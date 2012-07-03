@@ -281,16 +281,16 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Available Keyboard Shortcuts")
    String availableKeyShortcutsTitle();
 
-   @DefaultMessage("select text flows in all documents")
+   @DefaultMessage("Select text flows in all documents")
    String selectAllTextFlowsKeyShortcut();
 
-   @DefaultMessage("focus search phrase")
+   @DefaultMessage("Focus search phrase")
    String focusSearchPhraseKeyShortcut();
 
-   @DefaultMessage("focus replacement phrase")
+   @DefaultMessage("Focus replacement phrase")
    String focusReplacementPhraseKeyShortcut();
 
-   @DefaultMessage("show available shortcuts")
+   @DefaultMessage("Show available shortcuts")
    String showAvailableKeyShortcuts();
 
    @DefaultMessage("Application")
@@ -332,7 +332,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
    String requirePreviewDescription();
 
-   @DefaultMessage("Nagivate to next row")
+   @DefaultMessage("Navigate to next row")
    String navigateToNextRow();
    
    @DefaultMessage("Navigate to previous row")
@@ -341,6 +341,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Open editor in selected row")
    String openEditorInSelectedRow();
 
-   @DefaultMessage("Close keyboard shortcut list")
+   @DefaultMessage("Close keyboard shortcuts list")
    String closeShortcutView();
 }

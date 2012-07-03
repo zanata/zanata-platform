@@ -134,6 +134,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    public void onRevealDisplay()
    {
+      targetContentsPresenter.concealDisplay();
       keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
    }
 
@@ -388,6 +389,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    public void concealDisplay()
    {
+      targetContentsPresenter.concealDisplay();
       keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
    }
 

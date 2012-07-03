@@ -61,16 +61,16 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Move to previous state row")
    String moveToPreviousStateRow();
 
-   @DefaultMessage("Save changes as fuzzy")
+   @DefaultMessage("Save as fuzzy")
    String saveAsFuzzy();
 
-   @DefaultMessage("Save changes as approved")
+   @DefaultMessage("Save as approved")
    String saveAsApproved();
    
-   @DefaultMessage("Save changes as approved - if 'Enter key saves immediately' option enabled")
+   @DefaultMessage("Save as approved (if \"Enter key saves immediately\" enabled)")
    String saveAsApprovedEnter();
 
-   @DefaultMessage("Close opened editor")
+   @DefaultMessage("Close editor (if \"Esc key closes editor\" enabled)")
    String closeEditor();
 
    @DefaultMessage("User typing")

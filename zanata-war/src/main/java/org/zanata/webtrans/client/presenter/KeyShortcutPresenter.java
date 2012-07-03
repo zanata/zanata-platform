@@ -20,11 +20,9 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -40,7 +38,6 @@ import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Strings;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -66,7 +63,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    public interface Display extends WidgetDisplay
    {
-      void addContext(String title, List<String> shortcuts);
+      void addContext(ShortcutContext context, Collection<Set<KeyShortcut>> shorcutSets);
 
       void showPanel();
 
@@ -81,7 +78,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
     * Key uses {@link KeyShortcut#keysHash()}
     */
    private Map<Integer, Set<KeyShortcut>> shortcutMap;
-   private Map<Integer, String> keyDisplayMap;
 
    private Set<ShortcutContext> activeContexts;
 
@@ -92,19 +88,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    {
       super(display, eventBus);
       this.messages = webTransMessages;
-      keyDisplayMap = new HashMap<Integer, String>();
-
-      keyDisplayMap.put(KeyShortcut.ALT_KEY, "Alt");
-      keyDisplayMap.put(KeyShortcut.SHIFT_KEY, "Shift");
-      keyDisplayMap.put(KeyShortcut.META_KEY, "Meta");
-      keyDisplayMap.put(KeyShortcut.CTRL_KEY, "Ctrl");
-
-      keyDisplayMap.put(KeyCodes.KEY_DOWN, "Down");
-      keyDisplayMap.put(KeyCodes.KEY_UP, "Up");
-      keyDisplayMap.put(KeyCodes.KEY_ENTER, "Enter");
-      keyDisplayMap.put(KeyCodes.KEY_PAGEDOWN, "Page Down");
-      keyDisplayMap.put(KeyCodes.KEY_PAGEUP, "Page Up");
-      keyDisplayMap.put(KeyCodes.KEY_ESCAPE, "Esc");
    }
 
    @Override
@@ -149,68 +132,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             display.clearPanel();
             for (ShortcutContext context : ensureActiveContexts())
             {
-               ArrayList<String> shortcutStrings = new ArrayList<String>();
-
-               for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
-               {
-                  for (KeyShortcut shortcut : shortcutSet)
-                  {
-                     if (shortcut.getContext() == context && shortcut.isDisplayInView())
-                     {
-                        StringBuilder sb = new StringBuilder();
-                        if ((shortcut.getModifiers() & KeyShortcut.CTRL_KEY) != 0)
-                        {
-                           sb.append(keyDisplayMap.get(KeyShortcut.CTRL_KEY));
-                           sb.append("+");
-                        }
-                        if ((shortcut.getModifiers() & KeyShortcut.SHIFT_KEY) != 0)
-                        {
-                           sb.append(keyDisplayMap.get(KeyShortcut.SHIFT_KEY));
-                           sb.append("+");
-                        }
-                        if ((shortcut.getModifiers() & KeyShortcut.META_KEY) != 0)
-                        {
-                           sb.append(keyDisplayMap.get(KeyShortcut.META_KEY));
-                           sb.append("+");
-                        }
-                        if ((shortcut.getModifiers() & KeyShortcut.ALT_KEY) != 0)
-                        {
-                           sb.append(keyDisplayMap.get(KeyShortcut.ALT_KEY));
-                           sb.append("+");
-                        }
-                        if (!Strings.isNullOrEmpty(keyDisplayMap.get(shortcut.getKeyCode())))
-                        {
-                           sb.append(keyDisplayMap.get(shortcut.getKeyCode()));
-                        }
-                        else
-                        {
-                           sb.append((char) shortcut.getKeyCode());
-                        }
-                        sb.append(" : ");
-                        sb.append(shortcut.getDescription());
-                        shortcutStrings.add(sb.toString());
-                     }
-                  }
-               }
-               Collections.sort(shortcutStrings);
-
-               String contextName = "";
-               switch (context)
-               {
-               case Application:
-                  contextName = messages.applicationScope();
-                  break;
-               case ProjectWideSearch:
-                  contextName = messages.projectWideSearchAndReplace();
-                  break;
-               case Edit:
-                  contextName = messages.editScope();
-                  break;
-               case Navigation:
-                  contextName = messages.navigationScope();
-                  break;
-               }
-               display.addContext(contextName, shortcutStrings);
+               display.addContext(context, ensureShortcutMap().values());
             }
             display.showPanel();
          }
@@ -263,6 +185,10 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       return new KeyShortcutHandlerRegistration(shortcut);
    }
 
+   /**
+    * Process key event - check for 
+    * @param evt
+    */
    private void processKeyEvent(NativeEvent evt)
    {
       int modifiers = calculateModifiers(evt);
@@ -374,13 +300,5 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       }
 
-   }
-
-   public boolean isUserTyping(NativeEvent event)
-   {
-      boolean altKey = event.getAltKey();
-      boolean ctrlKey = event.getCtrlKey();
-
-      return !altKey && !ctrlKey && event.getKeyCode() != KeyCodes.KEY_ESCAPE;
    }
 }

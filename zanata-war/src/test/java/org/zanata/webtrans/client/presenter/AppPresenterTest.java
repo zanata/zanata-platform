@@ -76,7 +76,6 @@ public class AppPresenterTest
    private static final String SHOW_EDITOR_KEY_SHORTCUT_DESCRIPTION = "show editor view";
    private static final String SHOW_PROJECT_WIDE_SEARCH_KEY_SHORTCUT_DESCRIPTION = "show project-wide search";
 
-
    private AppPresenter appPresenter;
 
    HasClickHandlers mockDocumentsLink;
@@ -89,7 +88,6 @@ public class AppPresenterTest
    Identity mockIdentity;
    WebTransMessages mockMessages;
    Person mockPerson;
-
 
    HasCommand mockLeaveWorkspaceMenuItem;
    HasCommand mockSignoutMenuItem;
@@ -118,11 +116,9 @@ public class AppPresenterTest
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
    private Capture<PresenterRevealedHandler> capturedPresenterRevealedHandler;
 
-
    private Capture<Command> capturedLeaveWorkspaceLinkCommand;
    private Capture<Command> capturedSignoutLinkCommand;
    private Capture<Command> capturedHelpLinkCommand;
-
 
    private DocumentInfo testDocInfo;
    private DocumentId testDocId;
@@ -169,7 +165,6 @@ public class AppPresenterTest
       capturedLeaveWorkspaceLinkCommand = new Capture<Command>();
       capturedHelpLinkCommand = new Capture<Command>();
 
-
    }
 
    @BeforeMethod
@@ -183,11 +178,7 @@ public class AppPresenterTest
 
       setupDefaultMockExpectations();
 
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus,
-            mockKeyShortcutPresenter, mockTranslationPresenter,
-            mockDocumentListPresenter, mockSearchResultsPresenter,
-            mockNotificationPresenter, mockIdentity, mockWorkspaceContext,
-            mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
 
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
@@ -276,6 +267,9 @@ public class AppPresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setStats(notNull(TranslationStats.class));
       expectLastCall().anyTimes();
+      
+      mockTranslationPresenter.revealDisplay();
+      expectLastCall().once();
 
       replayAllMocks();
 
@@ -314,6 +308,10 @@ public class AppPresenterTest
       expectLastCall().once();
       mockDisplay.setStats(eq(testDocStats));
       expectLastCall().once();
+      
+      mockTranslationPresenter.revealDisplay();
+      expectLastCall().once();
+      
       replayAllMocks();
 
       appPresenter.bind();
@@ -323,7 +321,6 @@ public class AppPresenterTest
 
       verifyAllMocks();
    }
-
 
    /**
     * Note: this also verifies that editor pending change is saved when changing
@@ -401,7 +398,7 @@ public class AppPresenterTest
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
       simulatePageChangeFromEditor(token, MainView.Documents);
-      //update document stats
+      // update document stats
       capturedDocumentStatsUpdatedEventHandler.getValue().onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(testDocId, updatedStats));
       simulateReturnToEditorView(token);
 
@@ -433,9 +430,8 @@ public class AppPresenterTest
 
       replayAllMocks();
 
-
       appPresenter.bind();
-      //discard captured tokens from bind to allow easy check for new token
+      // discard captured tokens from bind to allow easy check for new token
       capturedHistoryTokenString.reset();
 
       // 1 - no doc loaded, don't generate MainView.Editor token
@@ -475,22 +471,22 @@ public class AppPresenterTest
       expect(mockHistory.getToken()).andReturn("").once();
       replayAllMocks();
       appPresenter.bind();
-      //simulate click
+      // simulate click
       capturedSearchLinkClickHandler.getValue().onClick(searchLinkClickEvent);
       HistoryToken capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
       assertThat("clicking search link should set view in history token to search", capturedToken.getView(), is(MainView.Search));
-      //TODO could check that nothing else has changed in token
+      // TODO could check that nothing else has changed in token
       verifyAllMocks();
    }
 
    public void testShowsHidesReadonlyLabel()
    {
-      //receives readonly event, label shown
+      // receives readonly event, label shown
       WorkspaceContextUpdateEvent readOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
       expect(readOnlyEvent.isReadOnly()).andReturn(true).anyTimes();
       mockDisplay.setReadOnlyVisible(true);
       expectLastCall().once();
-      //receives not-readonly event, label hidden
+      // receives not-readonly event, label hidden
       WorkspaceContextUpdateEvent editableEvent = createMock(WorkspaceContextUpdateEvent.class);
       expect(editableEvent.isReadOnly()).andReturn(false).anyTimes();
       mockDisplay.setReadOnlyVisible(false);
@@ -537,6 +533,9 @@ public class AppPresenterTest
       expectLastCall().once();
       mockSearchResultsPresenter.concealDisplay();
       expectLastCall().once();
+      
+      mockTranslationPresenter.revealDisplay();
+      expectLastCall().anyTimes();
    }
 
    /**
@@ -549,6 +548,7 @@ public class AppPresenterTest
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(docInEditorToken.toTokenString())
       {
       });
+      
       return docInEditorToken;
    }
 
@@ -566,7 +566,6 @@ public class AppPresenterTest
       return docInEditorToken;
    }
 
-
    /**
     * Sets expectations to show the documents view, update the document label,
     * show the given project stats, and save pending editor changes
@@ -579,27 +578,43 @@ public class AppPresenterTest
    }
 
    /**
-    * Sets expectations to show the given view, update the document label,
-    * show the given stats, and save pending editor changes.
+    * Sets expectations to show the given view, update the document label, show
+    * the given stats, and save pending editor changes.
     * 
     * @param toView the view to show
     * @param expectedStats the stats that should be displayed
-    * @param expectedDocLabel the text that the document label is expected to show
+    * @param expectedDocLabel the text that the document label is expected to
+    *           show
     */
    private void expectViewTransitionFromEditor(MainView toView, TranslationStats expectedStats, String expectedDocLabel)
    {
-      //expect return to given view
+      // expect return to given view
       mockDisplay.showInMainView(toView);
       expectLastCall().once();
       if (toView == MainView.Search)
       {
          mockSearchResultsPresenter.revealDisplay();
          expectLastCall().once();
+
+         mockTranslationPresenter.concealDisplay();
+         expectLastCall().once();
       }
       else
       {
          mockSearchResultsPresenter.concealDisplay();
          expectLastCall().once();
+         
+         if (toView == MainView.Editor)
+         {
+            mockTranslationPresenter.revealDisplay();
+            expectLastCall().once();
+         }
+         else if (toView == MainView.Documents)
+         {
+            mockTranslationPresenter.concealDisplay();
+            expectLastCall().once();
+         }
+
       }
       mockDisplay.setDocumentLabel("", expectedDocLabel);
       expectLastCall().once();
@@ -615,7 +630,7 @@ public class AppPresenterTest
    private void simulatePageChangeFromEditor(HistoryToken fromHistoryState, MainView toView)
    {
       fromHistoryState.setView(toView);
-      //simulate page transition
+      // simulate page transition
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(fromHistoryState.toTokenString())
       {
       });
@@ -642,7 +657,8 @@ public class AppPresenterTest
 
    /**
     * @see #simulateReturnToEditorView(HistoryToken)
-    * @param documentStats the stats object that has been set for the given document
+    * @param documentStats the stats object that has been set for the given
+    *           document
     */
    private void expectReturnToEditorView(TranslationStats documentStats)
    {
@@ -663,7 +679,7 @@ public class AppPresenterTest
       expectPresenterSetupActions();
       setupMockGetterReturnValues();
 
-      //misc and capture setup
+      // misc and capture setup
       mockHistory.fireCurrentHistoryState();
       expectLastCall().anyTimes();
       mockHistory.newItem(capture(capturedHistoryTokenString));
@@ -740,7 +756,10 @@ public class AppPresenterTest
       expectLastCall().once();
 
       mockDisplay.showInMainView(MainView.Documents);
-      expectLastCall().once(); //starts on document list view
+      expectLastCall().once(); // starts on document list view
+
+      mockTranslationPresenter.concealDisplay();
+      expectLastCall().once();
 
       // due to this display beginning as concealed
       mockSearchResultsPresenter.concealDisplay();

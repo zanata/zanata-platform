@@ -167,12 +167,6 @@ public class Editor extends Composite implements ToggleEditor
       }
    }
 
-   @UiHandler("rootContainer")
-   public void onKeyDown(KeyDownEvent event)
-   {
-      listener.onEditorKeyDown(event, this);
-   }
-
    @UiHandler("textArea")
    public void onValueChange(ValueChangeEvent<String> event)
    {

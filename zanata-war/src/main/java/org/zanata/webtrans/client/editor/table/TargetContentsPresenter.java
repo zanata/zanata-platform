@@ -283,7 +283,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             getCurrentEditor().autoSize();
          }
-      }, KeyShortcut.KEY_DOWN_EVENT, true, false, false, true));
+      }, KeyShortcut.KEY_DOWN_EVENT, false, false, false, true));
 
       // Register shortcut ESC to close editor - (if configHolder.isButtonEsc() = true)
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ESCAPE, ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
@@ -329,8 +329,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentDisplay.setToView();
          currentDisplay.showButtons(false);
       }
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+      concealDisplay();
    }
 
    private void fireTransUnitEditAction()
@@ -361,8 +360,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.clearTranslatorList();
          validate(editor);
       }
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+      revealDisplay();
 
       fireTransUnitEditAction();
 
@@ -589,8 +587,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       editor.autoSize();
       editor.setFocus();
 
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+      revealDisplay();
 
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
@@ -651,11 +648,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             editor.setViewMode(ToggleEditor.ViewMode.EDIT);
             validate(editor);
          }
-         keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
-         keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+         revealDisplay();
       }
    }
-
+   
    @Override
    public void onInsertString(final InsertStringInEditorEvent event)
    {
@@ -690,15 +686,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-   }
-
-   @Override
-   public void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor)
-   {
-      if (keyShortcutPresenter.isUserTyping(event.getNativeEvent()))
-      {
-//         editor.autoSize();
-      }
    }
 
    public void moveToNextState(final NavTransUnitEvent.NavigationType nav)
@@ -739,5 +726,17 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void onEnable(EnableModalNavigationEvent event)
    {
       isModalNavEnabled = event.isEnable();
+   }
+   
+   public void revealDisplay()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+   }
+   
+   public void concealDisplay()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
    }
 }
