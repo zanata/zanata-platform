@@ -77,7 +77,7 @@ public class DocumentServiceImpl implements DocumentService
       String docId = sourceDoc.getName();
 
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
-      HLocale hLocale = this.localeServiceImpl.validateSourceLocale( sourceDoc.getLang() );
+      HLocale hLocale = this.localeServiceImpl.getByLocaleId( sourceDoc.getLang() );
 
       boolean changed = false;
       int nextDocRev;
