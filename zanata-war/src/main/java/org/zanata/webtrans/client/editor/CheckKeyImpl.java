@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
  * 
  *         See org.zanata.webtrans.client.editor.table.CheckKey
  * 
+ * @deprecated See KeyShortcutPresenter for keyboard shortcut management
  **/
 public final class CheckKeyImpl implements CheckKey
 {

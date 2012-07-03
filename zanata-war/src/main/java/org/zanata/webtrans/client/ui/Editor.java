@@ -6,9 +6,11 @@ import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -57,6 +59,8 @@ public class Editor extends Composite implements ToggleEditor
    private static final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
    private final int index;
+
+   private boolean isFocused;
 
    @UiField
    Styles style;
@@ -163,12 +167,6 @@ public class Editor extends Composite implements ToggleEditor
       }
    }
 
-   @UiHandler("rootContainer")
-   public void onKeyDown(KeyDownEvent event)
-   {
-      listener.onEditorKeyDown(event, this);
-   }
-
    @UiHandler("textArea")
    public void onValueChange(ValueChangeEvent<String> event)
    {
@@ -184,6 +182,13 @@ public class Editor extends Composite implements ToggleEditor
       listener.toggleView(Editor.this);
       fireValidationEvent();
       event.stopPropagation();
+      isFocused = true;
+   }
+
+   @UiHandler("textArea")
+   public void onTextAreaBlur(BlurEvent event)
+   {
+      isFocused = false;
    }
 
    @UiHandler("textArea")
@@ -266,15 +271,16 @@ public class Editor extends Composite implements ToggleEditor
    public void autoSize()
    {
       textArea.setVisibleLines(INITIAL_LINES);
-      while(textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
+      while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
       {
          textArea.setVisibleLines(textArea.getVisibleLines() + 1);
       }
    }
 
    /**
-    * when user press enter, it will autosize first and then the enter itself will increase one line
-    *
+    * when user press enter, it will autosize first and then the enter itself
+    * will increase one line
+    * 
     */
    @Override
    public void autoSizePlusOne()
@@ -376,6 +382,7 @@ public class Editor extends Composite implements ToggleEditor
          }
       }
    }
+   
 
    /**
     * Color string return from userSessionService rgb(xx,xx,xx), Color string
@@ -388,5 +395,11 @@ public class Editor extends Composite implements ToggleEditor
    private String removeFormat(String color)
    {
       return color.replace(" ", "");
+   }
+
+   @Override
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 }

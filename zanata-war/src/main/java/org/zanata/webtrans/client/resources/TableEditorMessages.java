@@ -45,4 +45,34 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Run Validation")
    String runValidation();
+   
+   @DefaultMessage("Copy from translation memory {0}")
+   String copyFromTM(String index);
+
+   @DefaultMessage("Move to next row")
+   String moveToNextRow();
+
+   @DefaultMessage("Move to previous row")
+   String moveToPreviousRow();
+   
+   @DefaultMessage("Move to next state row")
+   String moveToNextStateRow();
+   
+   @DefaultMessage("Move to previous state row")
+   String moveToPreviousStateRow();
+
+   @DefaultMessage("Save as fuzzy")
+   String saveAsFuzzy();
+
+   @DefaultMessage("Save as approved")
+   String saveAsApproved();
+   
+   @DefaultMessage("Save as approved (if \"Enter key saves immediately\" enabled)")
+   String saveAsApprovedEnter();
+
+   @DefaultMessage("Close editor (if \"Esc key closes editor\" enabled)")
+   String closeEditor();
+
+   @DefaultMessage("User typing")
+   String userTyping();
 }
