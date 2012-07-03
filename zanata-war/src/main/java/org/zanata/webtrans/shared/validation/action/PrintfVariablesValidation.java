@@ -58,11 +58,11 @@ public class PrintfVariablesValidation extends ValidationAction
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
 
-      Log.info("source vars: " + sourceVars);
-      Log.info("target vars: " + targetVars);
+      Log.debug("source vars: " + sourceVars);
+      Log.debug("target vars: " + targetVars);
 
       ArrayList<String> targetAfterStrip = stripPositionIfApplicable(targetVars);
-      Log.info("target after stripping position: " + targetAfterStrip);
+      Log.debug("target after stripping position: " + targetAfterStrip);
 
       List<String> missing = listMissing(sourceVars, targetAfterStrip);
       if (!missing.isEmpty())
@@ -113,13 +113,13 @@ public class PrintfVariablesValidation extends ValidationAction
             }
             else
             {
-               Log.warn("positional variable has invalid position. Ignore position strip.");
+               Log.info("positional variable has invalid position. Ignore position strip.");
                return variables;
             }
          }
          else if (hasPosition)
          {
-            Log.warn("encounter mixed positional and unpositional variables. Ignore position strip.");
+            Log.info("encounter mixed positional and unpositional variables. Ignore position strip.");
             return variables;
          }
       }
@@ -134,7 +134,7 @@ public class PrintfVariablesValidation extends ValidationAction
       }
       catch (Exception e)
       {
-         Log.warn("cannot extract position index from " + positionAndDollar);
+         Log.info("cannot extract position index from " + positionAndDollar);
          return -1;
       }
    }
