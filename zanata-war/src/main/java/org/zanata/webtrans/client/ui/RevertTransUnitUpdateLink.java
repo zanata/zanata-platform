@@ -21,12 +21,18 @@
 
 package org.zanata.webtrans.client.ui;
 
+import java.util.Collection;
+import javax.annotation.Nullable;
+
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -128,7 +134,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
             @Override
             public void onFailure(Throwable caught)
             {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.undoFailure()));
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.undoFailure(0)));
                setText(messages.undo());
                enableLink();
             }
@@ -136,13 +142,36 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
             @Override
             public void onSuccess(UpdateTransUnitResult result)
             {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoSuccess()));
-               setText(messages.undone());
+               if (result.isAllSuccess())
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoSuccess()));
+                  setText(messages.undone());
+               }
+               else
+               {
+                  //most likely the undo link became stale i.e. entity state has changed on the server
+                  Collection<TransUnitUpdateInfo> unsuccessful = Collections2.filter(result.getUpdateInfoList(), UnsuccessfulUpdatePredicate.INSTANCE);
+                  int number = unsuccessful.size();
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoFailure(number)));
+                  setText("");
+               }
                //we ensure the undo can only be click once.
                handlerRegistration.removeHandler();
             }
          });
 
+      }
+
+
+   }
+   private static enum UnsuccessfulUpdatePredicate implements Predicate<TransUnitUpdateInfo>
+   {
+      INSTANCE;
+
+      @Override
+      public boolean apply(TransUnitUpdateInfo input)
+      {
+         return !input.isSuccess();
       }
    }
 }

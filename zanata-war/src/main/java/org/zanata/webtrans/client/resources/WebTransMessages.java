@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.resources;
 
+import java.util.List;
+
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -238,11 +240,15 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo replacement failed")
    String undoReplacementFailure();
 
-   @DefaultMessage("Undo failed")
-   String undoFailure();
-
    @DefaultMessage("Undo successful")
    String undoSuccess();
+
+   @Description("Message for unsuccessful undo")
+   @DefaultMessage("{0} items can not be undone")
+   @AlternateMessage({
+         "one", "Item can not be undone",
+         "=0", "Undo failed" })
+   String undoFailure(@PluralCount int unsuccessfulCount);
 
    @DefaultMessage("Undo not possible in read-only workspace")
    String cannotUndoInReadOnlyMode();
