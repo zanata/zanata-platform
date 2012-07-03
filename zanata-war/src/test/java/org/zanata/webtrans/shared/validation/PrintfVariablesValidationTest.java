@@ -316,19 +316,19 @@ public class PrintfVariablesValidationTest
    }
 
    @Test
-   public void invalidPositionalVariablesWillValidateAsIs2() {
+   public void positionalVariablesHaveSamePosition() {
       printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "%s: Read error at byte %s, while reading %lu byte";
-      String target = "%31$s：Read error while reading %99$lu bytes，at %2$s";
+      String target = "%3$s：Read error while reading %3$lu bytes，at %2$s";
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
       assertThat(printfVariablesValidation.getError().size(), is(2));
 
       assertThat(capturedVarsAdded.hasCaptured(), is(true));
-      assertThat(capturedVarsAdded.getValue(), contains("%31$s", "%99$lu", "%2$s"));
+      assertThat(capturedVarsAdded.getValue(), contains("%3$s"));
       assertThat(capturedVarsMissing.hasCaptured(), is(true));
-      assertThat(capturedVarsMissing.getValue(), contains("%s", "%s", "%lu"));
+      assertThat(capturedVarsMissing.getValue(), contains("%s"));
    }
 }
 
