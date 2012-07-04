@@ -143,6 +143,7 @@ public class EssentialDataCreator
          if( localeDAO.findByLocaleId( localeId ) == null )
          {
             HLocale en_US = new HLocale(localeId);
+            en_US.setActive(true);
             en_US.setEnabledByDefault(false);
             if (localeDAO.makePersistent(en_US) == null)
             {
