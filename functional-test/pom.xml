@@ -263,12 +263,9 @@
                             <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <printSummary>true</printSummary>
                             <forkMode>always</forkMode>
-                            <includes>
-                                <include>**/*Test.java</include>
-                            </includes>
-                            <excludes>
-
-                            </excludes>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>${basedir}/src/test/resources/functional-test.tng.xml</suiteXmlFile>
+                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                 </plugins>
