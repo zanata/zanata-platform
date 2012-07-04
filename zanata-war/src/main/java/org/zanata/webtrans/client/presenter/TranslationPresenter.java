@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements HasLayoutOrganiser
+public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements HasLayoutSelection
 {
    public interface Display extends WidgetDisplay
    {
@@ -406,13 +406,13 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    public void setSouthPanelVisible(boolean visible)
    {
-      setSouthPanelExpanded(visible);
+      display.getSouthPanelToggle().setValue(visible, true);
    }
 
    @Override
    public void setSidePanelVisible(boolean visible)
    {
-      setOptionsExpended(visible);
+      display.getOptionsToggle().setValue(visible, true);
    }
 
 }

@@ -58,7 +58,7 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
       HasClickHandlers getNoSouthLayoutContainer();
    }
 
-   private HasLayoutOrganiser layoutOrganiser;
+   private HasLayoutSelection layoutSelection;
 
    @Override
    protected void onBind()
@@ -70,8 +70,8 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
          @Override
          public void onClick(ClickEvent event)
          {
-            layoutOrganiser.setSidePanelVisible(true);
-            layoutOrganiser.setSouthPanelVisible(true);
+            layoutSelection.setSidePanelVisible(true);
+            layoutSelection.setSouthPanelVisible(true);
             display.hide();
          }
       }));
@@ -81,8 +81,8 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
          @Override
          public void onClick(ClickEvent event)
          {
-            layoutOrganiser.setSidePanelVisible(false);
-            layoutOrganiser.setSouthPanelVisible(false);
+            layoutSelection.setSidePanelVisible(false);
+            layoutSelection.setSouthPanelVisible(false);
             display.hide();
          }
       }));
@@ -92,8 +92,8 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
          @Override
          public void onClick(ClickEvent event)
          {
-            layoutOrganiser.setSidePanelVisible(false);
-            layoutOrganiser.setSouthPanelVisible(true);
+            layoutSelection.setSidePanelVisible(false);
+            layoutSelection.setSouthPanelVisible(true);
             display.hide();
          }
       }));
@@ -103,8 +103,8 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
          @Override
          public void onClick(ClickEvent event)
          {
-            layoutOrganiser.setSidePanelVisible(true);
-            layoutOrganiser.setSouthPanelVisible(false);
+            layoutSelection.setSidePanelVisible(true);
+            layoutSelection.setSouthPanelVisible(false);
             display.hide();
          }
       }));
@@ -132,8 +132,8 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
       display.hide();
    }
 
-   public void setLayoutListener(HasLayoutOrganiser layoutOrganiser)
+   public void setLayoutListener(HasLayoutSelection layoutOrganiser)
    {
-      this.layoutOrganiser = layoutOrganiser;
+      this.layoutSelection = layoutOrganiser;
    }
 }
