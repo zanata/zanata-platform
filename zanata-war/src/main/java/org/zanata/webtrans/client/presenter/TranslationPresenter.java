@@ -38,6 +38,7 @@ import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -279,12 +280,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       };
 
       // Register shortcut ALT+(UP/J) for previous row navigation
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyEvent.KEY_DOWN, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyEvent.KEY_DOWN, true, true));
 
       // Register shortcut ALT+(Down/K) for next row navigation
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyEvent.KEY_DOWN, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyEvent.KEY_DOWN, true, true));
 
       // Register shortcut Enter to open editor in selected row - if no other input field is in focus
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
@@ -297,7 +298,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                translationEditorPresenter.openEditorOnSelectedRow();
             }
          }
-      }, KeyShortcut.KEY_UP_EVENT, true, true));
+      }, KeyEvent.KEY_UP, true, true));
    }
 
    private boolean isOtherInputFieldFocused()

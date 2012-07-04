@@ -34,6 +34,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
@@ -120,7 +121,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
                display.hide(true);
             }
          }
-      }, KeyShortcut.KEY_UP_EVENT, true, true));
+      }, KeyEvent.KEY_UP, true, true));
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
@@ -200,7 +201,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers, evt.getKeyCode());
          for (KeyShortcut shortcut : shortcuts)
          {
-            if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyEvent().equals(evt.getType()))
+            if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyEvent().nativeEventType.equals(evt.getType()))
             {
                if (shortcut.isStopPropagation())
                {

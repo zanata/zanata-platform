@@ -49,6 +49,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -260,7 +261,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             saveAsFuzzy();
          }
-      }, KeyShortcut.KEY_DOWN_EVENT, true, true));
+      }, KeyEvent.KEY_DOWN, true, true));
 
       KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler = new KeyShortcutEventHandler()
       {
@@ -273,11 +274,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       ctrlEnterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.CTRL_KEY, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
-            KeyShortcut.KEY_DOWN_EVENT, true, true);
+            KeyEvent.KEY_DOWN, true, true);
 
       enterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
-            KeyShortcut.KEY_DOWN_EVENT, true, true);
+            KeyEvent.KEY_DOWN, true, true);
 
       enterTriggersAutoSizeShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, new KeyShortcutEventHandler()
@@ -287,7 +288,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             getCurrentEditor().autoSizePlusOne();
          }
-      }, KeyShortcut.KEY_DOWN_EVENT, false, false);
+      }, KeyEvent.KEY_DOWN, false, false);
 
       if (configHolder.isEnterSavesApproved())
       {
@@ -309,7 +310,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             getCurrentEditor().autoSize();
          }
-      }, KeyShortcut.KEY_DOWN_EVENT, false, false, true));
+      }, KeyEvent.KEY_DOWN, false, false, true));
 
       escClosesEditorShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE,
             ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()

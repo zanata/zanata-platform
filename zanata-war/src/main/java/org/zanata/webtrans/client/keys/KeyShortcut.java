@@ -43,6 +43,19 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
    public static final int ESC_ENTER_KEYS = KeyCodes.KEY_ESCAPE | KeyCodes.KEY_ENTER;
 
+   public enum KeyEvent {
+      KEY_UP ("keyup"),
+      KEY_DOWN ("keydown"),
+      KEY_PRESS ("keypress");
+
+      public final String nativeEventType;
+
+      KeyEvent(String nativeType)
+      {
+         this.nativeEventType = nativeType;
+      }
+   }
+
    public static final int KEY_G = 'G';
    public static final int KEY_J = 'J';
    public static final int KEY_K = 'K';
@@ -60,16 +73,12 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public static final int KEY_4 = 52;
    public static final int KEY_4_NUM = 100;
 
-   public static final String KEY_UP_EVENT = "keyup";
-   public static final String KEY_DOWN_EVENT = "keydown";
-   public static final String KEY_PRESS_EVENT = "keypress";
-
    private final int modifiers;
    private final int keyCode;
    private final ShortcutContext context;
    private String description;
    private final KeyShortcutEventHandler handler;
-   private final String keyEvent;
+   private final KeyEvent keyEvent;
 
    //Display in shortcut summary view
    public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
@@ -110,7 +119,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     * @param keyAction defined if shortcut action to be triggered by KeyUp, or
     *           KeyDown. Default KeyDown.
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean stopPropagation, boolean preventDefault, boolean isNot)
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, boolean isNot)
    {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
@@ -154,7 +163,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     * @param stopPropagation
     * @param preventDefault
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean stopPropagation, boolean preventDefault)
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault)
    {
       this(modifiers, keyCode, context, description, handler, keyEvent, stopPropagation, preventDefault, false);
    }
@@ -166,7 +175,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     */
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
    {
-      this(modifiers, keyCode, context, description, handler, KEY_DOWN_EVENT, false, false);
+      this(modifiers, keyCode, context, description, handler, KeyEvent.KEY_DOWN, false, false);
    }
 
    public int getModifiers()
@@ -194,7 +203,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       return handler;
    }
 
-   public String getKeyEvent()
+   public KeyEvent getKeyEvent()
    {
       return keyEvent;
    }
