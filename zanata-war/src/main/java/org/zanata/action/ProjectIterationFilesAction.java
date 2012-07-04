@@ -49,10 +49,14 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
+import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
 import javax.faces.context.FacesContext;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -173,6 +177,8 @@ public class ProjectIterationFilesAction
          Resource doc = this.translationFileServiceImpl.parseDocumentFile(this.documentFileUpload.getFileContents(),
               this.documentFileUpload.getDocumentPath(), this.documentFileUpload.getFileName());
 
+         doc.setLang( new LocaleId(this.documentFileUpload.getSourceLang()) );
+
          // TODO Copy Trans values
          // Extensions are hard-coded to GetText, since it is the only supported format at the time
          this.documentServiceImpl.saveDocument(this.projectSlug, this.iterationSlug,
@@ -193,6 +199,11 @@ public class ProjectIterationFilesAction
       // NB This needs to be done as for some reason seam is losing the parameters when redirecting
       // This is efectively the same as returning void
       return FacesContext.getCurrentInstance().getViewRoot().getViewId();
+   }
+
+   public List<HLocale> getAvailableSourceLocales()
+   {
+      return localeDAO.findAllActive();
    }
 
    public boolean isFileUploadAllowed()
@@ -331,40 +342,20 @@ public class ProjectIterationFilesAction
     */
    public static class DocumentFileUploadHelper
    {
+      @Getter
+      @Setter
       private InputStream fileContents;
 
+      @Getter
+      @Setter
       private String fileName;
 
+      @Getter
+      @Setter
       private String documentPath;
 
-      public InputStream getFileContents()
-      {
-         return fileContents;
-      }
-
-      public void setFileContents(InputStream fileContents)
-      {
-         this.fileContents = fileContents;
-      }
-
-      public String getFileName()
-      {
-         return fileName;
-      }
-
-      public void setFileName(String fileName)
-      {
-         this.fileName = fileName;
-      }
-
-      public String getDocumentPath()
-      {
-         return documentPath;
-      }
-
-      public void setDocumentPath(String documentPath)
-      {
-         this.documentPath = documentPath;
-      }
+      @Getter
+      @Setter
+      private String sourceLang = "en-US"; // en-US by default
    }
 }
