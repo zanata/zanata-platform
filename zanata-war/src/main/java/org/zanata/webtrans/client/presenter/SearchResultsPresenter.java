@@ -81,7 +81,8 @@ import com.google.inject.Inject;
 /**
  * View for project-wide search and replace within textflow targets
  * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresenter.Display>
 {
@@ -163,13 +164,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * @param selectAllHandler
        * @return the created table
        * 
-       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel, ValueChangeHandler, WebTransMessages)
+       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel,
+       *      ValueChangeHandler, WebTransMessages)
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
-            ClickHandler viewDocClickHandler,
-            ClickHandler searchDocClickHandler,
-            MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
-            ValueChangeHandler<Boolean> selectAllHandler);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
 
       /**
        * Add a document header and table to the display, with action buttons per
@@ -177,21 +175,17 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * 
        * @return the created table
        * 
-       * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel, ValueChangeHandler)
-       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate, Delegate, Delegate, SelectionModel, ValueChangeHandler, WebTransMessages, org.zanata.webtrans.client.resources.Resources)
+       * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel,
+       *      ValueChangeHandler)
+       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate,
+       *      Delegate, Delegate, SelectionModel, ValueChangeHandler,
+       *      WebTransMessages, org.zanata.webtrans.client.resources.Resources)
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(
-            String docName,
-            ClickHandler viewDocClickHandler,
-            ClickHandler searchDocClickHandler,
-            MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
-            ValueChangeHandler<Boolean> selectAllHandler,
-            Delegate<TransUnitReplaceInfo> previewDelegate,
-            Delegate<TransUnitReplaceInfo> replaceDelegate,
-            Delegate<TransUnitReplaceInfo> undoDelegate);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate);
 
       /**
-       * Required to avoid instantiating a component that calls client-only code in the presenter
+       * Required to avoid instantiating a component that calls client-only code
+       * in the presenter
        * 
        * @return a new selection model for use with table
        */
@@ -237,13 +231,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private boolean showRowActionButtons = false;
 
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus,
-         CachingDispatchAsync dispatcher,
-         History history,
-         final WebTransMessages webTransMessages,
-         final WorkspaceContext workspaceContext,
-         final KeyShortcutPresenter keyShortcutPresenter,
-         Location windowLocation)
+   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter, Location windowLocation)
    {
       super(display, eventBus);
       messages = webTransMessages;
@@ -297,17 +285,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            if (event.getValue())
-            {
-               selectAllTextFlows();
-            }
-            else
-            {
-               for (MultiSelectionModel<TransUnitReplaceInfo> selectionModel : documentSelectionModels.values())
-               {
-                  selectionModel.clear();
-               }
-            }
+            selectAllTextFlows(event.getValue());
          }
       }));
 
@@ -361,7 +339,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             Log.debug("found matching TU for TU update, id: " + updateInfo.getTransUnit().getId().getId());
 
-
             if (replaceInfo.getReplaceState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
             {
                // can't undo after additional update
@@ -377,7 +354,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                }
                else
                {
-                  // clear selection to avoid accidental inclusion in batch operations
+                  // clear selection to avoid accidental inclusion in batch
+                  // operations
                   selectionModel.setSelected(replaceInfo, false);
                }
             }
@@ -412,24 +390,16 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.SHIFT_ALT_KEYS, 'A',
-            ShortcutContext.ProjectWideSearch,
-            messages.selectAllTextFlowsKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.SHIFT_ALT_KEYS, 'A', ShortcutContext.ProjectWideSearch, messages.selectAllTextFlowsKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            selectAllTextFlows();
+            display.getSelectAllChk().setValue(!display.getSelectAllChk().getValue(), true);
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'P',
-            ShortcutContext.ProjectWideSearch,
-            messages.focusSearchPhraseKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'P', ShortcutContext.ProjectWideSearch, messages.focusSearchPhraseKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -438,11 +408,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'C',
-            ShortcutContext.ProjectWideSearch,
-            messages.focusReplacementPhraseKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'C', ShortcutContext.ProjectWideSearch, messages.focusReplacementPhraseKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -451,11 +417,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'R',
-            ShortcutContext.ProjectWideSearch,
-            messages.replaceSelectedKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'R', ShortcutContext.ProjectWideSearch, messages.replaceSelectedKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -464,13 +426,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      //TODO Alt+R for replace, Alt+C to focus replace field
+      // TODO Alt+R for replace, Alt+C to focus replace field
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'W',
-            ShortcutContext.ProjectWideSearch,
-            messages.toggleRowActionButtons(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'W', ShortcutContext.ProjectWideSearch, messages.toggleRowActionButtons(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -665,7 +623,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    /**
     * 
-    * @param skipEmptyNotification true to silently ignore the request when no rows are selected
+    * @param skipEmptyNotification true to silently ignore the request when no
+    *           rows are selected
     */
    private void previewSelected(boolean skipEmptyNotification, boolean hideNonSelectedPreviews)
    {
@@ -686,7 +645,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }
    }
-
 
    /**
     * Fire a {@link PreviewReplaceText} event for the given {@link TransUnit}s
@@ -747,7 +705,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             Log.error("[SearchResultsPresenter] Preview replace text failure " + e, e);
             eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.previewFailed()));
-            // may want to change TU state from 'previewing' (possibly error state)
+            // may want to change TU state from 'previewing' (possibly error
+            // state)
          }
 
          @Override
@@ -852,7 +811,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             Log.error("[SearchResultsPresenter] Replace text failure " + e, e);
             eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.replaceTextFailure()));
-            // may want to change state from 'replacing' (possibly add error state)
+            // may want to change state from 'replacing' (possibly add error
+            // state)
          }
 
          @Override
@@ -867,7 +827,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                TransUnitUpdateInfo info = updateInfoList.get(0);
                String text = info.getTransUnit().getTargets().get(0);
                String truncatedText = text.substring(0, (text.length() <= TRUNCATED_TARGET_LENGTH ? text.length() : TRUNCATED_TARGET_LENGTH));
-               int oneBasedRowIndex = info.getTransUnit().getRowIndex()+1;
+               int oneBasedRowIndex = info.getTransUnit().getRowIndex() + 1;
                String docName = docPaths.get(info.getDocumentId().getId());
                message = messages.replacedTextInOneTextFlow(searchText, replacement, docName, oneBasedRowIndex, truncatedText);
             }
@@ -916,7 +876,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          action.addUpdateToRevert(updateInfo);
          TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
-         // may be null if another search has been performed since the replacement
+         // may be null if another search has been performed since the
+         // replacement
          if (replaceInfo != null)
          {
             setReplaceState(replaceInfo, ReplacementState.Undoing);
@@ -998,8 +959,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    }
 
    /**
-    * Sets the info item to its current index in the containing data
-    * provider to force the provider to recognize that it has changed.
+    * Sets the info item to its current index in the containing data provider to
+    * force the provider to recognize that it has changed.
     * 
     * @param info
     */
@@ -1058,8 +1019,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       ValueChangeHandler<Boolean> selectDocHandler = selectAllHandler(docId, selectionModel);
       if (showRowActionButtons)
       {
-         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler,
-               ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler, ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
       }
       else
       {
@@ -1137,7 +1097,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       if (currentHistoryState == null)
          currentHistoryState = new HistoryToken(); // default values
 
-
       boolean caseSensitivityChanged = token.getProjectSearchCaseSensitive() != currentHistoryState.getProjectSearchCaseSensitive();
       boolean searchTextChanged = !token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText());
       boolean searchFieldsChanged = token.isProjectSearchInSource() != currentHistoryState.isProjectSearchInSource();
@@ -1154,11 +1113,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          if (!token.getProjectSearchText().isEmpty())
          {
             display.setSearching(true);
-            GetProjectTransUnitLists action = new GetProjectTransUnitLists(token.getProjectSearchText(),
-                  token.isProjectSearchInSource(),
-                  token.isProjectSearchInTarget(),
-                  token.getProjectSearchCaseSensitive(),
-                  windowLocation.getQueryDocuments());
+            GetProjectTransUnitLists action = new GetProjectTransUnitLists(token.getProjectSearchText(), token.isProjectSearchInSource(), token.isProjectSearchInTarget(), token.getProjectSearchCaseSensitive(), windowLocation.getQueryDocuments());
             dispatcher.execute(action, projectSearchCallback);
          }
       }
@@ -1271,7 +1226,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
    }
 
-   private void selectAllTextFlows()
+   private void selectAllTextFlows(boolean selected)
    {
       for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> en : documentDataProviders.entrySet())
       {
@@ -1280,7 +1235,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             for (TransUnitReplaceInfo tu : en.getValue().getList())
             {
-               selectionModel.setSelected(tu, true);
+               selectionModel.setSelected(tu, selected);
             }
          }
       }
