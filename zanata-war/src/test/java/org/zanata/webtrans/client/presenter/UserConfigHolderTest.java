@@ -48,8 +48,8 @@ public class UserConfigHolderTest
 
       Map<String, String> propertiesMap = getPropertiesMap();
 
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonEnter", "false"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonEsc", "false"));
+      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
+      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("escClosesEditor", "false"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonFuzzy", "true"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonUntranslated", "true"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
