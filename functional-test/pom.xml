@@ -266,6 +266,9 @@
                             <includes>
                                 <include>**/*Test.java</include>
                             </includes>
+                            <excludes>
+
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
