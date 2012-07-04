@@ -67,4 +67,16 @@ public class UpdateTransUnitResult implements Result
             add("tuUpdateInfo", tuUpdateInfo).
             toString();
    }
+
+   public boolean isAllSuccess()
+   {
+      for (TransUnitUpdateInfo transUnitUpdateInfo : tuUpdateInfo)
+      {
+         if (!transUnitUpdateInfo.isSuccess())
+         {
+            return false;
+         }
+      }
+      return true;
+   }
 }
