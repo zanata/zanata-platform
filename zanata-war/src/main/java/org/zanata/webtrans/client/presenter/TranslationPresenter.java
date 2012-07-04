@@ -287,7 +287,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
 
       // Register shortcut Enter to open editor in selected row - if no other input field is in focus
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)

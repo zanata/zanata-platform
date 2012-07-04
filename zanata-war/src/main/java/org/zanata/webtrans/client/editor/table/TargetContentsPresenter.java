@@ -275,11 +275,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
             KeyShortcut.KEY_DOWN_EVENT, true, true, true);
 
-      enterSavesApprovedShortcut = new KeyShortcut(0, KeyCodes.KEY_ENTER,
+      enterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
             KeyShortcut.KEY_DOWN_EVENT, true, true, true);
 
-      enterTriggersAutoSizeShortcut = new KeyShortcut(0, KeyCodes.KEY_ENTER,
+      enterTriggersAutoSizeShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, "", new KeyShortcutEventHandler()
       {
          @Override
@@ -312,7 +312,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }, KeyShortcut.KEY_DOWN_EVENT, false, false, false, true));
 
-      escClosesEditorShortcut = new KeyShortcut(0, KeyCodes.KEY_ESCAPE,
+      escClosesEditorShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE,
             ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
       {
          @Override

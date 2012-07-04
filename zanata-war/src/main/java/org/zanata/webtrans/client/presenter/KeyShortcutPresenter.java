@@ -110,7 +110,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
-      registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ESCAPE, ShortcutContext.Application, messages.closeShortcutView(), new KeyShortcutEventHandler()
+      registerKeyShortcut(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application, messages.closeShortcutView(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)

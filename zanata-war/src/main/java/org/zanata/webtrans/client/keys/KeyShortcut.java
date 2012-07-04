@@ -34,6 +34,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
  */
 public class KeyShortcut implements Comparable<KeyShortcut>
 {
+   public static final int NO_MODIFIER = 0x0;
    public static final int ALT_KEY = 0x1;
    public static final int SHIFT_KEY = 0x2;
    public static final int CTRL_KEY = 0x4;
