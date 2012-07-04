@@ -279,12 +279,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       };
 
       // Register shortcut ALT+(UP/J) for previous row navigation
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
 
       // Register shortcut ALT+(Down/K) for next row navigation
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true));
 
       // Register shortcut Enter to open editor in selected row - if no other input field is in focus
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
@@ -297,7 +297,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                translationEditorPresenter.openEditorOnSelectedRow();
             }
          }
-      }, KeyShortcut.KEY_UP_EVENT, true, true, true));
+      }, KeyShortcut.KEY_UP_EVENT, true, true));
    }
 
    private boolean isOtherInputFieldFocused()

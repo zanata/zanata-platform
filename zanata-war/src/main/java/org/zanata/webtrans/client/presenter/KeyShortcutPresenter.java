@@ -120,7 +120,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
                display.hide(true);
             }
          }
-      }, KeyShortcut.KEY_UP_EVENT, true, true, true));
+      }, KeyShortcut.KEY_UP_EVENT, true, true));
 
       // could try to use ?, although this is not as simple as passing character
       // '?'

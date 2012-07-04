@@ -72,7 +72,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    private final String keyEvent;
 
    //Display in shortcut summary view
-   private final boolean displayInView;
+   public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
 
    private final boolean stopPropagation;
    private final boolean preventDefault;
@@ -82,13 +82,12 @@ public class KeyShortcut implements Comparable<KeyShortcut>
 
    /**
     * Construct a KeyShortcut.
-    * 
     * @param modifiers keys such as Shift and Alt that must be depressed for the
     *           shortcut to fire.
     *           <p>
     *           Use {@link #ALT_KEY}, {@link #SHIFT_KEY},
     *           {@link #SHIFT_ALT_KEYS}, {@link #META_KEY} and {@link #CTRL_KEY}
-    *           to generate this. ( e.g. {@code} CTRL_KEY | ALT_KEY )
+    *           to generate this. ( e.g. {@code CTRL_KEY | ALT_KEY} )
     *           </p>
     * @param keyCode the integer code for the key.
     *           <p>
@@ -103,20 +102,15 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     *           </p>
     * @param context see
     *           {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
-    * @param description shown to the user in the key shortcut summary pane
-    * 
+    * @param description shown to the user in the key shortcut summary pane.
+    *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being displayed in the summary.
+    * @param stopPropagation
+    * @param preventDefault
+    * @param isNot
     * @param keyAction defined if shortcut action to be triggered by KeyUp, or
     *           KeyDown. Default KeyDown.
-    * 
-    * @param displayInView
-    * 
-    * @param stopPropagation
-    * 
-    * @param preventDefault
-    * 
-    * @param isNot
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault, boolean isNot)
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean stopPropagation, boolean preventDefault, boolean isNot)
    {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
@@ -124,25 +118,55 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       this.description = description;
       this.handler = handler;
       this.keyEvent = keyEvent;
-      this.displayInView = displayInView;
       this.stopPropagation = stopPropagation;
       this.preventDefault = preventDefault;
       this.isNot = isNot;
    }
 
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault)
+   /**
+    * Construct a KeyShortcut.
+    * 
+    * @param modifiers keys such as Shift and Alt that must be depressed for the
+    *           shortcut to fire.
+    *           <p>
+    *           Use {@link #ALT_KEY}, {@link #SHIFT_KEY},
+    *           {@link #SHIFT_ALT_KEYS}, {@link #META_KEY} and {@link #CTRL_KEY}
+    *           to generate this. ( e.g. {@code CTRL_KEY | ALT_KEY} )
+    *           </p>
+    * @param keyCode the integer code for the key.
+    *           <p>
+    *           This may be an uppercase character, but results may vary so test
+    *           thoroughly in the targeted browsers.
+    *           </p>
+    *           <p>
+    *           Note that for keypress events, the key code depends on Shift and
+    *           CapsLock and will give the lowercase or uppercase ASCII code as
+    *           expected. keydown and keyup events appear always to give the
+    *           uppercase key code.
+    *           </p>
+    * @param context see
+    *           {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
+    * @param description shown to the user in the key shortcut summary pane.
+    *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being
+    *        displayed in the summary pane.
+    * @param keyAction determines which type of key event this shortcut will 
+    *        respond to.
+    * @param stopPropagation
+    * @param preventDefault
+    */
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean stopPropagation, boolean preventDefault)
    {
-      this(modifiers, keyCode, context, description, handler, keyEvent, displayInView, false, false, false);
+      this(modifiers, keyCode, context, description, handler, keyEvent, stopPropagation, preventDefault, false);
    }
 
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, boolean displayInView)
-   {
-      this(modifiers, keyCode, context, description, handler, KEY_DOWN_EVENT, displayInView, false, false);
-   }
-
+   /**
+    * Create a key-down key shortcut that does not stop propagation or prevent default actions.
+    * 
+    * @see #KeyShortcut(int, int, ShortcutContext, String, KeyShortcutEventHandler, String, boolean, boolean, boolean)
+    */
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
    {
-      this(modifiers, keyCode, context, description, handler, KEY_DOWN_EVENT, true, false, false);
+      this(modifiers, keyCode, context, description, handler, KEY_DOWN_EVENT, false, false);
    }
 
    public int getModifiers()
@@ -177,7 +201,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
 
    public boolean isDisplayInView()
    {
-      return displayInView;
+      return !DO_NOT_DISPLAY_DESCRIPTION.equals(description);
    }
 
    public boolean isStopPropagation()
