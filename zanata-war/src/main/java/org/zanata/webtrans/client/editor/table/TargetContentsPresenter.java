@@ -82,10 +82,21 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.*;
+import net.customware.gwt.presenter.client.EventBus;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, EnableModalNavigationEventHandler, TransUnitEditEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+// @formatter:off
+public class TargetContentsPresenter implements
+      TargetContentsDisplay.Listener,
+      EnableModalNavigationEventHandler,
+      TransUnitEditEventHandler,
+      UserConfigChangeHandler,
+      RequestValidationEventHandler,
+      InsertStringInEditorHandler,
+      CopyDataToEditorHandler
+// @formatter:on
 {
    public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
@@ -123,7 +134,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final KeyShortcut prevStateShortcut;
 
    @Inject
-   public TargetContentsPresenter(TargetContentsDisplay display, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService,final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter, TranslationHistoryPresenter historyPresenter)
+   //TODO too many constructor dependencies
+   // @formatter:off
+   public TargetContentsPresenter(TargetContentsDisplay display, Identity identity, final EventBus eventBus,
+                                  TableEditorMessages messages,
+                                  SourceContentsPresenter sourceContentsPresenter,
+                                  UserSessionService sessionService,
+                                  final UserConfigHolder configHolder,
+                                  UserWorkspaceContext userWorkspaceContext,
+                                  ValidationMessagePanelDisplay validationMessagePanel,
+                                  final KeyShortcutPresenter keyShortcutPresenter,
+                                  TranslationHistoryPresenter historyPresenter)
+   // @formatter:on
    {
       this.display = display;
       this.display.setListener(this);
@@ -332,6 +354,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       return currentEditors.get(currentEditorIndex);
    }
 
+   //TODO to be removed
    public boolean isEditing()
    {
       return display != null && display.isEditing();
@@ -357,8 +380,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.clearTranslatorList();
          validate(editor);
       }
-      display.showButtons(isDisplayButtons());
       revealDisplay();
+      display.showButtons(isDisplayButtons());
       
       if (currentEditorIndex == LAST_INDEX)
       {
@@ -525,7 +548,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       Log.debug("copy source");
       currentEditorIndex = editor.getIndex();
-      display.showButtons(true);
+      display.showButtons(isDisplayButtons());
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
       editor.setViewMode(ViewMode.EDIT);
       editor.autoSize();

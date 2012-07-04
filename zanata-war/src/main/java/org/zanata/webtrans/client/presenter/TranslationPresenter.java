@@ -259,7 +259,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            translationEditorPresenter.gotoPrevRow(false);
+//            translationEditorPresenter.gotoPrevRow(false);
+            eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.PrevEntry));
          }
       };
 
@@ -268,7 +269,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            translationEditorPresenter.gotoNextRow(false);
+//            translationEditorPresenter.gotoNextRow(false);
+            eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
          }
       };
 

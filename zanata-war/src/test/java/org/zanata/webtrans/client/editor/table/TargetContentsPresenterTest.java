@@ -54,6 +54,7 @@ import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
@@ -117,8 +118,14 @@ public class TargetContentsPresenterTest
       verify(display).setListener(presenter);
    }
 
+   private void verifyRevealDisplay()
+   {
+      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Edit, true);
+      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Navigation, false);
+   }
+
    @Test
-   public void canSetToViewMode() 
+   public void canSetToViewMode()
    {
       presenter.setToViewMode();
 
@@ -191,16 +198,17 @@ public class TargetContentsPresenterTest
    public void canCopySource()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
-      presenter.showEditors();
+      when(configHolder.isDisplayButtons()).thenReturn(false);
 
       presenter.copySource(editor);
 
       verify(editor).setTextAndValidate("source");
       verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
-      verify(display).showButtons(true);
+      verify(display).showButtons(false);
       verify(editor).autoSize();
       verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
+      verifyRevealDisplay();
    }
 
    @Test
@@ -250,6 +258,7 @@ public class TargetContentsPresenterTest
       presenter.onRequestValidation(new RequestValidationEvent());
 
       verifyNoMoreInteractions(eventBus);
+
    }
 
    @Test
@@ -264,6 +273,7 @@ public class TargetContentsPresenterTest
 
       verify(eventBus).fireEvent(runValidationEventCaptor.capture());
       MatcherAssert.assertThat(runValidationEventCaptor.getValue().getTarget(), Matchers.equalTo("target"));
+      verifyRevealDisplay();
    }
 
    private void givenCurrentEditorsAs(ToggleEditor... currentEditors)
