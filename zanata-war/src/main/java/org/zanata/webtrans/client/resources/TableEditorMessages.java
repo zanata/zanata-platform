@@ -66,11 +66,8 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Save as approved")
    String saveAsApproved();
-   
-   @DefaultMessage("Save as approved (if \"Enter key saves immediately\" enabled)")
-   String saveAsApprovedEnter();
 
-   @DefaultMessage("Close editor (if \"Esc key closes editor\" enabled)")
+   @DefaultMessage("Close editor")
    String closeEditor();
 
    @DefaultMessage("User typing")

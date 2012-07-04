@@ -74,7 +74,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -106,6 +106,20 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final Identity identity;
 
    private final CachingDispatchAsync dispatcher;
+
+   private boolean enterSavesApprovedRegistered;
+   private boolean escClosesEditorRegistered;
+
+   private KeyShortcut ctrlEnterSavesApprovedShortcut;
+   private KeyShortcut enterSavesApprovedShortcut;
+   private KeyShortcut enterTriggersAutoSizeShortcut;
+   private KeyShortcut escClosesEditorShortcut;
+
+   private HandlerRegistration enterSavesApprovedHandlerRegistration;
+   private HandlerRegistration ctrlEnterSavesApprovedHandlerRegistration;
+   private HandlerRegistration enterTriggersAutoSizeHandlerRegistration;
+   private HandlerRegistration escClosesEditorHandlerRegistration;
+
 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter)
@@ -248,33 +262,46 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
 
-      // Register shortcut CTRL+ENTER to save as approved
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_KEY, KeyCodes.KEY_ENTER, ShortcutContext.Edit, messages.saveAsApproved(), new KeyShortcutEventHandler()
+      KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler = new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             saveAsApprovedAndMoveNext();
          }
-      }, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      };
 
-      // Register shortcut ENTER to save as approved (if configHolder.isButtonEnter() = true) or move to next line
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Edit, messages.saveAsApprovedEnter(), new KeyShortcutEventHandler()
+      ctrlEnterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.CTRL_KEY, KeyCodes.KEY_ENTER,
+            ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
+            KeyShortcut.KEY_DOWN_EVENT, true, true, true);
+
+      enterSavesApprovedShortcut = new KeyShortcut(0, KeyCodes.KEY_ENTER,
+            ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
+            KeyShortcut.KEY_DOWN_EVENT, true, true, true);
+
+      enterTriggersAutoSizeShortcut = new KeyShortcut(0, KeyCodes.KEY_ENTER,
+            ShortcutContext.Edit, "", new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (configHolder.isButtonEnter())
-            {
-               saveAsApprovedAndMoveNext();
-            } 
-            else 
-            {
-               getCurrentEditor().autoSizePlusOne();
-            }
+            getCurrentEditor().autoSizePlusOne();
          }
-      }, KeyShortcut.KEY_DOWN_EVENT, true, true, false));
-      
+      },
+            KeyShortcut.KEY_DOWN_EVENT, false, false, false);
+
+      if (configHolder.isButtonEnter())
+      {
+         enterSavesApprovedRegistered = true;
+         enterSavesApprovedHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(enterSavesApprovedShortcut);
+      }
+      else
+      {
+         enterSavesApprovedRegistered = false;
+         ctrlEnterSavesApprovedHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(ctrlEnterSavesApprovedShortcut);
+         enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(enterTriggersAutoSizeShortcut);
+      }
+
       // Register user typing keys to (anything not CTRL or ALT or ESC or ENTER) resize textarea
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.ESC_ENTER_KEYS, ShortcutContext.Edit, messages.userTyping(), new KeyShortcutEventHandler()
       {
@@ -285,8 +312,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }, KeyShortcut.KEY_DOWN_EVENT, false, false, false, true));
 
-      // Register shortcut ESC to close editor - (if configHolder.isButtonEsc() = true)
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ESCAPE, ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
+      escClosesEditorShortcut = new KeyShortcut(0, KeyCodes.KEY_ESCAPE,
+            ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -296,7 +323,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
                onCancel();
             }
          }
-      }));
+      });
+
+      if (configHolder.isButtonEsc()) {
+         escClosesEditorRegistered = true;
+         escClosesEditorHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(escClosesEditorShortcut);
+      }
+      else
+      {
+         escClosesEditorRegistered = false;
+      }
 
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_G, ShortcutContext.Edit, "Copy from source", new KeyShortcutEventHandler()
       {
@@ -635,6 +671,50 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             editor.showCopySourceButton(configHolder.isDisplayButtons());
          }
+      }
+
+      boolean enterSavesApproved = configHolder.isButtonEnter();
+      if (enterSavesApproved != enterSavesApprovedRegistered)
+      {
+         if (enterSavesApproved)
+         {
+            if (ctrlEnterSavesApprovedHandlerRegistration != null)
+            {
+               ctrlEnterSavesApprovedHandlerRegistration.removeHandler();
+            }
+            if (enterTriggersAutoSizeHandlerRegistration != null)
+            {
+               enterTriggersAutoSizeHandlerRegistration.removeHandler();
+            }
+            enterSavesApprovedHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(enterSavesApprovedShortcut);
+         }
+         else
+         {
+            if (enterSavesApprovedHandlerRegistration != null)
+            {
+               enterSavesApprovedHandlerRegistration.removeHandler();
+            }
+            ctrlEnterSavesApprovedHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(ctrlEnterSavesApprovedShortcut);
+            enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(enterTriggersAutoSizeShortcut);
+         }
+
+         enterSavesApprovedRegistered = enterSavesApproved;
+      }
+
+      boolean escClosesEditor = configHolder.isButtonEsc();
+      if (escClosesEditor != escClosesEditorRegistered)
+      {
+         if (escClosesEditor) {
+            escClosesEditorHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(escClosesEditorShortcut);
+         }
+         else
+         {
+            if (escClosesEditorHandlerRegistration != null)
+            {
+               escClosesEditorHandlerRegistration.removeHandler();
+            }
+         }
+         escClosesEditorRegistered = escClosesEditor;
       }
    }
 
