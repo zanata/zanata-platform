@@ -47,6 +47,7 @@ import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -77,6 +78,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * View for project-wide search and replace within textflow targets
@@ -204,12 +206,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final Location windowLocation;
    private final History history;
+   private final Provider<UndoLink> undoLinkProvider;
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
    private Delegate<TransUnitReplaceInfo> undoButtonDelegate;
    private Handler selectionChangeHandler;
-
+   
    /**
     * Model objects for tables in display. Changes to these are reflected in the
     * view.
@@ -243,6 +246,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          final WebTransMessages webTransMessages,
          final WorkspaceContext workspaceContext,
          final KeyShortcutPresenter keyShortcutPresenter,
+         final Provider<UndoLink> undoLinkProvider,
          Location windowLocation)
    {
       super(display, eventBus);
@@ -251,6 +255,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
+      this.undoLinkProvider = undoLinkProvider;
       this.windowLocation = windowLocation;
    }
 
