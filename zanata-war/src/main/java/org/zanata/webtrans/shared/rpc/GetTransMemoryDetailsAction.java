@@ -2,6 +2,8 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.Lists;
+
 public class GetTransMemoryDetailsAction extends AbstractWorkspaceAction<TransMemoryDetailsList>
 {
 
@@ -11,12 +13,16 @@ public class GetTransMemoryDetailsAction extends AbstractWorkspaceAction<TransMe
    @SuppressWarnings("unused")
    private GetTransMemoryDetailsAction()
    {
-      this(null);
    }
 
    public GetTransMemoryDetailsAction(ArrayList<Long> transUnitIdList)
    {
       this.transUnitIdList = transUnitIdList;
+   }
+
+   public GetTransMemoryDetailsAction(Long... ids)
+   {
+      this.transUnitIdList = Lists.newArrayList(ids);
    }
 
    public ArrayList<Long> getTransUnitIdList()

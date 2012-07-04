@@ -35,7 +35,7 @@ import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.model.HAccountActivationKey;
-import org.zanata.security.KeyNotFoundException;
+import org.zanata.exception.KeyNotFoundException;
 
 @Name("activate")
 @Scope(ScopeType.CONVERSATION)

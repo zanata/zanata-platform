@@ -287,27 +287,28 @@ td.TableEditorCell-Target {
 	word-break: break-all;
 }
 
-/*@-moz-document {
+/* below is a hack to allow firefox display extra long word properly */
+@-moz-document url-prefix() {
 {}
-	table.TableEditorCell-Source-Table { 
+    table.TableEditor {
+        table-layout : fixed;
+    }
+	table.TableEditorCell-Source-Table {
 		overflow-x:auto;
 		display: block;
-		width: 100%;
 	}
-	table.TableEditorCell-Target-Table {
-		overflow-x: auto;
-		display: block;
-	}
+	
 	div.TransUnitDetail-Wrapper {
-		width: 450px;
-	}
-}*/
+	    width: 450px;
+    }
+}
 
 .TableEditorCell-Source-Table {
 	width: 100%;
 }
 
 .TableEditorCell-Target-Table {
+    width: 100%;
 }
 
 .TransUnitDetail-Wrapper {
@@ -441,33 +442,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	margin: 2px;
 	opacity: 0.5;
 	width: 99%;
-}
-
-/* TODO share this with other modal panels */
-.keyShortcutPanel
-{
-	color: white;
-	background-color: black;
-	opacity:0.85;
-	border-radius:8px;
-	padding: 20px;
-}
-
-.keyShortcutHeading
-{
-	font-size: 1.4em;
-}
-
-.keyShortcutCategory
-{
-	padding: 10px;
-	font-size: 1.2em;
-}
-
-.keyShortcutCategoryTitle
-{
-	font-size: 1.2em;
-	margin-bottom: 4px;
 }
 
 /* Search-replace page
@@ -666,16 +640,6 @@ td.ApprovedStateDecoration div div div
 	padding: 5px;
 }
 
-td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
-{
-	font-size: 14px;
-	font-family: sans-serif;
-	white-space: pre-wrap;
-	word-wrap: normal;
-	padding: 0px;
-	margin: 0px;
-}
-
 .HasValidationError {
 	border-left:3px solid red;
 	border-right:3px solid red;
@@ -822,7 +786,7 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	cursor: pointer;
 }
 
-.translationContainer pre {
+.translationContainer pre, .translationContainer textarea {
 	font-size: 14px;
 	font-family: sans-serif;
 	word-wrap: break-word;

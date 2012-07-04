@@ -21,9 +21,9 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -31,11 +31,15 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
+import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
+import org.zanata.service.VersionGroupService.SelectableHIterationProject;
 
 @Name("versionGroupAction")
 @Scope(ScopeType.PAGE)
@@ -46,19 +50,32 @@ public class VersionGroupAction implements Serializable
    @In
    private VersionGroupService versionGroupServiceImpl;
 
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
+
+   @RequestParameter
+   private String[] slugParam;
+
    @Logger
    Log log;
 
    private List<HIterationGroup> allVersionGroups;
-   private List<HProjectIteration> searchResults;
+
+   private List<SelectableHIterationProject> searchResults;
 
    private HIterationGroup group;
 
-   private String searchTerm;
+   private String searchTerm = "";
    private String groupNameFilter;
 
    private boolean showActiveGroups = true;
    private boolean showObsoleteGroups = false;
+   private boolean selectAll = false;
+
+   public boolean isParamExists()
+   {
+      return slugParam != null && slugParam.length != 0;
+   }
 
    public void loadAllActiveGroupsOrIsMaintainer()
    {
@@ -68,6 +85,57 @@ public class VersionGroupAction implements Serializable
    public void init(String slug)
    {
       group = versionGroupServiceImpl.getBySlug(slug);
+   }
+
+   public void addSelected()
+   {
+      for (SelectableHIterationProject selectableVersion : getSearchResults())
+      {
+         if (selectableVersion.isSelected())
+         {
+            joinVersionGroup(selectableVersion.getProjectIteration().getId());
+         }
+      }
+   }
+
+   public void selectAll()
+   {
+      for (SelectableHIterationProject selectableVersion : getSearchResults())
+      {
+         if (!isVersionInGroup(selectableVersion.getProjectIteration().getId()))
+         {
+            selectableVersion.setSelected(selectAll);
+         }
+      }
+   }
+
+   /**
+    * Run search on unique project version if projectSlug, iterationSlug exits
+    * else search versions available
+    */
+   public void executePreSearch()
+   {
+      if (isParamExists())
+      {
+         for (String param : slugParam)
+         {
+            String[] paramSet = param.split(":");
+
+            if (paramSet.length == 2)
+            {
+               HProjectIteration projectVersion = versionGroupServiceImpl.getProjectIterationBySlug(paramSet[0],  paramSet[1]);
+               if (projectVersion != null)
+               {
+                  getSearchResults().add(new SelectableHIterationProject(projectVersion, true));
+               }
+            }
+         }
+      }
+      else
+      {
+         searchProjectAndVersion();
+      }
+
    }
 
    public String getSearchTerm()
@@ -80,45 +148,42 @@ public class VersionGroupAction implements Serializable
       this.searchTerm = searchTerm;
    }
 
-   public List<HProjectIteration> getSearchResults()
+   public List<SelectableHIterationProject> getSearchResults()
    {
+      if (searchResults == null)
+      {
+         searchResults = new ArrayList<SelectableHIterationProject>();
+      }
       return searchResults;
    }
 
    public boolean isVersionInGroup(Long projectIterationId)
    {
-      for (HProjectIteration iteration : group.getProjectIterations())
-      {
-         if (iteration.getId().equals(projectIterationId))
-         {
-            return true;
-         }
-      }
-      return false;
+     return versionGroupServiceImpl.isVersionInGroup(group, projectIterationId);
    }
 
    @Transactional
    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-   public void joinVersionGroup(Long projectIterationId)
+   private void joinVersionGroup(Long projectIterationId)
    {
       versionGroupServiceImpl.joinVersionGroup(group.getSlug(), projectIterationId);
    }
 
    @Transactional
+   @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
    public void leaveVersionGroup(Long projectIterationId)
    {
       versionGroupServiceImpl.leaveVersionGroup(group.getSlug(), projectIterationId);
+      searchProjectAndVersion();
    }
 
    public void searchProjectAndVersion()
    {
-      try
+      getSearchResults().clear();
+      List<HProjectIteration> result = versionGroupServiceImpl.searchLikeSlugOrProjectSlug(this.searchTerm);
+      for (HProjectIteration version : result)
       {
-         this.searchResults = versionGroupServiceImpl.searchLikeSlugOrProjectSlug(this.searchTerm);
-      }
-      catch (ParseException e)
-      {
-         return;
+         getSearchResults().add(new SelectableHIterationProject(version, false));
       }
    }
 
@@ -153,6 +218,11 @@ public class VersionGroupAction implements Serializable
          return isShowActiveGroups();
       }
       return false;
+   }
+
+   public boolean isUserProjectMaintainer()
+   {
+      return authenticatedAccount != null && authenticatedAccount.getPerson().isMaintainerOfProjects();
    }
 
    public String getGroupNameFilter()
@@ -193,5 +263,15 @@ public class VersionGroupAction implements Serializable
    public void setShowObsoleteGroups(boolean showObsoleteGroups)
    {
       this.showObsoleteGroups = showObsoleteGroups;
+   }
+
+   public boolean isSelectAll()
+   {
+      return selectAll;
+   }
+
+   public void setSelectAll(boolean selectAll)
+   {
+      this.selectAll = selectAll;
    }
 }

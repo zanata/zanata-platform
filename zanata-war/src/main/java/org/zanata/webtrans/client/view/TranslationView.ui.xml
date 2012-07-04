@@ -3,13 +3,19 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client"
 	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:style>
-        .small-button {
+	<ui:style type="org.zanata.webtrans.client.view.TranslationView.Styles">
+        .small-button
+         {
 	       height:10px;
 	       font-size:10px;
 	       border-radius:5px;
 	       outline:none;
         }
+        
+        .messageAlert
+        {
+			color:#FFA500;
+		}
 	
 	</ui:style>
 

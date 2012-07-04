@@ -267,5 +267,37 @@
     content="mssgTrans4"
     text_flow_target_id="8"
   />
-  
+
+    <!-- HDocument
+          Single Text Flow with no Translation -->
+
+    <HDocument
+            id="4"
+            versionNum="1"
+            creationDate="2009-09-01 20:30:16"
+            lastChanged="2009-09-01 20:30:16"
+            contentType="text/plain"
+            docId="my/path/document-4.txt"
+            locale="4"
+            name="document-4.txt"
+            path="my/path"
+            project_iteration_id="1"
+            revision="1"
+            obsolete="0"
+            />
+    <HTextFlow
+            id="6"
+            document_id="4"
+            resId="tf6"
+            revision="1"
+            pos="0"
+            obsolete="0"
+            plural="false"
+            wordCount="1"
+            />
+    <HTextFlowContent
+            pos="0"
+            content="mssgId6"
+            text_flow_id="6"
+            />
 </dataset>

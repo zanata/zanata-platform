@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import com.google.common.base.Objects;
 
 public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListResult>
 {
@@ -71,4 +72,26 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       return targetTransUnitId;
    }
 
+   public boolean isAcceptAllStatus()
+   {
+      //all filter options are checked or unchecked
+      return filterNeedReview == filterTranslated && filterNeedReview == filterUntranslated;
+   }
+
+   @Override
+   public String toString()
+   {
+      // @formatter:off
+      return Objects.toStringHelper(this).
+            add("offset", offset).
+            add("count", count).
+            add("documentId", documentId).
+            add("phrase", phrase).
+            add("filterTranslated", filterTranslated).
+            add("filterNeedReview", filterNeedReview).
+            add("filterUntranslated", filterUntranslated).
+            add("targetTransUnitId", targetTransUnitId).
+            toString();
+      // @formatter:on
+   }
 }

@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
@@ -50,7 +51,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
    {
       super(display, eventBus);
       this.history = history;
-      currentState = new HistoryToken();;
+      currentState = new HistoryToken();
    }
 
    @Override
@@ -62,7 +63,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            if (event.getValue() != currentState.getSearchText())
+            if (!event.getValue().equals(currentState.getSearchText()))
             {
                HistoryToken newToken = history.getHistoryToken();
                newToken.setSearchText(event.getValue());
@@ -78,10 +79,10 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
          public void onValueChange(ValueChangeEvent<String> event)
          {
             HistoryToken token = history.getHistoryToken();
-            if (token.getSearchText() != currentState.getSearchText())
+            if (!token.getSearchText().equals(currentState.getSearchText()))
             {
-               eventBus.fireEvent(new FindMessageEvent(token.getSearchText()));
                display.getFilterText().setValue(token.getSearchText(), false);
+               eventBus.fireEvent(new FindMessageEvent(token.getSearchText()));
             }
             currentState = token;
          }

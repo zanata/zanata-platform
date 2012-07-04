@@ -29,7 +29,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.TestFixture;
+import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.collect.Lists;

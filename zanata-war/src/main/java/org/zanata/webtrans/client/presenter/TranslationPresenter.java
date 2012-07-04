@@ -25,17 +25,19 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.editor.CheckKey;
-import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
-import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -44,14 +46,20 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
+
+
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
+
 
 public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements HasLayoutSelection
 {
@@ -83,6 +91,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       void setOptionsToggleTooltip(String tooltip);
 
       HasValue<Boolean> getSouthPanelToggle();
+
+      boolean isUserPanelOpen();
+
+      HasSelectionHandlers<Integer> getSouthTabPanel();
+
+      void startAlert(int periodMillis);
+
+      void cancelAlert();
    }
 
    private final DispatchAsync dispatcher;
@@ -93,17 +109,16 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final GlossaryPresenter glossaryPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
+   private final KeyShortcutPresenter keyShortcutPresenter;
 
    private WorkspaceContext workspaceContext;
 
    private final WebTransMessages messages;
 
-   private NativeEvent nativeEvent;
-
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -113,17 +128,18 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.optionsPanelPresenter = optionsPanelPresenter;
       this.glossaryPresenter = glossaryPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
+      this.keyShortcutPresenter = keyShortcutPresenter;
       this.dispatcher = dispatcher;
 
-      this.nativeEvent = nativeEvent;
       this.workspaceContext = workspaceContext;
    }
 
    @Override
    public void onRevealDisplay()
    {
+      targetContentsPresenter.concealDisplay();
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
    }
-
 
    private void loadTranslatorList()
    {
@@ -169,7 +185,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
             workspaceUsersPresenter.addTranslator(event.getEditorClientId(), event.getPerson(), null);
-            workspaceUsersPresenter.dispatchChatAction(event.getPerson().getId().toString(), messages.hasJoinedWorkspace());
+            workspaceUsersPresenter.dispatchChatAction(null, messages.hasJoinedWorkspace(event.getPerson().getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));
@@ -179,6 +195,30 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       // EventProcessor.
       // Thus we load the translator list here.
       loadTranslatorList();
+
+      registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), new PublishWorkspaceChatEventHandler()
+      {
+         @Override
+         public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event)
+         {
+            if (!display.isUserPanelOpen())
+            {
+               display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()) + " *");
+               display.startAlert(800);
+            }
+         }
+      }));
+
+      registerHandler(display.getSouthTabPanel().addSelectionHandler(new SelectionHandler<Integer>()
+      {
+
+         @Override
+         public void onSelection(SelectionEvent<Integer> event)
+         {
+            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
+            display.cancelAlert();
+         }
+      }));
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -215,101 +255,52 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-      final CheckKey checkKey = new CheckKeyImpl(ShortcutContext.Navigation);
-
-      // TODO make testable
-
-      nativeEvent.addNativePreviewHandler(new NativePreviewHandler()
+      KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
       {
          @Override
-         public void onPreviewNativeEvent(NativePreviewEvent event)
+         public void onKeyShortcut(KeyShortcutEvent event)
          {
-            /**
-             * keyup is used because TargetCellEditor will intercept the event
-             * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
-             **/
-            if (display.asWidget().isVisible() && (event.getNativeEvent().getType().equals("keyup") || event.getNativeEvent().getType().equals("keydown")))
-            {
-               checkKey.init(event.getNativeEvent());
-               
-               if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
-               {
-                  int index;
-                  switch (checkKey.getKeyCode())
-                  {
-                  case CheckKey.KEY_1:
-                  case CheckKey.KEY_1_NUM:
-                     index = 0;
-                     break;
-                  case CheckKey.KEY_2:
-                  case CheckKey.KEY_2_NUM:
-                     index = 1;
-                     break;
-                  case CheckKey.KEY_3:
-                  case CheckKey.KEY_3_NUM:
-                     index = 2;
-                     break;
-                  case CheckKey.KEY_4:
-                  case CheckKey.KEY_4_NUM:
-                     index = 3;
-                     break;
-                  default:
-                     index = -1;
-                     break;
-                  }
-                  Log.info("Copy from translation memory:" + index);
-                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(index));
-               }
+            translationEditorPresenter.gotoPrevRow(false);
+         }
+      };
 
-               /**
-                * @formatter:off
-                * Only when the Table is showed,editor is closed, search field
-                * not focused, the keyboard event will be processed.
-                **/
-               if (!translationEditorPresenter.isEditing() &&
-                  !translationEditorPresenter.isTransFilterFocused() && 
-                  !transMemoryPresenter.getDisplay().isFocused() && 
-                  !glossaryPresenter.getDisplay().isFocused() &&
-                  !translationEditorPresenter.getDisplay().isPagerFocused())
-               {
-                  if (event.getNativeEvent().getType().equals("keyup"))
-                  {
-                     if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
-                     {
-                        if (translationEditorPresenter.getSelectedTransUnit() != null)
-                        {
-                           if (!translationEditorPresenter.isCancelButtonFocused())
-                           {
-                              event.getNativeEvent().stopPropagation();
-                              event.getNativeEvent().preventDefault();
-                              
-                              translationEditorPresenter.openEditorOnSelectedRow();
-                           }
-                           translationEditorPresenter.setCancelButtonFocused(false);
-                        }
-                     }
-                  }
-                  if (event.getNativeEvent().getType().equals("keydown"))
-                  {
-                     if (checkKey.isPreviousEntryKey())
-                     {
-                        Log.info("Go to previous entry");
-                        event.getNativeEvent().stopPropagation();
-                        event.getNativeEvent().preventDefault();
-                        translationEditorPresenter.gotoPrevRow(false);
-                     }
-                     else if (checkKey.isNextEntryKey())
-                     {
-                        Log.info("Go to next entry");
-                        event.getNativeEvent().stopPropagation();
-                        event.getNativeEvent().preventDefault();
-                        translationEditorPresenter.gotoNextRow(false);
-                     }
-                  }
-               }
+      KeyShortcutEventHandler gotoNextRowHandler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            translationEditorPresenter.gotoNextRow(false);
+         }
+      };
+
+      // Register shortcut ALT+(UP/J) for previous row navigation
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+
+      // Register shortcut ALT+(Down/K) for next row navigation
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+
+      // Register shortcut Enter to open editor in selected row - if no other input field is in focus
+     keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (!isOtherInputFieldFocused())
+            {
+               translationEditorPresenter.openEditorOnSelectedRow();
             }
          }
-      });
+      }, KeyShortcut.KEY_UP_EVENT, true, true, true));
+   }
+
+   private boolean isOtherInputFieldFocused()
+   {
+      return translationEditorPresenter.isTransFilterFocused() || 
+            transMemoryPresenter.getDisplay().isFocused() || 
+            glossaryPresenter.getDisplay().isFocused() || 
+            translationEditorPresenter.getDisplay().isPagerFocused();
    }
 
    @Override
@@ -326,7 +317,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    }
 
    /**
-    * Handle all changes required to completely hide and unbind the south panel for read-only mode, or to undo said changes.
+    * Handle all changes required to completely hide and unbind the south panel
+    * for read-only mode, or to undo said changes.
     * 
     * @param readOnly
     */
@@ -343,11 +335,11 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          setSouthPanelExpanded(display.getSouthPanelToggle().getValue());
       }
    }
-   
+
    /**
-    * Expand or collapse south panel, binding or unbinding presenters
-    * as appropriate. Will have no effect if the panel is already in
-    * the state of expansion or contraction that is specified.
+    * Expand or collapse south panel, binding or unbinding presenters as
+    * appropriate. Will have no effect if the panel is already in the state of
+    * expansion or contraction that is specified.
     * 
     * @param expanded
     */
@@ -355,14 +347,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       if (expanded == southPanelExpanded)
       {
-         return; //nothing to do
+         return; // nothing to do
       }
       display.setSouthPanelExpanded(expanded);
       southPanelExpanded = expanded;
       if (expanded)
       {
          bindSouthPanelPresenters();
-         
+
          TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
          if (tu != null)
          {
@@ -395,7 +387,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       glossaryPresenter.bind();
       workspaceUsersPresenter.bind();
    }
-   
+
    private void unbindSouthPanelPresenters()
    {
       transMemoryPresenter.unbind();
@@ -413,6 +405,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    public void setSidePanelVisible(boolean visible)
    {
       display.getOptionsToggle().setValue(visible, true);
+   }
+
+   public void concealDisplay()
+   {
+      targetContentsPresenter.concealDisplay();
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
    }
 
 }

@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
@@ -45,9 +45,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -65,13 +63,11 @@ public class AppView extends Composite implements AppPresenter.Display
 
    interface Styles extends CssResource
    {
-      String notificationInfo();
-      String notificationWarning();
-      String notificationError();
-
       String userName();
 
       String hasError();
+      
+      String hasWarning();
 
       String image();
 
@@ -85,9 +81,6 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
 
-   @UiField
-   Label notificationMessage, dismissLink;
-   
    @UiField
    InlineLabel readOnlyLabel, documentsLink;
 
@@ -109,7 +102,7 @@ public class AppView extends Composite implements AppPresenter.Display
    MenuBar topMenuBar;
 
    @UiField
-   PushButton errorNotificationBtn;
+   PushButton notificationBtn;
 
    @UiField
    Anchor searchAndReplace;
@@ -161,7 +154,7 @@ public class AppView extends Composite implements AppPresenter.Display
       this.searchResultsView = searchResultsView.asWidget();
       this.container.add(this.searchResultsView);
 
-      errorNotificationBtn.setTitle(messages.errorNotification());
+      notificationBtn.setTitle(messages.notification());
 
       Window.enableScrolling(false);
    }
@@ -208,18 +201,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getDismiss()
-   {
-      return dismissLink;
-   }
-
-   @Override
-   public HasVisibility getDismissVisibility()
-   {
-      return dismissLink;
-   }
-
-   @Override
    public HasClickHandlers getDocumentsLink()
    {
       return documentsLink;
@@ -234,7 +215,7 @@ public class AppView extends Composite implements AppPresenter.Display
       ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help());
       helpImageLabel.setImageStyle(style.image());
 
-      ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.viewSelection());
+      ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.layoutSelection());
       layoutImageLabel.setImageStyle(style.image());
 
       ImageLabel signOutImageLabel = new ImageLabel(resources.logout(), messages.signOut());
@@ -281,28 +262,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setNotificationMessage(String message, NotificationEvent.Severity severity)
-   {
-      notificationMessage.setText(message);
-      notificationMessage.setTitle(message);
-
-      // TODO use setStyleDependentName (notification-severity.name())
-      switch (severity)
-      {
-      case Info:
-         notificationMessage.setStyleName(style.notificationInfo());
-         break;
-      case Warning:
-         notificationMessage.setStyleName(style.notificationWarning());
-         break;
-      case Error:
-         notificationMessage.setStyleName(style.notificationError());
-         break;
-      }
-      dismissLink.setVisible(!message.isEmpty());
-   }
-
-   @Override
    public void setStats(TranslationStats transStats)
    {
       translationStatsBar.setStats(transStats);
@@ -322,9 +281,9 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getErrorNotificationBtn()
+   public HasClickHandlers getNotificationBtn()
    {
-      return errorNotificationBtn;
+      return notificationBtn;
    }
 
    @Override
@@ -335,23 +294,31 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setErrorNotificationText(int count)
-   {
-      errorNotificationBtn.setText(String.valueOf(count));
-      errorNotificationBtn.getDownFace().setText(String.valueOf(count));
-      errorNotificationBtn.getDownDisabledFace().setText(String.valueOf(count));
-      errorNotificationBtn.getDownHoveringFace().setText(String.valueOf(count));
-      errorNotificationBtn.getUpDisabledFace().setText(String.valueOf(count));
-      errorNotificationBtn.getUpFace().setText(String.valueOf(count));
-      errorNotificationBtn.getUpHoveringFace().setText(String.valueOf(count));
+   public void setNotificationText(int count, Severity severity)
 
-      if (count == 0)
+   {
+      notificationBtn.setText(String.valueOf(count));
+      notificationBtn.getDownFace().setText(String.valueOf(count));
+      notificationBtn.getDownDisabledFace().setText(String.valueOf(count));
+      notificationBtn.getDownHoveringFace().setText(String.valueOf(count));
+      notificationBtn.getUpDisabledFace().setText(String.valueOf(count));
+      notificationBtn.getUpFace().setText(String.valueOf(count));
+      notificationBtn.getUpHoveringFace().setText(String.valueOf(count));
+
+      if (severity == Severity.Error)
       {
-         errorNotificationBtn.removeStyleName(style.hasError());
+         notificationBtn.removeStyleName(style.hasWarning());
+         notificationBtn.addStyleName(style.hasError());
       }
+      else if(severity == Severity.Warning)
+      {
+         notificationBtn.addStyleName(style.hasWarning());
+         notificationBtn.removeStyleName(style.hasError());
+      } 
       else
       {
-         errorNotificationBtn.addStyleName(style.hasError());
+         notificationBtn.removeStyleName(style.hasError());
+         notificationBtn.removeStyleName(style.hasWarning());
       }
    }
 

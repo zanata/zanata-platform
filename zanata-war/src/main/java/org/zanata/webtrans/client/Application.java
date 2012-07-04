@@ -89,6 +89,8 @@ public class Application implements EntryPoint
          }
 
       });
+
+      registerUncaughtExceptionHandler();
    }
 
    public static void exitWorkspace()
@@ -221,7 +223,7 @@ public class Application implements EntryPoint
     * Display an error message instead of the web app. Shows a link if both text
     * and url are provided. Provides a stack trace if a {@link Throwable} is
     * provided.
-    * 
+    *
     * @param message to display
     * @param e non-null to provide a stack trace in an expandable view.
     * @param linkText text to display for link
@@ -258,6 +260,18 @@ public class Application implements EntryPoint
       }
 
       RootLayoutPanel.get().add(layoutPanel);
+   }
+
+   private void registerUncaughtExceptionHandler()
+   {
+      GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler()
+      {
+         @Override
+         public void onUncaughtException(Throwable e)
+         {
+            Log.error("uncaught exception", e);
+         }
+      });
    }
 
 }

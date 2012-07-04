@@ -33,7 +33,7 @@ public class VersionGroupMaintainerManageAction implements Serializable
    HPerson selectedPerson;
 
    private String slug;
-   private HIterationGroup iterationGroup;
+   private HIterationGroup group;
 
    @In
    private VersionGroupService versionGroupServiceImpl;
@@ -46,8 +46,7 @@ public class VersionGroupMaintainerManageAction implements Serializable
 
    public void init()
    {
-      allList = versionGroupServiceImpl.getMaintainerBySlug(this.slug);
-      iterationGroup = versionGroupServiceImpl.getBySlug(this.slug);
+      allList = versionGroupServiceImpl.getMaintainerBySlug(slug);
    }
 
    public HPerson getSelectedPerson()
@@ -62,10 +61,10 @@ public class VersionGroupMaintainerManageAction implements Serializable
 
    public String getSlug()
    {
-      return this.slug;
+      return slug;
    }
 
-   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup,'update')}")
+   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.group,'update')}")
    public void deleteMaintainer(HPerson person)
    {
       log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
@@ -85,7 +84,7 @@ public class VersionGroupMaintainerManageAction implements Serializable
       versionGroupServiceImpl.flush();
    }
 
-   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup,'update')}")
+   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.group,'update')}")
    public String addMaintainers(String account)
    {
       HAccount a = accountDAO.getByUsername(account);
@@ -109,8 +108,13 @@ public class VersionGroupMaintainerManageAction implements Serializable
       return "failure";
    }
 
-   public HIterationGroup getIterationGroup()
+   public HIterationGroup getGroup()
    {
-      return iterationGroup;
+      if (group == null)
+      {
+         group = versionGroupServiceImpl.getBySlug(slug);
+      }
+
+      return group;
    }
 }

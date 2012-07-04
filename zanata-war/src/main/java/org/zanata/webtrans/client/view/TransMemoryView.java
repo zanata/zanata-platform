@@ -6,6 +6,7 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
+import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
@@ -68,6 +69,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @UiField
    ScrollPanel scrollPanel;
 
+   @UiField
+   Button mergeTMButton;
+
+   private TransMemoryMergePopupPanelDisplay transMemoryMergePopup;
+
    CellTable<TransMemoryResultItem> tmTable;
 
    private boolean isFocused;
@@ -81,7 +87,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private DetailsColumn<TransMemoryResultItem> detailsColumn;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, TransMemoryMergePopupPanelDisplay transMemoryMergePopup)
    {
       this.messages = messages;
 
@@ -91,11 +97,13 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
+      this.transMemoryMergePopup = transMemoryMergePopup;
       initWidget(uiBinder.createAndBindUi(this));
 
       headerLabel.setText(messages.translationMemoryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
+      mergeTMButton.setText(messages.mergeTMButtonLabel());
    }
 
    @Override
@@ -123,6 +131,12 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public void onTmTextBoxBlur(BlurEvent event)
    {
       isFocused = false;
+   }
+
+   @Override
+   public HasClickHandlers getMergeButton()
+   {
+      return mergeTMButton;
    }
 
    @Override

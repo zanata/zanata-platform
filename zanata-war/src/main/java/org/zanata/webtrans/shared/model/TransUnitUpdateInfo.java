@@ -24,6 +24,7 @@ package org.zanata.webtrans.shared.model;
 import java.io.Serializable;
 
 import org.zanata.common.ContentState;
+import com.google.common.base.Objects;
 
 /**
  * Represents information about an attempted update of a {@link TransUnit}.
@@ -91,4 +92,18 @@ public class TransUnitUpdateInfo implements Serializable
       return sourceWordCount;
    }
 
+   @Override
+   public String toString()
+   {
+      // @formatter:off
+      return Objects.toStringHelper(this).
+            add("success", success).
+            add("documentId", documentId).
+            add("transUnit", transUnit).
+            add("sourceWordCount", sourceWordCount).
+            add("previousVersionNum", previousVersionNum).
+            add("previousState", previousState).
+            toString();
+      // @formatter:on
+   }
 }

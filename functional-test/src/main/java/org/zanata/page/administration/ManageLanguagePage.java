@@ -56,21 +56,31 @@ public class ManageLanguagePage extends AbstractPage
 
    public ManageLanguageTeamMemberPage manageTeamMembersFor(final String localeId)
    {
-      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
-      Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
+      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
       {
          @Override
-         public boolean apply(TableRow input)
+         public TableRow apply(WebDriver driver)
          {
-            List<String> cellContents = input.getCellContents();
-            String localeCell = cellContents.get(0).trim();
-            return localeCell.equalsIgnoreCase(localeId);
+            List<TableRow> tableRows = WebElementUtil.getTableRows(driver, By.xpath("//table"));
+            Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
+            {
+               @Override
+               public boolean apply(TableRow input)
+               {
+                  List<String> cellContents = input.getCellContents();
+                  String localeCell = cellContents.get(LOCALE_COLUMN).trim();
+                  return localeCell.equalsIgnoreCase(localeId);
+               }
+            });
+
+            log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+            //we keep looking for the locale until timeout
+            return (matchedRow.size() == 1) ? matchedRow.iterator().next() : null;
          }
       });
 
-      ManageLanguagePage.log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
-      Preconditions.checkState(matchedRow.size() == 1, "given localeId can't not be found on table");
-      List<WebElement> cells = matchedRow.iterator().next().getCells();
+      log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+      List<WebElement> cells = matchedRow.getCells();
       int teamMemberCellIndex = cells.size() - 1;
       WebElement teamMemberCell = cells.get(teamMemberCellIndex);
       WebElement teamMemberButton = teamMemberCell.findElement(By.xpath(".//input[@value='Team Members']"));

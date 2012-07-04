@@ -27,8 +27,11 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.TranslationPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -40,14 +43,16 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
-
 
 @Test(groups = { "unit-tests" })
 public class TranslationPresenterTest
@@ -57,6 +62,7 @@ public class TranslationPresenterTest
    private static final String TEST_HAS_JONINED_WORKSPACE_MESSAGE = "has joined workspace";
    private static final String TEST_SHOW_OPTIONS_TOOLTIP = "tooltip to show options";
    private static final String TEST_HIDE_OPTIONS_TOOLTIP = "tooltip to hide options";
+   private static final String COPY_FROM_TM = "Copy from TM";
 
    // object under test
    private TranslationPresenter translationPresenter;
@@ -76,11 +82,12 @@ public class TranslationPresenterTest
    private WorkspaceContext mockWorkspaceContext;
    private WorkspaceUsersPresenter mockWorkspaceUsersPresenter;
    private TargetContentsPresenter mockTargetContentsPresenter;
+   private KeyShortcutPresenter mockKeyShortcutPresenter;
 
    // mock view components
    private HasValue<Boolean> mockOptionsToggle;
    private HasValue<Boolean> mockSouthPanelToggle;
-
+   private HasSelectionHandlers<Integer> mockSouthPanel;
 
    private Capture<EnterWorkspaceEventHandler> capturedEnterWorkspaceEventHandler;
    private Capture<ExitWorkspaceEventHandler> capturedExitWorkspaceEventHandler;
@@ -89,8 +96,9 @@ public class TranslationPresenterTest
    private Capture<AsyncCallback<GetTranslatorListResult>> capturedTranslatorListRequestCallback;
    private Capture<ValueChangeHandler<Boolean>> capturedOptionsToggleValueChangeHandler;
    private Capture<ValueChangeHandler<Boolean>> capturedSouthPanelToggleValueChangeHandler;
-
-   private Capture<NativePreviewHandler> capturedKeyShortcutHandler;
+   private Capture<SelectionHandler<Integer>> capturedSouthPanelSelectionHandler;
+   private Capture<KeyShortcut> capturedKeyShortcuts;
+   private Capture<PublishWorkspaceChatEventHandler> capturedPublishWorkspaceChatEventHandler;
 
    @SuppressWarnings("unchecked")
    @BeforeClass
@@ -108,16 +116,42 @@ public class TranslationPresenterTest
       mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockWorkspaceUsersPresenter = createMock(WorkspaceUsersPresenter.class);
       mockTargetContentsPresenter = createMock(TargetContentsPresenter.class);
+      mockKeyShortcutPresenter = createMock(KeyShortcutPresenter.class);
 
       mockOptionsToggle = createMock(HasValue.class);
       mockSouthPanelToggle = createMock(HasValue.class);
+      mockSouthPanel = createMock(HasSelectionHandlers.class);
+
+      capturedEnterWorkspaceEventHandler = new Capture<EnterWorkspaceEventHandler>();
+      capturedExitWorkspaceEventHandler = new Capture<ExitWorkspaceEventHandler>();
+      capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
+      capturedTranslatorListRequest = new Capture<GetTranslatorList>();
+      capturedTranslatorListRequestCallback = new Capture<AsyncCallback<GetTranslatorListResult>>();
+      capturedOptionsToggleValueChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
+      capturedSouthPanelToggleValueChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
+      capturedSouthPanelSelectionHandler = new Capture<SelectionHandler<Integer>>();
+      capturedKeyShortcuts = new Capture<KeyShortcut>();
+      capturedPublishWorkspaceChatEventHandler = new Capture<PublishWorkspaceChatEventHandler>();
    }
 
+   private void resetAllCaptures()
+   {
+      capturedEnterWorkspaceEventHandler.reset();
+      capturedExitWorkspaceEventHandler.reset();
+      capturedWorkspaceContextUpdateEventHandler.reset();
+      capturedTranslatorListRequest.reset();
+      capturedTranslatorListRequestCallback.reset();
+      capturedOptionsToggleValueChangeHandler.reset();
+      capturedSouthPanelToggleValueChangeHandler.reset();
+      capturedSouthPanelSelectionHandler.reset();
+      capturedKeyShortcuts.reset();
+      capturedPublishWorkspaceChatEventHandler.reset();
+   }
+   
    private TranslationPresenter newTranslationPresenter()
    {
-      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockWorkspaceContext);
+      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockWorkspaceContext, mockKeyShortcutPresenter);
    }
-
 
    @Test
    public void performsRequiredActionsOnBind()
@@ -138,7 +172,6 @@ public class TranslationPresenterTest
       translationPresenter = newTranslationPresenter();
       translationPresenter.bind();
    }
-
 
    @Test
    public void hidesOptionsPanel()
@@ -345,29 +378,26 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       Map<EditorClientId, Person> participants = new HashMap<EditorClientId, Person>();
-      participants.put(new EditorClientId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2"), new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
-      capturedTranslatorListRequest = new Capture<GetTranslatorList>();
-      capturedTranslatorListRequestCallback = new Capture<AsyncCallback<GetTranslatorListResult>>();
-
+      participants.put(new EditorClientId("sessionId1", 1), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
 
       expect(mockMessages.nUsersOnline(participants.size())).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
-      expect(mockMessages.hasJoinedWorkspace()).andReturn(TEST_HAS_JONINED_WORKSPACE_MESSAGE).once();
+      expect(mockMessages.hasJoinedWorkspace("bob")).andReturn(TEST_HAS_JONINED_WORKSPACE_MESSAGE).once();
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
       expectLastCall().once(); // once for now
 
       expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
 
-      mockWorkspaceUsersPresenter.dispatchChatAction("bob", TEST_HAS_JONINED_WORKSPACE_MESSAGE);
+      mockWorkspaceUsersPresenter.dispatchChatAction(null, TEST_HAS_JONINED_WORKSPACE_MESSAGE, MESSAGE_TYPE.SYSTEM_MSG);
       expectLastCall();
-      
-      mockWorkspaceUsersPresenter.addTranslator(new EditorClientId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
+
+      mockWorkspaceUsersPresenter.addTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
       expectLastCall();
 
       // simulate enter workspace event
       EnterWorkspaceEvent event = createMock(EnterWorkspaceEvent.class);
 
-      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1"));
+      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
       expect(event.getPerson()).andReturn(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16")).times(2);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter, event);
@@ -386,28 +416,23 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       Map<EditorClientId, Person> participants = new HashMap<EditorClientId, Person>();
-      participants.put(new EditorClientId("sessionId1"), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2"), new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2"), new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
-
-
-      capturedTranslatorListRequest = new Capture<GetTranslatorList>();
-      capturedTranslatorListRequestCallback = new Capture<AsyncCallback<GetTranslatorListResult>>();
+      participants.put(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
 
       expect(mockMessages.nUsersOnline(participants.size())).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
       expectLastCall().once(); // once for now
 
-      mockWorkspaceUsersPresenter.removeTranslator(new EditorClientId("sessionId1"), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
+      mockWorkspaceUsersPresenter.removeTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
       expectLastCall().once();
 
       // simulate enter workspace event
       ExitWorkspaceEvent event = createMock(ExitWorkspaceEvent.class);
 
-      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1"));
+      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
       expect(event.getPerson()).andReturn(new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
       expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
-
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter, event);
 
@@ -489,11 +514,16 @@ public class TranslationPresenterTest
    private void setupDefaultMockExpectations()
    {
       Map<EditorClientId, PersonSessionDetails> people = new HashMap<EditorClientId, PersonSessionDetails>();
-      people.put(new EditorClientId("sessionId"), new PersonSessionDetails(new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"), null));
+      people.put(new EditorClientId("sessionId", 1), new PersonSessionDetails(new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"), null));
 
       setupDefaultMockExpectations(people);
    }
 
+   private HandlerRegistration mockHandlerRegistration()
+   {
+      return createMock(HandlerRegistration.class);
+   }
+   
    @SuppressWarnings("unchecked")
    private void setupDefaultMockExpectations(Map<EditorClientId, PersonSessionDetails> initialParticipants)
    {
@@ -508,31 +538,34 @@ public class TranslationPresenterTest
       mockSidePanelPresenter.bind();
       expectLastCall().once();
 
+      expect(mockMessages.navigateToNextRow()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
+      expect(mockMessages.navigateToPreviousRow()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
+      expect(mockMessages.openEditorInSelectedRow()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
+      
       expect(mockMessages.showEditorOptions()).andReturn(TEST_SHOW_OPTIONS_TOOLTIP).anyTimes();
       expect(mockMessages.hideEditorOptions()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
 
-      capturedEnterWorkspaceEventHandler = new Capture<EnterWorkspaceEventHandler>();
+      expect(mockKeyShortcutPresenter.registerKeyShortcut(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(5);
+
       expect(mockEventBus.addHandler(eq(EnterWorkspaceEvent.getType()), and(capture(capturedEnterWorkspaceEventHandler), isA(EnterWorkspaceEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      capturedExitWorkspaceEventHandler = new Capture<ExitWorkspaceEventHandler>();
       expect(mockEventBus.addHandler(eq(ExitWorkspaceEvent.getType()), and(capture(capturedExitWorkspaceEventHandler), isA(ExitWorkspaceEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
       expect(mockEventBus.addHandler(eq(WorkspaceContextUpdateEvent.getType()), and(capture(capturedWorkspaceContextUpdateEventHandler), isA(WorkspaceContextUpdateEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      
+
       setupUserListRequestResponse(initialParticipants);
-      
+
+      expect(mockDisplay.getSouthTabPanel()).andReturn(mockSouthPanel).anyTimes();
+      expect(mockSouthPanel.addSelectionHandler(and(capture(capturedSouthPanelSelectionHandler), isA(SelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+
       expect(mockDisplay.getOptionsToggle()).andReturn(mockOptionsToggle).anyTimes();
-      capturedOptionsToggleValueChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
       expect(mockOptionsToggle.addValueChangeHandler(and(capture(capturedOptionsToggleValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       expect(mockDisplay.getSouthPanelToggle()).andReturn(mockSouthPanelToggle).anyTimes();
-      capturedSouthPanelToggleValueChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
       expect(mockSouthPanelToggle.addValueChangeHandler(and(capture(capturedSouthPanelToggleValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       expect(mockSouthPanelToggle.getValue()).andReturn(true).anyTimes();
 
       expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
 
-      capturedKeyShortcutHandler = new Capture<NativePreviewHandler>();
-      expect(mockNativeEvent.addNativePreviewHandler(and(capture(capturedKeyShortcutHandler), isA(NativePreviewHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), and(capture(capturedPublishWorkspaceChatEventHandler), isA(PublishWorkspaceChatEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
    }
 
    /**
@@ -541,8 +574,6 @@ public class TranslationPresenterTest
    @SuppressWarnings("unchecked")
    private void setupUserListRequestResponse(Map<EditorClientId, PersonSessionDetails> participants)
    {
-      capturedTranslatorListRequest = new Capture<GetTranslatorList>();
-      capturedTranslatorListRequestCallback = new Capture<AsyncCallback<GetTranslatorListResult>>();
       mockDispatcher.execute(and(capture(capturedTranslatorListRequest), isA(Action.class)), and(capture(capturedTranslatorListRequestCallback), isA(AsyncCallback.class)));
       expectLastCall().andAnswer(new TranslatorListSuccessAnswer(participants)).once();
 
@@ -558,27 +589,29 @@ public class TranslationPresenterTest
    {
       reset(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       reset(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      reset(mockWorkspaceContext, mockWorkspaceUsersPresenter);
+      reset(mockWorkspaceContext, mockWorkspaceUsersPresenter, mockKeyShortcutPresenter);
 
-      reset(mockOptionsToggle, mockSouthPanelToggle);
+      reset(mockOptionsToggle, mockSouthPanelToggle, mockSouthPanel);
+
+      resetAllCaptures();
    }
 
    private void replayAllMocks()
    {
       replay(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       replay(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      replay(mockWorkspaceContext, mockWorkspaceUsersPresenter);
+      replay(mockWorkspaceContext, mockWorkspaceUsersPresenter, mockKeyShortcutPresenter);
 
-      replay(mockOptionsToggle, mockSouthPanelToggle);
+      replay(mockOptionsToggle, mockSouthPanelToggle, mockSouthPanel);
    }
 
    private void verifyAllMocks()
    {
       verify(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       verify(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      verify(mockWorkspaceContext, mockWorkspaceUsersPresenter);
+      verify(mockWorkspaceContext, mockWorkspaceUsersPresenter, mockKeyShortcutPresenter);
 
-      verify(mockOptionsToggle, mockSouthPanelToggle);
+      verify(mockOptionsToggle, mockSouthPanelToggle, mockSouthPanel);
    }
 
    private class TranslatorListSuccessAnswer implements IAnswer<GetTranslatorListResult>

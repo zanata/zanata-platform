@@ -22,7 +22,6 @@ package org.zanata.service;
 
 import java.util.List;
 
-import org.apache.lucene.queryParser.ParseException;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
@@ -36,7 +35,9 @@ public interface VersionGroupService
 
    HIterationGroup getBySlug(String slug);
 
-   List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm) throws ParseException;
+   List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm);
+
+   List<HIterationGroup> searchLikeSlug(String searchTerm);
 
    List<HPerson> getMaintainerBySlug(String slug);
 
@@ -47,4 +48,37 @@ public interface VersionGroupService
    boolean joinVersionGroup(String slug, Long projectIterationId);
 
    boolean leaveVersionGroup(String slug, Long projectIterationId);
+
+   HProjectIteration getProjectIterationBySlug(String projectSlug, String iterationSlug);
+
+   boolean isVersionInGroup(HIterationGroup group, Long projectIterationId);
+
+   boolean isGroupInVersion(String groupSlug, Long id);
+
+   public final class SelectableHIterationProject
+   {
+      private HProjectIteration projectIteration;
+      private boolean selected;
+
+      public SelectableHIterationProject(HProjectIteration projectIteration, boolean selected)
+      {
+         this.projectIteration = projectIteration;
+         this.selected = selected;
+      }
+
+      public HProjectIteration getProjectIteration()
+      {
+         return projectIteration;
+      }
+
+      public boolean isSelected()
+      {
+         return selected;
+      }
+
+      public void setSelected(boolean selected)
+      {
+         this.selected = selected;
+      }
+   }
 }

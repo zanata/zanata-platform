@@ -20,17 +20,6 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-
 import java.util.List;
 
 import org.easymock.Capture;
@@ -39,6 +28,18 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
+
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 /**
  *
@@ -266,6 +267,68 @@ public class PrintfVariablesValidationTest
       assertThat(printfVariablesValidation.getError().size(), is(1));
 
       assertThat(capturedVarsMissing.getValue(), hasItems("%s", "%d", "%-25s", "%r"));
+   }
+
+   @Test
+   public void validPositionalVariables() {
+      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
+      String source = "%s: Read error at byte %s, while reading %lu byte";
+      String target = "%1$s：Read error while reading %3$lu bytes，at %2$s";
+      printfVariablesValidation.validate(source, target);
+
+      assertThat(printfVariablesValidation.hasError(), is(false));
+      assertThat(printfVariablesValidation.getError().size(), is(0));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+      assertThat(capturedVarsMissing.hasCaptured(), is(false));
+   }
+
+   @Test
+   public void mixPositionalVariablesWithNotPositionalWillValidateAsIs() {
+      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
+      String source = "%s: Read error at byte %s, while reading %lu byte";
+      String target = "%1$s：Read error while reading %lu bytes，at %2$s";
+      printfVariablesValidation.validate(source, target);
+
+      assertThat(printfVariablesValidation.hasError(), is(true));
+      assertThat(printfVariablesValidation.getError().size(), is(2));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(true));
+      assertThat(capturedVarsAdded.getValue(), contains("%1$s" , "%2$s"));
+      assertThat(capturedVarsMissing.hasCaptured(), is(true));
+      assertThat(capturedVarsMissing.getValue(), contains("%s", "%s"));
+   }
+
+   @Test
+   public void invalidPositionalVariablesWillValidateAsIs() {
+      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
+      String source = "%s: Read error at byte %s, while reading %lu byte";
+      String target = "%3$s：Read error while reading %99$lu bytes，at %2$s";
+      printfVariablesValidation.validate(source, target);
+
+      assertThat(printfVariablesValidation.hasError(), is(true));
+      assertThat(printfVariablesValidation.getError().size(), is(2));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(true));
+      assertThat(capturedVarsAdded.getValue(), contains("%3$s", "%99$lu", "%2$s"));
+      assertThat(capturedVarsMissing.hasCaptured(), is(true));
+      assertThat(capturedVarsMissing.getValue(), contains("%s", "%s", "%lu"));
+   }
+
+   @Test
+   public void positionalVariablesHaveSamePosition() {
+      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
+      String source = "%s: Read error at byte %s, while reading %lu byte";
+      String target = "%3$s：Read error while reading %3$lu bytes，at %2$s";
+      printfVariablesValidation.validate(source, target);
+
+      assertThat(printfVariablesValidation.hasError(), is(true));
+      assertThat(printfVariablesValidation.getError().size(), is(2));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(true));
+      assertThat(capturedVarsAdded.getValue(), contains("%3$s"));
+      assertThat(capturedVarsMissing.hasCaptured(), is(true));
+      assertThat(capturedVarsMissing.getValue(), contains("%s"));
    }
 }
 

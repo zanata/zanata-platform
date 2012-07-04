@@ -30,11 +30,10 @@ import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
-import org.zanata.webtrans.client.events.NotificationEventHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -57,10 +56,9 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasErrorNotificationLabel
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasNotificationLabel
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
@@ -76,23 +74,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       void setDocumentLabel(String docPath, String docName);
 
-      void setNotificationMessage(String message, NotificationEvent.Severity severity);
-
-      HasClickHandlers getDismiss();
-
-      HasVisibility getDismissVisibility();
-
       void setStats(TranslationStats transStats);
 
       void setReadOnlyVisible(boolean visible);
 
       HasClickHandlers getSearchAndReplaceLink();
 
-      HasClickHandlers getErrorNotificationBtn();
-
-      void setErrorNotificationText(int count);
+      HasClickHandlers getNotificationBtn();
 
       void setLayoutMenuVisible(boolean visible);
+
+      void setNotificationText(int count, Severity severity);
+
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -150,9 +143,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    }
 
    @Override
-   public void setErrorNotificationLabel(int count)
+   public void setNotificationLabel(int count, Severity severity)
    {
-      display.setErrorNotificationText(count);
+      display.setNotificationText(count, severity);
    }
 
    @Override
@@ -164,9 +157,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
-      
+     
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
-      notificationPresenter.setErrorLabelListener(this);
+      notificationPresenter.setNotificationListener(this);
+
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -178,30 +172,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      setErrorNotificationLabel(notificationPresenter.getMessageCount());
-
-      registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
-      {
-         @Override
-         public void onNotification(NotificationEvent event)
-         {
-            // See NotificationPresenter for Severity.Error message
-            if (event.getSeverity() != Severity.Error)
-            {
-               display.setNotificationMessage(event.getMessage(), event.getSeverity());
-               display.getDismissVisibility().setVisible(true);
-               Log.info("Notification:" + event.getMessage());
-            }
-            else
-            {
-               setErrorNotificationLabel(notificationPresenter.getMessageCount());
-            }
-         }
-      }));
-
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), new DocumentStatsUpdatedEventHandler()
       {
-
          @Override
          public void onDocumentStatsUpdated(DocumentStatsUpdatedEvent event)
          {
@@ -218,7 +190,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), new ProjectStatsUpdatedEventHandler()
       {
-
          @Override
          public void onProjectStatsRetrieved(ProjectStatsUpdatedEvent event)
          {
@@ -229,18 +200,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             }
          }
       }));
-
-      registerHandler(display.getDismiss().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.setNotificationMessage("", NotificationEvent.Severity.Info);
-            display.getDismissVisibility().setVisible(false);
-         }
-      }));
-
-      display.getDismissVisibility().setVisible(false);
 
       registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
       {
@@ -275,12 +234,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
       
-      registerHandler(display.getErrorNotificationBtn().addClickHandler(new ClickHandler()
+      registerHandler(display.getNotificationBtn().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            notificationPresenter.showErrorNotification();
+            notificationPresenter.showNotificationWithNoTimer();
          }
       }));
 
@@ -470,6 +429,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
             currentDisplayStats = selectedDocumentStats;
+            translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
             display.setLayoutMenuVisible(true);
             break;
@@ -478,6 +438,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             // fully functional
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
+            translationPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
             display.setLayoutMenuVisible(false);
             break;
@@ -487,6 +448,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             // if a document is selected.
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
+            translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
             display.setLayoutMenuVisible(false);
             break;

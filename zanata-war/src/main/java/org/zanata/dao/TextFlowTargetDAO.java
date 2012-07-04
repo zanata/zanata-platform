@@ -188,11 +188,10 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       // @formatter:off
       Query q = getSession().getNamedQuery("HTextFlowTarget.findLatestEquivalentTranslations");
       q.setParameter("document", document)
-      .setParameter("docId", document.getDocId())
       .setParameter("locale", locale)
       .setParameter("state", ContentState.Approved);
       q.setCacheable(false); // TODO does it make sense to cache scrollable results?
-      return q.scroll(ScrollMode.FORWARD_ONLY); // Not Scrollable, only allows forward scrolling
+      return q.scroll(ScrollMode.SCROLL_INSENSITIVE); // Scrollable, but insensitive to data changes
       // @formatter:on
    }
 }

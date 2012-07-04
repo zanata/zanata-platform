@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- purpose of this file is to be able to push to same content but use a different project id/name-->
+
+<config xmlns="http://zanata.org/namespace/config/">
+  <url>${zanata.instance.url}</url>
+  <project>trans-memory-v2</project>
+  <project-type>podir</project-type>
+
+  <locales>
+    <locale>zh-CN</locale>
+  </locales>
+
+</config>

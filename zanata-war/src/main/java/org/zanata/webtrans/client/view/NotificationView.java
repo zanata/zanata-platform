@@ -20,17 +20,24 @@
  */
 package org.zanata.webtrans.client.view;
 
+import java.util.Date;
+
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.ui.InlineLink;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -59,8 +66,27 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       String messageRow();
 
       String image();
+
+      String timeLabel();
+
+      String inlineLink();
+
+      String messagePanel();
+
+      String mainPanel();
+
+      String link();
    }
 
+   private final Timer hidePopupTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         hide(true);
+      }
+   };
+   
    @UiField
    VerticalPanel messagePanel;
 
@@ -80,17 +106,6 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    {
       setWidget(uiBinder.createAndBindUi(this));
       this.setStyleName("notificationPanel");
-   }
-
-   @Override
-   public void appendMessage(String msg)
-   {
-      messagePanel.insert(new Label(msg), 0);
-
-      while (messagePanel.getWidgetCount() > messagesToKeep)
-      {
-         messagePanel.remove(messagePanel.getWidgetCount() - 1);
-      }
    }
 
    public HasClickHandlers getDismissButton()
@@ -119,15 +134,50 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    {
       // return width of the notification panel, see
       // Style@Notification.ui.xml.mainPanel
-      return 400;
+      return 320;
    }
 
    @Override
-   public void appendMessage(Severity severity, String msg)
+   public void appendMessage(Severity severity, String msg, InlineLink inlineLink)
    {
       HorizontalPanel panel = new HorizontalPanel();
+      panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
       Image severityImg;
       panel.setWidth("100%");
+
+      severityImg = createSeverityImage(severity);
+      panel.add(severityImg);
+
+      Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.TIME_SHORT).format(new Date()) + "]");
+      timeLabel.setStyleName(style.timeLabel());
+      panel.add(timeLabel);
+
+      Label msgLabel = new Label(msg);
+      panel.add(msgLabel);
+
+      if (inlineLink != null)
+      {
+         inlineLink.setLinkStyle(style.inlineLink());
+         panel.add(inlineLink);
+      }
+      panel.setCellWidth(severityImg, "20px");
+      panel.setCellWidth(timeLabel, "50px");
+
+      panel.setCellHorizontalAlignment(msgLabel, HasHorizontalAlignment.ALIGN_LEFT);
+
+      messagePanel.insert(panel, 0);
+      messagePanel.getWidget(0).setStyleName(style.messageRow());
+
+      while (messagePanel.getWidgetCount() > messagesToKeep)
+      {
+         messagePanel.remove(messagePanel.getWidgetCount() - 1);
+      }
+   }
+
+   private Image createSeverityImage(Severity severity)
+   {
+      Image severityImg;
       if (severity == Severity.Error)
       {
          severityImg = new Image(resources.errorMsg());
@@ -141,21 +191,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
          severityImg = new Image(resources.infoMsg());
       }
       severityImg.addStyleName(style.image());
-      Label msgLabel = new Label(msg);
-
-      panel.add(severityImg);
-      panel.add(msgLabel);
-      panel.setCellWidth(severityImg, "20px");
-      panel.setCellVerticalAlignment(severityImg, HasVerticalAlignment.ALIGN_MIDDLE);
-      panel.setCellVerticalAlignment(msgLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-
-      messagePanel.insert(panel, 0);
-      messagePanel.getWidget(0).setStyleName(style.messageRow());
-
-      while (messagePanel.getWidgetCount() > messagesToKeep)
-      {
-         messagePanel.remove(messagePanel.getWidgetCount() - 1);
-      }
+      return severityImg;
    }
 
    @Override
@@ -168,5 +204,20 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    public void setPopupTopRightCorner()
    {
       super.setPopupPosition(Window.getClientWidth() - (getWidth() + 5), 38);
+   }
+   
+   @Override
+   public void hide(boolean autoClosed) 
+   {
+      hidePopupTimer.cancel();
+      super.hide(autoClosed);
+   }
+   
+   @Override
+   public void show(int delayMillisToClose)
+   {
+      hidePopupTimer.cancel();
+      super.show();
+      hidePopupTimer.schedule(delayMillisToClose);
    }
 }

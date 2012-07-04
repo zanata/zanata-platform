@@ -20,7 +20,7 @@ import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.model.HAccountResetPasswordKey;
-import org.zanata.security.KeyNotFoundException;
+import org.zanata.exception.KeyNotFoundException;
 
 @Name("passwordReset")
 @Scope(ScopeType.CONVERSATION)

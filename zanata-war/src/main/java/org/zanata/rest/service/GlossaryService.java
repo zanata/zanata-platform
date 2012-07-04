@@ -22,6 +22,7 @@ import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.hibernate.Session;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
@@ -67,9 +68,7 @@ public class GlossaryService implements GlossaryResource
    @In
    private LocaleService localeServiceImpl;
 
-   private final static String GLOSSARY_ACTION_INSERT = "glossary-insert";
-   private final static String GLOSSARY_ACTION_DELETE = "glossary-delete";
-   private final static String GLOSSARY_ACTION_UPDATE = "glossary-update";
+   private final static int BATCH_SIZE = 50;
 
 
    /**
@@ -141,6 +140,7 @@ public class GlossaryService implements GlossaryResource
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    @Restrict("#{s:hasPermission('', 'glossary-insert')}")
+   @Transactional(value = TransactionPropagationType.NEVER)
    public Response put(Glossary glossary)
    {
       ResponseBuilder response;
@@ -153,13 +153,30 @@ public class GlossaryService implements GlossaryResource
       }
       response = Response.created(uri.getAbsolutePath());
 
-      for (GlossaryEntry glossaryEntry : glossary.getGlossaryEntries())
+      int counter = 0;
+      for (int i = 0; i < glossary.getGlossaryEntries().size(); i++)
       {
-         transferGlossaryEntry(glossaryEntry);
+         transferGlossaryEntry(glossary.getGlossaryEntries().get(i));
+         counter++;
+
+         if (counter == BATCH_SIZE || i == glossary.getGlossaryEntries().size() - 1)
+         {
+            executeCommit();
+            counter = 0;
+         }
       }
-      glossaryDAO.flush();
 
       return response.build();
+   }
+
+   /**
+    * This force glossaryDAO to flush and commit every 50(BATCH_SIZE) records.
+    */
+   @Transactional
+   private void executeCommit()
+   {
+      glossaryDAO.flush();
+      glossaryDAO.clear();
    }
 
    /**

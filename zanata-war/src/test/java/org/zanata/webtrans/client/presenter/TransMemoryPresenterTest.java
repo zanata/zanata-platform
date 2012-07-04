@@ -62,7 +62,7 @@ public class TransMemoryPresenterTest
    Capture<TransMemoryShorcutCopyHandler> capturedTransMemoryShortcutCopyEventHandler = new Capture<TransMemoryShorcutCopyHandler>();
 
    HasClickHandlers mockClearButton = createMock(HasClickHandlers.class);
-
+   TransMemoryMergePresenter mockTransMemoryMergePresenter = createMock(TransMemoryMergePresenter.class);
 
 
    @BeforeMethod
@@ -96,6 +96,8 @@ public class TransMemoryPresenterTest
 
       expect(mockDisplay.getDetailsColumn()).andReturn(mockDetailsColumn).anyTimes();
 
+      expect(mockDisplay.getMergeButton()).andReturn(createMock(HasClickHandlers.class)).once();
+
       //TODO capture field updaters and data provider to check them?
 
       mockDetailsColumn.setFieldUpdater(isA(FieldUpdater.class));
@@ -115,7 +117,7 @@ public class TransMemoryPresenterTest
       replay(mockSearchType, mockSearchButton, mockClearButton);
       replay(mockDetailsColumn, mockCopyColumn);
 
-      transMemoryPresenter = new TransMemoryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTransMemoryDetailsPresenter , mockWorkspaceContext);
+      transMemoryPresenter = new TransMemoryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTransMemoryDetailsPresenter , mockWorkspaceContext, mockTransMemoryMergePresenter);
 
       transMemoryPresenter.bind();
 

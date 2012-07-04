@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
@@ -30,8 +29,10 @@ import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
@@ -55,6 +56,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
    @In
    SlugEntityService slugEntityServiceImpl;
+
+
+   @Logger
+   Log log;
 
    @Override
    protected HIterationGroup loadInstance()

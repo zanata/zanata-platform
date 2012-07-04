@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.resources;
 
+import java.util.List;
+
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -77,23 +79,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("▲ Restore")
    String restoreLabel();
 
-   @DefaultMessage("Find")
-   String findButton();
-
-   @DefaultMessage("Find Messages")
-   String transUnitSearchesHeading();
-
-   @DefaultMessage("Translation Unit Details")
-   String transUnitDetailsHeading();
-
    @DefaultMessage("Translation Memory/Glossary")
    String tmGlossaryHeading();
-
-   @DefaultMessage("Validation Details")
-   String validationDetailsHeading();
-
-   @DefaultMessage("Source or Target content")
-   String findSourceOrTargetString();
 
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
@@ -128,11 +115,11 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Project-wide Search and Replace")
    String projectWideSearchAndReplace();
 
-   @DefaultMessage("has quit workspace")
-   String hasQuitWorkspace();
+   @DefaultMessage("{0} has quit workspace")
+   String hasQuitWorkspace(String user);
 
-   @DefaultMessage("has joined workspace")
-   String hasJoinedWorkspace();
+   @DefaultMessage("{0} has joined workspace")
+   String hasJoinedWorkspace(String user);
 
    @DefaultMessage("Searching")
    String searching();
@@ -244,6 +231,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo")
    String undo();
 
+   @DefaultMessage("Undone")
+   String undone();
+
    @DefaultMessage("Undoing")
    String undoInProgress();
 
@@ -252,6 +242,13 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Undo successful")
    String undoSuccess();
+
+   @Description("Message for unsuccessful undo")
+   @DefaultMessage("{0} items can not be undone")
+   @AlternateMessage({
+         "one", "Item can not be undone",
+         "=0", "Undo failed" })
+   String undoFailure(@PluralCount int unsuccessfulCount);
 
    @DefaultMessage("Undo not possible in read-only workspace")
    String cannotUndoInReadOnlyMode();
@@ -278,31 +275,31 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Sign Out")
    String signOut();
 
-   @DefaultMessage("Search and replace")
+   @DefaultMessage("Search & replace")
    String searchAndReplace();
 
    @DefaultMessage("▼")
    String downArrow();
-
-   @DefaultMessage("Error notification")
-   String errorNotification();
    
-   @DefaultMessage("View Selection")
-   String viewSelection();
+   @DefaultMessage("Layout Selection")
+   String layoutSelection();
+
+   @DefaultMessage("Notification")
+   String notification();
 
    @DefaultMessage("Available Keyboard Shortcuts")
    String availableKeyShortcutsTitle();
 
-   @DefaultMessage("select text flows in all documents")
+   @DefaultMessage("Select text flows in all documents")
    String selectAllTextFlowsKeyShortcut();
 
-   @DefaultMessage("focus search phrase")
+   @DefaultMessage("Focus search phrase")
    String focusSearchPhraseKeyShortcut();
 
-   @DefaultMessage("focus replacement phrase")
+   @DefaultMessage("Focus replacement phrase")
    String focusReplacementPhraseKeyShortcut();
 
-   @DefaultMessage("show available shortcuts")
+   @DefaultMessage("Show available shortcuts")
    String showAvailableKeyShortcuts();
 
    @DefaultMessage("Application")
@@ -329,6 +326,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show project-wide search view")
    String showProjectWideSearch();
 
+   @DefaultMessage("Warning! This is a public channel")
+   String thisIsAPublicChannel();
+
    @DefaultMessage("Only show documents that contain the search text with matching case")
    String docListFilterCaseSensitiveDescription();
 
@@ -340,4 +340,16 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
    String requirePreviewDescription();
+
+   @DefaultMessage("Navigate to next row")
+   String navigateToNextRow();
+   
+   @DefaultMessage("Navigate to previous row")
+   String navigateToPreviousRow();
+
+   @DefaultMessage("Open editor in selected row")
+   String openEditorInSelectedRow();
+
+   @DefaultMessage("Close keyboard shortcuts list")
+   String closeShortcutView();
 }

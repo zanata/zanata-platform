@@ -23,10 +23,15 @@ package org.zanata.service;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.exception.ConcurrentTranslationException;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;

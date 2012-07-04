@@ -21,6 +21,7 @@
 package org.zanata.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -34,8 +35,10 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
@@ -45,36 +48,36 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.util.HTextFlowPosComparator;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Name("textFlowDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
+   //TODO replace all getSession() code to use entityManager
    private static final Version LUCENE_VERSION = Version.LUCENE_29;
-   private static final String CONTENT_FIELDS[] = new String[6];
-   {
-      for (int i = 0; i < 6; i++)
-      {
-         CONTENT_FIELDS[i] = IndexFieldLabels.CONTENT_CASE_FOLDED + i;
-      }
-   }
 
    @In
    private FullTextEntityManager entityManager;
 
    @In
    LocaleDAO localeDAO;
-
-   @Logger
-   Log log;
 
    public TextFlowDAO()
    {
@@ -177,7 +180,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          int queriesSize = multiQueryText.length;
          if (queriesSize > IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length)
          {
-            log.warn("query contains {0} fields, but we only index {1}", queriesSize, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length);
+            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length);
          }
          String[] searchFields = new String[queriesSize];
          System.arraycopy(IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, 0, searchFields, 0, queriesSize);
@@ -203,9 +206,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       Query q = getSession().createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.obsolete=0");
       q.setCacheable(true).setComment("TextFlowDAO.getTotalWords");
       Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
+      return totalCount == null ? 0 : totalCount.intValue();
    }
 
    public int getTotalTextFlows()
@@ -213,9 +214,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       Query q = getSession().createQuery("select count(*) from HTextFlow");
       q.setCacheable(true).setComment("TextFlowDAO.getTotalTextFlows");
       Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
+      return totalCount == null ? 0 : totalCount.intValue();
    }
 
    public int getTotalActiveTextFlows()
@@ -223,9 +222,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       Query q = getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0");
       q.setCacheable(true).setComment("TextFlowDAO.getTotalActiveTextFlows");
       Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
+      return totalCount == null ? 0 : totalCount.intValue();
    }
 
    public int getTotalObsoleteTextFlows()
@@ -233,9 +230,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       Query q = getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=1");
       q.setCacheable(true).setComment("TextFlowDAO.getTotalObsoleteTextFlows");
       Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
+      return totalCount == null ? 0 : totalCount.intValue();
    }
 
    public int getCountByDocument(Long documentId)
@@ -244,23 +239,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       q.setParameter("id", documentId);
       q.setCacheable(true).setComment("TextFlowDAO.getCountByDocument");
       Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
+      return totalCount == null ? 0 : totalCount.intValue();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getTransUnitList(Long documentId, int offset, int count)
-   {
-      Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
-      q.setParameter("id", documentId);
-      q.setFirstResult(offset).setMaxResults(count);
-      q.setCacheable(true).setComment("TextFlowDAO.getTransUnitList");
-      return q.list();
-   }
-
-   @SuppressWarnings("unchecked")
-   public List<HTextFlow> getTransUnitList(Long documentId)
+   public List<HTextFlow> getTextFlows(Long documentId)
    {
       Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
       q.setParameter("id", documentId);
@@ -303,4 +286,79 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return new ArrayList<Long>(idSet);
    }
 
+   /**
+    * for a given locale, we first find text flow where has no target (targets map has no key equals the locale),
+    * or (the text flow target has zero size contents OR content state is NEW).
+    *
+    * @param documentId document id (NOT the String type docId)
+    * @param hLocale locale
+    * @return a list of HTextFlow that has no translation for given locale.
+    */
+   public List<HTextFlow> getAllUntranslatedTextFlowByDocumentId(DocumentId documentId, HLocale hLocale)
+   {
+      // @formatter:off
+      String query = "select distinct tf from HTextFlow tf left join tf.targets " +
+            "where tf.obsolete = 0 and tf.document.id = :docId and " +
+            "(:locale not in indices(tf.targets) or exists " + //text flow does not have a target for given locale
+            "  (select tft.id from HTextFlowTarget tft where tft.textFlow.id = tf.id and tft.locale = :locale and tft.state = :contentState)" + //text flow has target but target has either empty contents or content state is NEW
+            ") order by tf.pos";
+      // @formatter:on
+
+      Query textFlowQuery = getSession().createQuery(query);
+      textFlowQuery.setParameter("docId", documentId.getId());
+      textFlowQuery.setParameter("locale", hLocale);
+      textFlowQuery.setParameter("contentState", ContentState.New);
+      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getAllUntranslatedTextFlowByDocId");
+
+      @SuppressWarnings("unchecked")
+      List<HTextFlow> result = textFlowQuery.list();
+      log.debug("doc {} has {} untranslated textFlow for locale {}",
+            new Object [] { documentId, result.size(), hLocale.getLocaleId()});
+      return result;
+   }
+
+   public List<HTextFlow> getTextFlowsByStatus(DocumentId documentId, HLocale hLocale, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
+   {
+      List<HTextFlow> result = Lists.newArrayList();
+      List<HTextFlow> untranslated = Lists.newArrayList();
+      List<HTextFlow> translated = Lists.newArrayList();
+
+      if (filterUntranslated)
+      {
+         //hard part. leave it alone.
+         untranslated = getAllUntranslatedTextFlowByDocumentId(documentId, hLocale);
+         result.addAll(untranslated);
+      }
+      if (filterNeedReview || filterTranslated)
+      {
+         // @formatter:off
+         String queryString = "select distinct tf from HTextFlow tf inner join tf.targets as tft " +
+               "where tf.document.id = :docId and tft.locale = :locale and tft.state in (:contentStates) " +
+               "order by tf.pos";
+         // @formatter:on
+         List<ContentState> contentStates = Lists.newArrayList();
+         if (filterNeedReview)
+         {
+            contentStates.add(ContentState.NeedReview);
+         }
+         if (filterTranslated)
+         {
+            contentStates.add(ContentState.Approved);
+         }
+         Query query = getSession().createQuery(queryString);
+         query.setParameter("docId", documentId.getId());
+         query.setParameter("locale", hLocale);
+         query.setParameterList("contentStates", contentStates);
+         query.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByStatus");
+
+         translated = query.list();
+         result.addAll(translated);
+      }
+
+      if (!untranslated.isEmpty() && !translated.isEmpty())
+      {
+         Collections.sort(result, HTextFlowPosComparator.INSTANCE);
+      }
+      return result;
+   }
 }

@@ -4,7 +4,7 @@
 
     <ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 
-    <ui:style>
+    <ui:style type="org.zanata.webtrans.client.view.WorkspaceUsersView.Styles">
         .chatRoomScrollPanel 
         {
 			height:100%;
@@ -47,6 +47,25 @@
 	       border-radius:3px;
 		}
 		
+		.systemMsg
+		{
+			color:grey;
+			font-style:italic;
+		}
+			
+		.userName
+		{
+			font-weight:bold;
+			padding:0 5px;
+		}
+		
+		.systemWarn
+		{
+			color:blue;
+			font-style:italic;
+			font-size:14px;
+		}
+		
 	
         
     </ui:style>
@@ -64,17 +83,16 @@
 			    	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
 			    </g:ScrollPanel>
 			</g:layer>
-			<!-- Disable chat function until 1.7, need further testing on HTML safe-->
-<!-- 			<g:layer bottom="2px" height="24px"> -->
-<!-- 				<g:HorizontalPanel width="100%" spacing="3"> -->
-<!-- 		        		<g:cell> -->
-<!-- 			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/> -->
-<!-- 			        	</g:cell> -->
-<!-- 			        	<g:cell width="40px"> -->
-<!-- 							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	 -->
-<!-- 						</g:cell>	        	 -->
-<!-- 		        	</g:HorizontalPanel> -->
-<!-- 			</g:layer> -->
+			<g:layer bottom="2px" height="24px">
+				<g:HorizontalPanel width="100%" spacing="3">
+		        		<g:cell>
+			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/>
+			        	</g:cell>
+			        	<g:cell width="40px">
+							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	
+						</g:cell>	        	
+		        	</g:HorizontalPanel>
+			</g:layer>
         	</g:LayoutPanel>
         </g:center>
     </g:SplitLayoutPanel>

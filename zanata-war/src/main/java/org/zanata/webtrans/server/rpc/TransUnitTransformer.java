@@ -51,7 +51,7 @@ public class TransUnitTransformer
       {
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
-      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
+      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
 
       int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);

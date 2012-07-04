@@ -19,18 +19,15 @@ public class EnumRenderer<T extends Enum<?>> extends AbstractRenderer<T>
    @Override
    public String render(T object)
    {
-       if (object == null)
-           return emptyValue;
+      if (object == null)
+      {
+         return emptyValue;
+      }
       return object.toString();
    }
 
    public String getEmptyValue()
    {
       return emptyValue;
-   }
-
-   public void setEmptyValue(String emptyValue)
-   {
-       this.emptyValue = emptyValue;
    }
 }

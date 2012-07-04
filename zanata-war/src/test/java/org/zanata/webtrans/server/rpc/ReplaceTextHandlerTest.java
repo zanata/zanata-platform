@@ -30,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.service.SecurityService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
@@ -49,6 +50,7 @@ public class ReplaceTextHandlerTest
    @Mock private UpdateTransUnitHandler mockUpdateTransUnitHandler;
    @Mock private ExecutionContext context;
    private TransUnit.Builder transUnitBuilder;
+   @Mock private SecurityService mockSecurityService;
 
    @BeforeMethod
    public void beforeMethod()
@@ -56,6 +58,7 @@ public class ReplaceTextHandlerTest
       MockitoAnnotations.initMocks(this);
       handler = new ReplaceTextHandler();
       handler.updateTransUnitHandler = mockUpdateTransUnitHandler;
+      handler.securityServiceImpl = mockSecurityService;
       transUnitBuilder = TransUnit.Builder.newTransUnitBuilder()
             .setId(1).setResId("").setLocaleId("en-US").setVerNum(1).addSource("abc");
    }

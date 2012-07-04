@@ -3,15 +3,10 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -26,25 +21,29 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+
 @Name("webtrans.gwt.GetTransMemoryDetailsHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransMemoryDetailsAction.class)
+@Slf4j
 public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList>
 {
-
-   @Logger
-   private Log log;
-
    @In
    private TextFlowDAO textFlowDAO;
 
    @In
    private LocaleService localeServiceImpl;
 
+   @In
+   private ZanataIdentity identity;
+
    @Override
    public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       HLocale hLocale;
       try{
@@ -56,23 +55,30 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       }
 
       ArrayList<Long> textFlowIds = action.getTransUnitIdList();
-      log.info("Fetching TM details for TFs {0} in locale {1}", textFlowIds, locale);
+      log.info("Fetching TM details for TFs {} in locale {}", textFlowIds, locale);
       List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
       ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>(textFlows.size());
 
       for (HTextFlow tf : textFlows)
       {
-         HTextFlowTarget tft = tf.getTargets().get(hLocale);
-         HSimpleComment sourceComment = tf.getComment();
-         HSimpleComment targetComment = tft.getComment();
-         String docId = tf.getDocument().getDocId();
-         String iterationName = tf.getDocument().getProjectIteration().getSlug();
-         String projectName = tf.getDocument().getProjectIteration().getProject().getName();
-         items.add(new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId));
+         TransMemoryDetails memoryDetails = getTransMemoryDetail(hLocale, tf);
+         items.add(memoryDetails);
       }
 
-      log.info("Returning {0} TM details", items.size());
+      log.info("Returning {} TM details", items.size());
       return new TransMemoryDetailsList(items);
+   }
+
+   protected TransMemoryDetails getTransMemoryDetail(HLocale hLocale, HTextFlow tf)
+   {
+      HTextFlowTarget tft = tf.getTargets().get(hLocale.getId());
+      HSimpleComment sourceComment = tf.getComment();
+      HSimpleComment targetComment = tft.getComment();
+      String docId = tf.getDocument().getDocId();
+      String iterationName = tf.getDocument().getProjectIteration().getSlug();
+      String projectName = tf.getDocument().getProjectIteration().getProject().getName();
+      String msgContext = (tf.getPotEntryData() == null) ? null : tf.getPotEntryData().getContext();
+      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext);
    }
 
    @Override

@@ -27,16 +27,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -49,21 +48,22 @@ import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 @Name("webtrans.gwt.GetTransMemoryHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTranslationMemory.class)
+@Slf4j
 public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult>
 {
 
    private static final int MAX_RESULTS = 10;
-
-   @Logger
-   private Log log;
 
    @In
    private LocaleService localeServiceImpl;
@@ -76,53 +76,44 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    {
       ZanataIdentity.instance().checkLoggedIn();
 
-      log.info("Fetching matches for {0}", action.getQuery());
+      TransMemoryQuery transMemoryQuery = action.getQuery();
+      log.debug("Fetching matches for {}", transMemoryQuery);
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
-      ArrayList<TransMemoryResultItem> results;
 
+      // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
+      List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId());
+
+      ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, transMemoryQuery, idsWithTranslations);
+
+      log.debug("Returning {} TM matches for {}", results.size(), transMemoryQuery);
+      return new GetTranslationMemoryResult(action, results);
+   }
+
+   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale hLocale, TransMemoryQuery transMemoryQuery, List<Long> idsWithTranslations)
+   {
+      ArrayList<TransMemoryResultItem> results = Lists.newArrayList();
       try
       {
-         // FIXME this won't scale well
-         List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(localeID);
-         List<Object[]> matches = textFlowDAO.getSearchResult(action.getQuery(), idsWithTranslations, MAX_RESULTS);
+         List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, MAX_RESULTS);
+
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
             float score = (Float) match[0];
             HTextFlow textFlow = (HTextFlow) match[1];
-            if (textFlow == null)
-            {
-               continue;
-            }
-            else
-            {
-               HProjectIteration projectIteration = textFlow.getDocument().getProjectIteration();
-               if (projectIteration.getStatus() == EntityStatus.OBSOLETE || projectIteration.getProject().getStatus() == EntityStatus.OBSOLETE)
-               {
-                  continue;
-               }
-            }
-            HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-            // double check in case of caching issues
-            if (target == null || target.getState() != ContentState.Approved)
+
+            if (isInvalidResult(textFlow, hLocale))
             {
                continue;
             }
 
-            double percent;
-            if (action.getQuery().getSearchType() == SearchType.FUZZY_PLURAL)
-            {
-               percent = 100 * LevenshteinUtil.getSimilarity(action.getQuery().getQueries(), textFlow.getContents());
-            }
-            else
-            {
-               final String searchText = action.getQuery().getQueries().get(0);
-               percent = 100 * LevenshteinUtil.getSimilarity(searchText, textFlow.getContents());
-            }
+            double percent = calculateSimilarityPercentage(transMemoryQuery, textFlow.getContents());
+
             ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
-            ArrayList<String> targetContents = new ArrayList<String>(target.getContents());
+            ArrayList<String> targetContents = new ArrayList<String>(textFlow.getTargets().get(hLocale.getId()).getContents());
+
             TMKey key = new TMKey(textFlowContents, targetContents);
             TransMemoryResultItem item = matchesMap.get(key);
             if (item == null)
@@ -132,74 +123,58 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             }
             item.addSourceId(textFlow.getId());
          }
-         results = new ArrayList<TransMemoryResultItem>(matchesMap.values());
+         results.addAll(matchesMap.values());
       }
       catch (ParseException e)
       {
-         if (action.getQuery().getSearchType() == SearchType.RAW)
+         if (transMemoryQuery.getSearchType() == SearchType.RAW)
          {
             // TODO tell the user
-            log.warn("Can't parse raw query " + action.getQuery());
+            log.warn("Can't parse raw query {}", transMemoryQuery);
          }
          else
          {
             // escaping failed!
-            log.error("Can't parse query " + action.getQuery(), e);
+            log.error("Can't parse query " + transMemoryQuery, e);
          }
-         results = new ArrayList<TransMemoryResultItem>(0);
       }
 
-      /**
-       * NB just because this Comparator returns 0 doesn't mean the matches are
-       * identical.
-       */
-      Comparator<TransMemoryResultItem> comp = new Comparator<TransMemoryResultItem>()
+      Collections.sort(results, TransMemoryResultComparator.COMPARATOR);
+      return results;
+   }
+
+   private static boolean isInvalidResult(HTextFlow textFlow, HLocale hLocale)
+   {
+      if (textFlow == null)
       {
-
-         @Override
-         public int compare(TransMemoryResultItem m1, TransMemoryResultItem m2)
+         return true;
+      }
+      else
+      {
+         HProjectIteration projectIteration = textFlow.getDocument().getProjectIteration();
+         if (projectIteration.getStatus() == EntityStatus.OBSOLETE || projectIteration.getProject().getStatus() == EntityStatus.OBSOLETE)
          {
-            int result;
-            result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
-            if (result != 0)
-            {
-               // sort higher similarity first
-               return -result;
-            }
-            result = compare(m1.getSourceContents(), m2.getSourceContents());
-            // sort longer string lists first (more plural forms)
-            return -result;
+            return true;
          }
+      }
+      HTextFlowTarget target = textFlow.getTargets().get(hLocale.getId());
+      // double check in case of caching issues
+      return target == null || target.getState() != ContentState.Approved;
+   }
 
-         private int compare(List<String> list1, List<String> list2)
-         {
-            for (int i = 0; i < list1.size() && i < list2.size(); i++)
-            {
-               String s1 = list1.get(i);
-               String s2 = list2.get(i);
-               int comp = s1.compareTo(s2);
-               if (comp != 0)
-               {
-                  return comp;
-               }
-            }
-            if (list1.size() < list2.size())
-            {
-               return -1;
-            }
-            else if (list1.size() > list2.size())
-            {
-               return 1;
-            }
-            return 0;
-         }
-
-      };
-
-      Collections.sort(results, comp);
-
-      log.info("Returning {0} TM matches for {1}", results.size(), action.getQuery());
-      return new GetTranslationMemoryResult(action, results);
+   private static double calculateSimilarityPercentage(TransMemoryQuery query, List<String> sourceContents)
+   {
+      double percent;
+      if (query.getSearchType() == SearchType.FUZZY_PLURAL)
+      {
+         percent = 100 * LevenshteinUtil.getSimilarity(query.getQueries(), sourceContents);
+      }
+      else
+      {
+         final String searchText = query.getQueries().get(0);
+         percent = 100 * LevenshteinUtil.getSimilarity(searchText, sourceContents);
+      }
+      return percent;
    }
 
    @Override
@@ -207,26 +182,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    {
    }
 
-   static class TMKey
+   private static class TMKey
    {
-
       private final List<String> textFlowContents;
       private final List<String> targetContents;
 
-      public TMKey(List<String> textFlowContents, List<String> targetContents)
+      private TMKey(List<String> textFlowContents, List<String> targetContents)
       {
          this.textFlowContents = textFlowContents;
          this.targetContents = targetContents;
-      }
-
-      public List<String> getTextFlowContents()
-      {
-         return textFlowContents;
-      }
-
-      public List<String> getTargetContents()
-      {
-         return targetContents;
       }
 
       @Override
@@ -243,12 +207,47 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       @Override
       public int hashCode()
       {
-         int result = 1;
-         result = 37 * result + (textFlowContents != null ? textFlowContents.hashCode() : 0);
-         result = 37 * result + (targetContents != null ? targetContents.hashCode() : 0);
-         return result;
+         return Objects.hashCode(textFlowContents, targetContents);
+      }
+   }
+
+   /**
+    * NB just because this Comparator returns 0 doesn't mean the matches are
+    * identical.
+    */
+   private static enum TransMemoryResultComparator implements Comparator<TransMemoryResultItem>
+   {
+      COMPARATOR;
+
+      @Override
+      public int compare(TransMemoryResultItem m1, TransMemoryResultItem m2)
+      {
+         int result;
+         result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
+         if (result != 0)
+         {
+            // sort higher similarity first
+            return -result;
+         }
+         result = compare(m1.getSourceContents(), m2.getSourceContents());
+         // sort longer string lists first (more plural forms)
+         return -result;
+      }
+
+      private int compare(List<String> list1, List<String> list2)
+      {
+         for (int i = 0; i < list1.size() && i < list2.size(); i++)
+         {
+            String s1 = list1.get(i);
+            String s2 = list2.get(i);
+            int comp = s1.compareTo(s2);
+            if (comp != 0)
+            {
+               return comp;
+            }
+         }
+         return list1.size() - list2.size();
       }
 
    }
-
 }

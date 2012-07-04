@@ -37,9 +37,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ClientPushWorkFlow
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(ClientPushWorkFlow.class);
    private static Properties properties;
 
    public ClientPushWorkFlow()
@@ -47,19 +49,19 @@ public class ClientPushWorkFlow
       properties = Constants.loadProperties();
    }
 
-   public int mvnPush(String sampleProject)
+   public int mvnPush(String sampleProject, String... extraPushOptions)
    {
       String baseDir = properties.getProperty(Constants.sampleProjects.value());
       Preconditions.checkState(!(Strings.isNullOrEmpty(sampleProject) || Strings.isNullOrEmpty(baseDir)), "base dir and sample project can't be empty");
 
       File projectDir = new File(baseDir, sampleProject);
-      LOGGER.info("about to push project at: {}", projectDir.getAbsolutePath());
+      log.info("about to push project at: {}", projectDir.getAbsolutePath());
 
       Process process = null;
       try
       {
-         List<String> command = zanataMavenPushCommand();
-         LOGGER.info("execute command: {}", command);
+         List<String> command = zanataMavenPushCommand(extraPushOptions);
+         log.info("execute command: {}", command);
 
          process = invokeMaven(projectDir, command);
          process.waitFor();
@@ -70,19 +72,24 @@ public class ClientPushWorkFlow
       }
       catch (Exception e)
       {
-         LOGGER.error("exception", e);
+         log.error("exception", e);
          return 1;
       }
    }
 
-   private static List<String> zanataMavenPushCommand()
+   private static List<String> zanataMavenPushCommand(String... extraPushOptions)
    {
       String userConfig = getUserConfigPath();
-      return ImmutableList.<String>builder()
-                  .add("mvn").add("--batch-mode").add("zanata:push")
-                  .add("-Dzanata.userConfig=" + userConfig).add("-Dzanata.username=admin")
-                  .add("-Dzanata.key=" + properties.getProperty(Constants.zanataApiKey.value()))
-                  .build();
+      // @formatter:off
+      ImmutableList.Builder<String> builder = ImmutableList.<String>builder()
+            .add("mvn").add("--batch-mode")
+            .add("zanata:push")
+            .add("-Dzanata.userConfig=" + userConfig)
+            .add("-Dzanata.username=admin")
+            .add("-Dzanata.key=" + properties.getProperty(Constants.zanataApiKey.value()))
+            .add(extraPushOptions);
+      // @formatter:on
+      return builder.build();
    }
 
    private static String getUserConfigPath()
@@ -97,9 +104,9 @@ public class ClientPushWorkFlow
       ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
       Map<String, String> env = processBuilder.environment();
       // mvn and java home
-      LOGGER.info("M2: {}", env.get("M2"));
-      LOGGER.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
-      LOGGER.debug("env: {}", env);
+      log.info("M2: {}", env.get("M2"));
+      log.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
+      log.debug("env: {}", env);
       processBuilder.directory(projectDir);
       return processBuilder.start();
    }
@@ -110,7 +117,7 @@ public class ClientPushWorkFlow
       List<String> lines = IOUtils.readLines(inputStream);
       for (String line : lines)
       {
-         LOGGER.info(line);
+         log.info(line);
       }
       IOUtils.closeQuietly(inputStream);
    }

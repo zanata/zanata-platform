@@ -60,7 +60,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 	private TransUnit cellValue;
 
 	private boolean isOpened = false;
-	private boolean isCancelButtonFocused = false;
 	private boolean isReadOnly;
 	private TargetContentsPresenter targetContentsPresenter;
 
@@ -318,15 +317,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 	protected boolean onCancel() {
 		return true;
 	}
-
-	public boolean isCancelButtonFocused() {
-		return isCancelButtonFocused;
-	}
-
-	public void setCancelButtonFocused(boolean isCancelButtonFocused) {
-		this.isCancelButtonFocused = isCancelButtonFocused;
-	}
-
+	
 	@Override
 	public TransUnit getTargetCell() {
 		return cellValue;

@@ -19,7 +19,7 @@
 	font-size: larger;
 }
 
-.filter-options {
+.float-right {
 	float: right;
 }
 
@@ -203,6 +203,17 @@ td.wrapped {
     word-wrap: break-word;
 }
 
+a.button {
+	font-size: 1em;
+	font-weight: bold;
+	background-color: #FFFFFF;
+	border: 1px solid #A2C4F5;
+	padding: 1px 8px;
+	border-radius: 5px;
+	color: #7092C3;
+	text-align: center;
+}
+
 a.action_link {
 	display: block;
 	font-size: 14px;
@@ -210,14 +221,13 @@ a.action_link {
 	background-color: #FFFFFF;
 	border: 1px solid #A2C4F5;
 	padding: 4px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 	color: #7092C3;
 	margin-top: 4px;
 	text-align: center;
 }
 
-a.action_link:hover {
+a.action_link:hover, a.button:hover {
 	background-color: #FFFFFF;
 	border:1px solid #990000;
 	color:#990000;
@@ -437,6 +447,11 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 .rich-tabpanel-content{
     background:white;
+}
+
+.noBackgroundTable
+{
+    background:none;
 }
 
 .noBorderTable .rich-table {
@@ -759,7 +774,35 @@ a.version_link:hover {
 .highlighted_datatable_row {
 	background-color: lightYellow;
 }
-/* -----------------------  End Inline project iteration CSS  -------------------------*/
+/* -----------------------  End project iteration CSS  -------------------------*/
+
+/* -----------------------  Project Iteration Copy Trans CSS  -----------------------------*/
+
+.copy_trans_options_table td {
+    padding: 5px 5px 5px 5px;
+}
+
+.copy_trans_options_table td.reject_action {
+    background-color: red;
+    text-align: center;
+}
+
+.copy_trans_options_table td.approved_action {
+    background-color: #099b09;
+    text-align: center;
+}
+
+.copy_trans_options_table td.downgrade_action {
+    background-color: #ffc000;
+    text-align: center;
+}
+
+.copy_trans_options_table td.ignore_action {
+    background-color: #ffffff;
+    text-align: center;
+}
+
+/* -----------------------  End Project Iteration Copy Trans CSS  -------------------------*/
 
 /* ------------------------ Profile Page CSS ------------------------------------------*/
 .inactive_tab {

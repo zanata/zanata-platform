@@ -33,14 +33,17 @@ import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.WebTranPage;
+import org.zanata.util.Constants;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class CreateSampleProjectTest
 {
-   private static final Logger log = LoggerFactory.getLogger(CreateSampleProjectTest.class);
    @Test
    public void canCreateProjectAndVersion()
    {
@@ -52,14 +55,6 @@ public class CreateSampleProjectTest
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
       List<String> projects = projectWorkFlow.goToHome().goToProjects().getProjectNamesOnCurrentPage();
       log.info("current projects: {}", projects);
-
-      if (projects.contains(projectName))
-      {
-         log.warn("{} has already been created, presumably you are running this test manually and more than once.", projectId);
-         //since we can't create same project multiple times,
-         //if we run this test more than once manually, we don't want it to fail
-         return;
-      }
 
       ProjectPage projectPage = projectWorkFlow.createNewProject(projectId, projectName);
 
@@ -115,7 +110,7 @@ public class CreateSampleProjectTest
       assertThat(languageLocales, Matchers.hasItems("en-US", "pl", "zh"));
    }
 
-   @Test(dependsOnMethods = { "canCreateProjectAndVersion", "canAddLanguage" }, invocationTimeOut = 50000)
+   @Test(dependsOnMethods = { "canCreateProjectAndVersion", "canAddLanguage" }, invocationTimeOut = Constants.FIFTY_SEC)
    public void canPush() throws IOException
    {
       ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();

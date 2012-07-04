@@ -30,9 +30,6 @@ public interface UiMessages extends Messages
 {
    @DefaultMessage("")
    String typeToEnter();
-   
-   @DefaultMessage("Phrase")
-   String phraseButtonLabel();
 
    @DefaultMessage("Clear")
    String clearButtonLabel();
@@ -58,9 +55,6 @@ public interface UiMessages extends Messages
    @DefaultMessage("Target Term")
    String targetTermLabel();
 
-   @DefaultMessage("Copy \"{0}\" to the editor")
-   String copyLinkTooltip(String targetMessage);
-
    @DefaultMessage("Translation Memory")
    String translationMemoryHeading();
 
@@ -79,4 +73,51 @@ public interface UiMessages extends Messages
    @DefaultMessage("Send")
    String sendLabel();
 
+   @DefaultMessage("Processing...")
+   String processing();
+
+   @DefaultMessage("TM merge for current page")
+   String mergeTMButtonLabel();
+
+   @DefaultMessage("Select TM match percentage to pre-fill translations.")
+   String mergeTMCaption();
+
+   @DefaultMessage("No text can be TM merged")
+   String noTranslationToMerge();
+
+   @DefaultMessage("TM merge failed")
+   String mergeTMFailed();
+
+   @DefaultMessage("TM merge success")
+   String mergeTMSuccess();
+
+   @DefaultMessage("Proceed to auto-fill")
+   String mergeTMConfirm();
+
+   @DefaultMessage("Cancel")
+   String mergeTMCancel();
+
+   @DefaultMessage("Match percentage threshold")
+   String matchThreshold();
+
+   @DefaultMessage("On Content mismatch:")
+   String differentContent();
+
+   @DefaultMessage("On Project Name mismatch:")
+   String differentProjectSlug();
+
+   @DefaultMessage("On Document Id mismatch (Document name and path):")
+   String differentDocument();
+
+   @DefaultMessage("On Context mismatch (Res Id, msgctx):")
+   String differentContext();
+
+   @DefaultMessage("Otherwise:")
+   String otherwise();
+
+   @DefaultMessage("Condition")
+   String condition();
+
+   @DefaultMessage("Action")
+   String action();
 }
