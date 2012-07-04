@@ -423,7 +423,7 @@ public class OptionsPanelPresenterTest
       boolean enterOptionCheckValue = true;
       Capture<ValueChangeHandler<Boolean>> enterCheckboxValueChangeHandler = capturedEnterChkValueChangeEventHandler;
       testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler);
-      assertThat(configHolder.isButtonEnter(), is(enterOptionCheckValue));
+      assertThat(configHolder.isEnterSavesApproved(), is(enterOptionCheckValue));
 
    }
 
@@ -432,7 +432,7 @@ public class OptionsPanelPresenterTest
       boolean enterOptionCheckValue = false;
       Capture<ValueChangeHandler<Boolean>> enterCheckboxValueChangeHandler = capturedEnterChkValueChangeEventHandler;
       testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler);
-      assertThat(configHolder.isButtonEnter(), is(enterOptionCheckValue));
+      assertThat(configHolder.isEnterSavesApproved(), is(enterOptionCheckValue));
    }
 
    public void escOptionChecked()
@@ -440,7 +440,7 @@ public class OptionsPanelPresenterTest
       boolean escOptionCheckValue = true;
       Capture<ValueChangeHandler<Boolean>> escCheckboxValueChangeHandler = capturedEscChkValueChangeEventHandler;
       testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler);
-      assertThat(configHolder.isButtonEsc(), is(escOptionCheckValue));
+      assertThat(configHolder.isEscClosesEditor(), is(escOptionCheckValue));
 
    }
 
@@ -449,7 +449,7 @@ public class OptionsPanelPresenterTest
       boolean escOptionCheckValue = false;
       Capture<ValueChangeHandler<Boolean>> escCheckboxValueChangeHandler = capturedEscChkValueChangeEventHandler;
       testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler);
-      assertThat(configHolder.isButtonEsc(), is(escOptionCheckValue));
+      assertThat(configHolder.isEscClosesEditor(), is(escOptionCheckValue));
    }
 
    /**

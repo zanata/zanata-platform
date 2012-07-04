@@ -26,30 +26,30 @@ import com.google.inject.Singleton;
 @Singleton
 public class UserConfigHolder
 {
-   private boolean buttonEnter = false;
-   private boolean buttonEsc = false;
+   private boolean enterSavesApproved = false;
+   private boolean escClosesEditor = false;
    private boolean buttonFuzzy = true;
    private boolean buttonUntranslated = true;
    private boolean displayButtons = true;
 
-   public boolean isButtonEnter()
+   public boolean isEnterSavesApproved()
    {
-      return buttonEnter;
+      return enterSavesApproved;
    }
 
-   void setButtonEnter(boolean buttonEnter)
+   void setEnterSavesApproved(boolean enterSavesApproved)
    {
-      this.buttonEnter = buttonEnter;
+      this.enterSavesApproved = enterSavesApproved;
    }
 
-   public boolean isButtonEsc()
+   public boolean isEscClosesEditor()
    {
-      return buttonEsc;
+      return escClosesEditor;
    }
 
-   void setButtonEsc(boolean buttonEsc)
+   void setEscClosesEditor(boolean escClosesEditor)
    {
-      this.buttonEsc = buttonEsc;
+      this.escClosesEditor = escClosesEditor;
    }
 
    public boolean isButtonFuzzy()
@@ -77,7 +77,6 @@ public class UserConfigHolder
       return displayButtons;
    }
 
-   //TODO TableEditorPresenter will call this one workspaceContext change event. Thus the method must be public.
    public void setDisplayButtons(boolean displayButtons)
    {
       this.displayButtons = displayButtons;

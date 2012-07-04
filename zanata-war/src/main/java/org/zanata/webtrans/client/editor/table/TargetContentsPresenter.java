@@ -290,7 +290,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       },
             KeyShortcut.KEY_DOWN_EVENT, false, false, false);
 
-      if (configHolder.isButtonEnter())
+      if (configHolder.isEnterSavesApproved())
       {
          enterSavesApprovedRegistered = true;
          enterSavesApprovedHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(enterSavesApprovedShortcut);
@@ -318,14 +318,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (configHolder.isButtonEsc() && !keyShortcutPresenter.getDisplay().isShowing())
+            if (configHolder.isEscClosesEditor() && !keyShortcutPresenter.getDisplay().isShowing())
             {
                onCancel();
             }
          }
       });
 
-      if (configHolder.isButtonEsc()) {
+      if (configHolder.isEscClosesEditor()) {
          escClosesEditorRegistered = true;
          escClosesEditorHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(escClosesEditorShortcut);
       }
@@ -673,7 +673,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }
 
-      boolean enterSavesApproved = configHolder.isButtonEnter();
+      boolean enterSavesApproved = configHolder.isEnterSavesApproved();
       if (enterSavesApproved != enterSavesApprovedRegistered)
       {
          if (enterSavesApproved)
@@ -701,7 +701,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          enterSavesApprovedRegistered = enterSavesApproved;
       }
 
-      boolean escClosesEditor = configHolder.isButtonEsc();
+      boolean escClosesEditor = configHolder.isEscClosesEditor();
       if (escClosesEditor != escClosesEditorRegistered)
       {
          if (escClosesEditor) {
