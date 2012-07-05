@@ -35,6 +35,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -79,7 +80,10 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    private HasNotificationLabel listener;
 
-   private static final int MESSAGE_TO_KEEP = 6;
+   private static final int MESSAGE_TO_KEEP = 30;
+   
+   @Inject
+   private Provider<UndoLink> undoLinkProvider;
 
    @Override
    protected void onBind()
@@ -121,6 +125,12 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
             listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
       }));
+      
+      for(int i = 0; i <50;i++)
+      {
+         UndoLink link = undoLinkProvider.get();
+         appendNotification(Severity.Info, "Message" + i, link);
+      }
    }
 
    public void setNotificationListener(HasNotificationLabel listener)

@@ -10,7 +10,7 @@
 			width:320px;
 			color:#FFFFFF;
 			border-radius:8px;
-			opacity:0.8;
+			opacity:0.9;
 		}
 		
 		.messagePanel 
@@ -19,6 +19,18 @@
 			padding:5px;
 			
 		}
+		
+		.messagePanel tr:hover
+		{
+			opacity:1;
+			background:#505050;
+		}
+		
+		.messagePanel tr
+		{
+			opacity:0.8;
+		}
+		
 		.messageRow 
 		{
 			border-bottom:1px dotted #FFFFFF;
@@ -33,9 +45,11 @@
 
         .inlineLink, .inlineLink:hover, .inlineLink:visited
         {
-            color: #ff0000;
             text-decoration: underline;
             cursor: pointer;
+            color:#ffa500;
+            font-size:0.8em;
+            font-weight:bold;
         }
 		
 		.image
@@ -46,13 +60,24 @@
 		.timeLabel
 		{
 			font-size:0.7em;
+			color:#ffa500;
+			padding-right:2px;
+			font-weight:bold;
+		}
+		
+		.scrollPanel
+		{
+			max-height:320px;
+
 		}
 		
 	</ui:style>
 
 	<g:VerticalPanel styleName="{style.mainPanel}" spacing="2">
 		<g:cell>
-			<g:VerticalPanel ui:field="messagePanel" styleName="{style.messagePanel}" />
+			<g:ScrollPanel styleName="{style.scrollPanel}">
+				<g:VerticalPanel ui:field="messagePanel" styleName="{style.messagePanel}" />
+			</g:ScrollPanel>
 		</g:cell>
 		<g:cell horizontalAlignment="ALIGN_RIGHT">
 			<g:HorizontalPanel>

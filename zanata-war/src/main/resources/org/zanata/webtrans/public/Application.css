@@ -848,6 +848,7 @@ td.ApprovedStateDecoration div div div
 .notificationPanel 
 {
 	border:none;
+	max-height:350px;
 }
 
 .boldFont

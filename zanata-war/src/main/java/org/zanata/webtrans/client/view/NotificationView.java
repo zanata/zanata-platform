@@ -149,7 +149,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       severityImg = createSeverityImage(severity);
       panel.add(severityImg);
 
-      Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.TIME_SHORT).format(new Date()) + "]");
+      Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.HOUR24_MINUTE_SECOND).format(new Date()) + "]");
       timeLabel.setStyleName(style.timeLabel());
       panel.add(timeLabel);
 
@@ -160,15 +160,16 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       {
          inlineLink.setLinkStyle(style.inlineLink());
          panel.add(inlineLink);
+         panel.setCellWidth(inlineLink, "16px");
       }
-      panel.setCellWidth(severityImg, "20px");
-      panel.setCellWidth(timeLabel, "50px");
+      panel.setCellWidth(severityImg, "16px");
+      panel.setCellWidth(timeLabel, "42px");
 
       panel.setCellHorizontalAlignment(msgLabel, HasHorizontalAlignment.ALIGN_LEFT);
 
       messagePanel.insert(panel, 0);
       messagePanel.getWidget(0).setStyleName(style.messageRow());
-
+      
       while (messagePanel.getWidgetCount() > messagesToKeep)
       {
          messagePanel.remove(messagePanel.getWidgetCount() - 1);
