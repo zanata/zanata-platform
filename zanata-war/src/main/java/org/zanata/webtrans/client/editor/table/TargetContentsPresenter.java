@@ -242,7 +242,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       // Register shortcut ALT+(PageUp) to move previous state entry - if modal
       // navigation is enabled
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_PAGEUP, ShortcutContext.Edit, messages.moveToPreviousStateRow(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_PAGEUP,
+            ShortcutContext.Edit, messages.moveToPreviousStateRow(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -255,14 +256,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }));
 
       // Register shortcut CTRL+S to save as fuzzy
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_KEY, KeyShortcut.KEY_S, ShortcutContext.Edit, messages.saveAsFuzzy(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_KEY, KeyShortcut.KEY_S,
+            ShortcutContext.Edit, messages.saveAsFuzzy(), KeyEvent.KEY_DOWN, true, true, new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             saveAsFuzzy();
          }
-      }, KeyEvent.KEY_DOWN, true, true));
+      }));
 
       KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler = new KeyShortcutEventHandler()
       {
@@ -274,22 +276,22 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       };
 
       ctrlEnterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.CTRL_KEY, KeyCodes.KEY_ENTER,
-            ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
-            KeyEvent.KEY_DOWN, true, true);
+            ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
+            saveAsApprovedKeyShortcutHandler);
 
       enterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
-            ShortcutContext.Edit, messages.saveAsApproved(), saveAsApprovedKeyShortcutHandler,
-            KeyEvent.KEY_DOWN, true, true);
+            ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
+            saveAsApprovedKeyShortcutHandler);
 
       enterTriggersAutoSizeShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
-            ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, new KeyShortcutEventHandler()
+            ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, KeyEvent.KEY_DOWN, false, false, new KeyShortcutEventHandler()
+    {
+      @Override
+      public void onKeyShortcut(KeyShortcutEvent event)
       {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            getCurrentEditor().autoSizePlusOne();
-         }
-      }, KeyEvent.KEY_DOWN, false, false);
+      getCurrentEditor().autoSizePlusOne();
+      }
+    });
 
       if (configHolder.isEnterSavesApproved())
       {

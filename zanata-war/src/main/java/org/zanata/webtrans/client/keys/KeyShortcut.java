@@ -112,12 +112,14 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     * @param description shown to the user in the key shortcut summary pane.
     *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being
     *        displayed in the summary pane.
-    * @param keyAction determines which type of key event this shortcut will 
-    *        respond to.
-    * @param stopPropagation
-    * @param preventDefault
+    * @param keyEvent determines which type of key event will trigger this shortcut.
+    * @param stopPropagation {@see NativeEvent#stopPropagation()}
+    * @param preventDefault {@see NativeEvent#preventDefault()}
+    * @param handler activated for a registered {@link KeyShortcut} when context is active
+    *        and a user inputs the correct key combination
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault)
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description,
+         KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
    {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
@@ -136,7 +138,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     */
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
    {
-      this(modifiers, keyCode, context, description, handler, KeyEvent.KEY_DOWN, false, false);
+      this(modifiers, keyCode, context, description, KeyEvent.KEY_DOWN, false, false, handler);
    }
 
    public int getModifiers()

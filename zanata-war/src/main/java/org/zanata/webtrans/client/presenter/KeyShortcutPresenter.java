@@ -114,7 +114,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
-      register(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application, messages.closeShortcutView(), new KeyShortcutEventHandler()
+      register(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application,
+            messages.closeShortcutView(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -124,11 +125,12 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
                display.hide(true);
             }
          }
-      }, KeyEvent.KEY_UP, true, true));
+      }));
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
-      register(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y', ShortcutContext.Application, messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
+      register(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y', ShortcutContext.Application,
+            messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
