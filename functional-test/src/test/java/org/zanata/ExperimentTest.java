@@ -37,7 +37,7 @@ public class ExperimentTest
       assertThat(matches, Matchers.equalTo(true));
    }
    
-   @Test
+   @Test(enabled = false)
    public void canDoCampbell() {
       //#. Tag: para
       //#, no-c-format

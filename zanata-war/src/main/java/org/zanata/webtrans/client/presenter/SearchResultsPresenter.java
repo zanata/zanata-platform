@@ -219,6 +219,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private boolean showRowActionButtons = false;
 
    @Inject
+
    public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter, final Provider<UndoLink> undoLinkProvider, Location windowLocation)
    {
       super(display, eventBus);
@@ -274,17 +275,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            if (event.getValue())
-            {
-               selectAllTextFlows();
-            }
-            else
-            {
-               for (MultiSelectionModel<TransUnitReplaceInfo> selectionModel : documentSelectionModels.values())
-               {
-                  selectionModel.clear();
-               }
-            }
+            selectAllTextFlows(event.getValue());
          }
       }));
 
@@ -394,7 +385,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            selectAllTextFlows();
+            display.getSelectAllChk().setValue(!display.getSelectAllChk().getValue(), true);
          }
       }));
 
@@ -1243,7 +1234,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
    }
 
-   private void selectAllTextFlows()
+   private void selectAllTextFlows(boolean selected)
    {
       for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> en : documentDataProviders.entrySet())
       {
@@ -1252,7 +1243,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             for (TransUnitReplaceInfo tu : en.getValue().getList())
             {
-               selectionModel.setSelected(tu, true);
+               selectionModel.setSelected(tu, selected);
             }
          }
       }

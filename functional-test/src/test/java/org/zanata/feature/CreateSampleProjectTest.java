@@ -41,6 +41,7 @@ import org.zanata.workflow.ProjectWorkFlow;
 
 import lombok.extern.slf4j.Slf4j;
 
+@Test(groups = "functional")
 @Slf4j
 public class CreateSampleProjectTest
 {

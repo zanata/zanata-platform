@@ -243,12 +243,18 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo successful")
    String undoSuccess();
 
+   // @formatter:off
    @Description("Message for unsuccessful undo")
-   @DefaultMessage("{0} items can not be undone")
+   @DefaultMessage("{0} items can not be undone. {1} items are reverted")
    @AlternateMessage({
-         "one", "Item can not be undone",
-         "=0", "Undo failed" })
-   String undoFailure(@PluralCount int unsuccessfulCount);
+         "one|=0", "Item can not be undone",
+         "other|=0", "Items can not be undone"
+   })
+   String undoUnsuccessful(@PluralCount int unsuccessfulCount, @PluralCount int successfulCount);
+   // @formatter:on
+
+   @DefaultMessage("Undo failed")
+   String undoFailure();
 
    @DefaultMessage("Undo not possible in read-only workspace")
    String cannotUndoInReadOnlyMode();
