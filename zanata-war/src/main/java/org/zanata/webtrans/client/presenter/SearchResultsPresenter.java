@@ -850,7 +850,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                @Override
                public void postSuccess(UpdateTransUnitResult result)
                {
-                  executePostUndo(result);
+                  executePostSucess(result);
                }
             });
 
@@ -886,7 +886,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onSuccess(UpdateTransUnitResult result)
          {
             eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
-            executePostUndo(result);
+            executePostSucess(result);
          }
       });
    }
@@ -906,7 +906,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
    }
    
-   private void executePostUndo(UpdateTransUnitResult result)
+   private void executePostSucess(UpdateTransUnitResult result)
    {
       for (TransUnitUpdateInfo info : result.getUpdateInfoList())
       {
@@ -1249,29 +1249,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
    }
 
-   // private List<ReplacementEventInfo> ensureReplacementEvents()
-   // {
-   // if (replacementEvents == null)
-   // {
-   // replacementEvents = new ArrayList<ReplacementEventInfo>();
-   // }
-   // return replacementEvents;
-   // }
-   //
-   // private void refreshReplacementEventInfoList()
-   // {
-   // display.clearReplacementMessages();
-   // List<ReplacementEventInfo> events = ensureReplacementEvents();
-   // while (events.size() > MAX_VISIBLE_REPLACEMENT_MESSAGES)
-   // {
-   // events.remove(0);
-   // }
-   // for (ReplacementEventInfo info : events)
-   // {
-   // display.addReplacementMessage(info.getMessage(), info.getHandler());
-   // }
-   // }
-
    private void updateSearch()
    {
       boolean changed = false;
@@ -1309,32 +1286,5 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          history.newItem(token);
       }
-   }
-
-   private class ReplacementEventInfo
-   {
-      private String message;
-      private ClickHandler handler;
-
-      public ReplacementEventInfo(String message)
-      {
-         this.message = message;
-      }
-
-      public String getMessage()
-      {
-         return message;
-      }
-
-      public ClickHandler getHandler()
-      {
-         return handler;
-      }
-
-      public void setHandler(ClickHandler handler)
-      {
-         this.handler = handler;
-      }
-
    }
 }
