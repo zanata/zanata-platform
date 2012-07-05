@@ -43,6 +43,7 @@ import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
@@ -71,6 +72,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 {
 
    private final TransUnitEditDisplay display;
+   private final Identity identity;
    private final EventBus eventBus;
    private final NavigationController navigationController;
    private final TransUnitListDisplay transUnitListDisplay;
@@ -92,10 +94,12 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  TargetContentsPresenter targetContentsPresenter,
                                  TransUnitSaveService saveService,
                                  TranslatorInteractionService translatorService,
-                                 WorkspaceContext workspaceContext)
+                                 WorkspaceContext workspaceContext,
+                                 Identity identity)
    {
       super(display, eventBus);
       this.display = display;
+      this.identity = identity;
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
@@ -397,11 +401,17 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
+      TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
+      if (selectedTransUnit == null)
+      {
+         return;
+      }
       TransUnit updatedTransUnit = event.getUpdateInfo().getTransUnit();
-      if (Objects.equal(dataModel.getSelectedOrNull(), updatedTransUnit))
+      if (Objects.equal(selectedTransUnit.getId(), updatedTransUnit.getId()) && !Objects.equal(event.getEditorClientId(), identity.getEditorClientId()))
       {
          //TODO current edit has happened. What's the best way to show it to user.
          Log.info("detect concurrent edit. Closing editor");
+         // TODO localise
          eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
          targetContentsPresenter.setToViewMode();
          targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());

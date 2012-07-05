@@ -75,7 +75,6 @@ import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -84,7 +83,9 @@ import com.google.inject.Singleton;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
 
 @Singleton
 // @formatter:off
@@ -98,7 +99,6 @@ public class TargetContentsPresenter implements
       CopyDataToEditorHandler
 // @formatter:on
 {
-   public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
@@ -110,11 +110,11 @@ public class TargetContentsPresenter implements
 
 
    private final ValidationMessagePanelDisplay validationMessagePanel;
-   private TargetContentsDisplay display;
-   private int currentEditorIndex = NO_OPEN_EDITOR;
+   private final TargetContentsDisplay display;
+   private int currentEditorIndex = 0;
    private ArrayList<ToggleEditor> currentEditors;
 
-   private boolean isModalNavEnabled;
+   private boolean isModalNavEnabled = true;
 
    private final Identity identity;
    private TransUnitId currentTransUnitId;
@@ -136,7 +136,7 @@ public class TargetContentsPresenter implements
    @Inject
    //TODO too many constructor dependencies
    // @formatter:off
-   public TargetContentsPresenter(TargetContentsDisplay display, Identity identity, final EventBus eventBus,
+   public TargetContentsPresenter(final TargetContentsDisplay display, Identity identity, final EventBus eventBus,
                                   TableEditorMessages messages,
                                   SourceContentsPresenter sourceContentsPresenter,
                                   UserSessionService sessionService,
@@ -230,7 +230,7 @@ public class TargetContentsPresenter implements
          {
             if (isModalNavEnabled)
             {
-               moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
+               eventBus.fireEvent(new NavTransUnitEvent(NextState));
             }
          }
       });
@@ -245,7 +245,7 @@ public class TargetContentsPresenter implements
          {
             if (isModalNavEnabled)
             {
-               moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
+               eventBus.fireEvent(new NavTransUnitEvent(PrevState));
             }
          }
       });
@@ -469,11 +469,6 @@ public class TargetContentsPresenter implements
    @Override
    public void saveAsApprovedAndMoveNext()
    {
-      moveNext(true);
-   }
-
-   protected void moveNext(boolean forceSave)
-   {
       if (currentEditorIndex + 1 < currentEditors.size())
       {
          display.focusEditor(currentEditorIndex + 1);
@@ -482,20 +477,12 @@ public class TargetContentsPresenter implements
       else
       {
          currentEditorIndex = 0;
-         if (forceSave)
-         {
-            eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(NextEntry));
-         }
+         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(NextEntry));
       }
    }
 
    @Override
    public void saveAsApprovedAndMovePrevious()
-   {
-      movePrevious(true);
-   }
-
-   protected void movePrevious(boolean forceSave)
    {
       if (currentEditorIndex - 1 >= 0)
       {
@@ -505,10 +492,7 @@ public class TargetContentsPresenter implements
       else
       {
          currentEditorIndex = LAST_INDEX;
-         if (forceSave)
-         {
-            eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(PrevEntry));
-         }
+         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(PrevEntry));
       }
    }
 
@@ -685,11 +669,6 @@ public class TargetContentsPresenter implements
          }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-   }
-
-   public void moveToNextState(final NavTransUnitEvent.NavigationType nav)
-   {
-      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(nav));
    }
 
    @Override
