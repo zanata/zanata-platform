@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.resources;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
@@ -43,6 +44,14 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Check that printf style (%x) variables are consistent")
    String printfVariablesValidatorDescription();
 
+   @DefaultMessage("Variable {0} position is out of range")
+   String varPositionOutOfRange(String var);
+
+   @DefaultMessage("Numbered arguments cannot mix with unumbered arguments")
+   String mixVarFormats();
+
+   @DefaultMessage("Variables have same position: {0,collection,string}")
+   String varPositionDuplicated(Collection<String> vars);
 
    // Java variables validator
 
@@ -94,7 +103,7 @@ public interface ValidationMessages extends Messages
    @AlternateMessage({ "one", "Tag in unexpected position: {0,list,string}" })
    String tagsWrongOrder(@PluralCount List<String> tags);
 
-   
+
    //XML Entity validator
 
    @DefaultMessage("XML entity")
