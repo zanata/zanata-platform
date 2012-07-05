@@ -555,7 +555,7 @@ public class SearchResultsPresenterTest
       expect(mockWorkspaceContext.isReadOnly()).andReturn(workspaceIsReadOnly).anyTimes();
       mockDisplay.setReplaceAllButtonVisible(!workspaceIsReadOnly);
       mockDisplay.setReplaceAllButtonEnabled(false);
-      expect(mockKeyShortcutPresenter.registerKeyShortcut(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(TOTAL_KEY_SHORTCUTS);
+      expect(mockKeyShortcutPresenter.register(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(TOTAL_KEY_SHORTCUTS);
    }
 
    private void expectUiMessages()

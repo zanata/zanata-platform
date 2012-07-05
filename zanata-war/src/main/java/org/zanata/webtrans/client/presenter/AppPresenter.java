@@ -301,7 +301,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+      keyShortcutPresenter.register(new KeyShortcut(
             KeyShortcut.ALT_KEY, 'L',
             ShortcutContext.Application,
             messages.showDocumentListKeyShortcut(),
@@ -316,7 +316,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+      keyShortcutPresenter.register(new KeyShortcut(
             KeyShortcut.ALT_KEY, 'O',
             ShortcutContext.Application,
             messages.showEditorKeyShortcut(),
@@ -338,7 +338,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+      keyShortcutPresenter.register(new KeyShortcut(
             KeyShortcut.ALT_KEY, 'P',
             ShortcutContext.Application,
             messages.showProjectWideSearch(),

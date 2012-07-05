@@ -114,7 +114,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
-      registerKeyShortcut(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application, messages.closeShortcutView(), new KeyShortcutEventHandler()
+      register(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application, messages.closeShortcutView(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -128,7 +128,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
-      registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y', ShortcutContext.Application, messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
+      register(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y', ShortcutContext.Application, messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -177,12 +177,13 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    }
 
    /**
+    * Register a {@link KeyShortcut} to respond to a specific key combination for a context.
     * 
     * @param shortcut to register
     * 
     * @return a {@link HandlerRegistration} that can be used to un-register the shortcut
     */
-   public HandlerRegistration registerKeyShortcut(KeyShortcut shortcut)
+   public HandlerRegistration register(KeyShortcut shortcut)
    {
       Log.debug("registering key shortcut. key: " + shortcut.getKeyCode() + " modifier: " + shortcut.getModifiers() + " keyhash: " + shortcut.keysHash());
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.keysHash());
