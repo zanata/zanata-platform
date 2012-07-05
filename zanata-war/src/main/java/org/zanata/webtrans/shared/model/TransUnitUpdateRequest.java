@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.zanata.common.ContentState;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 /**
  * Represents a request to update the translation for a {@link TransUnit},
@@ -43,6 +44,7 @@ public class TransUnitUpdateRequest implements Serializable
    private List<String> newContents;
    private ContentState newContentState;
    private int baseTranslationVersion;
+   private String targetComment;
 
    // required for GWT rpc serialization
    @SuppressWarnings("unused")
@@ -56,6 +58,12 @@ public class TransUnitUpdateRequest implements Serializable
       this.newContents = newContents;
       this.newContentState = newContentState;
       this.baseTranslationVersion = baseTranslationVersion;
+   }
+
+   public TransUnitUpdateRequest addTargetComment(String comment)
+   {
+      targetComment = comment;
+      return this;
    }
 
    public TransUnitId getTransUnitId()
@@ -78,6 +86,16 @@ public class TransUnitUpdateRequest implements Serializable
       return baseTranslationVersion;
    }
 
+   public boolean hasTargetComment()
+   {
+      return !Strings.isNullOrEmpty(targetComment);
+   }
+
+   public String getTargetComment()
+   {
+      return targetComment;
+   }
+
    @Override
    public String toString()
    {
@@ -86,6 +104,7 @@ public class TransUnitUpdateRequest implements Serializable
             add("newContents", newContents).
             add("newContentState", newContentState).
             add("baseTranslationVersion", baseTranslationVersion).
+            add("targetComment", targetComment).
             toString();
    }
 }

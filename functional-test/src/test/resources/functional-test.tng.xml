@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Selenium WebDriver functional test" verbose="1">
+
+    <test name="functional test">
+        <groups>
+            <run>
+                <include name=".*"/>
+                <exclude name="manual-run"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="org.zanata.feature.*"/>
+        </packages>
+    </test>
+
+</suite>

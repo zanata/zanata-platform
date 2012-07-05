@@ -42,6 +42,7 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
@@ -156,6 +157,7 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       {
          TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlowToBeFilled.getId());
          TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(), tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
+         request.addTargetComment("auto translated by TM merge");
          log.debug("auto translate from translation memory {}", request);
          return request;
       }
