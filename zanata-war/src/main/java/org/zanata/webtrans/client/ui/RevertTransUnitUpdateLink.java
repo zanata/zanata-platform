@@ -26,7 +26,6 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -59,18 +58,18 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    private HandlerRegistration handlerRegistration;
    private String linkStyleName;
    private boolean canUndo = false;
-   
+
    private HasUndoHandler undoHandler = new HasUndoHandler()
    {
       @Override
       public void preUndo(List<TransUnitUpdateInfo> updateInfoList)
       {
       }
-      
+
       @Override
       public void executeUndo(List<TransUnitUpdateInfo> updateInfoList)
       {
-         undoExecution(this, updateInfoList);
+         executeDefaultUndo(this, updateInfoList);
       }
 
       @Override
@@ -101,16 +100,9 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
     * </ul>
     * 
     * @param updateTransUnitResult result from update translation rpc call.
+    * @param undoHandler UndoHandler for execution when link is clicked.
     * @see RevertTransUnitUpdateClickHandler
     */
-   @Override
-   public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult)
-   {
-      ClickHandler clickHandler = new RevertTransUnitUpdateClickHandler(undoHandler, updateTransUnitResult.getUpdateInfoList());
-      handlerRegistration = addClickHandler(clickHandler);
-      canUndo = true;
-   }
-
    @Override
    public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult, HasUndoHandler undoHandler)
    {
@@ -119,6 +111,15 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
       handlerRegistration = addClickHandler(clickHandler);
       canUndo = true;
    }
+   
+   
+   @Override
+   public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult)
+   {
+      prepareUndoFor(updateTransUnitResult, undoHandler);
+   }
+
+   
 
    @Override
    public void setLinkStyle(String styleName)
@@ -175,56 +176,60 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
          return !input.isSuccess();
       }
    }
-   
+
    @Override
    public HasUndoHandler getUndoHandler()
    {
       return undoHandler;
    }
-   
+
+   /**
+    * Default undo execution when link is clicked. 
+    */
    @Override
-   public void undoExecution(final HasUndoHandler undoHandler, List<TransUnitUpdateInfo> updateInfoList)
+   public void executeDefaultUndo(final HasUndoHandler undoHandler, List<TransUnitUpdateInfo> updateInfoList)
    {
       RevertTransUnitUpdates revertAction = new RevertTransUnitUpdates(updateInfoList);
 
       if (!canUndo)
+      {
+         return;
+      }
+      setText(messages.undoInProgress());
+      disableLink();
+
+      dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
          {
-            return;
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.undoFailure()));
+            setText(messages.undo());
+            enableLink();
          }
-         setText(messages.undoInProgress());
-         disableLink();
 
-         dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
+         @Override
+         public void onSuccess(UpdateTransUnitResult result)
          {
-            @Override
-            public void onFailure(Throwable caught)
+            if (result.isAllSuccess())
             {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.undoFailure()));
-               setText(messages.undo());
-               enableLink();
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoSuccess()));
+               setText(messages.undone());
             }
-
-            @Override
-            public void onSuccess(UpdateTransUnitResult result)
+            else
             {
-               if (result.isAllSuccess())
-               {
-                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoSuccess()));
-                  setText(messages.undone());
-               }
-               else
-               {
-                  //most likely the undo link became stale i.e. entity state has changed on the server
-                  Collection<TransUnitUpdateInfo> unsuccessful = Collections2.filter(result.getUpdateInfoList(), UnsuccessfulUpdatePredicate.INSTANCE);
-                  int unsuccessfulCount = unsuccessful.size();
-                  int successfulCount = result.getUpdateInfoList().size() - unsuccessfulCount;
-                  Log.info("undo not all successful. #" + unsuccessfulCount + " unsucess and #" + successfulCount + " success");
-                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoUnsuccessful(unsuccessfulCount, successfulCount)));
-                  setText("");
-               }
-               //we ensure the undo can only be click once.
-               handlerRegistration.removeHandler();
+               // most likely the undo link became stale i.e. entity state has
+               // changed on the server
+               Collection<TransUnitUpdateInfo> unsuccessful = Collections2.filter(result.getUpdateInfoList(), UnsuccessfulUpdatePredicate.INSTANCE);
+               int unsuccessfulCount = unsuccessful.size();
+               int successfulCount = result.getUpdateInfoList().size() - unsuccessfulCount;
+               Log.info("undo not all successful. #" + unsuccessfulCount + " unsucess and #" + successfulCount + " success");
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoUnsuccessful(unsuccessfulCount, successfulCount)));
+               setText("");
             }
-         });
+            // we ensure the undo can only be click once.
+            handlerRegistration.removeHandler();
+         }
+      });
    }
 }

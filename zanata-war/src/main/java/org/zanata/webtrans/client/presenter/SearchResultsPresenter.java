@@ -843,7 +843,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   }
                   else
                   {
-                     undoLink.undoExecution(this, updateInfoList);
+                     undoLink.executeDefaultUndo(this, updateInfoList);
                   }
                }
 
