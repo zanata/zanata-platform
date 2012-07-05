@@ -70,7 +70,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @UiField
-   VerticalPanel searchResultsPanel, replaceLogPanel;
+   VerticalPanel searchResultsPanel;
 
    @UiField
    TextBox filterTextBox, replacementTextBox;
@@ -240,25 +240,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public String getSelectedSearchField()
    {
       return searchFieldsSelect.getValue(searchFieldsSelect.getSelectedIndex());
-   }
-
-   @Override
-   public void addReplacementMessage(String message, ClickHandler undoButtonHandler)
-   {
-      FlowPanel logMessage = new FlowPanel();
-      logMessage.add(new InlineLabel(message));
-      InlineLabel undoLabel = new InlineLabel(messages.undo());
-      undoLabel.addClickHandler(undoButtonHandler);
-      undoLabel.addStyleName("linkLabel");
-      undoLabel.addStyleName("linkLabelLightColor");
-      logMessage.add(undoLabel);
-      replaceLogPanel.add(logMessage);
-   }
-
-   @Override
-   public void clearReplacementMessages()
-   {
-      replaceLogPanel.clear();
    }
 
    @Override

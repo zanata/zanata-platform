@@ -21,7 +21,12 @@
 
 package org.zanata.webtrans.client.ui;
 
+import java.util.List;
+
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.inject.ImplementedBy;
 
 /**
@@ -40,4 +45,11 @@ public interface UndoLink extends InlineLink
     * @see org.zanata.webtrans.server.rpc.TransMemoryMergeHandler
     */
    void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult);
+
+   void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult, HasUndoHandler undoHandler);
+
+   HasUndoHandler getUndoHandler();
+
+   void undoExecution(HasUndoHandler undoHandler, List<TransUnitUpdateInfo> updateInfoList);
+
 }
