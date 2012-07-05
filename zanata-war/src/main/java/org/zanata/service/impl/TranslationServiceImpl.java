@@ -55,6 +55,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
@@ -154,6 +155,10 @@ public class TranslationServiceImpl implements TranslationService
       {
          HTextFlow hTextFlow = entityManager.find(HTextFlow.class, request.getTransUnitId().getValue());
          HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+         if (request.hasTargetComment())
+         {
+            hTextFlowTarget.setComment(new HSimpleComment(request.getTargetComment()));
+         }
 
          TranslationResultImpl result = new TranslationResultImpl();
          result.baseVersion = hTextFlowTarget.getVersionNum();

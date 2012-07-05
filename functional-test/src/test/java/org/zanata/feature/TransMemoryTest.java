@@ -35,7 +35,7 @@ import static org.hamcrest.MatcherAssert.*;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "manual-run")
+@Test(groups = "manual-run", description = "This test class only sets up test data on server. It's not verifying any TM features.")
 public class TransMemoryTest
 {
 
@@ -53,12 +53,6 @@ public class TransMemoryTest
       int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.merge=import", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Both");
 
       assertThat(exitCode, Matchers.equalTo(0));
-      System.out.println("++++++++++++++++++++++++++++");
-      System.out.println("++++++++++++++++++++++++++++");
-      System.out.println("++++++++++++++++++++++++++++");
-      System.out.println("++++++++++++++++++++++++++++");
-      System.out.println("++++++++++++++++++++++++++++");
-      System.out.println("++++++++++++++++++++++++++++");
    }
 
    @Test(timeOut = Constants.FIFTY_SEC)

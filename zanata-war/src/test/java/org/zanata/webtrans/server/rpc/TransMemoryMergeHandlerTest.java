@@ -170,7 +170,9 @@ public class TransMemoryMergeHandlerTest
       verify(updateTransUnitHandler).doTranslation(same(hLocale.getLocaleId()), same(workspace), updateRequestCaptor.capture(), same(action.getEditorClientId()), eq(TransUnitUpdated.UpdateType.TMMerge));
       List<TransUnitUpdateRequest> updateRequest = updateRequestCaptor.getValue();
       assertThat(updateRequest, Matchers.hasSize(1));
-      assertThat(updateRequest.get(0).getNewContents(), Matchers.equalTo(mostSimilarTM.getTargetContents()));
+      TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
+      assertThat(transUnitUpdateRequest.getNewContents(), Matchers.equalTo(mostSimilarTM.getTargetContents()));
+      assertThat(transUnitUpdateRequest.getTargetComment(), Matchers.equalTo("auto translated by TM merge"));
    }
 
    @Test
