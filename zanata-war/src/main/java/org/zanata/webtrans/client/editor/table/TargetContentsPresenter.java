@@ -51,6 +51,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -302,15 +303,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.registerKeyShortcut(enterTriggersAutoSizeShortcut);
       }
 
-      // Register user typing keys to (anything not CTRL or ALT or ESC or ENTER) resize textarea
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.ESC_ENTER_KEYS, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, new KeyShortcutEventHandler()
+      // Auto-size for any non-shortcut key presses
+      keyShortcutPresenter.register(new SurplusKeyListener(KeyEvent.KEY_DOWN, ShortcutContext.Edit, new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             getCurrentEditor().autoSize();
          }
-      }, KeyEvent.KEY_DOWN, false, false, true));
+      }));
 
       escClosesEditorShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE,
             ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()

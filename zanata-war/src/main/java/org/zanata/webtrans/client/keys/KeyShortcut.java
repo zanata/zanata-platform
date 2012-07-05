@@ -73,6 +73,8 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public static final int KEY_4 = 52;
    public static final int KEY_4_NUM = 100;
 
+   public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
+
    private final int modifiers;
    private final int keyCode;
    private final ShortcutContext context;
@@ -80,57 +82,9 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    private final KeyShortcutEventHandler handler;
    private final KeyEvent keyEvent;
 
-   //Display in shortcut summary view
-   public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
-
    private final boolean stopPropagation;
    private final boolean preventDefault;
-   
-   //Match anything else that is not the registered shortcut
-   private final boolean isNot;
 
-   /**
-    * Construct a KeyShortcut.
-    * @param modifiers keys such as Shift and Alt that must be depressed for the
-    *           shortcut to fire.
-    *           <p>
-    *           Use {@link #ALT_KEY}, {@link #SHIFT_KEY},
-    *           {@link #SHIFT_ALT_KEYS}, {@link #META_KEY} and {@link #CTRL_KEY}
-    *           to generate this. ( e.g. {@code CTRL_KEY | ALT_KEY} )
-    *           </p>
-    * @param keyCode the integer code for the key.
-    *           <p>
-    *           This may be an uppercase character, but results may vary so test
-    *           thoroughly in the targeted browsers.
-    *           </p>
-    *           <p>
-    *           Note that for keypress events, the key code depends on Shift and
-    *           CapsLock and will give the lowercase or uppercase ASCII code as
-    *           expected. keydown and keyup events appear always to give the
-    *           uppercase key code (keydown is currently used for all shortcuts.
-    *           </p>
-    * @param context see
-    *           {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
-    * @param description shown to the user in the key shortcut summary pane.
-    *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being displayed in the summary.
-    * @param stopPropagation
-    * @param preventDefault
-    * @param isNot
-    * @param keyAction defined if shortcut action to be triggered by KeyUp, or
-    *           KeyDown. Default KeyDown.
-    */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, boolean isNot)
-   {
-      this.modifiers = modifiers;
-      this.keyCode = keyCode;
-      this.context = context;
-      this.description = description;
-      this.handler = handler;
-      this.keyEvent = keyEvent;
-      this.stopPropagation = stopPropagation;
-      this.preventDefault = preventDefault;
-      this.isNot = isNot;
-   }
 
    /**
     * Construct a KeyShortcut.
@@ -165,7 +119,14 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     */
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault)
    {
-      this(modifiers, keyCode, context, description, handler, keyEvent, stopPropagation, preventDefault, false);
+      this.modifiers = modifiers;
+      this.keyCode = keyCode;
+      this.context = context;
+      this.description = description;
+      this.handler = handler;
+      this.keyEvent = keyEvent;
+      this.stopPropagation = stopPropagation;
+      this.preventDefault = preventDefault;
    }
 
    /**
@@ -221,11 +182,6 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public boolean isPreventDefault()
    {
       return preventDefault;
-   }
-
-   public boolean isNot()
-   {
-      return isNot;
    }
 
    /**
