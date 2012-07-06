@@ -101,9 +101,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       DESCENDING, ASCENDING
    }
    
-   @Inject
-   private Provider<UndoLink> undoLinkProvider;
-   
    @Override
    protected void onBind()
    {
@@ -145,12 +142,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
             listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
       }));
-      
-      for(int i = 0; i <100;i++)
-      {
-         UndoLink link = undoLinkProvider.get();
-         appendNotification(Severity.Info, "Message long long long long long long long long long" + i, link);
-      }
    }
 
    public void setNotificationListener(HasNotificationLabel listener)
