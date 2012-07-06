@@ -26,6 +26,12 @@
 			background:#505050;
 		}
 		
+		.messagePanel tr:first-child
+		{
+			opacity:1;
+			background:#505050;
+		}
+		
 		.messagePanel tr
 		{
 			opacity:0.8;
@@ -36,11 +42,22 @@
 			border-bottom:1px dotted #FFFFFF;
 		}
 		
+		.messageRow tr:first-child
+		{
+			background:none;
+		}
+		
+		.messageRow tr:last-child
+		{
+			background:none;
+		}
+		
 		.link, .link:hover, .link:visited
 		{
 			color:#FFFFFF;	
 			padding:5px;
 			outline:none;
+			opacity:0.8;
 		}
 
         .inlineLink, .inlineLink:hover, .inlineLink:visited
@@ -61,21 +78,27 @@
 		{
 			font-size:0.7em;
 			color:#ffa500;
-			padding-right:2px;
 			font-weight:bold;
 		}
 		
 		.scrollPanel
 		{
 			max-height:320px;
-
+			width:320px;
+		}
+		
+		.msgLabel
+		{
+			padding:0 3px;
+			word-break:break-all;
+			word-wrap:break-word;
 		}
 		
 	</ui:style>
 
 	<g:VerticalPanel styleName="{style.mainPanel}" spacing="2">
 		<g:cell>
-			<g:ScrollPanel styleName="{style.scrollPanel}">
+			<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scrollPanel}" >
 				<g:VerticalPanel ui:field="messagePanel" styleName="{style.messagePanel}" />
 			</g:ScrollPanel>
 		</g:cell>

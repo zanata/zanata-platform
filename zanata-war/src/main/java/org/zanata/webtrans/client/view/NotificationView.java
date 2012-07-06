@@ -24,11 +24,17 @@ import java.util.Date;
 
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
+import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.InlineLink;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.CssResource;
@@ -37,12 +43,15 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -76,6 +85,8 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       String mainPanel();
 
       String link();
+
+      String msgLabel();
    }
 
    private final Timer hidePopupTimer = new Timer()
@@ -86,7 +97,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
          hide(true);
       }
    };
-   
+
    @UiField
    VerticalPanel messagePanel;
 
@@ -99,7 +110,12 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    @UiField
    Styles style;
 
-   private int messagesToKeep = 1;
+   @UiField
+   ScrollPanel scrollPanel;
+
+   private int messagesToKeep;
+
+   private DisplayOrder displayOrder = DisplayOrder.ASCENDING;
 
    @Inject
    public NotificationView()
@@ -149,31 +165,48 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       severityImg = createSeverityImage(severity);
       panel.add(severityImg);
 
-      Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.HOUR24_MINUTE_SECOND).format(new Date()) + "]");
+      String time = "[" + DateTimeFormat.getFormat(PredefinedFormat.HOUR24_MINUTE_SECOND).format(new Date()) + "]";
+      Label timeLabel = new Label(time);
       timeLabel.setStyleName(style.timeLabel());
       panel.add(timeLabel);
 
       Label msgLabel = new Label(msg);
+      msgLabel.setStyleName(style.msgLabel());
+      
       panel.add(msgLabel);
-
       if (inlineLink != null)
       {
          inlineLink.setLinkStyle(style.inlineLink());
          panel.add(inlineLink);
          panel.setCellWidth(inlineLink, "16px");
       }
-      panel.setCellWidth(severityImg, "16px");
+
+      panel.setCellWidth(severityImg, severityImg.getWidth() + "px");
       panel.setCellWidth(timeLabel, "42px");
-
       panel.setCellHorizontalAlignment(msgLabel, HasHorizontalAlignment.ALIGN_LEFT);
-
-      messagePanel.insert(panel, 0);
-      messagePanel.getWidget(0).setStyleName(style.messageRow());
       
-      while (messagePanel.getWidgetCount() > messagesToKeep)
+      if (displayOrder == DisplayOrder.ASCENDING)
       {
-         messagePanel.remove(messagePanel.getWidgetCount() - 1);
+         messagePanel.insert(panel, 0);
+
+         while (messagePanel.getWidgetCount() > messagesToKeep)
+         {
+            messagePanel.remove(messagePanel.getWidgetCount() - 1);
+         }
+         scrollPanel.scrollToTop();
       }
+      else if (displayOrder == DisplayOrder.DESCENDING)
+      {
+         messagePanel.add(panel);
+
+         while (messagePanel.getWidgetCount() > messagesToKeep)
+         {
+            messagePanel.remove(0);
+         }
+         scrollPanel.scrollToBottom();
+      }
+
+      messagePanel.getWidget(messagePanel.getWidgetIndex(panel)).setStyleName(style.messageRow());
    }
 
    private Image createSeverityImage(Severity severity)
@@ -200,25 +233,39 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    {
       return messagePanel.getWidgetCount();
    }
-   
+
    @Override
    public void setPopupTopRightCorner()
    {
       super.setPopupPosition(Window.getClientWidth() - (getWidth() + 5), 38);
    }
-   
+
    @Override
-   public void hide(boolean autoClosed) 
+   public void hide(boolean autoClosed)
    {
       hidePopupTimer.cancel();
       super.hide(autoClosed);
    }
-   
+
    @Override
    public void show(int delayMillisToClose)
    {
       hidePopupTimer.cancel();
       super.show();
+      if (displayOrder == DisplayOrder.ASCENDING)
+      {
+         scrollPanel.scrollToTop();
+      }
+      else
+      {
+         scrollPanel.scrollToBottom();
+      }
       hidePopupTimer.schedule(delayMillisToClose);
+   }
+
+   @Override
+   public void setMessageOrder(DisplayOrder displayOrder)
+   {
+      this.displayOrder = displayOrder;
    }
 }
