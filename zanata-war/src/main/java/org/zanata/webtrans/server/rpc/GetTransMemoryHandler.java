@@ -165,6 +165,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    private static double calculateSimilarityPercentage(TransMemoryQuery query, List<String> sourceContents)
    {
       double percent;
+      // TODO use LevenshteinTokenUtil, *but* we need to distinguish 100% token match from 100% text match
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          percent = 100 * LevenshteinUtil.getSimilarity(query.getQueries(), sourceContents);
