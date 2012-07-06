@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.keys;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-
 /**
  * Represents a key shortcut for registration with {@link KeyShortcutPresenter}.
  * 
@@ -34,15 +32,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
  */
 public class KeyShortcut implements Comparable<KeyShortcut>
 {
-   public static final int NO_MODIFIER = 0x0;
-   public static final int ALT_KEY = 0x1;
-   public static final int SHIFT_KEY = 0x2;
-   public static final int CTRL_KEY = 0x4;
-   public static final int META_KEY = 0x8;
-   public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
-   public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
-   public static final int ESC_ENTER_KEYS = KeyCodes.KEY_ESCAPE | KeyCodes.KEY_ENTER;
-
    public enum KeyEvent {
       KEY_UP ("keyup"),
       KEY_DOWN ("keydown"),
@@ -56,27 +45,12 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       }
    }
 
-   public static final int KEY_G = 'G';
-   public static final int KEY_J = 'J';
-   public static final int KEY_K = 'K';
-   public static final int KEY_S = 'S';
-
-   public static int KEY_1 = 49;
-   public static int KEY_1_NUM = 97;
-
-   public static final int KEY_2 = 50;
-   public static final int KEY_2_NUM = 98;
-
-   public static final int KEY_3 = 51;
-   public static final int KEY_3_NUM = 99;
-
-   public static final int KEY_4 = 52;
-   public static final int KEY_4_NUM = 100;
-
    public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
 
-   private final int modifiers;
-   private final int keyCode;
+   // TODO replace with List<Keys>
+   private final Keys keys;
+
+
    private final ShortcutContext context;
    private String description;
    private final KeyShortcutEventHandler handler;
@@ -92,8 +66,8 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     * @param modifiers keys such as Shift and Alt that must be depressed for the
     *           shortcut to fire.
     *           <p>
-    *           Use {@link #ALT_KEY}, {@link #SHIFT_KEY},
-    *           {@link #SHIFT_ALT_KEYS}, {@link #META_KEY} and {@link #CTRL_KEY}
+    *           Use {@link Keys#ALT_KEY}, {@link Keys#SHIFT_KEY},
+    *           {@link Keys#SHIFT_ALT_KEYS}, {@link Keys#META_KEY} and {@link Keys#CTRL_KEY}
     *           to generate this. ( e.g. {@code CTRL_KEY | ALT_KEY} )
     *           </p>
     * @param keyCode the integer code for the key.
@@ -121,8 +95,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description,
          KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
    {
-      this.modifiers = modifiers;
-      this.keyCode = keyCode;
+      this.keys = new Keys(modifiers, keyCode);
       this.context = context;
       this.description = description;
       this.handler = handler;
@@ -141,14 +114,21 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       this(modifiers, keyCode, context, description, KeyEvent.KEY_DOWN, false, false, handler);
    }
 
-   public int getModifiers()
+   public Keys getKeys()
    {
-      return modifiers;
+      return keys;
    }
 
+   // TODO remove (use Keys.getModifiers)
+   public int getModifiers()
+   {
+      return keys.getModifiers();
+   }
+
+   // TODO remove (use Keys.getKeyCode)
    public int getKeyCode()
    {
-      return keyCode;
+      return keys.getKeyCode();
    }
 
    public ShortcutContext getContext()
@@ -186,6 +166,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       return preventDefault;
    }
 
+   //TODO remove this and just inline body for any usages
    /**
     * Return a hash for just the user input part of the shortcut, without
     * context.
@@ -194,21 +175,18 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     */
    public int keysHash()
    {
-      return keyCode * 8 + modifiers;
+      return keys.hashCode();
    }
 
+   // TODO update to deal with list of key combinations
    @Override
    public int hashCode()
    {
-      int hash = context.ordinal();
-      hash = hash * 256 + keyCode;
-      hash = hash * 8 + modifiers;
-      return hash;
+      return context.ordinal() * 2048 + keys.hashCode();
    }
 
    /**
-    * Two {@link KeyShortcut} objects are equal if they have the same modifier
-    * keys, key code and context.
+    * Two {@link KeyShortcut} objects are equal if they have the same key combination and context.
     */
    @Override
    public boolean equals(Object obj)
@@ -218,26 +196,13 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       if (!(obj instanceof KeyShortcut))
          return false;
       KeyShortcut other = (KeyShortcut) obj;
-      return modifiers == other.modifiers && keyCode == other.keyCode && context == other.context;
+      return keys.equals(other.keys) && context == other.context;
    }
 
+   // TODO update to deal with list of key combinations
    @Override
    public int compareTo(KeyShortcut o)
    {
-      Integer compareFrom;
-      Integer compareTo;
-
-      if (this.modifiers == o.modifiers)
-      {
-         compareFrom = this.modifiers + this.keyCode;
-         compareTo = o.modifiers + o.keyCode;
-      }
-      else
-      {
-         compareFrom = this.modifiers;
-         compareTo = o.modifiers;
-      }
-
-      return compareFrom.compareTo(compareTo);
+      return keys.compareTo(o.keys);
    }
 }

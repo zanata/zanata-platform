@@ -32,6 +32,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
@@ -114,7 +115,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
-      register(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application,
+      register(new KeyShortcut(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application,
             messages.closeShortcutView(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
       {
          @Override
@@ -129,7 +130,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
-      register(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y', ShortcutContext.Application,
+      register(new KeyShortcut(Keys.ALT_KEY, 'Y', ShortcutContext.Application,
             messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
       {
          @Override
@@ -298,10 +299,10 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    private int calculateModifiers(NativeEvent evt)
    {
       int modifiers = 0;
-      modifiers |= evt.getAltKey() ? KeyShortcut.ALT_KEY : 0;
-      modifiers |= evt.getShiftKey() ? KeyShortcut.SHIFT_KEY : 0;
-      modifiers |= evt.getCtrlKey() ? KeyShortcut.CTRL_KEY : 0;
-      modifiers |= evt.getMetaKey() ? KeyShortcut.META_KEY : 0;
+      modifiers |= evt.getAltKey() ? Keys.ALT_KEY : 0;
+      modifiers |= evt.getShiftKey() ? Keys.SHIFT_KEY : 0;
+      modifiers |= evt.getCtrlKey() ? Keys.CTRL_KEY : 0;
+      modifiers |= evt.getMetaKey() ? Keys.META_KEY : 0;
       return modifiers;
    }
 

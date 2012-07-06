@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
@@ -280,15 +281,15 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       };
 
       // Register shortcut ALT+(UP/J) for previous row navigation
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), KeyEvent.KEY_DOWN, true, true, gotoPreRowHandler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), KeyEvent.KEY_DOWN, true, true, gotoPreRowHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), KeyEvent.KEY_DOWN, true, true, gotoPreRowHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, Keys.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), KeyEvent.KEY_DOWN, true, true, gotoPreRowHandler));
 
       // Register shortcut ALT+(Down/K) for next row navigation
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), KeyEvent.KEY_DOWN, true, true, gotoNextRowHandler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), KeyEvent.KEY_DOWN, true, true, gotoNextRowHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), KeyEvent.KEY_DOWN, true, true, gotoNextRowHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, Keys.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), KeyEvent.KEY_DOWN, true, true, gotoNextRowHandler));
 
       // Register shortcut Enter to open editor in selected row - if no other input field is in focus
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)

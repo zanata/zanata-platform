@@ -48,6 +48,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
@@ -183,20 +184,20 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       };
 
       // Register shortcut CTRL+ALT+1 to copy result from TM result 1
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1, ShortcutContext.Edit, messages.copyFromTM(1), copyTM1Handler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1_NUM, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM1Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_1, ShortcutContext.Edit, messages.copyFromTM(1), copyTM1Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM1Handler));
 
       // Register shortcut CTRL+ALT+2 to copy result from TM result 2
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2, ShortcutContext.Edit, messages.copyFromTM(2), copyTM2Handler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2_NUM, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM2Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_2, ShortcutContext.Edit, messages.copyFromTM(2), copyTM2Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM2Handler));
 
       // Register shortcut CTRL+ALT+3 to copy result from TM result 3
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3, ShortcutContext.Edit, messages.copyFromTM(3), copyTM3Handler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3_NUM, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM3Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_3, ShortcutContext.Edit, messages.copyFromTM(3), copyTM3Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM3Handler));
 
       // Register shortcut CTRL+ALT+4 to copy result from TM result 4
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4, ShortcutContext.Edit, messages.copyFromTM(4), copyTM4Handler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4_NUM, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM4Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_4, ShortcutContext.Edit, messages.copyFromTM(4), copyTM4Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4, ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM4Handler));
 
       KeyShortcutEventHandler moveNextKeyHandler = new KeyShortcutEventHandler()
       {
@@ -219,16 +220,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       };
 
       // Register shortcut ALT+(Down/K) to move next row and open editor
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, Keys.KEY_K, ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
 
       // Register shortcut ALT+(Up/J) to move previous row and open editor
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, Keys.KEY_J, ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
 
       // Register shortcut ALT+(PageDown) to move next state entry - if modal
       // navigation is enabled
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_PAGEDOWN, ShortcutContext.Edit, messages.moveToNextStateRow(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN, ShortcutContext.Edit, messages.moveToNextStateRow(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -242,7 +243,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       // Register shortcut ALT+(PageUp) to move previous state entry - if modal
       // navigation is enabled
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_PAGEUP,
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP,
             ShortcutContext.Edit, messages.moveToPreviousStateRow(), new KeyShortcutEventHandler()
       {
          @Override
@@ -256,7 +257,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }));
 
       // Register shortcut CTRL+S to save as fuzzy
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.CTRL_KEY, KeyShortcut.KEY_S,
+      keyShortcutPresenter.register(new KeyShortcut(Keys.CTRL_KEY, Keys.KEY_S,
             ShortcutContext.Edit, messages.saveAsFuzzy(), KeyEvent.KEY_DOWN, true, true, new KeyShortcutEventHandler()
       {
          @Override
@@ -275,15 +276,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       };
 
-      ctrlEnterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.CTRL_KEY, KeyCodes.KEY_ENTER,
+      ctrlEnterSavesApprovedShortcut = new KeyShortcut(Keys.CTRL_KEY, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
             saveAsApprovedKeyShortcutHandler);
 
-      enterSavesApprovedShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
+      enterSavesApprovedShortcut = new KeyShortcut(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
             saveAsApprovedKeyShortcutHandler);
 
-      enterTriggersAutoSizeShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ENTER,
+      enterTriggersAutoSizeShortcut = new KeyShortcut(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER,
             ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, KeyEvent.KEY_DOWN, false, false, new KeyShortcutEventHandler()
     {
       @Override
@@ -315,7 +316,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }));
 
-      escClosesEditorShortcut = new KeyShortcut(KeyShortcut.NO_MODIFIER, KeyCodes.KEY_ESCAPE,
+      escClosesEditorShortcut = new KeyShortcut(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE,
             ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
       {
          @Override
@@ -337,7 +338,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          escClosesEditorRegistered = false;
       }
 
-      keyShortcutPresenter.register(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_G, ShortcutContext.Edit, "Copy from source", new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, Keys.KEY_G, ShortcutContext.Edit, "Copy from source", new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
