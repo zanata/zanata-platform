@@ -141,33 +141,36 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
    private String getModifier(KeyShortcut shortcut)
    {
       StringBuilder sb = new StringBuilder();
-      if ((shortcut.getModifiers() & Keys.CTRL_KEY) != 0)
+      int modifiers = shortcut.getKeys().getModifiers();
+      int keyCode = shortcut.getKeys().getKeyCode();
+
+      if ((modifiers & Keys.CTRL_KEY) != 0)
       {
          sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
          sb.append("+");
       }
-      if ((shortcut.getModifiers() & Keys.SHIFT_KEY) != 0)
+      if ((modifiers & Keys.SHIFT_KEY) != 0)
       {
          sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
          sb.append("+");
       }
-      if ((shortcut.getModifiers() & Keys.META_KEY) != 0)
+      if ((modifiers & Keys.META_KEY) != 0)
       {
          sb.append(keyDisplayMap.get(Keys.META_KEY));
          sb.append("+");
       }
-      if ((shortcut.getModifiers() & Keys.ALT_KEY) != 0)
+      if ((modifiers & Keys.ALT_KEY) != 0)
       {
          sb.append(keyDisplayMap.get(Keys.ALT_KEY));
          sb.append("+");
       }
-      if (!Strings.isNullOrEmpty(keyDisplayMap.get(shortcut.getKeyCode())))
+      if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode)))
       {
-         sb.append(keyDisplayMap.get(shortcut.getKeyCode()));
+         sb.append(keyDisplayMap.get(keyCode));
       }
       else
       {
-         sb.append((char) shortcut.getKeyCode());
+         sb.append((char) keyCode);
       }
       return sb.toString();
    }

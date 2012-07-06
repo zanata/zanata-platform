@@ -92,10 +92,10 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     * @param handler activated for a registered {@link KeyShortcut} when context is active
     *        and a user inputs the correct key combination
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description,
+   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description,
          KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
    {
-      this.keys = new Keys(modifiers, keyCode);
+      this.keys = shortcutKeys;
       this.context = context;
       this.description = description;
       this.handler = handler;
@@ -109,26 +109,14 @@ public class KeyShortcut implements Comparable<KeyShortcut>
     * 
     * @see #KeyShortcut(int, int, ShortcutContext, String, KeyShortcutEventHandler, String, boolean, boolean, boolean)
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
+   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description, KeyShortcutEventHandler handler)
    {
-      this(modifiers, keyCode, context, description, KeyEvent.KEY_DOWN, false, false, handler);
+      this(shortcutKeys, context, description, KeyEvent.KEY_DOWN, false, false, handler);
    }
 
    public Keys getKeys()
    {
       return keys;
-   }
-
-   // TODO remove (use Keys.getModifiers)
-   public int getModifiers()
-   {
-      return keys.getModifiers();
-   }
-
-   // TODO remove (use Keys.getKeyCode)
-   public int getKeyCode()
-   {
-      return keys.getKeyCode();
    }
 
    public ShortcutContext getContext()
@@ -164,18 +152,6 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public boolean isPreventDefault()
    {
       return preventDefault;
-   }
-
-   //TODO remove this and just inline body for any usages
-   /**
-    * Return a hash for just the user input part of the shortcut, without
-    * context.
-    * 
-    * @return a hash that is unique for a set of modifiers + key code
-    */
-   public int keysHash()
-   {
-      return keys.hashCode();
    }
 
    // TODO update to deal with list of key combinations

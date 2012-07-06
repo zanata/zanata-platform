@@ -391,7 +391,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.register(new KeyShortcut(Keys.SHIFT_ALT_KEYS, 'A', ShortcutContext.ProjectWideSearch, messages.selectAllTextFlowsKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.SHIFT_ALT_KEYS, 'A'), ShortcutContext.ProjectWideSearch, messages.selectAllTextFlowsKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -400,7 +400,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, 'P', ShortcutContext.ProjectWideSearch, messages.focusSearchPhraseKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'P'), ShortcutContext.ProjectWideSearch, messages.focusSearchPhraseKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -409,7 +409,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, 'C', ShortcutContext.ProjectWideSearch, messages.focusReplacementPhraseKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'C'), ShortcutContext.ProjectWideSearch, messages.focusReplacementPhraseKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -418,7 +418,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, 'R', ShortcutContext.ProjectWideSearch, messages.replaceSelectedKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'R'), ShortcutContext.ProjectWideSearch, messages.replaceSelectedKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -429,7 +429,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       // TODO Alt+R for replace, Alt+C to focus replace field
 
-      keyShortcutPresenter.register(new KeyShortcut(Keys.ALT_KEY, 'W', ShortcutContext.ProjectWideSearch, messages.toggleRowActionButtons(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'W'), ShortcutContext.ProjectWideSearch, messages.toggleRowActionButtons(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
