@@ -77,7 +77,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    }
 
    /**
-    * Key uses {@link KeyShortcut#keysHash()}
+    * Key uses {@link Keys#hashCode()}
     */
    private Map<Integer, Set<KeyShortcut>> shortcutMap;
 
@@ -115,7 +115,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
-      register(new KeyShortcut(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE, ShortcutContext.Application,
+      register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE), ShortcutContext.Application,
             messages.closeShortcutView(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
       {
          @Override
@@ -130,7 +130,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
-      register(new KeyShortcut(Keys.ALT_KEY, 'Y', ShortcutContext.Application,
+      register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'Y'), ShortcutContext.Application,
             messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
       {
          @Override
@@ -188,12 +188,12 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
     */
    public HandlerRegistration register(KeyShortcut shortcut)
    {
-      Log.debug("registering key shortcut. key: " + shortcut.getKeyCode() + " modifier: " + shortcut.getModifiers() + " keyhash: " + shortcut.keysHash());
-      Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.keysHash());
+      Log.debug("registering key shortcut. key: " + shortcut.getKeys().getKeyCode() + " modifier: " + shortcut.getKeys().getModifiers() + " key hash: " + shortcut.getKeys().hashCode());
+      Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.getKeys().hashCode());
       if (shortcuts == null)
       {
          shortcuts = new HashSet<KeyShortcut>();
-         ensureShortcutMap().put(shortcut.keysHash(), shortcuts);
+         ensureShortcutMap().put(shortcut.getKeys().hashCode(), shortcuts);
       }
       shortcuts.add(shortcut);
       return new KeyShortcutHandlerRegistration(shortcut);
@@ -283,11 +283,11 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    }
 
    /**
-    * Calculate a hash that should match {@link KeyShortcut#keysHash()}.
+    * Calculate a hash that should match {@link Keys#hashCode()}.
     * 
     * @param evt
     * @return
-    * @see KeyShortcut#keysHash()
+    * @see Keys#hashCode()
     */
    private int calculateKeyHash(int modifiers, int keyCode)
    {
@@ -337,7 +337,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       @Override
       public void removeHandler()
       {
-         Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.keysHash());
+         Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.getKeys().hashCode());
          if (shortcuts != null)
          {
             shortcuts.remove(shortcut);

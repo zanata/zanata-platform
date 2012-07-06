@@ -38,11 +38,6 @@ public class Keys implements Comparable<Keys>
    public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
    public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
 
-   public static final int KEY_G = 'G';
-   public static final int KEY_J = 'J';
-   public static final int KEY_K = 'K';
-   public static final int KEY_S = 'S';
-
    public static final int KEY_1 = 49;
    public static final int KEY_2 = 50;
    public static final int KEY_3 = 51;
