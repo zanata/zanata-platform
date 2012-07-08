@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -291,7 +292,7 @@ public class ResourceUtilsTest
    private static final String[][] urlPatterns = new String[][] { new String[] { ",my,doc,id", "/my/doc/id" }, new String[] { ",my,,doc,id", "/my//doc/id" }, new String[] { "x+y", "x y" }, };
 
    @DataProvider(name = "urlpatterns")
-   public String[][] createUrlPatterns()
+   private String[][] createUrlPatterns()
    {
       return urlPatterns;
    }
@@ -306,6 +307,25 @@ public class ResourceUtilsTest
    public void encodeDocIds(String encoded, String decoded)
    {
       assertThat("Encoding " + decoded, resourceUtils.encodeDocId(decoded), is(encoded));
+   }
+
+   /**
+    * Tests that all plural information is readable
+    */
+   @Test
+   public void readPluralForms()
+   {
+      ResourceUtils resourceUtils = new ResourceUtils();
+      resourceUtils.create();
+      Properties properties = ResourceUtils.getPluralForms();
+
+      for (Object key: properties.keySet())
+      {
+         String propKey = (String) key;
+         LocaleId localeId = LocaleId.fromJavaName(propKey);
+         resourceUtils.getPluralForms(localeId, false);
+         resourceUtils.getNPluralForms(null, localeId);
+      }
    }
 
 }
