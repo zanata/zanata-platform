@@ -18,7 +18,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.webtrans.client.ui;
 
 import java.util.List;
@@ -26,29 +25,32 @@ import java.util.List;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-import com.google.inject.ImplementedBy;
-
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ *
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ *
  */
-@ImplementedBy(RevertTransUnitUpdateLink.class)
-public interface UndoLink extends InlineLink
+public interface HasUndoHandler
 {
+   
    /**
-    * Give the UpdateTransUnitResult object returned from trans unit update handler, then it will create a click handler.
-    *
-    * @param updateTransUnitResult result from update translation rpc call.
-    * @param undoHandler UndoHandler for execution when link is clicked.
-    *
-    * @see org.zanata.webtrans.server.rpc.UpdateTransUnitHandler
-    * @see org.zanata.webtrans.server.rpc.ReplaceTextHandler
-    * @see org.zanata.webtrans.server.rpc.TransMemoryMergeHandler
+    * Execution before executeUndo(List<TransUnitUpdateInfo> updateInfoList) is executed.
+    * 
+    * @param updateInfoList
     */
-   void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult, HasUndoHandler undoHandler);
+   void preUndo(List<TransUnitUpdateInfo> updateInfoList);
    
-   void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult);
-
-   void executeDefaultUndo(HasUndoHandler undoHandler, List<TransUnitUpdateInfo> updateInfoList);
+   /**
+    * Main execution for undo.
+    * 
+    * @param updateInfoList
+    */
+   void executeUndo(List<TransUnitUpdateInfo> updateInfoList);
    
-   HasUndoHandler getUndoHandler();
+   /**
+    * Excution after AsyncCallback.onSuccess
+    * 
+    * @param result
+    */
+   void postSuccess(UpdateTransUnitResult result);
 }
