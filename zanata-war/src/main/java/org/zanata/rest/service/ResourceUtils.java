@@ -126,6 +126,11 @@ public class ResourceUtils
       }
    }
 
+   static Properties getPluralForms()
+   {
+      return pluralForms;
+   }
+
    /**
     * Merges the list of TextFlows into the target HDocument, adding and
     * obsoleting TextFlows as necessary.
@@ -1079,6 +1084,11 @@ public class ResourceUtils
 
    private int getNPluralForms(String entries, HLocale targetLocale)
    {
+      return getNPluralForms(entries, targetLocale.getLocaleId());
+   }
+
+   int getNPluralForms(String entries, LocaleId localeId)
+   {
       int nPlurals = 1;
 
       try
@@ -1094,17 +1104,17 @@ public class ResourceUtils
             }
             else
             {
-               pluralForms = getPluralForms(targetLocale);
+               pluralForms = getPluralForms(localeId);
             }
          }
          else
          {
-            pluralForms = getPluralForms(targetLocale);
+            pluralForms = getPluralForms(localeId);
          }
          if (pluralForms == null)
          {
-            log.error("No plural forms for locale {0} found in {1}", targetLocale, PLURALS_FILE);
-            throw new RuntimeException("No plural forms found; contact admin. Locale: " + targetLocale);
+            log.error("No plural forms for locale {0} found in {1}", localeId, PLURALS_FILE);
+            throw new RuntimeException("No plural forms found; contact admin. Locale: " + localeId);
          }
          Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
          String nPluralsString = "";

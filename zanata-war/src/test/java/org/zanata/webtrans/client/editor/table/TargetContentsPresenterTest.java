@@ -152,7 +152,7 @@ public class TargetContentsPresenterTest
       String findMessages = "abc";
       when(transUnit.getTargets()).thenReturn(targetContents);
       when(workspaceContext.isReadOnly()).thenReturn(false);
-      when(configHolder.isButtonEnter()).thenReturn(false);
+      when(configHolder.isEnterSavesApproved()).thenReturn(false);
       when(navMessages.editSaveShortcut()).thenReturn(buttonTitle);
 
       //when selecting row 1
@@ -173,7 +173,7 @@ public class TargetContentsPresenterTest
       String findMessages = "abc";
       when(transUnit.getTargets()).thenReturn(targetContents);
       when(workspaceContext.isReadOnly()).thenReturn(true);
-      when(configHolder.isButtonEnter()).thenReturn(true);
+      when(configHolder.isEnterSavesApproved()).thenReturn(true);
       when(navMessages.editSaveWithEnterShortcut()).thenReturn(buttonTitle);
 
       //when selecting row 2
@@ -282,7 +282,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canChangeViewOnUserConfigChange()
    {
-      when(configHolder.isButtonEnter()).thenReturn(true);
+      when(configHolder.isEnterSavesApproved()).thenReturn(true);
 
       presenter.onValueChanged(new UserConfigChangeEvent());
 

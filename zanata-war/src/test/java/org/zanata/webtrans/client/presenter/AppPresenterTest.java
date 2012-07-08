@@ -761,7 +761,7 @@ public class AppPresenterTest
       mockDisplay.setLayoutMenuVisible(true);
       expectLastCall().anyTimes();
 
-      expect(mockKeyShortcutPresenter.registerKeyShortcut(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
+      expect(mockKeyShortcutPresenter.register(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
    }
 
    private void setupMockGetterReturnValues()

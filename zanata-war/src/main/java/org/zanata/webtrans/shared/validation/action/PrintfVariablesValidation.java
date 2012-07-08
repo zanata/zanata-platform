@@ -21,11 +21,15 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -60,22 +64,39 @@ public class PrintfVariablesValidation extends ValidationAction
 
       Log.debug("source vars: " + sourceVars);
       Log.debug("target vars: " + targetVars);
+      
+      if (hasPosition(targetVars))
+      {
+         sourceVars = appendPosition(sourceVars);
+         checkPosition(targetVars, sourceVars.size());
+         Log.debug("source vars after treatment: " + sourceVars);
+      }
 
-      ArrayList<String> targetAfterStrip = stripPositionIfApplicable(targetVars);
-      Log.debug("target after stripping position: " + targetAfterStrip);
 
-      List<String> missing = listMissing(sourceVars, targetAfterStrip);
+      List<String> missing = listMissing(sourceVars, targetVars);
       if (!missing.isEmpty())
       {
          addError(getMessages().varsMissing(missing));
       }
 
       // missing from source = added
-      missing = listMissing(targetAfterStrip, sourceVars);
+      missing = listMissing(targetVars, sourceVars);
       if (!missing.isEmpty())
       {
          addError(getMessages().varsAdded(missing));
       }
+   }
+
+   private ArrayList<String> appendPosition(ArrayList<String> sourceVars)
+   {
+      ArrayList<String> result = Lists.newArrayList();
+      for (int i = 0; i < sourceVars.size(); i++)
+      {
+         String sourceVar = sourceVars.get(i);
+         int position = i + 1;
+         result.add(sourceVar.replace("%", "%" + position + "$"));
+      }
+      return result;
    }
 
    private List<String> listMissing(ArrayList<String> baseVars, ArrayList<String> testVars)
@@ -93,37 +114,56 @@ public class PrintfVariablesValidation extends ValidationAction
       }
       return unmatched;
    }
-
-   private static ArrayList<String> stripPositionIfApplicable(ArrayList<String> variables)
+   
+   private boolean hasPosition(ArrayList<String> variables)
    {
-      ArrayList<String> copyOfVariables = new ArrayList<String>(variables);
-
-      boolean hasPosition = false;
       for (String testVar : variables)
       {
          MatchResult result = POSITIONAL_REG_EXP.exec(testVar);
          if (result != null)
          {
-            hasPosition = true;
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private void checkPosition(ArrayList<String> variables, int size)
+   {
+      Multimap<Integer, String> posToVars = ArrayListMultimap.create();
+      
+      for (String testVar : variables)
+      {
+         MatchResult result = POSITIONAL_REG_EXP.exec(testVar);
+         if (result != null)
+         {
             String positionAndDollar = result.getGroup(1);
             int position = extractPositionIndex(positionAndDollar);
-            if (position >= 0 && position < variables.size())
+            if (position >= 0 && position < size)
             {
-               copyOfVariables.set(position, testVar.replace(positionAndDollar, ""));
+               posToVars.put(position, testVar);
             }
             else
             {
-               Log.info("positional variable has invalid position. Ignore position strip.");
-               return variables;
+               addError(getMessages().varPositionOutOfRange(testVar));
             }
          }
-         else if (hasPosition)
+         else
          {
-            Log.info("encounter mixed positional and unpositional variables. Ignore position strip.");
-            return variables;
+            addError(getMessages().mixVarFormats());
          }
       }
-      return copyOfVariables;
+      if (posToVars.keySet().size() != variables.size())
+      {
+         //has some duplicate positions
+         for (Map.Entry<Integer, Collection<String>> entry : posToVars.asMap().entrySet())
+         {
+            if (entry.getValue().size() > 1)
+            {
+               addError(getMessages().varPositionDuplicated(entry.getValue()));
+            }
+         }
+      }
    }
 
    private static int extractPositionIndex(String positionAndDollar)

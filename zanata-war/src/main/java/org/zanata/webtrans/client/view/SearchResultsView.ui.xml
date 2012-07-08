@@ -48,16 +48,12 @@
                 <g:InlineLabel ui:field="searchResponseLabel" styleName='projectWideSearchReportLabel' ></g:InlineLabel>
             </g:HorizontalPanel>
         </g:layer>
-        <g:layer top='96px' bottom='100px'>
+        <g:layer top='96px' bottom='0'>
             <g:ScrollPanel styleName='projectWideSearchResultsPanel' >
                 <g:VerticalPanel ui:field='searchResultsPanel' width="100%" />
             </g:ScrollPanel>
         </g:layer>
-        <g:layer bottom='0px' height='100px' left="0px" right="0px">
-            <g:HorizontalPanel width="100%" height="100%" styleName='projectWideSearchLogPanel' horizontalAlignment="ALIGN_CENTER" verticalAlignment='ALIGN_MIDDLE' >
-                <g:VerticalPanel ui:field="replaceLogPanel" />
-            </g:HorizontalPanel>
-        </g:layer>
+        
     </g:LayoutPanel>
 
 </ui:UiBinder>

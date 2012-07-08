@@ -55,6 +55,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
@@ -66,6 +67,7 @@ import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -153,6 +155,10 @@ public class TranslationServiceImpl implements TranslationService
       {
          HTextFlow hTextFlow = entityManager.find(HTextFlow.class, request.getTransUnitId().getValue());
          HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+         if (request.hasTargetComment())
+         {
+            hTextFlowTarget.setComment(new HSimpleComment(request.getTargetComment()));
+         }
 
          TranslationResultImpl result = new TranslationResultImpl();
          result.baseVersion = hTextFlowTarget.getVersionNum();
@@ -578,8 +584,14 @@ public class TranslationServiceImpl implements TranslationService
                }
                else
                {
-                  log.warn("got null previous target for tu with id {}, version {}. Cannot revert with no previous state.", hTextFlow.getId(), info.getPreviousVersionNum());
-                  results.add(buildFailResult(hTextFlowTarget));
+                  log.info("got null previous target for tu with id {}, version {}. Assuming previous state is untranslated", hTextFlow.getId(), info.getPreviousVersionNum());
+                  List<String> emptyContents = Lists.newArrayList();
+                  for (int i = 0; i < hTextFlowTarget.getContents().size(); i++)
+                  {
+                     emptyContents.add("");
+                  }
+                  TransUnitUpdateRequest request = new TransUnitUpdateRequest(tuId, emptyContents, ContentState.New, versionNum);
+                  updateRequests.add(request);
                }
             }
             else

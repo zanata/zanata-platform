@@ -103,6 +103,41 @@ public class ManageLanguagePage extends AbstractPage
       return this;
    }
 
+   public ManageLanguagePage enableLanguageByDefault( final String localeId )
+   {
+      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
+      {
+         @Override
+         public TableRow apply(WebDriver driver)
+         {
+            List<TableRow> tableRows = WebElementUtil.getTableRows(driver, By.xpath("//table"));
+            Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
+            {
+               @Override
+               public boolean apply(TableRow input)
+               {
+                  List<String> cellContents = input.getCellContents();
+                  String localeCell = cellContents.get(LOCALE_COLUMN).trim();
+                  return localeCell.equalsIgnoreCase(localeId);
+               }
+            });
+
+            log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+            //we keep looking for the locale until timeout
+            return (matchedRow.size() == 1) ? matchedRow.iterator().next() : null;
+         }
+      });
+
+      WebElement enabledCell = matchedRow.getCells().get(3);
+      WebElement enabledCheckbox = enabledCell.findElement(By.tagName("input"));
+      if(!enabledCheckbox.isSelected())
+      {
+         enabledCheckbox.click();
+      }
+
+      return this;
+   }
+
    public List<String> getLanguageLocales()
    {
       List<TableRow> languageTable = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));

@@ -47,7 +47,7 @@ public interface TableEditorMessages extends Messages
    String runValidation();
    
    @DefaultMessage("Copy from translation memory {0}")
-   String copyFromTM(String index);
+   String copyFromTM(int index);
 
    @DefaultMessage("Move to next row")
    String moveToNextRow();
@@ -66,13 +66,7 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Save as approved")
    String saveAsApproved();
-   
-   @DefaultMessage("Save as approved (if \"Enter key saves immediately\" enabled)")
-   String saveAsApprovedEnter();
 
-   @DefaultMessage("Close editor (if \"Esc key closes editor\" enabled)")
+   @DefaultMessage("Close editor")
    String closeEditor();
-
-   @DefaultMessage("User typing")
-   String userTyping();
 }

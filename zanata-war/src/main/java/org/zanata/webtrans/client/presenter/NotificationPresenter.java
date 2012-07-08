@@ -35,6 +35,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -75,12 +76,31 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       void setPopupTopRightCorner();
 
       void show(int delayMillisToClose);
+
+      void setMessageOrder(DisplayOrder displayOrder);
    }
 
    private HasNotificationLabel listener;
 
-   private static final int MESSAGE_TO_KEEP = 6;
-
+   /**
+    * Message count to keep in notification area
+    */
+   private static final int MESSAGE_TO_KEEP = 50;
+   
+   /**
+    * Time where notification pop up stays visible
+    */
+   private static final int DELAY_MILLIS_TO_CLOSE = 2500;
+   
+   /**
+    * 
+    * Display order for the notification, Default = ASCENDING
+    */
+   public enum DisplayOrder
+   {
+      DESCENDING, ASCENDING
+   }
+   
    @Override
    protected void onBind()
    {
@@ -89,6 +109,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.setAnimationEnabled(true);
       display.hide(true);
       display.setMessagesToKeep(MESSAGE_TO_KEEP);
+      display.setMessageOrder(DisplayOrder.ASCENDING);
       display.setPopupTopRightCorner();
 
       registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
@@ -131,7 +152,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    private void showNotification()
    {
-      display.show(2500);
+      display.show(DELAY_MILLIS_TO_CLOSE);
    }
 
    public void showNotificationWithNoTimer()

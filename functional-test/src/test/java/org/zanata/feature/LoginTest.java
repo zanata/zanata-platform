@@ -27,6 +27,7 @@ import org.zanata.page.HomePage;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Test(groups = "functional")
 public class LoginTest
 {
    @Test

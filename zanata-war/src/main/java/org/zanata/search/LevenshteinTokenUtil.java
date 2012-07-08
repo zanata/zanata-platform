@@ -2,14 +2,15 @@ package org.zanata.search;
 
 import java.util.List;
 
-public class LevenshteinUtil
+public class LevenshteinTokenUtil
 {
+   private static final String SPLIT_REGEX = "[,.]?[\\s]+";
 
    /**
     * Compute Levenshtein distance.  Taken from
     * http://web.archive.org/web/20110720093554/http://www.merriampark.com/ldjava.htm (public domain)
     */
-   public static int getLevenshteinDistance(String s, String t)
+   public static int getLevenshteinDistanceInWords(String[] s, String[] t)
    {
       if (s == null || t == null)
       {
@@ -27,14 +28,14 @@ public class LevenshteinUtil
          the minimum of the cost count to the left, up one, and diagonally up and to the left
          of the current cost count being calculated).  (Note that the arrays aren't really
          copied anymore, just switched...this is clearly much better than cloning an array
-         or doing a System.arraycopy() each time through the outer loop.)
+         or doing a System.arraycopy() each time  through the outer loop.)
 
          Effectively, the difference between the two implementations is this one does not
          cause an out of memory condition when calculating the LD over two very large strings.
       */
 
-      int n = s.length(); // length of s
-      int m = t.length(); // length of t
+      int n = s.length; // length of s
+      int m = t.length; // length of t
 
       if (n == 0)
       {
@@ -53,7 +54,7 @@ public class LevenshteinUtil
       int i; // iterates through s
       int j; // iterates through t
 
-      char t_j; // jth character of t
+      String t_j; // jth token of t
 
       int cost; // cost
 
@@ -64,12 +65,12 @@ public class LevenshteinUtil
 
       for (j = 1; j<=m; j++)
       {
-         t_j = t.charAt(j-1);
+         t_j = t[j-1];
          d[0] = j;
 
          for (i=1; i<=n; i++)
          {
-            cost = s.charAt(i-1)==t_j ? 0 : 1;
+            cost = s[i-1].equals(t_j) ? 0 : 1;
             // minimum of cell to the left+1, to the top+1, diagonally left and up +cost
             d[i] = Math.min(Math.min(d[i-1]+1, p[i]+1),  p[i-1]+cost);
          }
@@ -85,11 +86,13 @@ public class LevenshteinUtil
       return p[n];
     }
 
-
    public static double getSimilarity(final String s1, final String s2)
    {
-      int levDistance = getLevenshteinDistance(s1, s2);
-      int maxDistance = Math.max(s1.length(), s2.length());
+      String[] s1s = s1.split(SPLIT_REGEX);
+      String[] s2s = s2.split(SPLIT_REGEX);
+
+      int levDistance = getLevenshteinDistanceInWords(s1s, s2s);
+      int maxDistance = Math.max(s1s.length, s2s.length);
       double similarity = (maxDistance - levDistance) / (double) maxDistance;
       return similarity;
    }
@@ -100,7 +103,8 @@ public class LevenshteinUtil
       for (int i = fromIndex; i < strings.size(); i++)
       {
          String s = strings.get(i);
-         total += s.length();
+         String[] ss = s.split(SPLIT_REGEX);
+         total += ss.length;
       }
       return total;
    }
@@ -153,11 +157,11 @@ public class LevenshteinUtil
       // now count the strings which correspond between both lists
       for (int i = 0; i < minListSize; i++)
       {
-         String s1 = strings1.get(i);
-         String s2 = strings2.get(i);
-         int levenshteinDistance = getLevenshteinDistance(s1, s2);
+         String[] s1 = strings1.get(i).split(SPLIT_REGEX);
+         String[] s2 = strings2.get(i).split(SPLIT_REGEX);
+         int levenshteinDistance = getLevenshteinDistanceInWords(s1, s2);
          totalLevDistance += levenshteinDistance;
-         totalMaxDistance += Math.max(s1.length(), s2.length());
+         totalMaxDistance += Math.max(s1.length, s2.length);
       }
       double similarity = (totalMaxDistance - totalLevDistance) / (double) totalMaxDistance;
       return similarity;

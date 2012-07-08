@@ -41,6 +41,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -310,11 +311,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       };
 
-
       display.initMenuList(identity.getPerson().getName(), helpMenuCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
-      
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'L',
+
+      keyShortcutPresenter.register(new KeyShortcut(
+            new Keys(Keys.ALT_KEY, 'L'),
+
             ShortcutContext.Application,
             messages.showDocumentListKeyShortcut(),
             new KeyShortcutEventHandler()
@@ -328,8 +329,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'O',
+      keyShortcutPresenter.register(new KeyShortcut(
+            new Keys(Keys.ALT_KEY, 'O'),
             ShortcutContext.Application,
             messages.showEditorKeyShortcut(),
             new KeyShortcutEventHandler()
@@ -350,8 +351,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'P',
+      keyShortcutPresenter.register(new KeyShortcut(
+            new Keys(Keys.ALT_KEY, 'P'),
             ShortcutContext.Application,
             messages.showProjectWideSearch(),
             new KeyShortcutEventHandler()

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
@@ -71,10 +72,10 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
       
       keyDisplayMap = new HashMap<Integer, String>();
 
-      keyDisplayMap.put(KeyShortcut.ALT_KEY, "Alt");
-      keyDisplayMap.put(KeyShortcut.SHIFT_KEY, "Shift");
-      keyDisplayMap.put(KeyShortcut.META_KEY, "Meta");
-      keyDisplayMap.put(KeyShortcut.CTRL_KEY, "Ctrl");
+      keyDisplayMap.put(Keys.ALT_KEY, "Alt");
+      keyDisplayMap.put(Keys.SHIFT_KEY, "Shift");
+      keyDisplayMap.put(Keys.META_KEY, "Meta");
+      keyDisplayMap.put(Keys.CTRL_KEY, "Ctrl");
       keyDisplayMap.put(KeyCodes.KEY_DOWN, "Down");
       keyDisplayMap.put(KeyCodes.KEY_UP, "Up");
       keyDisplayMap.put(KeyCodes.KEY_ENTER, "Enter");
@@ -140,33 +141,36 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
    private String getModifier(KeyShortcut shortcut)
    {
       StringBuilder sb = new StringBuilder();
-      if ((shortcut.getModifiers() & KeyShortcut.CTRL_KEY) != 0)
+      int modifiers = shortcut.getKeys().getModifiers();
+      int keyCode = shortcut.getKeys().getKeyCode();
+
+      if ((modifiers & Keys.CTRL_KEY) != 0)
       {
-         sb.append(keyDisplayMap.get(KeyShortcut.CTRL_KEY));
+         sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
          sb.append("+");
       }
-      if ((shortcut.getModifiers() & KeyShortcut.SHIFT_KEY) != 0)
+      if ((modifiers & Keys.SHIFT_KEY) != 0)
       {
-         sb.append(keyDisplayMap.get(KeyShortcut.SHIFT_KEY));
+         sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
          sb.append("+");
       }
-      if ((shortcut.getModifiers() & KeyShortcut.META_KEY) != 0)
+      if ((modifiers & Keys.META_KEY) != 0)
       {
-         sb.append(keyDisplayMap.get(KeyShortcut.META_KEY));
+         sb.append(keyDisplayMap.get(Keys.META_KEY));
          sb.append("+");
       }
-      if ((shortcut.getModifiers() & KeyShortcut.ALT_KEY) != 0)
+      if ((modifiers & Keys.ALT_KEY) != 0)
       {
-         sb.append(keyDisplayMap.get(KeyShortcut.ALT_KEY));
+         sb.append(keyDisplayMap.get(Keys.ALT_KEY));
          sb.append("+");
       }
-      if (!Strings.isNullOrEmpty(keyDisplayMap.get(shortcut.getKeyCode())))
+      if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode)))
       {
-         sb.append(keyDisplayMap.get(shortcut.getKeyCode()));
+         sb.append(keyDisplayMap.get(keyCode));
       }
       else
       {
-         sb.append((char) shortcut.getKeyCode());
+         sb.append((char) keyCode);
       }
       return sb.toString();
    }

@@ -48,8 +48,8 @@ public class UserConfigHolderTest
 
       Map<String, String> propertiesMap = getPropertiesMap();
 
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonEnter", "false"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonEsc", "false"));
+      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
+      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("escClosesEditor", "false"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonFuzzy", "true"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonUntranslated", "true"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
@@ -68,14 +68,14 @@ public class UserConfigHolderTest
       Random random = new Random(System.nanoTime());
       boolean value = random.nextBoolean();
 
-      configHolder.setButtonEnter(value);
-      configHolder.setButtonEsc(value);
+      configHolder.setEnterSavesApproved(value);
+      configHolder.setEscClosesEditor(value);
       configHolder.setButtonFuzzy(value);
       configHolder.setButtonUntranslated(value);
       configHolder.setDisplayButtons(value);
 
-      MatcherAssert.assertThat(configHolder.isButtonEnter(), Matchers.equalTo(value));
-      MatcherAssert.assertThat(configHolder.isButtonEsc(), Matchers.equalTo(value));
+      MatcherAssert.assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(value));
+      MatcherAssert.assertThat(configHolder.isEscClosesEditor(), Matchers.equalTo(value));
       MatcherAssert.assertThat(configHolder.isButtonFuzzy(), Matchers.equalTo(value));
       MatcherAssert.assertThat(configHolder.isButtonUntranslated(), Matchers.equalTo(value));
       MatcherAssert.assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(value));

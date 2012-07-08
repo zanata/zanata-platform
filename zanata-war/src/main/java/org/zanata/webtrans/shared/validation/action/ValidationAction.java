@@ -52,7 +52,9 @@ public abstract class ValidationAction implements ValidationObject
    public void validate(String source, String target)
    {
       if (!Strings.isNullOrEmpty(target))
+      {
          doValidate(source, target);
+      }
    }
 
    public abstract void doValidate(String source, String target);
