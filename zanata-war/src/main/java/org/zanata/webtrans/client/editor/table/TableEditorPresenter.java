@@ -754,7 +754,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                {
                   UndoLink undoLink = undoLinkProvider.get();
                   undoLink.prepareUndoFor(result);
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved(), undoLink));
+                  targetContentsPresenter.addUndoLink(row, undoLink);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
                }
                else
                {

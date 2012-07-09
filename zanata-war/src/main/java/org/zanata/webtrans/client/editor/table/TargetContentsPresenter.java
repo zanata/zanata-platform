@@ -61,6 +61,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -822,5 +823,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
       keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+   }
+
+   public void addUndoLink(int row, UndoLink undoLink)
+   {
+      TargetContentsDisplay targetContentsDisplay = displayList.get(row);
+      targetContentsDisplay.addUndo(undoLink);
    }
 }
