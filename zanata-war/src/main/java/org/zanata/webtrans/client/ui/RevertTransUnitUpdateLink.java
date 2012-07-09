@@ -61,6 +61,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    // state variables
    private HandlerRegistration handlerRegistration;
    private String linkStyleName;
+   private String disabledStyleName;
    private boolean canUndo = false;
 
    //default callback
@@ -98,6 +99,12 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
       linkStyleName = styleName;
       setStyleName(linkStyleName);
    }
+   
+   @Override
+   public void setDisabledStyle(String styleName)
+   {
+      disabledStyleName = styleName;
+   }
 
    private void enableLink()
    {
@@ -112,7 +119,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    {
       if (!Strings.isNullOrEmpty(linkStyleName))
       {
-         removeStyleName(linkStyleName);
+         setStyleName(disabledStyleName);
       }
       canUndo = false;
    }
