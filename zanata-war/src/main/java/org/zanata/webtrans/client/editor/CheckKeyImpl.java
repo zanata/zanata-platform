@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
  * 
  *         See org.zanata.webtrans.client.editor.table.CheckKey
  * 
+ * @deprecated See KeyShortcutPresenter for keyboard shortcut management
  **/
 public final class CheckKeyImpl implements CheckKey
 {
@@ -170,7 +171,7 @@ public final class CheckKeyImpl implements CheckKey
    @Override
    public boolean isCopyFromTransMem()
    {
-      return ctrlKey && shiftKey && (keyCode == KEY_1 || keyCode == KEY_1_NUM || keyCode == KEY_2 || keyCode == KEY_2_NUM || keyCode == KEY_3 || keyCode == KEY_3_NUM || keyCode == KEY_4 || keyCode == KEY_4_NUM);
+      return ctrlKey && altKey && (keyCode == KEY_1 || keyCode == KEY_1_NUM || keyCode == KEY_2 || keyCode == KEY_2_NUM || keyCode == KEY_3 || keyCode == KEY_3_NUM || keyCode == KEY_4 || keyCode == KEY_4_NUM);
    }
 
    @Override

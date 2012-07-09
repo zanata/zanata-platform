@@ -101,6 +101,7 @@ public class ResourceUtils
    private static final Pattern NPLURALS_TAG_PATTERN = Pattern.compile("nplurals=");
    private static final Pattern NPLURALS_PATTERN = Pattern.compile("nplurals=[0-9]+");
    private static final String PLURALS_FILE = "pluralforms.properties";
+   private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
 
@@ -123,6 +124,11 @@ public class ResourceUtils
       {
          log.error("There was an error loading plural forms.", e);
       }
+   }
+
+   static Properties getPluralForms()
+   {
+      return pluralForms;
    }
 
    /**
@@ -1013,6 +1019,8 @@ public class ResourceUtils
 
    /**
     * Returns the appropriate plural form for a given Locale.
+    * Returns a default value if there is no plural form information
+    * for the provided locale.
     */
    public String getPluralForms(HLocale locale)
    {
@@ -1021,8 +1029,22 @@ public class ResourceUtils
 
    /**
     * Returns the appropriate plural form for a given Locale Id.
+    * Returns a default value if there is no plural form information
+    * for the provided locale id.
+    *
+    * @see {@link ResourceUtils#getPluralForms(org.zanata.common.LocaleId, boolean)}
     */
    public String getPluralForms(LocaleId localeId)
+   {
+      return getPluralForms(localeId, true);
+   }
+
+   /**
+    * Returns the appropriate plural from for a given locale Id.
+    *
+    * @return A default value if useDefault is True. Otherwise, null.
+    */
+   public String getPluralForms(LocaleId localeId, boolean useDefault)
    {
       String javaLocale = localeId.toJavaName().toLowerCase();
 
@@ -1043,8 +1065,14 @@ public class ResourceUtils
          }
       }
 
-      // Not found, return null
-      return null;
+      if( useDefault )
+      {
+         return DEFAULT_PLURAL_FORM;
+      }
+      else
+      {
+         return null;
+      }
    }
 
    public int getNumPlurals(HDocument document, HLocale hLocale)
@@ -1055,6 +1083,11 @@ public class ResourceUtils
    }
 
    private int getNPluralForms(String entries, HLocale targetLocale)
+   {
+      return getNPluralForms(entries, targetLocale.getLocaleId());
+   }
+
+   int getNPluralForms(String entries, LocaleId localeId)
    {
       int nPlurals = 1;
 
@@ -1071,17 +1104,17 @@ public class ResourceUtils
             }
             else
             {
-               pluralForms = getPluralForms(targetLocale);
+               pluralForms = getPluralForms(localeId);
             }
          }
          else
          {
-            pluralForms = getPluralForms(targetLocale);
+            pluralForms = getPluralForms(localeId);
          }
          if (pluralForms == null)
          {
-            log.error("No plural forms for locale {0} found in {1}", targetLocale, PLURALS_FILE);
-            throw new RuntimeException("No plural forms found; contact admin. Locale: " + targetLocale);
+            log.error("No plural forms for locale {0} found in {1}", localeId, PLURALS_FILE);
+            throw new RuntimeException("No plural forms found; contact admin. Locale: " + localeId);
          }
          Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
          String nPluralsString = "";

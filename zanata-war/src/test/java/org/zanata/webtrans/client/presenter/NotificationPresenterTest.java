@@ -20,6 +20,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.Display;
+import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -44,7 +45,7 @@ public class NotificationPresenterTest
    private Capture<ClickHandler> capturedClearClickHandler;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    
-   private final static int MSG_TO_KEEP = 6;
+   private final static int MSG_TO_KEEP = 50;
 
    @BeforeClass
    public void createMocks()
@@ -86,7 +87,7 @@ public class NotificationPresenterTest
    {
       String testMessage = "error testing";
 
-      mockDisplay.appendMessage(Severity.Error, testMessage);
+      mockDisplay.appendMessage(Severity.Error, testMessage, null);
       expectLastCall().once();
 
       mockDisplay.show();
@@ -115,7 +116,7 @@ public class NotificationPresenterTest
 
       for (String msg : testMessages)
       {
-         mockDisplay.appendMessage(Severity.Error, msg);
+         mockDisplay.appendMessage(Severity.Error, msg, null);
          expectLastCall().once();
       }
 
@@ -151,11 +152,11 @@ public class NotificationPresenterTest
 
       for (String msg : testMessages)
       {
-         mockDisplay.appendMessage(Severity.Error, msg);
+         mockDisplay.appendMessage(Severity.Error, msg, null);
          expectLastCall().once();
       }
       
-      for (int count = 0;count<=MSG_TO_KEEP;count++)
+      for (int count = 0;count<testMessages.length;count++)
       {
          expect(mockDisplay.getMessageCount()).andReturn(count);
 
@@ -228,6 +229,7 @@ public class NotificationPresenterTest
       expectLastCall().once();
       mockDisplay.setPopupTopRightCorner();
       expectLastCall().once();
+      mockDisplay.setMessageOrder(DisplayOrder.ASCENDING);
    }
 
    private void setupMockGetterReturnValues()

@@ -36,7 +36,7 @@
               
               <rich:spacer height="15" />
               
-              <s:div styleClass="filter-options">
+              <s:div styleClass="float-right">
 		            <h:selectBooleanCheckbox title="Show active group" value="#{versionGroupAction.showActiveGroups}">
 		                <a4j:support event="onchange" reRender="threads" />
 		            </h:selectBooleanCheckbox>
@@ -69,11 +69,11 @@
                   	  </f:facet>
                       <s:link id="versionGroup" styleClass="table_link" value="#{group.name}" propagation="none"
                              view="/version-group/version_group.xhtml" rendered="#{group.status == 'ACTIVE'}"> 
-                            <f:param name="slug" value="#{group.slug}"/>
+                            <f:param name="versionGroupSlug" value="#{group.slug}"/>
                       </s:link>
                       <s:link id="versionGroup_obsolete" styleClass="table_link obsolete_link" value="#{group.name}" propagation="none"
                              view="/version-group/version_group.xhtml" rendered="#{group.status == 'OBSOLETE'}"> 
-                            <f:param name="slug" value="#{group.slug}"/>
+                            <f:param name="versionGroupSlug" value="#{group.slug}"/>
                       </s:link>
                       
                   </rich:column>

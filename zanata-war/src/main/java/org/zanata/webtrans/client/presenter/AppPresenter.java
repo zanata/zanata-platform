@@ -41,10 +41,10 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -69,7 +69,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getDocumentsLink();
 
-      void setUserLabel(String userLabel);
+      void initMenuList(String userLabel, Command helpMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
 
       void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
@@ -79,17 +79,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       void setReadOnlyVisible(boolean visible);
 
-      HasCommand getLeaveWorkspaceMenuItem();
-
-      HasCommand getHelpMenuItem();
-
-      HasCommand getSignOutMenuItem();
-
       HasClickHandlers getSearchAndReplaceLink();
 
       HasClickHandlers getNotificationBtn();
 
+      void setLayoutMenuVisible(boolean visible);
+
       void setNotificationText(int count, Severity severity);
+
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -97,6 +94,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
+   private final LayoutSelectorPresenter layoutSelectorPresenter;
+
    private final History history;
    private final Identity identity;
    private final Window window;
@@ -121,6 +120,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          final DocumentListPresenter documentListPresenter,
          final SearchResultsPresenter searchResultsPresenter,
          final NotificationPresenter notificationPresenter,
+		 final LayoutSelectorPresenter layoutSelectorPresenter,
          final Identity identity,
          final WorkspaceContext workspaceContext,
          final WebTransMessages messages,
@@ -137,6 +137,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter =notificationPresenter;
+      this.layoutSelectorPresenter = layoutSelectorPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
       this.workspaceContext = workspaceContext;
@@ -156,8 +157,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       translationPresenter.bind();
       searchResultsPresenter.bind();
       notificationPresenter.bind();
-
+      layoutSelectorPresenter.bind();
+     
+      layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
+
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -240,38 +244,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      display.getLeaveWorkspaceMenuItem().setCommand(new Command()
-      {
-         @Override
-         public void execute()
-         {
-            // use when opening workspace in new window
-            // Application.closeWindow();
-
-            // use when opening workspace in same window
-            Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
-         }
-      });
-
-      display.getHelpMenuItem().setCommand(new Command()
-      {
-         @Override
-         public void execute()
-         {
-            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
-         }
-      });
-
-      display.getSignOutMenuItem().setCommand(new Command()
-      {
-         @Override
-         public void execute()
-         {
-            Application.redirectToLogout();
-         }
-      });
-
       display.getSearchAndReplaceLink().addClickHandler(new ClickHandler()
       {
          @Override
@@ -301,8 +273,49 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'L',
+
+      Command helpMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
+         }
+      };
+
+      Command signOutMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            Application.redirectToLogout();
+         }
+      };
+
+      Command leaveWorkspaceMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            Application.exitWorkspace();
+            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+         }
+      };
+
+      Command layoutMenuMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            layoutSelectorPresenter.show();
+         }
+      };
+
+      display.initMenuList(identity.getPerson().getName(), helpMenuCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
+
+      keyShortcutPresenter.register(new KeyShortcut(
+            new Keys(Keys.ALT_KEY, 'L'),
+
             ShortcutContext.Application,
             messages.showDocumentListKeyShortcut(),
             new KeyShortcutEventHandler()
@@ -316,8 +329,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'O',
+      keyShortcutPresenter.register(new KeyShortcut(
+            new Keys(Keys.ALT_KEY, 'O'),
             ShortcutContext.Application,
             messages.showEditorKeyShortcut(),
             new KeyShortcutEventHandler()
@@ -338,8 +351,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'P',
+      keyShortcutPresenter.register(new KeyShortcut(
+            new Keys(Keys.ALT_KEY, 'P'),
             ShortcutContext.Application,
             messages.showProjectWideSearch(),
             new KeyShortcutEventHandler()
@@ -353,7 +366,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      display.setUserLabel(identity.getPerson().getName());
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
       window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
@@ -418,14 +430,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
             currentDisplayStats = selectedDocumentStats;
+            translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
+            display.setLayoutMenuVisible(true);
             break;
          case Search:
             // these two lines temporarily here until PresenterRevealedHandler is
             // fully functional
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
+            translationPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
+            display.setLayoutMenuVisible(false);
             break;
          case Documents:
          default:
@@ -433,7 +449,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             // if a document is selected.
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
+            translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
+            display.setLayoutMenuVisible(false);
             break;
          }
          display.showInMainView(viewToShow);

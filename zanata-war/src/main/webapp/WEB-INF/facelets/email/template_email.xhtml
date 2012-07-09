@@ -19,7 +19,10 @@
       <body>
         <ui:insert name="body">No email body template specified.</ui:insert>
         <hr/>
-        <p>#{messages['jsf.email.GeneratedFromZanataServerAt']}
+        <p>
+          #{messages['jsf.email.YouAreReceivingThisMailBecause']} <br/>
+          #{emailServiceImpl.receivedReason}<br/><br/>
+          #{messages['jsf.email.GeneratedFromZanataServerAt']}
           <a href="#{applicationConfiguration.serverPath}">#{applicationConfiguration.serverPath}</a>
         </p>
       </body>

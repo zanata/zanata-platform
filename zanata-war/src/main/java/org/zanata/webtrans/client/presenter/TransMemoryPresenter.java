@@ -35,7 +35,6 @@ import com.google.inject.Inject;
 
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display>
 {
-
    public interface Display extends WidgetDisplay
    {
       HasClickHandlers getSearchButton();
@@ -61,6 +60,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       void setDataProvider(ListDataProvider<TransMemoryResultItem> dataProvider);
 
       void setQueries(List<String> queries);
+
+      HasClickHandlers getMergeButton();
+
    }
 
    private final WorkspaceContext workspaceContext;
@@ -68,15 +70,17 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private GetTranslationMemory submittedRequest = null;
    private GetTranslationMemory lastRequest = null;
    private TransMemoryDetailsPresenter tmInfoPresenter;
+   private TransMemoryMergePresenter transMemoryMergePresenter;
    private ListDataProvider<TransMemoryResultItem> dataProvider;
 
    @Inject
-   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext)
+   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext, TransMemoryMergePresenter transMemoryMergePresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
       this.tmInfoPresenter = tmInfoPresenter;
+      this.transMemoryMergePresenter = transMemoryMergePresenter;
 
       dataProvider = new ListDataProvider<TransMemoryResultItem>();
       display.setDataProvider(dataProvider);
@@ -133,6 +137,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
                }
                if (item != null)
                {
+                  Log.debug("Copy from translation memory:" + (event.getIndex()+1));
                   eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
                }
             }
@@ -154,6 +159,15 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void update(int index, TransMemoryResultItem object, String value)
          {
             eventBus.fireEvent(new CopyDataToEditorEvent(object.getTargetContents()));
+         }
+      });
+
+      display.getMergeButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            transMemoryMergePresenter.prepareTMMerge();
          }
       });
    }

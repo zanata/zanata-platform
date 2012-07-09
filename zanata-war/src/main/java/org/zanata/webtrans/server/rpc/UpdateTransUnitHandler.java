@@ -22,56 +22,39 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.LocaleService;
+import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(UpdateTransUnit.class)
+@Slf4j
 public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult>
 {
-   // security actions (to be implemented)
-   // private static final String ACTION_ADD_TRANSLATION = "add-translation";
-   private static final String ACTION_MODIFY_TRANSLATION = "modify-translation";
-   // private static final String ACTION_REMOVE_TRANSLATION =
-   // "remove-translation";
-   // private static final String ACTION_APPROVE_TRANSLATION =
-   // "approve-translation";
-
-   @Logger
-   Log log;
-
    @In
    TransUnitTransformer transUnitTransformer;
 
@@ -79,59 +62,22 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    TranslationService translationServiceImpl;
 
    @In
-   ZanataIdentity identity;
-
-   @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
-   HAccount authenticatedAccount;
-
-   @In
-   ProjectDAO projectDAO;
-
-   @In
-   TranslationWorkspaceManager translationWorkspaceManager;
-
-   @In
-   private LocaleService localeServiceImpl;
-
-   /**
-    * Used by Seam
-    */
-   public UpdateTransUnitHandler()
-   {
-   }
-
-   /**
-    * Used for tests
-    */
-   public UpdateTransUnitHandler(
-         ZanataIdentity identity,
-         ProjectDAO projectDAO,
-         TranslationWorkspaceManager translationWorkspaceManager,
-         LocaleService localeServiceImpl,
-         HAccount authenticatedAccount,
-         TranslationService translationService,
-         TransUnitTransformer transUnitTransformer)
-   {
-      this.transUnitTransformer = transUnitTransformer;
-      this.translationServiceImpl = translationService;
-      this.log = Logging.getLog(UpdateTransUnitHandler.class);
-      this.identity = identity;
-      this.projectDAO = projectDAO;
-      this.translationWorkspaceManager = translationWorkspaceManager;
-      this.localeServiceImpl = localeServiceImpl;
-      this.authenticatedAccount = authenticatedAccount;
-   }
+   SecurityService securityServiceImpl;
 
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
+      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
+      HLocale hLocale = securityCheckResult.getLocale();
+      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+
+      return doTranslation(hLocale.getLocaleId(), workspace, action.getUpdateRequests(), action.getEditorClientId(), action.getUpdateType());
+   }
+
+   protected UpdateTransUnitResult doTranslation(LocaleId localeId, TranslationWorkspace workspace, List<TransUnitUpdateRequest> updateRequests, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
+   {
       UpdateTransUnitResult result = new UpdateTransUnitResult();
-      LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      log.debug("Updating {0} TransUnits for loacle {1}", action.getUpdateRequests().size(), localeId);
-      TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
-
-      List<TranslationResult> translationResults = translationServiceImpl.translate(localeId, action.getUpdateRequests());
-
+      List<TranslationResult> translationResults = translationServiceImpl.translate(localeId, updateRequests);
       for (TranslationResult translationResult : translationResults)
       {
          HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
@@ -139,28 +85,12 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          int wordCount = hTextFlow.getWordCount().intValue();
          TransUnit tu = transUnitTransformer.transform(hTextFlow, newTarget.getLocale());
          TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
-         workspace.publish(new TransUnitUpdated(updateInfo, action.getEditorClientId(), action.getUpdateType()));
+         workspace.publish(new TransUnitUpdated(updateInfo, editorClientId, updateType));
 
          result.addUpdateResult(updateInfo);
       }
 
       return result;
-   }
-
-   private TranslationWorkspace checkSecurityAndGetWorkspace(AbstractWorkspaceAction<?> action) throws ActionException
-   {
-      identity.checkLoggedIn();
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-      if (workspace.getWorkspaceContext().isReadOnly())
-      {
-         throw new ActionException("Project or version is read-only");
-      }
-
-      HProject hProject = projectDAO.getBySlug( action.getWorkspaceId().getProjectIterationId().getProjectSlug() );
-      HLocale hLocale = localeServiceImpl.getByLocaleId(action.getWorkspaceId().getLocaleId());
-      identity.checkPermission(ACTION_MODIFY_TRANSLATION, hLocale, hProject);
-
-      return workspace;
    }
 
    @Override

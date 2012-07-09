@@ -26,7 +26,7 @@ import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
  * View contexts within the application that may have key shortcuts bound and
  * may be activated and deactivated to enable or disable bound shortcuts.
  * 
- * @see KeyShortcutPresenter#registerKeyShortcut(KeyShortcut)
+ * @see KeyShortcutPresenter#register(KeyShortcut)
  * @see KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)
  */
 public enum ShortcutContext

@@ -54,8 +54,6 @@ public interface TargetContentsDisplay extends WidgetDisplay
       void saveAsFuzzy();
 
       boolean isDisplayButtons();
-
-      void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor);
    }
 
    void setTargets(List<String> targets);

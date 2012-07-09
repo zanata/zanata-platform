@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -85,6 +86,8 @@ public class ResourceUtilsTest
       newLoc = new HLocale(LocaleId.DE);
       fuzzyLoc = new HLocale(LocaleId.FR);
       apprLoc = new HLocale(LocaleId.ES);
+      // Target Locale ids
+      Long newLocId = 1L, fuzzyLocId = 2L, apprLocId = 3L;
 
       HTextFlowTarget newTarg, fuzzyTarg, apprTarg;
       newTarg = new HTextFlowTarget(originalTF, newLoc);
@@ -103,9 +106,9 @@ public class ResourceUtilsTest
       fuzzyTarg.setState(ContentState.NeedReview);
       apprTarg.setState(ContentState.Approved);
 
-      originalTF.getTargets().put(newLoc, newTarg);
-      originalTF.getTargets().put(fuzzyLoc, fuzzyTarg);
-      originalTF.getTargets().put(apprLoc, apprTarg);
+      originalTF.getTargets().put(newLocId, newTarg);
+      originalTF.getTargets().put(fuzzyLocId, fuzzyTarg);
+      originalTF.getTargets().put(apprLocId, apprTarg);
 
       to.getAllTextFlows().put("id", originalTF);
 
@@ -119,18 +122,18 @@ public class ResourceUtilsTest
       boolean changed = resourceUtils.transferFromTextFlows(from, to, new HashSet<String>(), newTFRevision);
 
 
-      Map<HLocale, HTextFlowTarget> targets = to.getAllTextFlows().get("id").getTargets();
-      newTarg = targets.get(newLoc);
+      Map<Long, HTextFlowTarget> targets = to.getAllTextFlows().get("id").getTargets();
+      newTarg = targets.get(newLocId);
       assertThat(newTarg.getState(), is(ContentState.New));
       assertThat(newTarg.getVersionNum(), is(newTargVersionBefore));
       assertThat(newTarg.getTextFlowRevision(), is(originalTFRevision));
 
-      fuzzyTarg = targets.get(fuzzyLoc);
+      fuzzyTarg = targets.get(fuzzyLocId);
       assertThat(fuzzyTarg.getState(), is(ContentState.NeedReview));
       assertThat(fuzzyTarg.getVersionNum(), is(fuzzyTargVersionBefore));
       assertThat(fuzzyTarg.getTextFlowRevision(), is(originalTFRevision));
 
-      apprTarg = targets.get(apprLoc);
+      apprTarg = targets.get(apprLocId);
       assertThat("approved targets should be set to fuzzy when source content changes", apprTarg.getState(), is(ContentState.NeedReview));
       assertThat(apprTarg.getVersionNum(), is(apprTargVersionBefore + 1));
       // Note: TFTRevision should be updated when target content or state is
@@ -291,7 +294,7 @@ public class ResourceUtilsTest
    private static final String[][] urlPatterns = new String[][] { new String[] { ",my,doc,id", "/my/doc/id" }, new String[] { ",my,,doc,id", "/my//doc/id" }, new String[] { "x+y", "x y" }, };
 
    @DataProvider(name = "urlpatterns")
-   public String[][] createUrlPatterns()
+   private String[][] createUrlPatterns()
    {
       return urlPatterns;
    }
@@ -306,6 +309,25 @@ public class ResourceUtilsTest
    public void encodeDocIds(String encoded, String decoded)
    {
       assertThat("Encoding " + decoded, resourceUtils.encodeDocId(decoded), is(encoded));
+   }
+
+   /**
+    * Tests that all plural information is readable
+    */
+   @Test
+   public void readPluralForms()
+   {
+      ResourceUtils resourceUtils = new ResourceUtils();
+      resourceUtils.create();
+      Properties properties = ResourceUtils.getPluralForms();
+
+      for (Object key: properties.keySet())
+      {
+         String propKey = (String) key;
+         LocaleId localeId = LocaleId.fromJavaName(propKey);
+         resourceUtils.getPluralForms(localeId, false);
+         resourceUtils.getNPluralForms(null, localeId);
+      }
    }
 
 }

@@ -15,50 +15,83 @@ public final class EditorClientId implements Identifier<String>, Serializable
    // generated
    private static final long serialVersionUID = 6713691712353126602L;
 
-   private String id;
+   private String httpSessionId;
+   private long editorClientNum;
 
    @SuppressWarnings("unused")
    private EditorClientId()
    {
    }
 
-   public EditorClientId(String id)
+   public EditorClientId(String httpSessionId, long editorClientNum)
    {
-      if (id == null || id.isEmpty())
+      if (httpSessionId == null || httpSessionId.isEmpty())
       {
          throw new IllegalStateException("Invalid Id");
       }
-      this.id = id;
+      this.httpSessionId = httpSessionId;
+      this.editorClientNum = editorClientNum;
    }
 
    @Override
    public boolean equals(Object obj)
    {
-      if (obj == null)
-         return false;
-      if (obj instanceof EditorClientId)
+      if (this == obj)
       {
-         return ((EditorClientId) obj).id.equals(id);
+         return true;
       }
-      return super.equals(obj);
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof EditorClientId))
+      {
+         return false;
+      }
+      EditorClientId other = (EditorClientId) obj;
+      if (editorClientNum != other.editorClientNum)
+      {
+         return false;
+      }
+      if (httpSessionId == null)
+      {
+         if (other.httpSessionId != null)
+         {
+            return false;
+         }
+      }
+      else if (!httpSessionId.equals(other.httpSessionId))
+      {
+         return false;
+      }
+      return true;
    }
 
    @Override
    public int hashCode()
    {
-      return id.hashCode();
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (int) (editorClientNum ^ (editorClientNum >>> 32));
+      result = prime * result + ((httpSessionId == null) ? 0 : httpSessionId.hashCode());
+      return result;
+   }
+   
+   public String getHttpSessionId()
+   {
+      return httpSessionId;
    }
 
    @Override
    public String toString()
    {
-      return id;
+      return getValue();
    }
 
    @Override
    public String getValue()
    {
-      return id;
+      return httpSessionId + ":" + editorClientNum;
    }
 
 }

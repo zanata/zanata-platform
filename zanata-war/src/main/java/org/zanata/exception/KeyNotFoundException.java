@@ -1,4 +1,4 @@
-package org.zanata.security;
+package org.zanata.exception;
 
 public class KeyNotFoundException extends RuntimeException
 {

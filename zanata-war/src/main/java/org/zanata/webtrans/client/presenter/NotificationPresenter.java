@@ -27,12 +27,15 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
+import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.ui.UndoLink;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -62,11 +65,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
       void hide(boolean autoClosed);
 
-      void appendMessage(Severity severity, String message);
+      void appendMessage(Severity severity, String message, InlineLink inlineLink);
 
       void setMessagesToKeep(int count);
-
-      void appendMessage(String message);
 
       void show();
 
@@ -75,12 +76,31 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       void setPopupTopRightCorner();
 
       void show(int delayMillisToClose);
+
+      void setMessageOrder(DisplayOrder displayOrder);
    }
 
    private HasNotificationLabel listener;
 
-   private static final int MESSAGE_TO_KEEP = 6;
-
+   /**
+    * Message count to keep in notification area
+    */
+   private static final int MESSAGE_TO_KEEP = 50;
+   
+   /**
+    * Time where notification pop up stays visible
+    */
+   private static final int DELAY_MILLIS_TO_CLOSE = 2500;
+   
+   /**
+    * 
+    * Display order for the notification, Default = ASCENDING
+    */
+   public enum DisplayOrder
+   {
+      DESCENDING, ASCENDING
+   }
+   
    @Override
    protected void onBind()
    {
@@ -89,6 +109,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.setAnimationEnabled(true);
       display.hide(true);
       display.setMessagesToKeep(MESSAGE_TO_KEEP);
+      display.setMessageOrder(DisplayOrder.ASCENDING);
       display.setPopupTopRightCorner();
 
       registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
@@ -116,7 +137,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          @Override
          public void onNotification(NotificationEvent event)
          {
-            appendNotification(event.getSeverity(), event.getMessage());
+            appendNotification(event.getSeverity(), event.getMessage(), event.getInlineLink());
             Log.info("Notification:" + event.getMessage());
             listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
@@ -131,7 +152,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    private void showNotification()
    {
-      display.show(2500);
+      display.show(DELAY_MILLIS_TO_CLOSE);
    }
 
    public void showNotificationWithNoTimer()
@@ -139,9 +160,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.show();
    }
 
-   private void appendNotification(Severity severity, String msg)
+   private void appendNotification(Severity severity, String msg, InlineLink inlineLink)
    {
-      display.appendMessage(severity, msg);
+      display.appendMessage(severity, msg, inlineLink);
       if (severity == Severity.Error)
       {
          showNotificationWithNoTimer();

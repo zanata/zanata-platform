@@ -1,9 +1,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:f="urn:import:org.zanata.webtrans.client"
+	xmlns:f="urn:import:org.zanata.webtrans.client.ui"
 	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
-	<ui:style>
+    <ui:style>
         .headerLabel {
             padding-right:5px;
             padding-top:5px;	
@@ -20,6 +20,7 @@
                 <g:ValueListBox ui:field="searchType"/>
 				<g:Button ui:field="searchButton"/>
 				<g:Button ui:field="clearButton"/>
+                <g:Button ui:field="mergeTMButton"/>
 			</g:HorizontalPanel>
 		</g:layer>
 		<g:layer top="25px" bottom="0px">

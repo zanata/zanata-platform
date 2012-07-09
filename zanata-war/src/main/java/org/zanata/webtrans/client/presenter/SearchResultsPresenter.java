@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,10 +33,10 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -42,11 +44,14 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window.Location;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.HasUndoHandler;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -77,16 +82,17 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * View for project-wide search and replace within textflow targets
  * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresenter.Display>
 {
 
-   private static final int MAX_VISIBLE_REPLACEMENT_MESSAGES = 5;
    private static final int TRUNCATED_TARGET_LENGTH = 24;
 
    public interface Display extends WidgetDisplay
@@ -138,21 +144,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       void clearAll();
 
       /**
-       * Shows a message in the replacement region with an associated 'undo'
-       * button
-       * 
-       * @param message
-       * @param undoButtonHandler
-       * @see #clearReplacementMessages()
-       */
-      void addReplacementMessage(String message, ClickHandler undoButtonHandler);
-
-      /**
-       * @see #addReplacementMessage(String, ClickHandler)
-       */
-      void clearReplacementMessages();
-
-      /**
        * Add a document header and table to the display, with no row action
        * buttons.
        * 
@@ -163,13 +154,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * @param selectAllHandler
        * @return the created table
        * 
-       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel, ValueChangeHandler, WebTransMessages)
+       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel,
+       *      ValueChangeHandler, WebTransMessages)
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
-            ClickHandler viewDocClickHandler,
-            ClickHandler searchDocClickHandler,
-            MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
-            ValueChangeHandler<Boolean> selectAllHandler);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
 
       /**
        * Add a document header and table to the display, with action buttons per
@@ -177,21 +165,17 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * 
        * @return the created table
        * 
-       * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel, ValueChangeHandler)
-       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate, Delegate, Delegate, SelectionModel, ValueChangeHandler, WebTransMessages, org.zanata.webtrans.client.resources.Resources)
+       * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel,
+       *      ValueChangeHandler)
+       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate,
+       *      Delegate, Delegate, SelectionModel, ValueChangeHandler,
+       *      WebTransMessages, org.zanata.webtrans.client.resources.Resources)
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(
-            String docName,
-            ClickHandler viewDocClickHandler,
-            ClickHandler searchDocClickHandler,
-            MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
-            ValueChangeHandler<Boolean> selectAllHandler,
-            Delegate<TransUnitReplaceInfo> previewDelegate,
-            Delegate<TransUnitReplaceInfo> replaceDelegate,
-            Delegate<TransUnitReplaceInfo> undoDelegate);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate);
 
       /**
-       * Required to avoid instantiating a component that calls client-only code in the presenter
+       * Required to avoid instantiating a component that calls client-only code
+       * in the presenter
        * 
        * @return a new selection model for use with table
        */
@@ -204,6 +188,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final Location windowLocation;
    private final History history;
+   private final Provider<UndoLink> undoLinkProvider;
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
@@ -229,21 +214,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private HistoryToken currentHistoryState = null;
 
-   private List<ReplacementEventInfo> replacementEvents;
-
    private Map<Long, String> docPaths;
 
    private boolean autoPreview = true;
    private boolean showRowActionButtons = false;
 
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus,
-         CachingDispatchAsync dispatcher,
-         History history,
-         final WebTransMessages webTransMessages,
-         final WorkspaceContext workspaceContext,
-         final KeyShortcutPresenter keyShortcutPresenter,
-         Location windowLocation)
+
+   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter, final Provider<UndoLink> undoLinkProvider, Location windowLocation)
    {
       super(display, eventBus);
       messages = webTransMessages;
@@ -251,6 +229,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
+      this.undoLinkProvider = undoLinkProvider;
       this.windowLocation = windowLocation;
    }
 
@@ -297,17 +276,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            if (event.getValue())
-            {
-               selectAllTextFlows();
-            }
-            else
-            {
-               for (MultiSelectionModel<TransUnitReplaceInfo> selectionModel : documentSelectionModels.values())
-               {
-                  selectionModel.clear();
-               }
-            }
+            selectAllTextFlows(event.getValue());
          }
       }));
 
@@ -361,7 +330,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             Log.debug("found matching TU for TU update, id: " + updateInfo.getTransUnit().getId().getId());
 
-
             if (replaceInfo.getReplaceState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
             {
                // can't undo after additional update
@@ -377,7 +345,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                }
                else
                {
-                  // clear selection to avoid accidental inclusion in batch operations
+                  // clear selection to avoid accidental inclusion in batch
+                  // operations
                   selectionModel.setSelected(replaceInfo, false);
                }
             }
@@ -412,24 +381,16 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.SHIFT_ALT_KEYS, 'A',
-            ShortcutContext.ProjectWideSearch,
-            messages.selectAllTextFlowsKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.SHIFT_ALT_KEYS, 'A'), ShortcutContext.ProjectWideSearch, messages.selectAllTextFlowsKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            selectAllTextFlows();
+            display.getSelectAllChk().setValue(!display.getSelectAllChk().getValue(), true);
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'P',
-            ShortcutContext.ProjectWideSearch,
-            messages.focusSearchPhraseKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'P'), ShortcutContext.ProjectWideSearch, messages.focusSearchPhraseKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -438,11 +399,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'C',
-            ShortcutContext.ProjectWideSearch,
-            messages.focusReplacementPhraseKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'C'), ShortcutContext.ProjectWideSearch, messages.focusReplacementPhraseKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -451,11 +408,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'R',
-            ShortcutContext.ProjectWideSearch,
-            messages.replaceSelectedKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'R'), ShortcutContext.ProjectWideSearch, messages.replaceSelectedKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -464,13 +417,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      //TODO Alt+R for replace, Alt+C to focus replace field
+      // TODO Alt+R for replace, Alt+C to focus replace field
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'W',
-            ShortcutContext.ProjectWideSearch,
-            messages.toggleRowActionButtons(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'W'), ShortcutContext.ProjectWideSearch, messages.toggleRowActionButtons(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -665,7 +614,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    /**
     * 
-    * @param skipEmptyNotification true to silently ignore the request when no rows are selected
+    * @param skipEmptyNotification true to silently ignore the request when no
+    *           rows are selected
     */
    private void previewSelected(boolean skipEmptyNotification, boolean hideNonSelectedPreviews)
    {
@@ -686,7 +636,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }
    }
-
 
    /**
     * Fire a {@link PreviewReplaceText} event for the given {@link TransUnit}s
@@ -747,7 +696,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             Log.error("[SearchResultsPresenter] Preview replace text failure " + e, e);
             eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.previewFailed()));
-            // may want to change TU state from 'previewing' (possibly error state)
+            // may want to change TU state from 'previewing' (possibly error
+            // state)
          }
 
          @Override
@@ -796,7 +746,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
       return selected;
    }
-
+   
    /**
     * Fire a {@link ReplaceText} event for the given {@link TransUnit}s using
     * parameters from the current history state. This will also update the state
@@ -852,14 +802,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             Log.error("[SearchResultsPresenter] Replace text failure " + e, e);
             eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.replaceTextFailure()));
-            // may want to change state from 'replacing' (possibly add error state)
+            // may want to change state from 'replacing' (possibly add error
+            // state)
          }
 
          @Override
          public void onSuccess(final UpdateTransUnitResult result)
          {
             final List<TransUnitUpdateInfo> updateInfoList = processSuccessfulReplacements(result.getUpdateInfoList());
-            eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.replacedTextSuccess()));
 
             String message;
             if (updateInfoList.size() == 1)
@@ -867,7 +817,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                TransUnitUpdateInfo info = updateInfoList.get(0);
                String text = info.getTransUnit().getTargets().get(0);
                String truncatedText = text.substring(0, (text.length() <= TRUNCATED_TARGET_LENGTH ? text.length() : TRUNCATED_TARGET_LENGTH));
-               int oneBasedRowIndex = info.getTransUnit().getRowIndex()+1;
+               int oneBasedRowIndex = info.getTransUnit().getRowIndex() + 1;
                String docName = docPaths.get(info.getDocumentId().getId());
                message = messages.replacedTextInOneTextFlow(searchText, replacement, docName, oneBasedRowIndex, truncatedText);
             }
@@ -875,20 +825,38 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                message = messages.replacedTextInMultipleTextFlows(searchText, replacement, updateInfoList.size());
             }
-            final ReplacementEventInfo replacementInfo = new ReplacementEventInfo(message);
-            ClickHandler handler = new ClickHandler()
+
+            final UndoLink undoLink = undoLinkProvider.get();
+            undoLink.prepareUndoFor(result, new HasUndoHandler()
             {
                @Override
-               public void onClick(ClickEvent event)
+               public void preUndo(List<TransUnitUpdateInfo> updateInfoList)
                {
-                  fireUndoEvent(updateInfoList);
-                  ensureReplacementEvents().remove(replacementInfo);
-                  refreshReplacementEventInfoList();
+                  executePreUndo(updateInfoList);
                }
-            };
-            replacementInfo.setHandler(handler);
-            ensureReplacementEvents().add(replacementInfo);
-            refreshReplacementEventInfoList();
+               
+               @Override
+               public void executeUndo(List<TransUnitUpdateInfo> updateInfoList)
+               {
+                  if (workspaceContext.isReadOnly())
+                  {
+                     eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
+                  }
+                  else
+                  {
+                     undoLink.executeDefaultUndo(this, updateInfoList);
+                  }
+               }
+
+               @Override
+               public void postSuccess(UpdateTransUnitResult result)
+               {
+                  executePostSucess(result);
+               }
+            });
+
+            NotificationEvent event = new NotificationEvent(Info, message, undoLink);
+            eventBus.fireEvent(event);
          }
       });
    }
@@ -901,31 +869,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireUndoEvent(List<TransUnitUpdateInfo> updateInfoList)
    {
-      if (workspaceContext.isReadOnly())
-      {
-         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
-         return;
-      }
-
       // TODO only fire undo for flows that are undoable?
       // rpc method should cope with this anyway, so no big deal
 
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoInProgress()));
       RevertTransUnitUpdates action = new RevertTransUnitUpdates();
-      for (TransUnitUpdateInfo updateInfo : updateInfoList)
-      {
-         action.addUpdateToRevert(updateInfo);
-         TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
-         // may be null if another search has been performed since the replacement
-         if (replaceInfo != null)
-         {
-            setReplaceState(replaceInfo, ReplacementState.Undoing);
-            refreshInfoDisplay(replaceInfo);
-         }
-      }
+      executePreUndo(updateInfoList);
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
-
          @Override
          public void onFailure(Throwable caught)
          {
@@ -936,32 +887,51 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onSuccess(UpdateTransUnitResult result)
          {
             eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
-            for (TransUnitUpdateInfo info : result.getUpdateInfoList())
-            {
-               TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(info.getTransUnit().getId());
-               setReplaceState(replaceInfo, ReplacementState.NotReplaced);
-               if (replaceInfo.getPreview() == null)
-               {
-                  replaceInfo.setPreviewState(PreviewState.NotFetched);
-               }
-               else
-               {
-                  MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(replaceInfo.getDocId());
-                  if (selectionModel != null && selectionModel.isSelected(replaceInfo))
-                  {
-                     replaceInfo.setPreviewState(PreviewState.Show);
-                  }
-                  else
-                  {
-                     replaceInfo.setPreviewState(PreviewState.Hide);
-                  }
-               }
-               refreshInfoDisplay(replaceInfo);
-            }
-            refreshReplaceAllButton();
-            // update model with new values?
+            executePostSucess(result);
          }
       });
+   }
+   
+   private void executePreUndo(List<TransUnitUpdateInfo> updateInfoList)
+   {
+      for (TransUnitUpdateInfo updateInfo : updateInfoList)
+      {
+         TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
+         // may be null if another search has been performed since the
+         // replacement
+         if (replaceInfo != null)
+         {
+            setReplaceState(replaceInfo, ReplacementState.Undoing);
+            refreshInfoDisplay(replaceInfo);
+         }
+      }
+   }
+   
+   private void executePostSucess(UpdateTransUnitResult result)
+   {
+      for (TransUnitUpdateInfo info : result.getUpdateInfoList())
+      {
+         TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(info.getTransUnit().getId());
+         setReplaceState(replaceInfo, ReplacementState.NotReplaced);
+         if (replaceInfo.getPreview() == null)
+         {
+            replaceInfo.setPreviewState(PreviewState.NotFetched);
+         }
+         else
+         {
+            MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(replaceInfo.getDocId());
+            if (selectionModel != null && selectionModel.isSelected(replaceInfo))
+            {
+               replaceInfo.setPreviewState(PreviewState.Show);
+            }
+            else
+            {
+               replaceInfo.setPreviewState(PreviewState.Hide);
+            }
+         }
+         refreshInfoDisplay(replaceInfo);
+      }
+      refreshReplaceAllButton();
    }
 
    /**
@@ -998,8 +968,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    }
 
    /**
-    * Sets the info item to its current index in the containing data
-    * provider to force the provider to recognize that it has changed.
+    * Sets the info item to its current index in the containing data provider to
+    * force the provider to recognize that it has changed.
     * 
     * @param info
     */
@@ -1058,8 +1028,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       ValueChangeHandler<Boolean> selectDocHandler = selectAllHandler(docId, selectionModel);
       if (showRowActionButtons)
       {
-         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler,
-               ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler, ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
       }
       else
       {
@@ -1137,7 +1106,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       if (currentHistoryState == null)
          currentHistoryState = new HistoryToken(); // default values
 
-
       boolean caseSensitivityChanged = token.getProjectSearchCaseSensitive() != currentHistoryState.getProjectSearchCaseSensitive();
       boolean searchTextChanged = !token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText());
       boolean searchFieldsChanged = token.isProjectSearchInSource() != currentHistoryState.isProjectSearchInSource();
@@ -1154,11 +1122,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          if (!token.getProjectSearchText().isEmpty())
          {
             display.setSearching(true);
-            GetProjectTransUnitLists action = new GetProjectTransUnitLists(token.getProjectSearchText(),
-                  token.isProjectSearchInSource(),
-                  token.isProjectSearchInTarget(),
-                  token.getProjectSearchCaseSensitive(),
-                  windowLocation.getQueryDocuments());
+            GetProjectTransUnitLists action = new GetProjectTransUnitLists(token.getProjectSearchText(), token.isProjectSearchInSource(), token.isProjectSearchInTarget(), token.getProjectSearchCaseSensitive(), windowLocation.getQueryDocuments());
             dispatcher.execute(action, projectSearchCallback);
          }
       }
@@ -1271,7 +1235,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
    }
 
-   private void selectAllTextFlows()
+   private void selectAllTextFlows(boolean selected)
    {
       for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> en : documentDataProviders.entrySet())
       {
@@ -1280,32 +1244,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             for (TransUnitReplaceInfo tu : en.getValue().getList())
             {
-               selectionModel.setSelected(tu, true);
+               selectionModel.setSelected(tu, selected);
             }
          }
-      }
-   }
-
-   private List<ReplacementEventInfo> ensureReplacementEvents()
-   {
-      if (replacementEvents == null)
-      {
-         replacementEvents = new ArrayList<ReplacementEventInfo>();
-      }
-      return replacementEvents;
-   }
-
-   private void refreshReplacementEventInfoList()
-   {
-      display.clearReplacementMessages();
-      List<ReplacementEventInfo> events = ensureReplacementEvents();
-      while (events.size() > MAX_VISIBLE_REPLACEMENT_MESSAGES)
-      {
-         events.remove(0);
-      }
-      for (ReplacementEventInfo info : events)
-      {
-         display.addReplacementMessage(info.getMessage(), info.getHandler());
       }
    }
 
@@ -1346,32 +1287,5 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          history.newItem(token);
       }
-   }
-
-   private class ReplacementEventInfo
-   {
-      private String message;
-      private ClickHandler handler;
-
-      public ReplacementEventInfo(String message)
-      {
-         this.message = message;
-      }
-
-      public String getMessage()
-      {
-         return message;
-      }
-
-      public ClickHandler getHandler()
-      {
-         return handler;
-      }
-
-      public void setHandler(ClickHandler handler)
-      {
-         this.handler = handler;
-      }
-
    }
 }

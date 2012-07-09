@@ -484,7 +484,7 @@ public class HistoryToken
             sb.append(nextChar);
          }
       }
-      Log.info("Decoded: \"" + toDecode + "\" to \"" + sb + "\"");
+      Log.debug("Decoded: \"" + toDecode + "\" to \"" + sb + "\"");
       return sb.toString();
    }
 

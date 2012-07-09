@@ -93,6 +93,7 @@ public class UserSessionService implements TransUnitEditEventHandler
    public void removeUser(EditorClientId editorClientId)
    {
       userSessionMap.remove(editorClientId);
+      // FIXME remove from colorListMap (memory leak)
    }
 
    public Map<EditorClientId, UserPanelSessionItem> getUserSessionMap()
@@ -100,6 +101,8 @@ public class UserSessionService implements TransUnitEditEventHandler
       return userSessionMap;
    }
 
+   // TODO what we pass is really editorClientId
+   // Should we be passing sessionId?  See also memory leak above.
    public String getColor(String sessionId)
    {
       if (colorListMap.containsKey(sessionId))

@@ -15,9 +15,12 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 
 /**
@@ -54,8 +57,12 @@ public class EssentialDataCreator
 
    @In
    AccountDAO accountDAO;
+
    @In
    AccountRoleDAO accountRoleDAO;
+
+   @In
+   LocaleDAO localeDAO;
 
    // Do it when the application starts (but after everything else has been
    // loaded)
@@ -128,6 +135,19 @@ public class EssentialDataCreator
             if (accountRoleDAO.create("translator") == null)
             {
                throw new RuntimeException("Couldn't create 'translator' role");
+            }
+         }
+
+         // Enable en-US by default
+         LocaleId localeId = new LocaleId("en-US");
+         if( localeDAO.findByLocaleId( localeId ) == null )
+         {
+            HLocale en_US = new HLocale(localeId);
+            en_US.setActive(true);
+            en_US.setEnabledByDefault(false);
+            if (localeDAO.makePersistent(en_US) == null)
+            {
+               throw new RuntimeException("Couldn't create 'en-US' locale");
             }
          }
 

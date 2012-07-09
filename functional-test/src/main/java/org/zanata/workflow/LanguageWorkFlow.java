@@ -52,8 +52,8 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow
       List<String> locales = manageLanguagePage.getLanguageLocales();
       if (locales.contains(localeId))
       {
-         log.warn("{} has already been added", localeId);
-         return manageLanguagePage;
+         log.warn("{} has already been added, enabling by default", localeId);
+         return manageLanguagePage.enableLanguageByDefault(localeId);
       }
       //continue to add the new language
       return manageLanguagePage.addNewLanguage().enableLanguageByDefault().inputLanguage(localeId).saveLanguage();

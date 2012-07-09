@@ -29,16 +29,17 @@ import javax.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.editor.CheckKey;
-import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
@@ -47,7 +48,12 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.keys.SurplusKeyListener;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -70,7 +76,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -83,10 +90,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private final UserSessionService sessionService;
    private final UserConfigHolder configHolder;
 
-   private final CheckKey checkKey;
    private WorkspaceContext workspaceContext;
    private Scheduler scheduler;
 
@@ -97,15 +104,28 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
-
    private boolean isModalNavEnabled;
 
    private final Identity identity;
 
    private final CachingDispatchAsync dispatcher;
 
+   private boolean enterSavesApprovedRegistered;
+   private boolean escClosesEditorRegistered;
+
+   private KeyShortcut ctrlEnterSavesApprovedShortcut;
+   private KeyShortcut enterSavesApprovedShortcut;
+   private KeyShortcut enterTriggersAutoSizeShortcut;
+   private KeyShortcut escClosesEditorShortcut;
+
+   private HandlerRegistration enterSavesApprovedHandlerRegistration;
+   private HandlerRegistration ctrlEnterSavesApprovedHandlerRegistration;
+   private HandlerRegistration enterTriggersAutoSizeHandlerRegistration;
+   private HandlerRegistration escClosesEditorHandlerRegistration;
+
+
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -118,14 +138,218 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.sessionService = sessionService;
       this.identity = identity;
       this.dispatcher = dispatcher;
+      this.keyShortcutPresenter = keyShortcutPresenter;
 
-      checkKey = new CheckKeyImpl(ShortcutContext.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
+
+      KeyShortcutEventHandler copyTM1Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(0));
+         }
+      };
+
+      KeyShortcutEventHandler copyTM2Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(1));
+         }
+      };
+
+      KeyShortcutEventHandler copyTM3Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(2));
+         }
+      };
+
+      KeyShortcutEventHandler copyTM4Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(3));
+         }
+      };
+
+      // Register shortcut CTRL+ALT+1 to copy result from TM result 1
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), ShortcutContext.Edit, messages.copyFromTM(1), copyTM1Handler));
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM1Handler));
+
+      // Register shortcut CTRL+ALT+2 to copy result from TM result 2
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_2), ShortcutContext.Edit, messages.copyFromTM(2), copyTM2Handler));
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM2Handler));
+
+      // Register shortcut CTRL+ALT+3 to copy result from TM result 3
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_3), ShortcutContext.Edit, messages.copyFromTM(3), copyTM3Handler));
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM3Handler));
+
+      // Register shortcut CTRL+ALT+4 to copy result from TM result 4
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_4), ShortcutContext.Edit, messages.copyFromTM(4), copyTM4Handler));
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM4Handler));
+
+      KeyShortcutEventHandler moveNextKeyHandler = new KeyShortcutEventHandler()
+      {
+
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            moveNext(false);
+         }
+      };
+
+      KeyShortcutEventHandler movePreviousKeyHandler = new KeyShortcutEventHandler()
+      {
+
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            movePrevious(false);
+         }
+      };
+
+      // Register shortcut ALT+(Down/K) to move next row and open editor
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'K'), ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
+
+      // Register shortcut ALT+(Up/J) to move previous row and open editor
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'J'), ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
+
+      // Register shortcut ALT+(PageDown) to move next state entry - if modal
+      // navigation is enabled
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN), ShortcutContext.Edit, messages.moveToNextStateRow(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (isModalNavEnabled)
+            {
+               moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
+            }
+         }
+      }));
+
+      // Register shortcut ALT+(PageUp) to move previous state entry - if modal
+      // navigation is enabled
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP),
+            ShortcutContext.Edit, messages.moveToPreviousStateRow(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (isModalNavEnabled)
+            {
+               moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
+            }
+         }
+      }));
+
+      // Register shortcut CTRL+S to save as fuzzy
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_KEY, 'S'),
+            ShortcutContext.Edit, messages.saveAsFuzzy(), KeyEvent.KEY_DOWN, true, true, new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            saveAsFuzzy();
+         }
+      }));
+
+      KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            saveAsApprovedAndMoveNext();
+         }
+      };
+
+      ctrlEnterSavesApprovedShortcut = new KeyShortcut(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER),
+            ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
+            saveAsApprovedKeyShortcutHandler);
+
+      enterSavesApprovedShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER),
+            ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
+            saveAsApprovedKeyShortcutHandler);
+
+      enterTriggersAutoSizeShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER),
+            ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, KeyEvent.KEY_DOWN, false, false, new KeyShortcutEventHandler()
+    {
+      @Override
+      public void onKeyShortcut(KeyShortcutEvent event)
+      {
+      getCurrentEditor().autoSizePlusOne();
+      }
+    });
+
+      if (configHolder.isEnterSavesApproved())
+      {
+         enterSavesApprovedRegistered = true;
+         enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
+      }
+      else
+      {
+         enterSavesApprovedRegistered = false;
+         ctrlEnterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(ctrlEnterSavesApprovedShortcut);
+         enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.register(enterTriggersAutoSizeShortcut);
+      }
+
+      // Auto-size for any non-shortcut key presses
+      keyShortcutPresenter.register(new SurplusKeyListener(KeyEvent.KEY_DOWN, ShortcutContext.Edit, new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            getCurrentEditor().autoSize();
+         }
+      }));
+
+      escClosesEditorShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE),
+            ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (configHolder.isEscClosesEditor() && !keyShortcutPresenter.getDisplay().isShowing())
+            {
+               onCancel();
+            }
+         }
+      });
+
+      if (configHolder.isEscClosesEditor()) {
+         escClosesEditorRegistered = true;
+         escClosesEditorHandlerRegistration = keyShortcutPresenter.register(escClosesEditorShortcut);
+      }
+      else
+      {
+         escClosesEditorRegistered = false;
+      }
+
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'G'), ShortcutContext.Edit, "Copy from source", new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (getCurrentEditor().isFocused())
+            {
+               copySource(getCurrentEditor());
+            }
+         }
+      }));
+
    }
 
    private ToggleEditor getCurrentEditor()
@@ -145,6 +369,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentDisplay.setToView();
          currentDisplay.showButtons(false);
       }
+      concealDisplay();
    }
 
    private void fireTransUnitEditAction()
@@ -162,6 +387,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       });
    }
+
    public void showEditors(int rowIndex, int editorIndex)
    {
       Log.debug("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
@@ -174,9 +400,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.clearTranslatorList();
          validate(editor);
       }
-      
+      revealDisplay();
+
       fireTransUnitEditAction();
-      
+
       if (configHolder.isDisplayButtons())
       {
          currentDisplay.showButtons(true);
@@ -399,6 +626,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       editor.setViewMode(ViewMode.EDIT);
       editor.autoSize();
       editor.setFocus();
+
+      revealDisplay();
+
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
@@ -446,6 +676,50 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             editor.showCopySourceButton(configHolder.isDisplayButtons());
          }
       }
+
+      boolean enterSavesApproved = configHolder.isEnterSavesApproved();
+      if (enterSavesApproved != enterSavesApprovedRegistered)
+      {
+         if (enterSavesApproved)
+         {
+            if (ctrlEnterSavesApprovedHandlerRegistration != null)
+            {
+               ctrlEnterSavesApprovedHandlerRegistration.removeHandler();
+            }
+            if (enterTriggersAutoSizeHandlerRegistration != null)
+            {
+               enterTriggersAutoSizeHandlerRegistration.removeHandler();
+            }
+            enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
+         }
+         else
+         {
+            if (enterSavesApprovedHandlerRegistration != null)
+            {
+               enterSavesApprovedHandlerRegistration.removeHandler();
+            }
+            ctrlEnterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(ctrlEnterSavesApprovedShortcut);
+            enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.register(enterTriggersAutoSizeShortcut);
+         }
+
+         enterSavesApprovedRegistered = enterSavesApproved;
+      }
+
+      boolean escClosesEditor = configHolder.isEscClosesEditor();
+      if (escClosesEditor != escClosesEditorRegistered)
+      {
+         if (escClosesEditor) {
+            escClosesEditorHandlerRegistration = keyShortcutPresenter.register(escClosesEditorShortcut);
+         }
+         else
+         {
+            if (escClosesEditorHandlerRegistration != null)
+            {
+               escClosesEditorHandlerRegistration.removeHandler();
+            }
+         }
+         escClosesEditorRegistered = escClosesEditor;
+      }
    }
 
    @Override
@@ -458,9 +732,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             editor.setViewMode(ToggleEditor.ViewMode.EDIT);
             validate(editor);
          }
+         revealDisplay();
       }
    }
-
+   
    @Override
    public void onInsertString(final InsertStringInEditorEvent event)
    {
@@ -495,58 +770,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-   }
-
-   @Override
-   public void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor)
-   {
-      checkKey.init(event.getNativeEvent());
-
-      if (checkKey.isCopyFromSourceKey())
-      {
-         copySource(editor);
-      }
-      else if (checkKey.isNextEntryKey())
-      {
-         moveNext(false);
-      }
-      else if (checkKey.isPreviousEntryKey())
-      {
-         movePrevious(false);
-      }
-      else if (checkKey.isNextStateEntryKey() && isModalNavEnabled)
-      {
-         moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
-      }
-      else if (checkKey.isPreviousStateEntryKey() && isModalNavEnabled)
-      {
-         moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
-      }
-      else if (checkKey.isSaveAsFuzzyKey())
-      {
-         event.stopPropagation();
-         event.preventDefault(); // stop browser save
-         saveAsFuzzy();
-      }
-      else if (checkKey.isSaveAsApprovedKey(configHolder.isButtonEnter()))
-      {
-         event.stopPropagation();
-         event.preventDefault();
-         saveAsApprovedAndMoveNext();
-      }
-      else if (checkKey.isCloseEditorKey(configHolder.isButtonEsc()))
-      {
-         onCancel();
-      }
-      else if (checkKey.isUserTyping() && checkKey.isEnterKey())
-      {
-         //because enter itself will increase one line
-         editor.autoSizePlusOne();
-      }
-      else if (checkKey.isUserTyping())
-      {
-         editor.autoSize();
-      }
    }
 
    public void moveToNextState(final NavTransUnitEvent.NavigationType nav)
@@ -587,5 +810,17 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void onEnable(EnableModalNavigationEvent event)
    {
       isModalNavEnabled = event.isEnable();
+   }
+   
+   public void revealDisplay()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+   }
+   
+   public void concealDisplay()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
    }
 }

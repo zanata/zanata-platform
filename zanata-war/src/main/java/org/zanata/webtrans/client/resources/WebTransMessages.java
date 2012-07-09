@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.resources;
 
+import java.util.List;
+
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -59,16 +61,16 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
 
-   @DefaultMessage("Show Editor Options")
-   String showEditorOptions();
+   @DefaultMessage("Show Options")
+   String showOptions();
 
-   @DefaultMessage("Hide Editor Options")
-   String hideEditorOptions();
+   @DefaultMessage("Hide Options")
+   String hideOptions();
 
-   @DefaultMessage("► Options")
+   @DefaultMessage("▲ Options")
    String showEditorOptionsLabel();
 
-   @DefaultMessage("◄ Options")
+   @DefaultMessage("▼ Options")
    String hideEditorOptionsLabel();
 
    @DefaultMessage("▼ Minimise")
@@ -77,23 +79,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("▲ Restore")
    String restoreLabel();
 
-   @DefaultMessage("Find")
-   String findButton();
-
-   @DefaultMessage("Find Messages")
-   String transUnitSearchesHeading();
-
-   @DefaultMessage("Translation Unit Details")
-   String transUnitDetailsHeading();
-
    @DefaultMessage("Translation Memory/Glossary")
    String tmGlossaryHeading();
-
-   @DefaultMessage("Validation Details")
-   String validationDetailsHeading();
-
-   @DefaultMessage("Source or Target content")
-   String findSourceOrTargetString();
 
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
@@ -244,6 +231,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo")
    String undo();
 
+   @DefaultMessage("Undone")
+   String undone();
+
    @DefaultMessage("Undoing")
    String undoInProgress();
 
@@ -252,6 +242,19 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Undo successful")
    String undoSuccess();
+
+   // @formatter:off
+   @Description("Message for unsuccessful undo")
+   @DefaultMessage("{0} items can not be undone. {1} items are reverted")
+   @AlternateMessage({
+         "one|=0", "Item can not be undone",
+         "other|=0", "Items can not be undone"
+   })
+   String undoUnsuccessful(@PluralCount int unsuccessfulCount, @PluralCount int successfulCount);
+   // @formatter:on
+
+   @DefaultMessage("Undo failed")
+   String undoFailure();
 
    @DefaultMessage("Undo not possible in read-only workspace")
    String cannotUndoInReadOnlyMode();
@@ -283,6 +286,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("▼")
    String downArrow();
+   
+   @DefaultMessage("Layout Selection")
+   String layoutSelection();
 
    @DefaultMessage("Notification")
    String notification();
@@ -290,16 +296,16 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Available Keyboard Shortcuts")
    String availableKeyShortcutsTitle();
 
-   @DefaultMessage("select text flows in all documents")
+   @DefaultMessage("Select text flows in all documents")
    String selectAllTextFlowsKeyShortcut();
 
-   @DefaultMessage("focus search phrase")
+   @DefaultMessage("Focus search phrase")
    String focusSearchPhraseKeyShortcut();
 
-   @DefaultMessage("focus replacement phrase")
+   @DefaultMessage("Focus replacement phrase")
    String focusReplacementPhraseKeyShortcut();
 
-   @DefaultMessage("show available shortcuts")
+   @DefaultMessage("Show available shortcuts")
    String showAvailableKeyShortcuts();
 
    @DefaultMessage("Application")
@@ -340,4 +346,16 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
    String requirePreviewDescription();
+
+   @DefaultMessage("Navigate to next row")
+   String navigateToNextRow();
+   
+   @DefaultMessage("Navigate to previous row")
+   String navigateToPreviousRow();
+
+   @DefaultMessage("Open editor in selected row")
+   String openEditorInSelectedRow();
+
+   @DefaultMessage("Close keyboard shortcuts list")
+   String closeShortcutView();
 }

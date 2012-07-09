@@ -7,8 +7,8 @@
    xmlns:rich="http://richfaces.org/rich"
    template="/WEB-INF/facelets/email/template_email.xhtml">
    
-  <ui:param name="toName" value="#{sendEmail.toName}" />
-  <ui:param name="toEmailAddr" value="#{sendEmail.toEmailAddr}" />
+  <ui:param name="toName" value="#{emailServiceImpl.toName}" />
+  <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
   <ui:param name="replyToName" value="#{sendEmail.fromName}" />
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}" />
   <ui:param name="subject" value="#{messages['jsf.email.admin.SubjectPrefix']} #{sendEmail.subject}" />

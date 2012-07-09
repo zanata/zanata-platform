@@ -20,30 +20,33 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.SurplusKeyListener;
+import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
  * Detects shortcut key combinations such as Alt+KEY and Shift+Alt+KEY and
@@ -62,19 +65,23 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    public interface Display extends WidgetDisplay
    {
-      void addContext(String title, List<String> shortcuts);
+      void addContext(ShortcutContext context, Collection<Set<KeyShortcut>> shorcutSets);
 
       void showPanel();
 
       public void clearPanel();
 
-      //hide method not provided as auto-hide is enabled
+      boolean isShowing();
+
+      void hide(boolean autoClosed);
    }
 
    /**
-    * Key uses {@link KeyShortcut#keysHash()}
+    * Key uses {@link Keys#hashCode()}
     */
    private Map<Integer, Set<KeyShortcut>> shortcutMap;
+
+   private Map<ShortcutContext, Set<SurplusKeyListener>> surplusKeyMap;
 
    private Set<ShortcutContext> activeContexts;
 
@@ -100,81 +107,39 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          {
             NativeEvent evt = event.getNativeEvent();
 
-            if ((event.getTypeInt() & Event.ONKEYDOWN) != 0)
+            // TODO enable keypress events if any shortcuts require them
+            if ((event.getTypeInt() & (Event.ONKEYDOWN | Event.ONKEYUP)) != 0)
             {
-               Log.debug("Event type: " + evt.getType());
-
                processKeyEvent(evt);
-
-               // Log.debug("Key event. Stopping propagation.");
-               // evt.stopPropagation();
-               // evt.preventDefault();
             }
          }
       });
 
-      // could try to use ?, although this is not as simple as passing character '?'
-      registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y',
-            ShortcutContext.Application,
-            messages.showAvailableKeyShortcuts(),
-            new KeyShortcutEventHandler()
+      register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE), ShortcutContext.Application,
+            messages.closeShortcutView(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
       {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (display.isShowing())
+            {
+               display.hide(true);
+            }
+         }
+      }));
 
+      // could try to use ?, although this is not as simple as passing character
+      // '?'
+      register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'Y'), ShortcutContext.Application,
+            messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
+      {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             display.clearPanel();
             for (ShortcutContext context : ensureActiveContexts())
             {
-               ArrayList<String> shortcutStrings = new ArrayList<String>();
-               for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
-               {
-                  for (KeyShortcut shortcut : shortcutSet)
-                  {
-                     if (shortcut.getContext() == context)
-                     {
-                        StringBuilder sb = new StringBuilder();
-                        if ((shortcut.getModifiers() & KeyShortcut.CTRL_KEY) != 0)
-                        {
-                           sb.append("Ctrl+");
-                        }
-                        if ((shortcut.getModifiers() & KeyShortcut.SHIFT_KEY) != 0)
-                        {
-                           sb.append("Shift+");
-                        }
-                        if ((shortcut.getModifiers() & KeyShortcut.META_KEY) != 0)
-                        {
-                           sb.append("Meta+");
-                        }
-                        if ((shortcut.getModifiers() & KeyShortcut.ALT_KEY) != 0)
-                        {
-                           sb.append("Alt+");
-                        }
-                        sb.append((char) shortcut.getKeyCode());
-                        sb.append(" : ");
-                        sb.append(shortcut.getDescription());
-                        shortcutStrings.add(sb.toString());
-                     }
-                  }
-               }
-
-               String contextName = "";
-               switch (context)
-               {
-               case Application:
-                  contextName = messages.applicationScope();
-                  break;
-               case ProjectWideSearch:
-                  contextName = messages.projectWideSearchAndReplace();
-                  break;
-               case Edit:
-                  contextName = messages.editScope();
-                  break;
-               case Navigation:
-                  contextName = messages.navigationScope();
-                  break;
-               }
-               display.addContext(contextName, shortcutStrings);
+               display.addContext(context, ensureShortcutMap().values());
             }
             display.showPanel();
          }
@@ -203,7 +168,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       {
          if (context == ShortcutContext.Application)
          {
-            // TODO throw exception? Remove this check? Just warn but still remove context?
+            // TODO throw exception? Remove this check? Just warn but still
+            // remove context?
             Log.warn("Tried to set global shortcut context inactive. Ignoring.");
          }
          else
@@ -213,44 +179,115 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       }
    }
 
-   public HandlerRegistration registerKeyShortcut(KeyShortcut shortcut)
+   /**
+    * Register a {@link KeyShortcut} to respond to a specific key combination for a context.
+    * 
+    * @param shortcut to register
+    * 
+    * @return a {@link HandlerRegistration} that can be used to un-register the shortcut
+    */
+   public HandlerRegistration register(KeyShortcut shortcut)
    {
-      Log.info("registering key shortcut. key: " + shortcut.getKeyCode() + " modifier: " + shortcut.getModifiers() + " keyhash: " + shortcut.keysHash());
-      Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.keysHash());
+      Log.debug("registering key shortcut. key: " + shortcut.getKeys().getKeyCode() + " modifier: " + shortcut.getKeys().getModifiers() + " key hash: " + shortcut.getKeys().hashCode());
+      Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.getKeys().hashCode());
       if (shortcuts == null)
       {
          shortcuts = new HashSet<KeyShortcut>();
-         ensureShortcutMap().put(shortcut.keysHash(), shortcuts);
+         ensureShortcutMap().put(shortcut.getKeys().hashCode(), shortcuts);
       }
       shortcuts.add(shortcut);
       return new KeyShortcutHandlerRegistration(shortcut);
    }
 
+   /**
+    * Register a {@link SurplusKeyListener} to catch all non-shortcut key events for a context.
+    * 
+    * @param listener
+    * @return a {@link HandlerRegistration} that can be used to un-register the listener
+    */
+   public HandlerRegistration register(SurplusKeyListener listener)
+   {
+      Set<SurplusKeyListener> listeners = ensureSurplusKeyListenerMap().get(listener.getContext());
+      if (listeners == null)
+      {
+         listeners = new HashSet<SurplusKeyListener>();
+         ensureSurplusKeyListenerMap().put(listener.getContext(), listeners);
+      }
+      listeners.add(listener);
+      return new SurplusKeyListenerHandlerRegistration(listener);
+   }
+
+   /**
+    * Check for active shortcuts for the entered key combination,
+    * trigger events in handlers, then if no shortcuts have been
+    * triggered, fire any registered {@link SurplusKeyListener}
+    * events.
+    * 
+    * @param evt
+    */
    private void processKeyEvent(NativeEvent evt)
    {
       int modifiers = calculateModifiers(evt);
       int keyHash = calculateKeyHash(modifiers, evt.getKeyCode());
       Log.debug("processing key shortcut for key" + evt.getKeyCode() + " with hash " + keyHash);
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keyHash);
-      if (shortcuts != null)
+      boolean shortcutFound = false;
+      KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers, evt.getKeyCode());
+      if (shortcuts != null && !shortcuts.isEmpty())
       {
-         KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers, evt.getKeyCode());
          for (KeyShortcut shortcut : shortcuts)
          {
-            if (ensureActiveContexts().contains(shortcut.getContext()))
+            if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyEvent().nativeEventType.equals(evt.getType()))
             {
+               shortcutFound = true;
+               if (shortcut.isStopPropagation())
+               {
+                  evt.stopPropagation();
+               }
+               if (shortcut.isPreventDefault())
+               {
+                  evt.preventDefault();
+               }
                shortcut.getHandler().onKeyShortcut(shortcutEvent);
             }
          }
       }
+
+      if(!shortcutFound)
+      {
+         for (ShortcutContext context : ensureActiveContexts())
+         {
+            Set<SurplusKeyListener> listeners = ensureSurplusKeyListenerMap().get(context);
+            if (listeners != null && !listeners.isEmpty())
+            {
+               for (SurplusKeyListener listener : listeners)
+               {
+                  if (listener.getKeyEvent().nativeEventType.equals(evt.getType()))
+                  {
+                     // could add interface with these methods to reduce duplication
+                     if (listener.isStopPropagation())
+                     {
+                        evt.stopPropagation();
+                     }
+                     if (listener.isPreventDefault())
+                     {
+                        evt.preventDefault();
+                     }
+                     listener.getHandler().onKeyShortcut(shortcutEvent);
+                  }
+               }
+            }
+         }
+      }
+
    }
 
    /**
-    * Calculate a hash that should match {@link KeyShortcut#keysHash()}.
+    * Calculate a hash that should match {@link Keys#hashCode()}.
     * 
     * @param evt
-    * @return 
-    * @see KeyShortcut#keysHash()
+    * @return
+    * @see Keys#hashCode()
     */
    private int calculateKeyHash(int modifiers, int keyCode)
    {
@@ -262,10 +299,10 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    private int calculateModifiers(NativeEvent evt)
    {
       int modifiers = 0;
-      modifiers |= evt.getAltKey() ? KeyShortcut.ALT_KEY : 0;
-      modifiers |= evt.getShiftKey() ? KeyShortcut.SHIFT_KEY : 0;
-      modifiers |= evt.getCtrlKey() ? KeyShortcut.CTRL_KEY : 0;
-      modifiers |= evt.getMetaKey() ? KeyShortcut.META_KEY : 0;
+      modifiers |= evt.getAltKey() ? Keys.ALT_KEY : 0;
+      modifiers |= evt.getShiftKey() ? Keys.SHIFT_KEY : 0;
+      modifiers |= evt.getCtrlKey() ? Keys.CTRL_KEY : 0;
+      modifiers |= evt.getMetaKey() ? Keys.META_KEY : 0;
       return modifiers;
    }
 
@@ -300,13 +337,42 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       @Override
       public void removeHandler()
       {
-         Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.keysHash());
+         Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.getKeys().hashCode());
          if (shortcuts != null)
          {
             shortcuts.remove(shortcut);
          }
       }
-      
+
+   }
+   private Map<ShortcutContext, Set<SurplusKeyListener>> ensureSurplusKeyListenerMap()
+   {
+      if (surplusKeyMap == null)
+      {
+         surplusKeyMap = new HashMap<ShortcutContext, Set<SurplusKeyListener>>();
+      }
+      return surplusKeyMap;
    }
 
+   private class SurplusKeyListenerHandlerRegistration implements HandlerRegistration
+   {
+
+      private SurplusKeyListener listener;
+
+      public SurplusKeyListenerHandlerRegistration(SurplusKeyListener listener)
+      {
+         this.listener = listener;
+      }
+
+      @Override
+      public void removeHandler()
+      {
+         Set<SurplusKeyListener> listeners = ensureSurplusKeyListenerMap().get(listener.getContext());
+         if (listeners != null)
+         {
+            listeners.remove(listener);
+         }
+      }
+
+   }
 }

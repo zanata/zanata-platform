@@ -80,6 +80,16 @@
   	<to last="true">/iteration/edit.seam\?projectSlug=$1&amp;slug=$2</to>
   </rule>
 
+  <rule>
+    <from casesensitive="true">^/iteration/request_join_group/([^/]+)/([^/]+)/([^/]+)/?$</from>
+    <to last="true">/iteration/request_to_join_group.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1&amp;projectSlug=$2&amp;iterationSlug=$3</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/iteration/copytrans/([^/]+)/(.+)$</from>
+    <to last="true">/iteration/copy_trans.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
+  </rule>
+
   <!-- zanata.xml -->
   <rule>
     <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/config/?$</from>
@@ -209,14 +219,21 @@
   </rule>
   
   <!-- Version group -->
+  
+  <rule>
+    <from casesensitive="true">^/version-group/create(.+)$</from>
+    <to last="true">/version-group/create_version_group.seam?$1</to>
+  </rule>
+  
+  
   <rule>
     <from casesensitive="true">^/version-group/list(.+)?$</from>
     <to last="true">/version-group/home.seam$1</to>
   </rule>
-  
+
   <rule>
-    <from casesensitive="true">^/version-group/view/(.+)$</from>
-    <to last="true">/version-group/version_group.seam\?slug=$1</to>
+    <from casesensitive="true">^/version-group/view/([^/]+)/?(\?(.*))?$</from>
+    <to last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;$3</to>
   </rule>
   
   <rule>
@@ -228,7 +245,12 @@
     <from casesensitive="true">^/version-group/maintainer/(.+)?$</from>
     <to last="true">/version-group/assign_maintainer.seam$1</to>
   </rule>
-    
+  
+   <rule>
+    <from casesensitive="true">^/version-group/join/(.+)$</from>
+    <to last="true">/version-group/request_to_join.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1</to>
+  </rule>
+  
   <outbound-rule>
     <from>^(/.+)?/admin/(.+).seam$</from>
     <to>$1/admin/$2</to>
@@ -275,8 +297,8 @@
     <to>$1/project/list$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
-    <to>$1/iteration/view/$2/$3</to>
+    <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/view/$2/$3?$5</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
@@ -285,6 +307,11 @@
   <outbound-rule>
     <from>^(/.+)?/iteration/edit.seam\?projectSlug=([^&amp;]+)&amp;slug=([^&amp;]+)$</from>
     <to>$1/iteration/edit/$2/$3</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/iteration/copy_trans.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/copytrans/$2/$3?$5</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/login.seam(.+)?$</from>
@@ -331,10 +358,17 @@
     <from>^(/.+)?/version-group/home.seam(.+)?$</from>
     <to>$1/version-group/list$2</to>
   </outbound-rule>
+  
+   <outbound-rule>
+    <from>^(/.+)?/version-group/create_version_group.seam(.+)?$</from>
+    <to>$1/version-group/create/$2</to>
+  </outbound-rule>
+  
   <outbound-rule>
-    <from>^(/.+)?/version-group/version_group.seam\?slug=(.+)$</from>
+    <from>^(/.+)?/version-group/version_group.seam\?versionGroupSlug=(.+)$</from>
     <to>$1/version-group/view/$2</to>
   </outbound-rule>
+
   <outbound-rule>
     <from>^(/.+)?/version-group/edit.seam(.+)$</from>
     <to>$1/version-group/edit/$2</to>

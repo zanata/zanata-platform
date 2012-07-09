@@ -40,7 +40,6 @@ import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -76,7 +75,6 @@ public class AppPresenterTest
    private static final String SHOW_EDITOR_KEY_SHORTCUT_DESCRIPTION = "show editor view";
    private static final String SHOW_PROJECT_WIDE_SEARCH_KEY_SHORTCUT_DESCRIPTION = "show project-wide search";
 
-
    private AppPresenter appPresenter;
 
    HasClickHandlers mockDocumentsLink;
@@ -90,16 +88,12 @@ public class AppPresenterTest
    WebTransMessages mockMessages;
    Person mockPerson;
 
-
-   HasCommand mockLeaveWorkspaceMenuItem;
-   HasCommand mockSignoutMenuItem;
-   HasCommand mockHelpMenuItem;
-
    KeyShortcutPresenter mockKeyShortcutPresenter;
    DocumentListPresenter mockDocumentListPresenter;
    SearchResultsPresenter mockSearchResultsPresenter;
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
+   LayoutSelectorPresenter mockLayoutPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -118,12 +112,6 @@ public class AppPresenterTest
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
    private Capture<PresenterRevealedHandler> capturedPresenterRevealedHandler;
 
-
-   private Capture<Command> capturedLeaveWorkspaceLinkCommand;
-   private Capture<Command> capturedSignoutLinkCommand;
-   private Capture<Command> capturedHelpLinkCommand;
-
-
    private DocumentInfo testDocInfo;
    private DocumentId testDocId;
    private TranslationStats testDocStats;
@@ -141,17 +129,15 @@ public class AppPresenterTest
       mockHistory = createMock(History.class);
       mockIdentity = createMock(Identity.class);
       mockKeyShortcutPresenter = createMock(KeyShortcutPresenter.class);
-      mockLeaveWorkspaceMenuItem = createMock(HasCommand.class);
       mockMessages = createMock(WebTransMessages.class);
       mockPerson = createMock(Person.class);
       mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
-      mockSignoutMenuItem = createMock(HasCommand.class);
       mockTranslationPresenter = createMock(TranslationPresenter.class);
       mockWindow = createMock(Window.class);
       mockWindowLocation = createMock(Window.Location.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockNotificationPresenter = createMock(NotificationPresenter.class);
-      mockHelpMenuItem = createMock(HasCommand.class);
+      mockLayoutPresenter = createMock(LayoutSelectorPresenter.class);
 
       capturedSearchLinkClickHandler = new Capture<ClickHandler>();
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
@@ -164,12 +150,6 @@ public class AppPresenterTest
       capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
       capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
       capturedPresenterRevealedHandler = new Capture<PresenterRevealedHandler>();
-
-      capturedSignoutLinkCommand = new Capture<Command>();
-      capturedLeaveWorkspaceLinkCommand = new Capture<Command>();
-      capturedHelpLinkCommand = new Capture<Command>();
-
-
    }
 
    @BeforeMethod
@@ -183,11 +163,7 @@ public class AppPresenterTest
 
       setupDefaultMockExpectations();
 
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus,
-            mockKeyShortcutPresenter, mockTranslationPresenter,
-            mockDocumentListPresenter, mockSearchResultsPresenter,
-            mockNotificationPresenter, mockIdentity, mockWorkspaceContext,
-            mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
 
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
@@ -276,6 +252,9 @@ public class AppPresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setStats(notNull(TranslationStats.class));
       expectLastCall().anyTimes();
+      
+      mockTranslationPresenter.revealDisplay();
+      expectLastCall().once();
 
       replayAllMocks();
 
@@ -314,6 +293,10 @@ public class AppPresenterTest
       expectLastCall().once();
       mockDisplay.setStats(eq(testDocStats));
       expectLastCall().once();
+      
+      mockTranslationPresenter.revealDisplay();
+      expectLastCall().once();
+      
       replayAllMocks();
 
       appPresenter.bind();
@@ -323,7 +306,6 @@ public class AppPresenterTest
 
       verifyAllMocks();
    }
-
 
    /**
     * Note: this also verifies that editor pending change is saved when changing
@@ -401,7 +383,7 @@ public class AppPresenterTest
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
       simulatePageChangeFromEditor(token, MainView.Documents);
-      //update document stats
+      // update document stats
       capturedDocumentStatsUpdatedEventHandler.getValue().onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(testDocId, updatedStats));
       simulateReturnToEditorView(token);
 
@@ -433,9 +415,8 @@ public class AppPresenterTest
 
       replayAllMocks();
 
-
       appPresenter.bind();
-      //discard captured tokens from bind to allow easy check for new token
+      // discard captured tokens from bind to allow easy check for new token
       capturedHistoryTokenString.reset();
 
       // 1 - no doc loaded, don't generate MainView.Editor token
@@ -475,22 +456,22 @@ public class AppPresenterTest
       expect(mockHistory.getToken()).andReturn("").once();
       replayAllMocks();
       appPresenter.bind();
-      //simulate click
+      // simulate click
       capturedSearchLinkClickHandler.getValue().onClick(searchLinkClickEvent);
       HistoryToken capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
       assertThat("clicking search link should set view in history token to search", capturedToken.getView(), is(MainView.Search));
-      //TODO could check that nothing else has changed in token
+      // TODO could check that nothing else has changed in token
       verifyAllMocks();
    }
 
    public void testShowsHidesReadonlyLabel()
    {
-      //receives readonly event, label shown
+      // receives readonly event, label shown
       WorkspaceContextUpdateEvent readOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
       expect(readOnlyEvent.isReadOnly()).andReturn(true).anyTimes();
       mockDisplay.setReadOnlyVisible(true);
       expectLastCall().once();
-      //receives not-readonly event, label hidden
+      // receives not-readonly event, label hidden
       WorkspaceContextUpdateEvent editableEvent = createMock(WorkspaceContextUpdateEvent.class);
       expect(editableEvent.isReadOnly()).andReturn(false).anyTimes();
       mockDisplay.setReadOnlyVisible(false);
@@ -537,6 +518,9 @@ public class AppPresenterTest
       expectLastCall().once();
       mockSearchResultsPresenter.concealDisplay();
       expectLastCall().once();
+      
+      mockTranslationPresenter.revealDisplay();
+      expectLastCall().anyTimes();
    }
 
    /**
@@ -549,6 +533,7 @@ public class AppPresenterTest
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(docInEditorToken.toTokenString())
       {
       });
+      
       return docInEditorToken;
    }
 
@@ -566,7 +551,6 @@ public class AppPresenterTest
       return docInEditorToken;
    }
 
-
    /**
     * Sets expectations to show the documents view, update the document label,
     * show the given project stats, and save pending editor changes
@@ -579,27 +563,43 @@ public class AppPresenterTest
    }
 
    /**
-    * Sets expectations to show the given view, update the document label,
-    * show the given stats, and save pending editor changes.
+    * Sets expectations to show the given view, update the document label, show
+    * the given stats, and save pending editor changes.
     * 
     * @param toView the view to show
     * @param expectedStats the stats that should be displayed
-    * @param expectedDocLabel the text that the document label is expected to show
+    * @param expectedDocLabel the text that the document label is expected to
+    *           show
     */
    private void expectViewTransitionFromEditor(MainView toView, TranslationStats expectedStats, String expectedDocLabel)
    {
-      //expect return to given view
+      // expect return to given view
       mockDisplay.showInMainView(toView);
       expectLastCall().once();
       if (toView == MainView.Search)
       {
          mockSearchResultsPresenter.revealDisplay();
          expectLastCall().once();
+
+         mockTranslationPresenter.concealDisplay();
+         expectLastCall().once();
       }
       else
       {
          mockSearchResultsPresenter.concealDisplay();
          expectLastCall().once();
+         
+         if (toView == MainView.Editor)
+         {
+            mockTranslationPresenter.revealDisplay();
+            expectLastCall().once();
+         }
+         else if (toView == MainView.Documents)
+         {
+            mockTranslationPresenter.concealDisplay();
+            expectLastCall().once();
+         }
+
       }
       mockDisplay.setDocumentLabel("", expectedDocLabel);
       expectLastCall().once();
@@ -615,7 +615,7 @@ public class AppPresenterTest
    private void simulatePageChangeFromEditor(HistoryToken fromHistoryState, MainView toView)
    {
       fromHistoryState.setView(toView);
-      //simulate page transition
+      // simulate page transition
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(fromHistoryState.toTokenString())
       {
       });
@@ -642,7 +642,8 @@ public class AppPresenterTest
 
    /**
     * @see #simulateReturnToEditorView(HistoryToken)
-    * @param documentStats the stats object that has been set for the given document
+    * @param documentStats the stats object that has been set for the given
+    *           document
     */
    private void expectReturnToEditorView(TranslationStats documentStats)
    {
@@ -663,7 +664,7 @@ public class AppPresenterTest
       expectPresenterSetupActions();
       setupMockGetterReturnValues();
 
-      //misc and capture setup
+      // misc and capture setup
       mockHistory.fireCurrentHistoryState();
       expectLastCall().anyTimes();
       mockHistory.newItem(capture(capturedHistoryTokenString));
@@ -686,6 +687,10 @@ public class AppPresenterTest
       mockTranslationPresenter.bind();
       expectLastCall().once();
       mockNotificationPresenter.bind();
+      expectLastCall().once();
+      mockLayoutPresenter.bind();
+      expectLastCall().once();
+      mockLayoutPresenter.setLayoutListener(mockTranslationPresenter);
       expectLastCall().once();
 
    }
@@ -726,8 +731,6 @@ public class AppPresenterTest
    {
       mockWindow.setTitle(TEST_WINDOW_TITLE);
       expectLastCall().once();
-      mockDisplay.setUserLabel(TEST_PERSON_NAME);
-      expectLastCall().anyTimes();
       mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
       expectLastCall().anyTimes();
       mockDisplay.setReadOnlyVisible(false);
@@ -740,29 +743,29 @@ public class AppPresenterTest
       expectLastCall().once();
 
       mockDisplay.showInMainView(MainView.Documents);
-      expectLastCall().once(); //starts on document list view
+      expectLastCall().once(); // starts on document list view
+
+      mockTranslationPresenter.concealDisplay();
+      expectLastCall().once();
 
       // due to this display beginning as concealed
       mockSearchResultsPresenter.concealDisplay();
       expectLastCall().once();
-
-      mockLeaveWorkspaceMenuItem.setCommand(and(capture(capturedLeaveWorkspaceLinkCommand), isA(Command.class)));
+      
+      mockDisplay.initMenuList(isA(String.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
       expectLastCall().once();
+      
+      mockDisplay.setLayoutMenuVisible(false);
+      expectLastCall().anyTimes();
+      
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().anyTimes();
 
-      mockHelpMenuItem.setCommand(and(capture(capturedHelpLinkCommand), isA(Command.class)));
-      expectLastCall().once();
-
-      mockSignoutMenuItem.setCommand(and(capture(capturedSignoutLinkCommand), isA(Command.class)));
-      expectLastCall().once();
-
-      expect(mockKeyShortcutPresenter.registerKeyShortcut(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
+      expect(mockKeyShortcutPresenter.register(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
    }
 
    private void setupMockGetterReturnValues()
    {
-      expect(mockDisplay.getSignOutMenuItem()).andReturn(mockSignoutMenuItem).anyTimes();
-      expect(mockDisplay.getHelpMenuItem()).andReturn(mockHelpMenuItem).anyTimes();
-      expect(mockDisplay.getLeaveWorkspaceMenuItem()).andReturn(mockLeaveWorkspaceMenuItem).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
       expect(mockDisplay.getNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
 
@@ -793,9 +796,8 @@ public class AppPresenterTest
       reset(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       reset(mockMessages, mockPerson, mockSearchResultsPresenter);
       reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-      reset(mockNotificationPresenter);
-
-      reset(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchLink);
+      reset(mockNotificationPresenter, mockLayoutPresenter);
+      reset(mockSearchLink);
    }
 
    private void resetAllCaptures()
@@ -805,12 +807,9 @@ public class AppPresenterTest
       capturedDocumentStatsUpdatedEventHandler.reset();
       capturedHistoryTokenString.reset();
       capturedHistoryValueChangeHandler.reset();
-      capturedLeaveWorkspaceLinkCommand.reset();
-      capturedHelpLinkCommand.reset();
       capturedKeyShortcuts.reset();
       capturedProjectStatsUpdatedEventHandler.reset();
       capturedSearchLinkClickHandler.reset();
-      capturedSignoutLinkCommand.reset();
       capturedWorkspaceContextUpdatedEventHandler.reset();
       capturedPresenterRevealedHandler.reset();
       capturedErrorNotificationBtnHandler.reset();
@@ -822,9 +821,8 @@ public class AppPresenterTest
       replay(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       replay(mockMessages, mockPerson, mockSearchResultsPresenter);
       replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-      replay(mockNotificationPresenter);
-
-      replay(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchLink);
+      replay(mockNotificationPresenter, mockLayoutPresenter);
+      replay(mockSearchLink);
    }
 
    private void verifyAllMocks()
@@ -833,8 +831,7 @@ public class AppPresenterTest
       verify(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       verify(mockMessages, mockPerson, mockSearchResultsPresenter);
       verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-      verify(mockNotificationPresenter);
-
-      verify(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchLink);
+      verify(mockNotificationPresenter, mockLayoutPresenter);
+      verify(mockSearchLink);
    }
 }

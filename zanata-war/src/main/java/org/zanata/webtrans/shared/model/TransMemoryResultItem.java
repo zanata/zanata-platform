@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -83,7 +84,7 @@ public class TransMemoryResultItem extends SearchResultItem implements Serializa
       return targetContents.get(0);
    }
 
-   public ArrayList<String> getTargetContents()
+   public List<String> getTargetContents()
    {
       return targetContents;
    }

@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.gin;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.inject.Provides;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
@@ -50,11 +48,13 @@ import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
+import org.zanata.webtrans.client.presenter.LayoutSelectorPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
+import org.zanata.webtrans.client.presenter.TransMemoryMergePresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
@@ -67,6 +67,8 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.OptionsPanelView;
+import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
+import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.view.AppView;
@@ -74,6 +76,7 @@ import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryView;
 import org.zanata.webtrans.client.view.KeyShortcutView;
+import org.zanata.webtrans.client.view.LayoutSelectorView;
 import org.zanata.webtrans.client.view.NotificationView;
 import org.zanata.webtrans.client.view.SearchResultsView;
 import org.zanata.webtrans.client.view.TransMemoryDetailsView;
@@ -86,7 +89,9 @@ import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Provider;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 public class WebTransClientModule extends AbstractPresenterModule
@@ -121,11 +126,13 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationPresenter.Display.class, NotificationView.class);
+      bindPresenter(LayoutSelectorPresenter.class, LayoutSelectorPresenter.Display.class, LayoutSelectorView.class);
 
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);
       bind(SourceContentsDisplay.class).to(SourceContentsView.class);
       bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
+      bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);

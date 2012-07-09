@@ -144,7 +144,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            configHolder.setButtonEnter(event.getValue());
+            configHolder.setEnterSavesApproved(event.getValue());
             eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
@@ -155,15 +155,15 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
-            configHolder.setButtonEsc(event.getValue());
+            configHolder.setEscClosesEditor(event.getValue());
             eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
       // editor buttons always shown by default
       display.getEditorButtonsChk().setValue(true, false);
-      display.getEnterChk().setValue(configHolder.isButtonEnter(), false);
-      display.getEscChk().setValue(configHolder.isButtonEsc(), false);
+      display.getEnterChk().setValue(configHolder.isEnterSavesApproved(), false);
+      display.getEscChk().setValue(configHolder.isEscClosesEditor(), false);
 
       registerHandler(display.getModalNavigationOptionsSelect().addChangeHandler(new ChangeHandler()
       {

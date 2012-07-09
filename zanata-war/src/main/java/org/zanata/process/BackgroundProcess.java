@@ -34,7 +34,7 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
 
    @Logger
    private Log log;
-   
+
    /**
     * Starts the process.
     * 
@@ -43,19 +43,26 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
    @Asynchronous
    public void startProcess(H handle)
    {
-      handle.setInProgress(true);
+      // make sure the process handle is not being reused
+      if( handle.isStarted() || handle.isFinished() )
+      {
+         throw new RuntimeException("Process handles cannot be reused.");
+      }
+
+      handle.start();
       
       try
       {
          runProcess(handle);
       }
-      catch( Exception ex )
+      catch( Throwable t )
       {
-         log.error("Exception with long running process.", ex);
+         // TODO add the throwable to the handle
+         log.error("Exception with long running process.", t);
       }
       finally
       {
-         handle.setInProgress(false);
+         handle.finish();
       }
    }
    

@@ -21,6 +21,7 @@
 package org.zanata.page.projects;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -28,10 +29,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
+import org.zanata.util.WebElementUtil;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,15 +43,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectPage extends AbstractPage
 {
 
+   public static final String ACTIVE_VERSIONS_TABLE_ID = "main_content:activeIterations";
    @FindBy(id = "main_content")
    private WebElement mainContent;
    private final List<WebElement> h1;
 
    @FindBy(linkText = "Create Version")
    private WebElement createVersionLink;
-
-   @FindBy(id = "main_content:activeIterations")
-   private WebElement activeVersions;
 
    public ProjectPage(final WebDriver driver)
    {
@@ -75,9 +77,9 @@ public class ProjectPage extends AbstractPage
 
    public ProjectVersionPage goToActiveVersion(final String versionId)
    {
-      //TODO active versions may not exist yet
+      WebElement activeVersions = getDriver().findElement(By.id(ACTIVE_VERSIONS_TABLE_ID));
       List<WebElement> versionLinks = activeVersions.findElements(By.tagName("a"));
-      ProjectPage.log.info("found {} active versions", versionLinks.size());
+      log.info("found {} active versions", versionLinks.size());
 
       Preconditions.checkState(!versionLinks.isEmpty(), "no version links available");
       Collection<WebElement> found = Collections2.filter(versionLinks, new Predicate<WebElement>()
@@ -93,5 +95,29 @@ public class ProjectPage extends AbstractPage
       Preconditions.checkState(found.size() == 1, versionId + " not found");
       found.iterator().next().click();
       return new ProjectVersionPage(getDriver());
+   }
+
+   public List<String> getVersions()
+   {
+      List<WebElement> tables = getDriver().findElements(By.id(ACTIVE_VERSIONS_TABLE_ID));
+      if (tables.isEmpty())
+      {
+         log.debug("no version exists for this project");
+         return Collections.emptyList();
+      }
+
+      List<WebElement> versionLinks = tables.get(0).findElements(By.tagName("a"));
+
+      List<String> versions = WebElementUtil.elementsToText(versionLinks);
+      return Lists.transform(versions, new Function<String, String>()
+      {
+         @Override
+         public String apply(String from)
+         {
+            String replaceLineBreak = from.replaceAll("\\n", " ");
+            log.debug("version text: {}", replaceLineBreak);
+            return replaceLineBreak.split("\\s")[0];
+         }
+      });
    }
 }

@@ -23,7 +23,6 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -79,15 +78,27 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
+   public HProjectIteration getProjectIterationBySlug(String projectSlug, String iterationSlug)
+   {
+      return projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+   }
+
+   @Override
    public HIterationGroup getBySlug(String slug)
    {
       return versionGroupDAO.getBySlug(slug);
    }
 
    @Override
-   public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm) throws ParseException
+   public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm)
    {
       return projectIterationDAO.searchLikeSlugOrProjectSlug(searchTerm);
+   }
+
+   @Override
+   public List<HIterationGroup> searchLikeSlug(String searchTerm)
+   {
+      return versionGroupDAO.searchLikeSlug(searchTerm);
    }
 
    @Override
@@ -145,4 +156,38 @@ public class VersionGroupServiceImpl implements VersionGroupService
       }
       return false;
    }
+
+   @Override
+   public boolean isVersionInGroup(HIterationGroup group, Long projectIterationId)
+   {
+      if (group != null && projectIterationId != null)
+      {
+         for (HProjectIteration iteration : group.getProjectIterations())
+         {
+            if (iteration.getId().equals(projectIterationId))
+            {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public boolean isGroupInVersion(String groupSlug, Long projectIterationId)
+   {
+      HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
+      if (group != null)
+      {
+         for (HProjectIteration iteration : group.getProjectIterations())
+         {
+            if (iteration.getId().equals(projectIterationId))
+            {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
 }

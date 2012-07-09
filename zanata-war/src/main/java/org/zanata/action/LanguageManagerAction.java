@@ -201,6 +201,7 @@ public class LanguageManagerAction implements Serializable
 
       // Cannot use FacesMessages as they are request scoped.
       // Cannot use UI binding as they don't work in Page scoped beans
+      // TODO Use the new (since 1.7) FlashScopeBean
 
       // Check that locale Id is syntactically valid
       LocaleId localeId;
@@ -222,11 +223,10 @@ public class LanguageManagerAction implements Serializable
       }
 
       // Check for plural forms
-      if( resourceUtils.getPluralForms( localeId ) == null )
+      if( resourceUtils.getPluralForms( localeId, false ) == null )
       {
          // Have to get the component Id this way as binding won't work on a Page scoped bean.
-         this.languageNameValidationMessage = messages.get("jsf.language.validation.UnknownPluralForm");
-         return false;
+         this.languageNameWarningMessage = messages.get("jsf.language.validation.UnknownPluralForm");
       }
 
       // Check for similar already registered languages (warning)

@@ -83,6 +83,7 @@ public class SeamAutowire
       {
          instance = new SeamAutowire();
          instance.rewireSeamComponentClass();
+         instance.rewireSeamTransactionClass();
       }
       return instance;
    }
@@ -309,6 +310,29 @@ public class SeamAutowire
          throw new RuntimeException("Problem rewiring Seam's Component class", e);
       }
 
+   }
+
+   private void rewireSeamTransactionClass()
+   {
+      try
+      {
+         ClassPool pool = ClassPool.getDefault();
+         CtClass cls = pool.get("org.jboss.seam.transaction.Transaction");
+
+         // Replace Component's method bodies with the ones in AutowireComponent
+         CtMethod methodToReplace = cls.getDeclaredMethod("instance", new CtClass[]{});
+         methodToReplace.setBody("{ return org.zanata.seam.AutowireTransaction.instance(); }");
+
+         cls.toClass();
+      }
+      catch (NotFoundException e)
+      {
+         throw new RuntimeException("Problem rewiring Seam's Transaction class", e);
+      }
+      catch (CannotCompileException e)
+      {
+         throw new RuntimeException("Problem rewiring Seam's Transaction class", e);
+      }
    }
 
    private static ComponentAccessor[] getAllComponentAccessors( Object component )

@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.resources;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
@@ -43,6 +44,14 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Check that printf style (%x) variables are consistent")
    String printfVariablesValidatorDescription();
 
+   @DefaultMessage("Variable {0} position is out of range")
+   String varPositionOutOfRange(String var);
+
+   @DefaultMessage("Numbered arguments cannot mix with unumbered arguments")
+   String mixVarFormats();
+
+   @DefaultMessage("Variables have same position: {0,collection,string}")
+   String varPositionDuplicated(Collection<String> vars);
 
    // Java variables validator
 
@@ -93,4 +102,23 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Tags in unexpected position: {0,list,string}")
    @AlternateMessage({ "one", "Tag in unexpected position: {0,list,string}" })
    String tagsWrongOrder(@PluralCount List<String> tags);
+
+
+   //XML Entity validator
+
+   @DefaultMessage("XML entity")
+   String xmlEntityValidatorName();
+
+   @DefaultMessage("Check that XML entity are complete")
+   String xmlEntityValidatorDescription();
+
+   @DefaultMessage("XML entity [ {0} ] is incomplete")
+   String incompleteXMLEntity(String entity);
+   
+   @Description("List of XML entity in original string have not been included in the target")
+   @DefaultMessage("Missing entity: {0,list,string}")
+   String entityMissing(List<String> entities);
+
+   @DefaultMessage("Possible XML entity [ {0} ] does not match with pre-defined [ {1} ]")
+   String invalidPredefinedEnity(String word, String preDefinedEntity);
 }

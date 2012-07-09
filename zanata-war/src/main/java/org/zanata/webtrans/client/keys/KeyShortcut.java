@@ -30,19 +30,35 @@ import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  * 
  */
-public class KeyShortcut
+public class KeyShortcut implements Comparable<KeyShortcut>
 {
-   public static final int ALT_KEY = 0x1;
-   public static final int SHIFT_KEY = 0x2;
-   public static final int CTRL_KEY = 0x4;
-   public static final int META_KEY = 0x8;
-   public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
+   public enum KeyEvent {
+      KEY_UP ("keyup"),
+      KEY_DOWN ("keydown"),
+      KEY_PRESS ("keypress");
 
-   private final int modifiers;
-   private final int keyCode;
+      public final String nativeEventType;
+
+      KeyEvent(String nativeType)
+      {
+         this.nativeEventType = nativeType;
+      }
+   }
+
+   public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
+
+   // TODO replace with List<Keys>
+   private final Keys keys;
+
+
    private final ShortcutContext context;
    private String description;
    private final KeyShortcutEventHandler handler;
+   private final KeyEvent keyEvent;
+
+   private final boolean stopPropagation;
+   private final boolean preventDefault;
+
 
    /**
     * Construct a KeyShortcut.
@@ -50,9 +66,9 @@ public class KeyShortcut
     * @param modifiers keys such as Shift and Alt that must be depressed for the
     *           shortcut to fire.
     *           <p>
-    *           Use {@link #ALT_KEY}, {@link #SHIFT_KEY},
-    *           {@link #SHIFT_ALT_KEYS}, {@link #META_KEY} and {@link #CTRL_KEY}
-    *           to generate this. ( e.g. {@code} CTRL_KEY | ALT_KEY )
+    *           Use {@link Keys#ALT_KEY}, {@link Keys#SHIFT_KEY},
+    *           {@link Keys#SHIFT_ALT_KEYS}, {@link Keys#META_KEY} and {@link Keys#CTRL_KEY}
+    *           to generate this. ( e.g. {@code CTRL_KEY | ALT_KEY} )
     *           </p>
     * @param keyCode the integer code for the key.
     *           <p>
@@ -63,29 +79,44 @@ public class KeyShortcut
     *           Note that for keypress events, the key code depends on Shift and
     *           CapsLock and will give the lowercase or uppercase ASCII code as
     *           expected. keydown and keyup events appear always to give the
-    *           uppercase key code (keydown is currently used for all shortcuts.
+    *           uppercase key code.
     *           </p>
     * @param context see
     *           {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
-    * @param description shown to the user in the key shortcut summary pane
+    * @param description shown to the user in the key shortcut summary pane.
+    *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being
+    *        displayed in the summary pane.
+    * @param keyEvent determines which type of key event will trigger this shortcut.
+    * @param stopPropagation {@see NativeEvent#stopPropagation()}
+    * @param preventDefault {@see NativeEvent#preventDefault()}
+    * @param handler activated for a registered {@link KeyShortcut} when context is active
+    *        and a user inputs the correct key combination
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
+   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description,
+         KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
    {
-      this.modifiers = modifiers;
-      this.keyCode = keyCode;
+      this.keys = shortcutKeys;
       this.context = context;
       this.description = description;
       this.handler = handler;
+      this.keyEvent = keyEvent;
+      this.stopPropagation = stopPropagation;
+      this.preventDefault = preventDefault;
    }
 
-   public int getModifiers()
+   /**
+    * Create a key-down key shortcut that does not stop propagation or prevent default actions.
+    * 
+    * @see #KeyShortcut(int, int, ShortcutContext, String, KeyShortcutEventHandler, String, boolean, boolean, boolean)
+    */
+   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description, KeyShortcutEventHandler handler)
    {
-      return modifiers;
+      this(shortcutKeys, context, description, KeyEvent.KEY_DOWN, false, false, handler);
    }
 
-   public int getKeyCode()
+   public Keys getKeys()
    {
-      return keyCode;
+      return keys;
    }
 
    public ShortcutContext getContext()
@@ -103,29 +134,35 @@ public class KeyShortcut
       return handler;
    }
 
-   /**
-    * Return a hash for just the user input part of the shortcut, without
-    * context.
-    * 
-    * @return a hash that is unique for a set of modifiers + key code
-    */
-   public int keysHash()
+   public KeyEvent getKeyEvent()
    {
-      return keyCode * 8 + modifiers;
+      return keyEvent;
    }
 
+   public boolean isDisplayInView()
+   {
+      return !DO_NOT_DISPLAY_DESCRIPTION.equals(description);
+   }
+
+   public boolean isStopPropagation()
+   {
+      return stopPropagation;
+   }
+
+   public boolean isPreventDefault()
+   {
+      return preventDefault;
+   }
+
+   // TODO update to deal with list of key combinations
    @Override
    public int hashCode()
    {
-      int hash = context.ordinal();
-      hash = hash * 256 + keyCode;
-      hash = hash * 8 + modifiers;
-      return hash;
+      return context.ordinal() * 2048 + keys.hashCode();
    }
 
    /**
-    * Two {@link KeyShortcut} objects are equal if they have the same modifier
-    * keys, key code and context.
+    * Two {@link KeyShortcut} objects are equal if they have the same key combination and context.
     */
    @Override
    public boolean equals(Object obj)
@@ -135,6 +172,13 @@ public class KeyShortcut
       if (!(obj instanceof KeyShortcut))
          return false;
       KeyShortcut other = (KeyShortcut) obj;
-      return modifiers == other.modifiers && keyCode == other.keyCode && context == other.context;
+      return keys.equals(other.keys) && context == other.context;
+   }
+
+   // TODO update to deal with list of key combinations
+   @Override
+   public int compareTo(KeyShortcut o)
+   {
+      return keys.compareTo(o.keys);
    }
 }

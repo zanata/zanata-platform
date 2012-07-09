@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
+import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransMemoryDetails implements IsSerializable
@@ -10,20 +11,23 @@ public class TransMemoryDetails implements IsSerializable
    private String projectName;
    private String iterationName;
    private String docId;
+   private String resId;
+   private String msgContext;
 
    @SuppressWarnings("unused")
    private TransMemoryDetails()
    {
-      this(null, null, null, null, null);
    }
 
-   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId)
+   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext)
    {
       this.sourceComment = sourceComment;
       this.targetComment = targetComment;
       this.projectName = projectName;
       this.iterationName = iterationName;
       this.docId = docId;
+      this.resId = resId;
+      this.msgContext = msgContext;
    }
 
    public String getSourceComment()
@@ -49,5 +53,32 @@ public class TransMemoryDetails implements IsSerializable
    public String getDocId()
    {
       return docId;
+   }
+
+
+   public String getResId()
+   {
+      return resId;
+   }
+
+   public String getMsgContext()
+   {
+      return msgContext;
+   }
+
+   @Override
+   public String toString()
+   {
+      // @formatter:off
+      return Objects.toStringHelper(this).
+            add("sourceComment", sourceComment).
+            add("targetComment", targetComment).
+            add("projectName", projectName).
+            add("iterationName", iterationName).
+            add("docId", docId).
+            add("resId", resId).
+            add("msgContext", msgContext).
+            toString();
+      // @formatter:on
    }
 }

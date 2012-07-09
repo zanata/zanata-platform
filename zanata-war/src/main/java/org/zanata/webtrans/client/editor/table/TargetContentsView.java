@@ -47,6 +47,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    interface Binder extends UiBinder<VerticalPanel, TargetContentsView>
    {
    }
+
    private static Binder binder = GWT.create(Binder.class);
 
    public static final int COLUMNS = 1;
@@ -61,6 +62,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    PushButton fuzzyButton;
    @UiField
    PushButton cancelButton;
+
    private VerticalPanel rootPanel;
    private String findMessage;
    private ArrayList<ToggleEditor> editors;

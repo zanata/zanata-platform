@@ -59,6 +59,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
@@ -78,6 +79,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.inject.Provider;
 
 /**
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -130,6 +132,7 @@ public class SearchResultsPresenterTest
    WebTransMessages mockMessages;
    Location mockWindowLocation;
    WorkspaceContext mockWorkspaceContext;
+   Provider<UndoLink> mockUndoLinkProvider;
 
    HasValue<Boolean> mockCaseSensitiveChk;
    HasValue<String> mockFilterTextBox;
@@ -273,7 +276,7 @@ public class SearchResultsPresenterTest
 
       searchResultsPresenter = new SearchResultsPresenter(mockDisplay, mockEventBus,
             mockDispatcher, mockHistory, mockMessages, mockWorkspaceContext,
-            mockKeyShortcutPresenter, mockWindowLocation);
+            mockKeyShortcutPresenter, mockUndoLinkProvider, mockWindowLocation);
 
    }
 
@@ -555,7 +558,7 @@ public class SearchResultsPresenterTest
       expect(mockWorkspaceContext.isReadOnly()).andReturn(workspaceIsReadOnly).anyTimes();
       mockDisplay.setReplaceAllButtonVisible(!workspaceIsReadOnly);
       mockDisplay.setReplaceAllButtonEnabled(false);
-      expect(mockKeyShortcutPresenter.registerKeyShortcut(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(TOTAL_KEY_SHORTCUTS);
+      expect(mockKeyShortcutPresenter.register(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(TOTAL_KEY_SHORTCUTS);
    }
 
    private void expectUiMessages()

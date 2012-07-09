@@ -23,7 +23,7 @@ package org.zanata;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ExperimentTest
 {
@@ -35,5 +35,30 @@ public class ExperimentTest
       System.out.println(stripNewLine);
       boolean matches = stripNewLine.matches("master\\s+Documents.+");
       assertThat(matches, Matchers.equalTo(true));
+   }
+   
+   @Test(enabled = false)
+   public void canDoCampbell() {
+      //#. Tag: para
+      //#, no-c-format
+      //msgid "Describes Fedora, the Fedora Project, and how you can help."
+      //msgstr ""
+      String tag = "#. Tag: para";
+      String msgCtx = "#, no-c-format";
+      String msgId = "msgid \"This is string number %d. \"";
+      String msgStr = "msgstr \"%s %d\"";
+      String potMsgStr = "msgstr \"\"";
+
+      for (int i = 55; i > 0; i--)
+      {
+         System.out.println(tag);
+         System.out.println(msgCtx);
+         System.out.printf(msgId, i);
+         System.out.println();
+         System.out.printf(potMsgStr);
+//         System.out.printf(msgStr, "translated string number", i);
+         System.out.println();
+         System.out.println();
+      }
    }
 }

@@ -1,0 +1,283 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-06-18T04:48:59\n"
+"PO-Revision-Date: 2012-06-18T04:48:59\n"
+"Last-Translator: Patrick Huang\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "About Fedora"
+msgstr ""
+
+#. Tag: subtitle
+#, no-c-format
+msgid "Fedora, the Fedora Project, and how you can help."
+msgstr ""
+
+#. Tag: productname
+#, no-c-format
+msgid "Fedora"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Describes Fedora, the Fedora Project, and how you can help."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 5. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 6. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 7. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 8. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 9. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 10. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 11. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 12. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 13. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 14. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 15. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 16. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 17. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 18. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 19. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 20. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 21. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 22. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 23. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 24. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 25. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 26. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 27. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 28. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 29. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 30. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 31. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 32. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 33. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 34. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 35. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 36. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 37. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 38. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 39. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 40. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 41. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 42. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 43. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 44. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 45. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 46. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 47. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 48. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 49. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 50. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 51. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 52. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 53. "
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is string number 54. "
+msgstr ""
