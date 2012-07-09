@@ -74,7 +74,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField(provided = true)
    ToggleButton southPanelToggleButton;
    
-   @UiField
+   @UiField(provided = true)
    SplitLayoutPanel mainSplitPanel;
 
    @UiField
@@ -85,6 +85,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    SplitLayoutPanel tmGlossaryPanel;
 
    private static double SIDE_PANEL_WIDTH = 20;
+   private static double MIN_SIDE_PANEL_WIDTH = 20;
    private static double SOUTH_PANEL_HEIGHT = 150;
    private static double MIN_SOUTH_PANEL_HEIGHT = 26;
    private final static double GLOSSARY_PANEL_WIDTH = 500;
@@ -124,15 +125,18 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       tmGlossaryPanel = new SplitLayoutPanel(3);
       
       optionsToggleButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
-      optionsToggleButton.setTitle(messages.hideEditorOptions());
+      optionsToggleButton.setTitle(messages.hideOptions());
       optionsToggleButton.setDown(true);
 
       southPanelToggleButton = new ToggleButton(messages.restoreLabel(), messages.minimiseLabel());
       southPanelToggleButton.setDown(true);
+      
+      mainSplitPanel = new SplitLayoutPanel(3);
 
       initWidget(uiBinder.createAndBindUi(this));
-      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) SIDE_PANEL_WIDTH);
-      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) SOUTH_PANEL_HEIGHT);
+//      setSplitterHeight("3px");
+      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) MIN_SIDE_PANEL_WIDTH);
+      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) MIN_SOUTH_PANEL_HEIGHT);
 
       southPanelTab.add(tmGlossaryPanel, messages.tmGlossaryHeading());
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
@@ -146,6 +150,20 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
       setWorkspaceUsersView(workspaceUsersView.asWidget());
    }
+   
+//   public void setSplitterHeight (String height)
+//   {
+//     int widgetCount = mainSplitPanel.getWidgetCount ();
+//     for (int i = 0; i < widgetCount; i++) {
+//       Widget w = mainSplitPanel.getWidget (i);
+//       if (w.getStyleName ().equals ("gwt-SplitLayoutPanel-VDragger")) {
+//         w.setHeight (height);
+//       }
+//       if (w.getStyleName ().equals ("gwt-SplitLayoutPanel-HDragger")) {
+//          w.setWidth(height);
+//        }
+//     }
+//   }
 
    private void setTranslationMemoryView(Widget translationMemoryView)
    {
@@ -216,7 +234,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       else
       {
          SIDE_PANEL_WIDTH = mainSplitPanel.getWidgetContainerElement(sidePanelOuterContainer).getOffsetWidth();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, 0);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, MIN_SIDE_PANEL_WIDTH);
       }
       splitter.setVisible(visible);
       mainSplitPanel.animate(ANIMATE_DURATION);

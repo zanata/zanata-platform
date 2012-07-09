@@ -374,12 +374,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       if (shouldShowOptions)
       {
          display.setSidePanelVisible(true);
-         display.setOptionsToggleTooltip(messages.hideEditorOptions());
+         display.setOptionsToggleTooltip(messages.hideOptions());
       }
       else
       {
          display.setSidePanelVisible(false);
-         display.setOptionsToggleTooltip(messages.showEditorOptions());
+         display.setOptionsToggleTooltip(messages.showOptions());
       }
    }
 
