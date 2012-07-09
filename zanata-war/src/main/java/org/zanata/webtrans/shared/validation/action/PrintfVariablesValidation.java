@@ -33,7 +33,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class PrintfVariablesValidation extends ValidationAction
+public class PrintfVariablesValidation extends AbstractValidation
 {
 
    private static final String GLOBAL_FLAG = "g";

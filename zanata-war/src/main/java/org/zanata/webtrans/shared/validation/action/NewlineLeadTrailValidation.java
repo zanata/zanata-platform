@@ -30,7 +30,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class NewlineLeadTrailValidation extends ValidationAction
+public class NewlineLeadTrailValidation extends AbstractValidation
 {
    public NewlineLeadTrailValidation(final ValidationMessages messages)
    {

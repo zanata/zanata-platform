@@ -45,7 +45,6 @@ import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
-import org.zanata.webtrans.shared.validation.action.ValidationAction;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 import com.google.inject.Inject;
@@ -58,7 +57,7 @@ import com.google.inject.Inject;
 
 public class ValidationService
 {
-   private final Map<String, ValidationAction> validationMap = new HashMap<String, ValidationAction>();
+   private final Map<String, ValidationObject> validationMap = new HashMap<String, ValidationObject>();
    private final EventBus eventBus;
    private final TableEditorMessages messages;
 
@@ -122,7 +121,7 @@ public class ValidationService
 
       for (String key : validationMap.keySet())
       {
-         ValidationAction action = validationMap.get(key);
+         ValidationObject action = validationMap.get(key);
 
          if (action != null && action.isEnabled())
          {
@@ -143,7 +142,7 @@ public class ValidationService
     */
    public void updateStatus(String key, boolean isEnabled)
    {
-      ValidationAction action = validationMap.get(key);
+      ValidationObject action = validationMap.get(key);
       action.setEnabled(isEnabled);
       // is this put necessary?
       validationMap.put(key, action);
@@ -164,7 +163,7 @@ public class ValidationService
    {
       for (String key : validationMap.keySet())
       {
-         ValidationAction action = validationMap.get(key);
+         ValidationObject action = validationMap.get(key);
 
          if (action != null)
          {

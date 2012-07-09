@@ -38,4 +38,10 @@ public interface ValidationObject
    boolean hasError();
 
    List<String> getError();
+
+   void validate(String source, String target);
+
+   void clearErrorMessage();
+
+   void setEnabled(boolean isEnabled);
 }
