@@ -141,7 +141,6 @@ public class ApplicationConfiguration implements Serializable
          rootLogger.removeAppender(EMAIL_APPENDER_NAME);
          log.info("Email log appender is disabled.");
       }
-      log.error("This is an error", new Exception("error"));
    }
 
    public String getRegisterPath()
