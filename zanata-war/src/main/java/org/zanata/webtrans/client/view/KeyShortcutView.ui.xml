@@ -28,14 +28,16 @@
 		
 		.keyShortcutTable td
 		{
-			padding:0 10px;
-			border:none;
 			color:#FFA07A;
 			background:black;
+			padding: 2px 10px;
+			border-width: 0px;
+			border-bottom-width: 1px;
+			border-color: #301a1a;
 		}
 	</ui:style>
 
-	<g:VerticalPanel styleName="{style.keyShortcutPanel}" width="515px" height="220px">
+	<g:VerticalPanel styleName="{style.keyShortcutPanel}">
 		<g:cell horizontalAlignment="ALIGN_CENTER">
 			<g:Label ui:field="heading" styleName="{style.keyShortcutHeading}"/>
 		</g:cell>

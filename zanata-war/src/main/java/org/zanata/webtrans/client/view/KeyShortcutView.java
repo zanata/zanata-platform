@@ -20,6 +20,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -61,7 +62,7 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
       setWidget(uiBinder.createAndBindUi(this));
       heading.setText(webTransMessages.availableKeyShortcutsTitle());
       
-      setStyleName("notificationPanel");
+      setStyleName("keyShortcutPanel");
       setAutoHideEnabled(true);
       setAutoHideOnHistoryEventsEnabled(true);
       setGlassEnabled(true);
@@ -181,7 +182,22 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
    @Override
    public void showPanel()
    {
-      this.center();
+      // center() does not set vertical position properly
+      this.setPopupPositionAndShow(new PositionCallback()
+      {
+         @Override
+         public void setPosition(int offsetWidth, int offsetHeight)
+         {
+            int left = (Window.getClientWidth() - offsetWidth) / 2;
+            setThisPosition(left, 100);
+         }
+      });
+
+   }
+
+   private void setThisPosition(int left, int top)
+   {
+      this.setPopupPosition(left, top);
    }
 
    @Override
