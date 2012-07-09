@@ -23,7 +23,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
 
    public PrintfXSIExtensionValidation(final ValidationMessages messages)
    {
-      super(messages.positionalPrintfVariablesValidatorName(), messages.positionalPrintfVariablesValidatorDescription(), true, messages);
+      super(messages.positionalPrintfVariablesValidatorName(), messages.positionalPrintfVariablesValidatorDescription(), false, messages);
    }
 
    @Override

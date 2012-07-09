@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Test(groups = { "unit-tests" })
 public class PrintfXSIExtensionValidationTest
 {
    private static final String MOCK_VARIABLES_VALIDATOR_NAME = "test variable validator name";

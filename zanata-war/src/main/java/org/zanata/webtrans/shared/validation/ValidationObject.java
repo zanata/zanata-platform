@@ -44,4 +44,8 @@ public interface ValidationObject
    void clearErrorMessage();
 
    void setEnabled(boolean isEnabled);
+
+   void mutuallyExclusive(ValidationObject... exclusiveValidations);
+
+   List<ValidationObject> getExclusiveValidations();
 }

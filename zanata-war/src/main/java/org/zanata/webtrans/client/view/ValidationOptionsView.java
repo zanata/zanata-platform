@@ -44,6 +44,18 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @Override
+   public void changeValidationSelectorValue(String label, boolean enabled)
+   {
+      for (Widget checkbox : contentPanel)
+      {
+         if (checkbox instanceof CheckBox && ((CheckBox) checkbox).getText().equals(label))
+         {
+            ((CheckBox) checkbox).setValue(enabled);
+         }
+      }
+   }
+
+   @Override
    public Widget asWidget()
    {
       return this;

@@ -69,10 +69,12 @@ public class ValidationService
 
       HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation(valMessages);
       NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation(valMessages);
-      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(valMessages);
       JavaVariablesValidation javaVariablesValidation = new JavaVariablesValidation(valMessages);
       XmlEntityValidation xmlEntityValidation = new XmlEntityValidation(valMessages);
+      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(valMessages);
       PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(valMessages);
+      printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
+      positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);
 
       validationMap.put(htmlxmlValidation.getId(), htmlxmlValidation);
       validationMap.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);
@@ -144,8 +146,6 @@ public class ValidationService
    {
       ValidationObject action = validationMap.get(key);
       action.setEnabled(isEnabled);
-      // is this put necessary?
-      validationMap.put(key, action);
 
       // request re-run validation with new options
       eventBus.fireEvent(new RequestValidationEvent());

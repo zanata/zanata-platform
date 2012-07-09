@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 /**
  *
@@ -42,7 +43,8 @@ public abstract class AbstractValidation implements ValidationObject
 
    private ValidationMessages messages;
 
-   private List<String> errorList = new ArrayList<String>();
+   private List<String> errorList = Lists.newArrayList();
+   private List<ValidationObject> exclusiveValidations = Lists.newArrayList();
 
    public AbstractValidation(String id, String description, boolean enabled, final ValidationMessages messages)
    {
@@ -78,6 +80,18 @@ public abstract class AbstractValidation implements ValidationObject
    public void setEnabled(boolean isEnabled)
    {
       this.isEnabled = isEnabled;
+   }
+
+   @Override
+   public void mutuallyExclusive(ValidationObject... exclusiveValidations)
+   {
+      this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
+   }
+
+   @Override
+   public List<ValidationObject> getExclusiveValidations()
+   {
+      return exclusiveValidations;
    }
 
    @Override
