@@ -20,6 +20,12 @@
  */
 package org.zanata.webtrans.client.keys;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.google.gwt.dom.client.NativeEvent;
+
 /**
  * Represents a combination of modifier keys and a single key code for use with
  * {@link KeyShortcut}.
@@ -58,6 +64,13 @@ public class Keys implements Comparable<Keys>
       this.keyCode = keyCode;
    }
 
+   public Keys(NativeEvent evt)
+   {
+      modifiers = (evt.getAltKey() ? ALT_KEY : 0) | (evt.getShiftKey() ? SHIFT_KEY : 0)
+                | (evt.getCtrlKey() ? CTRL_KEY : 0) | (evt.getMetaKey() ? META_KEY : 0);
+      keyCode = evt.getKeyCode();
+   }
+
    public int getModifiers()
    {
       return modifiers;
@@ -71,7 +84,23 @@ public class Keys implements Comparable<Keys>
    @Override
    public int hashCode()
    {
+      // could pre-calculate hash as these are both final.
       return keyCode * 8 + modifiers;
+   }
+
+   /**
+    * Two {@link KeyShortcut} objects are equal if they have the same key combination and context.
+    */
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == null)
+         return false;
+      if (!(obj instanceof Keys))
+         return false;
+      Keys other = (Keys) obj;
+      boolean equal = keyCode == other.keyCode && modifiers == other.modifiers;
+      return equal;
    }
 
    @Override
@@ -93,4 +122,16 @@ public class Keys implements Comparable<Keys>
 
       return compareFrom.compareTo(compareTo);
    }
+
+   @Override
+   public String toString()
+   {
+      return "mod: " + modifiers + " key: " + keyCode + " hash: " + hashCode();
+   }
+
+   public static Set<Keys> setOf(Keys... keys)
+   {
+      return new HashSet<Keys>(Arrays.asList(keys));
+   }
+
 }

@@ -44,6 +44,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -168,12 +169,22 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       // TODO use LevenshteinTokenUtil, *but* we need to distinguish 100% token match from 100% text match
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
-         percent = 100 * LevenshteinUtil.getSimilarity(query.getQueries(), sourceContents);
+         percent = 100 * LevenshteinTokenUtil.getSimilarity(query.getQueries(), sourceContents);
+         if (percent > 99.99)
+         {
+            // make sure we only get 100% similarity if every character matches
+            percent = 100 * LevenshteinUtil.getSimilarity(query.getQueries(), sourceContents);
+         }
       }
       else
       {
          final String searchText = query.getQueries().get(0);
-         percent = 100 * LevenshteinUtil.getSimilarity(searchText, sourceContents);
+         percent = 100 * LevenshteinTokenUtil.getSimilarity(searchText, sourceContents);
+         if (percent > 99.99)
+         {
+            // make sure we only get 100% similarity if every character matches
+            percent = 100 * LevenshteinUtil.getSimilarity(searchText, sourceContents);
+         }
       }
       return percent;
    }

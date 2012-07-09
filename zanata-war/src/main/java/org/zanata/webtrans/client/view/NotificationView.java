@@ -87,6 +87,8 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       String link();
 
       String msgLabel();
+
+      String disabledInlineLink();
    }
 
    private final Timer hidePopupTimer = new Timer()
@@ -177,6 +179,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       if (inlineLink != null)
       {
          inlineLink.setLinkStyle(style.inlineLink());
+         inlineLink.setDisabledStyle(style.disabledInlineLink());
          panel.add(inlineLink);
          panel.setCellWidth(inlineLink, "16px");
       }

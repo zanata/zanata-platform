@@ -51,6 +51,9 @@ public class ServerConfigurationBean implements Serializable
     */
    private static final long serialVersionUID = 1L;
 
+   @Logger
+   Log log;
+
    @In
    ApplicationConfigurationDAO applicationConfigurationDAO;
 
@@ -61,8 +64,9 @@ public class ServerConfigurationBean implements Serializable
    private String fromEmailAddr;
    private String homeContent;
    private String helpContent;
-   @Logger
-   Log log;
+   private boolean enableLogEmail;
+   private String logDestinationEmails;
+   private String logEmailLevel;
 
 
    public String getHomeContent()
@@ -197,6 +201,36 @@ public class ServerConfigurationBean implements Serializable
       this.serverUrl = serverUrl;
    }
 
+   public boolean isEnableLogEmail()
+   {
+      return enableLogEmail;
+   }
+
+   public void setEnableLogEmail(boolean enableLogEmail)
+   {
+      this.enableLogEmail = enableLogEmail;
+   }
+
+   public String getLogDestinationEmails()
+   {
+      return logDestinationEmails;
+   }
+
+   public void setLogDestinationEmails(String logDestinationEmails)
+   {
+      this.logDestinationEmails = logDestinationEmails;
+   }
+
+   public String getLogEmailLevel()
+   {
+      return logEmailLevel;
+   }
+
+   public void setLogEmailLevel(String logEmailLevel)
+   {
+      this.logEmailLevel = logEmailLevel;
+   }
+
    @Create
    public void onCreate()
    {
@@ -225,7 +259,21 @@ public class ServerConfigurationBean implements Serializable
       {
          this.fromEmailAddr = fromAddressValue.getValue();
       }
-
+      HApplicationConfiguration emailLogEventsValue  = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
+      if (emailLogEventsValue != null)
+      {
+         this.enableLogEmail = Boolean.parseBoolean(emailLogEventsValue.getValue());
+      }
+      HApplicationConfiguration logDestinationValue  = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
+      if (logDestinationValue != null)
+      {
+         this.logDestinationEmails = logDestinationValue.getValue();
+      }
+      HApplicationConfiguration logEmailLevelValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
+      if(logEmailLevelValue != null)
+      {
+         this.logEmailLevel = logEmailLevelValue.getValue();
+      }
    }
 
    @Transactional
@@ -319,6 +367,53 @@ public class ServerConfigurationBean implements Serializable
       {
          fromEmailAddrValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, fromEmailAddr);
          applicationConfigurationDAO.makePersistent(fromEmailAddrValue);
+      }
+
+      HApplicationConfiguration emailLogEventsValue  = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
+      if( emailLogEventsValue == null )
+      {
+         emailLogEventsValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS, Boolean.toString(enableLogEmail));
+      }
+      else
+      {
+         emailLogEventsValue.setValue( Boolean.toString(enableLogEmail) );
+      }
+      applicationConfigurationDAO.makePersistent( emailLogEventsValue );
+
+      HApplicationConfiguration logDestEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
+      if (logDestEmailValue != null)
+      {
+         if (logDestinationEmails == null || logDestinationEmails.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(logDestEmailValue);
+         }
+         else
+         {
+            logDestEmailValue.setValue(logDestinationEmails);
+         }
+      }
+      else if (logDestinationEmails != null && !logDestinationEmails.isEmpty())
+      {
+         logDestEmailValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL, logDestinationEmails);
+         applicationConfigurationDAO.makePersistent(logDestEmailValue);
+      }
+
+      HApplicationConfiguration logEmailLevelValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
+      if (logEmailLevelValue != null)
+      {
+         if (logEmailLevel == null || logEmailLevel.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(logEmailLevelValue);
+         }
+         else
+         {
+            logEmailLevelValue.setValue(logEmailLevel);
+         }
+      }
+      else if (logEmailLevel != null && !logEmailLevel.isEmpty())
+      {
+         logEmailLevelValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL, logEmailLevel);
+         applicationConfigurationDAO.makePersistent(logEmailLevelValue);
       }
 
       applicationConfigurationDAO.flush();

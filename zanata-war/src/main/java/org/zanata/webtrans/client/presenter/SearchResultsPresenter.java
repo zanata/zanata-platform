@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -44,12 +43,11 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window.Location;
-import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.HasUndoHandler;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -165,8 +163,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * 
        * @return the created table
        * 
-       * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel,
-       *      ValueChangeHandler)
+       * @see #addDocument(String, com.google.gwt.event.dom.client.ClickHandler,
+       *      com.google.gwt.event.dom.client.ClickHandler,
+       *      com.google.gwt.view.client.MultiSelectionModel,
+       *      com.google.gwt.event.logical.shared.ValueChangeHandler)
        * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate,
        *      Delegate, Delegate, SelectionModel, ValueChangeHandler,
        *      WebTransMessages, org.zanata.webtrans.client.resources.Resources)
@@ -180,6 +180,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * @return a new selection model for use with table
        */
       MultiSelectionModel<TransUnitReplaceInfo> createMultiSelectionModel();
+
+      HasValue<Boolean> getSelectAllCheckbox();
    }
 
    private final WebTransMessages messages;
@@ -194,6 +196,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
    private Delegate<TransUnitReplaceInfo> undoButtonDelegate;
    private Handler selectionChangeHandler;
+
+   private List<HasValue<Boolean>> selectAllCheckboxList;
 
    /**
     * Model objects for tables in display. Changes to these are reflected in the
@@ -220,7 +224,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private boolean showRowActionButtons = false;
 
    @Inject
-
    public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter, final Provider<UndoLink> undoLinkProvider, Location windowLocation)
    {
       super(display, eventBus);
@@ -242,6 +245,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
       allReplaceInfos = new HashMap<TransUnitId, TransUnitReplaceInfo>();
       docPaths = new HashMap<Long, String>();
+      selectAllCheckboxList = new ArrayList<HasValue<Boolean>>();
       setUiForNothingSelected();
       display.setReplaceAllButtonVisible(!workspaceContext.isReadOnly());
 
@@ -746,7 +750,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
       return selected;
    }
-   
+
    /**
     * Fire a {@link ReplaceText} event for the given {@link TransUnit}s using
     * parameters from the current history state. This will also update the state
@@ -826,30 +830,18 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                message = messages.replacedTextInMultipleTextFlows(searchText, replacement, updateInfoList.size());
             }
 
-            final UndoLink undoLink = undoLinkProvider.get();
-            undoLink.prepareUndoFor(result, new HasUndoHandler()
+            UndoLink undoLink = undoLinkProvider.get();
+            undoLink.prepareUndoFor(result);
+            undoLink.setUndoCallback(new UndoLink.UndoCallback()
             {
                @Override
-               public void preUndo(List<TransUnitUpdateInfo> updateInfoList)
+               public void preUndo()
                {
                   executePreUndo(updateInfoList);
                }
-               
-               @Override
-               public void executeUndo(List<TransUnitUpdateInfo> updateInfoList)
-               {
-                  if (workspaceContext.isReadOnly())
-                  {
-                     eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
-                  }
-                  else
-                  {
-                     undoLink.executeDefaultUndo(this, updateInfoList);
-                  }
-               }
 
                @Override
-               public void postSuccess(UpdateTransUnitResult result)
+               public void postUndoSuccess()
                {
                   executePostSucess(result);
                }
@@ -886,12 +878,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onSuccess(UpdateTransUnitResult result)
          {
-            eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
             executePostSucess(result);
          }
       });
    }
-   
+
    private void executePreUndo(List<TransUnitUpdateInfo> updateInfoList)
    {
       for (TransUnitUpdateInfo updateInfo : updateInfoList)
@@ -906,7 +897,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }
    }
-   
+
    private void executePostSucess(UpdateTransUnitResult result)
    {
       for (TransUnitUpdateInfo info : result.getUpdateInfoList())
@@ -1026,6 +1017,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       ClickHandler showDocHandler = showDocClickHandler(docPathName, false);
       ClickHandler searchDocHandler = showDocClickHandler(docPathName, true);
       ValueChangeHandler<Boolean> selectDocHandler = selectAllHandler(docId, selectionModel);
+
       if (showRowActionButtons)
       {
          dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler, ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
@@ -1034,6 +1026,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler);
       }
+      
+      selectAllCheckboxList.add(display.getSelectAllCheckbox());
       documentDataProviders.put(docId, dataProvider);
 
       selectionModel.addSelectionChangeHandler(selectionChangeHandler);
@@ -1071,8 +1065,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    /**
     * Build a handler to select and de-select all text flows in a document
     * 
+    * @param docId
     * @param selectionModel
-    * @param dataProvider
     * @return the new handler
     */
    private ValueChangeHandler<Boolean> selectAllHandler(final Long docId, final MultiSelectionModel<TransUnitReplaceInfo> selectionModel)
@@ -1159,6 +1153,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels.clear();
       allReplaceInfos.clear();
       display.clearAll();
+      selectAllCheckboxList.clear();
       setUiForNothingSelected();
    }
 
@@ -1237,16 +1232,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private void selectAllTextFlows(boolean selected)
    {
-      for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> en : documentDataProviders.entrySet())
+      for (HasValue<Boolean> header : selectAllCheckboxList)
       {
-         MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(en.getKey());
-         if (selectionModel != null)
-         {
-            for (TransUnitReplaceInfo tu : en.getValue().getList())
-            {
-               selectionModel.setSelected(tu, selected);
-            }
-         }
+         header.setValue(selected, true);
       }
    }
 

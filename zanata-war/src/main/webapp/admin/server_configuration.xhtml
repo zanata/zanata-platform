@@ -85,6 +85,44 @@
               </h:graphicImage>
             </s:decorate>
 
+            <s:decorate id="enableLogEmailField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.config.EnableLogEmails']}</ui:define>
+              <h:selectBooleanCheckbox value="#{serverConfigurationBean.enableLogEmail}"/>
+              <h:graphicImage id="enableLogEmailHelp" value="../images/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  #{messages['jsf.config.EnableLogEmails.tooltip']}<br/>
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+
+            <s:decorate id="logDestEmailField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.config.LogDestEmail']}</ui:define>
+              <h:inputText id="logDestEml" value="#{serverConfigurationBean.logDestinationEmails}">
+                <a4j:support event="onblur" reRender="logDestEmailField" ajaxSingle="false"/>
+              </h:inputText>
+              <h:graphicImage id="logDestEmailHelp" value="../images/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  #{messages['jsf.config.LogDestEmail.tooltip']}<br/>
+                  #{messages['jsf.email.EmailListToolTip']}<br/>
+                  #{messages['jsf.EmailToolTip']}<br/>
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+
+            <s:decorate id="logEmailLevelField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.config.LogEmailLevel']}</ui:define>
+              <h:selectOneMenu id="logEmailLvl" value="#{serverConfigurationBean.logEmailLevel}" style="width:156px; margin:0 3px 0 2px;">
+                <f:selectItem itemLabel="#{messages['jsf.Warning']}" itemValue="WARN"/>
+                <f:selectItem itemLabel="#{messages['jsf.Error']}" itemValue="ERROR"/>
+              </h:selectOneMenu>
+              <h:graphicImage id="logEmailLevelHelp" value="../images/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  <h:outputLabel escape="true">
+                    #{messages['jsf.config.LogEmailLevel.tooltip']}
+                  </h:outputLabel>
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
 
             <div style="clear:both"/>
 

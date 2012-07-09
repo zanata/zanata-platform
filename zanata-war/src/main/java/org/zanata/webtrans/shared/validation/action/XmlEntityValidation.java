@@ -35,7 +35,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class XmlEntityValidation extends ValidationAction
+public class XmlEntityValidation extends AbstractValidation
 {
 
    private final static String entityRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";

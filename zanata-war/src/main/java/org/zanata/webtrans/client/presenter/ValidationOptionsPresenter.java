@@ -43,6 +43,8 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public interface Display extends WidgetDisplay
    {
       HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled);
+
+      void changeValidationSelectorValue(String label, boolean enabled);
    }
 
    private ValidationService validationService;
@@ -67,6 +69,14 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
             public void onValueChange(ValueChangeEvent<Boolean> event)
             {
                validationService.updateStatus(object.getId(), event.getValue());
+               if (event.getValue())
+               {
+                  for (ValidationObject excluded : object.getExclusiveValidations())
+                  {
+                     validationService.updateStatus(excluded.getId(), false);
+                     display.changeValidationSelectorValue(excluded.getId(), false);
+                  }
+               }
             }
          });
       }

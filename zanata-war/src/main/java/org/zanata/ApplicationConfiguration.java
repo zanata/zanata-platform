@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.HTMLLayout;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -38,6 +41,7 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.dao.ApplicationConfigurationDAO;
+import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.AuthenticationType;
 
@@ -48,10 +52,13 @@ import org.zanata.security.AuthenticationType;
 public class ApplicationConfiguration implements Serializable
 {
 
+   private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
 
    private static final Log log = Logging.getLog(ApplicationConfiguration.class);
    private static final long serialVersionUID = -4970657841198107092L;
+
+   private static final ZanataSMTPAppender smtpAppenderInstance = new ZanataSMTPAppender();
 
    private Map<String, String> configValues = new HashMap<String, String>();
    
@@ -93,6 +100,8 @@ public class ApplicationConfiguration implements Serializable
          }
       }
       this.configValues = configValues;
+
+      this.applyLoggingConfiguration();
    }
 
    private void setDefaults(Map<String, String> map)
@@ -100,6 +109,38 @@ public class ApplicationConfiguration implements Serializable
       map.put(HApplicationConfiguration.KEY_REGISTER, "/zanata/account/register");
       map.put(HApplicationConfiguration.KEY_HOST, "http://localhost:8080/zanata");
       map.put(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, "no-reply@redhat.com");
+      map.put(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL, "WARN");
+   }
+
+   /**
+    * Apply logging configuration.
+    */
+   public void applyLoggingConfiguration()
+   {
+      final Logger rootLogger = Logger.getRootLogger();
+
+      if( isEmailLogAppenderEnabled() )
+      {
+         // NB: This appender uses Seam's email configuration (no need for host or port)
+         smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
+         smtpAppenderInstance.setFrom(getFromEmailAddr());
+         smtpAppenderInstance.setTo(this.configValues.get(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL));
+         smtpAppenderInstance.setSubject("%p log message from Zanata at " + this.getServerPath());
+         smtpAppenderInstance.setLayout(new HTMLLayout());
+         //smtpAppenderInstance.setLayout(new PatternLayout("%-5p [%c] %m%n"));
+         smtpAppenderInstance.setThreshold(Level.toLevel(getEmailLogLevel()));
+         smtpAppenderInstance.setTimeout(60); // will aggregate identical messages within 60 sec periods
+         smtpAppenderInstance.activateOptions();
+
+         // Safe to add more than once
+         rootLogger.addAppender(smtpAppenderInstance);
+         log.info("Email log appender is enabled [level: " + smtpAppenderInstance.getThreshold().toString() + "]");
+      }
+      else
+      {
+         rootLogger.removeAppender(EMAIL_APPENDER_NAME);
+         log.info("Email log appender is disabled.");
+      }
    }
 
    public String getRegisterPath()
@@ -217,6 +258,36 @@ public class ApplicationConfiguration implements Serializable
    public boolean getEnableCopyTrans()
    {
       return enableCopyTrans;
+   }
+
+   public boolean isEmailLogAppenderEnabled()
+   {
+      String strVal = configValues.get(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
+
+      if(strVal == null)
+      {
+         return false;
+      }
+      else
+      {
+         return Boolean.parseBoolean( strVal );
+      }
+   }
+
+   public List<String> getLogDestinationEmails()
+   {
+      String s = configValues.get(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
+      if (s == null || s.trim().length() == 0)
+      {
+         return new ArrayList<String>();
+      }
+      String[] ss = s.trim().split("\\s*,\\s*");
+      return new ArrayList<String>(Arrays.asList(ss));
+   }
+
+   public String getEmailLogLevel()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
    }
 
 }

@@ -38,17 +38,18 @@ public interface UndoLink extends InlineLink
     * Give the UpdateTransUnitResult object returned from trans unit update handler, then it will create a click handler.
     *
     * @param updateTransUnitResult result from update translation rpc call.
-    * @param undoHandler UndoHandler for execution when link is clicked.
     *
     * @see org.zanata.webtrans.server.rpc.UpdateTransUnitHandler
     * @see org.zanata.webtrans.server.rpc.ReplaceTextHandler
     * @see org.zanata.webtrans.server.rpc.TransMemoryMergeHandler
     */
-   void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult, HasUndoHandler undoHandler);
-   
    void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult);
 
-   void executeDefaultUndo(HasUndoHandler undoHandler, List<TransUnitUpdateInfo> updateInfoList);
-   
-   HasUndoHandler getUndoHandler();
+   void setUndoCallback(UndoCallback callback);
+
+   interface UndoCallback
+   {
+      void preUndo();
+      void postUndoSuccess();
+   }
 }

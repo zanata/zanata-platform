@@ -26,6 +26,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.ToggleEditor;
+import org.zanata.webtrans.client.ui.UndoLink;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 
@@ -34,6 +35,8 @@ public interface TargetContentsDisplay extends WidgetDisplay
    void showButtons(boolean displayButtons);
 
    void focusEditor(int currentEditorIndex);
+
+   void addUndo(UndoLink undoLink);
 
    interface Listener
    {

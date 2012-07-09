@@ -26,4 +26,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface InlineLink extends IsWidget
 {
    void setLinkStyle(String styleName);
+
+   void setDisabledStyle(String styleName);
 }

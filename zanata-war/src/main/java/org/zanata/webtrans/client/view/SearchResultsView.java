@@ -95,6 +95,8 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    private Resources resources;
 
+   private HasValue<Boolean> selectAllCheckbox;
+
    @Inject
    public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
    {
@@ -243,49 +245,45 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
-         ClickHandler viewDocClickHandler,
-         ClickHandler searchDocClickHandler,
-         MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
-         ValueChangeHandler<Boolean> selectAllHandler)
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler)
    {
       SearchResultsDocumentTable table = new SearchResultsDocumentTable(selectionModel, selectAllHandler, messages);
       return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
    }
 
    @Override
-   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
-         ClickHandler viewDocClickHandler,
-         ClickHandler searchDocClickHandler,
-         MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
-         ValueChangeHandler<Boolean> selectAllHandler,
-         Delegate<TransUnitReplaceInfo> previewDelegate,
-         Delegate<TransUnitReplaceInfo> replaceDelegate,
-         Delegate<TransUnitReplaceInfo> undoDelegate)
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
    {
       SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
       return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
    }
 
-/**
- * @param docName
- * @param viewDocClickHandler
- * @param searchDocClickHandler
- * @param table
- * @return
- */
-private ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, SearchResultsDocumentTable table)
-{
-   // ensure 'no results' message is no longer visible
-   noResultsLabel.removeFromParent();
-   addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
-   searchResultsPanel.add(table);
-   table.addStyleName("projectWideSearchResultsDocumentBody");
+   /**
+    * @param docName
+    * @param viewDocClickHandler
+    * @param searchDocClickHandler
+    * @param table
+    * @return
+    */
+   private ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, SearchResultsDocumentTable table)
+   {
+      // ensure 'no results' message is no longer visible
+      noResultsLabel.removeFromParent();
+      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
+      searchResultsPanel.add(table);
+      table.addStyleName("projectWideSearchResultsDocumentBody");
 
-   ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
-   dataProvider.addDataDisplay(table);
-   return dataProvider;
-}
+      ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
+      dataProvider.addDataDisplay(table);
+      selectAllCheckbox = table.getCheckbox();
+      return dataProvider;
+   }
+
+   @Override
+   public HasValue<Boolean> getSelectAllCheckbox()
+   {
+      return selectAllCheckbox;
+   }
 
    private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler)
    {

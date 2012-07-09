@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -44,6 +45,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.inject.Inject;
 
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -53,79 +56,54 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    private final CachingDispatchAsync dispatcher;
    private final WebTransMessages messages;
    private final EventBus eventBus;
+   private final WorkspaceContext workspaceContext;
 
    // state variables
    private HandlerRegistration handlerRegistration;
    private String linkStyleName;
+   private String disabledStyleName;
    private boolean canUndo = false;
 
-   private HasUndoHandler undoHandler = new HasUndoHandler()
-   {
-      @Override
-      public void preUndo(List<TransUnitUpdateInfo> updateInfoList)
-      {
-      }
-
-      @Override
-      public void executeUndo(List<TransUnitUpdateInfo> updateInfoList)
-      {
-         executeDefaultUndo(this, updateInfoList);
-      }
-
-      @Override
-      public void postSuccess(UpdateTransUnitResult result)
-      {
-      }
-   };
+   //default callback
+   private UndoCallback callback = new DefaultUndoCallback();
 
    @Inject
-   public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher, WebTransMessages messages, EventBus eventBus)
+   public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher, WebTransMessages messages, EventBus eventBus, WorkspaceContext workspaceContext)
    {
       super(messages.undo());
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.eventBus = eventBus;
+      this.workspaceContext = workspaceContext;
    }
 
-   /**
-    * Give the UpdateTransUnitResult object returned from trans unit update
-    * handler, then it will create a click handler. When the click handler gets
-    * clicked, it will:
-    * <ul>
-    * <li>call RevertTransUnitUpdatesHandler to revert changes</li>
-    * <li>set text to undo in progress</li>
-    * <li>on success it will remove click handler, send notification for undo
-    * success and remove any link style from itself</li>
-    * <li>on failure it will re-enable click handler and revert text to undo</li>
-    * </ul>
-    * 
-    * @param updateTransUnitResult result from update translation rpc call.
-    * @param undoHandler UndoHandler for execution when link is clicked.
-    * @see RevertTransUnitUpdateClickHandler
-    */
-   @Override
-   public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult, HasUndoHandler undoHandler)
-   {
-      this.undoHandler = undoHandler;
-      ClickHandler clickHandler = new RevertTransUnitUpdateClickHandler(undoHandler, updateTransUnitResult.getUpdateInfoList());
-      handlerRegistration = addClickHandler(clickHandler);
-      canUndo = true;
-   }
-   
-   
+
    @Override
    public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult)
    {
-      prepareUndoFor(updateTransUnitResult, undoHandler);
+      ClickHandler clickHandler = new RevertTransUnitUpdateClickHandler(updateTransUnitResult.getUpdateInfoList());
+      handlerRegistration = addClickHandler(clickHandler);
+      canUndo = true;
    }
 
-   
+   @Override
+   public void setUndoCallback(UndoCallback callback)
+   {
+      this.callback = callback;
+   }
+
 
    @Override
    public void setLinkStyle(String styleName)
    {
       linkStyleName = styleName;
       setStyleName(linkStyleName);
+   }
+   
+   @Override
+   public void setDisabledStyle(String styleName)
+   {
+      disabledStyleName = styleName;
    }
 
    private void enableLink()
@@ -141,7 +119,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    {
       if (!Strings.isNullOrEmpty(linkStyleName))
       {
-         removeStyleName(linkStyleName);
+         setStyleName(disabledStyleName);
       }
       canUndo = false;
    }
@@ -149,20 +127,65 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    // we should make this a presenter if the size or logic grows
    private class RevertTransUnitUpdateClickHandler implements ClickHandler
    {
-      private final HasUndoHandler undoHandler;
       private final List<TransUnitUpdateInfo> updateInfoList;
 
-      RevertTransUnitUpdateClickHandler(HasUndoHandler undoHandler, List<TransUnitUpdateInfo> updateInfoList)
+      RevertTransUnitUpdateClickHandler(List<TransUnitUpdateInfo> updateInfoList)
       {
-         this.undoHandler = undoHandler;
          this.updateInfoList = updateInfoList;
       }
 
       @Override
       public void onClick(ClickEvent event)
       {
-         undoHandler.preUndo(updateInfoList);
-         undoHandler.executeUndo(updateInfoList);
+         RevertTransUnitUpdates revertAction = new RevertTransUnitUpdates(updateInfoList);
+
+         if (!canUndo)
+         {
+            return;
+         }
+         if (workspaceContext.isReadOnly())
+         {
+            eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
+            return;
+         }
+         callback.preUndo();
+         setText(messages.undoInProgress());
+         disableLink();
+
+         dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
+         {
+            @Override
+            public void onFailure(Throwable caught)
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.undoFailure()));
+               setText(messages.undo());
+               enableLink();
+            }
+
+            @Override
+            public void onSuccess(UpdateTransUnitResult result)
+            {
+               if (result.isAllSuccess())
+               {
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
+                  setText(messages.undone());
+                  callback.postUndoSuccess();
+               }
+               else
+               {
+                  // most likely the undo link became stale i.e. entity state has
+                  // changed on the server
+                  Collection<TransUnitUpdateInfo> unsuccessful = Collections2.filter(result.getUpdateInfoList(), UnsuccessfulUpdatePredicate.INSTANCE);
+                  int unsuccessfulCount = unsuccessful.size();
+                  int successfulCount = result.getUpdateInfoList().size() - unsuccessfulCount;
+                  Log.info("undo not all successful. #" + unsuccessfulCount + " unsuccess and #" + successfulCount + " success");
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoUnsuccessful(unsuccessfulCount, successfulCount)));
+                  setText("");
+               }
+               // we ensure the undo can only be click once.
+               handlerRegistration.removeHandler();
+            }
+         });
       }
    }
 
@@ -177,59 +200,16 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
       }
    }
 
-   @Override
-   public HasUndoHandler getUndoHandler()
+   private class DefaultUndoCallback implements UndoCallback
    {
-      return undoHandler;
-   }
-
-   /**
-    * Default undo execution when link is clicked. 
-    */
-   @Override
-   public void executeDefaultUndo(final HasUndoHandler undoHandler, List<TransUnitUpdateInfo> updateInfoList)
-   {
-      RevertTransUnitUpdates revertAction = new RevertTransUnitUpdates(updateInfoList);
-
-      if (!canUndo)
+      @Override
+      public void preUndo()
       {
-         return;
       }
-      setText(messages.undoInProgress());
-      disableLink();
 
-      dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
+      @Override
+      public void postUndoSuccess()
       {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.undoFailure()));
-            setText(messages.undo());
-            enableLink();
-         }
-
-         @Override
-         public void onSuccess(UpdateTransUnitResult result)
-         {
-            if (result.isAllSuccess())
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoSuccess()));
-               setText(messages.undone());
-            }
-            else
-            {
-               // most likely the undo link became stale i.e. entity state has
-               // changed on the server
-               Collection<TransUnitUpdateInfo> unsuccessful = Collections2.filter(result.getUpdateInfoList(), UnsuccessfulUpdatePredicate.INSTANCE);
-               int unsuccessfulCount = unsuccessful.size();
-               int successfulCount = result.getUpdateInfoList().size() - unsuccessfulCount;
-               Log.info("undo not all successful. #" + unsuccessfulCount + " unsucess and #" + successfulCount + " success");
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoUnsuccessful(unsuccessfulCount, successfulCount)));
-               setText("");
-            }
-            // we ensure the undo can only be click once.
-            handlerRegistration.removeHandler();
-         }
-      });
+      }
    }
 }

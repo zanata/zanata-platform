@@ -33,10 +33,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -60,9 +60,9 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ImageResourceRenderer;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.DefaultSelectionEventManager.BlacklistEventTranslator;
 import com.google.gwt.view.client.DefaultSelectionEventManager.SelectAction;
+import com.google.gwt.view.client.SelectionModel;
 
 /**
  * Displays search results for a single document.
@@ -90,6 +90,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    private Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn;
    private ActionColumn previewButtonColumn;
    private ActionColumn replaceButtonColumn;
+   
+   private CheckboxHeader checkboxColumnHeader;
 
 
    public static void setHighlightString(String highlightString)
@@ -125,7 +127,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       addStyleName("projectWideSearchResultsDocumentBody");
 
       checkboxColumn = new CheckColumn(selectionModel);
-      CheckboxHeader checkboxColumnHeader = new CheckboxHeader();
+      checkboxColumnHeader = new CheckboxHeader();
       checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
       rowIndexColumn = buildRowIndexColumn();
       sourceColumn = buildSourceColumn();
@@ -610,4 +612,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       });
    }
 
+   public HasValue<Boolean> getCheckbox()
+   {
+      return checkboxColumnHeader;
+   }
 }
