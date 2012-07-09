@@ -28,10 +28,12 @@
 		
 		.keyShortcutTable td
 		{
-			padding:0 10px;
-			border:none;
 			color:#FFA07A;
 			background:black;
+			padding: 2px 10px;
+			border-width: 0px;
+			border-bottom-width: 1px;
+			border-color: #301a1a;
 		}
 	</ui:style>
 
