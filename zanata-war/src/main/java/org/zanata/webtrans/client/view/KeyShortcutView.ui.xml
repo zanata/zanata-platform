@@ -37,7 +37,7 @@
 		}
 	</ui:style>
 
-	<g:VerticalPanel styleName="{style.keyShortcutPanel}" width="515px" height="220px">
+	<g:VerticalPanel styleName="{style.keyShortcutPanel}">
 		<g:cell horizontalAlignment="ALIGN_CENTER">
 			<g:Label ui:field="heading" styleName="{style.keyShortcutHeading}"/>
 		</g:cell>

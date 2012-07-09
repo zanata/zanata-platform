@@ -851,6 +851,11 @@ td.ApprovedStateDecoration div div div
 	max-height:350px;
 }
 
+.keyShortcutPanel
+{
+	border:none;
+}
+
 .boldFont
 {
 	font-weight:bold;
