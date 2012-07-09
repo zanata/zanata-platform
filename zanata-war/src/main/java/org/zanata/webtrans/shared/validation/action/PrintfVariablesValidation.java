@@ -21,15 +21,10 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -47,13 +42,15 @@ public class PrintfVariablesValidation extends ValidationAction
    // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
    private static final String VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
 
-   // regex to find out whether the variable has position
-   private static final RegExp POSITIONAL_REG_EXP = RegExp.compile("%(\\d+\\$)\\w+");
-
 
    public PrintfVariablesValidation(final ValidationMessages messages)
    {
       super(messages.printfVariablesValidatorName(), messages.printfVariablesValidatorDescription(), true, messages);
+   }
+
+   protected PrintfVariablesValidation(String id, String description, boolean enabled, ValidationMessages messages)
+   {
+      super(id, description, enabled, messages);
    }
 
    @Override
@@ -62,48 +59,34 @@ public class PrintfVariablesValidation extends ValidationAction
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
 
-      Log.debug("source vars: " + sourceVars);
-      Log.debug("target vars: " + targetVars);
-      
-      if (hasPosition(targetVars))
-      {
-         sourceVars = appendPosition(sourceVars);
-         checkPosition(targetVars, sourceVars.size());
-         Log.debug("source vars after treatment: " + sourceVars);
-      }
+      findMissingVariables(sourceVars, targetVars);
+      findAddedVariables(sourceVars, targetVars);
+   }
 
-
+   protected void findMissingVariables(ArrayList<String> sourceVars, ArrayList<String> targetVars)
+   {
       List<String> missing = listMissing(sourceVars, targetVars);
       if (!missing.isEmpty())
       {
          addError(getMessages().varsMissing(missing));
       }
-
-      // missing from source = added
-      missing = listMissing(targetVars, sourceVars);
-      if (!missing.isEmpty())
-      {
-         addError(getMessages().varsAdded(missing));
-      }
    }
 
-   private ArrayList<String> appendPosition(ArrayList<String> sourceVars)
+   protected void findAddedVariables(ArrayList<String> sourceVars, ArrayList<String> targetVars)
    {
-      ArrayList<String> result = Lists.newArrayList();
-      for (int i = 0; i < sourceVars.size(); i++)
+      // missing from source = added
+      List<String> added = listMissing(targetVars, sourceVars);
+      if (!added.isEmpty())
       {
-         String sourceVar = sourceVars.get(i);
-         int position = i + 1;
-         result.add(sourceVar.replace("%", "%" + position + "$"));
+         addError(getMessages().varsAdded(added));
       }
-      return result;
    }
 
    private List<String> listMissing(ArrayList<String> baseVars, ArrayList<String> testVars)
    {
-      ArrayList<String> remainingVars = new ArrayList<String>(testVars);
+      ArrayList<String> remainingVars = Lists.newArrayList(testVars);
 
-      ArrayList<String> unmatched = new ArrayList<String>();
+      ArrayList<String> unmatched = Lists.newArrayList();
 
       for (String var : baseVars)
       {
@@ -114,72 +97,8 @@ public class PrintfVariablesValidation extends ValidationAction
       }
       return unmatched;
    }
-   
-   private boolean hasPosition(ArrayList<String> variables)
-   {
-      for (String testVar : variables)
-      {
-         MatchResult result = POSITIONAL_REG_EXP.exec(testVar);
-         if (result != null)
-         {
-            return true;
-         }
-      }
-      return false;
-   }
 
-   private void checkPosition(ArrayList<String> variables, int size)
-   {
-      Multimap<Integer, String> posToVars = ArrayListMultimap.create();
-      
-      for (String testVar : variables)
-      {
-         MatchResult result = POSITIONAL_REG_EXP.exec(testVar);
-         if (result != null)
-         {
-            String positionAndDollar = result.getGroup(1);
-            int position = extractPositionIndex(positionAndDollar);
-            if (position >= 0 && position < size)
-            {
-               posToVars.put(position, testVar);
-            }
-            else
-            {
-               addError(getMessages().varPositionOutOfRange(testVar));
-            }
-         }
-         else
-         {
-            addError(getMessages().mixVarFormats());
-         }
-      }
-      if (posToVars.keySet().size() != variables.size())
-      {
-         //has some duplicate positions
-         for (Map.Entry<Integer, Collection<String>> entry : posToVars.asMap().entrySet())
-         {
-            if (entry.getValue().size() > 1)
-            {
-               addError(getMessages().varPositionDuplicated(entry.getValue()));
-            }
-         }
-      }
-   }
-
-   private static int extractPositionIndex(String positionAndDollar)
-   {
-      try
-      {
-         return Integer.valueOf(positionAndDollar.substring(0, positionAndDollar.length() - 1)) - 1;
-      }
-      catch (Exception e)
-      {
-         Log.info("cannot extract position index from " + positionAndDollar);
-         return -1;
-      }
-   }
-
-   private ArrayList<String> findVars(String inString)
+   protected ArrayList<String> findVars(String inString)
    {
       ArrayList<String> vars = new ArrayList<String>();
       // compile each time to reset index
