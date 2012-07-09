@@ -20,6 +20,9 @@
  */
 package org.zanata.webtrans.client.keys;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 
@@ -47,8 +50,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
 
    public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
 
-   // TODO replace with List<Keys>
-   private final Keys keys;
+   private final Set<Keys> keys;
 
 
    private final ShortcutContext context;
@@ -95,7 +97,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description,
          KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
    {
-      this.keys = shortcutKeys;
+      this.keys = Keys.setOf(shortcutKeys);
       this.context = context;
       this.description = description;
       this.handler = handler;
@@ -114,7 +116,24 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       this(shortcutKeys, context, description, KeyEvent.KEY_DOWN, false, false, handler);
    }
 
-   public Keys getKeys()
+   public KeyShortcut(Set<Keys> shortcutKeySet, ShortcutContext context, String description, KeyShortcutEventHandler handler)
+   {
+      this(shortcutKeySet, context, description, KeyEvent.KEY_DOWN, false, false, handler);
+   }
+
+   public KeyShortcut(Set<Keys> shortcutKeySet, ShortcutContext context, String description,
+         KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
+   {
+      this.keys = shortcutKeySet;
+      this.context = context;
+      this.description = description;
+      this.handler = handler;
+      this.keyEvent = keyEvent;
+      this.stopPropagation = stopPropagation;
+      this.preventDefault = preventDefault;
+   }
+
+   public Set<Keys> getAllKeys()
    {
       return keys;
    }
@@ -154,11 +173,16 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       return preventDefault;
    }
 
-   // TODO update to deal with list of key combinations
    @Override
    public int hashCode()
    {
-      return context.ordinal() * 2048 + keys.hashCode();
+      int hash = context.ordinal();
+      for (Keys singleKey : keys)
+      {
+         hash *= 2048;
+         hash += singleKey.hashCode();
+      }
+      return hash;
    }
 
    /**
@@ -172,13 +196,21 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       if (!(obj instanceof KeyShortcut))
          return false;
       KeyShortcut other = (KeyShortcut) obj;
-      return keys.equals(other.keys) && context == other.context;
+      boolean equal = keys.equals(other.keys) && context == other.context;
+      return equal;
    }
 
-   // TODO update to deal with list of key combinations
+   /**
+    * Used for sorting shortcuts in summary in UI
+    */
    @Override
    public int compareTo(KeyShortcut o)
    {
-      return keys.compareTo(o.keys);
+      if (context.ordinal() != o.context.ordinal())
+      {
+         return context.ordinal() - o.context.ordinal();
+      }
+      return keys.iterator().next().compareTo(o.keys.iterator().next());
    }
+
 }
