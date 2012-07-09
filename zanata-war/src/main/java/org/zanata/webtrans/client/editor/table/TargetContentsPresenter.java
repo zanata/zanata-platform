@@ -147,85 +147,75 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
 
-      KeyShortcutEventHandler copyTM1Handler = new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(0));
-         }
-      };
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1),
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1)),
+            ShortcutContext.Edit, messages.copyFromTM(1), new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(0));
+               }
+            }));
 
-      KeyShortcutEventHandler copyTM2Handler = new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(1));
-         }
-      };
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_2),
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2)),
+            ShortcutContext.Edit, messages.copyFromTM(2), new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(1));
+               }
+            }));
 
-      KeyShortcutEventHandler copyTM3Handler = new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(2));
-         }
-      };
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_3),
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3)),
+            ShortcutContext.Edit, messages.copyFromTM(3), new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(2));
+               }
+            }));
 
-      KeyShortcutEventHandler copyTM4Handler = new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(3));
-         }
-      };
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_4),
+            new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4)),
+            ShortcutContext.Edit, messages.copyFromTM(4), new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(3));
+               }
+            }));
 
-      // Register shortcut CTRL+ALT+1 to copy result from TM result 1
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), ShortcutContext.Edit, messages.copyFromTM(1), copyTM1Handler));
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM1Handler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
+            new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K')),
+            ShortcutContext.Edit, messages.moveToNextRow(), new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  moveNext(false);
+               }
+            }));
 
-      // Register shortcut CTRL+ALT+2 to copy result from TM result 2
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_2), ShortcutContext.Edit, messages.copyFromTM(2), copyTM2Handler));
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM2Handler));
-
-      // Register shortcut CTRL+ALT+3 to copy result from TM result 3
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_3), ShortcutContext.Edit, messages.copyFromTM(3), copyTM3Handler));
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM3Handler));
-
-      // Register shortcut CTRL+ALT+4 to copy result from TM result 4
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_4), ShortcutContext.Edit, messages.copyFromTM(4), copyTM4Handler));
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, copyTM4Handler));
-
-      KeyShortcutEventHandler moveNextKeyHandler = new KeyShortcutEventHandler()
-      {
-
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            moveNext(false);
-         }
-      };
-
-      KeyShortcutEventHandler movePreviousKeyHandler = new KeyShortcutEventHandler()
-      {
-
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            movePrevious(false);
-         }
-      };
-
-      // Register shortcut ALT+(Down/K) to move next row and open editor
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'K'), ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
-
-      // Register shortcut ALT+(Up/J) to move previous row and open editor
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'J'), ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
+            new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J')),
+            ShortcutContext.Edit, messages.moveToPreviousRow(), new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  movePrevious(false);
+               }
+            }));
 
       // Register shortcut ALT+(PageDown) to move next state entry - if modal
       // navigation is enabled
