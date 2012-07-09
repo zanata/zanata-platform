@@ -872,7 +872,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onSuccess(UpdateTransUnitResult result)
          {
-            eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
             executePostSucess(result);
          }
       });

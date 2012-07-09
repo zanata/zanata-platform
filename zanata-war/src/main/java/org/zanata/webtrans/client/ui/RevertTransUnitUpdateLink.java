@@ -161,6 +161,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
                if (result.isAllSuccess())
                {
                   eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
+                  setText(messages.undone());
                   callback.postUndoSuccess();
                }
                else
@@ -202,7 +203,6 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
       @Override
       public void postUndoSuccess()
       {
-         setText(messages.undone());
       }
    }
 }
