@@ -14,7 +14,7 @@ in case changes are required for production deployment (eg cfengine).
             <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
         </loader-repository>
     </class-loading>
-    <security-domain>java:/jaas/${jaas.configure}</security-domain>
+    <security-domain>java:/jaas/zanata</security-domain>
     <!-- _context_root_ -->
     <depends>jboss.jca:service=DataSourceBinding,name=${ds.jndi.name}</depends>
 </jboss-web>

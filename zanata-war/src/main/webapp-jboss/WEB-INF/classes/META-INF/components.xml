@@ -45,7 +45,7 @@
       url-pattern="/*"/>
 
   <!-- Login and security -->
-  <security:identity jaas-config-name="@jaas.configure@" />
+  <security:identity jaas-config-name="zanata" />
   <web:identity-filter disabled="true"/>
 	
 	<!--
