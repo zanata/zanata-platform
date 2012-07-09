@@ -49,7 +49,6 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.HasUndoHandler;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -165,8 +164,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * 
        * @return the created table
        * 
-       * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel,
-       *      ValueChangeHandler)
+       * @see #addDocument(String, com.google.gwt.event.dom.client.ClickHandler, com.google.gwt.event.dom.client.ClickHandler, com.google.gwt.view.client.MultiSelectionModel, com.google.gwt.event.logical.shared.ValueChangeHandler)
        * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate,
        *      Delegate, Delegate, SelectionModel, ValueChangeHandler,
        *      WebTransMessages, org.zanata.webtrans.client.resources.Resources)
@@ -826,30 +824,18 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                message = messages.replacedTextInMultipleTextFlows(searchText, replacement, updateInfoList.size());
             }
 
-            final UndoLink undoLink = undoLinkProvider.get();
-            undoLink.prepareUndoFor(result, new HasUndoHandler()
+            UndoLink undoLink = undoLinkProvider.get();
+            undoLink.prepareUndoFor(result);
+            undoLink.setUndoCallback(new UndoLink.UndoCallback()
             {
                @Override
-               public void preUndo(List<TransUnitUpdateInfo> updateInfoList)
+               public void preUndo()
                {
                   executePreUndo(updateInfoList);
                }
-               
-               @Override
-               public void executeUndo(List<TransUnitUpdateInfo> updateInfoList)
-               {
-                  if (workspaceContext.isReadOnly())
-                  {
-                     eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
-                  }
-                  else
-                  {
-                     undoLink.executeDefaultUndo(this, updateInfoList);
-                  }
-               }
 
                @Override
-               public void postSuccess(UpdateTransUnitResult result)
+               public void postUndoSuccess()
                {
                   executePostSucess(result);
                }
@@ -1071,8 +1057,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    /**
     * Build a handler to select and de-select all text flows in a document
     * 
+    * @param docId
     * @param selectionModel
-    * @param dataProvider
     * @return the new handler
     */
    private ValueChangeHandler<Boolean> selectAllHandler(final Long docId, final MultiSelectionModel<TransUnitReplaceInfo> selectionModel)

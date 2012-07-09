@@ -101,8 +101,22 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void addUndo(UndoLink undoLink)
+   public void addUndo(final UndoLink undoLink)
    {
+      undoLink.setUndoCallback(new UndoLink.UndoCallback()
+      {
+         @Override
+         public void preUndo()
+         {
+            setToView();
+         }
+
+         @Override
+         public void postUndoSuccess()
+         {
+            undoContainer.remove(undoLink);
+         }
+      });
       undoContainer.setWidget(undoLink);
    }
 
