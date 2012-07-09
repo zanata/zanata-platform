@@ -78,8 +78,8 @@ public class LevenshteinTokenUtilTest
 
    public void testSimilarLists()
    {
-      List<String> strings1 = Arrays.asList("123 456 78 90", "a bc def ghi j");
-      List<String> strings2 = Arrays.asList("123 456 78 9", "bc def ghi j");
+      List<String> strings1 = Arrays.asList("123 456 78 90", "a_ bc_ def ghi j");
+      List<String> strings2 = Arrays.asList("123 456 78 9", "bc_ def ghi j");
       double similarity = LevenshteinTokenUtil.getSimilarity(strings1, strings2);
       System.out.println(similarity);
       Assert.assertTrue(similarity > 0.7);
@@ -101,6 +101,15 @@ public class LevenshteinTokenUtilTest
       List<String> strings2 = Arrays.asList("one", "two");
       double similarity = LevenshteinTokenUtil.getSimilarity(strings1, strings2);
       Assert.assertEquals(similarity, 1.0, DELTA);
+   }
+   
+   public void testTokenise()
+   {
+      String[] foobar = LevenshteinTokenUtil.tokenise("foo bar baz");
+      assert foobar.length == 3;
+   
+      String[] thefoobar = LevenshteinTokenUtil.tokenise("The foo IS NOT bar");
+      assert thefoobar.length == 2;
    }
 
 }
