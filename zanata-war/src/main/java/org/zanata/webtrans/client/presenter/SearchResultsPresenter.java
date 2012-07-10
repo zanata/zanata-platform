@@ -197,7 +197,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private Delegate<TransUnitReplaceInfo> undoButtonDelegate;
    private Handler selectionChangeHandler;
 
-   private List<HasValue<Boolean>> selectAllCheckboxList;
+   private Map<Long, HasValue<Boolean>> selectAllDocList;
 
    /**
     * Model objects for tables in display. Changes to these are reflected in the
@@ -245,7 +245,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
       allReplaceInfos = new HashMap<TransUnitId, TransUnitReplaceInfo>();
       docPaths = new HashMap<Long, String>();
-      selectAllCheckboxList = new ArrayList<HasValue<Boolean>>();
+      selectAllDocList = new HashMap<Long, HasValue<Boolean>>();
       setUiForNothingSelected();
       display.setReplaceAllButtonVisible(!workspaceContext.isReadOnly());
 
@@ -612,6 +612,51 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                refreshReplaceAllButton();
             }
+         }
+      };
+   }
+
+   /**
+    * Build selection change handler to uncheck 'Select All' in document list if
+    * any child is unchecked
+    * 
+    * @param docId
+    * @param selectionModel
+    * @param dataProvider
+    * @return
+    */
+   private Handler buildSelectionChangeDeselectHandler(final Long docId, final MultiSelectionModel<TransUnitReplaceInfo> selectionModel, final ListDataProvider<TransUnitReplaceInfo> dataProvider)
+   {
+      return new Handler()
+      {
+         @Override
+         public void onSelectionChange(SelectionChangeEvent event)
+         {
+            boolean isAllSelected = true;
+            for (TransUnitReplaceInfo data : dataProvider.getList())
+            {
+               if (!selectionModel.isSelected(data))
+               {
+                  isAllSelected = false;
+                  break;
+               }
+            }
+
+            if (selectAllDocList.containsKey(docId))
+            {
+               selectAllDocList.get(docId).setValue(isAllSelected);
+            }
+            
+            isAllSelected = true;
+            for(HasValue<Boolean> docSelectAll: selectAllDocList.values())
+            {
+               if(!docSelectAll.getValue().booleanValue())
+               {
+                  isAllSelected = false;
+                  break;
+               }
+            }
+            display.getSelectAllChk().setValue(isAllSelected);
          }
       };
    }
@@ -1009,10 +1054,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     * @param docPathName
     * @param transUnits
     */
-   private void displayDocumentResults(Long docId, final String docPathName, List<TransUnit> transUnits)
+   private void displayDocumentResults(final Long docId, final String docPathName, List<TransUnit> transUnits)
    {
-      ListDataProvider<TransUnitReplaceInfo> dataProvider;
+      final ListDataProvider<TransUnitReplaceInfo> dataProvider;
       final MultiSelectionModel<TransUnitReplaceInfo> selectionModel = display.createMultiSelectionModel();
+
       documentSelectionModels.put(docId, selectionModel);
       ClickHandler showDocHandler = showDocClickHandler(docPathName, false);
       ClickHandler searchDocHandler = showDocClickHandler(docPathName, true);
@@ -1026,8 +1072,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler);
       }
-      
-      selectAllCheckboxList.add(display.getSelectAllCheckbox());
+
+      selectAllDocList.put(docId, display.getSelectAllCheckbox());
       documentDataProviders.put(docId, dataProvider);
 
       selectionModel.addSelectionChangeHandler(selectionChangeHandler);
@@ -1041,6 +1087,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          data.add(info);
          allReplaceInfos.put(tu.getId(), info);
       }
+
+      selectionModel.addSelectionChangeHandler(buildSelectionChangeDeselectHandler(docId, selectionModel, dataProvider));
+
       Collections.sort(data, TransUnitReplaceInfo.getRowComparator());
    }
 
@@ -1153,7 +1202,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels.clear();
       allReplaceInfos.clear();
       display.clearAll();
-      selectAllCheckboxList.clear();
+      selectAllDocList.clear();
       setUiForNothingSelected();
    }
 
@@ -1232,9 +1281,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private void selectAllTextFlows(boolean selected)
    {
-      for (HasValue<Boolean> header : selectAllCheckboxList)
+      for (HasValue<Boolean> docSelectAll : selectAllDocList.values())
       {
-         header.setValue(selected, true);
+         docSelectAll.setValue(selected, true);
       }
    }
 
