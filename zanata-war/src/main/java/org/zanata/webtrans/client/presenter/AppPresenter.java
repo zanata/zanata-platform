@@ -248,7 +248,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      display.getSearchAndReplaceLink().addClickHandler(new ClickHandler()
+      display.getSearchAndReplaceButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
@@ -259,6 +259,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
                token.setView(MainView.Search);
                history.newItem(token.toTokenString());
             }
+         }
+      });
+
+	  display.getKeyShortcutButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            keyShortcutPresenter.showShortcuts();
          }
       });
 
@@ -278,7 +287,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       }));
 
 
-      Command helpMenuCommand = new Command()
+      ommand helpMenuCommand = new Command()
       {
          @Override
          public void execute()
@@ -316,10 +325,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       };
 
       display.initMenuList(identity.getPerson().getName(), helpMenuCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
-
+     
       keyShortcutPresenter.register(new KeyShortcut(
             new Keys(Keys.ALT_KEY, 'L'),
-
             ShortcutContext.Application,
             messages.showDocumentListKeyShortcut(),
             new KeyShortcutEventHandler()

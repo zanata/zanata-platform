@@ -76,8 +76,11 @@ public interface UiMessages extends Messages
    @DefaultMessage("Processing...")
    String processing();
 
-   @DefaultMessage("TM merge for current page")
+   @DefaultMessage("TM merge")
    String mergeTMButtonLabel();
+
+   @DefaultMessage("Merge translation from Translation Memory for untranslated text flows on current page")
+   String mergeTMTooltip();
 
    @DefaultMessage("Select TM match percentage to pre-fill translations.")
    String mergeTMCaption();
@@ -112,7 +115,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("On Context mismatch (Res Id, msgctx):")
    String differentContext();
 
-   @DefaultMessage("Otherwise:")
+   @DefaultMessage("If not Reject or downgrade to Fuzzy:")
    String otherwise();
 
    @DefaultMessage("Condition")

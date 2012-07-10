@@ -113,4 +113,11 @@ public interface Resources extends ClientBundle
 
    @Source("images/crystal_project/_16x16/actions/logout.png")
    ImageResource logout();
+
+   @Source("images/crystal_project/_24x24/devices/Keyboard.png")
+   ImageResource keyboard();
+
+   @Source("images/crystal_project/_24x24/apps/kfind.png")
+   ImageResource search();
+
 }

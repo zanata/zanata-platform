@@ -112,19 +112,25 @@
 		{
 			margin-top:2px;
 		}
-		
-		.searchAndReplace
+
+		.searchAndReplaceButton
 		{
-			font-weight:bold;
-			color:#FFFFFF;
-			text-decoration:underline;
-			cursor:pointer;
+			outline: none;
+			padding-top: 6px;
 		}
-		
+
+		.keyShortcutButton
+		{
+			outline: none;
+			padding-top: 6px;
+		}
+
 		.searchAndReplace:hover
 		{
 			color:#ADD8E6;
 		}
+
+
 		
 		.menuBar
 		{
@@ -160,8 +166,15 @@
 						<g:cell width="200px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
-	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="120px">
-	                    	<g:Anchor ui:field="searchAndReplace" styleName="{style.searchAndReplace}"/>
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
+	                        <g:PushButton ui:field="keyShortcuts" styleName="{style.keyShortcutButton}">
+                                <g:upFace image="{resources.keyboard}" />
+                            </g:PushButton>
+	                    </g:cell>
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
+	                        <g:PushButton ui:field="searchAndReplace" styleName="{style.searchAndReplaceButton}">
+                                <g:upFace image="{resources.search}" />
+                            </g:PushButton>
 	                    </g:cell>
 	                    <g:cell horizontalAlignment="ALIGN_LEFT" width="200px">
 	                    	<g:MenuBar ui:field="topMenuBar" addStyleNames="{style.topMenuBar}"/>

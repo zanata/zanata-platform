@@ -170,6 +170,7 @@ public class SearchResultsPresenterTest
    List<TransUnitReplaceInfo> dataProviderDoc1List;
    MultiSelectionModel<TransUnitReplaceInfo> mockSelectionModelDoc1;
    Capture<SelectionChangeEvent.Handler> capturedSelectionChangeHandlerDoc1;
+   Capture<SelectionChangeEvent.Handler> capturedSelectionChangeDeselectHandlerDoc1;
 
    @BeforeClass
    public void createMocks()
@@ -235,6 +236,7 @@ public class SearchResultsPresenterTest
       capturedSelectDocChangeHandlers = addCapture(new Capture<ValueChangeHandler<Boolean>>());
 
       capturedSelectionChangeHandlerDoc1 = addCapture(new Capture<SelectionChangeEvent.Handler>());
+      capturedSelectionChangeDeselectHandlerDoc1 = addCapture(new Capture<SelectionChangeEvent.Handler>());
    }
 
    /**
@@ -419,7 +421,8 @@ public class SearchResultsPresenterTest
       // display single document
       expect(mockDisplay.createMultiSelectionModel()).andReturn(mockSelectionModelDoc1).once();
       expect(mockSelectionModelDoc1.addSelectionChangeHandler(capture(capturedSelectionChangeHandlerDoc1))).andReturn(mockHandlerRegistration());
-
+      expect(mockSelectionModelDoc1.addSelectionChangeHandler(capture(capturedSelectionChangeDeselectHandlerDoc1))).andReturn(mockHandlerRegistration());
+      
       expect(mockDisplay.addDocument(eq(TEST_DOC_PATH_1), capture(capturedViewDocClickHandlers), capture(capturedSearchDocClickHandlers), capture(capturedSelectionModels), capture(capturedSelectDocChangeHandlers))).andReturn(mockDataProviderDoc1).once();
 
       expect(mockDisplay.getSelectAllCheckbox()).andReturn(mockSelectAllHeader).once();

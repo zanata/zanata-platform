@@ -31,7 +31,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -71,7 +70,7 @@ public class AbstractPage
    {
       PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), this);
       this.driver = driver;
-      ajaxWaitForTenSec = createWaitForAjax(driver, 10);
+      ajaxWaitForTenSec = waitForSeconds(driver, 10);
       if (pageContext == PageContext.jsf)
       {
          //webTran and jsp don't share same page layout
@@ -79,7 +78,7 @@ public class AbstractPage
       }
    }
 
-   public static FluentWait<WebDriver> createWaitForAjax(WebDriver webDriver, int durationInSec)
+   public static FluentWait<WebDriver> waitForSeconds(WebDriver webDriver, int durationInSec)
    {
       return new FluentWait<WebDriver>(webDriver).withTimeout(durationInSec, SECONDS).pollingEvery(1, SECONDS).ignoring(NoSuchElementException.class);
    }
