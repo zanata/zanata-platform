@@ -137,25 +137,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            display.clearPanel();
-            for (ShortcutContext context : ensureActiveContexts())
-            {
-               ListDataProvider<KeyShortcut> dataProvider = new ListDataProvider<KeyShortcut>();
-
-               for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
-               {
-                  for (KeyShortcut shortcut : shortcutSet)
-                  {
-                     if (shortcut.getContext() == context && shortcut.isDisplayInView() && !dataProvider.getList().contains(shortcut))
-                     {
-                        dataProvider.getList().add(shortcut);
-                     }
-                  }
-               }
-               Collections.sort(dataProvider.getList());
-               display.addContext(getContextName(context), dataProvider);
-            }
-            display.showPanel();
+            showShortcuts();
          }
       }));
    }
@@ -371,6 +353,30 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          surplusKeyMap = new HashMap<ShortcutContext, Set<SurplusKeyListener>>();
       }
       return surplusKeyMap;
+   }
+
+   public void showShortcuts()
+   {
+      display.clearPanel();
+      for (ShortcutContext context : ensureActiveContexts())
+      {
+         ListDataProvider<KeyShortcut> dataProvider = new ListDataProvider<KeyShortcut>();
+
+         for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
+         {
+            for (KeyShortcut shortcut : shortcutSet)
+            {
+               if (shortcut.getContext() == context && shortcut.isDisplayInView()
+                   && !dataProvider.getList().contains(shortcut))
+               {
+                  dataProvider.getList().add(shortcut);
+               }
+            }
+         }
+         Collections.sort(dataProvider.getList());
+         display.addContext(getContextName(context), dataProvider);
+      }
+      display.showPanel();
    }
 
    private class SurplusKeyListenerHandlerRegistration implements HandlerRegistration

@@ -86,7 +86,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasCommand getSignOutMenuItem();
 
-      HasClickHandlers getSearchAndReplaceLink();
+      HasClickHandlers getKeyShortcutButton();
+
+      HasClickHandlers getSearchAndReplaceButton();
 
       HasClickHandlers getNotificationBtn();
 
@@ -273,7 +275,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
-      display.getSearchAndReplaceLink().addClickHandler(new ClickHandler()
+      display.getSearchAndReplaceButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
@@ -284,6 +286,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
                token.setView(MainView.Search);
                history.newItem(token.toTokenString());
             }
+         }
+      });
+
+      display.getKeyShortcutButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            keyShortcutPresenter.showShortcuts();
          }
       });
 
