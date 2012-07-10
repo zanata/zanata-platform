@@ -110,10 +110,8 @@
 
   <component class="org.zanata.ApplicationConfiguration" name="applicationConfiguration" precedence="30">
     <property name="debug">@env.debug@</property>
-    <property name="authType">@zanata.authType@</property>
     <property name="hibernateStatistics">false</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
-    <property name="useDefaultConfig">@zanata.useDefaultConfig@</property>
   </component>
   
   <!-- Zanata Background Job scheduler.

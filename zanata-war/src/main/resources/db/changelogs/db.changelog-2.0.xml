@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="camunoz@redhat.com" id="1">
+        <comment>Rename application configuration properties</comment>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="host.url"/>
+            <where>config_key = 'flies.host'</where>
+        </update>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="register.url"/>
+            <where>config_key = 'flies.register'</where>
+        </update>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="email.domain"/>
+            <where>config_key = 'flies.email.domain'</where>
+        </update>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="pages.home.content"/>
+            <where>config_key = 'flies.home.content'</where>
+        </update>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="pages.help.content"/>
+            <where>config_key = 'flies.help.content'</where>
+        </update>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="log.destination.email"/>
+            <where>config_key = 'zanata.log.destination.email'</where>
+        </update>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="log.email.active"/>
+            <where>config_key = 'zanata.log.email.active'</where>
+        </update>
+        <update tableName="HApplicationConfiguration" >
+            <column name="config_key" value="log.email.level"/>
+            <where>config_key = 'zanata.log.email.level'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>
