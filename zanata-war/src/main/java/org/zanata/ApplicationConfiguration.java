@@ -108,6 +108,7 @@ public class ApplicationConfiguration implements Serializable
          configValues.put(value.getKey(), value.getValue());
          log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
       }
+      this.configValues = configValues;
 
       this.loadExternalConfig();
       this.applyLoggingConfiguration();
@@ -149,7 +150,7 @@ public class ApplicationConfiguration implements Serializable
       {
          try
          {
-            defaultConfig = ResourceBundle.getBundle("zanata-defaultConfig");
+            defaultConfig = ResourceBundle.getBundle("zanata-defaultconfig");
          }
          catch (MissingResourceException e)
          {

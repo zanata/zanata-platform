@@ -150,7 +150,6 @@ public class TranslationResourceRestTest extends ZanataRestTest
       seam.reset();
       seam.ignoreNonResolvable()
           .use("session", getSession())
-          .use("applicationConfiguration", new ApplicationConfiguration(true))
           .use("identity", mockIdentity)
           .use("translationWorkspaceManager", transWorspaceManager)
           .use("entityManager", super.getEm())

@@ -161,17 +161,10 @@
 					<execution>
 						<id>default-war</id>
 						<configuration>
-							<classifier>internal</classifier>
-							<webappDirectory>${project.build.directory}/${project.build.finalName}-internal</webappDirectory>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 							<filters>
-								<filter>${war.config.dir}/internalauth.properties</filter>
 								<filter>${war.config.dir}/mysql.properties</filter>
 							</filters>
-							<archive>
-								<manifestEntries>
-									<Classifier>internal</Classifier>
-								</manifestEntries>
-							</archive>
 						</configuration>
 					</execution>
 					<!-- Default Seam tests exploded war -->
@@ -184,7 +177,6 @@
 						<configuration>
 							<webappDirectory>${project.build.directory}/${project.build.finalName}-seamtests</webappDirectory>
 							<filters>
-								<filter>${war.config.dir}/seamtests.properties</filter>
 								<filter>${war.config.dir}/h2.properties</filter>
 							</filters>
 						</configuration>
@@ -584,8 +576,8 @@
 							<deployer>
 								<deployables>
 									<deployable>
-										<pingURL>http://localhost:${port}/${war.name}-internal/</pingURL>
-										<location>${project.build.directory}/zanata-internal</location>
+										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
+										<location>${project.build.directory}/zanata</location>
 										<properties>
 											<context>zanata</context>
 										</properties>
