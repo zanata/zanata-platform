@@ -18,39 +18,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
+import net.customware.gwt.dispatch.shared.Action;
 
-import org.zanata.webtrans.server.rpc.PreviewReplaceTextHandler;
-import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * 
- * @author David Mason, damason@redhat.com
- * @see PreviewReplaceTextHandler
- * 
+ * The DispatchAction class just makes it easier to ensure that all our Actions implement IsSerializable.
+ *
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class PreviewReplaceTextResult implements DispatchResult
+public interface DispatchAction<R extends DispatchResult> extends Action<R>, IsSerializable
 {
-   private static final long serialVersionUID = 1L;
-
-   private List<TransUnitUpdatePreview> previews;
-
-   @SuppressWarnings("unused")
-   private PreviewReplaceTextResult()
-   {
-   }
-
-   public PreviewReplaceTextResult(List<TransUnitUpdatePreview> previews)
-   {
-      this.previews = previews;
-   }
-
-   public List<TransUnitUpdatePreview> getPreviews()
-   {
-      return previews;
-   }
-
 
 }

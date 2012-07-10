@@ -1,8 +1,7 @@
 package org.zanata.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Result;
 
-public class ExitWorkspaceResult implements Result
+public class ExitWorkspaceResult implements DispatchResult
 {
 
    private static final long serialVersionUID = 1L;

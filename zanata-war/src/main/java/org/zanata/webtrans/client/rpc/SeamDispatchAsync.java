@@ -9,8 +9,8 @@ import org.zanata.webtrans.shared.DispatchService;
 import org.zanata.webtrans.shared.DispatchServiceAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
-import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
@@ -46,7 +46,10 @@ public class SeamDispatchAsync implements CachingDispatchAsync
       ((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
    }
 
-   public <A extends Action<R>, R extends Result> void execute(final A action, final AsyncCallback<R> callback)
+   @Override
+   public
+   <A extends Action<R>, R extends Result>
+   void execute(final A action, final AsyncCallback<R> callback)
    {
       if (action instanceof AbstractWorkspaceAction<?>)
       {
@@ -102,7 +105,9 @@ public class SeamDispatchAsync implements CachingDispatchAsync
    }
 
    @Override
-   public <A extends Action<R>, R extends Result> void rollback(final A action, final R result, final AsyncCallback<Void> callback)
+   public
+   <A extends Action<R>, R extends Result>
+   void rollback(final A action, final R result, final AsyncCallback<Void> callback)
    {
       if (action instanceof AbstractWorkspaceAction<?>)
       {

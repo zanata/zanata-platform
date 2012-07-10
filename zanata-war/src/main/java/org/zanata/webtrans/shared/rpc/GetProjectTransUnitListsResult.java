@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.customware.gwt.dispatch.shared.Result;
-
 import org.zanata.webtrans.shared.model.TransUnit;
 
 /**
@@ -33,7 +31,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
  * @author David Mason, damason@redhat.com
  *
  */
-public class GetProjectTransUnitListsResult implements Result
+public class GetProjectTransUnitListsResult implements DispatchResult
 {
    private static final long serialVersionUID = 1L;
 

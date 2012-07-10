@@ -1,8 +1,8 @@
 package org.zanata.webtrans.shared.auth;
 
-import java.io.Serializable;
-
 import org.zanata.webtrans.shared.model.Identifier;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Represents a single connection to Zanata from GWT.  Usually represents one tab in a browser.  It has a one-to-one relationship with
@@ -10,11 +10,8 @@ import org.zanata.webtrans.shared.model.Identifier;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public final class EditorClientId implements Identifier<String>, Serializable
+public final class EditorClientId implements Identifier<String>, IsSerializable
 {
-   // generated
-   private static final long serialVersionUID = 6713691712353126602L;
-
    private String httpSessionId;
    private long editorClientNum;
 

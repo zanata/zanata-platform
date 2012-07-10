@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 
-import net.customware.gwt.dispatch.shared.Result;
-
-public class TransMemoryDetailsList implements Result
+public class TransMemoryDetailsList implements DispatchResult
 {
 
    // generated

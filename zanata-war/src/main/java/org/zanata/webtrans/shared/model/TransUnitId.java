@@ -4,11 +4,8 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnitId implements Serializable, IsSerializable, Identifier<Long>
+public class TransUnitId implements IsSerializable, Identifier<Long>
 {
-
-   private static final long serialVersionUID = 6291339842619640513L;
-
    private long id;
 
    // for GWT

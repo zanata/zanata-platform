@@ -20,12 +20,11 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Result;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class NoOpResult implements Result
+public class NoOpResult implements DispatchResult
 {
    private static final long serialVersionUID = 1L;
 }

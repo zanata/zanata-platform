@@ -21,19 +21,14 @@
 
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class GlossaryResultItem extends SearchResultItem implements Serializable, IsSerializable
+public class GlossaryResultItem extends SearchResultItem implements IsSerializable
 {
-
-   private static final long serialVersionUID = 1L;
-
    private String source;
    private String target;
 

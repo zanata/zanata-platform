@@ -1,11 +1,9 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class WorkspaceContext implements Serializable
+public class WorkspaceContext implements IsSerializable
 {
-   private static final long serialVersionUID = 1L;
-
    private WorkspaceId workspaceId;
    private String workspaceName;
    private String localeName;

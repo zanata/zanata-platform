@@ -1,11 +1,9 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class PersonSessionDetails implements Serializable
+public class PersonSessionDetails implements IsSerializable
 {
-   private static final long serialVersionUID = -3927926641310793285L;
-
    private Person person;
    private TransUnit selectedTransUnit;
 
