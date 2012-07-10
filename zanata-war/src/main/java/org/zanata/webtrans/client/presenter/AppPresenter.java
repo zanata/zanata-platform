@@ -79,7 +79,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       void setReadOnlyVisible(boolean visible);
 
-      HasClickHandlers getSearchAndReplaceLink();
+      HasClickHandlers getKeyShortcutButton();
+      
+      HasClickHandlers getSearchAndReplaceButton();
 
       HasClickHandlers getNotificationBtn();
 
@@ -122,7 +124,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          final DocumentListPresenter documentListPresenter,
          final SearchResultsPresenter searchResultsPresenter,
          final NotificationPresenter notificationPresenter,
-		 final LayoutSelectorPresenter layoutSelectorPresenter,
+		   final LayoutSelectorPresenter layoutSelectorPresenter,
          final Identity identity,
          final WorkspaceContext workspaceContext,
          final WebTransMessages messages,
@@ -287,7 +289,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       }));
 
 
-      ommand helpMenuCommand = new Command()
+      Command helpMenuCommand = new Command()
       {
          @Override
          public void execute()
@@ -326,6 +328,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       display.initMenuList(identity.getPerson().getName(), helpMenuCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
      
+      keyShortcutPresenter.register(new KeyShortcut(
+            new Keys(Keys.ALT_KEY, 'B'),
+            ShortcutContext.Application,
+            messages.showDashboardKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            HistoryToken token = history.getHistoryToken();
+            token.setView(MainView.Dashboard);
+            history.newItem(token.toTokenString());
+         }
+      }));
+      
       keyShortcutPresenter.register(new KeyShortcut(
             new Keys(Keys.ALT_KEY, 'L'),
             ShortcutContext.Application,
@@ -432,7 +449,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          {
             translationPresenter.saveEditorPendingChange();
          }
-
          switch (viewToShow)
          {
          // TODO use revealDisplay/concealDisplay for editor and document views
@@ -444,6 +460,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = selectedDocumentStats;
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
+            dashboardPresenter.concealDisplay();
             display.setLayoutMenuVisible(true);
             break;
          case Dashboard:
@@ -451,6 +468,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
+            dashboardPresenter.revealDisplay();
             display.setLayoutMenuVisible(false);
             break;
          case Search:
@@ -459,6 +477,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
+            dashboardPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
             display.setLayoutMenuVisible(false);
             break;
@@ -470,6 +489,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
+            dashboardPresenter.concealDisplay();
             display.setLayoutMenuVisible(false);
             break;
          }

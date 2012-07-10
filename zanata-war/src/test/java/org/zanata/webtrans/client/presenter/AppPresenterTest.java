@@ -95,6 +95,7 @@ public class AppPresenterTest
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
    LayoutSelectorPresenter mockLayoutPresenter;
+   DashboardPresenter mockDashboardPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -141,6 +142,7 @@ public class AppPresenterTest
       mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockNotificationPresenter = createMock(NotificationPresenter.class);
       mockLayoutPresenter = createMock(LayoutSelectorPresenter.class);
+      mockDashboardPresenter = createMock(DashboardPresenter.class);
 
       capturedSearchLinkClickHandler = new Capture<ClickHandler>();
       capturedKeyShortcutButtonClickHandler = new Capture<ClickHandler>();
@@ -167,7 +169,7 @@ public class AppPresenterTest
 
       setupDefaultMockExpectations();
 
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockDashboardPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
 
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
@@ -696,7 +698,8 @@ public class AppPresenterTest
       expectLastCall().once();
       mockLayoutPresenter.setLayoutListener(mockTranslationPresenter);
       expectLastCall().once();
-
+      mockDashboardPresenter.bind();
+      expectLastCall().once();
    }
 
    @SuppressWarnings("unchecked")
@@ -802,14 +805,8 @@ public class AppPresenterTest
       reset(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       reset(mockMessages, mockPerson, mockSearchResultsPresenter);
       reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-
-      reset(mockNotificationPresenter, mockLayoutPresenter);
-      reset(mockSearchLink);
-
-      reset(mockNotificationPresenter);
-
-      reset(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
-
+      reset(mockNotificationPresenter, mockLayoutPresenter, mockDashboardPresenter);
+      reset(mockSearchButton, mockKeyShortcutButton);
    }
 
    private void resetAllCaptures()
@@ -822,10 +819,7 @@ public class AppPresenterTest
       capturedKeyShortcuts.reset();
       capturedProjectStatsUpdatedEventHandler.reset();
       capturedSearchLinkClickHandler.reset();
-
       capturedKeyShortcutButtonClickHandler.reset();
-      capturedSignoutLinkCommand.reset();
-
       capturedWorkspaceContextUpdatedEventHandler.reset();
       capturedPresenterRevealedHandler.reset();
       capturedErrorNotificationBtnHandler.reset();
@@ -837,13 +831,8 @@ public class AppPresenterTest
       replay(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       replay(mockMessages, mockPerson, mockSearchResultsPresenter);
       replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-
-      replay(mockNotificationPresenter, mockLayoutPresenter);
-      replay(mockSearchLink);
-
-      replay(mockNotificationPresenter);
-
-      replay(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
+      replay(mockNotificationPresenter, mockLayoutPresenter, mockDashboardPresenter);
+      replay(mockSearchButton, mockKeyShortcutButton);
 
    }
 
@@ -853,13 +842,7 @@ public class AppPresenterTest
       verify(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       verify(mockMessages, mockPerson, mockSearchResultsPresenter);
       verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-
-      verify(mockNotificationPresenter, mockLayoutPresenter);
-      verify(mockSearchLink);
-
-      verify(mockNotificationPresenter);
-
-      verify(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
-
+      verify(mockNotificationPresenter, mockLayoutPresenter, mockDashboardPresenter);
+      verify(mockSearchButton, mockKeyShortcutButton);
    }
 }

@@ -361,4 +361,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Dashboard")
    String dashboard();
+
+   @DefaultMessage("Show dashboard")
+   String showDashboardKeyShortcut();
 }

@@ -5,14 +5,23 @@
     <ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 
     <ui:style>
+    	.container
+    	{
+			background:#E0E8EE;
+			margin:15px;
+		}
         .rootTable
         {
+			background:#E0E8EE;
 		}
     </ui:style>
     
     
-	<g:FlexTable ui:field="rootTable" styleName="rootTable" cellPadding="10px">
-	
-	</g:FlexTable>
+    <g:LayoutPanel styleName="{style.container}">
+    	<g:layer top="0" bottom="0">
+			<g:FlexTable ui:field="rootTable" styleName="{style.rootTable}" cellPadding="10"/>
+    	</g:layer>
+    </g:LayoutPanel>
+    
     
 </ui:UiBinder> 

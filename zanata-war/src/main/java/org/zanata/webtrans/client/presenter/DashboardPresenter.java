@@ -74,5 +74,11 @@ public class DashboardPresenter extends WidgetPresenter<DashboardPresenter.Displ
       // TODO Auto-generated method stub
       
    }
+
+   public void concealDisplay()
+   {
+      // TODO Auto-generated method stub
+      
+   }
    
 }

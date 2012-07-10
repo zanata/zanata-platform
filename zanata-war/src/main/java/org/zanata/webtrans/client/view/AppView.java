@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.DashboardPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
@@ -89,8 +90,6 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    LayoutPanel container, topPanel;
 
-   // NotificationPanel notificationPanel;
-
    @UiField(provided = true)
    final Resources resources;
 
@@ -118,13 +117,15 @@ public class AppView extends Composite implements AppPresenter.Display
    private Widget documentListView;
    private Widget translationView;
    private Widget searchResultsView;
+   private Widget dashboardView;
+   
 
    private final WebTransMessages messages;
    
    private final String userAvatarUrl;
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, DashboardPresenter.Display dashboardView, final Identity identity)
    {
       this.resources = resources;
       this.messages = messages;
@@ -139,7 +140,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
       initWidget(uiBinder.createAndBindUi(this));
 
-      searchAndReplace.setText(messages.searchAndReplace());
+//      searchAndReplace.setText(messages.searchAndReplace());
       userAvatarUrl = identity.getPerson().getAvatarUrl();
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
@@ -153,6 +154,9 @@ public class AppView extends Composite implements AppPresenter.Display
 
       this.searchResultsView = searchResultsView.asWidget();
       this.container.add(this.searchResultsView);
+      
+      this.dashboardView = dashboardView.asWidget();
+      this.container.add(this.dashboardView);
 
       notificationBtn.setTitle(messages.notification());
 
@@ -174,16 +178,25 @@ public class AppView extends Composite implements AppPresenter.Display
          setWidgetVisible(documentListView, true);
          setWidgetVisible(searchResultsView, false);
          setWidgetVisible(translationView, false);
+         setWidgetVisible(dashboardView, false);
          break;
       case Search:
          setWidgetVisible(documentListView, false);
          setWidgetVisible(searchResultsView, true);
          setWidgetVisible(translationView, false);
+         setWidgetVisible(dashboardView, false);
+         break;
+      case Dashboard:
+         setWidgetVisible(documentListView, false);
+         setWidgetVisible(searchResultsView, false);
+         setWidgetVisible(translationView, false);
+         setWidgetVisible(dashboardView, true);
          break;
       case Editor:
          setWidgetVisible(documentListView, false);
          setWidgetVisible(searchResultsView, false);
          setWidgetVisible(translationView, true);
+         setWidgetVisible(dashboardView, false);
          break;
       }
    }
