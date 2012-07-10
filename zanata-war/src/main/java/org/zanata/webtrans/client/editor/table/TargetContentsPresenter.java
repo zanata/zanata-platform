@@ -111,6 +111,7 @@ public class TargetContentsPresenter implements
 
    private final ValidationMessagePanelDisplay validationMessagePanel;
    private final TargetContentsDisplay display;
+   private final UserWorkspaceContext userWorkspaceContext;
    private int currentEditorIndex = 0;
    private ArrayList<ToggleEditor> currentEditors;
 
@@ -148,6 +149,7 @@ public class TargetContentsPresenter implements
    // @formatter:on
    {
       this.display = display;
+      this.userWorkspaceContext = userWorkspaceContext;
       this.display.setListener(this);
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
@@ -208,7 +210,16 @@ public class TargetContentsPresenter implements
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            moveNext(false);
+            if (currentEditorIndex + 1 < currentEditors.size())
+            {
+               display.focusEditor(currentEditorIndex + 1);
+               currentEditorIndex++;
+            }
+            else
+            {
+               currentEditorIndex = 0;
+               eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
+            }
          }
       }));
 
@@ -217,7 +228,16 @@ public class TargetContentsPresenter implements
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            movePrevious(false);
+            if (currentEditorIndex - 1 >= 0)
+            {
+               display.focusEditor(currentEditorIndex - 1);
+               currentEditorIndex--;
+            }
+            else
+            {
+               currentEditorIndex = LAST_INDEX;
+               eventBus.fireEvent(new NavTransUnitEvent(PrevEntry));
+            }
          }
       }));
 
@@ -691,6 +711,7 @@ public class TargetContentsPresenter implements
 
    public void addUndoLink(int row, UndoLink undoLink)
    {
+      //FIXME undo where to put undo link if editor always display?
 //      TargetContentsDisplay targetContentsDisplay = displayList.get(row);
 //      targetContentsDisplay.addUndo(undoLink);
    }

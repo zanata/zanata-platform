@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -156,7 +157,6 @@ public class TargetContentsPresenterTest
    @Test
    public void canValidate()
    {
-      givenCurrentEditorsAs(editor);
       when(editor.getIndex()).thenReturn(0);
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
       when(editor.getText()).thenReturn("target");
@@ -264,14 +264,14 @@ public class TargetContentsPresenterTest
    @Test
    public void onRequestValidationWillFireRunValidationEventIfItsEditing()
    {
-      //given current display is row 1 and current editor has target content
-      givenCurrentEditorsAs(editor);
+      //given current display has one editor and current editor has target content
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
       when(editor.getIndex()).thenReturn(0);
       when(editor.getText()).thenReturn("target");
 
       presenter.onRequestValidation(new RequestValidationEvent());
 
-      verify(eventBus).fireEvent(runValidationEventCaptor.capture());
+      verify(eventBus).fireEvent(runValidationEventCaptor.capture());//one in showEditor() one in onRequestValidation()
       MatcherAssert.assertThat(runValidationEventCaptor.getValue().getTarget(), Matchers.equalTo("target"));
       verifyRevealDisplay();
    }
@@ -301,24 +301,9 @@ public class TargetContentsPresenterTest
       presenter.onInsertString(new InsertStringInEditorEvent("", "suggestion"));
 
       verify(editor).insertTextInCursorPosition("suggestion");
-      ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
-      verify(eventBus, times(2)).fireEvent(eventArgumentCaptor.capture());
-      NotificationEvent notificationEvent = findEvent(eventArgumentCaptor, NotificationEvent.class);
-      MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
-      RunValidationEvent runValidationEvent = findEvent(eventArgumentCaptor, RunValidationEvent.class);
-      MatcherAssert.assertThat(runValidationEvent, Matchers.notNullValue());
-   }
-
-   private <T> T findEvent(ArgumentCaptor<GwtEvent> eventArgumentCaptor, Class<T> clazz)
-   {
-      for (GwtEvent event : eventArgumentCaptor.getAllValues())
-      {
-         if (clazz.isAssignableFrom(event.getClass()))
-         {
-            return clazz.cast(event);
-         }
-      }
-      throw new RuntimeException("can't find event type in captured values: " + clazz.getName());
+      verify(eventBus, times(2)).fireEvent(isA(RunValidationEvent.class));
+      verify(eventBus, atLeastOnce()).fireEvent(notificationEventCaptor.capture());
+      MatcherAssert.assertThat(notificationEventCaptor.getValue().getMessage(), Matchers.equalTo("copied"));
    }
 
    @Test

@@ -7,6 +7,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
  * This is mainly to abstract some methods out from InlineTargetCellEditor. So
  * that other newly created class won't have to depend on ScrollPagingTable
  * classes.
+ * TODO to be removed
  */
 public interface TransUnitsEditModel {
 
