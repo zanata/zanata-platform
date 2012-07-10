@@ -104,6 +104,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
       mergeTMButton.setText(messages.mergeTMButtonLabel());
+      mergeTMButton.setTitle(messages.mergeTMTooltip());
    }
 
    @Override
