@@ -89,6 +89,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
    }
 
+   private final DashboardPresenter dashboardPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
@@ -115,6 +116,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
    @Inject
    public AppPresenter(Display display, EventBus eventBus,
+         final DashboardPresenter dashboardPresenter,
          final KeyShortcutPresenter keyShortcutPresenter,
          final TranslationPresenter translationPresenter,
          final DocumentListPresenter documentListPresenter,
@@ -130,6 +132,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    {
       super(display, eventBus);
       this.keyShortcutPresenter = keyShortcutPresenter;
+      this.dashboardPresenter = dashboardPresenter;
       this.history = history;
       this.identity = identity;
       this.messages = messages;
@@ -152,6 +155,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    @Override
    protected void onBind()
    {
+      dashboardPresenter.bind();
       keyShortcutPresenter.bind();
       documentListPresenter.bind();
       translationPresenter.bind();
@@ -433,6 +437,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
             display.setLayoutMenuVisible(true);
+            break;
+         case Dashboard:
+            display.setDocumentLabel("", messages.dashboard());
+            currentDisplayStats = projectStats;
+            translationPresenter.concealDisplay();
+            searchResultsPresenter.concealDisplay();
+            display.setLayoutMenuVisible(false);
             break;
          case Search:
             // these two lines temporarily here until PresenterRevealedHandler is

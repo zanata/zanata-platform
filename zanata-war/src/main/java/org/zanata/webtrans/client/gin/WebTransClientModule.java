@@ -44,6 +44,7 @@ import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.history.WindowImpl;
 import org.zanata.webtrans.client.history.WindowLocationImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.DashboardPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
@@ -72,6 +73,7 @@ import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.view.AppView;
+import org.zanata.webtrans.client.view.DashboardView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryView;
@@ -110,6 +112,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(ValidationService.class).in(Singleton.class);
 
       bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
+      bindPresenter(DashboardPresenter.class, DashboardPresenter.Display.class, DashboardView.class);
       bindPresenter(KeyShortcutPresenter.class, KeyShortcutPresenter.Display.class, KeyShortcutView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);

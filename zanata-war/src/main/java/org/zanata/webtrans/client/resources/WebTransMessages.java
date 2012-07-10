@@ -358,4 +358,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Close keyboard shortcuts list")
    String closeShortcutView();
+
+   @DefaultMessage("Dashboard")
+   String dashboard();
 }

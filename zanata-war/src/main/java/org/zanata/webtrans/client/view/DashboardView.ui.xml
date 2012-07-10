@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
+
+    <ui:style>
+        .rootTable
+        {
+		}
+    </ui:style>
+    
+    
+	<g:FlexTable ui:field="rootTable" styleName="rootTable" cellPadding="10px">
+	
+	</g:FlexTable>
+    
+</ui:UiBinder> 
