@@ -31,7 +31,6 @@ import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -56,7 +55,21 @@ public class ManageLanguagePage extends AbstractPage
 
    public ManageLanguageTeamMemberPage manageTeamMembersFor(final String localeId)
    {
-      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
+      TableRow matchedRow = findRowByLocale(localeId);
+
+      log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+      List<WebElement> cells = matchedRow.getCells();
+      int teamMemberCellIndex = cells.size() - 1;
+      WebElement teamMemberCell = cells.get(teamMemberCellIndex);
+      WebElement teamMemberButton = teamMemberCell.findElement(By.xpath(".//input[@value='Team Members']"));
+      teamMemberButton.click();
+      return new ManageLanguageTeamMemberPage(getDriver());
+   }
+
+   private TableRow findRowByLocale(final String localeId)
+   {
+
+      TableRow matchedRow = waitForSeconds(getDriver(), 20).until(new Function<WebDriver, TableRow>()
       {
          @Override
          public TableRow apply(WebDriver driver)
@@ -78,14 +91,7 @@ public class ManageLanguagePage extends AbstractPage
             return (matchedRow.size() == 1) ? matchedRow.iterator().next() : null;
          }
       });
-
-      log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
-      List<WebElement> cells = matchedRow.getCells();
-      int teamMemberCellIndex = cells.size() - 1;
-      WebElement teamMemberCell = cells.get(teamMemberCellIndex);
-      WebElement teamMemberButton = teamMemberCell.findElement(By.xpath(".//input[@value='Team Members']"));
-      teamMemberButton.click();
-      return new ManageLanguageTeamMemberPage(getDriver());
+      return matchedRow;
    }
 
    public ManageLanguagePage joinLanguageTeam()
@@ -103,30 +109,9 @@ public class ManageLanguagePage extends AbstractPage
       return this;
    }
 
-   public ManageLanguagePage enableLanguageByDefault( final String localeId )
+   public ManageLanguagePage enableLanguageByDefault(String localeId)
    {
-      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
-      {
-         @Override
-         public TableRow apply(WebDriver driver)
-         {
-            List<TableRow> tableRows = WebElementUtil.getTableRows(driver, By.xpath("//table"));
-            Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
-            {
-               @Override
-               public boolean apply(TableRow input)
-               {
-                  List<String> cellContents = input.getCellContents();
-                  String localeCell = cellContents.get(LOCALE_COLUMN).trim();
-                  return localeCell.equalsIgnoreCase(localeId);
-               }
-            });
-
-            log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
-            //we keep looking for the locale until timeout
-            return (matchedRow.size() == 1) ? matchedRow.iterator().next() : null;
-         }
-      });
+      TableRow matchedRow = findRowByLocale(localeId);
 
       WebElement enabledCell = matchedRow.getCells().get(3);
       WebElement enabledCheckbox = enabledCell.findElement(By.tagName("input"));

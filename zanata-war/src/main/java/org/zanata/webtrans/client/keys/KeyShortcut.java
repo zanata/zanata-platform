@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.keys;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
