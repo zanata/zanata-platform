@@ -114,13 +114,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private boolean enterSavesApprovedRegistered;
    private boolean escClosesEditorRegistered;
 
-   private KeyShortcut ctrlEnterSavesApprovedShortcut;
    private KeyShortcut enterSavesApprovedShortcut;
    private KeyShortcut enterTriggersAutoSizeShortcut;
    private KeyShortcut escClosesEditorShortcut;
 
    private HandlerRegistration enterSavesApprovedHandlerRegistration;
-   private HandlerRegistration ctrlEnterSavesApprovedHandlerRegistration;
    private HandlerRegistration enterTriggersAutoSizeHandlerRegistration;
    private HandlerRegistration escClosesEditorHandlerRegistration;
 
@@ -267,9 +265,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       };
 
-      ctrlEnterSavesApprovedShortcut = new KeyShortcut(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER),
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER),
             ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
-            saveAsApprovedKeyShortcutHandler);
+            saveAsApprovedKeyShortcutHandler));
 
       enterSavesApprovedShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER),
             ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true,
@@ -293,7 +291,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       else
       {
          enterSavesApprovedRegistered = false;
-         ctrlEnterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(ctrlEnterSavesApprovedShortcut);
          enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.register(enterTriggersAutoSizeShortcut);
       }
 
@@ -673,10 +670,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          if (enterSavesApproved)
          {
-            if (ctrlEnterSavesApprovedHandlerRegistration != null)
-            {
-               ctrlEnterSavesApprovedHandlerRegistration.removeHandler();
-            }
             if (enterTriggersAutoSizeHandlerRegistration != null)
             {
                enterTriggersAutoSizeHandlerRegistration.removeHandler();
@@ -689,10 +682,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             {
                enterSavesApprovedHandlerRegistration.removeHandler();
             }
-            ctrlEnterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(ctrlEnterSavesApprovedShortcut);
             enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.register(enterTriggersAutoSizeShortcut);
          }
-
          enterSavesApprovedRegistered = enterSavesApproved;
       }
 
