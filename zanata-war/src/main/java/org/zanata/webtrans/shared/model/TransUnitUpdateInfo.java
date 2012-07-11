@@ -21,10 +21,10 @@
 
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import org.zanata.common.ContentState;
+
 import com.google.common.base.Objects;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Represents information about an attempted update of a {@link TransUnit}.
@@ -32,11 +32,8 @@ import com.google.common.base.Objects;
  * @author David Mason, damason@redhat.com
  * 
  */
-public class TransUnitUpdateInfo implements Serializable
+public class TransUnitUpdateInfo implements IsSerializable
 {
-
-   private static final long serialVersionUID = 1L;
-
    private boolean success;
    private DocumentId documentId;
    private TransUnit transUnit;

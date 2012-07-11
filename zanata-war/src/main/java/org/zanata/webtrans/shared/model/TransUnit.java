@@ -1,6 +1,5 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -14,10 +13,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnit implements IsSerializable, Serializable
+public class TransUnit implements IsSerializable
 {
-   private static final long serialVersionUID = -8247442475446266600L;
-
    private ContentState status;
 
    private TransUnitId id;

@@ -1,11 +1,49 @@
 package org.zanata.search;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LevenshteinTokenUtil
 {
    private static final String SPLIT_REGEX = "[,.]?[\\s]+";
 
+   private static final Set<String> stopwords;
+   
+   static
+   {
+      Set<String> stopwordsSet = new HashSet<String>();
+      try
+      {
+         BufferedReader reader = new BufferedReader(new InputStreamReader(LevenshteinTokenUtil.class.getResourceAsStream("stopwords.txt")));
+         try
+         {
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+               if (!line.startsWith("#"))
+               {
+                  stopwordsSet.add(line);
+               }
+            }
+         }
+         finally
+         {
+            reader.close();
+         }
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException(e);
+      }
+      stopwords = Collections.unmodifiableSet(stopwordsSet);
+   }
+   
    /**
     * Compute Levenshtein distance.  Taken from
     * http://web.archive.org/web/20110720093554/http://www.merriampark.com/ldjava.htm (public domain)
@@ -88,13 +126,32 @@ public class LevenshteinTokenUtil
 
    public static double getSimilarity(final String s1, final String s2)
    {
-      String[] s1s = s1.split(SPLIT_REGEX);
-      String[] s2s = s2.split(SPLIT_REGEX);
+      String[] s1s = tokenise(s1);
+      String[] s2s = tokenise(s2);
 
       int levDistance = getLevenshteinDistanceInWords(s1s, s2s);
       int maxDistance = Math.max(s1s.length, s2s.length);
       double similarity = (maxDistance - levDistance) / (double) maxDistance;
       return similarity;
+   }
+   
+   /**
+    * Splits into tokens (lower-case).
+    * @param s
+    * @return
+    */
+   static String[] tokenise(String s)
+   {
+      String[] tokens = s.toLowerCase().split(SPLIT_REGEX);
+      ArrayList<String> list = new ArrayList<String>(tokens.length);
+      for (String tok : tokens)
+      {
+         if (!stopwords.contains(tok))
+         {
+            list.add(tok);
+         }
+      }
+      return list.toArray(new String[list.size()]);
    }
 
    private static int countExtraStringLengths(List<String> strings, int fromIndex)
@@ -103,7 +160,7 @@ public class LevenshteinTokenUtil
       for (int i = fromIndex; i < strings.size(); i++)
       {
          String s = strings.get(i);
-         String[] ss = s.split(SPLIT_REGEX);
+         String[] ss = tokenise(s);
          total += ss.length;
       }
       return total;
@@ -157,8 +214,8 @@ public class LevenshteinTokenUtil
       // now count the strings which correspond between both lists
       for (int i = 0; i < minListSize; i++)
       {
-         String[] s1 = strings1.get(i).split(SPLIT_REGEX);
-         String[] s2 = strings2.get(i).split(SPLIT_REGEX);
+         String[] s1 = tokenise(strings1.get(i));
+         String[] s2 = tokenise(strings2.get(i));
          int levenshteinDistance = getLevenshteinDistanceInWords(s1, s2);
          totalLevDistance += levenshteinDistance;
          totalMaxDistance += Math.max(s1.length, s2.length);

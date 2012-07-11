@@ -1,14 +1,10 @@
 package org.zanata.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-import net.customware.gwt.dispatch.shared.Result;
-
-import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 
-public abstract class AbstractWorkspaceAction<R extends Result> implements Action<R>
+public abstract class AbstractWorkspaceAction<R extends DispatchResult> implements DispatchAction<R>
 {
 
    private static final long serialVersionUID = 1L;

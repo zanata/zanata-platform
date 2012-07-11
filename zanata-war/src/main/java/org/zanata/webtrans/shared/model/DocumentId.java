@@ -1,12 +1,9 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocumentId implements Identifier<Long>, Serializable
+public class DocumentId implements Identifier<Long>, IsSerializable
 {
-
-   private static final long serialVersionUID = 6291339842619640513L;
-
    private long id;
 
    // for GWT

@@ -43,6 +43,10 @@
             background-color: #F3F2F2;
             border-color: silver;
         }
+        .tmMergeTable td {
+            padding: 1px 3px 1px 3px;
+        }
+
     </ui:style>
 
     <g:Grid styleName="{style.tmMergeTable}">
@@ -73,10 +77,10 @@
                 <g:Label text="{messages.differentContent}" />
             </g:customCell>
             <g:customCell>
-                <g:InlineLabel styleName="{style.downgrade_action}" text="{enumMessages.fuzzyStatus}"/>
+                <g:InlineLabel styleName="{style.reject_action}" text="{enumMessages.rejectMerge}" ui:field="differentContentStatus"/>
             </g:customCell>
             <g:customCell>
-                <g:Label text="{enumMessages.downgradeToFuzzy}" />
+                <g:Label text="{enumMessages.rejectMerge}" ui:field="differentContentLabel" />
             </g:customCell>
         </g:row>
         <g:row>

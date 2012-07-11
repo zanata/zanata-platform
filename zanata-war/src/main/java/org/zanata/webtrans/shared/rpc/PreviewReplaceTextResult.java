@@ -25,15 +25,13 @@ import java.util.List;
 import org.zanata.webtrans.server.rpc.PreviewReplaceTextHandler;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 
-import net.customware.gwt.dispatch.shared.Result;
-
 /**
  * 
  * @author David Mason, damason@redhat.com
  * @see PreviewReplaceTextHandler
  * 
  */
-public class PreviewReplaceTextResult implements Result
+public class PreviewReplaceTextResult implements DispatchResult
 {
    private static final long serialVersionUID = 1L;
 

@@ -82,8 +82,9 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Provider;
 
 /**
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
- *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * 
  */
 @Test(groups = { "unit-tests" })
 public class SearchResultsPresenterTest
@@ -100,7 +101,6 @@ public class SearchResultsPresenterTest
    private static final long TEST_TU_ID_1 = 7L;
    private static final String TEST_RES_ID_1 = "resId1";
 
-
    private static final int TOTAL_KEY_SHORTCUTS = 5;
 
    private static final String TEST_MESSAGE_FOCUS_SEARCH_PHRASE_KEY_SHORTCUT = "Focus search phrase";
@@ -115,11 +115,8 @@ public class SearchResultsPresenterTest
 
    private static final String TEST_MESSAGE_NO_RESULTS_FOR_SEARCH = "No results for search XXX";
 
-
-
-   //object under test
+   // object under test
    SearchResultsPresenter searchResultsPresenter;
-
 
    ArrayList<Object> createdMocks;
    Object[] allMocks;
@@ -139,10 +136,10 @@ public class SearchResultsPresenterTest
    HasClickHandlers mockReplaceAllButton;
    HasValue<String> mockReplacementTextBox;
    HasValue<Boolean> mockRequirePreviewChk;
+   HasValue<Boolean> mockSelectAllHeader;
    HasClickHandlers mockSearchButton;
    HasText mockSearchResponseLabel;
    HasValue<Boolean> mockSelectAllChk;
-
 
    List<Capture<?>> allCaptures;
 
@@ -166,21 +163,14 @@ public class SearchResultsPresenterTest
    Capture<ClickHandler> capturedViewDocClickHandlers;
    Capture<ClickHandler> capturedSearchDocClickHandlers;
    Capture<MultiSelectionModel<TransUnitReplaceInfo>> capturedSelectionModels;
-   Capture<ValueChangeHandler<Boolean> > capturedSelectDocChangeHandlers;
+   Capture<ValueChangeHandler<Boolean>> capturedSelectDocChangeHandlers;
 
    // first test document
    ListDataProvider<TransUnitReplaceInfo> mockDataProviderDoc1;
    List<TransUnitReplaceInfo> dataProviderDoc1List;
    MultiSelectionModel<TransUnitReplaceInfo> mockSelectionModelDoc1;
-   Capture<TransUnitReplaceInfo> capturedSelectedReplaceInfosDoc1;
    Capture<SelectionChangeEvent.Handler> capturedSelectionChangeHandlerDoc1;
-
-
-
-
-
-
-
+   Capture<SelectionChangeEvent.Handler> capturedSelectionChangeDeselectHandlerDoc1;
 
    @BeforeClass
    public void createMocks()
@@ -208,6 +198,7 @@ public class SearchResultsPresenterTest
       mockReplaceAllButton = createAndAddMock(HasClickHandlers.class);
       mockReplacementTextBox = createAndAddMock(HasValue.class);
       mockRequirePreviewChk = createAndAddMock(HasValue.class);
+      mockSelectAllHeader = createAndAddMock(HasValue.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
       mockSearchResponseLabel = createAndAddMock(HasText.class);
       mockSelectAllChk = createAndAddMock(HasValue.class);
@@ -242,14 +233,15 @@ public class SearchResultsPresenterTest
       capturedViewDocClickHandlers = addCapture(new Capture<ClickHandler>());
       capturedSearchDocClickHandlers = addCapture(new Capture<ClickHandler>());
       capturedSelectionModels = addCapture(new Capture<MultiSelectionModel<TransUnitReplaceInfo>>());
-      capturedSelectedReplaceInfosDoc1 = addCapture(new Capture<TransUnitReplaceInfo>());
       capturedSelectDocChangeHandlers = addCapture(new Capture<ValueChangeHandler<Boolean>>());
 
       capturedSelectionChangeHandlerDoc1 = addCapture(new Capture<SelectionChangeEvent.Handler>());
+      capturedSelectionChangeDeselectHandlerDoc1 = addCapture(new Capture<SelectionChangeEvent.Handler>());
    }
 
    /**
     * Convenience method to add a capture to allCaptures
+    * 
     * @return the given capture for assignment
     */
    private <T> Capture<T> addCapture(Capture<T> capture)
@@ -274,9 +266,7 @@ public class SearchResultsPresenterTest
 
       setupDefaultMockExpectations();
 
-      searchResultsPresenter = new SearchResultsPresenter(mockDisplay, mockEventBus,
-            mockDispatcher, mockHistory, mockMessages, mockWorkspaceContext,
-            mockKeyShortcutPresenter, mockUndoLinkProvider, mockWindowLocation);
+      searchResultsPresenter = new SearchResultsPresenter(mockDisplay, mockEventBus, mockDispatcher, mockHistory, mockMessages, mockWorkspaceContext, mockKeyShortcutPresenter, mockUndoLinkProvider, mockWindowLocation);
 
    }
 
@@ -302,14 +292,10 @@ public class SearchResultsPresenterTest
       verify(allMocks);
 
       HistoryToken newToken = capturedHistoryToken.getValue();
-      assertThat("new history token should be updated with current search phrase in search text box",
-            newToken.getProjectSearchText(), is(TEST_SEARCH_PHRASE));
-      assertThat("new history token project search case sensitivity should match checkbox value",
-            newToken.getProjectSearchCaseSensitive(), is(caseSensitiveFalseValue));
-      assertThat("new history token should reflect search in target when selected search field is target",
-            newToken.isProjectSearchInTarget(), is(true));
-      assertThat("new history token should reflect not to search in source when selected search field is target",
-            newToken.isProjectSearchInSource(), is(false));
+      assertThat("new history token should be updated with current search phrase in search text box", newToken.getProjectSearchText(), is(TEST_SEARCH_PHRASE));
+      assertThat("new history token project search case sensitivity should match checkbox value", newToken.getProjectSearchCaseSensitive(), is(caseSensitiveFalseValue));
+      assertThat("new history token should reflect search in target when selected search field is target", newToken.isProjectSearchInTarget(), is(true));
+      assertThat("new history token should reflect not to search in source when selected search field is target", newToken.isProjectSearchInSource(), is(false));
    }
 
    public void searchWithCaseSensitive()
@@ -322,8 +308,7 @@ public class SearchResultsPresenterTest
       verify(allMocks);
 
       HistoryToken newToken = capturedHistoryToken.getValue();
-      assertThat("new history token project search case sensitivity should match checkbox value",
-            newToken.getProjectSearchCaseSensitive(), is(caseSensitiveTrueValue));
+      assertThat("new history token project search case sensitivity should match checkbox value", newToken.getProjectSearchCaseSensitive(), is(caseSensitiveTrueValue));
    }
 
    public void searchInSource()
@@ -335,10 +320,8 @@ public class SearchResultsPresenterTest
       verify(allMocks);
 
       HistoryToken newToken = capturedHistoryToken.getValue();
-      assertThat("new history token should reflect search in source when selected search field is source",
-            newToken.isProjectSearchInSource(), is(true));
-      assertThat("new history token should reflect not to search in target when selected search field is source",
-            newToken.isProjectSearchInTarget(), is(false));
+      assertThat("new history token should reflect search in source when selected search field is source", newToken.isProjectSearchInSource(), is(true));
+      assertThat("new history token should reflect not to search in target when selected search field is source", newToken.isProjectSearchInTarget(), is(false));
    }
 
    public void searchInSourceAndTarget()
@@ -350,10 +333,8 @@ public class SearchResultsPresenterTest
       verify(allMocks);
 
       HistoryToken newToken = capturedHistoryToken.getValue();
-      assertThat("new history token should reflect search in source when selected search field is both",
-            newToken.isProjectSearchInSource(), is(true));
-      assertThat("new history token should reflect search in target when selected search field is both",
-            newToken.isProjectSearchInTarget(), is(true));
+      assertThat("new history token should reflect search in source when selected search field is both", newToken.isProjectSearchInSource(), is(true));
+      assertThat("new history token should reflect search in target when selected search field is both", newToken.isProjectSearchInTarget(), is(true));
    }
 
    public void replacementValueChanged()
@@ -366,8 +347,7 @@ public class SearchResultsPresenterTest
       verify(allMocks);
 
       HistoryToken newToken = capturedHistoryToken.getValue();
-      assertThat("new history token should be updated with current replacement phrase",
-            newToken.getProjectSearchReplacement(), is(TEST_REPLACE_PHRASE));
+      assertThat("new history token should be updated with current replacement phrase", newToken.getProjectSearchReplacement(), is(TEST_REPLACE_PHRASE));
    }
 
    public void firesSearchFromHistoryNoResults()
@@ -405,7 +385,8 @@ public class SearchResultsPresenterTest
    public void selectAllChkCheckedSingleResult()
    {
       expectSearchAndDisplaySingleResult();
-      mockSelectionModelDoc1.setSelected(capture(capturedSelectedReplaceInfosDoc1), eq(true));
+      mockSelectAllHeader.setValue(Boolean.TRUE, true);
+      expectLastCall().anyTimes();
 
       replay(allMocks);
       searchResultsPresenter.bind();
@@ -417,10 +398,16 @@ public class SearchResultsPresenterTest
 
    public void selectAllChkUnchecked()
    {
-      // set up some search results
-      // capture the selection models
-      // simulate uncheck
-      // check that all are selected
+      expectSearchAndDisplaySingleResult();
+      mockSelectAllHeader.setValue(Boolean.FALSE, true);
+      expectLastCall().anyTimes();
+
+      replay(allMocks);
+      searchResultsPresenter.bind();
+      simulateSearch();
+      valueChangeEvent(capturedSelectAllChkValueChangeHandler, false);
+
+      verify(allMocks);
    }
 
    private void expectSearchAndDisplaySingleResult()
@@ -434,12 +421,11 @@ public class SearchResultsPresenterTest
       // display single document
       expect(mockDisplay.createMultiSelectionModel()).andReturn(mockSelectionModelDoc1).once();
       expect(mockSelectionModelDoc1.addSelectionChangeHandler(capture(capturedSelectionChangeHandlerDoc1))).andReturn(mockHandlerRegistration());
+      expect(mockSelectionModelDoc1.addSelectionChangeHandler(capture(capturedSelectionChangeDeselectHandlerDoc1))).andReturn(mockHandlerRegistration());
+      
+      expect(mockDisplay.addDocument(eq(TEST_DOC_PATH_1), capture(capturedViewDocClickHandlers), capture(capturedSearchDocClickHandlers), capture(capturedSelectionModels), capture(capturedSelectDocChangeHandlers))).andReturn(mockDataProviderDoc1).once();
 
-      expect(mockDisplay.addDocument(eq(TEST_DOC_PATH_1),
-            capture(capturedViewDocClickHandlers),
-            capture(capturedSearchDocClickHandlers),
-            capture(capturedSelectionModels),
-            capture(capturedSelectDocChangeHandlers))).andReturn(mockDataProviderDoc1).once();
+      expect(mockDisplay.getSelectAllCheckbox()).andReturn(mockSelectAllHeader).once();
    }
 
    private void expectSearchReturned(String searchResponseInfoMessage)
@@ -469,14 +455,7 @@ public class SearchResultsPresenterTest
 
       final Map<Long, List<TransUnit>> documents = new HashMap<Long, List<TransUnit>>();
       List<TransUnit> docs = new ArrayList<TransUnit>();
-      docs.add(TransUnit.Builder.newTransUnitBuilder()
-            .setId(TEST_TU_ID_1)
-            .setResId(TEST_RES_ID_1)
-            .setLocaleId(TEST_LOCALE_ID)
-            .setVerNum(TEST_VERNUM_1)
-            .addSource(TEST_SOURCE_STRING_1)
-            .addTargets(TEST_TARGET_STRING_1)
-            .build());
+      docs.add(TransUnit.Builder.newTransUnitBuilder().setId(TEST_TU_ID_1).setResId(TEST_RES_ID_1).setLocaleId(TEST_LOCALE_ID).setVerNum(TEST_VERNUM_1).addSource(TEST_SOURCE_STRING_1).addTargets(TEST_TARGET_STRING_1).build());
       documents.put(TEST_DOC_ID_1, docs);
 
       return buildSuccessSearchResponse(docPaths, documents);
@@ -617,7 +596,7 @@ public class SearchResultsPresenterTest
       expect(mockObjectWithValue.addValueChangeHandler(capture(captureForHandler))).andReturn(mockHandlerRegistration()).once();
    }
 
-   //copied from AppPresenterTest
+   // copied from AppPresenterTest
    private <H extends EventHandler> void expectEventHandlerRegistration(Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
    {
       expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(mockHandlerRegistration()).once();

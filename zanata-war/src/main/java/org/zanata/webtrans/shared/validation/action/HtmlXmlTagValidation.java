@@ -33,7 +33,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HtmlXmlTagValidation extends ValidationAction
+public class HtmlXmlTagValidation extends AbstractValidation
 {
    public HtmlXmlTagValidation(final ValidationMessages messages)
    {

@@ -53,7 +53,7 @@ public class WebTranPage extends AbstractPage
    {
 
       List<WebElement> trs = null;
-      trs = createWaitForAjax(getDriver(), 20).until(new Function<WebDriver, List<WebElement>>()
+      trs = waitForSeconds(getDriver(), 20).until(new Function<WebDriver, List<WebElement>>()
       {
          @Override
          public List<WebElement> apply(WebDriver from)

@@ -44,7 +44,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -89,7 +88,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField
    LayoutPanel container, topPanel;
-   
+
    // NotificationPanel notificationPanel;
 
    @UiField(provided = true)
@@ -102,10 +101,8 @@ public class AppView extends Composite implements AppPresenter.Display
    MenuBar topMenuBar;
 
    @UiField
-   PushButton notificationBtn;
+   PushButton keyShortcuts, searchAndReplace, notificationBtn;
 
-   @UiField
-   Anchor searchAndReplace;
 
    Image userImg;
 
@@ -152,7 +149,8 @@ public class AppView extends Composite implements AppPresenter.Display
       leaveWorkspaceMenuItem = new MenuCommandItem(messages.leaveWorkspace(), emptyCommand);
       signOutMenuItem = new MenuCommandItem(messages.signOut(), emptyCommand);
 
-      searchAndReplace.setText(messages.searchAndReplace());
+      keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
+      searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
 
       menuBar.addItem(helpMenuItem);
       menuBar.addSeparator();
@@ -288,7 +286,13 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getSearchAndReplaceLink()
+   public HasClickHandlers getKeyShortcutButton()
+   {
+      return keyShortcuts;
+   }
+
+   @Override
+   public HasClickHandlers getSearchAndReplaceButton()
    {
       return searchAndReplace;
    }

@@ -1,13 +1,11 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 
-public class UserPanelSessionItem implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
+public class UserPanelSessionItem implements IsSerializable
+{
    private HasManageUserPanel panel;
    private Person person;
    private TransUnit selectedTransUnit;

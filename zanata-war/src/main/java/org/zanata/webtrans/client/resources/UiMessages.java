@@ -76,10 +76,13 @@ public interface UiMessages extends Messages
    @DefaultMessage("Processing...")
    String processing();
 
-   @DefaultMessage("TM merge for current page")
+   @DefaultMessage("TM merge")
    String mergeTMButtonLabel();
 
-   @DefaultMessage("Select TM match percentage to pre-fill translations.")
+   @DefaultMessage("Merge translation from Translation Memory for untranslated text flows on current page")
+   String mergeTMTooltip();
+
+   @DefaultMessage("Select TM match percentage to pre-fill translations. All the conditions will be checked to determine final state.")
    String mergeTMCaption();
 
    @DefaultMessage("No text can be TM merged")
@@ -109,10 +112,10 @@ public interface UiMessages extends Messages
    @DefaultMessage("On Document Id mismatch (Document name and path):")
    String differentDocument();
 
-   @DefaultMessage("On Context mismatch (Res Id, msgctx):")
+   @DefaultMessage("On Context mismatch (resId, msgctxt):")
    String differentContext();
 
-   @DefaultMessage("Otherwise:")
+   @DefaultMessage("If not Rejected or downgraded to Fuzzy:")
    String otherwise();
 
    @DefaultMessage("Condition")

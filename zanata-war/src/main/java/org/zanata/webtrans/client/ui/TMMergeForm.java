@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.resources.EnumMessages;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -35,6 +36,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.inject.Inject;
 
@@ -60,6 +62,10 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    EnumMessages enumMessages;
    @UiField
    Styles style;
+   @UiField
+   InlineLabel differentContentStatus;
+   @UiField
+   Label differentContentLabel;
 
    private final EnumRadioButtonGroup<MergeOption> projectOptionGroup;
    private final EnumRadioButtonGroup<MergeOption> docIdOptionGroup;
@@ -109,6 +115,23 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    public void onCancelButtonClick(ClickEvent event)
    {
       listener.cancelMergeTM();
+   }
+
+   @UiHandler("matchThreshold")
+   public void onThresholdPercentChange(ChangeEvent event)
+   {
+      if (getSelectedMatchThreshold() == 100)
+      {
+         differentContentStatus.setStyleName(style.reject_action());
+         differentContentStatus.setText(enumMessages.rejectMerge());
+         differentContentLabel.setText(enumMessages.rejectMerge());
+      }
+      else
+      {
+         differentContentStatus.setStyleName(style.downgrade_action());
+         differentContentStatus.setText(enumMessages.fuzzyStatus());
+         differentContentLabel.setText(enumMessages.downgradeToFuzzy());
+      }
    }
 
    @Override

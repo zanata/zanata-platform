@@ -38,11 +38,15 @@ public interface ValidationMessages extends Messages
 
    // Printf variables validator
 
-   @DefaultMessage("%x variables")
+   @DefaultMessage("Printf variables")
    String printfVariablesValidatorName();
 
    @DefaultMessage("Check that printf style (%x) variables are consistent")
    String printfVariablesValidatorDescription();
+
+   // Printf variables validator with XSI extension (positional variables)
+   @DefaultMessage("Positional printf (XSI extension)")
+   String positionalPrintfVariablesValidatorName();
 
    @DefaultMessage("Variable {0} position is out of range")
    String varPositionOutOfRange(String var);
@@ -53,9 +57,12 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Variables have same position: {0,collection,string}")
    String varPositionDuplicated(Collection<String> vars);
 
+   @DefaultMessage("Check that positional printf style (%n$x) variables are consistent")
+   String positionalPrintfVariablesValidatorDescription();
+
    // Java variables validator
 
-   @DefaultMessage("'{x}' variables")
+   @DefaultMessage("Java variables")
    String javaVariablesValidatorName();
 
    @DefaultMessage("Check that java style ('{x}') variables are consistent")
@@ -106,7 +113,7 @@ public interface ValidationMessages extends Messages
 
    //XML Entity validator
 
-   @DefaultMessage("XML entity")
+   @DefaultMessage("XML entity reference")
    String xmlEntityValidatorName();
 
    @DefaultMessage("Check that XML entity are complete")

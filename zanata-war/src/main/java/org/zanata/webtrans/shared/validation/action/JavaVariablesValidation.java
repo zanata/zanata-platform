@@ -36,7 +36,7 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
  * @author David Mason, damason@redhat.com
  * @see http://docs.oracle.com/javase/1.4.2/docs/api/java/text/MessageFormat.html
  **/
-public class JavaVariablesValidation extends ValidationAction
+public class JavaVariablesValidation extends AbstractValidation
 {
    public JavaVariablesValidation(final ValidationMessages messages)
    {

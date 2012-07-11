@@ -1,14 +1,12 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import org.zanata.common.TranslationStats;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocumentStatus implements Serializable
+
+public class DocumentStatus implements IsSerializable
 {
-   private static final long serialVersionUID = 1L;
-
    private TranslationStats count;
    private DocumentId documentid;
 

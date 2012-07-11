@@ -21,12 +21,13 @@
 
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Represents a request to update the translation for a {@link TransUnit},
@@ -35,11 +36,8 @@ import com.google.common.base.Strings;
  * @author David Mason, damason@redhat.com
  * 
  */
-public class TransUnitUpdateRequest implements Serializable
+public class TransUnitUpdateRequest implements IsSerializable
 {
-
-   private static final long serialVersionUID = 1L;
-
    private TransUnitId transUnitId;
    private List<String> newContents;
    private ContentState newContentState;
