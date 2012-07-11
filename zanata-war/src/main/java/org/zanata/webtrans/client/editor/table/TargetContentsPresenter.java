@@ -277,13 +277,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       enterTriggersAutoSizeShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER),
             ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, KeyEvent.KEY_DOWN, false, false, new KeyShortcutEventHandler()
-    {
-      @Override
-      public void onKeyShortcut(KeyShortcutEvent event)
       {
-      getCurrentEditor().autoSizePlusOne();
-      }
-    });
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+         getCurrentEditor().autoSizePlusOne();
+         }
+      });
 
       if (configHolder.isEnterSavesApproved())
       {
