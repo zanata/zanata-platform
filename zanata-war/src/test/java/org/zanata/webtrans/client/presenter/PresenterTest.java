@@ -20,7 +20,12 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import static org.easymock.EasyMock.and;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
@@ -28,9 +33,19 @@ import static org.easymock.EasyMock.verify;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.easymock.Capture;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.user.client.ui.HasValue;
 
 /**
  * Provides common functionality for testing presenter classes.
@@ -113,4 +128,51 @@ public abstract class PresenterTest
       resetAllCaptures();
       setDefaultBindExpectations();
    }
+
+   protected void simulateClick(Capture<ClickHandler> clickable)
+   {
+      ClickEvent event = new ClickEvent()
+      {
+      };
+      clickable.getValue().onClick(event);
+   }
+
+   protected <T> void valueChangeEvent(Capture<ValueChangeHandler<T>> handler, T newValue)
+   {
+      handler.getValue().onValueChange(new ValueChangeEvent<T>(newValue)
+      {
+      });
+   }
+
+   /**
+    * Expect a single handler registration on a mock object, and capture the
+    * click handler in the given {@link Capture}
+    * 
+    * @param mockObjectToClick
+    * @param captureForHandler
+    */
+   protected void expectClickHandlerRegistration(HasClickHandlers mockObjectToClick, Capture<ClickHandler> captureForHandler)
+   {
+      expect(mockObjectToClick.addClickHandler(and(capture(captureForHandler), isA(ClickHandler.class)))).andReturn(mockHandlerRegistration()).once();
+   }
+
+   /**
+    * Expects an event handler to be registered against the given event bus,
+    * capturing the handler in the given capture.
+    * 
+    * @param mockEventBus
+    * @param expectedType
+    * @param expectedClass
+    * @param handlerCapture
+    */
+   protected <H extends EventHandler> void expectEventHandlerRegistration(EventBus mockEventBus, Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
+   {
+      expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(mockHandlerRegistration()).once();
+   }
+
+   protected <T> void expectValueChangeHandlerRegistration(HasValue<T> mockObjectWithValue, Capture<ValueChangeHandler<T>> captureForHandler)
+   {
+      expect(mockObjectWithValue.addValueChangeHandler(capture(captureForHandler))).andReturn(mockHandlerRegistration()).once();
+   }
+
 }

@@ -58,7 +58,6 @@ import com.google.gwt.view.client.ListDataProvider;
 @Test(groups = { "unit-tests" })
 public class KeyShortcutPresenterTest extends PresenterTest
 {
-
    static final String TEST_MESSAGE_CLOSE_SHORTCUT_VIEW = "close shortcut view";
    static final String TEST_MESSAGE_SHOW_AVAILABLE_KEY_SHORTCUTS = "show available key shortcuts";
 
