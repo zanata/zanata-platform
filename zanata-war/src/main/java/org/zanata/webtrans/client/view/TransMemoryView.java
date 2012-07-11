@@ -72,8 +72,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @UiField
    Button mergeTMButton;
 
-   private TransMemoryMergePopupPanelDisplay transMemoryMergePopup;
-
    CellTable<TransMemoryResultItem> tmTable;
 
    private boolean isFocused;
@@ -87,7 +85,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private DetailsColumn<TransMemoryResultItem> detailsColumn;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, TransMemoryMergePopupPanelDisplay transMemoryMergePopup)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
    {
       this.messages = messages;
 
@@ -97,7 +95,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
-      this.transMemoryMergePopup = transMemoryMergePopup;
       initWidget(uiBinder.createAndBindUi(this));
 
       headerLabel.setText(messages.translationMemoryHeading());

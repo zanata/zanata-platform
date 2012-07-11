@@ -48,7 +48,7 @@ public class MergeStatusRenderer extends EnumRenderer<MergeOption>
       case FUZZY:
          return messages.fuzzyStatus();
       case IGNORE_CHECK:
-         return messages.skipStatus();
+         return messages.ignoreDifference();
       case REJECT:
          return messages.rejectMerge();
       default:

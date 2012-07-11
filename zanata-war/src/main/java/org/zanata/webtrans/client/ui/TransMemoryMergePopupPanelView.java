@@ -43,6 +43,7 @@ public class TransMemoryMergePopupPanelView extends DialogBox implements TransMe
    {
       //auto hide false, modal true
       super(false, true);
+      ensureDebugId("TMMerge");
       getCaption().setText(messages.mergeTMCaption());
       setGlassEnabled(true);
       VerticalPanel main = new VerticalPanel();

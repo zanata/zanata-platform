@@ -39,10 +39,10 @@ public interface EnumMessages extends com.google.gwt.i18n.client.Messages
    @DefaultMessage("Reject")
    String rejectMerge();
 
-   @DefaultMessage("Don''t care, try next rule")
+   @DefaultMessage("Don''t care")
    String ignoreDifference();
 
-   @DefaultMessage("Downgrade to Fuzzy, try next rule")
+   @DefaultMessage("Downgrade to Fuzzy")
    String downgradeToFuzzy();
 
    @DefaultMessage("Needs Review")
@@ -50,7 +50,4 @@ public interface EnumMessages extends com.google.gwt.i18n.client.Messages
 
    @DefaultMessage("Approved")
    String approvedStatus();
-
-   @DefaultMessage("Don''t care")
-   String skipStatus();
 }

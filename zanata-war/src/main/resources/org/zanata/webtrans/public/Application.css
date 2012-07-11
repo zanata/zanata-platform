@@ -860,3 +860,15 @@ td.ApprovedStateDecoration div div div
 {
 	font-weight:bold;
 }
+
+#gwt-debug-TMMerge-caption {
+    background: #4481DB;
+    padding: 8px 4px 8px 8px;
+    font-weight: bold;
+    text-align: center;
+    color: whiteSmoke;
+}
+
+#gwt-debug-TMMerge .dialogMiddleCenter {
+    background-color: #F3F2F2;
+}
