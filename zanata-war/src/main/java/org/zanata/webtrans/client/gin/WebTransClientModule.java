@@ -45,6 +45,8 @@ import org.zanata.webtrans.client.history.HistoryImpl;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.history.WindowImpl;
 import org.zanata.webtrans.client.history.WindowLocationImpl;
+import org.zanata.webtrans.client.keys.EventWrapper;
+import org.zanata.webtrans.client.keys.EventWrapperImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
@@ -131,6 +133,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
       bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
 
+      bind(EventWrapper.class).to(EventWrapperImpl.class).in(Singleton.class);
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);
       bind(History.class).to(HistoryImpl.class).in(Singleton.class);

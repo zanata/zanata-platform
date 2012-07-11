@@ -32,6 +32,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
+import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.SurplusKeyListener;
@@ -43,7 +44,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.view.client.ListDataProvider;
@@ -66,7 +66,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    public interface Display extends WidgetDisplay
    {
-      void addContext(String contextName, ListDataProvider<KeyShortcut> shortcuts);
+      ListDataProvider<KeyShortcut> addContext(String contextName);
 
       void showPanel();
 
@@ -88,11 +88,14 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    private WebTransMessages messages;
 
+   private EventWrapper event;
+
    @Inject
-   public KeyShortcutPresenter(Display display, EventBus eventBus, final WebTransMessages webTransMessages)
+   public KeyShortcutPresenter(Display display, EventBus eventBus, final WebTransMessages webTransMessages, final EventWrapper event)
    {
       super(display, eventBus);
       this.messages = webTransMessages;
+      this.event = event;
    }
 
    @Override
@@ -100,16 +103,16 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    {
       ensureActiveContexts().add(ShortcutContext.Application);
 
-      Event.addNativePreviewHandler(new NativePreviewHandler()
+      event.addNativePreviewHandler(new NativePreviewHandler()
       {
 
          @Override
-         public void onPreviewNativeEvent(NativePreviewEvent event)
+         public void onPreviewNativeEvent(NativePreviewEvent nativeEvent)
          {
-            NativeEvent evt = event.getNativeEvent();
+            NativeEvent evt = nativeEvent.getNativeEvent();
 
             // TODO enable keypress events if any shortcuts require them
-            if ((event.getTypeInt() & (Event.ONKEYDOWN | Event.ONKEYUP)) != 0)
+            if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
             {
                processKeyEvent(evt);
             }
@@ -227,7 +230,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
     */
    private void processKeyEvent(NativeEvent evt)
    {
-      Keys pressedKeys = new Keys(evt);
+      Keys pressedKeys = event.createKeys(evt);
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(pressedKeys);
       boolean shortcutFound = false;
       // TODO replace modifiers + keycode in event with Keys
@@ -237,7 +240,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          for (KeyShortcut shortcut : shortcuts)
          {
             boolean contextActive = ensureActiveContexts().contains(shortcut.getContext());
-            boolean matchingEventType = shortcut.getKeyEvent().nativeEventType.equals(evt.getType());
+            boolean matchingEventType = shortcut.getKeyEvent().nativeEventType.equals(event.getType(evt));
             if (contextActive && matchingEventType)
             {
                shortcutFound = true;
@@ -360,7 +363,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       display.clearPanel();
       for (ShortcutContext context : ensureActiveContexts())
       {
-         ListDataProvider<KeyShortcut> dataProvider = new ListDataProvider<KeyShortcut>();
+         ListDataProvider<KeyShortcut> dataProvider = display.addContext(getContextName(context));
 
          for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
          {
@@ -374,7 +377,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             }
          }
          Collections.sort(dataProvider.getList());
-         display.addContext(getContextName(context), dataProvider);
       }
       display.showPanel();
    }
