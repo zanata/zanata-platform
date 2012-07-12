@@ -190,7 +190,6 @@ public class NotificationPresenterTest
       setupMockGetterReturnValues();
    }
 
-   @SuppressWarnings("unchecked")
    private void expectHandlerRegistrations()
    {
       expectClickHandlerRegistration(mockDismiss, capturedDismissClickHandler);
