@@ -50,6 +50,8 @@ import com.google.gwt.user.client.ui.HasValue;
 /**
  * Provides common functionality for testing presenter classes.
  * 
+ * TODO add overview of usage
+ * 
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
@@ -115,6 +117,15 @@ public abstract class PresenterTest
    }
 
    /**
+    * Override to reset non-mock objects. Called with {@link #resetAll()}
+    * before {@link #setDefaultBindExpectations()}.
+    */
+   protected void resetTestObjects()
+   {
+      // TODO could make abstract, but some tests will not require this.
+   }
+
+   /**
     * Called with {@link #resetAll()}.
     */
    protected abstract void setDefaultBindExpectations();
@@ -126,6 +137,7 @@ public abstract class PresenterTest
    {
       resetAllMocks();
       resetAllCaptures();
+      resetTestObjects();
       setDefaultBindExpectations();
    }
 

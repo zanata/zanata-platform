@@ -9,8 +9,6 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.notNull;
 import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -53,13 +51,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 
 @Test(groups = { "unit-tests" })
-public class AppPresenterTest
+public class AppPresenterTest extends PresenterTest
 {
 
    private static final String TEST_PERSON_NAME = "Mister Ed";
@@ -133,29 +128,38 @@ public class AppPresenterTest
    @BeforeClass
    public void createMocks()
    {
-      mockDisplay = createMock(AppPresenter.Display.class);
-      mockDocumentListPresenter = createMock(DocumentListPresenter.class);
-      mockDocumentsLink = createMock(HasClickHandlers.class);
-      mockErrorNotificationBtn = createMock(HasClickHandlers.class);
-      mockSearchButton = createMock(HasClickHandlers.class);
-      mockKeyShortcutButton = createMock(HasClickHandlers.class);
-      mockEventBus = createMock(EventBus.class);
-      mockHistory = createMock(History.class);
-      mockIdentity = createMock(Identity.class);
-      mockKeyShortcutPresenter = createMock(KeyShortcutPresenter.class);
-      mockLeaveWorkspaceMenuItem = createMock(HasCommand.class);
-      mockMessages = createMock(WebTransMessages.class);
-      mockPerson = createMock(Person.class);
-      mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
-      mockSignoutMenuItem = createMock(HasCommand.class);
-      mockTranslationPresenter = createMock(TranslationPresenter.class);
-      mockWindow = createMock(Window.class);
-      mockWindowLocation = createMock(Window.Location.class);
-      mockUserWorkspaceContext = createMock(UserWorkspaceContext.class);
-      mockWorkspaceContext = createMock(WorkspaceContext.class);
-      mockNotificationPresenter = createMock(NotificationPresenter.class);
-      mockHelpMenuItem = createMock(HasCommand.class);
+      createAllMocks();
+      createAllCaptures();
+   }
 
+   private void createAllMocks()
+   {
+      mockDisplay = createAndAddMock(AppPresenter.Display.class);
+      mockDocumentListPresenter = createAndAddMock(DocumentListPresenter.class);
+      mockDocumentsLink = createAndAddMock(HasClickHandlers.class);
+      mockErrorNotificationBtn = createAndAddMock(HasClickHandlers.class);
+      mockSearchButton = createAndAddMock(HasClickHandlers.class);
+      mockKeyShortcutButton = createAndAddMock(HasClickHandlers.class);
+      mockEventBus = createAndAddMock(EventBus.class);
+      mockHistory = createAndAddMock(History.class);
+      mockIdentity = createAndAddMock(Identity.class);
+      mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
+      mockLeaveWorkspaceMenuItem = createAndAddMock(HasCommand.class);
+      mockMessages = createAndAddMock(WebTransMessages.class);
+      mockPerson = createAndAddMock(Person.class);
+      mockSearchResultsPresenter = createAndAddMock(SearchResultsPresenter.class);
+      mockSignoutMenuItem = createAndAddMock(HasCommand.class);
+      mockTranslationPresenter = createAndAddMock(TranslationPresenter.class);
+      mockWindow = createAndAddMock(Window.class);
+      mockWindowLocation = createAndAddMock(Window.Location.class);
+      mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
+      mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
+      mockNotificationPresenter = createAndAddMock(NotificationPresenter.class);
+      mockHelpMenuItem = createAndAddMock(HasCommand.class);
+   }
+
+   private void createAllCaptures()
+   {
       capturedSearchLinkClickHandler = new Capture<ClickHandler>();
       capturedKeyShortcutButtonClickHandler = new Capture<ClickHandler>();
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
@@ -172,22 +176,13 @@ public class AppPresenterTest
       capturedSignoutLinkCommand = new Capture<Command>();
       capturedLeaveWorkspaceLinkCommand = new Capture<Command>();
       capturedHelpLinkCommand = new Capture<Command>();
-
    }
 
    @BeforeMethod
    void beforeMethod()
    {
-      resetAllMocks();
-      resetAllCaptures();
-
-      emptyProjectStats = new TranslationStats();
-      buildTestDocumentInfo();
-
-      setupDefaultMockExpectations();
-
+      resetAll();
       appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
-
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
    }
@@ -518,18 +513,6 @@ public class AppPresenterTest
    }
 
    /**
-    * generates new test doc id and doc info ready for use in tests
-    */
-   private void buildTestDocumentInfo()
-   {
-      testDocId = new DocumentId(2222L);
-      TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
-      TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
-      testDocStats = new TranslationStats(unitCount, wordCount);
-      testDocInfo = new DocumentInfo(testDocId, TEST_DOCUMENT_NAME, TEST_DOCUMENT_PATH, LocaleId.EN_US, testDocStats);
-   }
-
-   /**
     * @see #simulateLoadDocAndViewEditor()
     */
    private void expectLoadDocAndViewEditor()
@@ -685,7 +668,24 @@ public class AppPresenterTest
       expectLastCall().once();
    }
 
-   private void setupDefaultMockExpectations()
+   @Override
+   protected void resetTestObjects()
+   {
+      buildTestDocumentInfo();
+      emptyProjectStats = new TranslationStats();
+   }
+
+   private void buildTestDocumentInfo()
+   {
+      testDocId = new DocumentId(2222L);
+      TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
+      TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
+      testDocStats = new TranslationStats(unitCount, wordCount);
+      testDocInfo = new DocumentInfo(testDocId, TEST_DOCUMENT_NAME, TEST_DOCUMENT_PATH, LocaleId.EN_US, testDocStats);
+   }
+
+   @Override
+   protected void setDefaultBindExpectations()
    {
       expectSubPresenterBindings();
       expectHandlerRegistrations();
@@ -716,40 +716,22 @@ public class AppPresenterTest
       expectLastCall().once();
       mockNotificationPresenter.bind();
       expectLastCall().once();
-
    }
 
    @SuppressWarnings("unchecked")
    private void expectHandlerRegistrations()
    {
-      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(mockHandlerRegistration()).once();
 
       expectClickHandlerRegistration(mockDocumentsLink, capturedDocumentLinkClickHandler);
       expectClickHandlerRegistration(mockErrorNotificationBtn, capturedErrorNotificationBtnHandler);
       expectClickHandlerRegistration(mockSearchButton, capturedSearchLinkClickHandler);
       expectClickHandlerRegistration(mockKeyShortcutButton, capturedKeyShortcutButtonClickHandler);
 
-      expectEventHandlerRegistration(DocumentStatsUpdatedEvent.getType(), DocumentStatsUpdatedEventHandler.class, capturedDocumentStatsUpdatedEventHandler);
-      expectEventHandlerRegistration(ProjectStatsUpdatedEvent.getType(), ProjectStatsUpdatedEventHandler.class, capturedProjectStatsUpdatedEventHandler);
-      expectEventHandlerRegistration(WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdatedEventHandler);
-      expectEventHandlerRegistration(PresenterRevealedEvent.getType(), PresenterRevealedHandler.class, capturedPresenterRevealedHandler);
-   }
-
-   /**
-    * Expect a single handler registration on a mock object, and capture the
-    * click handler in the given {@link Capture}
-    * 
-    * @param mockObjectToClick
-    * @param captureForHandler
-    */
-   private void expectClickHandlerRegistration(HasClickHandlers mockObjectToClick, Capture<ClickHandler> captureForHandler)
-   {
-      expect(mockObjectToClick.addClickHandler(and(capture(captureForHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-   }
-
-   private <H extends EventHandler> void expectEventHandlerRegistration(Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
-   {
-      expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expectEventHandlerRegistration(mockEventBus, DocumentStatsUpdatedEvent.getType(), DocumentStatsUpdatedEventHandler.class, capturedDocumentStatsUpdatedEventHandler);
+      expectEventHandlerRegistration(mockEventBus, ProjectStatsUpdatedEvent.getType(), ProjectStatsUpdatedEventHandler.class, capturedProjectStatsUpdatedEventHandler);
+      expectEventHandlerRegistration(mockEventBus, WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdatedEventHandler);
+      expectEventHandlerRegistration(mockEventBus, PresenterRevealedEvent.getType(), PresenterRevealedHandler.class, capturedPresenterRevealedHandler);
    }
 
    private void expectPresenterSetupActions()
@@ -821,57 +803,5 @@ public class AppPresenterTest
       expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
 
       expect(mockDocumentListPresenter.getDocumentInfo(testDocId)).andReturn(testDocInfo).anyTimes();
-   }
-
-   private void resetAllMocks()
-   {
-      reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
-      reset(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
-      reset(mockMessages, mockPerson, mockSearchResultsPresenter);
-      reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockUserWorkspaceContext, mockWorkspaceContext);
-      reset(mockNotificationPresenter);
-
-      reset(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
-   }
-
-   private void resetAllCaptures()
-   {
-      capturedDocumentLinkClickHandler.reset();
-      capturedDocumentSelectionEvent.reset();
-      capturedDocumentStatsUpdatedEventHandler.reset();
-      capturedHistoryTokenString.reset();
-      capturedHistoryValueChangeHandler.reset();
-      capturedLeaveWorkspaceLinkCommand.reset();
-      capturedHelpLinkCommand.reset();
-      capturedKeyShortcuts.reset();
-      capturedProjectStatsUpdatedEventHandler.reset();
-      capturedSearchLinkClickHandler.reset();
-      capturedKeyShortcutButtonClickHandler.reset();
-      capturedSignoutLinkCommand.reset();
-      capturedWorkspaceContextUpdatedEventHandler.reset();
-      capturedPresenterRevealedHandler.reset();
-      capturedErrorNotificationBtnHandler.reset();
-   }
-
-   private void replayAllMocks()
-   {
-      replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
-      replay(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
-      replay(mockMessages, mockPerson, mockSearchResultsPresenter);
-      replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockUserWorkspaceContext, mockWorkspaceContext);
-      replay(mockNotificationPresenter);
-
-      replay(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
-   }
-
-   private void verifyAllMocks()
-   {
-      verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
-      verify(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
-      verify(mockMessages, mockPerson, mockSearchResultsPresenter);
-      verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockUserWorkspaceContext, mockWorkspaceContext);
-      verify(mockNotificationPresenter);
-
-      verify(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
    }
 }
