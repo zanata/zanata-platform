@@ -515,7 +515,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       moveNext(true);
    }
 
-   private void moveNext(boolean forceSave)
+   protected void moveNext(boolean forceSave)
    {
       if (currentEditorIndex + 1 < currentEditors.size())
       {
@@ -547,7 +547,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       movePrevious(true);
    }
 
-   private void movePrevious(boolean forceSave)
+   protected void movePrevious(boolean forceSave)
    {
       if (currentEditorIndex - 1 >= 0)
       {

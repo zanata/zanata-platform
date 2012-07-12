@@ -437,12 +437,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                // If goto Next or Prev Fuzzy/New Trans Unit
                if (event.getRowType() == NavigationType.PrevEntry)
                {
-                  targetContentsPresenter.saveAsApprovedAndMovePrevious();
+
+                  targetContentsPresenter.movePrevious(false);
                }
 
                if (event.getRowType() == NavigationType.NextEntry)
                {
-                  targetContentsPresenter.saveAsApprovedAndMoveNext();
+                  targetContentsPresenter.moveNext(false);
                }
 
                if (event.getRowType() == NavigationType.PrevState)
