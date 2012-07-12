@@ -32,9 +32,16 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.web.ServletContexts;
+import org.zanata.common.EntityStatus;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
+import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -42,6 +49,7 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
@@ -53,13 +61,21 @@ import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 @Slf4j
 public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult>
 {
+   @In
+   private TranslationWorkspaceManager translationWorkspaceManager;
 
    @In
-   TranslationWorkspaceManager translationWorkspaceManager;
+   private GravatarService gravatarServiceImpl;
 
    @In
-   GravatarService gravatarServiceImpl;
+   private ProjectDAO projectDAO;
+   
+   @In
+   private ProjectIterationDAO projectIterationDAO;
 
+   @In
+   private LocaleService localeServiceImpl;
+   
    private static long nextEditorClientIdNum = 0;
 
    @Synchronized
@@ -82,10 +98,29 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       // Send EnterWorkspace event to clients
       EnterWorkspace event = new EnterWorkspace(editorClientId, person);
       workspace.publish(event);
+      
+      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
+      
+      boolean isProjectActive = isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
+      boolean hasWriteAccess = hasPermission(project, locale);
+      
       Identity identity = new Identity(editorClientId, person);
-      return new ActivateWorkspaceResult(workspace.getWorkspaceContext(), identity);
+      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess);
+      return new ActivateWorkspaceResult(userWorkspaceContext, identity);
    }
-
+   
+   private boolean hasPermission(HProject project, HLocale locale)
+   {
+      return ZanataIdentity.instance().hasPermission("modify-translation", project, locale);
+   }
+   
+   private boolean isProjectIterationActive(EntityStatus projectStatus, EntityStatus iterStatus)
+   {
+      return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
+   }
+   
    @Override
    public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result, ExecutionContext context) throws ActionException
    {

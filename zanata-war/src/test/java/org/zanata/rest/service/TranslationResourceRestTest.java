@@ -1,10 +1,23 @@
 package org.zanata.rest.service;
 
+import static java.util.Arrays.asList;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isOneOf;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBContext;
@@ -76,19 +89,8 @@ import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-import com.google.common.collect.Lists;
 
-import static java.util.Arrays.asList;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isOneOf;
-import static org.hamcrest.Matchers.notNullValue;
+import com.google.common.collect.Lists;
 
 public class TranslationResourceRestTest extends ZanataRestTest
 {
@@ -970,11 +972,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationWorkspace transWorkspace = mockControl.createMock(TranslationWorkspace.class);
 
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
-      WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "sample-workspace", localeId.getId(), false);
       
       // Set mock expectations
       expect(this.transWorspaceManager.getOrRegisterWorkspace(anyObject(WorkspaceId.class))).andReturn(transWorkspace).anyTimes();
-      expect( transWorkspace.getWorkspaceContext() ).andReturn( workspaceContext );
       mockIdentity.checkLoggedIn();
       expectLastCall();
       mockIdentity.checkPermission(anyObject(String.class), anyObject(HLocale.class), anyObject(HProject.class));

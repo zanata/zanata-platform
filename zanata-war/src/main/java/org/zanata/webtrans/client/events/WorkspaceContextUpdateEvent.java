@@ -6,11 +6,11 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdateEventHandler>
 {
-   private final boolean readOnly;
+   private final boolean isProjectActive;
 
    public WorkspaceContextUpdateEvent(HasWorkspaceContextUpdateData data)
    {
-      this.readOnly = data.isReadOnly();
+      this.isProjectActive = data.isProjectActive();
    }
 
    /**
@@ -44,9 +44,9 @@ public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdate
       handler.onWorkspaceContextUpdated(this);
    }
 
-   public boolean isReadOnly()
+   public boolean isProjectActive()
    {
-      return readOnly;
+      return isProjectActive;
    }
 
 }

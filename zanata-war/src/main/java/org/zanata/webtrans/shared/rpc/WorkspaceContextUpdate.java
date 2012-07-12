@@ -7,21 +7,21 @@ public class WorkspaceContextUpdate implements SessionEventData, HasWorkspaceCon
 
    private static final long serialVersionUID = 1L;
 
-   private boolean readOnly;
+   private boolean isProjectActive;
 
    @SuppressWarnings("unused")
    private WorkspaceContextUpdate()
    {
    }
 
-   public WorkspaceContextUpdate(boolean readOnly)
+   public WorkspaceContextUpdate(boolean isProjectActive)
    {
-      this.readOnly = readOnly;
+      this.isProjectActive = isProjectActive;
    }
 
    @Override
-   public boolean isReadOnly()
+   public boolean isProjectActive()
    {
-      return readOnly;
+      return isProjectActive;
    }
 }

@@ -33,9 +33,9 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
@@ -60,7 +60,7 @@ import com.google.inject.Inject;
  **/
 public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display>
 {
-   private final WorkspaceContext workspaceContext;
+   private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
    private final GlossaryDetailsPresenter glossaryDetailsPresenter;
    private final DocumentListPresenter docListPresenter;
@@ -93,11 +93,11 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    }
 
    @Inject
-   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, GlossaryDetailsPresenter glossaryDetailsPresenter, DocumentListPresenter docListPresenter, History history, WorkspaceContext workspaceContext)
+   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, GlossaryDetailsPresenter glossaryDetailsPresenter, DocumentListPresenter docListPresenter, History history, UserWorkspaceContext userWorkspaceContext)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
       this.glossaryDetailsPresenter = glossaryDetailsPresenter;
       this.docListPresenter = docListPresenter;
       this.history = history;
@@ -158,7 +158,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       {
          srcLocale = docInfo.getSourceLocale();
       }
-      final GetGlossary action = new GetGlossary(query, workspaceContext.getWorkspaceId().getLocaleId(), srcLocale, searchType);
+      final GetGlossary action = new GetGlossary(query, userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(), srcLocale, searchType);
       scheduleGlossaryRequest(action);
    }
 

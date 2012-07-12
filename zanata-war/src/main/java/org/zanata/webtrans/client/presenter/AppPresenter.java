@@ -41,15 +41,15 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
-import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -104,8 +104,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final Identity identity;
    private final Window window;
    private final Window.Location windowLocation;
-   private final WorkspaceContext workspaceContext;
-
+   private final UserWorkspaceContext userWorkspaceContext;
    private final WebTransMessages messages;
 
    private DocumentInfo selectedDocument;
@@ -125,13 +124,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          final SearchResultsPresenter searchResultsPresenter,
          final NotificationPresenter notificationPresenter,
          final Identity identity,
-         final WorkspaceContext workspaceContext,
+         final UserWorkspaceContext userWorkspaceContext,
          final WebTransMessages messages,
          final History history,
          final Window window,
          final Window.Location windowLocation)
    {
       super(display, eventBus);
+      this.userWorkspaceContext = userWorkspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
       this.identity = identity;
@@ -142,7 +142,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.notificationPresenter =notificationPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
-      this.workspaceContext = workspaceContext;
    }
 
    @Override
@@ -168,7 +167,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            display.setReadOnlyVisible(event.isReadOnly());
+            userWorkspaceContext.setProjectActive(event.isProjectActive());
+            display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
          }
       }));
 
@@ -253,7 +253,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
             // use when opening workspace in same window
             Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+            Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
          }
       });
 
@@ -367,10 +367,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       display.setUserLabel(identity.getPerson().getName());
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
-      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
-      window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+      display.setWorkspaceNameLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), workspaceTitle);
+      window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
 
-      display.setReadOnlyVisible(workspaceContext.isReadOnly());
+      display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
 
       // this may be redundant with the following history event line
       showView(MainView.Documents);

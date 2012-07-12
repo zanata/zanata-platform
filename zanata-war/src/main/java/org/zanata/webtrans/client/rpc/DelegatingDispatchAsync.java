@@ -4,7 +4,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -38,9 +38,8 @@ public class DelegatingDispatchAsync implements CachingDispatchAsync
    }
 
    @Override
-   public void setWorkspaceContext(WorkspaceContext workspaceContext)
+   public void setUserWorkspaceContext(UserWorkspaceContext userworkspaceContext)
    {
-      delegate.setWorkspaceContext(workspaceContext);
+      delegate.setUserWorkspaceContext(userworkspaceContext);
    }
-
 }

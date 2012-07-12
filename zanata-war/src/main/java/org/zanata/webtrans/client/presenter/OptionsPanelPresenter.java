@@ -31,7 +31,7 @@ import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -77,16 +77,16 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
 
-   private final WorkspaceContext workspaceContext;
    private UserConfigHolder configHolder;
+   private final UserWorkspaceContext userWorkspaceContext;
 
    @Inject
-   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final WorkspaceContext workspaceContext, UserConfigHolder configHolder)
+   public OptionsPanelPresenter(final Display display, final EventBus eventBus, UserWorkspaceContext userWorkspaceContext, final ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
-      this.workspaceContext = workspaceContext;
       this.configHolder = configHolder;
+      this.userWorkspaceContext = userWorkspaceContext;
    }
 
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
@@ -102,7 +102,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    protected void onBind()
    {
       validationOptionsPresenter.bind();
-      if (workspaceContext.isReadOnly())
+      if(userWorkspaceContext.hasReadOnlyAccess())
       {
          setReadOnly(true);
       }
@@ -195,10 +195,11 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            setReadOnly(event.isReadOnly());
+            userWorkspaceContext.setProjectActive(event.isProjectActive());
+            setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
          }
       }));
-      
+
       registerHandler(eventBus.addHandler(EnableModalNavigationEvent.getType(), new EnableModalNavigationEventHandler()
       {
          @Override

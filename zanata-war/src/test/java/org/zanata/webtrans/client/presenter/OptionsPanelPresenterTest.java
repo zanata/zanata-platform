@@ -10,9 +10,9 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
 import org.testng.annotations.BeforeMethod;
@@ -25,8 +25,8 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter.Display;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -46,6 +46,7 @@ public class OptionsPanelPresenterTest
    //injected mocks
    Display mockDisplay = createMock(Display.class);
    EventBus mockEventBus = createMock(EventBus.class);
+   UserWorkspaceContext mockUserWorkspaceContext = createMock(UserWorkspaceContext.class);
    ValidationOptionsPresenter mockValidationDetailsPresenter = createMock(ValidationOptionsPresenter.class);
    WorkspaceContext mockWorkspaceContext = createMock(WorkspaceContext.class);
 
@@ -159,7 +160,8 @@ public class OptionsPanelPresenterTest
       mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
       mockDisplay.setEditorOptionsVisible(changeToEditable);
       mockDisplay.setValidationOptionsVisible(changeToEditable);
-
+      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(changeToReadonly).once();
+      mockUserWorkspaceContext.setProjectActive(changeToReadonly);
       if (changeToEditable)
       {
          //should check button display option to decide whether to show them
@@ -168,7 +170,7 @@ public class OptionsPanelPresenterTest
 
       //workspace context event to fire
       WorkspaceContextUpdateEvent workspaceContextChangeEvent = createMock(WorkspaceContextUpdateEvent.class);
-      expect(workspaceContextChangeEvent.isReadOnly()).andReturn(changeToReadonly).anyTimes();
+      expect(workspaceContextChangeEvent.isProjectActive()).andReturn(changeToReadonly).anyTimes();
       replay(workspaceContextChangeEvent);
 
       replayGlobalMocks();
@@ -542,16 +544,17 @@ public class OptionsPanelPresenterTest
    {
       mockValidationDetailsPresenter.bind();
       expectLastCall().once();
-      expect(mockWorkspaceContext.isReadOnly()).andReturn(readOnlyWorkspace).once();
+
+      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(readOnlyWorkspace).once();
 
       if (readOnlyWorkspace)
       {
          mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
          expectLastCall().once();
          mockDisplay.setEditorOptionsVisible(false);
-         expectLastCall().once();
+         expectLastCall().anyTimes();
          mockDisplay.setValidationOptionsVisible(false);
-         expectLastCall().once();
+         expectLastCall().anyTimes();
       }
 
       expectRegisterFilterChangeHandlers();
@@ -604,7 +607,7 @@ public class OptionsPanelPresenterTest
 
    private void resetAllMocks()
    {
-      reset(mockDisplay, mockEventBus);
+      reset(mockDisplay, mockEventBus, mockUserWorkspaceContext);
       reset(mockValidationDetailsPresenter, mockWorkspaceContext);
       reset(mockTranslatedChk, mockNeedReviewChk, mockUntranslatedChk);
       reset(mockEditorButtonsChk, mockEnterChk, mockEscChk);
@@ -632,7 +635,7 @@ public class OptionsPanelPresenterTest
 
    private void replayGlobalMocks()
    {
-      replay(mockDisplay, mockEventBus);
+      replay(mockDisplay, mockEventBus, mockUserWorkspaceContext);
       replay(mockValidationDetailsPresenter, mockWorkspaceContext);
       replay(mockTranslatedChk, mockNeedReviewChk, mockUntranslatedChk);
       replay(mockEditorButtonsChk, mockEnterChk, mockEscChk);
@@ -641,7 +644,7 @@ public class OptionsPanelPresenterTest
 
    private void verifyAllMocks()
    {
-      verify(mockDisplay, mockEventBus);
+      verify(mockDisplay, mockEventBus, mockUserWorkspaceContext);
       verify(mockValidationDetailsPresenter, mockWorkspaceContext);
       verify(mockTranslatedChk, mockNeedReviewChk, mockUntranslatedChk);
       verify(mockEditorButtonsChk, mockEnterChk, mockEscChk);
@@ -655,6 +658,6 @@ public class OptionsPanelPresenterTest
     */
    private OptionsPanelPresenter newOptionsPanelPresenter()
    {
-      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockValidationDetailsPresenter, mockWorkspaceContext, configHolder);
+      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockValidationDetailsPresenter, configHolder);
    }
 }

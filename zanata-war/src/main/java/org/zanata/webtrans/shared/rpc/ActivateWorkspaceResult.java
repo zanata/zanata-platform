@@ -1,7 +1,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 
 public class ActivateWorkspaceResult implements DispatchResult
@@ -9,7 +9,7 @@ public class ActivateWorkspaceResult implements DispatchResult
 
    private static final long serialVersionUID = 1L;
 
-   private WorkspaceContext workspaceContext;
+   private UserWorkspaceContext userWorkspaceContext;
    private Identity identity;
 
    @SuppressWarnings("unused")
@@ -17,15 +17,15 @@ public class ActivateWorkspaceResult implements DispatchResult
    {
    }
 
-   public ActivateWorkspaceResult(WorkspaceContext workspaceContext, Identity identity)
+   public ActivateWorkspaceResult(UserWorkspaceContext userWorkspaceContext, Identity identity)
    {
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
       this.identity = identity;
    }
 
-   public WorkspaceContext getWorkspaceContext()
+   public UserWorkspaceContext getUserWorkspaceContext()
    {
-      return workspaceContext;
+      return userWorkspaceContext;
    }
 
    public Identity getIdentity()
