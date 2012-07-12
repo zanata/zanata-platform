@@ -39,18 +39,18 @@ import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
-import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
@@ -69,7 +69,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
@@ -95,7 +95,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final UserSessionService sessionService;
    private final UserConfigHolder configHolder;
 
-   private WorkspaceContext workspaceContext;
    private Scheduler scheduler;
 
    private final ValidationMessagePanelDisplay validationMessagePanel;
@@ -108,7 +107,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private boolean isModalNavEnabled;
 
    private final Identity identity;
-
+   private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
 
    private boolean enterSavesApprovedRegistered;
@@ -126,14 +125,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
       this.scheduler = scheduler;
       this.validationMessagePanel = validationMessagePanel;
       this.sessionService = sessionService;
@@ -476,7 +475,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       TargetContentsDisplay result = displayList.get(rowIndex);
       result.setFindMessage(findMessages);
       result.setTargets(transUnit.getTargets());
-      if (workspaceContext.isReadOnly())
+      if (userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.debug("read only mode. Hide buttons");
          result.showButtons(false);

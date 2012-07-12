@@ -27,17 +27,18 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.AuthorizationException;
-import org.zanata.common.LocaleId;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
@@ -50,11 +51,14 @@ import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 public class SecurityServiceImpl implements SecurityService
 {
    @In
-   ProjectDAO projectDAO;
+   private ProjectDAO projectDAO;
+   
+   @In
+   private ProjectIterationDAO projectIterationDAO;
 
    @In
    private LocaleService localeServiceImpl;
-
+   
    @In
    ZanataIdentity identity;
 
@@ -68,19 +72,24 @@ public class SecurityServiceImpl implements SecurityService
 
       WorkspaceId workspaceId = action.getWorkspaceId();
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-      LocaleId localeId = workspaceId.getLocaleId();
-      ProjectIterationId projectIterationId = workspaceId.getProjectIterationId();
-      if (workspace.getWorkspaceContext().isReadOnly())
+      
+      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
+      
+      if (projectIterationIsInactive(project.getStatus(), projectIteration.getStatus()))
       {
          throw new AuthorizationException("Project or version is read-only");
       }
+      
+      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+      identity.checkPermission(translationAction.action(), locale, project);
 
-      String projectSlug = projectIterationId.getProjectSlug();
-      HProject hProject = projectDAO.getBySlug(projectSlug);
-      HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-      identity.checkPermission(translationAction.action(), hLocale, hProject);
-
-      return new SecurityCheckResultImpl(hLocale, workspace);
+      return new SecurityCheckResultImpl(locale, workspace);
+   }
+   
+   private boolean projectIterationIsInactive(EntityStatus projectStatus, EntityStatus iterStatus)
+   {
+      return !(projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
    }
 
    private static class SecurityCheckResultImpl implements SecurityCheckResult

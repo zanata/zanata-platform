@@ -35,7 +35,6 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +60,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 
@@ -71,8 +70,8 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -128,7 +127,7 @@ public class SearchResultsPresenterTest
    KeyShortcutPresenter mockKeyShortcutPresenter;
    WebTransMessages mockMessages;
    Location mockWindowLocation;
-   WorkspaceContext mockWorkspaceContext;
+   UserWorkspaceContext mockUserWorkspaceContext;
    Provider<UndoLink> mockUndoLinkProvider;
 
    HasValue<Boolean> mockCaseSensitiveChk;
@@ -187,11 +186,11 @@ public class SearchResultsPresenterTest
       mockDispatcher = createAndAddMock(CachingDispatchAsync.class);
       mockDisplay = createAndAddMock(Display.class);
       mockEventBus = createAndAddMock(EventBus.class);
+      mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockHistory = createAndAddMock(History.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
       mockWindowLocation = createAndAddMock(Window.Location.class);
-      mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
 
       mockCaseSensitiveChk = createAndAddMock(HasValue.class);
       mockFilterTextBox = createAndAddMock(HasValue.class);
@@ -266,7 +265,7 @@ public class SearchResultsPresenterTest
 
       setupDefaultMockExpectations();
 
-      searchResultsPresenter = new SearchResultsPresenter(mockDisplay, mockEventBus, mockDispatcher, mockHistory, mockMessages, mockWorkspaceContext, mockKeyShortcutPresenter, mockUndoLinkProvider, mockWindowLocation);
+      searchResultsPresenter = new SearchResultsPresenter(mockDisplay, mockEventBus, mockDispatcher, mockHistory, mockMessages, mockUserWorkspaceContext, mockKeyShortcutPresenter, mockUndoLinkProvider, mockWindowLocation);
 
    }
 
@@ -534,7 +533,7 @@ public class SearchResultsPresenterTest
 
       expect(mockDataProviderDoc1.getList()).andReturn(dataProviderDoc1List).anyTimes();
 
-      expect(mockWorkspaceContext.isReadOnly()).andReturn(workspaceIsReadOnly).anyTimes();
+      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(workspaceIsReadOnly).anyTimes();
       mockDisplay.setReplaceAllButtonVisible(!workspaceIsReadOnly);
       mockDisplay.setReplaceAllButtonEnabled(false);
       expect(mockKeyShortcutPresenter.register(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(TOTAL_KEY_SHORTCUTS);

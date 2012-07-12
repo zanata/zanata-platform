@@ -21,7 +21,9 @@ import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter.Display;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -44,9 +46,11 @@ public class TransMemoryPresenterTest
    //injected mocks
    Display mockDisplay = createMock(Display.class);
    EventBus mockEventBus = createMock(EventBus.class);
+   Identity mockIdentity = createMock(Identity.class);
+   UserWorkspaceContext mockUserWorkspaceContext = createMock(UserWorkspaceContext.class);
+   
    CachingDispatchAsync mockDispatcher = createMock(CachingDispatchAsync.class);
    TransMemoryDetailsPresenter mockTransMemoryDetailsPresenter = createMock(TransMemoryDetailsPresenter.class);
-   WorkspaceContext mockWorkspaceContext = createMock(WorkspaceContext.class);
 
    @SuppressWarnings("unchecked")
    HasValue<SearchType> mockSearchType = createMock(HasValue.class);
@@ -68,7 +72,7 @@ public class TransMemoryPresenterTest
    @BeforeMethod
    public void resetMocks()
    {
-      reset(mockDispatcher, mockDisplay, mockEventBus, mockTransMemoryDetailsPresenter, mockWorkspaceContext);
+      reset(mockDispatcher, mockDisplay, mockEventBus, mockIdentity, mockTransMemoryDetailsPresenter, mockUserWorkspaceContext);
       reset(mockSearchType, mockSearchButton, mockClearButton);
       reset(mockDetailsColumn, mockCopyColumn);
 
@@ -113,15 +117,15 @@ public class TransMemoryPresenterTest
       mockDisplay.setDataProvider(isA(ListDataProvider.class));
       expectLastCall().once();
 
-      replay(mockDispatcher, mockDisplay, mockEventBus, mockTransMemoryDetailsPresenter, mockWorkspaceContext);
+      replay(mockDispatcher, mockDisplay, mockEventBus, mockIdentity, mockTransMemoryDetailsPresenter, mockUserWorkspaceContext);
       replay(mockSearchType, mockSearchButton, mockClearButton);
       replay(mockDetailsColumn, mockCopyColumn);
 
-      transMemoryPresenter = new TransMemoryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTransMemoryDetailsPresenter , mockWorkspaceContext, mockTransMemoryMergePresenter);
+      transMemoryPresenter = new TransMemoryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTransMemoryDetailsPresenter, mockUserWorkspaceContext, mockTransMemoryMergePresenter);
 
       transMemoryPresenter.bind();
 
-      verify(mockDispatcher, mockDisplay, mockEventBus, mockTransMemoryDetailsPresenter, mockWorkspaceContext);
+      verify(mockDispatcher, mockDisplay, mockEventBus, mockIdentity, mockTransMemoryDetailsPresenter, mockUserWorkspaceContext);
       verify(mockSearchType, mockSearchButton, mockClearButton);
       verify(mockDetailsColumn, mockCopyColumn);
    }

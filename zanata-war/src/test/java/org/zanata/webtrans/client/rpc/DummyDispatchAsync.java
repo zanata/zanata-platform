@@ -46,13 +46,13 @@ public class DummyDispatchAsync extends SeamDispatchAsync
 
       if (action instanceof AbstractWorkspaceAction<?>)
       {
-         if (this.workspaceContext == null || this.identity == null)
+         if (this.userWorkspaceContext == null || this.identity == null)
          {
             callback.onFailure(new AuthorizationError("Dispatcher not initialized for WorkspaceActions"));
             return;
          }
          AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
-         wsAction.setWorkspaceId(this.workspaceContext.getWorkspaceId());
+         wsAction.setWorkspaceId(this.userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
          wsAction.setEditorClientId(this.identity.getEditorClientId());
       }
 

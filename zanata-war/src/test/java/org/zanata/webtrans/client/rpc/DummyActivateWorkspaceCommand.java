@@ -4,6 +4,7 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
@@ -28,10 +29,11 @@ public class DummyActivateWorkspaceCommand implements Command
    public void execute()
    {
       Log.info("ENTER DummyActivateWorkspaceCommand.execute()");
-      WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish", false);
+      WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish");
+      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(context, true, true);
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      callback.onSuccess(new ActivateWorkspaceResult(context, identity));
+      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity));
       Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }
 

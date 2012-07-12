@@ -72,7 +72,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -175,10 +175,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
 
-   private final WorkspaceContext workspaceContext;
-
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
+   private final UserWorkspaceContext userWorkspaceContext;
 
    private final UserSessionService sessionService;
    private final Provider<UndoLink> undoLinkProvider;
@@ -191,13 +190,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final TransUnitNavigationService navigationService;
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, final TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService, final UserSessionService sessionService, Provider<UndoLink> undoLinkProvider)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService, final UserSessionService sessionService, Provider<UndoLink> undoLinkProvider)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.identity = identity;
+      this.userWorkspaceContext = userWorkspaceContext;
       this.messages = messages;
-      this.workspaceContext = workspaceContext;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.configHolder = configHolder;
@@ -536,13 +535,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            boolean readOnly = event.isReadOnly();
-            workspaceContext.setReadOnly(readOnly);
-            configHolder.setDisplayButtons(false);
+            userWorkspaceContext.setProjectActive(event.isProjectActive());
+            configHolder.setDisplayButtons(!userWorkspaceContext.hasReadOnlyAccess());
             eventBus.fireEvent(new UserConfigChangeEvent());
-            display.getTargetCellEditor().setReadOnly(readOnly);
+            display.getTargetCellEditor().setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
-            if (readOnly)
+            if (userWorkspaceContext.hasReadOnlyAccess())
             {
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyReadOnlyWorkspace()));
             }

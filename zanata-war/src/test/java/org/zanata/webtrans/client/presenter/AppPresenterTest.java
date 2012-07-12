@@ -45,6 +45,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -85,6 +86,7 @@ public class AppPresenterTest
 
    Display mockDisplay;
    EventBus mockEventBus;
+   Boolean mockIsReadOnly;
    History mockHistory;
    Identity mockIdentity;
    WebTransMessages mockMessages;
@@ -102,6 +104,7 @@ public class AppPresenterTest
 
    Window mockWindow;
    Location mockWindowLocation;
+   UserWorkspaceContext mockUserWorkspaceContext;
    WorkspaceContext mockWorkspaceContext;
 
    private Capture<ClickHandler> capturedDocumentLinkClickHandler;
@@ -148,6 +151,7 @@ public class AppPresenterTest
       mockTranslationPresenter = createMock(TranslationPresenter.class);
       mockWindow = createMock(Window.class);
       mockWindowLocation = createMock(Window.Location.class);
+      mockUserWorkspaceContext = createMock(UserWorkspaceContext.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockNotificationPresenter = createMock(NotificationPresenter.class);
       mockHelpMenuItem = createMock(HasCommand.class);
@@ -182,7 +186,7 @@ public class AppPresenterTest
 
       setupDefaultMockExpectations();
 
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
 
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
@@ -487,14 +491,19 @@ public class AppPresenterTest
    {
       // receives readonly event, label shown
       WorkspaceContextUpdateEvent readOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
-      expect(readOnlyEvent.isReadOnly()).andReturn(true).anyTimes();
+      expect(readOnlyEvent.isProjectActive()).andReturn(false).anyTimes();
       mockDisplay.setReadOnlyVisible(true);
-      expectLastCall().once();
+      expectLastCall().anyTimes();
+      mockUserWorkspaceContext.setProjectActive(false);
+      expectLastCall().anyTimes();
+      
       // receives not-readonly event, label hidden
       WorkspaceContextUpdateEvent editableEvent = createMock(WorkspaceContextUpdateEvent.class);
-      expect(editableEvent.isReadOnly()).andReturn(false).anyTimes();
+      expect(editableEvent.isProjectActive()).andReturn(true).anyTimes();
       mockDisplay.setReadOnlyVisible(false);
-      expectLastCall().once();
+      expectLastCall().anyTimes();
+      mockUserWorkspaceContext.setProjectActive(true);
+      expectLastCall().anyTimes();
 
       replayAllMocks();
       replay(readOnlyEvent, editableEvent);
@@ -805,9 +814,11 @@ public class AppPresenterTest
       expect(mockMessages.showEditorKeyShortcut()).andReturn(SHOW_EDITOR_KEY_SHORTCUT_DESCRIPTION).anyTimes();
       expect(mockMessages.showProjectWideSearch()).andReturn(SHOW_PROJECT_WIDE_SEARCH_KEY_SHORTCUT_DESCRIPTION).anyTimes();
 
+      expect(mockUserWorkspaceContext.getWorkspaceContext()).andReturn(mockWorkspaceContext).anyTimes();
+      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false).anyTimes();
+      
       expect(mockWorkspaceContext.getWorkspaceName()).andReturn(TEST_WORKSPACE_NAME).anyTimes();
       expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
-      expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
 
       expect(mockDocumentListPresenter.getDocumentInfo(testDocId)).andReturn(testDocInfo).anyTimes();
    }
@@ -817,7 +828,7 @@ public class AppPresenterTest
       reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
       reset(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       reset(mockMessages, mockPerson, mockSearchResultsPresenter);
-      reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
+      reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockUserWorkspaceContext, mockWorkspaceContext);
       reset(mockNotificationPresenter);
 
       reset(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
@@ -847,7 +858,7 @@ public class AppPresenterTest
       replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
       replay(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       replay(mockMessages, mockPerson, mockSearchResultsPresenter);
-      replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
+      replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockUserWorkspaceContext, mockWorkspaceContext);
       replay(mockNotificationPresenter);
 
       replay(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);
@@ -858,7 +869,7 @@ public class AppPresenterTest
       verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
       verify(mockEventBus, mockHistory, mockIdentity, mockKeyShortcutPresenter);
       verify(mockMessages, mockPerson, mockSearchResultsPresenter);
-      verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
+      verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockUserWorkspaceContext, mockWorkspaceContext);
       verify(mockNotificationPresenter);
 
       verify(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchButton, mockKeyShortcutButton);

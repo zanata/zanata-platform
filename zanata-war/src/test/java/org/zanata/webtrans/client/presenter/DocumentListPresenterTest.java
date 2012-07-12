@@ -56,6 +56,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
@@ -100,6 +101,7 @@ public class DocumentListPresenterTest
    private History mockHistory;
    private WebTransMessages mockMessages;
    private Window.Location mockWindowLocation;
+   private UserWorkspaceContext mockUserWorkspaceContext;
    private WorkspaceContext mockWorkspaceContext;
 
    // this list is updated to update display table
@@ -137,6 +139,7 @@ public class DocumentListPresenterTest
       mockHistory = createMock(History.class);
       mockMessages = createMock(WebTransMessages.class);
       mockWindowLocation = createMock(Window.Location.class);
+      mockUserWorkspaceContext = createMock(UserWorkspaceContext.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
 
       capturedCaseSensitiveCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
@@ -153,7 +156,7 @@ public class DocumentListPresenterTest
 
    private DocumentListPresenter newDocListPresenter()
    {
-      return new DocumentListPresenter(mockDisplay, mockEventBus, mockWorkspaceContext, mockDispatcher, mockMessages, mockHistory, mockWindowLocation);
+      return new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockDispatcher, mockMessages, mockHistory, mockWindowLocation);
    }
 
    @Test
@@ -714,6 +717,9 @@ public class DocumentListPresenterTest
       expect(mockCaseSensitiveCheckbox.addValueChangeHandler(and(capture(capturedCaseSensitiveCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       setupMockHistory("");
+      
+      
+      expect(mockUserWorkspaceContext.getWorkspaceContext()).andReturn(mockWorkspaceContext).anyTimes();
       expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
       expect(mockWindowLocation.getParameterMap()).andReturn(windowLocationParameters).anyTimes();
       expect(mockWindowLocation.getQueryDocuments()).andReturn(windowLocationParameters.get("doc")).anyTimes();
@@ -799,6 +805,7 @@ public class DocumentListPresenterTest
       reset(mockHistory);
       reset(mockMessages);
       reset(mockWindowLocation);
+      reset(mockUserWorkspaceContext);
       reset(mockWorkspaceContext);
    }
 
@@ -816,6 +823,7 @@ public class DocumentListPresenterTest
       replay(mockHistory);
       replay(mockMessages);
       replay(mockWindowLocation);
+      replay(mockUserWorkspaceContext);
       replay(mockWorkspaceContext);
    }
 
@@ -833,6 +841,7 @@ public class DocumentListPresenterTest
       verify(mockHistory);
       verify(mockMessages);
       verify(mockWindowLocation);
+      verify(mockUserWorkspaceContext);
       verify(mockWorkspaceContext);
    }
 
