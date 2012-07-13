@@ -20,6 +20,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
@@ -132,72 +133,50 @@ public class TranslationPresenterTest
       capturedKeyShortcuts = new Capture<KeyShortcut>();
       capturedPublishWorkspaceChatEventHandler = new Capture<PublishWorkspaceChatEventHandler>();
    }
-
-   private void resetAllCaptures()
-   {
-      capturedEnterWorkspaceEventHandler.reset();
-      capturedExitWorkspaceEventHandler.reset();
-      capturedWorkspaceContextUpdateEventHandler.reset();
-      capturedTranslatorListRequest.reset();
-      capturedTranslatorListRequestCallback.reset();
-      capturedOptionsToggleValueChangeHandler.reset();
-      capturedSouthPanelToggleValueChangeHandler.reset();
-      capturedSouthPanelSelectionHandler.reset();
-      capturedKeyShortcuts.reset();
-      capturedPublishWorkspaceChatEventHandler.reset();
-   }
    
-   private TranslationPresenter newTranslationPresenter()
+   @BeforeMethod
+   public void resetEverything()
    {
-      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockUserWorkspaceContext, mockKeyShortcutPresenter);
+      resetAllMocks();
+      resetAllCaptures();
+      setupDefaultMockExpectations();
+
+      translationPresenter = new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockUserWorkspaceContext, mockKeyShortcutPresenter);
    }
 
    @Test
    public void performsRequiredActionsOnBind()
    {
-      setupAndBindPresenter();
-      verifyAllMocks();
-   }
-
-   private void setupAndBindPresenter()
-   {
-      resetAllMocks();
-      setupDefaultMockExpectations();
-      // default mock expectations include:
-      // - bind 5 sub-presenters
-      // - request & update participant list
-
       replayAllMocks();
-      translationPresenter = newTranslationPresenter();
       translationPresenter.bind();
+      verifyAllMocks();
    }
 
    @Test
    public void hidesOptionsPanel()
    {
-      setupAndBindPresenter();
-      reset(mockDisplay);
-      mockDisplay.setOptionsToggleTooltip(TEST_SHOW_OPTIONS_TOOLTIP);
-      expectLastCall().once();
-      mockDisplay.setSidePanelVisible(false);
-      expectLastCall().once();
-      replay(mockDisplay);
-
-      // simulate options toggle released
       @SuppressWarnings("unchecked")
       ValueChangeEvent<Boolean> optionsToggleDeactivated = createMock(ValueChangeEvent.class);
       expect(optionsToggleDeactivated.getValue()).andReturn(false).anyTimes();
+
+      mockDisplay.setOptionsToggleTooltip(TEST_SHOW_OPTIONS_TOOLTIP);
+      mockDisplay.setSidePanelVisible(false);
+
       replay(optionsToggleDeactivated);
+      replayAllMocks();
+
+      translationPresenter.bind();
+      // simulate options toggle released
       capturedOptionsToggleValueChangeHandler.getValue().onValueChange(optionsToggleDeactivated);
 
-      verify(mockDisplay);
+      verifyAllMocks();
    }
 
    @Test
    public void showsOptionsPanel()
    {
-      setupAndBindPresenter();
-
+      replayAllMocks();
+      translationPresenter.bind();
       reset(mockDisplay);
       // simulate options panel hidden
       mockDisplay.setOptionsToggleTooltip(TEST_HIDE_OPTIONS_TOOLTIP);
@@ -219,8 +198,8 @@ public class TranslationPresenterTest
    @Test
    public void hidesSouthPanel()
    {
-      setupAndBindPresenter();
-
+      replayAllMocks();
+      translationPresenter.bind();
       reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
       // doesn't set tooltip like options toggle
       mockDisplay.setSouthPanelExpanded(false);
@@ -249,8 +228,8 @@ public class TranslationPresenterTest
    @Test
    public void showsSouthPanel()
    {
-      setupAndBindPresenter();
-
+      replayAllMocks();
+      translationPresenter.bind();
       // hide south panel so that it can be shown
       reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
       // doesn't set tooltip like options toggle
@@ -311,8 +290,8 @@ public class TranslationPresenterTest
    @Test
    public void fireTMGlossarySearchOnShowSouthPanel()
    {
-      setupAndBindPresenter();
-
+      replayAllMocks();
+      translationPresenter.bind();
       // hide south panel so that it can be shown
       reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
       // doesn't set tooltip like options toggle
@@ -371,8 +350,8 @@ public class TranslationPresenterTest
    @Test
    public void updateParticipantsOnEnterWorkspace()
    {
-      setupAndBindPresenter();
-
+      replayAllMocks();
+      translationPresenter.bind();
       reset(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
 
       // expect lookup translator list
@@ -409,8 +388,8 @@ public class TranslationPresenterTest
    @Test
    public void updateParticipantsOnExitWorkspace()
    {
-      setupAndBindPresenter();
-
+      replayAllMocks();
+      translationPresenter.bind();
       reset(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
 
       // expect lookup translator list
@@ -443,14 +422,16 @@ public class TranslationPresenterTest
    @Test
    public void disablesTmOnReadOnly()
    {
-      setupAndBindPresenter();
+      replayAllMocks();
+      translationPresenter.bind();
       fireReadOnlyAndCheckResponse();
    }
 
    @Test
    public void enablesTmOnNotReadOnly()
    {
-      setupAndBindPresenter();
+      replayAllMocks();
+      translationPresenter.bind();
       fireReadOnlyAndCheckResponse();
 
       reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockSouthPanelToggle, mockUserWorkspaceContext);
@@ -594,6 +575,20 @@ public class TranslationPresenterTest
       expectLastCall().once(); // once for now
    }
 
+   private void resetAllCaptures()
+   {
+      capturedEnterWorkspaceEventHandler.reset();
+      capturedExitWorkspaceEventHandler.reset();
+      capturedWorkspaceContextUpdateEventHandler.reset();
+      capturedTranslatorListRequest.reset();
+      capturedTranslatorListRequestCallback.reset();
+      capturedOptionsToggleValueChangeHandler.reset();
+      capturedSouthPanelToggleValueChangeHandler.reset();
+      capturedSouthPanelSelectionHandler.reset();
+      capturedKeyShortcuts.reset();
+      capturedPublishWorkspaceChatEventHandler.reset();
+   }
+
    private void resetAllMocks()
    {
       reset(mockDispatcher, mockDisplay, mockEventBus, mockUserWorkspaceContext, mockGlossaryPresenter);
@@ -601,8 +596,6 @@ public class TranslationPresenterTest
       reset(mockWorkspaceUsersPresenter, mockKeyShortcutPresenter);
 
       reset(mockOptionsToggle, mockSouthPanelToggle, mockSouthPanel);
-
-      resetAllCaptures();
    }
 
    private void replayAllMocks()
