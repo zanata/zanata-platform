@@ -588,6 +588,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
+   public boolean isReadOnly()
+   {
+      return userWorkspaceContext.hasReadOnlyAccess();
+   }
+
+   @Override
    public void onCancel()
    {
       List<String> targets = cellEditor.getTargetCell().getTargets();
