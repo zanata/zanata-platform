@@ -215,7 +215,6 @@ public class TranslationPresenterTest
       verifyAllMocks();
    }
 
-   // TODO extract methods for common south panel show/hide test components
 
    /**
     * similar to showsSouthPanel() but with non-null selected TU
@@ -226,7 +225,6 @@ public class TranslationPresenterTest
       expectHideSouthPanel();
       TransUnit mockTU = createMock(TransUnit.class);
       expectShowSouthPanel(mockTU);
-
       // these called for non-null TU
       mockTransMemoryPresenter.createTMRequestForTransUnit(mockTU);
       mockGlossaryPresenter.createGlossaryRequestForTransUnit(mockTU);
@@ -240,39 +238,19 @@ public class TranslationPresenterTest
    @Test
    public void updateParticipantsOnEnterWorkspace()
    {
-      replayAllMocks();
-      translationPresenter.bind();
-      reset(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
-
-      // expect lookup translator list
-      Map<EditorClientId, Person> participants = new HashMap<EditorClientId, Person>();
-      participants.put(new EditorClientId("sessionId1", 1), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
-
-      expect(mockMessages.nUsersOnline(participants.size())).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
+      int numUsersOnline = 5;
+      expect(mockMessages.nUsersOnline(numUsersOnline)).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
       expect(mockMessages.hasJoinedWorkspace("bob")).andReturn(TEST_HAS_JONINED_WORKSPACE_MESSAGE).once();
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
-      expectLastCall().once(); // once for now
 
-      expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
-
+      expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(numUsersOnline);
       mockWorkspaceUsersPresenter.dispatchChatAction(null, TEST_HAS_JONINED_WORKSPACE_MESSAGE, MESSAGE_TYPE.SYSTEM_MSG);
-      expectLastCall();
-
       mockWorkspaceUsersPresenter.addTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
-      expectLastCall();
 
-      // simulate enter workspace event
-      EnterWorkspaceEvent event = createMock(EnterWorkspaceEvent.class);
-
-      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
-      expect(event.getPerson()).andReturn(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16")).times(2);
-
-      replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter, event);
-
-      capturedEnterWorkspaceEventHandler.getValue().onEnterWorkspace(event);
-
-      verify(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
+      replayAllMocks();
+      translationPresenter.bind();
+      simulateEnterWorkspaceEvent();
+      verifyAllMocks();
    }
 
    @Test
@@ -282,6 +260,7 @@ public class TranslationPresenterTest
       translationPresenter.bind();
       reset(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
 
+      // TODO this map is not used, check why before deleting
       // expect lookup translator list
       Map<EditorClientId, Person> participants = new HashMap<EditorClientId, Person>();
       participants.put(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
@@ -379,6 +358,15 @@ public class TranslationPresenterTest
       expect(southPanelToggleEvent.getValue()).andReturn(show).anyTimes();
       replay(southPanelToggleEvent);
       capturedSouthPanelToggleValueChangeHandler.getValue().onValueChange(southPanelToggleEvent);
+   }
+
+   private void simulateEnterWorkspaceEvent()
+   {
+      EnterWorkspaceEvent event = createMock(EnterWorkspaceEvent.class);
+      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
+      expect(event.getPerson()).andReturn(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16")).anyTimes();
+      replay(event);
+      capturedEnterWorkspaceEventHandler.getValue().onEnterWorkspace(event);
    }
 
    /**
