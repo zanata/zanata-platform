@@ -256,77 +256,74 @@ public class TranslationPresenterTest
    @Test
    public void updateParticipantsOnExitWorkspace()
    {
-      replayAllMocks();
-      translationPresenter.bind();
-      reset(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
-
-      // TODO this map is not used, check why before deleting
-      // expect lookup translator list
-      Map<EditorClientId, Person> participants = new HashMap<EditorClientId, Person>();
-      participants.put(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
-
-      expect(mockMessages.nUsersOnline(participants.size())).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
+      int numUsersOnline = 2;
+      expect(mockMessages.nUsersOnline(numUsersOnline)).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
-      expectLastCall().once(); // once for now
-
       mockWorkspaceUsersPresenter.removeTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-      expectLastCall().once();
 
-      // simulate enter workspace event
       ExitWorkspaceEvent event = createMock(ExitWorkspaceEvent.class);
-
       expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
       expect(event.getPerson()).andReturn(new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
       expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
 
-      replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter, event);
-
+      replay(event);
+      replayAllMocks();
+      translationPresenter.bind();
       capturedExitWorkspaceEventHandler.getValue().onExitWorkspace(event);
 
-      verify(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
+      verifyAllMocks();
    }
 
    @Test
    public void disablesTmOnReadOnly()
    {
+      expectSetReadOnly();
       replayAllMocks();
       translationPresenter.bind();
-      fireReadOnlyAndCheckResponse();
+      boolean readOnly = true;
+      simulateReadOnlyEvent(readOnly);
+      verifyAllMocks();
    }
 
    @Test
    public void enablesTmOnNotReadOnly()
    {
-      replayAllMocks();
-      translationPresenter.bind();
-      fireReadOnlyAndCheckResponse();
-
-      reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockSouthPanelToggle, mockUserWorkspaceContext);
+      expectSetReadOnly();
 
       // re-expansion of south panel depends on toggle state (from before it was
       // hidden). Simulating contracted in this test, so no re-binding of
       // presenters is expected.
       // might be good to have presenter store this rather than keeping state in
       // view.
-      expect(mockSouthPanelToggle.getValue()).andReturn(false).anyTimes();
-      expect(mockDisplay.getSouthPanelToggle()).andReturn(mockSouthPanelToggle);
-
+      expect(mockSouthPanelToggle.getValue()).andReturn(false);
       mockUserWorkspaceContext.setProjectActive(true);
       expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false);
-      
       mockDisplay.setSouthPanelVisible(true);
 
-      replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockSouthPanelToggle, mockUserWorkspaceContext);
+      replayAllMocks();
+      translationPresenter.bind();
+      simulateReadOnlyEvent(true);
+      simulateReadOnlyEvent(false);
+      verifyAllMocks();
+   }
 
-      // fire readonly event
-      WorkspaceContextUpdateEvent notReadOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
-      expect(notReadOnlyEvent.isProjectActive()).andReturn(true).anyTimes();
-      replay(notReadOnlyEvent);
-      capturedWorkspaceContextUpdateEventHandler.getValue().onWorkspaceContextUpdated(notReadOnlyEvent);
+   private void expectSetReadOnly()
+   {
+      mockDisplay.setSouthPanelExpanded(false);
+      mockDisplay.setSouthPanelVisible(false);
+      mockUserWorkspaceContext.setProjectActive(false);
+      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(true);
+      mockTransMemoryPresenter.unbind();
+      mockGlossaryPresenter.unbind();
+      mockWorkspaceUsersPresenter.unbind();
+   }
 
-      verify(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockSouthPanelToggle, mockUserWorkspaceContext);
+   private void simulateReadOnlyEvent(boolean readOnly)
+   {
+      WorkspaceContextUpdateEvent readOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
+      expect(readOnlyEvent.isProjectActive()).andReturn(!readOnly).anyTimes();
+      replay(readOnlyEvent);
+      capturedWorkspaceContextUpdateEventHandler.getValue().onWorkspaceContextUpdated(readOnlyEvent);
    }
 
    private void expectShowSouthPanel(TransUnit selectedTransUnit)
@@ -338,7 +335,6 @@ public class TranslationPresenterTest
       mockWorkspaceUsersPresenter.bind();
 
       // When shown, TM will try to fire a search for currently selected TU.
-      // simulating no selected TU to simplify test
       expect(mockTranslationEditorPresenter.getSelectedTransUnit()).andReturn(selectedTransUnit);
    }
 
@@ -367,36 +363,6 @@ public class TranslationPresenterTest
       expect(event.getPerson()).andReturn(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16")).anyTimes();
       replay(event);
       capturedEnterWorkspaceEventHandler.getValue().onEnterWorkspace(event);
-   }
-
-   /**
-    * Fire a mock read-only event and check that south panel is hidden and
-    * presenters on south panel are unbound
-    */
-   private void fireReadOnlyAndCheckResponse()
-   {
-      reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockUserWorkspaceContext);
-
-      mockDisplay.setSouthPanelExpanded(false);
-      mockDisplay.setSouthPanelVisible(false);
-
-      mockUserWorkspaceContext.setProjectActive(false);
-      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(true);
-      
-      mockTransMemoryPresenter.unbind();
-      mockGlossaryPresenter.unbind();
-      mockWorkspaceUsersPresenter.unbind();
-      
-
-      replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockUserWorkspaceContext);
-
-      // fire readonly event
-      WorkspaceContextUpdateEvent readOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
-      expect(readOnlyEvent.isProjectActive()).andReturn(false).anyTimes();
-      replay(readOnlyEvent);
-      capturedWorkspaceContextUpdateEventHandler.getValue().onWorkspaceContextUpdated(readOnlyEvent);
-
-      verify(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockUserWorkspaceContext);
    }
 
    // TODO test for starting in read-only mode
@@ -459,9 +425,9 @@ public class TranslationPresenterTest
 
       expect(mockDisplay.getSouthPanelToggle()).andReturn(mockSouthPanelToggle).anyTimes();
       expect(mockSouthPanelToggle.addValueChangeHandler(and(capture(capturedSouthPanelToggleValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      expect(mockSouthPanelToggle.getValue()).andReturn(true).anyTimes();
+      expect(mockSouthPanelToggle.getValue()).andReturn(true);
 
-      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false).anyTimes();
+      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false);
 
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), and(capture(capturedPublishWorkspaceChatEventHandler), isA(PublishWorkspaceChatEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
    }
