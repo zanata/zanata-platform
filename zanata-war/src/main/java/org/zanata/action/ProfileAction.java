@@ -23,6 +23,8 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import org.hibernate.validator.Email;
+import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -121,6 +123,8 @@ public class ProfileAction implements Serializable
       }
    }
 
+   @NotEmpty
+   @Length(min = 2, max = 80)
    public String getName()
    {
       return name;
