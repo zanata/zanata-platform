@@ -203,7 +203,7 @@
   </rule>
 
   <rule>
-    <from>^/error(.+)?$</from>
+    <from>^/error(\?.+)?$</from>
     <to>/error.seam$1</to>
   </rule>
 
