@@ -31,13 +31,17 @@ import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.auth.AuthenticationError;
+import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -49,6 +53,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -66,17 +71,19 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    private final TransUnitNavigationService navigationService;
    private final TransUnitsDataModel dataModel;
    private final UserConfigHolder configHolder;
+   private final TableEditorMessages messages;
    //tracking variables
    private GetTransUnitActionContext context;
 
    @Inject
-   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder)
+   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder, TableEditorMessages messages)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.navigationService = navigationService;
       this.dataModel = dataModel;
       this.configHolder = configHolder;
+      this.messages = messages;
       bindHandlers();
    }
 
@@ -101,8 +108,22 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       final int itemPerPage = context.getCount();
       final int offset = context.getOffset();
 
-      dispatcher.execute(GetTransUnitList.newAction(context), new AbstractAsyncCallback<GetTransUnitListResult>()
+      dispatcher.execute(GetTransUnitList.newAction(context), new AsyncCallback<GetTransUnitListResult>()
       {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            if (caught instanceof AuthenticationError)
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyNotLoggedIn()));
+            }
+            else
+            {
+               Log.error("GetTransUnits failure " + caught, caught);
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyLoadFailed()));
+            }
+         }
+
          @Override
          public void onSuccess(GetTransUnitListResult result)
          {

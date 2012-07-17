@@ -45,6 +45,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
@@ -61,6 +62,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
@@ -112,13 +114,13 @@ public class NavigationControllerTest
    private ArgumentCaptor<AbstractWorkspaceAction> actionCaptor;
 
    @Captor
-   private ArgumentCaptor<AbstractAsyncCallback> asyncCallbackCaptor;
+   private ArgumentCaptor<AsyncCallback> asyncCallbackCaptor;
 
    //captured dispatcher arguments
    private GetTransUnitList getTransUnitList;
    private GetTransUnitsNavigation getTransUnitsNavigation;
-   private AbstractAsyncCallback<GetTransUnitListResult> getTransUnitListCallback;
-   private AbstractAsyncCallback<GetTransUnitsNavigationResult> getTransUnitsNavigationCallback;
+   private AsyncCallback<GetTransUnitListResult> getTransUnitListCallback;
+   private AsyncCallback<GetTransUnitsNavigationResult> getTransUnitsNavigationCallback;
    
    
    //used by GetTransUnitListHandler and GetTransUnitsNavigationHandler
@@ -138,6 +140,7 @@ public class NavigationControllerTest
 
    private GetTransUnitActionContext context;
    @Mock private SingleSelectionModel<TransUnit> selectionModel;
+   @Mock private TableEditorMessages messages;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -149,7 +152,7 @@ public class NavigationControllerTest
       UserConfigHolder configHolder = new UserConfigHolder();
       TransUnitsDataModel dataModel = new TransUnitsDataModel(selectionModel);
 
-      controller = new NavigationController(eventBus, dispatcher, navigationService, dataModel, configHolder);
+      controller = new NavigationController(eventBus, dispatcher, navigationService, dataModel, configHolder, messages);
 
       context = GetTransUnitActionContext.of(documentId);
    }
@@ -160,7 +163,7 @@ public class NavigationControllerTest
       verify(dispatcher, atLeastOnce()).execute(actionCaptor.capture(), asyncCallbackCaptor.capture());
 
       List<AbstractWorkspaceAction> actions = actionCaptor.getAllValues();
-      List<AbstractAsyncCallback> callbacks = asyncCallbackCaptor.getAllValues();
+      List<AsyncCallback> callbacks = asyncCallbackCaptor.getAllValues();
 
       for (int i = 0, allValuesSize = actions.size(); i < allValuesSize; i++)
       {
@@ -168,13 +171,13 @@ public class NavigationControllerTest
          {
             getTransUnitList = (GetTransUnitList) actions.get(i);
             getTransUnitList.setWorkspaceId(workspaceId);
-            getTransUnitListCallback = (AbstractAsyncCallback<GetTransUnitListResult>) callbacks.get(i);
+            getTransUnitListCallback = (AsyncCallback<GetTransUnitListResult>) callbacks.get(i);
          }
          else
          {
             getTransUnitsNavigation = (GetTransUnitsNavigation) actions.get(i);
             getTransUnitsNavigation.setWorkspaceId(workspaceId);
-            getTransUnitsNavigationCallback = (AbstractAsyncCallback<GetTransUnitsNavigationResult>) callbacks.get(i);
+            getTransUnitsNavigationCallback = (AsyncCallback<GetTransUnitsNavigationResult>) callbacks.get(i);
          }
       }
    }
