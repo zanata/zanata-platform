@@ -245,7 +245,7 @@ public class TargetContentsPresenterTest
    {
       when(configHolder.isEnterSavesApproved()).thenReturn(true);
 
-      presenter.onValueChanged(new UserConfigChangeEvent());
+      presenter.onValueChanged(UserConfigChangeEvent.EVENT);
 
       verify(display).showButtons(configHolder.isDisplayButtons());
    }

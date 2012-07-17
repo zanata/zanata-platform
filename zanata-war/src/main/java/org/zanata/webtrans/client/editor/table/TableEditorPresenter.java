@@ -531,26 +531,26 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          }
       }));
 
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
-      {
-         @Override
-         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-         {
-            userWorkspaceContext.setProjectActive(event.isProjectActive());
-            configHolder.setDisplayButtons(!userWorkspaceContext.hasReadOnlyAccess());
-            eventBus.fireEvent(new UserConfigChangeEvent());
-            display.getTargetCellEditor().setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-
-            if (userWorkspaceContext.hasReadOnlyAccess())
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyReadOnlyWorkspace()));
-            }
-            else
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyEditableWorkspace()));
-            }
-         }
-      }));
+//      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
+//      {
+//         @Override
+//         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+//         {
+//            userWorkspaceContext.setProjectActive(event.isProjectActive());
+//            configHolder.setDisplayButtons(!userWorkspaceContext.hasReadOnlyAccess());
+//            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+//            display.getTargetCellEditor().setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+//
+//            if (userWorkspaceContext.hasReadOnlyAccess())
+//            {
+//               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyReadOnlyWorkspace()));
+//            }
+//            else
+//            {
+//               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyEditableWorkspace()));
+//            }
+//         }
+//      }));
 
       display.gotoFirstPage();
 

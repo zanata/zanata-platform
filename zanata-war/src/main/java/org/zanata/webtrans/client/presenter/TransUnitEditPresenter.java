@@ -34,8 +34,10 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TransUnitsDataModel;
@@ -75,6 +77,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TransUnitEditDisplay display;
    private final UserWorkspaceContext userWorkspaceContext;
    private final Identity identity;
+   private final TableEditorMessages messages;
    private final EventBus eventBus;
    private final NavigationController navigationController;
    private final TransUnitListDisplay transUnitListDisplay;
@@ -97,12 +100,14 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  TransUnitSaveService saveService,
                                  TranslatorInteractionService translatorService,
                                  UserWorkspaceContext userWorkspaceContext,
-                                 Identity identity)
+                                 Identity identity,
+                                 TableEditorMessages messages)
    {
       super(display, eventBus);
       this.display = display;
       this.userWorkspaceContext = userWorkspaceContext;
       this.identity = identity;
+      this.messages = messages;
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
@@ -236,6 +241,14 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
+      if (userWorkspaceContext.hasReadOnlyAccess())
+      {
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyReadOnlyWorkspace()));
+      }
+      else
+      {
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyEditableWorkspace()));
+      }
       initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
    }
 

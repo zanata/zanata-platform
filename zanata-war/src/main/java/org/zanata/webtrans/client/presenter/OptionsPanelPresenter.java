@@ -134,7 +134,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             Log.info("Show editor buttons: " + event.getValue());
             configHolder.setDisplayButtons(event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent());
+            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
          }
       }));
 
@@ -145,7 +145,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
             configHolder.setEnterSavesApproved(event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent());
+            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
          }
       }));
 
@@ -156,7 +156,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
             configHolder.setEscClosesEditor(event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent());
+            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
          }
       }));
 
@@ -186,7 +186,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
                configHolder.setButtonFuzzy(false);
                configHolder.setButtonUntranslated(true);
             }
-            eventBus.fireEvent(new UserConfigChangeEvent());
+            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
          }
       }));
 
@@ -197,6 +197,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             userWorkspaceContext.setProjectActive(event.isProjectActive());
             setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
          }
       }));
 
@@ -214,7 +215,6 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    {
       boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
       configHolder.setDisplayButtons(displayButtons);
-      eventBus.fireEvent(new UserConfigChangeEvent());
       display.setEditorOptionsVisible(!readOnly);
       display.setValidationOptionsVisible(!readOnly);
    }
