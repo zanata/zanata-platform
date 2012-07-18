@@ -23,7 +23,7 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -131,8 +131,7 @@ public class HPerson extends ModelEntityBase implements Serializable
       return memberships;
    }
 
-   @OneToMany
-   @JoinColumn(name = "personId")
+   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person")
    protected Set<HLocaleMember> getLanguageTeamMemberships()
    {
       if( this.languageTeamMemberships == null )
