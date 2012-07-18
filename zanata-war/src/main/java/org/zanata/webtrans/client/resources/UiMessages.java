@@ -73,7 +73,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("Send")
    String sendLabel();
 
-   @DefaultMessage("Processing...")
+   @DefaultMessage("Processing")
    String processing();
 
    @DefaultMessage("TM merge")

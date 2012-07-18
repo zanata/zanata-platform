@@ -50,6 +50,9 @@
                 <g:PushButton ui:field="cancelButton" styleName="gwt-Button" title="{messages.editCancelShortcut}">
                     <g:upFace image="{images.cellEditorCancel}" />
                 </g:PushButton>
+                <g:PushButton ui:field="historyButton" styleName="gwt-Button" title="{messages.history}" >
+                    <g:upFace image="{images.copySrcButton}" />
+                </g:PushButton>
             </g:HorizontalPanel>
         </g:cell>
     </g:VerticalPanel>

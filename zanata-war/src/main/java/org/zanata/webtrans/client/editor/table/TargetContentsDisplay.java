@@ -59,6 +59,8 @@ public interface TargetContentsDisplay extends WidgetDisplay
       boolean isDisplayButtons();
 
       boolean isReadOnly();
+
+      void showHistory();
    }
 
    void setTargets(List<String> targets);

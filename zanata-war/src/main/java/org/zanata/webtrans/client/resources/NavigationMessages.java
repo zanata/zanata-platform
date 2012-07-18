@@ -80,6 +80,9 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Cancel")
    String editCancelShortcut();
 
+   @DefaultMessage("History")
+   String history();
+
    // @DefaultMessage("Copy")
    // String editClone();
 
