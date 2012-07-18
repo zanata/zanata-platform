@@ -10,7 +10,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class TransHistoryItem implements IsSerializable
 {
-   private Integer versionNum;
+   private String versionNum;
    private List<String> contents;
    private ContentState status;
    private String modifiedBy;
@@ -23,14 +23,14 @@ public class TransHistoryItem implements IsSerializable
 
    public TransHistoryItem(Integer versionNum, List<String> contents, ContentState status, String modifiedBy, String modifiedDate)
    {
-      this.versionNum = versionNum;
+      this.versionNum = versionNum.toString();
       this.contents = contents;
       this.status = status;
       this.modifiedBy = modifiedBy;
       this.modifiedDate = modifiedDate;
    }
 
-   public Integer getVersionNum()
+   public String getVersionNum()
    {
       return versionNum;
    }

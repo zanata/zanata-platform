@@ -1,6 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -67,7 +70,8 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       Map<Integer,HTextFlowTargetHistory> history = hTextFlow.getTargets().get(hLocale.getId()).getHistory();
 
 
-      List<TransHistoryItem> historyItems = ImmutableList.copyOf(Collections2.transform(history.values(), new TargetHistoryToTransHistoryItemFunction()));
+      Collection<TransHistoryItem> historyItems = Collections2.transform(history.values(), new TargetHistoryToTransHistoryItemFunction());
+      log.info("found {} history for text flow id {}", historyItems.size(), action.getTransUnitId());
       return new GetTranslationHistoryResult(historyItems);
    }
 
@@ -88,8 +92,9 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       @Override
       public TransHistoryItem apply(HTextFlowTargetHistory targetHistory)
       {
-         return new TransHistoryItem(targetHistory.getVersionNum(), targetHistory.getContents(), targetHistory.getState(), targetHistory.getLastModifiedBy().getName(), dateFormat.format(targetHistory.getLastChanged()));
-
+         //targetHistory.getContents will return Hibernate persistentList which RPC can't handle
+         ArrayList<String> contents = Lists.newArrayList(targetHistory.getContents());
+         return new TransHistoryItem(targetHistory.getVersionNum(), contents, targetHistory.getState(), targetHistory.getLastModifiedBy().getName(), dateFormat.format(targetHistory.getLastChanged()));
       }
    }
 }

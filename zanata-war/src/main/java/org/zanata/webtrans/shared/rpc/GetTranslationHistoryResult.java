@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.zanata.webtrans.shared.model.TransHistoryItem;
@@ -21,9 +22,9 @@ public class GetTranslationHistoryResult implements DispatchResult
    {
    }
 
-   public GetTranslationHistoryResult(List<TransHistoryItem> historyItems)
+   public GetTranslationHistoryResult(Collection<TransHistoryItem> historyItems)
    {
-      this.historyItems = historyItems;
+      this.historyItems = Lists.newArrayList(historyItems);
    }
 
    public List<TransHistoryItem> getHistoryItems()

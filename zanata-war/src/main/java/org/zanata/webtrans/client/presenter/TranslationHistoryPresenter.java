@@ -1,9 +1,14 @@
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
+import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -44,10 +49,26 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    {
    }
 
-   public void showTranslationHistory(TransUnitId transUnitId)
+   public void showTranslationHistory(final TransUnitId transUnitId)
    {
       //TODO implement
       //throw new UnsupportedOperationException("Implement me!");
       display.center();
+      dispatcher.execute(new GetTranslationHistoryAction(transUnitId), new AsyncCallback<GetTranslationHistoryResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, caught.getMessage()));
+            display.hide();
+         }
+
+         @Override
+         public void onSuccess(GetTranslationHistoryResult result)
+         {
+            Log.info(transUnitId + " has " + result.getHistoryItems().size() + " history items");
+            display.showHistory(result.getHistoryItems());
+         }
+      });
    }
 }
