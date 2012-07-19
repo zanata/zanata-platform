@@ -378,6 +378,16 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Chat")
    String chatScope();
 
+
    @DefaultMessage("Report a problem")
    String reportAProblem();
+
+   @DefaultMessage("Version No.")
+   String versionNumber();
+
+   @DefaultMessage("Modified By")
+   String modifiedBy();
+
+   @DefaultMessage("Modified Date")
+   String modifiedDate();
 }

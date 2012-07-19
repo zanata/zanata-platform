@@ -3,6 +3,7 @@ package org.zanata.webtrans.server.rpc;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -26,6 +28,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -67,8 +70,12 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
 
       HTextFlow hTextFlow = textFlowDAO.findById(action.getTransUnitId().getId(), false);
 
-      Map<Integer,HTextFlowTargetHistory> history = hTextFlow.getTargets().get(hLocale.getId()).getHistory();
-
+      HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
+      Map<Integer,HTextFlowTargetHistory> history = Maps.newHashMap();
+      if (hTextFlowTarget != null)
+      {
+         history = hTextFlowTarget.getHistory();
+      }
 
       Collection<TransHistoryItem> historyItems = Collections2.transform(history.values(), new TargetHistoryToTransHistoryItemFunction());
       log.info("found {} history for text flow id {}", historyItems.size(), action.getTransUnitId());

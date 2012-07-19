@@ -1,86 +1,165 @@
 package org.zanata.webtrans.client.ui;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
+import com.google.common.base.Strings;
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AbstractDataProvider;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ProvidesKey;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TranslationHistoryView extends DialogBox implements TranslationHistoryDisplay
 {
-   private final ProcessingLabel processingLabel;
+   private final CellTable<TransHistoryItem> historyTable;
+   private static CellTableResources cellTableResources = GWT.create(CellTableResources.class);
+   private AbstractDataProvider<TransHistoryItem> dataProvider;
 
    @Inject
-   public TranslationHistoryView(ProcessingLabel processingLabel)
+   public TranslationHistoryView(WebTransMessages messages)
    {
       super(true, true);
-      this.processingLabel = processingLabel;
       setGlassEnabled(true);
       //TODO localise
       getCaption().setText("Translation History");
-      setWidget(processingLabel);
+
+      historyTable = new CellTable<TransHistoryItem>(5, cellTableResources, new ProvidesKey<TransHistoryItem>()
+      {
+         @Override
+         public Object getKey(TransHistoryItem item)
+         {
+            return item.getVersionNum();
+         }
+      });
+      historyTable.setLoadingIndicator(new Label(messages.loading()));
+      historyTable.setEmptyTableWidget(new Label(messages.noContent()));
+      Column<TransHistoryItem, String> verColumn = createVersionColumn();
+      Column<TransHistoryItem, List<String>> contentsColumn = createContentsColumn();
+      Column<TransHistoryItem, String> modifiedByColumn = createModifiedByColumn();
+      Column<TransHistoryItem, String> modifiedDateColumn = createModifiedDateColumn();
+      historyTable.addColumn(verColumn, messages.versionNumber());
+      historyTable.addColumn(contentsColumn, messages.target());
+      historyTable.addColumn(modifiedByColumn, messages.modifiedBy());
+      historyTable.addColumn(modifiedDateColumn, messages.modifiedDate());
+
+      SimplePager simplePager = new SimplePager();
+      simplePager.setDisplay(historyTable);
+
+      VerticalPanel container = new VerticalPanel();
+      container.add(historyTable);
+      container.add(simplePager);
+      setWidget(container);
    }
 
    @Override
-   public void center()
+   public void setDataProvider(AbstractDataProvider<TransHistoryItem> dataProvider)
    {
-      processingLabel.start();
-      super.center();
+      this.dataProvider = dataProvider;
+      dataProvider.addDataDisplay(historyTable);
    }
 
    @Override
    public void hide()
    {
-      processingLabel.stop();
+      dataProvider.removeDataDisplay(historyTable);
+      historyTable.setRowData(Collections.<TransHistoryItem>emptyList());
+      historyTable.flush();
       super.hide();
    }
 
-   @Override
-   public void showHistory(List<TransHistoryItem> historyItems)
+   private static Column<TransHistoryItem, String> createVersionColumn()
    {
-      processingLabel.stop();
-      //TODO should use cell table
-      Grid grid = new Grid(historyItems.size(), 4);
-      for (int i = 0; i < historyItems.size(); i++)
+      return new Column<TransHistoryItem, String>(new TextCell())
       {
-         TransHistoryItem item = historyItems.get(i);
-         grid.setWidget(i, 0, new Label(item.getVersionNum()));
-
-         VerticalPanel contentPanel = new VerticalPanel();
-         for (String content : item.getContents())
+         @Override
+         public String getValue(TransHistoryItem historyItem)
          {
-            contentPanel.add(new HighlightingLabel(content));
+            return historyItem.getVersionNum();
          }
-         grid.setWidget(i, 1, contentPanel);
-
-         grid.getCellFormatter().setStyleName(i, 1, resolveStyle(item.getStatus()));
-
-         grid.setWidget(i, 2, new Label(item.getModifiedBy()));
-
-         grid.setWidget(i, 3, new Label(item.getModifiedDate()));
-      }
-      setWidget(grid);
+      };
    }
 
-   private static String resolveStyle(ContentState status)
+   private static Column<TransHistoryItem, List<String>> createContentsColumn()
    {
-      switch (status)
+      return new Column<TransHistoryItem, List<String>>(new AbstractCell<List<String>>()
       {
-         case NeedReview:
-            return "FuzzyStateDecoration";
-         case Approved:
-            return "ApprovedStateDecoration";
-      }
-      return "";
+         @Override
+         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
+         {
+
+            for (String source : contents)
+            {
+               HighlightingLabel label = new HighlightingLabel(source);
+               appendContent(sb, label.getElement().getString());
+            }
+         }
+      })
+      {
+         @Override
+         public List<String> getValue(TransHistoryItem historyItem)
+         {
+            return historyItem.getContents();
+         }
+
+         @Override
+         public String getCellStyleNames(Cell.Context context, TransHistoryItem historyItem)
+         {
+            String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, historyItem));
+            if (historyItem.getStatus() == ContentState.Approved)
+            {
+               styleNames += " ApprovedStateDecoration";
+            }
+            else if (historyItem.getStatus() == ContentState.NeedReview)
+            {
+               styleNames += " FuzzyStateDecoration";
+            }
+            return styleNames;
+         }
+      };
+   }
+
+   private static Column<TransHistoryItem, String> createModifiedByColumn()
+   {
+      return new Column<TransHistoryItem, String>(new TextCell())
+      {
+         @Override
+         public String getValue(TransHistoryItem historyItem)
+         {
+            return historyItem.getModifiedBy();
+         }
+      };
+   }
+
+   private static Column<TransHistoryItem, String> createModifiedDateColumn()
+   {
+      return new Column<TransHistoryItem, String>(new TextCell())
+      {
+         @Override
+         public String getValue(TransHistoryItem historyItem)
+         {
+            return historyItem.getModifiedDate();
+         }
+      };
+   }
+
+   private static void appendContent(SafeHtmlBuilder sb, String content)
+   {
+      sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
    }
 }
