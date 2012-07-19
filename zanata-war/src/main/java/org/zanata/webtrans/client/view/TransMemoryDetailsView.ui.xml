@@ -43,6 +43,7 @@
 						<g:TextArea ui:field='targetComment' readOnly='true'><ui:msg>Target Comment</ui:msg></g:TextArea>
 					</g:VerticalPanel>
 				</g:HorizontalPanel>
+				<g:Label ui:field='lastModified' ><ui:msg>Last modified</ui:msg></g:Label>
 			</g:VerticalPanel>
 	    <g:Button ui:field='dismissButton'><ui:msg>Dismiss</ui:msg></g:Button>
 	  </g:HTMLPanel>
