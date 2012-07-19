@@ -19,14 +19,14 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AbstractDataProvider;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.Range;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TranslationHistoryView extends DialogBox implements TranslationHistoryDisplay
 {
+   public static final int PAGE_SIZE = 5;
    private final CellTable<TransHistoryItem> historyTable;
    private static CellTableResources cellTableResources = GWT.create(CellTableResources.class);
    private AbstractDataProvider<TransHistoryItem> dataProvider;
@@ -39,14 +39,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       //TODO localise
       getCaption().setText("Translation History");
 
-      historyTable = new CellTable<TransHistoryItem>(5, cellTableResources, new ProvidesKey<TransHistoryItem>()
-      {
-         @Override
-         public Object getKey(TransHistoryItem item)
-         {
-            return item.getVersionNum();
-         }
-      });
+      historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, cellTableResources, HISTORY_ITEM_PROVIDES_KEY);
       historyTable.setLoadingIndicator(new Label(messages.loading()));
       historyTable.setEmptyTableWidget(new Label(messages.noContent()));
       Column<TransHistoryItem, String> verColumn = createVersionColumn();
@@ -75,11 +68,15 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
+   public void resetPage()
+   {
+      historyTable.setPageStart(0);
+   }
+
+   @Override
    public void hide()
    {
       dataProvider.removeDataDisplay(historyTable);
-      historyTable.setRowData(Collections.<TransHistoryItem>emptyList());
-      historyTable.flush();
       super.hide();
    }
 

@@ -78,7 +78,7 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       }
 
       Collection<TransHistoryItem> historyItems = Collections2.transform(history.values(), new TargetHistoryToTransHistoryItemFunction());
-      log.info("found {} history for text flow id {}", historyItems.size(), action.getTransUnitId());
+      log.debug("found {} history for text flow id {}", historyItems.size(), action.getTransUnitId());
       return new GetTranslationHistoryResult(historyItems);
    }
 
