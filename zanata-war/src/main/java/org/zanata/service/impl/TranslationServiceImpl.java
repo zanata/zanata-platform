@@ -169,7 +169,7 @@ public class TranslationServiceImpl implements TranslationService
             try
             {
                int nPlurals = getNumPlurals(hLocale, hTextFlow);
-               translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(), nPlurals);
+               result.targetChanged = translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(), nPlurals);
                result.isSuccess = true;
             }
             catch (HibernateException e)
@@ -224,7 +224,7 @@ public class TranslationServiceImpl implements TranslationService
       return hTextFlowTarget;
    }
 
-   private HTextFlowTarget translate(@Nonnull HTextFlowTarget hTextFlowTarget, @Nonnull List<String> contentsToSave, ContentState requestedState, int nPlurals)
+   private boolean translate(@Nonnull HTextFlowTarget hTextFlowTarget, @Nonnull List<String> contentsToSave, ContentState requestedState, int nPlurals)
    {
       boolean targetChanged = false;
       targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
@@ -241,7 +241,7 @@ public class TranslationServiceImpl implements TranslationService
       //save the target histories
       entityManager.flush();
 
-      return hTextFlowTarget;
+      return targetChanged;
    }
 
    /**
@@ -522,6 +522,7 @@ public class TranslationServiceImpl implements TranslationService
    {
       private HTextFlowTarget translatedTextFlowTarget;
       private boolean isSuccess;
+      private boolean targetChanged = false;
       private int baseVersion;
       private ContentState baseContentState;
 
@@ -529,6 +530,11 @@ public class TranslationServiceImpl implements TranslationService
       public boolean isTranslationSuccessful()
       {
          return isSuccess;
+      }
+      @Override
+      public boolean isTargetChanged()
+      {
+         return targetChanged;
       }
       @Override
       public HTextFlowTarget getTranslatedTextFlowTarget()
@@ -545,7 +551,6 @@ public class TranslationServiceImpl implements TranslationService
       {
          return baseContentState;
       }
-
 
    }
 

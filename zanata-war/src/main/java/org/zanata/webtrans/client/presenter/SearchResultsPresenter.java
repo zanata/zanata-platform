@@ -862,6 +862,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             final List<TransUnitUpdateInfo> updateInfoList = processSuccessfulReplacements(result.getUpdateInfoList());
 
+            if (updateInfoList.isEmpty())
+            {
+               eventBus.fireEvent(new NotificationEvent(Info, messages.noReplacementsToMake()));
+               return;
+            }
+
             String message;
             if (updateInfoList.size() == 1)
             {
@@ -987,10 +993,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          if (updateInfo.isSuccess())
          {
-            successfulReplacements.add(updateInfo);
             TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
             if (replaceInfo != null)
             {
+               if (updateInfo.isTargetChanged())
+               {
+                  successfulReplacements.add(updateInfo);
+               }
                replaceInfo.setReplaceInfo(updateInfo);
                ReplacementState replaceState = ReplacementState.Replaced;
                setReplaceState(replaceInfo, replaceState);
