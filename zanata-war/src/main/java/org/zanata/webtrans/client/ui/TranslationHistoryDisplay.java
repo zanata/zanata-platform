@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
+import java.util.List;
+
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
@@ -23,7 +25,9 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void hide();
 
-   void resetPage();
+   void reset();
 
    HasData<TransHistoryItem> getHistoryTable();
+
+   void showDiff(List<String> one, List<String> other, String description);
 }

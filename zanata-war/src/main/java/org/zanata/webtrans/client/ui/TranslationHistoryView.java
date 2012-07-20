@@ -33,6 +33,9 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private static final CellTableResources CELL_TABLE_RESOURCES = GWT.create(CellTableResources.class);
    private final CellTable<TransHistoryItem> historyTable;
    private final EventBus eventBus;
+   private final StackPanel container;
+   private final VerticalPanel diffPanel;
+   private WebTransMessages messages;
 
    @Inject
    public TranslationHistoryView(WebTransMessages messages, EventBus eventBus)
@@ -43,6 +46,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       getCaption().setText(messages.translationHistoryManagement());
 
       this.eventBus = eventBus;
+      this.messages = messages;
 
       historyTable = setUpHistoryTable(messages);
 
@@ -53,8 +57,10 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       historyTableContainer.add(historyTable);
       historyTableContainer.add(simplePager);
 
-      StackPanel container = new StackPanel();
+      container = new StackPanel();
       container.add(historyTableContainer, messages.translationHistory());
+      diffPanel = new VerticalPanel();
+      container.add(diffPanel, messages.comparison());
       setWidget(container);
    }
 
@@ -108,9 +114,29 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
-   public void resetPage()
+   public void showDiff(List<String> one, List<String> other, String description)
+   {
+      setComparisonStackTitle(description);
+      diffPanel.clear();
+      for (int i = 0; i < one.size(); i++)
+      {
+         String content1 = one.get(i);
+         String content2 = other.get(i);
+         diffPanel.add(new DiffMatchPatchLabel(content1, content2));
+      }
+   }
+
+   private void setComparisonStackTitle(String description)
+   {
+      container.setStackText(1, description);
+   }
+
+   @Override
+   public void reset()
    {
       historyTable.setPageStart(0);
+      diffPanel.clear();
+      setComparisonStackTitle(messages.comparison());
    }
 
    private static Column<TransHistoryItem, String> createVersionColumn()

@@ -399,4 +399,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Translation History")
    String translationHistory();
+
+   @DefaultMessage("Comparison")
+   String comparison();
 }
