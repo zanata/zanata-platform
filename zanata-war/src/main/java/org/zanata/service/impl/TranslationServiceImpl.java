@@ -566,6 +566,11 @@ public class TranslationServiceImpl implements TranslationService
          HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
          for (TransUnitUpdateInfo info : translationsToRevert)
          {
+            if (!info.isSuccess() || !info.isTargetChanged())
+            {
+               continue;
+            }
+
             TransUnitId tuId = info.getTransUnit().getId();
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class, tuId.getValue());
             HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
