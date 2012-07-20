@@ -29,9 +29,9 @@ import net.customware.gwt.presenter.client.EventBus;
 @Singleton
 public class TranslationHistoryView extends DialogBox implements TranslationHistoryDisplay
 {
-   public static final int PAGE_SIZE = 5;
+   private static final int PAGE_SIZE = 5;
+   private static final CellTableResources CELL_TABLE_RESOURCES = GWT.create(CellTableResources.class);
    private final CellTable<TransHistoryItem> historyTable;
-   private static CellTableResources cellTableResources = GWT.create(CellTableResources.class);
    private final EventBus eventBus;
 
    @Inject
@@ -60,7 +60,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 
    private CellTable<TransHistoryItem> setUpHistoryTable(WebTransMessages messages)
    {
-      CellTable<TransHistoryItem> historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, cellTableResources, HISTORY_ITEM_PROVIDES_KEY);
+      CellTable<TransHistoryItem> historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, CELL_TABLE_RESOURCES, HISTORY_ITEM_PROVIDES_KEY);
       historyTable.setLoadingIndicator(new Label(messages.loading()));
       historyTable.setEmptyTableWidget(new Label(messages.noContent()));
 
