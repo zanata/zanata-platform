@@ -44,6 +44,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand<PublicanPull
       this.sourceDocResource = sourceDocResource;
       this.translationResources = translationResources;
       this.uri = uri;
+      deprecate("please use \"pull\" with project type \"" + PROJECT_TYPE_PUBLICAN + "\"");
    }
 
    private PublicanPullCommand(PublicanPullOptions opts, ZanataProxyFactory factory)

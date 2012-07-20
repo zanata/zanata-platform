@@ -79,4 +79,9 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
    }
 
 
+   @Override
+   public String getCommandName()
+   {
+      return "putproject";
+   }
 }

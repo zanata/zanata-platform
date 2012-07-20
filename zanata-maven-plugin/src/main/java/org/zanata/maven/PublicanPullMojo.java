@@ -91,5 +91,11 @@ public class PublicanPullMojo extends ConfigurableProjectMojo<PublicanPullOption
    {
       this.exportPot = exportPot;
    }
+   
+   @Override
+   public String getCommandName()
+   {
+      return "publican-pull";
+   }
 
 }

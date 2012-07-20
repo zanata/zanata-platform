@@ -2,14 +2,11 @@ package org.zanata.maven;
 
 import java.util.Arrays;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushPullType;
 
 public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
 {
-   IMocksControl control = EasyMock.createControl();
    PushCommand mockCommand = control.createMock(PushCommand.class);
    PushMojo pushMojo = new PushMojo()
    {
@@ -41,7 +38,6 @@ public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
    {
       // required for mojo lookups to work
       super.setUp();
-      control.reset();
    }
 
    @Override
@@ -72,7 +68,7 @@ public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
 
    /**
     * Test that the pom.xml settings are applied as expected using the pushType
-    * mojo paramater,
+    * mojo parameter,
     *
     * @throws Exception
     */

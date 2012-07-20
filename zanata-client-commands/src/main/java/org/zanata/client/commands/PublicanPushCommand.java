@@ -55,6 +55,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
       this.sourceDocResource = sourceDocResource;
       this.translationResources = translationResources;
       this.uri = uri;
+      deprecate("please use \"push\" with project type \"" + PROJECT_TYPE_PUBLICAN + "\"");
    }
 
    private PublicanPushCommand(PublicanPushOptions opts, ZanataProxyFactory factory)

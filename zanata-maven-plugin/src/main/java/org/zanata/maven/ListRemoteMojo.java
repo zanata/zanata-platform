@@ -31,5 +31,11 @@ public class ListRemoteMojo extends ConfigurableProjectMojo<ConfigurableProjectO
    {
       return ZANATA_SERVER_PROJECT_TYPE;
    }
+   
+   @Override
+   public String getCommandName()
+   {
+      return "listremote";
+   }
 
 }

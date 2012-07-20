@@ -124,4 +124,9 @@ public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushOption
       return merge;
    }
 
+   @Override
+   public String getCommandName()
+   {
+      return "publican-push";
+   }
 }
