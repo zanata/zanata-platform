@@ -115,7 +115,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          {
             sourceContentsView.highlightSearch(findMessage);
          }
-         Label indexLabel = new Label(String.valueOf(rowValue.getRowIndex()));
+         //row number starts with 1
+         Label indexLabel = new Label(String.valueOf(rowValue.getRowIndex() + 1));
          indexLabel.setStyleName("indexLabel");
          
          panel.add(indexLabel);
