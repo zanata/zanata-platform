@@ -1,16 +1,8 @@
 package org.zanata.webtrans.client.ui;
 
-import java.util.List;
-
 import org.zanata.webtrans.shared.model.TransHistoryItem;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.view.client.AbstractDataProvider;
-import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SelectionModel;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.ImplementedBy;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -31,10 +23,7 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void hide();
 
-   void setDataProvider(AbstractDataProvider<TransHistoryItem> dataProvider);
-
    void resetPage();
 
-   void setHistorySelectionModel(SelectionModel<TransHistoryItem> selectionModel);
-
+   HasData<TransHistoryItem> getHistoryTable();
 }

@@ -888,7 +888,7 @@ td.ApprovedStateDecoration div div div
 	font-weight:bold;
 }
 
-#gwt-debug-TMMerge-caption {
+#gwt-debug-TMMerge-caption, #gwt-debug-transHistory-caption {
     background: #4481DB;
     padding: 8px 4px 8px 8px;
     font-weight: bold;

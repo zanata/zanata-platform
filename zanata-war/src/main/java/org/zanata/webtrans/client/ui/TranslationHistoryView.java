@@ -15,14 +15,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.view.client.AbstractDataProvider;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.HasData;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -34,14 +32,17 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public static final int PAGE_SIZE = 5;
    private final CellTable<TransHistoryItem> historyTable;
    private static CellTableResources cellTableResources = GWT.create(CellTableResources.class);
-   private AbstractDataProvider<TransHistoryItem> dataProvider;
    private final EventBus eventBus;
 
    @Inject
    public TranslationHistoryView(WebTransMessages messages, EventBus eventBus)
    {
+      //TODO localise
       super(true, true);
+      ensureDebugId("transHistory");
       setGlassEnabled(true);
+      getCaption().setText("Translation History Management");
+
       this.eventBus = eventBus;
 
       historyTable = setUpHistoryTable(messages);
@@ -54,7 +55,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       historyTableContainer.add(simplePager);
 
       StackPanel container = new StackPanel();
-      //TODO localise
       container.add(historyTableContainer, "Translation History");
       setWidget(container);
    }
@@ -103,16 +103,9 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
-   public void setDataProvider(AbstractDataProvider<TransHistoryItem> dataProvider)
+   public HasData<TransHistoryItem> getHistoryTable()
    {
-      this.dataProvider = dataProvider;
-      dataProvider.addDataDisplay(historyTable);
-   }
-
-   @Override
-   public void setHistorySelectionModel(SelectionModel<TransHistoryItem> selectionModel)
-   {
-      historyTable.setSelectionModel(selectionModel);
+      return historyTable;
    }
 
    @Override

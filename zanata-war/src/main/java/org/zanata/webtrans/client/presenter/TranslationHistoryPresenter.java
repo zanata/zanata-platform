@@ -30,7 +30,6 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    private final ListDataProvider<TransHistoryItem> listDataProvider;
    private final SingleSelectionModel<TransHistoryItem> selectionModel;
 
-
    @Inject
    public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher)
    {
@@ -39,30 +38,15 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       listDataProvider = new ListDataProvider<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
-      display.setDataProvider(listDataProvider);
+      listDataProvider.addDataDisplay(display.getHistoryTable());
+
       selectionModel = new SingleSelectionModel<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
       selectionModel.addSelectionChangeHandler(this);
-      display.setHistorySelectionModel(selectionModel);
-   }
-
-   @Override
-   protected void onBind()
-   {
-   }
-
-   @Override
-   protected void onUnbind()
-   {
-   }
-
-   @Override
-   protected void onRevealDisplay()
-   {
+      display.getHistoryTable().setSelectionModel(selectionModel);
    }
 
    public void showTranslationHistory(final TransUnitId transUnitId)
    {
-      //TODO selection model
       //TODO compare history with current
       display.center();
       dispatcher.execute(new GetTranslationHistoryAction(transUnitId), new AsyncCallback<GetTranslationHistoryResult>()
@@ -94,5 +78,20 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       }
 
 
+   }
+
+   @Override
+   protected void onBind()
+   {
+   }
+
+   @Override
+   protected void onUnbind()
+   {
+   }
+
+   @Override
+   protected void onRevealDisplay()
+   {
    }
 }
