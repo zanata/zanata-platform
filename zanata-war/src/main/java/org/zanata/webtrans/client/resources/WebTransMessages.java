@@ -393,4 +393,10 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Copy")
    String copy();
+
+   @DefaultMessage("Translation History Management")
+   String translationHistoryManagement();
+
+   @DefaultMessage("Translation History")
+   String translationHistory();
 }

@@ -37,11 +37,10 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Inject
    public TranslationHistoryView(WebTransMessages messages, EventBus eventBus)
    {
-      //TODO localise
       super(true, true);
       ensureDebugId("transHistory");
       setGlassEnabled(true);
-      getCaption().setText("Translation History Management");
+      getCaption().setText(messages.translationHistoryManagement());
 
       this.eventBus = eventBus;
 
@@ -55,7 +54,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       historyTableContainer.add(simplePager);
 
       StackPanel container = new StackPanel();
-      container.add(historyTableContainer, "Translation History");
+      container.add(historyTableContainer, messages.translationHistory());
       setWidget(container);
    }
 
