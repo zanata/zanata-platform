@@ -10,6 +10,8 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -20,12 +22,14 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHistoryDisplay>
+public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHistoryDisplay> implements SelectionChangeEvent.Handler
 {
    private final TranslationHistoryDisplay display;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
-   private ListDataProvider<TransHistoryItem> listDataProvider;
+   private final ListDataProvider<TransHistoryItem> listDataProvider;
+   private final SingleSelectionModel<TransHistoryItem> selectionModel;
+
 
    @Inject
    public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher)
@@ -36,6 +40,9 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.dispatcher = dispatcher;
       listDataProvider = new ListDataProvider<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
       display.setDataProvider(listDataProvider);
+      selectionModel = new SingleSelectionModel<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
+      selectionModel.addSelectionChangeHandler(this);
+      display.setHistorySelectionModel(selectionModel);
    }
 
    @Override
@@ -77,4 +84,15 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       });
    }
 
+   @Override
+   public void onSelectionChange(SelectionChangeEvent event)
+   {
+      TransHistoryItem historyItem = selectionModel.getSelectedObject();
+      if (historyItem == null)
+      {
+         return;
+      }
+
+
+   }
 }

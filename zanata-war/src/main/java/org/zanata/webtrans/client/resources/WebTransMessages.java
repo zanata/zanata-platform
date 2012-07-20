@@ -390,4 +390,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Modified Date")
    String modifiedDate();
+
+   @DefaultMessage("Copy")
+   String copy();
 }
