@@ -66,7 +66,10 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
       }
       catch (PersistenceException e)
       {
-         FacesMessages.instance().add(StatusMessage.Severity.ERROR, messages.get("jsf.UserManager.delete.constraintViolation.error") );
+         if( e.getCause() instanceof ConstraintViolationException)
+         {
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR, messages.get("jsf.UserManager.delete.constraintViolation.error") );
+         }
       }
    }
 }
