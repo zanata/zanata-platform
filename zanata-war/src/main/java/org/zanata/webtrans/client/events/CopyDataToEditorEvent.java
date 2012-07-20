@@ -35,7 +35,7 @@ public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler>
    @Override
    protected void dispatch(CopyDataToEditorHandler handler)
    {
-      handler.onTransMemoryCopy(this);
+      handler.onDataCopy(this);
    }
 
    @Override

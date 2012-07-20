@@ -400,7 +400,7 @@ public class TargetContentsPresenterTest
       givenCurrentEditorsAs(editor);
 
       // TODO update for plurals
-      presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
+      presenter.onDataCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
       verify(editor).setTextAndValidate("target");
       verify(eventBus, atLeastOnce()).fireEvent(notificationEventCaptor.capture());

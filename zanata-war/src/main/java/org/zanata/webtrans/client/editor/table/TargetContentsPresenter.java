@@ -740,7 +740,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onTransMemoryCopy(final CopyDataToEditorEvent event)
+   public void onDataCopy(final CopyDataToEditorEvent event)
    {
       copyTextWhenIsEditing(event.getTargetResult(), false);
    }
