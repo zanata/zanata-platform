@@ -35,8 +35,10 @@ import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
@@ -90,6 +92,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       @Override
       public void setCellValue(TransUnit rowValue, TransUnit cellValue)
       {
+         cellValue.setRowIndex(rowValue.getRowIndex());
          cellValue.setSources(rowValue.getSources());
          cellValue.setSourceComment(rowValue.getSourceComment());
       }
@@ -112,6 +115,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          {
             sourceContentsView.highlightSearch(findMessage);
          }
+         Label indexLabel = new Label(String.valueOf(rowValue.getRowIndex()));
+         indexLabel.setStyleName("indexLabel");
+         
+         panel.add(indexLabel);
          panel.add(sourceContentsView);
          // FIXME Plural support potentially this map could contain all panels
          // with all id

@@ -872,3 +872,10 @@ td.ApprovedStateDecoration div div div
 #gwt-debug-TMMerge .dialogMiddleCenter {
     background-color: #F3F2F2;
 }
+
+.indexLabel
+{
+	font-size:0.8em;
+	color:#808080;
+	text-decoration:underline;
+}

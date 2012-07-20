@@ -58,7 +58,7 @@ public class TransUnit implements IsSerializable
       this.verNum = verNum;
    }
    
-   public void OverrideWith(TransUnit obj){
+   public void OverrideWith(TransUnit obj, Integer rowIndex){
       this.id = obj.getId();
       this.resId = obj.getResId();
       this.localeId = obj.getLocaleId();
@@ -70,7 +70,7 @@ public class TransUnit implements IsSerializable
       this.lastModifiedBy = obj.getLastModifiedBy();
       this.lastModifiedTime = obj.getLastModifiedTime();
       this.msgContext = obj.getMsgContext();
-      this.rowIndex = obj.getRowIndex();
+      this.rowIndex = rowIndex;
       this.verNum = obj.getVerNum();
    }
    
@@ -160,7 +160,7 @@ public class TransUnit implements IsSerializable
       return rowIndex;
    }
 
-   void setRowIndex(int rowIndex)
+   public void setRowIndex(int rowIndex)
    {
       this.rowIndex = rowIndex;
    }
