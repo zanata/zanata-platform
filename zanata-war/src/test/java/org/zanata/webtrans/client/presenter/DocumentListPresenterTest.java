@@ -305,7 +305,7 @@ public class DocumentListPresenterTest
             .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
             .setVerNum(1)
             .build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
       expect(mockEvent.getUpdateInfo()).andReturn(updateInfo).anyTimes();
 
       replay(mockEvent);
@@ -356,7 +356,7 @@ public class DocumentListPresenterTest
             .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
             .setVerNum(1)
             .build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
       expect(mockEvent.getUpdateInfo()).andReturn(updateInfo).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);

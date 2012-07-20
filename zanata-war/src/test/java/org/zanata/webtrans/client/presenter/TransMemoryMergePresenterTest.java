@@ -216,7 +216,7 @@ public class TransMemoryMergePresenterTest
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success and result has some updated info
-      UpdateTransUnitResult result = new UpdateTransUnitResult(new TransUnitUpdateInfo(true, null, null, 0, 0, ContentState.Approved));
+      UpdateTransUnitResult result = new UpdateTransUnitResult(new TransUnitUpdateInfo(true, true, null, null, 0, 0, ContentState.Approved));
       callback.onSuccess(result);
 
       // Then:
