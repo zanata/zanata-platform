@@ -37,7 +37,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 
 @Name("accountSearch")
-@Scope(ScopeType.EVENT)
+@Scope(ScopeType.PAGE)
 @AutoCreate
 public class AccountSearchAction implements Serializable
 {
