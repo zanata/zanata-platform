@@ -14,13 +14,15 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.HasData;
@@ -34,23 +36,30 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 {
    private static final int PAGE_SIZE = 5;
    private static final CellTableResources CELL_TABLE_RESOURCES = GWT.create(CellTableResources.class);
+   private static TranslationHistoryViewUiBinder uiBinder = GWT.create(TranslationHistoryViewUiBinder.class);
    private final CellTable<TransHistoryItem> historyTable;
    private final EventBus eventBus;
    private final TabLayoutPanel container;
-   private final VerticalPanel diffPanel;
-   private WebTransMessages messages;
+   @UiField
+   WebTransMessages messages;
+   @UiField
+   Styles style;
+   @UiField
+   VerticalPanel diffPanel;
+   @UiField
+   VerticalPanel historyPanel;
 
    @Inject
-   public TranslationHistoryView(WebTransMessages messages, EventBus eventBus)
+   public TranslationHistoryView(EventBus eventBus)
    {
       super(true, true);
+      container = uiBinder.createAndBindUi(this);
       ensureDebugId("transHistory");
       setGlassEnabled(true);
 
       getCaption().setText(messages.translationHistoryManagement());
 
       this.eventBus = eventBus;
-      this.messages = messages;
 
       historyTable = setUpHistoryTable(messages);
 
@@ -58,16 +67,11 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       simplePager.setDisplay(historyTable);
 
 
-      VerticalPanel historyContainer = new VerticalPanel();
-      historyContainer.setSize("100%", "100%");
-      historyContainer.add(historyTable);
-      historyContainer.add(simplePager);
+      historyPanel.add(historyTable);
+      historyPanel.add(simplePager);
 
-      container = new TabLayoutPanel(20, Style.Unit.PX);
-      container.setSize("800px", "600px");
-      container.add(new ScrollPanel(historyContainer), messages.translationHistory());
-      diffPanel = new VerticalPanel();
-      container.add(new ScrollPanel(diffPanel), messages.translationHistoryComparison(Collections.<String>emptyList()));
+//      container.add(new ScrollPanel(historyPanel), messages.translationHistory());
+//      container.add(new ScrollPanel(diffPanel), messages.translationHistoryComparison(Collections.<String>emptyList()));
       setWidget(container);
    }
 
@@ -132,8 +136,14 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public void showDiff(List<String> one, List<String> other, String description)
    {
       setComparisonTitle(description);
-      //TODO show origin and diff
       diffPanel.clear();
+      VerticalPanel originPanel = new VerticalPanel();
+      originPanel.setStyleName(style.origin());
+      for (String content : one)
+      {
+         originPanel.add(new HighlightingLabel(content));
+      }
+      diffPanel.add(originPanel);
       for (int i = 0; i < one.size(); i++)
       {
          String content1 = one.get(i);
@@ -240,5 +250,14 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private static void appendContent(SafeHtmlBuilder sb, String content)
    {
       sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
+   }
+
+   interface TranslationHistoryViewUiBinder extends UiBinder<TabLayoutPanel, TranslationHistoryView>
+   {
+   }
+
+   interface Styles extends CssResource
+   {
+      String origin();
    }
 }
