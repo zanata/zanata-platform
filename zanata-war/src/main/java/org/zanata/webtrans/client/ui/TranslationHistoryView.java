@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -12,13 +13,15 @@ import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.StackPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.HasData;
 import com.google.inject.Inject;
@@ -33,7 +36,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private static final CellTableResources CELL_TABLE_RESOURCES = GWT.create(CellTableResources.class);
    private final CellTable<TransHistoryItem> historyTable;
    private final EventBus eventBus;
-   private final StackPanel container;
+   private final TabLayoutPanel container;
    private final VerticalPanel diffPanel;
    private WebTransMessages messages;
 
@@ -43,6 +46,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       super(true, true);
       ensureDebugId("transHistory");
       setGlassEnabled(true);
+
       getCaption().setText(messages.translationHistoryManagement());
 
       this.eventBus = eventBus;
@@ -53,21 +57,23 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       SimplePager simplePager = new SimplePager();
       simplePager.setDisplay(historyTable);
 
-      VerticalPanel historyTableContainer = new VerticalPanel();
-      historyTableContainer.add(historyTable);
-      historyTableContainer.add(simplePager);
 
-      container = new StackPanel();
-      container.add(historyTableContainer, messages.translationHistory());
+      VerticalPanel historyContainer = new VerticalPanel();
+      historyContainer.setSize("100%", "100%");
+      historyContainer.add(historyTable);
+      historyContainer.add(simplePager);
+
+      container = new TabLayoutPanel(20, Style.Unit.PX);
+      container.setSize("800px", "600px");
+      container.add(new ScrollPanel(historyContainer), messages.translationHistory());
       diffPanel = new VerticalPanel();
-      container.add(diffPanel, messages.comparison());
+      container.add(new ScrollPanel(diffPanel), messages.translationHistoryComparison(Collections.<String>emptyList()));
       setWidget(container);
    }
 
    private CellTable<TransHistoryItem> setUpHistoryTable(WebTransMessages messages)
    {
       CellTable<TransHistoryItem> historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, CELL_TABLE_RESOURCES, HISTORY_ITEM_PROVIDES_KEY);
-      historyTable.setLoadingIndicator(new Label(messages.loading()));
       historyTable.setEmptyTableWidget(new Label(messages.noContent()));
 
       Column<TransHistoryItem, String> verColumn = createVersionColumn();
@@ -77,10 +83,19 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       Column<TransHistoryItem, TransHistoryItem> copyActionColumn = createCopyActionColumn(messages);
 
       historyTable.addColumn(verColumn, messages.versionNumber());
+      historyTable.setColumnWidth(verColumn, 15, Style.Unit.PCT);
+
       historyTable.addColumn(contentsColumn, messages.target());
+      historyTable.setColumnWidth(contentsColumn, 45, Style.Unit.PCT);
+
       historyTable.addColumn(modifiedByColumn, messages.modifiedBy());
+      historyTable.setColumnWidth(modifiedByColumn, 10, Style.Unit.PCT);
+
       historyTable.addColumn(modifiedDateColumn, messages.modifiedDate());
+      historyTable.setColumnWidth(modifiedDateColumn, 20, Style.Unit.PCT);
+
       historyTable.addColumn(copyActionColumn, messages.actions());
+      historyTable.setColumnWidth(copyActionColumn, 10, Style.Unit.PCT);
 
       return historyTable;
    }
@@ -116,7 +131,8 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Override
    public void showDiff(List<String> one, List<String> other, String description)
    {
-      setComparisonStackTitle(description);
+      setComparisonTitle(description);
+      //TODO show origin and diff
       diffPanel.clear();
       for (int i = 0; i < one.size(); i++)
       {
@@ -126,17 +142,23 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       }
    }
 
-   private void setComparisonStackTitle(String description)
+   @Override
+   public void resetComparison()
    {
-      container.setStackText(1, description);
+      diffPanel.clear();
+      setComparisonTitle(messages.translationHistoryComparison(Collections.<String>emptyList()));
+   }
+
+   private void setComparisonTitle(String description)
+   {
+      container.setTabText(1, description);
    }
 
    @Override
-   public void reset()
+   public void resetView()
    {
       historyTable.setPageStart(0);
-      diffPanel.clear();
-      setComparisonStackTitle(messages.comparison());
+      resetComparison();
    }
 
    private static Column<TransHistoryItem, String> createVersionColumn()

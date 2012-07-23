@@ -1,9 +1,12 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
@@ -11,6 +14,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -30,16 +34,19 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    private final TranslationHistoryDisplay display;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
+   private final WebTransMessages messages;
    private final ListDataProvider<TransHistoryItem> listDataProvider;
    private final MultiSelectionModel<TransHistoryItem> selectionModel;
+   private TargetContentsPresenter targetContentsPresenter;
 
    @Inject
-   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher)
+   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages)
    {
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
+      this.messages = messages;
       listDataProvider = new ListDataProvider<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
       listDataProvider.addDataDisplay(display.getHistoryTable());
 
@@ -50,7 +57,6 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    public void showTranslationHistory(final TransUnitId transUnitId)
    {
-      //TODO compare history with current
       display.center();
       dispatcher.execute(new GetTranslationHistoryAction(transUnitId), new AsyncCallback<GetTranslationHistoryResult>()
       {
@@ -66,7 +72,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          {
             Log.info("get back " + result.getHistoryItems().size() + " items for " + transUnitId);
             listDataProvider.setList(result.getHistoryItems());
-            display.reset();
+            display.resetView();
          }
       });
    }
@@ -78,6 +84,9 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       if (historyItems.size() == 1)
       {
          //selected one. Compare against current value
+         TransHistoryItem selected = historyItems.iterator().next();
+         ArrayList<String> currentTargets = targetContentsPresenter.getNewTargets();
+         display.showDiff(selected.getContents(), currentTargets, messages.translationHistoryComparison(Lists.newArrayList(selected.getVersionNum())));
       }
       else if (historyItems.size() == 2)
       {
@@ -85,11 +94,11 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          Iterator<TransHistoryItem> iterator = historyItems.iterator();
          TransHistoryItem one = iterator.next();
          TransHistoryItem two = iterator.next();
-         display.showDiff(one.getContents(), two.getContents(), "Compare ver. " + two.getVersionNum() + " to " + one.getVersionNum());
+         display.showDiff(one.getContents(), two.getContents(), messages.translationHistoryComparison(Lists.newArrayList(one.getVersionNum(), two.getVersionNum())));
       }
       else
       {
-         //TODO should reset comparison title and remove comparison?
+         display.resetComparison();
       }
    }
 
@@ -106,5 +115,10 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    @Override
    protected void onRevealDisplay()
    {
+   }
+
+   public void addCurrentValueHolder(TargetContentsPresenter targetContentsPresenter)
+   {
+      this.targetContentsPresenter = targetContentsPresenter;
    }
 }

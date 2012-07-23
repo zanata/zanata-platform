@@ -400,6 +400,15 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Translation History")
    String translationHistory();
 
-   @DefaultMessage("Comparison")
-   String comparison();
+   // @formatter:off
+   @Description("Tab text for translation history comparison")
+   @DefaultMessage("Compare ver. {0,list,string}")
+   @AlternateMessage({
+         "=0", "Select 1 or 2 entries to compare",
+         "one", "Comparison of ver. {0,list,string} and current",
+         "two", "Comparison of ver. {0,list,string}",
+         "other", "Select 1 or 2 entries to compare"
+   })
+   String translationHistoryComparison(@PluralCount List<String> versions);
+   // @formatter:on
 }

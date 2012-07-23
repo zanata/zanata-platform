@@ -143,6 +143,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.dispatcher = dispatcher;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.historyPresenter = historyPresenter;
+      this.historyPresenter.addCurrentValueHolder(this);
 
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);

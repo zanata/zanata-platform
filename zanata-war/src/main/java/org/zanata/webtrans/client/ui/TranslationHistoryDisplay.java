@@ -25,9 +25,11 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void hide();
 
-   void reset();
+   void resetView();
 
    HasData<TransHistoryItem> getHistoryTable();
 
    void showDiff(List<String> one, List<String> other, String description);
+
+   void resetComparison();
 }
