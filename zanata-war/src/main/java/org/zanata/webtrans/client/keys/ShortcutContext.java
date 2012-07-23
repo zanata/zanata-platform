@@ -51,5 +51,20 @@ public enum ShortcutContext
    /**
     * Used by {@link InlineTargetCellEditor}
     */
-   Edit;
+   Edit,
+   
+   /**
+    * Used by {@link TransMemoryPresenter}
+    */
+   TM,
+   
+   /**
+    * Used by {@link GlossaryPresenter}
+    */
+   Glossary,
+   
+   /**
+    * Used by {@link WorkspaceUsersPresenter}
+    */
+   Chat;
 }

@@ -302,8 +302,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private boolean isOtherInputFieldFocused()
    {
       return translationEditorPresenter.isTransFilterFocused() || 
-            transMemoryPresenter.getDisplay().isFocused() || 
-            glossaryPresenter.getDisplay().isFocused() || 
+            transMemoryPresenter.isFocused() || 
+            glossaryPresenter.isFocused() || 
             translationEditorPresenter.getDisplay().isPagerFocused();
    }
 

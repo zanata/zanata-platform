@@ -9,6 +9,7 @@ import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -144,5 +145,11 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       chatRoom.add(hp);
 
       chatRoomScrollPanel.scrollToBottom();
+   }
+
+   @Override
+   public HasAllFocusHandlers getFocusInputText()
+   {
+      return chatInput;
    }
 }
