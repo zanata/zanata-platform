@@ -6,8 +6,13 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
@@ -23,9 +28,15 @@ import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 
 import com.google.common.base.Strings;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
@@ -42,6 +53,8 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    private final UserSessionService sessionService;
 
+   private KeyShortcutPresenter keyShortcutPresenter;
+
    public interface Display extends WidgetDisplay
    {
       HasManageUserPanel addUser(Person person);
@@ -50,24 +63,35 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
       HasText getInputText();
 
+      HasAllFocusHandlers getFocusInputText();
+
       void appendChat(String user, String timestamp, String msg, MESSAGE_TYPE messageType);
 
       void removeUser(HasManageUserPanel userPanel);
    }
 
    @Inject
-   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus, final Identity identity, final CachingDispatchAsync dispatcher, final WebTransMessages messages, final UserSessionService sessionService)
+   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus, final Identity identity, final CachingDispatchAsync dispatcher, final WebTransMessages messages, final UserSessionService sessionService, final KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.identity = identity;
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.sessionService = sessionService;
+      this.keyShortcutPresenter = keyShortcutPresenter;
    }
 
    @Override
    protected void onBind()
    {
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Chat, messages.searchGlossary(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            dispatchChatAction(identity.getPerson().getId().toString(), display.getInputText().getText(), MESSAGE_TYPE.USER_MSG);
+         }
+      }));
 
       display.getSendButton().addClickHandler(new ClickHandler()
       {
@@ -75,11 +99,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          @Override
          public void onClick(ClickEvent event)
          {
-            if (!Strings.isNullOrEmpty(display.getInputText().getText()))
-            {
-               dispatchChatAction(identity.getPerson().getId().toString(), display.getInputText().getText(), MESSAGE_TYPE.USER_MSG);
-               display.getInputText().setText("");
-            }
+            dispatchChatAction(identity.getPerson().getId().toString(), display.getInputText().getText(), MESSAGE_TYPE.USER_MSG);
          }
       });
 
@@ -91,6 +111,27 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
             display.appendChat(event.getPersonId(), event.getTimestamp(), event.getMsg(), event.getMessageType());
          }
       }));
+
+      display.getFocusInputText().addFocusHandler(new FocusHandler()
+      {
+         @Override
+         public void onFocus(FocusEvent event)
+         {
+            keyShortcutPresenter.setContextActive(ShortcutContext.Chat, true);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+         }
+      });
+
+      display.getFocusInputText().addBlurHandler(new BlurHandler()
+      {
+         @Override
+         public void onBlur(BlurEvent event)
+         {
+            keyShortcutPresenter.setContextActive(ShortcutContext.Chat, false);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+         }
+      });
 
       display.appendChat(null, null, messages.thisIsAPublicChannel(), MESSAGE_TYPE.SYSTEM_WARNING);
    }
@@ -125,20 +166,23 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public void dispatchChatAction(String person, String msg, MESSAGE_TYPE messageType)
    {
-      dispatcher.execute(new PublishWorkspaceChatAction(person, msg, messageType), new AsyncCallback<PublishWorkspaceChatResult>()
+      if (!Strings.isNullOrEmpty(msg))
       {
-
-         @Override
-         public void onFailure(Throwable caught)
+         dispatcher.execute(new PublishWorkspaceChatAction(person, msg, messageType), new AsyncCallback<PublishWorkspaceChatResult>()
          {
-         }
 
-         @Override
-         public void onSuccess(PublishWorkspaceChatResult result)
-         {
-         }
-      });
+            @Override
+            public void onFailure(Throwable caught)
+            {
+            }
 
+            @Override
+            public void onSuccess(PublishWorkspaceChatResult result)
+            {
+            }
+         });
+         display.getInputText().setText("");
+      }
    }
 
    public void addTranslator(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit)

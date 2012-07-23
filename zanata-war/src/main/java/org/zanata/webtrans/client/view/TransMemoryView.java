@@ -6,7 +6,6 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
-import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
@@ -17,8 +16,6 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -74,8 +71,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    CellTable<TransMemoryResultItem> tmTable;
 
-   private boolean isFocused;
-
    private UiMessages messages;
    private ListDataProvider<TransMemoryResultItem> dataProvider;
 
@@ -117,18 +112,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       {
          searchButton.click();
       }
-   }
-
-   @UiHandler("tmTextBox")
-   public void onTmTextBoxFocus(FocusEvent event)
-   {
-      isFocused = true;
-   }
-
-   @UiHandler("tmTextBox")
-   public void onTmTextBoxBlur(BlurEvent event)
-   {
-      isFocused = false;
    }
 
    @Override
@@ -186,12 +169,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public boolean isFocused()
-   {
-      return isFocused;
-   }
-
-   @Override
    public Column<TransMemoryResultItem, ImageResource> getDetailsColumn()
    {
       return detailsColumn;
@@ -235,5 +212,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
       scrollPanel.clear();
       scrollPanel.add(tmTable);
+   }
+
+   @Override
+   public TextBox getFocusTmTextBox()
+   {
+      return tmTextBox;
    }
 }

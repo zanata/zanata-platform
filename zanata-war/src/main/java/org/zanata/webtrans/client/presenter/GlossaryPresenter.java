@@ -26,10 +26,16 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -42,9 +48,15 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -65,11 +77,14 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private final GlossaryDetailsPresenter glossaryDetailsPresenter;
    private final DocumentListPresenter docListPresenter;
    private final History history;
+   private final WebTransMessages messages;
    private GetGlossary submittedRequest = null;
    private GetGlossary lastRequest = null;
+   private KeyShortcutPresenter keyShortcutPresenter;
+
+   private boolean isFocused;
 
    private ListDataProvider<GlossaryResultItem> dataProvider;
-
 
    public interface Display extends WidgetDisplay
    {
@@ -77,11 +92,11 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
       HasText getGlossaryTextBox();
 
+      HasAllFocusHandlers getFocusGlossaryTextBox();
+
       HasValue<SearchType> getSearchType();
 
       void startProcessing();
-
-      boolean isFocused();
 
       Column<GlossaryResultItem, String> getCopyColumn();
 
@@ -93,14 +108,16 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    }
 
    @Inject
-   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, GlossaryDetailsPresenter glossaryDetailsPresenter, DocumentListPresenter docListPresenter, History history, UserWorkspaceContext userWorkspaceContext)
+   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, GlossaryDetailsPresenter glossaryDetailsPresenter, DocumentListPresenter docListPresenter, History history, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.userWorkspaceContext = userWorkspaceContext;
       this.glossaryDetailsPresenter = glossaryDetailsPresenter;
       this.docListPresenter = docListPresenter;
+      this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
+      this.messages = messages;
       dataProvider = new ListDataProvider<GlossaryResultItem>();
       display.setDataProvider(dataProvider);
    }
@@ -113,10 +130,18 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          @Override
          public void onClick(ClickEvent event)
          {
-            String query = display.getGlossaryTextBox().getText();
-            createGlossaryRequest(query, display.getSearchType().getValue());
+            fireSearchEvent();
          }
       });
+
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Glossary, messages.searchGlossary(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            fireSearchEvent();
+         }
+      }));
 
       registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
       {
@@ -144,12 +169,41 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
             glossaryDetailsPresenter.show(object);
          }
       });
+
+      display.getFocusGlossaryTextBox().addFocusHandler(new FocusHandler()
+      {
+         @Override
+         public void onFocus(FocusEvent event)
+         {
+            keyShortcutPresenter.setContextActive(ShortcutContext.Glossary, true);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+            isFocused = true;
+         }
+      });
+
+      display.getFocusGlossaryTextBox().addBlurHandler(new BlurHandler()
+      {
+         @Override
+         public void onBlur(BlurEvent event)
+         {
+            keyShortcutPresenter.setContextActive(ShortcutContext.Glossary, false);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+            isFocused = false;
+         }
+      });
+   }
+
+   private void fireSearchEvent()
+   {
+      String query = display.getGlossaryTextBox().getText();
+      createGlossaryRequest(query, display.getSearchType().getValue());
    }
 
    private void createGlossaryRequest(final String query, GetGlossary.SearchType searchType)
    {
       display.startProcessing();
-      
+
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());
       DocumentId docId = docListPresenter.getDocumentId(token.getDocumentPath());
       DocumentInfo docInfo = docListPresenter.getDocumentInfo(docId);
@@ -165,7 +219,8 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    public void createGlossaryRequestForTransUnit(TransUnit transUnit)
    {
       StringBuilder sources = new StringBuilder();
-      for(String source: transUnit.getSources()){
+      for (String source : transUnit.getSources())
+      {
          sources.append(source);
          sources.append(" ");
       }
@@ -246,5 +301,10 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    @Override
    protected void onRevealDisplay()
    {
+   }
+
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 }
