@@ -132,4 +132,10 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
       return effectiveLocales;
    }
 
+   @Override
+   public String getCommandName()
+   {
+      return "pull";
+   }
+   
 }

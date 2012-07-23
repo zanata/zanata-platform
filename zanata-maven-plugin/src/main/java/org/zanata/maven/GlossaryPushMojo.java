@@ -142,6 +142,12 @@ public class GlossaryPushMojo extends ConfigurableProjectMojo<GlossaryPushOption
    {
       return batchSize;
    }
+
+   @Override
+   public String getCommandName()
+   {
+      return "glossary-push";
+   }
 }
 
 

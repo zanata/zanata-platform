@@ -22,6 +22,8 @@ public abstract class ZanataMojoTest<M extends Mojo, C extends ZanataCommand> ex
       // required for mojo lookups to work
       super.setUp();
       control.reset();
+      EasyMock.expect(getMockCommand().getName()).andReturn("mockCommand").anyTimes();
+      EasyMock.expect(getMockCommand().isDeprecated()).andReturn(false).anyTimes();
    }
 
    @Override

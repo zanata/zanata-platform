@@ -240,4 +240,10 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 
       return effectiveLocales;
    }
+   
+   @Override
+   public String getCommandName()
+   {
+      return "push";
+   }
 }

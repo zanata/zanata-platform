@@ -168,4 +168,9 @@ public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements Put
       this.userDisabled = userDisabled;
    }
 
+   @Override
+   public String getCommandName()
+   {
+      return "putuser";
+   }
 }

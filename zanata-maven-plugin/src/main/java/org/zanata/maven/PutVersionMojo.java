@@ -61,4 +61,9 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions> implemen
       this.versionSlug = versionSlug;
    }
 
+   @Override
+   public String getCommandName()
+   {
+      return "putversion";
+   }
 }

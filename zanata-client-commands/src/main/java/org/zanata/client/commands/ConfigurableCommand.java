@@ -33,6 +33,8 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions> impleme
 {
    private final O opts;
    private ZanataProxyFactory requestFactory;
+   private boolean deprecated;
+   private String deprecationMessage;
 
    public ConfigurableCommand(O opts, ZanataProxyFactory factory)
    {
@@ -56,6 +58,30 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions> impleme
    public ZanataProxyFactory getRequestFactory()
    {
       return requestFactory;
+   }
+
+   @Override
+   public boolean isDeprecated()
+   {
+      return deprecated;
+   }
+
+   @Override
+   public String getDeprecationMessage()
+   {
+      return this.deprecationMessage;
+   }
+
+   public void deprecate(String deprecationMessage)
+   {
+      this.deprecated = true;
+      this.deprecationMessage = deprecationMessage;
+   }
+
+   @Override
+   public String getName()
+   {
+      return opts.getCommandName();
    }
 
 }

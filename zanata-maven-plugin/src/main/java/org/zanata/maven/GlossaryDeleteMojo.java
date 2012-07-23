@@ -67,6 +67,11 @@ public class GlossaryDeleteMojo extends ConfigurableProjectMojo<GlossaryDeleteOp
       return new GlossaryDeleteCommand(this);
    }
 
+   @Override
+   public String getCommandName()
+   {
+      return "glossary-delete";
+   }
 
 }
 

@@ -25,4 +25,9 @@ public class ListLocalMojo extends ConfigurableProjectMojo<ConfigurableProjectOp
       return new ListLocalCommand(this);
    }
 
+   @Override
+   public String getCommandName()
+   {
+      return "list-local";
+   }
 }

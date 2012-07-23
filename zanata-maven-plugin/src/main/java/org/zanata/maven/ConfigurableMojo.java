@@ -6,8 +6,6 @@ import java.net.URL;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.OptionsUtil;
@@ -24,7 +22,7 @@ import com.pyx4j.log4j.MavenLogAppender;
  */
 public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends AbstractMojo implements ConfigurableOptions
 {
-   private static final Logger log = LoggerFactory.getLogger(ConfigurableMojo.class);
+   private static final String BUG_URL = "https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata";
 
    // @formatter:off
    /*
@@ -126,6 +124,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
       MavenLogAppender.startPluginLog(this);
       try
       {
+         getLog().info("Please report Zanata bugs here: " + BUG_URL);
          OptionsUtil.applyConfigFiles(this);
          runCommand();
       }
@@ -142,6 +141,20 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
    protected void runCommand() throws Exception
    {
       ZanataCommand command = initCommand();
+      String name = command.getName();
+      getLog().info("Zanata command: " + name);
+      if (command.isDeprecated())
+      {
+         String msg = command.getDeprecationMessage();
+         if (msg != null)
+         {
+            getLog().warn("Command \"" + name + "\" has been deprecated: " + msg);
+         }
+         else
+         {
+            getLog().warn("Command \"" + name + "\" has been deprecated");
+         }
+      }
       command.run();
    }
 
@@ -159,7 +172,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
    @Override
    public void setDebug(boolean debug)
    {
-      log.info("ignoring setDebug: use mvn -X to control debug logging");
+      getLog().info("ignoring setDebug: use mvn -X to control debug logging");
    }
 
    @Override
@@ -171,7 +184,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
    @Override
    public void setErrors(boolean errors)
    {
-      log.info("ignoring setErrors: use mvn -e to control exception logging");
+      getLog().info("ignoring setErrors: use mvn -e to control exception logging");
    }
 
    @Override
@@ -195,7 +208,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
    @Override
    public void setQuiet(boolean quiet)
    {
-      log.info("ignoring setQuiet: use mvn -q to set quiet logging mode");
+      getLog().info("ignoring setQuiet: use mvn -q to set quiet logging mode");
    }
 
    // maven controls logging, so there's no point in changing these values
@@ -235,13 +248,6 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
    {
       throw new UnsupportedOperationException();
    }
-
-   @Override
-   public String getCommandName()
-   {
-      throw new UnsupportedOperationException();
-   }
-
 
    @Override
    public String getKey()
