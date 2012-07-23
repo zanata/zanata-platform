@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.zanata</groupId>
         <artifactId>server</artifactId>
-        <version>1.7.0-alpha-2-SNAPSHOT</version>
+        <version>1.7.0</version>
     </parent>
     <artifactId>zanata-model</artifactId>
     <name>Zanata model</name>
