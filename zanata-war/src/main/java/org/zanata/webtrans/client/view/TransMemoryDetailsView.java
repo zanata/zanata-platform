@@ -41,6 +41,8 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
    @UiField
    Label docName;
    @UiField
+   Label lastModified;
+   @UiField
    Button dismissButton;
 
    @UiField
@@ -139,4 +141,9 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
       documentListBox.clear();
    }
 
+   @Override
+   public HasText getLastModified()
+   {
+      return lastModified;
+   }
 }

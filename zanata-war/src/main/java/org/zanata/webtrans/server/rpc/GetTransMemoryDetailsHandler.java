@@ -1,6 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -46,7 +49,8 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       identity.checkLoggedIn();
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       HLocale hLocale;
-      try{
+      try
+      {
          hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
       }
       catch (ZanataServiceException e)
@@ -78,7 +82,8 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       String iterationName = tf.getDocument().getProjectIteration().getSlug();
       String projectName = tf.getDocument().getProjectIteration().getProject().getName();
       String msgContext = (tf.getPotEntryData() == null) ? null : tf.getPotEntryData().getContext();
-      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext);
+      SimpleDateFormat dateFormat = new SimpleDateFormat();
+      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, tft.getLastModifiedBy().getAccount().getUsername(), dateFormat.format(tft.getLastChanged()));
    }
 
    @Override
