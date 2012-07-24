@@ -13,16 +13,16 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HeaderPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -52,6 +52,8 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @UiField
    VerticalPanel diffPanel;
 
+   private Column<TransHistoryItem,String> versionColumn;
+
    @Inject
    public TranslationHistoryView(EventBus eventBus)
    {
@@ -78,14 +80,16 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       CellTable<TransHistoryItem> historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, CELL_TABLE_RESOURCES, HISTORY_ITEM_PROVIDES_KEY);
       historyTable.setEmptyTableWidget(new Label(messages.noContent()));
 
-      Column<TransHistoryItem, String> verColumn = createVersionColumn();
+      versionColumn = createVersionColumn();
+      versionColumn.setSortable(true);
       Column<TransHistoryItem, List<String>> contentsColumn = createContentsColumn();
       Column<TransHistoryItem, String> modifiedByColumn = createModifiedByColumn();
       Column<TransHistoryItem, String> modifiedDateColumn = createModifiedDateColumn();
       Column<TransHistoryItem, TransHistoryItem> copyActionColumn = createCopyActionColumn(messages);
 
-      historyTable.addColumn(verColumn, messages.versionNumber());
-      historyTable.setColumnWidth(verColumn, 15, Style.Unit.PCT);
+      historyTable.addColumn(versionColumn, messages.versionNumber());
+      historyTable.setColumnWidth(versionColumn, 15, Style.Unit.PCT);
+      historyTable.getColumnSortList().push(versionColumn);
 
       historyTable.addColumn(contentsColumn, messages.target());
       historyTable.setColumnWidth(contentsColumn, 45, Style.Unit.PCT);
@@ -162,6 +166,19 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       setComparisonTitle(messages.translationHistoryComparisonTitle());
    }
 
+   @Override
+   public Column<TransHistoryItem, String> getVersionColumn()
+   {
+      return versionColumn;
+   }
+
+   @Override
+   public void addVersionSortHandler(ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler)
+   {
+//      handlerRegistration = historyTable.addColumnSortHandler(sortHandler);
+      historyTable.addColumnSortHandler(sortHandler);
+   }
+
    private void setComparisonTitle(String description)
    {
       container.setTabText(1, description);
@@ -171,6 +188,10 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public void resetView()
    {
       historyTable.setPageStart(0);
+//      if (handlerRegistration != null)
+//      {
+//         handlerRegistration.removeHandler();//remove the column sort handler
+//      }
       resetComparison();
    }
 

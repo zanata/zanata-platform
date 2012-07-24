@@ -3,6 +3,9 @@ package org.zanata.webtrans.client.ui;
 import java.util.List;
 
 import org.zanata.webtrans.shared.model.TransHistoryItem;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.inject.ImplementedBy;
@@ -32,4 +35,8 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
    void showDiff(List<String> one, List<String> other, String description);
 
    void resetComparison();
+
+   void addVersionSortHandler(ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler);
+
+   Column<TransHistoryItem, String> getVersionColumn();
 }

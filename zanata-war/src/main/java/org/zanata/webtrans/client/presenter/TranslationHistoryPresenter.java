@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Lists;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -49,6 +51,9 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.messages = messages;
       listDataProvider = new ListDataProvider<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
       listDataProvider.addDataDisplay(display.getHistoryTable());
+      ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler = new ColumnSortEvent.ListHandler<TransHistoryItem>(listDataProvider.getList());
+      sortHandler.setComparator(display.getVersionColumn(), TransHistoryVersionComparator.COMPARATOR);
+      display.addVersionSortHandler(sortHandler);
 
       selectionModel = new MultiSelectionModel<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
       selectionModel.addSelectionChangeHandler(this);
@@ -57,6 +62,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    public void showTranslationHistory(final TransUnitId transUnitId)
    {
+      display.resetView();
       display.center();
       dispatcher.execute(new GetTranslationHistoryAction(transUnitId), new AsyncCallback<GetTranslationHistoryResult>()
       {
@@ -71,8 +77,9 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          public void onSuccess(GetTranslationHistoryResult result)
          {
             Log.info("get back " + result.getHistoryItems().size() + " items for " + transUnitId);
-            listDataProvider.setList(result.getHistoryItems());
-            display.resetView();
+            //here we CANNOT use listDataProvider.setList() because we need to retain the same list reference which is used by ColumnSortEvent.ListHandler
+            listDataProvider.getList().clear();
+            listDataProvider.getList().addAll(result.getHistoryItems());
          }
       });
    }
@@ -120,5 +127,18 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    public void addCurrentValueHolder(TargetContentsPresenter targetContentsPresenter)
    {
       this.targetContentsPresenter = targetContentsPresenter;
+   }
+
+   private static enum TransHistoryVersionComparator implements Comparator<TransHistoryItem>
+   {
+      COMPARATOR;
+
+      @Override
+      public int compare(TransHistoryItem one, TransHistoryItem two)
+      {
+         Integer verOne = Integer.parseInt(one.getVersionNum());
+         Integer verTwo = Integer.parseInt(two.getVersionNum());
+         return verOne.compareTo(verTwo);
+      }
    }
 }
