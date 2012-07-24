@@ -812,6 +812,43 @@ a.version_link:hover {
 }
 /* ------------------------ End Profile Page CSS --------------------------------------*/
 
+/* ------------------------ Admin Page CSS -------------------------------------*/
+a.admin_link {
+    font-size: 1.0em;
+    font-weight: bold;
+    color: #7092C3;
+    text-decoration: none;
+    text-align: center;
+}
+
+a.admin_link:hover {
+    color: #990000;
+}
+
+.admin_link_div .admin_link_img {
+    margin-top:8px;
+}
+
+.admin_link_div .admin_link_title {
+    margin-top:15px;
+}
+
+.admin_link_div {
+    border:1px solid #7092C3;
+    border-radius: 5px;
+    padding:5px;
+    margin-bottom:3px;
+    margin-left:3px;
+    width: 120px;
+    height: 90px;
+}
+
+.admin_link_div:hover {
+    border:1px solid #990000;
+    background-color: #F3F2F2;
+}
+/* ------------------------ End Admin Page CSS --------------------------------------*/
+
 .iteration_inline_tribes {
 	
 }

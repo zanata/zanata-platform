@@ -1,40 +1,112 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.org/rich"
-	template="../WEB-INF/layout/template.xhtml">
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                template="../WEB-INF/layout/template.xhtml">
 
-   <ui:define name="page_title">Administration</ui:define>
-	<ui:define name="center_content">
-		<rich:jQuery selector="#tab_admin"
-			query="addClass('ui-tabs-selected')" />
-		<h1>#{messages['jsf.Administration']}</h1>
+    <ui:define name="page_title">Administration</ui:define>
+    <ui:define name="center_content">
+        <rich:jQuery selector="#tab_admin"
+                     query="addClass('ui-tabs-selected')"/>
 
-		<ul style="padding-left:20px">
-			<li id="Admin_Server_configuration_home"><s:link
-					id="Admin_Server_configuration_a_home"
-					view="/admin/server_configuration.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ServerConfiguration']}</s:link></li>
-			<li id="Admin_Manage_users_home"><s:link id="Admin_Manage_users_a_home"
-					view="/admin/usermanager.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ManageUsers']}</s:link></li>
-			<li id="Admin_Manage_roles_home"><s:link id="Admin_Manage_roles_a_home"
-					view="/admin/rolemanager.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ManageRoles']}</s:link></li>
-			<li id="Admin_Manage_languages_home"><s:link
-					id="Admin_Manage_languages_a_home" view="/admin/languagemanager.xhtml"
-					propagation="none" styleClass="table_link">#{messages['jsf.ManageLanguage']}</s:link></li>
-			<li id="Admin_Manage_search_home"><s:link id="Admin_Manage_search_a_home"
-					view="/admin/search.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ManageSearch']}</s:link></li>
-			<li id="Admin_Glossary_home"><s:link id="Admin_Glossary_home"
-					view="/admin/glossary.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.Glossary']}</s:link></li>
-			<li id="Admin_Manage_stats_home"><s:link id="Admin_Manage_stats_a_home"
-					view="/admin/stats.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.OverallStatistics']}</s:link></li>
-            <li id="Admin_Monitoring_home"><s:link id="Admin_Monitoring_a_home"
-                    view="/admin/monitoring" propagation="none" styleClass="table_link">#{messages['jsf.ServerMonitoring']}</s:link></li>
-		</ul>
+        <h1>#{messages['jsf.Administration']}</h1>
 
 
-	</ui:define>
+        <h:panelGrid columns="4" border="0">
+            <s:link id="Admin_Server_configuration_home" view="/admin/server_configuration.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/Service%20Manager.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.ServerConfiguration']}
+                    </div>
+                </div>
+            </s:link>
+
+            <s:link id="Admin_Manage_users_home" view="/admin/usermanager.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/Login%20Manager.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.ManageUsers']}
+                    </div>
+                </div>
+            </s:link>
+
+            <s:link id="Admin_Manage_roles_home" view="/admin/rolemanager.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/personal.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.ManageRoles']}
+                    </div>
+                </div>
+            </s:link>
+
+            <s:link id="Admin_Manage_languages_home" view="/admin/languagemanager.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/locale.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.ManageLanguage']}
+                    </div>
+                </div>
+            </s:link>
+
+
+            <s:link id="Admin_Manage_search_home" view="/admin/search.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/kappfinder.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.ManageSearch']}
+                    </div>
+                </div>
+            </s:link>
+
+            <s:link id="Admin_Glossary_home" view="/admin/glossary.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/package_editors.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.Glossary']}
+                    </div>
+                </div>
+            </s:link>
+
+            <s:link id="Admin_Manage_stats_home" view="/admin/stats.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/kchart.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.OverallStatistics']}
+                    </div>
+                </div>
+            </s:link>
+
+            <s:link id="Admin_Monitoring_home" view="/admin/monitoring" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <img src="#{request.contextPath}/images/javamelody.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.ServerMonitoring']}
+                    </div>
+                </div>
+            </s:link>
+
+        </h:panelGrid>
+
+    </ui:define>
 </ui:composition>
