@@ -225,7 +225,6 @@ public class LanguageManagerAction implements Serializable
       // Check for plural forms
       if( resourceUtils.getPluralForms( localeId, false ) == null )
       {
-         // Have to get the component Id this way as binding won't work on a Page scoped bean.
          this.languageNameWarningMessage = messages.get("jsf.language.validation.UnknownPluralForm");
       }
 
