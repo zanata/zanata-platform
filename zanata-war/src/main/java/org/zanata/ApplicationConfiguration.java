@@ -290,4 +290,13 @@ public class ApplicationConfiguration implements Serializable
       return configValues.get(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
    }
 
+   public String getPiwikUrl()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_PIWIK_URL);
+   }
+
+   public String getPiwikIdSite()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_PIWIK_IDSITE);
+   }
 }

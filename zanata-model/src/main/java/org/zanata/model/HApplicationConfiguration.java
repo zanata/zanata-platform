@@ -23,15 +23,15 @@ package org.zanata.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Setter
@@ -51,6 +51,8 @@ public class HApplicationConfiguration extends ModelEntityBase
    public static String KEY_LOG_DESTINATION_EMAIL  = "zanata.log.destination.email";
    public static String KEY_EMAIL_LOG_EVENTS       = "zanata.log.email.active";
    public static String KEY_EMAIL_LOG_LEVEL        = "zanata.log.email.level";
+   public static String KEY_PIWIK_URL = "piwik.url";
+   public static String KEY_PIWIK_IDSITE = "piwik.idSite";
    private static final long serialVersionUID = 8652817113098817448L;
 
    private String key;

@@ -115,6 +115,19 @@
 				</div>
 			</div>
 		</div>
+		<s:fragment rendered="#{not empty applicationConfiguration.piwikUrl and not empty applicationConfiguration.piwikIdSite}">
+			<!-- Piwik --> <script type="text/javascript">
+			var pkBaseURL = (("https:" == document.location.protocol) ? "https://#{applicationConfiguration.piwikUrl}/" : "http://#{applicationConfiguration.piwikUrl}/");
+			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+			</script><script type="text/javascript">
+			try {
+			var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", #{applicationConfiguration.piwikIdSite});
+			piwikTracker.trackPageView();
+			piwikTracker.enableLinkTracking();
+			} catch( err ) {}
+			</script>
+			<!-- End Piwik Code -->
+		</s:fragment>
 	</body>
 </html>
 </f:view>
