@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -22,6 +21,8 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HeaderPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -45,37 +46,34 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @UiField
    Styles style;
    @UiField
-   VerticalPanel diffPanel;
-   @UiField
    VerticalPanel historyPanel;
+   @UiField
+   VerticalPanel originPanel;
+   @UiField
+   VerticalPanel diffPanel;
 
    @Inject
    public TranslationHistoryView(EventBus eventBus)
    {
       super(true, true);
       container = uiBinder.createAndBindUi(this);
+      this.eventBus = eventBus;
       ensureDebugId("transHistory");
       setGlassEnabled(true);
 
       getCaption().setText(messages.translationHistoryManagement());
 
-      this.eventBus = eventBus;
-
-      historyTable = setUpHistoryTable(messages);
+      historyTable = setUpHistoryTable();
 
       SimplePager simplePager = new SimplePager();
       simplePager.setDisplay(historyTable);
 
-
       historyPanel.add(historyTable);
       historyPanel.add(simplePager);
-
-//      container.add(new ScrollPanel(historyPanel), messages.translationHistory());
-//      container.add(new ScrollPanel(diffPanel), messages.translationHistoryComparison(Collections.<String>emptyList()));
       setWidget(container);
    }
 
-   private CellTable<TransHistoryItem> setUpHistoryTable(WebTransMessages messages)
+   private CellTable<TransHistoryItem> setUpHistoryTable()
    {
       CellTable<TransHistoryItem> historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, CELL_TABLE_RESOURCES, HISTORY_ITEM_PROVIDES_KEY);
       historyTable.setEmptyTableWidget(new Label(messages.noContent()));
@@ -136,27 +134,32 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public void showDiff(List<String> one, List<String> other, String description)
    {
       setComparisonTitle(description);
+      originPanel.clear();
       diffPanel.clear();
-      VerticalPanel originPanel = new VerticalPanel();
-      originPanel.setStyleName(style.origin());
+
       for (String content : one)
       {
-         originPanel.add(new HighlightingLabel(content));
+         HighlightingLabel label = new HighlightingLabel(content);
+         label.addStyleName(style.historyEntry());
+         originPanel.add(label);
       }
-      diffPanel.add(originPanel);
+
       for (int i = 0; i < one.size(); i++)
       {
          String content1 = one.get(i);
          String content2 = other.get(i);
-         diffPanel.add(new DiffMatchPatchLabel(content1, content2));
+         DiffMatchPatchLabel label = new DiffMatchPatchLabel(content1, content2);
+         label.addStyleName(style.historyEntry());
+         diffPanel.add(label);
       }
    }
 
    @Override
    public void resetComparison()
    {
+      originPanel.clear();
       diffPanel.clear();
-      setComparisonTitle(messages.translationHistoryComparison(Collections.<String>emptyList()));
+      setComparisonTitle(messages.translationHistoryComparisonTitle());
    }
 
    private void setComparisonTitle(String description)
@@ -258,6 +261,9 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 
    interface Styles extends CssResource
    {
+
       String origin();
+
+      String historyEntry();
    }
 }

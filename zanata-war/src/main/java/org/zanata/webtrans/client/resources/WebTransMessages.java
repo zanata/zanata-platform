@@ -404,11 +404,12 @@ public interface WebTransMessages extends Messages
    @Description("Tab text for translation history comparison")
    @DefaultMessage("Compare ver. {0,list,string}")
    @AlternateMessage({
-         "=0", "Select 1 or 2 entries to compare",
          "one", "Comparison of ver. {0,list,string} and current",
-         "two", "Comparison of ver. {0,list,string}",
-         "other", "Select 1 or 2 entries to compare"
+         "other", "Comparison of ver. {0,list,string}"
    })
    String translationHistoryComparison(@PluralCount List<String> versions);
    // @formatter:on
+
+   @DefaultMessage("Select 1 or 2 entries to compare")
+   String translationHistoryComparisonTitle();
 }

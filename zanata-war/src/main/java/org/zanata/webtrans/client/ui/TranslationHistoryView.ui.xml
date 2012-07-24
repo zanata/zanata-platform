@@ -2,9 +2,13 @@
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
     <ui:style field="style" type="org.zanata.webtrans.client.ui.TranslationHistoryView.Styles">
         .origin {
-            border-bottom: solid 2px #0000cc
+            border-bottom: solid 2px #0000cc;
         }
 
+        .historyEntry {
+            margin: 5px;
+            border-bottom: 1px dotted grey;
+        }
     </ui:style>
 
     <g:TabLayoutPanel barUnit='PX' barHeight='20' width="800px" height="600px">
@@ -18,10 +22,13 @@
         </g:tab>
         <g:tab>
             <g:customHeader size='7'>
-                <g:InlineHTML text="{messages.translationHistoryComparison}" />
+                <g:InlineHTML text="{messages.translationHistoryComparisonTitle}" />
             </g:customHeader>
             <g:ScrollPanel>
-                <g:VerticalPanel ui:field="diffPanel" width="100%" height="100%"/>
+                <g:VerticalPanel width="100%" height="100%">
+                    <g:VerticalPanel ui:field="originPanel" width="100%" styleName="{style.origin}" />
+                    <g:VerticalPanel ui:field="diffPanel" width="100%" />
+                </g:VerticalPanel>
             </g:ScrollPanel>
         </g:tab>
     </g:TabLayoutPanel>
