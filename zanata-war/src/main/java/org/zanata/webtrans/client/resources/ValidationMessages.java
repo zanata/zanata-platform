@@ -51,7 +51,7 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Variable {0} position is out of range")
    String varPositionOutOfRange(String var);
 
-   @DefaultMessage("Numbered arguments cannot mix with unumbered arguments")
+   @DefaultMessage("Numbered arguments cannot mix with unnumbered arguments")
    String mixVarFormats();
 
    @DefaultMessage("Variables have same position: {0,collection,string}")

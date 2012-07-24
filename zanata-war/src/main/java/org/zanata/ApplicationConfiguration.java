@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListResourceBundle;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.HTMLLayout;
 import org.apache.log4j.Level;
@@ -52,11 +55,31 @@ import org.zanata.security.AuthenticationType;
 public class ApplicationConfiguration implements Serializable
 {
 
+   private static final Log log = Logging.getLog(ApplicationConfiguration.class);
+   private static final long serialVersionUID = -4970657841198107092L;
+
    private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
 
-   private static final Log log = Logging.getLog(ApplicationConfiguration.class);
-   private static final long serialVersionUID = -4970657841198107092L;
+   private static final String KEY_EXT_AUTH_TYPE = "zanata.security.auth.type";
+
+   private static final String[] allConfigKeys = new String[]
+      {
+         HApplicationConfiguration.KEY_ADMIN_EMAIL,
+         HApplicationConfiguration.KEY_DOMAIN,
+         HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS,
+         HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS,
+         HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL,
+         HApplicationConfiguration.KEY_HELP_CONTENT,
+         HApplicationConfiguration.KEY_HOME_CONTENT,
+         HApplicationConfiguration.KEY_HOST,
+         HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL,
+         HApplicationConfiguration.KEY_REGISTER
+      };
+
+   // Resource Bundles
+   private static ResourceBundle externalConfig;
+   private static ResourceBundle defaultConfig;
 
    private static final ZanataSMTPAppender smtpAppenderInstance = new ZanataSMTPAppender();
 
@@ -69,17 +92,6 @@ public class ApplicationConfiguration implements Serializable
    private String buildTimestamp;
    private boolean enableCopyTrans = true;
    private AuthenticationType authType;
-   private boolean useDefaultConfig = false;
-
-   public ApplicationConfiguration()
-   {
-      this(false);
-   }
-
-   public ApplicationConfiguration(boolean useDefaultConfig)
-   {
-      this.useDefaultConfig = useDefaultConfig;
-   }
 
    @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
@@ -88,28 +100,83 @@ public class ApplicationConfiguration implements Serializable
       log.info("Reloading configuration");
       Map<String, String> configValues = new HashMap<String, String>();
       setDefaults(configValues);
-      
-      if( !this.useDefaultConfig ) 
+
+      ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
+      List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
+      for (HApplicationConfiguration value : storedConfigValues)
       {
-         ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
-         List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
-         for (HApplicationConfiguration value : storedConfigValues)
-         {
-            configValues.put(value.getKey(), value.getValue());
-            log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
-         }
+         configValues.put(value.getKey(), value.getValue());
+         log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
       }
       this.configValues = configValues;
 
+      this.loadExternalConfig();
       this.applyLoggingConfiguration();
+   }
+
+   private void loadExternalConfig()
+   {
+      ResourceBundle config = getExternalConfig();
+      if( !config.containsKey(KEY_EXT_AUTH_TYPE) )
+      {
+         throw new RuntimeException("Authentication type not present in zanata.properties.");
+      }
+      else
+      {
+         authType = AuthenticationType.valueOf( config.getString(KEY_EXT_AUTH_TYPE) );
+      }
+   }
+
+   private static final ResourceBundle getExternalConfig()
+   {
+      if( externalConfig == null )
+      {
+         try
+         {
+            externalConfig = ResourceBundle.getBundle("zanata");
+         }
+         catch (MissingResourceException e)
+         {
+            log.error("zanata.properties file not found.");
+            throw e;
+         }
+      }
+      return externalConfig;
+   }
+
+   private static final ResourceBundle getDefaultConfig()
+   {
+      if( defaultConfig == null )
+      {
+         try
+         {
+            defaultConfig = ResourceBundle.getBundle("zanata-defaultconfig");
+         }
+         catch (MissingResourceException e)
+         {
+            defaultConfig = new ListResourceBundle()
+            {
+               @Override
+               protected Object[][] getContents()
+               {
+                  return new Object[0][];
+               }
+            };
+            log.info("zanata-defaultconfig.properties not found. Default configuration won't be bootstrapped.");
+         }
+      }
+      return defaultConfig;
    }
 
    private void setDefaults(Map<String, String> map)
    {
-      map.put(HApplicationConfiguration.KEY_REGISTER, "/zanata/account/register");
-      map.put(HApplicationConfiguration.KEY_HOST, "http://localhost:8080/zanata");
-      map.put(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, "no-reply@redhat.com");
-      map.put(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL, "WARN");
+      for( String key : allConfigKeys )
+      {
+         if( getDefaultConfig().containsKey(key) )
+         {
+            map.put(key, getDefaultConfig().getString(key));
+         }
+      }
    }
 
    /**
@@ -187,11 +254,6 @@ public class ApplicationConfiguration implements Serializable
    public String getHelpContent()
    {
       return configValues.get(HApplicationConfiguration.KEY_HELP_CONTENT);
-   }
-   
-   public String getLoginConfigUrl()
-   {
-      return configValues.get(HApplicationConfiguration.KEY_LOGINCONFIG_URL);
    }
    
    public boolean isInternalAuth()

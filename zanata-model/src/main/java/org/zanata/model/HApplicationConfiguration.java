@@ -40,17 +40,16 @@ import org.hibernate.validator.NotNull;
 public class HApplicationConfiguration extends ModelEntityBase
 {
 
-   public static String KEY_HOST                   = "flies.host";
-   public static String KEY_REGISTER               = "flies.register";
-   public static String KEY_DOMAIN                 = "flies.email.domain";
+   public static String KEY_HOST                   = "host.url";
+   public static String KEY_REGISTER               = "register.url";
+   public static String KEY_DOMAIN                 = "email.domain";
    public static String KEY_ADMIN_EMAIL            = "email.admin.addr";
    public static String KEY_EMAIL_FROM_ADDRESS     = "email.from.addr";
-   public static String KEY_HOME_CONTENT           = "flies.home.content";
-   public static String KEY_HELP_CONTENT           = "flies.help.content";
-   public static String KEY_LOGINCONFIG_URL        = "zanata.login-config.url";
-   public static String KEY_LOG_DESTINATION_EMAIL  = "zanata.log.destination.email";
-   public static String KEY_EMAIL_LOG_EVENTS       = "zanata.log.email.active";
-   public static String KEY_EMAIL_LOG_LEVEL        = "zanata.log.email.level";
+   public static String KEY_HOME_CONTENT           = "pages.home.content";
+   public static String KEY_HELP_CONTENT           = "pages.help.content";
+   public static String KEY_LOG_DESTINATION_EMAIL  = "log.destination.email";
+   public static String KEY_EMAIL_LOG_EVENTS       = "log.email.active";
+   public static String KEY_EMAIL_LOG_LEVEL        = "log.email.level";
    public static String KEY_PIWIK_URL = "piwik.url";
    public static String KEY_PIWIK_IDSITE = "piwik.idSite";
    private static final long serialVersionUID = 8652817113098817448L;

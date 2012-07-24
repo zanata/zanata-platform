@@ -1,6 +1,7 @@
 package org.zanata.rest.service;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
@@ -328,6 +329,27 @@ public class ResourceUtilsTest
          resourceUtils.getPluralForms(localeId, false);
          resourceUtils.getNPluralForms(null, localeId);
       }
+   }
+
+   @Test
+   public void pluralFormsAlternateSeparators()
+   {
+      ResourceUtils resourceUtils = new ResourceUtils();
+      resourceUtils.create();
+
+      // Plural forms for "es"
+      String esPluralForm = resourceUtils.getPluralForms( new LocaleId("es") );
+      assertThat(esPluralForm, notNullValue());
+
+      // Alternate forms that should match the "es" plurals
+      // "es_ES"
+      assertThat( resourceUtils.getPluralForms( new LocaleId("es-ES") ), is( esPluralForm ) );
+      // "es.ES"
+      assertThat( resourceUtils.getPluralForms( new LocaleId("es.ES") ), is( esPluralForm ) );
+      // "es@ES"
+      assertThat( resourceUtils.getPluralForms( new LocaleId("es@ES") ), is( esPluralForm ) );
+      // "es.ES@Latin"
+      assertThat( resourceUtils.getPluralForms( new LocaleId("es.ES@Latin") ), is( esPluralForm ) );
    }
 
 }

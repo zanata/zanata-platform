@@ -5,7 +5,7 @@
 
 	<!-- sso security -->
 
-	<!-- @spnego.security.start@
+	<!-- Kerberos only (also configurable on JBOSS_HOME/server/<config>/deployers/jbossweb.deployer/web.xml)
 	
 	<security-constraint>
 	    <web-resource-collection>
@@ -19,8 +19,8 @@
 	<login-config>
 	    <auth-method>SPNEGO</auth-method>
 	</login-config>
-	
-	@spnego.security.end@ -->
+
+	-->
 
 	<!-- RichFaces -->
 	<context-param>
@@ -220,7 +220,7 @@
 		<url-pattern>/webtrans/gwteventservice</url-pattern>
 	</servlet-mapping>
 
-	<!-- @h2console.servlet.start@
+	<!-- Uncomment this to enable the H2Console
 	
 	<servlet>
 		<servlet-name>H2Console</servlet-name>
@@ -232,7 +232,7 @@
 		<url-pattern>/console/*</url-pattern>
 	</servlet-mapping>
 	
-	@h2console.servlet.end@ -->
+	-->
 
 	<security-constraint>
 		<display-name>Restrict raw XHTML Documents</display-name>

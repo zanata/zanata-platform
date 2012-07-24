@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Proxy;
-import java.net.URL;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -163,8 +162,6 @@ public class ZanataInit
             log.error("Hibernate statistics MBean failed to start", e);
          }
       }
-      
-      this.initSecurityConfig();
 
       Events.instance().raiseEvent(EVENT_Zanata_Startup);
 
@@ -199,30 +196,6 @@ public class ZanataInit
       }
 
       log.info("Stopped Zanata...");
-   }
-   
-   /**
-    * Initializes the Zanata security configuration.
-    */
-   private void initSecurityConfig() throws Exception {
-      
-      log.info("Initializing Zanata Security...");
-      
-      // Look for the authConf as resource
-      final String loginConfigUrl = applicationConfiguration.getLoginConfigUrl();
-      
-      if( loginConfigUrl != null )
-      {
-         URL loginConfig = new URL( loginConfigUrl );
-         log.info("Using security configuration at: " + loginConfig.getFile());
-
-         XMLLoginConfigMBean config = (XMLLoginConfigMBean) MBeanProxy.get(XMLLoginConfigMBean.class,
-               new ObjectName("jboss.security:service=XMLLoginConfig"),
-               MBeanServerLocator.locateJBoss());
-         this.additionalSecurityDomains = config.loadConfig(loginConfig);
-
-         log.info("Loaded the following security domains: {}", ArrayUtils.toString(this.additionalSecurityDomains));
-      }
    }
    
    /**

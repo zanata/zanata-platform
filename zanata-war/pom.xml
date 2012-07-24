@@ -161,17 +161,10 @@
 					<execution>
 						<id>default-war</id>
 						<configuration>
-							<classifier>internal</classifier>
-							<webappDirectory>${project.build.directory}/${project.build.finalName}-internal</webappDirectory>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 							<filters>
-								<filter>${war.config.dir}/internalauth.properties</filter>
 								<filter>${war.config.dir}/mysql.properties</filter>
 							</filters>
-							<archive>
-								<manifestEntries>
-									<Classifier>internal</Classifier>
-								</manifestEntries>
-							</archive>
 						</configuration>
 					</execution>
 					<!-- Default Seam tests exploded war -->
@@ -184,7 +177,6 @@
 						<configuration>
 							<webappDirectory>${project.build.directory}/${project.build.finalName}-seamtests</webappDirectory>
 							<filters>
-								<filter>${war.config.dir}/seamtests.properties</filter>
 								<filter>${war.config.dir}/h2.properties</filter>
 							</filters>
 						</configuration>
@@ -584,8 +576,8 @@
 							<deployer>
 								<deployables>
 									<deployable>
-										<pingURL>http://localhost:${port}/${war.name}-internal/</pingURL>
-										<location>${project.build.directory}/zanata-internal</location>
+										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
+										<location>${project.build.directory}/zanata</location>
 										<properties>
 											<context>zanata</context>
 										</properties>
@@ -635,158 +627,6 @@
 			<properties>
 				<gwt.compiler.skip>true</gwt.compiler.skip>
 			</properties>
-		</profile>
-
-		<profile>
-			<id>fedora</id>
-			<activation>
-				<property>
-					<name>!internalAuth</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>generate-fedora-war</id>
-								<goals>
-									<goal>war</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<classifier>fedora</classifier>
-									<webappDirectory>${project.build.directory}/${project.build.finalName}-fedora</webappDirectory>
-									<filters>
-										<filter>${war.config.dir}/fedora.properties</filter>
-										<filter>${war.config.dir}/mysql.properties</filter>
-									</filters>
-									<archive>
-										<manifestEntries>
-											<Classifier>fedora</Classifier>
-										</manifestEntries>
-									</archive>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>kerberos</id>
-			<activation>
-				<property>
-					<name>!internalAuth</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>generate-kerberos-war</id>
-								<goals>
-									<goal>war</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<classifier>kerberos</classifier>
-									<webappDirectory>${project.build.directory}/${project.build.finalName}-kerberos</webappDirectory>
-									<filters>
-										<filter>${war.config.dir}/kerberos.properties</filter>
-										<filter>${war.config.dir}/mysql.properties</filter>
-									</filters>
-									<archive>
-										<manifestEntries>
-											<Classifier>kerberos</Classifier>
-										</manifestEntries>
-									</archive>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		
-		<profile>
-			<id>jaas</id>
-			<activation>
-				<property>
-					<name>!internalAuth</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>generate-jaas-war</id>
-								<goals>
-									<goal>war</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<classifier>jaas</classifier>
-									<webappDirectory>${project.build.directory}/${project.build.finalName}-jaas</webappDirectory>
-									<filters>
-										<filter>${war.config.dir}/jaas.properties</filter>
-										<filter>${war.config.dir}/mysql.properties</filter>
-									</filters>
-									<archive>
-										<manifestEntries>
-											<Classifier>jaas</Classifier>
-										</manifestEntries>
-									</archive>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>autotest</id>
-			<activation>
-				<property>
-					<name>!internalAuth</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>generate-autotest-war</id>
-								<goals>
-									<goal>war</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<classifier>autotest</classifier>
-									<webappDirectory>${project.build.directory}/${project.build.finalName}-autotest</webappDirectory>
-									<filters>
-										<filter>${war.config.dir}/autotest.properties</filter>
-										<filter>${war.config.dir}/h2.properties</filter>
-									</filters>
-									<archive>
-										<manifestEntries>
-											<Classifier>autotest</Classifier>
-										</manifestEntries>
-									</archive>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 
 		<profile>
