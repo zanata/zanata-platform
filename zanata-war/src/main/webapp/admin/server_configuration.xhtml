@@ -123,6 +123,30 @@
                 </rich:toolTip>
               </h:graphicImage>
             </s:decorate>
+            
+             <s:decorate id="piwikUrlField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.config.PiwikUrl']}</ui:define>
+              <h:inputText id="piwikUrlEml" value="#{serverConfigurationBean.piwikUrl}">
+                <a4j:support event="onblur" reRender="piwikUrlField" ajaxSingle="false"/>
+              </h:inputText>
+              <h:graphicImage id="piwikUrlHelp" value="../images/msginfo.png" styleClass="input_help">
+                 <rich:toolTip>
+                  #{messages['jsf.config.Piwiktooltip']}
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+            
+            <s:decorate id="piwikIdSiteField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.config.PiwikIdSite']}</ui:define>
+              <h:inputText id="piwikIdSiteEml" value="#{serverConfigurationBean.piwikIdSite}">
+                <a4j:support event="onblur" reRender="piwikIdSiteField" ajaxSingle="false"/>
+              </h:inputText>
+              <h:graphicImage id="piwikIdSiteHelp" value="../images/msginfo.png" styleClass="input_help">
+                 <rich:toolTip>
+                  #{messages['jsf.config.PiwikIdSitetooltip']}
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
 
             <div style="clear:both"/>
 

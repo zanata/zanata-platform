@@ -382,8 +382,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                            TransUnit rowValue = display.getRowValue(rowIndex);
                            if (rowValue != null)
                            {
-                              rowValue.OverrideWith(event.getUpdateInfo().getTransUnit());
-                              display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+                              rowValue.OverrideWith(event.getUpdateInfo().getTransUnit(), rowIndex);
+                              display.getTableModel().setRowValueOverride(rowIndex, rowValue);
                            }
                         }
                      }
@@ -409,8 +409,14 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                Log.debug("updateRow: " + updateRow);
                if (updateRow && rowIndex != null)
                {
-                  Log.info("onTransUnitUpdated - update row:" + rowIndex);
-                  display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+                  TransUnit rowValue = display.getRowValue(rowIndex);
+                  if (rowValue != null)
+                  {
+                     rowValue.OverrideWith(event.getUpdateInfo().getTransUnit(), rowIndex);
+                     display.getTableModel().setRowValueOverride(rowIndex, rowValue);
+                  }
+//                  Log.info("onTransUnitUpdated - update row:" + rowIndex);
+//                  display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
                }
                if (editing && reopen)
                {

@@ -303,6 +303,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       case Navigation:
          contextName = messages.navigationScope();
          break;
+      case TM:
+         contextName = messages.tmScope();
+         break;
+      case Glossary:
+         contextName = messages.glossaryScope();
+         break; 
+      case Chat:
+         contextName = messages.chatScope();
+         break; 
       }
       return contextName;
    }

@@ -54,6 +54,8 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       void clearDocs();
 
       void addDoc(String text);
+
+      HasText getLastModified();
    }
 
    TransMemoryDetailsList tmDetails;
@@ -121,6 +123,9 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       String project = "";
       String iter = "";
       String doc = "";
+      String lastModifiedBy = "";
+      String lastModifiedDate = "";
+      
       if (selected >= 0)
       {
          TransMemoryDetails item = tmDetails.getItems().get(selected);
@@ -129,12 +134,15 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
          project = item.getProjectName();
          iter = item.getIterationName();
          doc = item.getDocId();
+         lastModifiedBy = item.getLastModifiedBy();
+         lastModifiedDate = item.getLastModifiedDate();
       }
       display.getSourceComment().setText(sourceComment);
       display.getTargetComment().setText(targetComment);
       display.getProjectName().setText(project);
       display.getIterationName().setText(iter);
       display.getDocumentName().setText(doc);
+      display.getLastModified().setText("Last modified by " + lastModifiedBy + " on " + lastModifiedDate);
    }
 
    @Override

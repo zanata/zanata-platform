@@ -13,13 +13,15 @@ public class TransMemoryDetails implements IsSerializable
    private String docId;
    private String resId;
    private String msgContext;
+   private String lastModifiedBy;
+   private String lastModifiedDate;
 
    @SuppressWarnings("unused")
    private TransMemoryDetails()
    {
    }
 
-   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext)
+   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext, String lastModifiedBy, String lastModifiedDate)
    {
       this.sourceComment = sourceComment;
       this.targetComment = targetComment;
@@ -28,6 +30,8 @@ public class TransMemoryDetails implements IsSerializable
       this.docId = docId;
       this.resId = resId;
       this.msgContext = msgContext;
+      this.lastModifiedBy = lastModifiedBy;
+      this.lastModifiedDate = lastModifiedDate;
    }
 
    public String getSourceComment()
@@ -66,6 +70,16 @@ public class TransMemoryDetails implements IsSerializable
       return msgContext;
    }
 
+   public String getLastModifiedBy()
+   {
+      return lastModifiedBy;
+   }
+
+   public String getLastModifiedDate()
+   {
+      return lastModifiedDate;
+   }
+
    @Override
    public String toString()
    {
@@ -78,6 +92,8 @@ public class TransMemoryDetails implements IsSerializable
             add("docId", docId).
             add("resId", resId).
             add("msgContext", msgContext).
+            add("lastModifiedBy", lastModifiedBy).
+            add("lastModifiedDate", lastModifiedDate).
             toString();
       // @formatter:on
    }
