@@ -1046,7 +1046,15 @@ public class ResourceUtils
     */
    public String getPluralForms(LocaleId localeId, boolean useDefault)
    {
+      final char[] alternateSeparators = {'.', '@'};
+
       String javaLocale = localeId.toJavaName().toLowerCase();
+
+      // Replace all alternate separators for the "_" (Java) separator.
+      for( char sep : alternateSeparators )
+      {
+         javaLocale = javaLocale.replace(sep, '_');
+      }
 
       if (pluralForms.containsKey(javaLocale))
       {
