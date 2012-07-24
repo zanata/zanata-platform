@@ -54,7 +54,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceText;
@@ -186,11 +186,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private final WebTransMessages messages;
    private final CachingDispatchAsync dispatcher;
-   private final WorkspaceContext workspaceContext;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final Location windowLocation;
    private final History history;
    private final Provider<UndoLink> undoLinkProvider;
+   private final UserWorkspaceContext userWorkspaceContext;
+
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
@@ -224,13 +225,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private boolean showRowActionButtons = false;
 
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter, final Provider<UndoLink> undoLinkProvider, Location windowLocation)
+   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, final Provider<UndoLink> undoLinkProvider, Location windowLocation)
    {
       super(display, eventBus);
       messages = webTransMessages;
       this.history = history;
       this.dispatcher = dispatcher;
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.undoLinkProvider = undoLinkProvider;
       this.windowLocation = windowLocation;
@@ -247,11 +248,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       docPaths = new HashMap<Long, String>();
       selectAllDocList = new HashMap<Long, HasValue<Boolean>>();
       setUiForNothingSelected();
-      display.setReplaceAllButtonVisible(!workspaceContext.isReadOnly());
+      display.setReplaceAllButtonVisible(!userWorkspaceContext.hasReadOnlyAccess());
 
       registerHandler(display.getSearchButton().addClickHandler(new ClickHandler()
       {
-
          @Override
          public void onClick(ClickEvent event)
          {
@@ -364,11 +364,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            display.setReplaceAllButtonVisible(!event.isReadOnly());
+            userWorkspaceContext.setProjectActive(event.isProjectActive());
+            
+            display.setReplaceAllButtonVisible(!userWorkspaceContext.hasReadOnlyAccess());
 
             for (TransUnitReplaceInfo info : allReplaceInfos.values())
             {
-               if (event.isReadOnly())
+               if (userWorkspaceContext.hasReadOnlyAccess())
                {
                   setReplaceState(info, ReplacementState.NotAllowed);
                }
@@ -808,7 +810,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireReplaceTextEvent(List<TransUnitReplaceInfo> toReplace)
    {
-      if (workspaceContext.isReadOnly())
+      if (userWorkspaceContext.hasReadOnlyAccess())
       {
          eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotReplaceInReadOnlyMode()));
          return;
@@ -859,6 +861,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onSuccess(final UpdateTransUnitResult result)
          {
             final List<TransUnitUpdateInfo> updateInfoList = processSuccessfulReplacements(result.getUpdateInfoList());
+
+            if (updateInfoList.isEmpty())
+            {
+               eventBus.fireEvent(new NotificationEvent(Info, messages.noReplacementsToMake()));
+               return;
+            }
 
             String message;
             if (updateInfoList.size() == 1)
@@ -985,10 +993,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          if (updateInfo.isSuccess())
          {
-            successfulReplacements.add(updateInfo);
             TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
             if (replaceInfo != null)
             {
+               if (updateInfo.isTargetChanged())
+               {
+                  successfulReplacements.add(updateInfo);
+               }
                replaceInfo.setReplaceInfo(updateInfo);
                ReplacementState replaceState = ReplacementState.Replaced;
                setReplaceState(replaceInfo, replaceState);
@@ -1269,7 +1280,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void setReplaceState(TransUnitReplaceInfo replaceInfo, ReplacementState replaceState)
    {
-      if (workspaceContext.isReadOnly())
+      if (userWorkspaceContext.hasReadOnlyAccess())
       {
          replaceInfo.setReplaceState(ReplacementState.NotAllowed);
       }

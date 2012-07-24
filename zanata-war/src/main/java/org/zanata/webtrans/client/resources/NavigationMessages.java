@@ -114,4 +114,7 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
+
+   @DefaultMessage("No content")
+   String noContent();
 }

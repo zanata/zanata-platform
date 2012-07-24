@@ -113,23 +113,12 @@
 			margin-top:2px;
 		}
 
-		.searchAndReplaceButton
+		.topMenuButton
 		{
 			outline: none;
 			padding-top: 6px;
+            cursor: pointer;
 		}
-
-		.keyShortcutButton
-		{
-			outline: none;
-			padding-top: 6px;
-		}
-
-		.searchAndReplace:hover
-		{
-			color:#ADD8E6;
-		}
-
 
 		
 		.menuBar
@@ -167,12 +156,12 @@
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
 	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
-	                        <g:PushButton ui:field="keyShortcuts" styleName="{style.keyShortcutButton}">
+	                        <g:PushButton ui:field="keyShortcuts" styleName="{style.topMenuButton}">
                                 <g:upFace image="{resources.keyboard}" />
                             </g:PushButton>
 	                    </g:cell>
 	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
-	                        <g:PushButton ui:field="searchAndReplace" styleName="{style.searchAndReplaceButton}">
+	                        <g:PushButton ui:field="searchAndReplace" styleName="{style.topMenuButton}">
                                 <g:upFace image="{resources.search}" />
                             </g:PushButton>
 	                    </g:cell>

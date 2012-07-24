@@ -64,7 +64,7 @@
 	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
 	              <h:commandButton value="#{messages['jsf.Edit']}" action="#{userAction.editUser(userSearch.selectedUser)}"/>
 	            </s:fragment>
-	            <h:commandButton value="#{messages['jsf.Delete']}" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
+	            <h:commandButton value="#{messages['jsf.Delete']}" action="#{userAction.deleteUser(userSearch.selectedUser)}"
 	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>

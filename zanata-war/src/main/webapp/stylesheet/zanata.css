@@ -867,25 +867,27 @@ a.version_link:hover {
     padding: 5px 5px 5px 5px;
 }
 
-.copy_trans_options_table td.reject_action {
+.copy_trans_options_table td.reject_action, .reject_action {
     background-color: red;
     text-align: center;
 }
 
-.copy_trans_options_table td.approved_action {
+.copy_trans_options_table td.approved_action, .approved_action {
     background-color: #099b09;
     text-align: center;
 }
 
-.copy_trans_options_table td.downgrade_action {
+.copy_trans_options_table td.downgrade_action, .downgrade_action {
     background-color: #ffc000;
     text-align: center;
 }
 
-.copy_trans_options_table td.ignore_action {
+.copy_trans_options_table td.ignore_action, .ignore_action {
     background-color: #ffffff;
     text-align: center;
 }
+
+
 
 /* -----------------------  End Project Iteration Copy Trans CSS  -------------------------*/
 

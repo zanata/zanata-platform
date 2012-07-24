@@ -7,24 +7,36 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.TransMemoryShorcutCopyHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,13 +57,13 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       HasText getTmTextBox();
 
+      HasAllFocusHandlers getFocusTmTextBox();
+
       void startProcessing();
 
       void stopProcessing();
 
       void setPageSize(int size);
-
-      boolean isFocused();
 
       Column<TransMemoryResultItem, ImageResource> getDetailsColumn();
 
@@ -62,25 +74,32 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       void setQueries(List<String> queries);
 
       HasClickHandlers getMergeButton();
-
    }
 
-   private final WorkspaceContext workspaceContext;
+   private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
+
    private GetTranslationMemory submittedRequest = null;
    private GetTranslationMemory lastRequest = null;
    private TransMemoryDetailsPresenter tmInfoPresenter;
    private TransMemoryMergePresenter transMemoryMergePresenter;
+   private KeyShortcutPresenter keyShortcutPresenter;
    private ListDataProvider<TransMemoryResultItem> dataProvider;
 
+   private final WebTransMessages messages;
+
+   private boolean isFocused;
+
    @Inject
-   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext, TransMemoryMergePresenter transMemoryMergePresenter)
+   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
       this.tmInfoPresenter = tmInfoPresenter;
       this.transMemoryMergePresenter = transMemoryMergePresenter;
+      this.keyShortcutPresenter = keyShortcutPresenter;
+      this.messages = messages;
 
       dataProvider = new ListDataProvider<TransMemoryResultItem>();
       display.setDataProvider(dataProvider);
@@ -90,13 +109,22 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    protected void onBind()
    {
       display.getSearchType().setValue(SearchType.FUZZY);
+
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.TM, messages.searchTM(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            fireSearchEvent();
+         }
+      }));
+
       display.getSearchButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            String query = display.getTmTextBox().getText();
-            createTMRequest(new TransMemoryQuery(query, display.getSearchType().getValue()));
+            fireSearchEvent();
          }
       });
 
@@ -107,6 +135,29 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          {
             display.getTmTextBox().setText("");
             dataProvider.getList().clear();
+         }
+      });
+
+      display.getFocusTmTextBox().addFocusHandler(new FocusHandler()
+      {
+         @Override
+         public void onFocus(FocusEvent event)
+         {
+            keyShortcutPresenter.setContextActive(ShortcutContext.TM, true);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+            isFocused = true;
+         }
+      });
+
+      display.getFocusTmTextBox().addBlurHandler(new BlurHandler()
+      {
+         @Override
+         public void onBlur(BlurEvent event)
+         {
+            keyShortcutPresenter.setContextActive(ShortcutContext.TM, false);
+            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+            isFocused = false;
          }
       });
 
@@ -124,7 +175,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onTransMemoryCopy(TransMemoryShortcutCopyEvent event)
          {
-            if (!workspaceContext.isReadOnly())
+            if (!userWorkspaceContext.hasReadOnlyAccess())
             {
                TransMemoryResultItem item;
                try
@@ -137,7 +188,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
                }
                if (item != null)
                {
-                  Log.debug("Copy from translation memory:" + (event.getIndex()+1));
+                  Log.debug("Copy from translation memory:" + (event.getIndex() + 1));
                   eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
                }
             }
@@ -172,6 +223,12 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       });
    }
 
+   private void fireSearchEvent()
+   {
+      String query = display.getTmTextBox().getText();
+      createTMRequest(new TransMemoryQuery(query, display.getSearchType().getValue()));
+   }
+
    public void createTMRequestForTransUnit(TransUnit transUnit)
    {
       // Start automatically fuzzy search
@@ -183,15 +240,16 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       dataProvider.getList().clear();
       display.startProcessing();
-      final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId());
+      final GetTranslationMemory action = new GetTranslationMemory(query, userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId());
       scheduleTMRequest(action);
    }
 
    /**
-    * Create a translation memory request.  The request will be sent
-    * immediately if the server is not processing another TM request,
-    * otherwise it will block. NB: If this request is blocked, it will be
-    * discarded if another request arrives before the server finishes.
+    * Create a translation memory request. The request will be sent immediately
+    * if the server is not processing another TM request, otherwise it will
+    * block. NB: If this request is blocked, it will be discarded if another
+    * request arrives before the server finishes.
+    * 
     * @param action
     */
    private void scheduleTMRequest(GetTranslationMemory action)
@@ -264,6 +322,11 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    @Override
    public void onRevealDisplay()
    {
+   }
+
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 
 }

@@ -3,9 +3,7 @@ package org.zanata.webtrans.shared.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class WrappedAction<R extends Result> implements Action<R>, IsSerializable
+public class WrappedAction<R extends Result> implements Action<R>
 {
    // generated
    private static final long serialVersionUID = 4059317550536068556L;

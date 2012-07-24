@@ -2,12 +2,10 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
-import net.customware.gwt.dispatch.shared.Result;
-
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 
 
-public class GetGlossaryResult implements Result
+public class GetGlossaryResult implements DispatchResult
 {
 
    private static final long serialVersionUID = 1L;

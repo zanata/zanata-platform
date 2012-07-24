@@ -21,10 +21,10 @@
 
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import org.zanata.common.ContentState;
+
 import com.google.common.base.Objects;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Represents information about an attempted update of a {@link TransUnit}.
@@ -32,12 +32,10 @@ import com.google.common.base.Objects;
  * @author David Mason, damason@redhat.com
  * 
  */
-public class TransUnitUpdateInfo implements Serializable
+public class TransUnitUpdateInfo implements IsSerializable
 {
-
-   private static final long serialVersionUID = 1L;
-
    private boolean success;
+   private boolean targetChanged;
    private DocumentId documentId;
    private TransUnit transUnit;
    private int sourceWordCount;
@@ -50,9 +48,10 @@ public class TransUnitUpdateInfo implements Serializable
    {
    }
 
-   public TransUnitUpdateInfo(boolean success, DocumentId documentId, TransUnit transUnit, int sourceWordCount, int previousVersionNum, ContentState previousState)
+   public TransUnitUpdateInfo(boolean success, boolean targetChanged, DocumentId documentId, TransUnit transUnit, int sourceWordCount, int previousVersionNum, ContentState previousState)
    {
       this.success = success;
+      this.targetChanged = targetChanged;
       this.documentId = documentId;
       this.transUnit = transUnit;
       this.sourceWordCount = sourceWordCount;
@@ -65,6 +64,11 @@ public class TransUnitUpdateInfo implements Serializable
       // TODO could do this
 //      return transUnit.getVerNum() > previousVersionNum;
       return success;
+   }
+
+   public boolean isTargetChanged()
+   {
+      return targetChanged;
    }
 
    public DocumentId getDocumentId()

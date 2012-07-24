@@ -9,9 +9,9 @@ import org.zanata.webtrans.shared.DispatchService;
 import org.zanata.webtrans.shared.DispatchServiceAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
-import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.auth.InvalidTokenError;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
@@ -32,7 +32,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync
       realService = GWT.create(DispatchService.class);
    }
 
-   protected WorkspaceContext workspaceContext;
+   protected UserWorkspaceContext userWorkspaceContext;
    protected Identity identity;
 
    private final RpcMessages messages;
@@ -46,18 +46,21 @@ public class SeamDispatchAsync implements CachingDispatchAsync
       ((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
    }
 
-   public <A extends Action<R>, R extends Result> void execute(final A action, final AsyncCallback<R> callback)
+   @Override
+   public
+   <A extends Action<R>, R extends Result>
+   void execute(final A action, final AsyncCallback<R> callback)
    {
       if (action instanceof AbstractWorkspaceAction<?>)
       {
          AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
-         if (workspaceContext == null || identity == null)
+         if (userWorkspaceContext == null || identity == null)
          {
             callback.onFailure(new AuthorizationError(messages.dispatcherSetupFailed()));
             return;
          }
          wsAction.setEditorClientId(identity.getEditorClientId());
-         wsAction.setWorkspaceId(workspaceContext.getWorkspaceId());
+         wsAction.setWorkspaceId(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
       }
 
       String sessionId = Cookies.getCookie("JSESSIONID");
@@ -90,9 +93,9 @@ public class SeamDispatchAsync implements CachingDispatchAsync
    }
 
    @Override
-   public void setWorkspaceContext(WorkspaceContext workspaceContext)
+   public void setUserWorkspaceContext(UserWorkspaceContext userWorkspaceContext)
    {
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
    }
 
    @Override
@@ -102,18 +105,20 @@ public class SeamDispatchAsync implements CachingDispatchAsync
    }
 
    @Override
-   public <A extends Action<R>, R extends Result> void rollback(final A action, final R result, final AsyncCallback<Void> callback)
+   public
+   <A extends Action<R>, R extends Result>
+   void rollback(final A action, final R result, final AsyncCallback<Void> callback)
    {
       if (action instanceof AbstractWorkspaceAction<?>)
       {
          AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
-         if (workspaceContext == null || identity == null)
+         if (userWorkspaceContext == null || identity == null)
          {
             callback.onFailure(new AuthorizationError(messages.dispatcherSetupFailed()));
             return;
          }
          wsAction.setEditorClientId(identity.getEditorClientId());
-         wsAction.setWorkspaceId(workspaceContext.getWorkspaceId());
+         wsAction.setWorkspaceId(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
       }
 
       String sessionId = Cookies.getCookie("JSESSIONID");
@@ -143,5 +148,4 @@ public class SeamDispatchAsync implements CachingDispatchAsync
          }
       });
    }
-
 }

@@ -12,9 +12,8 @@ import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.ImageResource;
@@ -68,7 +67,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    ScrollPanel scrollPanel;
 
    private final UiMessages messages;
-   private boolean isFocused;
    
    private final HighlightingLabelGlossaryColumn sourceColumn;
    private final HighlightingLabelGlossaryColumn targetColumn;
@@ -102,19 +100,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
          searchButton.click();
       }
    }
-
-   @UiHandler("glossaryTextBox")
-   public void onGlossaryTextBoxFocus(FocusEvent event)
-   {
-      isFocused = true;
-   }
-
-   @UiHandler("glossaryTextBox")
-   public void onGlossaryTextBoxBlur(BlurEvent event)
-   {
-      isFocused = false;
-   }
-
+   
    @UiHandler("clearButton")
    void onClearButtonClicked(ClickEvent event)
    {
@@ -146,16 +132,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    }
 
    @Override
-   public boolean isFocused()
-   {
-      return isFocused;
-   }
-
-   @Override
    public HasValue<SearchType> getSearchType()
    {
       return searchType;
    }
+
 
    public void renderTable()
    {
@@ -206,5 +187,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    public void setPageSize(int size)
    {
       glossaryTable.setPageSize(size);
+   }
+
+   @Override
+   public HasAllFocusHandlers getFocusGlossaryTextBox()
+   {
+      return glossaryTextBox;
    }
 }

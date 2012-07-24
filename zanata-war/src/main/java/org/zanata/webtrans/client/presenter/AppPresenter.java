@@ -41,14 +41,14 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
-import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -80,7 +80,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void setReadOnlyVisible(boolean visible);
 
       HasClickHandlers getKeyShortcutButton();
-      
+
       HasClickHandlers getSearchAndReplaceButton();
 
       HasClickHandlers getNotificationBtn();
@@ -103,8 +103,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final Identity identity;
    private final Window window;
    private final Window.Location windowLocation;
-   private final WorkspaceContext workspaceContext;
-
+   private final UserWorkspaceContext userWorkspaceContext;
    private final WebTransMessages messages;
 
    private DocumentInfo selectedDocument;
@@ -116,23 +115,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
+   private boolean enableDashBoard = false;
+
    @Inject
-   public AppPresenter(Display display, EventBus eventBus,
-         final DashboardPresenter dashboardPresenter,
-         final KeyShortcutPresenter keyShortcutPresenter,
-         final TranslationPresenter translationPresenter,
-         final DocumentListPresenter documentListPresenter,
-         final SearchResultsPresenter searchResultsPresenter,
-         final NotificationPresenter notificationPresenter,
-		   final LayoutSelectorPresenter layoutSelectorPresenter,
-         final Identity identity,
-         final WorkspaceContext workspaceContext,
-         final WebTransMessages messages,
-         final History history,
-         final Window window,
-         final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final DashboardPresenter dashboardPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
+      this.userWorkspaceContext = userWorkspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.dashboardPresenter = dashboardPresenter;
       this.history = history;
@@ -141,11 +130,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
-      this.notificationPresenter =notificationPresenter;
+      this.notificationPresenter = notificationPresenter;
       this.layoutSelectorPresenter = layoutSelectorPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
-      this.workspaceContext = workspaceContext;
    }
 
    @Override
@@ -164,10 +152,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
-     
+
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
-
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -175,7 +162,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            display.setReadOnlyVisible(event.isReadOnly());
+            userWorkspaceContext.setProjectActive(event.isProjectActive());
+            display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
          }
       }));
 
@@ -240,7 +228,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             processHistoryEvent(event);
          }
       }));
-      
+
       registerHandler(display.getNotificationBtn().addClickHandler(new ClickHandler()
       {
          @Override
@@ -264,7 +252,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
-	  display.getKeyShortcutButton().addClickHandler(new ClickHandler()
+      display.getKeyShortcutButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
@@ -280,14 +268,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          public void onPresenterRevealed(PresenterRevealedEvent event)
          {
             // TODO disabled until tests are updated
-//            if (event.getPresenter() == searchResultsPresenter)
-//            {
-//               display.setDocumentLabel("", messages.projectWideSearchAndReplace());
-//               currentDisplayStats = projectStats;
-//            }
+            // if (event.getPresenter() == searchResultsPresenter)
+            // {
+            // display.setDocumentLabel("",
+            // messages.projectWideSearchAndReplace());
+            // currentDisplayStats = projectStats;
+            // }
          }
       }));
-
 
       Command helpMenuCommand = new Command()
       {
@@ -313,7 +301,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          public void execute()
          {
             Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+            Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
          }
       };
 
@@ -327,27 +315,22 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       };
 
       display.initMenuList(identity.getPerson().getName(), helpMenuCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
-     
-      keyShortcutPresenter.register(new KeyShortcut(
-            new Keys(Keys.ALT_KEY, 'B'),
-            ShortcutContext.Application,
-            messages.showDashboardKeyShortcut(),
-            new KeyShortcutEventHandler()
+
+      if (enableDashBoard)
       {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
+         keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'B'), ShortcutContext.Application, messages.showDashboardKeyShortcut(), new KeyShortcutEventHandler()
          {
-            HistoryToken token = history.getHistoryToken();
-            token.setView(MainView.Dashboard);
-            history.newItem(token.toTokenString());
-         }
-      }));
-      
-      keyShortcutPresenter.register(new KeyShortcut(
-            new Keys(Keys.ALT_KEY, 'L'),
-            ShortcutContext.Application,
-            messages.showDocumentListKeyShortcut(),
-            new KeyShortcutEventHandler()
+            @Override
+            public void onKeyShortcut(KeyShortcutEvent event)
+            {
+               HistoryToken token = history.getHistoryToken();
+               token.setView(MainView.Dashboard);
+               history.newItem(token.toTokenString());
+            }
+         }));
+      }
+
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -358,11 +341,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.register(new KeyShortcut(
-            new Keys(Keys.ALT_KEY, 'O'),
-            ShortcutContext.Application,
-            messages.showEditorKeyShortcut(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'O'), ShortcutContext.Application, messages.showEditorKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -380,11 +359,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      keyShortcutPresenter.register(new KeyShortcut(
-            new Keys(Keys.ALT_KEY, 'P'),
-            ShortcutContext.Application,
-            messages.showProjectWideSearch(),
-            new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'P'), ShortcutContext.Application, messages.showProjectWideSearch(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -396,10 +371,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       }));
 
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
-      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
-      window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+      display.setWorkspaceNameLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), workspaceTitle);
+      window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
 
-      display.setReadOnlyVisible(workspaceContext.isReadOnly());
+      display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
 
       // this may be redundant with the following history event line
       showView(MainView.Documents);
@@ -472,7 +447,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             display.setLayoutMenuVisible(false);
             break;
          case Search:
-            // these two lines temporarily here until PresenterRevealedHandler is
+            // these two lines temporarily here until PresenterRevealedHandler
+            // is
             // fully functional
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;

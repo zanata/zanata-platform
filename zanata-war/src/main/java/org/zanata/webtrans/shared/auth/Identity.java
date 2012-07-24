@@ -1,15 +1,12 @@
 package org.zanata.webtrans.shared.auth;
 
-import java.io.Serializable;
-
 import org.zanata.webtrans.shared.model.Person;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Identity implements Serializable
+
+public class Identity implements IsSerializable
 {
-
-   private static final long serialVersionUID = 1L;
-
    private EditorClientId editorClientId;
    private Person person;
 

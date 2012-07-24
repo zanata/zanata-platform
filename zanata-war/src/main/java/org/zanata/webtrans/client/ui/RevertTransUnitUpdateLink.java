@@ -27,10 +27,11 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -45,8 +46,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.inject.Inject;
 
-import static org.zanata.webtrans.client.events.NotificationEvent.Severity;
-
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -56,7 +55,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    private final CachingDispatchAsync dispatcher;
    private final WebTransMessages messages;
    private final EventBus eventBus;
-   private final WorkspaceContext workspaceContext;
+   private final UserWorkspaceContext userWorkspaceContext;
 
    // state variables
    private HandlerRegistration handlerRegistration;
@@ -68,13 +67,13 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    private UndoCallback callback = new DefaultUndoCallback();
 
    @Inject
-   public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher, WebTransMessages messages, EventBus eventBus, WorkspaceContext workspaceContext)
+   public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher, WebTransMessages messages, EventBus eventBus, UserWorkspaceContext userWorkspaceContext)
    {
       super(messages.undo());
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.eventBus = eventBus;
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
    }
 
 
@@ -143,7 +142,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
          {
             return;
          }
-         if (workspaceContext.isReadOnly())
+         if (userWorkspaceContext.hasReadOnlyAccess())
          {
             eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
             return;

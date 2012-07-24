@@ -37,14 +37,14 @@ import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
@@ -113,14 +113,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final TargetContentsPresenter targetContentsPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
 
-   private WorkspaceContext workspaceContext;
+   private UserWorkspaceContext userWorkspaceContext;
 
    private final WebTransMessages messages;
 
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -132,8 +132,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.targetContentsPresenter = targetContentsPresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.dispatcher = dispatcher;
-
-      this.workspaceContext = workspaceContext;
+      this.userWorkspaceContext = userWorkspaceContext;
    }
 
    @Override
@@ -227,14 +226,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            setSouthPanelReadOnly(event.isReadOnly());
+            userWorkspaceContext.setProjectActive(event.isProjectActive());
+            setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
          }
       }));
 
-      if (workspaceContext.isReadOnly())
-      {
-         setSouthPanelReadOnly(true);
-      }
+      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
       registerHandler(display.getOptionsToggle().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
@@ -300,8 +297,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private boolean isOtherInputFieldFocused()
    {
       return translationEditorPresenter.isTransFilterFocused() || 
-            transMemoryPresenter.getDisplay().isFocused() || 
-            glossaryPresenter.getDisplay().isFocused() || 
+            transMemoryPresenter.isFocused() || 
+            glossaryPresenter.isFocused() || 
             translationEditorPresenter.getDisplay().isPagerFocused();
    }
 

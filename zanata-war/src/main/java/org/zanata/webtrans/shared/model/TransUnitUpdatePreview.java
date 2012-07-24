@@ -20,10 +20,12 @@
  */
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.shared.rpc.ReplaceText;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Holds preview information about a {@link ReplaceText} operation
@@ -31,11 +33,8 @@ import org.zanata.common.ContentState;
  * @author David Mason, damason@redhat.com
  * 
  */
-public class TransUnitUpdatePreview implements Serializable
+public class TransUnitUpdatePreview implements IsSerializable
 {
-
-   private static final long serialVersionUID = 1L;
-
    private TransUnitId id;
    private List<String> contents;
    private ContentState state;

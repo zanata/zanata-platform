@@ -1,11 +1,9 @@
 package org.zanata.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-
 import org.zanata.common.LocaleId;
 
 
-public class GetGlossary implements Action<GetGlossaryResult>, HasSearchType
+public class GetGlossary implements DispatchAction<GetGlossaryResult>, HasSearchType
 {
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;

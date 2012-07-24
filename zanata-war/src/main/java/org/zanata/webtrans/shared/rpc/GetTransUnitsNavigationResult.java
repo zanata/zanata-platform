@@ -3,13 +3,11 @@ package org.zanata.webtrans.shared.rpc;
 import java.util.ArrayList;
 import java.util.Map;
 
-import net.customware.gwt.dispatch.shared.Result;
-
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.DocumentId;
 
 
-public class GetTransUnitsNavigationResult implements Result
+public class GetTransUnitsNavigationResult implements DispatchResult
 {
 
    private static final long serialVersionUID = 1L;

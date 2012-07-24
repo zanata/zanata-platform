@@ -1,15 +1,12 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Person implements HasIdentifier<PersonId>, Serializable
+public class Person implements HasIdentifier<PersonId>, IsSerializable
 {
-   private static final long serialVersionUID = 510785473431813586L;
-
    private PersonId id;
    private String name;
    private String avatarUrl;

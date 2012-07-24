@@ -43,6 +43,8 @@ import org.zanata.webtrans.client.history.HistoryImpl;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.history.WindowImpl;
 import org.zanata.webtrans.client.history.WindowLocationImpl;
+import org.zanata.webtrans.client.keys.EventWrapper;
+import org.zanata.webtrans.client.keys.EventWrapperImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DashboardPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
@@ -89,7 +91,7 @@ import org.zanata.webtrans.client.view.TranslationView;
 import org.zanata.webtrans.client.view.ValidationOptionsView;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Provider;
@@ -137,6 +139,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
       bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
 
+      bind(EventWrapper.class).to(EventWrapperImpl.class).in(Singleton.class);
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);
       bind(History.class).to(HistoryImpl.class).in(Singleton.class);
@@ -149,7 +152,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
 
       bind(Identity.class).toProvider(IdentityProvider.class).in(Singleton.class);
-      bind(WorkspaceContext.class).toProvider(WorkspaceContextProvider.class).in(Singleton.class);
+      bind(UserWorkspaceContext.class).toProvider(UserWorkspaceContextProvider.class).in(Singleton.class);
    }
 
    // default implementation doesn't use singleton display binding, adding here
@@ -166,15 +169,15 @@ public class WebTransClientModule extends AbstractPresenterModule
       return Scheduler.get();
    }
 
-   static class WorkspaceContextProvider implements Provider<WorkspaceContext>
+   static class UserWorkspaceContextProvider implements Provider<UserWorkspaceContext>
    {
       @Override
-      public WorkspaceContext get()
+      public UserWorkspaceContext get()
       {
-         return Application.getWorkspaceContext();
+         return Application.getUserWorkspaceContext();
       }
    }
-
+   
    static class IdentityProvider implements Provider<Identity>
    {
       @Override

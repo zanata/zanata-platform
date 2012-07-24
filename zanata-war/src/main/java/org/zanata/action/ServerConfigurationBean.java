@@ -67,7 +67,8 @@ public class ServerConfigurationBean implements Serializable
    private boolean enableLogEmail;
    private String logDestinationEmails;
    private String logEmailLevel;
-
+   private String piwikUrl;
+   private String piwikIdSite;
 
    public String getHomeContent()
    {
@@ -179,7 +180,6 @@ public class ServerConfigurationBean implements Serializable
       return "/help/view.xhtml";
    }
 
-
    public String getRegisterUrl()
    {
       return registerUrl;
@@ -231,6 +231,26 @@ public class ServerConfigurationBean implements Serializable
       this.logEmailLevel = logEmailLevel;
    }
 
+   public String getPiwikUrl()
+   {
+      return piwikUrl;
+   }
+
+   public void setPiwikUrl(String piwikUrl)
+   {
+      this.piwikUrl = piwikUrl;
+   }
+
+   public String getPiwikIdSite()
+   {
+      return piwikIdSite;
+   }
+
+   public void setPiwikIdSite(String piwikIdSite)
+   {
+      this.piwikIdSite = piwikIdSite;
+   }
+
    @Create
    public void onCreate()
    {
@@ -259,20 +279,30 @@ public class ServerConfigurationBean implements Serializable
       {
          this.fromEmailAddr = fromAddressValue.getValue();
       }
-      HApplicationConfiguration emailLogEventsValue  = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
+      HApplicationConfiguration emailLogEventsValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
       if (emailLogEventsValue != null)
       {
          this.enableLogEmail = Boolean.parseBoolean(emailLogEventsValue.getValue());
       }
-      HApplicationConfiguration logDestinationValue  = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
+      HApplicationConfiguration logDestinationValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
       if (logDestinationValue != null)
       {
          this.logDestinationEmails = logDestinationValue.getValue();
       }
       HApplicationConfiguration logEmailLevelValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
-      if(logEmailLevelValue != null)
+      if (logEmailLevelValue != null)
       {
          this.logEmailLevel = logEmailLevelValue.getValue();
+      }
+      HApplicationConfiguration piwikUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_PIWIK_URL);
+      if (piwikUrlValue != null)
+      {
+         this.piwikUrl = piwikUrlValue.getValue();
+      }
+      HApplicationConfiguration piwikIdSiteValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_PIWIK_IDSITE);
+      if (piwikIdSiteValue != null)
+      {
+         this.piwikIdSite = piwikIdSiteValue.getValue();
       }
    }
 
@@ -280,147 +310,70 @@ public class ServerConfigurationBean implements Serializable
    public void update()
    {
       HApplicationConfiguration registerUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_REGISTER);
-      if (registerUrlValue != null)
-      {
-         if (registerUrl == null || registerUrl.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(registerUrlValue);
-         }
-         else
-         {
-            registerUrlValue.setValue(registerUrl);
-         }
-      }
-      else if (registerUrl != null && !registerUrl.isEmpty())
-      {
-         registerUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_REGISTER, registerUrl);
-         applicationConfigurationDAO.makePersistent(registerUrlValue);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_REGISTER, registerUrlValue, registerUrl);
 
       HApplicationConfiguration serverUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
-      if (serverUrlValue != null)
-      {
-         if (serverUrl == null || serverUrl.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(serverUrlValue);
-         }
-         else
-         {
-            serverUrlValue.setValue(serverUrl);
-         }
-      }
-      else if (serverUrl != null && !serverUrl.isEmpty())
-      {
-         serverUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HOST, serverUrl);
-         applicationConfigurationDAO.makePersistent(serverUrlValue);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_HOST, serverUrlValue, serverUrl);
 
       HApplicationConfiguration emailDomainValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
-      if (emailDomainValue != null)
-      {
-         if (emailDomain == null || emailDomain.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(emailDomainValue);
-         }
-         else
-         {
-            emailDomainValue.setValue(emailDomain);
-         }
-      }
-      else if (emailDomain != null && !emailDomain.isEmpty())
-      {
-         emailDomainValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_DOMAIN, emailDomain);
-         applicationConfigurationDAO.makePersistent(emailDomainValue);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_DOMAIN, emailDomainValue, emailDomain);
 
       HApplicationConfiguration adminEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
-      if (adminEmailValue != null)
-      {
-         if (adminEmail == null || adminEmail.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(adminEmailValue);
-         }
-         else
-         {
-            adminEmailValue.setValue(adminEmail);
-         }
-      }
-      else if (adminEmail != null && !adminEmail.isEmpty())
-      {
-         adminEmailValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_ADMIN_EMAIL, adminEmail);
-         applicationConfigurationDAO.makePersistent(adminEmailValue);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_ADMIN_EMAIL, adminEmailValue, adminEmail);
 
       HApplicationConfiguration fromEmailAddrValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
-      if (fromEmailAddrValue != null)
-      {
-         if (fromEmailAddr == null || fromEmailAddr.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(fromEmailAddrValue);
-         }
-         else
-         {
-            fromEmailAddrValue.setValue(fromEmailAddr);
-         }
-      }
-      else if (fromEmailAddr != null && !fromEmailAddr.isEmpty())
-      {
-         fromEmailAddrValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, fromEmailAddr);
-         applicationConfigurationDAO.makePersistent(fromEmailAddrValue);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, fromEmailAddrValue, fromEmailAddr);
 
-      HApplicationConfiguration emailLogEventsValue  = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
-      if( emailLogEventsValue == null )
+
+      HApplicationConfiguration emailLogEventsValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
+      if (emailLogEventsValue == null)
       {
          emailLogEventsValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS, Boolean.toString(enableLogEmail));
       }
       else
       {
-         emailLogEventsValue.setValue( Boolean.toString(enableLogEmail) );
+         emailLogEventsValue.setValue(Boolean.toString(enableLogEmail));
       }
-      applicationConfigurationDAO.makePersistent( emailLogEventsValue );
+      applicationConfigurationDAO.makePersistent(emailLogEventsValue);
 
       HApplicationConfiguration logDestEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
-      if (logDestEmailValue != null)
-      {
-         if (logDestinationEmails == null || logDestinationEmails.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(logDestEmailValue);
-         }
-         else
-         {
-            logDestEmailValue.setValue(logDestinationEmails);
-         }
-      }
-      else if (logDestinationEmails != null && !logDestinationEmails.isEmpty())
-      {
-         logDestEmailValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL, logDestinationEmails);
-         applicationConfigurationDAO.makePersistent(logDestEmailValue);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL, logDestEmailValue, logDestinationEmails);
 
       HApplicationConfiguration logEmailLevelValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
-      if (logEmailLevelValue != null)
-      {
-         if (logEmailLevel == null || logEmailLevel.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(logEmailLevelValue);
-         }
-         else
-         {
-            logEmailLevelValue.setValue(logEmailLevel);
-         }
-      }
-      else if (logEmailLevel != null && !logEmailLevel.isEmpty())
-      {
-         logEmailLevelValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL, logEmailLevel);
-         applicationConfigurationDAO.makePersistent(logEmailLevelValue);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL, logEmailLevelValue, logEmailLevel);
+
+      HApplicationConfiguration piwikUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_PIWIK_URL);
+      persistApplicationConfig(HApplicationConfiguration.KEY_PIWIK_URL, piwikUrlValue, piwikUrl);
+
+      HApplicationConfiguration piwikIdSiteValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_PIWIK_IDSITE);
+      persistApplicationConfig(HApplicationConfiguration.KEY_PIWIK_IDSITE, piwikIdSiteValue, piwikIdSite);
+
 
       applicationConfigurationDAO.flush();
       FacesMessages.instance().add("Configuration was successfully updated.");
       if (Events.exists())
       {
          Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
+      }
+   }
+
+   private void persistApplicationConfig(String key, HApplicationConfiguration appConfig, String newValue)
+   {
+      if (appConfig != null)
+      {
+         if (newValue == null || newValue.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(appConfig);
+         }
+         else
+         {
+            appConfig.setValue(newValue);
+         }
+      }
+      else if (newValue != null && !newValue.isEmpty())
+      {
+         appConfig = new HApplicationConfiguration(key, newValue);
+         applicationConfigurationDAO.makePersistent(appConfig);
       }
    }
 

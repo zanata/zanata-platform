@@ -5,8 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.hibernate.Session;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -24,6 +22,8 @@ import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
@@ -32,6 +32,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
+import org.zanata.service.LocaleService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -59,7 +60,16 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    private AccountDAO accountDAO;
 
    @In
-   GravatarService gravatarServiceImpl;
+   private GravatarService gravatarServiceImpl;
+
+   @In
+   private ProjectDAO projectDAO;
+
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
+   @In
+   private LocaleService localeServiceImpl;
 
    private static final String EVENT_WORKSPACE_CREATED = "webtrans.WorkspaceCreated";
 
@@ -143,36 +153,20 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String projectSlug = projectIteration.getProject().getSlug();
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
-      Boolean readOnly = projectIterationIsInactive(project.getStatus(), projectIteration.getStatus());
-      LOGGER.info("Project {} iteration {} updated, status={}, readOnly={}", new Object[] {projectSlug, iterSlug, projectIteration.getStatus(), readOnly});
+      Boolean isProjectActive = projectIterationIsActive(project.getStatus(), projectIteration.getStatus());
+      LOGGER.info("Project {} iteration {} updated, status={}, isProjectActive={}", new Object[] { projectSlug, iterSlug, projectIteration.getStatus(), isProjectActive });
 
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);
       for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId))
       {
-         if (readOnly != workspace.getWorkspaceContext().isReadOnly())
-         {
-            workspace.getWorkspaceContext().setReadOnly(readOnly);
-            WorkspaceContextUpdate event = new WorkspaceContextUpdate(readOnly);
-            workspace.publish(event);
-         }
+         WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive);
+         workspace.publish(event);
       }
    }
 
-   private boolean projectIterationIsInactive(EntityStatus projectStatus, EntityStatus iterStatus)
+   private boolean projectIterationIsActive(EntityStatus projectStatus, EntityStatus iterStatus)
    {
-      return !(projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
-   }
-
-   private boolean hasNoPermission(HProject project, HLocale locale)
-   {
-      return !ZanataIdentity.instance().hasPermission("modify-translation", project, locale);
-   }
-
-   private boolean isReadOnly(HProject project, EntityStatus iterStatus, HLocale locale)
-   {
-      // There must be permissions and the project iteration must be in the
-      // correct state
-      return hasNoPermission(project, locale) || projectIterationIsInactive(project.getStatus(), iterStatus);
+      return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
    }
 
    @Destroy
@@ -205,43 +199,46 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
 
          return prev == null ? workspace : prev;
       }
-
-      validateAndGetWorkspaceContext(workspaceId);
-
+      else
+      {
+         validateAndGetWorkspaceContext(workspaceId);
+      }
       return workspace;
    }
 
    private WorkspaceContext validateAndGetWorkspaceContext(WorkspaceId workspaceId) throws NoSuchWorkspaceException
    {
-      Session session = (Session) Component.getInstance("session");
+      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
 
-      HProject project = (HProject) session.createQuery("select p from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
+      if (project == null)
+      {
+         throw new NoSuchWorkspaceException("Invalid workspace Id");
+      }
       if (project.getStatus() == EntityStatus.OBSOLETE)
       {
          throw new NoSuchWorkspaceException("Project is obsolete");
       }
 
-      EntityStatus projectIterationStatus = (EntityStatus) session.createQuery("select it.status from HProjectIteration it where it.slug = :slug and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectIterationStatus == EntityStatus.OBSOLETE)
-      {
-         throw new NoSuchWorkspaceException("Project Iteration is obsolete");
-      }
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
 
-      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.status <> :status").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).setParameter("status", EntityStatus.OBSOLETE).uniqueResult();
-      if (workspaceName == null)
+      if (projectIteration == null)
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");
       }
-
-      HLocale locale = (HLocale) session.createQuery("select l from HLocale l where localeId = :localeId").setParameter("localeId", workspaceId.getLocaleId()).uniqueResult();
+      if (projectIteration.getStatus() == EntityStatus.OBSOLETE)
+      {
+         throw new NoSuchWorkspaceException("Project Iteration is obsolete");
+      }
+      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
       if (locale == null)
       {
          throw new NoSuchWorkspaceException("Invalid Workspace Locale");
       }
 
-      boolean readOnly = isReadOnly(project, projectIterationStatus, locale);
+      String workspaceName = project.getName() + " (" + projectIteration.getSlug() + ")";
       String localeDisplayName = ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH);
-      return new WorkspaceContext(workspaceId, workspaceName, localeDisplayName, readOnly);
+
+      return new WorkspaceContext(workspaceId, workspaceName, localeDisplayName);
    }
 
    private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException

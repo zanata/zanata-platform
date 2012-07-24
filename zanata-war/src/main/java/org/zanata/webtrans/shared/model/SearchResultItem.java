@@ -1,15 +1,11 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public abstract class SearchResultItem implements Serializable, IsSerializable
+public abstract class SearchResultItem implements IsSerializable
 {
-
-   private static final long serialVersionUID = -7381018377520206564L;
-
    private ArrayList<Long> sourceIdList = new ArrayList<Long>();
    private double relevanceScore;
    private double similarityPercent;

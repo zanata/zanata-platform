@@ -49,7 +49,7 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
@@ -90,7 +90,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    }
 
    private final DispatchAsync dispatcher;
-   private final WorkspaceContext workspaceContext;
+   private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
@@ -134,10 +134,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    };
 
    @Inject
-   public DocumentListPresenter(final Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
+   public DocumentListPresenter(final Display display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
    {
       super(display, eventBus);
-      this.workspaceContext = workspaceContext;
+      this.userworkspaceContext = userworkspaceContext;
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.history = history;
@@ -429,7 +429,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    private void loadDocumentList()
    {
-      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId(), windowLocation.getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
+      dispatcher.execute(new GetDocumentList(userworkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId(), windowLocation.getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)

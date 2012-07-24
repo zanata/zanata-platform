@@ -135,7 +135,10 @@ public class Editor extends Composite implements ToggleEditor
 
       setLabelText(displayString);
 
-      label.setTitle(messages.clickHere());
+      if (!listener.isReadOnly())
+      {
+         label.setTitle(messages.clickHere());
+      }
       textArea.setVisible(false);
       translatorList.setVisible(false);
    }
@@ -144,7 +147,14 @@ public class Editor extends Composite implements ToggleEditor
    {
       if (Strings.isNullOrEmpty(displayString))
       {
-         label.setText(messages.clickHere());
+         if (listener.isReadOnly())
+         {
+            label.setText(messages.noContent());
+         }
+         else
+         {
+            label.setText(messages.clickHere());
+         }
          label.setStylePrimaryName("TableEditorContent-Empty");
       }
       else

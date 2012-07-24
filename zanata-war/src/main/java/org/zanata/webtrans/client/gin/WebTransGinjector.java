@@ -5,7 +5,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -20,7 +20,7 @@ public interface WebTransGinjector extends Ginjector
 
    EventBus getEventBus();
 
-   WorkspaceContext getWorkspaceContext();
+   UserWorkspaceContext getUserWorkspaceContext();
 
    EventProcessor getEventProcessor();
 

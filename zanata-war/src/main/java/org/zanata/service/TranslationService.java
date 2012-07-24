@@ -99,6 +99,7 @@ public interface TranslationService
    public interface TranslationResult
    {
       boolean isTranslationSuccessful();
+      boolean isTargetChanged();
       HTextFlowTarget getTranslatedTextFlowTarget();
       int getBaseVersionNum();
       ContentState getBaseContentState();

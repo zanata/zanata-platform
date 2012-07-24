@@ -27,7 +27,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.inject.Inject;
 
@@ -50,7 +50,7 @@ public class DashboardPresenter extends WidgetPresenter<DashboardPresenter.Displ
  
 
    @Inject
-   public DashboardPresenter(final Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
+   public DashboardPresenter(final Display display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;

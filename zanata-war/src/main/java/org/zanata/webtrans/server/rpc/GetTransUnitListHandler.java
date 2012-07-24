@@ -114,7 +114,15 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       for (int i = startIndex; i < endIndex; i++)
       {
          HTextFlow textFlow = textFlows.get(i);
-         TransUnit tu = transUnitTransformer.transform(textFlow, hLocale);
+         TransUnit tu;
+         if (action.isAcceptAllStatus())
+         {
+            tu = transUnitTransformer.transform(textFlow, hLocale);
+         }
+         else
+         {
+            tu = transUnitTransformer.transform(textFlow, hLocale, i);
+         }
          if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
          {
             gotoRow = i;

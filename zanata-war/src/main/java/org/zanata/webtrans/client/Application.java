@@ -8,7 +8,7 @@ import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
@@ -40,7 +40,7 @@ public class Application implements EntryPoint
 
    private static boolean IS_DEBUG = false;
    private static WorkspaceId workspaceId;
-   private static WorkspaceContext workspaceContext;
+   private static UserWorkspaceContext userWorkspaceContext;
 
    private static Identity identity;
 
@@ -81,10 +81,10 @@ public class Application implements EntryPoint
          @Override
          public void onSuccess(ActivateWorkspaceResult result)
          {
-            workspaceContext = result.getWorkspaceContext();
+            userWorkspaceContext = result.getUserWorkspaceContext();
             identity = result.getIdentity();
             injector.getDispatcher().setIdentity(identity);
-            injector.getDispatcher().setWorkspaceContext(workspaceContext);
+            injector.getDispatcher().setUserWorkspaceContext(userWorkspaceContext);
             startApp();
          }
 
@@ -108,7 +108,6 @@ public class Application implements EntryPoint
          {
 
          }
-
       });
    }
 
@@ -198,22 +197,21 @@ public class Application implements EntryPoint
    {
       if (workspaceId == null)
       {
-         // TODO handle null values
          workspaceId = new WorkspaceId(getProjectIterationId(), getLocaleId());
       }
       return workspaceId;
    }
 
-   public static WorkspaceContext getWorkspaceContext()
+   public static UserWorkspaceContext getUserWorkspaceContext()
    {
-      return workspaceContext;
+      return userWorkspaceContext;
    }
 
    public static Identity getIdentity()
    {
       return identity;
    }
-
+  
    public static String getModuleParentBaseUrl()
    {
       return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");

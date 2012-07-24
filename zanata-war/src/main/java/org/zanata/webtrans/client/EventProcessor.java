@@ -11,7 +11,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.HasEnterWorkspaceData;
@@ -137,12 +137,12 @@ public class EventProcessor implements RemoteEventListener
    private final EventBus eventBus;
 
    @Inject
-   public EventProcessor(EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext)
+   public EventProcessor(EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userWorkspaceContext)
    {
       this.eventBus = eventBus;
       this.eventRegistry = new EventRegistry();
       this.remoteEventService = RemoteEventServiceFactory.getInstance().getRemoteEventService();
-      this.domain = DomainFactory.getDomain(workspaceContext.getWorkspaceId().toString());
+      this.domain = DomainFactory.getDomain(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().toString());
    }
 
    public void start(final StartCallback callback)

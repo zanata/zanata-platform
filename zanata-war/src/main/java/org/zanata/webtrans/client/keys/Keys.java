@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.dom.client.NativeEvent;
-
 /**
  * Represents a combination of modifier keys and a single key code for use with
  * {@link KeyShortcut}.
@@ -62,13 +60,6 @@ public class Keys implements Comparable<Keys>
    {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
-   }
-
-   public Keys(NativeEvent evt)
-   {
-      modifiers = (evt.getAltKey() ? ALT_KEY : 0) | (evt.getShiftKey() ? SHIFT_KEY : 0)
-                | (evt.getCtrlKey() ? CTRL_KEY : 0) | (evt.getMetaKey() ? META_KEY : 0);
-      keyCode = evt.getKeyCode();
    }
 
    public int getModifiers()

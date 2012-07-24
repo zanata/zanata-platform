@@ -37,7 +37,7 @@ final class DummyUpdateTransUnitCommand implements Command
             .setVerNum(firstTu.getBaseTranslationVersion() + 1)
             .setResId("dummyRestId")
             .build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, new DocumentId(0), tu, 5, firstTu.getBaseTranslationVersion(), ContentState.NeedReview);
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(0), tu, 5, firstTu.getBaseTranslationVersion(), ContentState.NeedReview);
       UpdateTransUnitResult result = new UpdateTransUnitResult(updateInfo);
       callback.onSuccess(result);
       Log.info("EXIT DummyUpdateTransUnitCommand.execute()");

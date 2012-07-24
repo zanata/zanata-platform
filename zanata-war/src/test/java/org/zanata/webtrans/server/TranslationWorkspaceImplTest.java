@@ -43,7 +43,7 @@ public class TranslationWorkspaceImplTest
    public void setUp()
    {
       workspaceId = new WorkspaceId(ProjectIterationId.of("project", "master"), new LocaleId("en-US"));
-      WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "workspaceName", "en-US", false);
+      WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "workspaceName", "en-US");
       translationWorkspace = new TranslationWorkspaceImpl(workspaceContext);
    }
 

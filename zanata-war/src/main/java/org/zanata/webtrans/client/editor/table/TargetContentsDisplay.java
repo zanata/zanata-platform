@@ -57,6 +57,8 @@ public interface TargetContentsDisplay extends WidgetDisplay
       void saveAsFuzzy();
 
       boolean isDisplayButtons();
+
+      boolean isReadOnly();
    }
 
    void setTargets(List<String> targets);

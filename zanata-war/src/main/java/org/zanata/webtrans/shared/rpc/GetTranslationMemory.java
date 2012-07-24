@@ -1,12 +1,10 @@
 package org.zanata.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 
 
-public class GetTranslationMemory implements Action<GetTranslationMemoryResult>, HasSearchType
+public class GetTranslationMemory implements DispatchAction<GetTranslationMemoryResult>, HasSearchType
 {
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;

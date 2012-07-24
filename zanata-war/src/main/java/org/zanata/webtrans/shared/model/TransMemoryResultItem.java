@@ -21,7 +21,6 @@
 
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +30,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TransMemoryResultItem extends SearchResultItem implements Serializable, IsSerializable
+public class TransMemoryResultItem extends SearchResultItem implements IsSerializable
 {
-   private static final long serialVersionUID = 1L;
-
    private ArrayList<String> sourceContents;
    private ArrayList<String> targetContents;
 

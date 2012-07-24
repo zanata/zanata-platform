@@ -1,15 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.and;
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
@@ -24,12 +16,9 @@ import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerRegistration;
 
 @Test(groups = { "unit-tests" })
-public class NotificationPresenterTest
+public class NotificationPresenterTest extends PresenterTest
 {
    private NotificationPresenter notificationPresenter;
 
@@ -50,25 +39,21 @@ public class NotificationPresenterTest
    @BeforeClass
    public void createMocks()
    {
-      mockDismiss = createMock(HasClickHandlers.class);
-      mockClear = createMock(HasClickHandlers.class);
-      mockDisplay = createMock(NotificationPresenter.Display.class);
-      mockEventBus = createMock(EventBus.class);
-      mockListener = createMock(HasNotificationLabel.class);
+      mockDismiss = createAndAddMock(HasClickHandlers.class);
+      mockClear = createAndAddMock(HasClickHandlers.class);
+      mockDisplay = createAndAddMock(NotificationPresenter.Display.class);
+      mockEventBus = createAndAddMock(EventBus.class);
+      mockListener = createAndAddMock(HasNotificationLabel.class);
 
-      capturedDismissClickHandler = new Capture<ClickHandler>();
-      capturedClearClickHandler = new Capture<ClickHandler>();
-      capturedNotificationEventHandler = new Capture<NotificationEventHandler>();
+      capturedDismissClickHandler = addCapture(new Capture<ClickHandler>());
+      capturedClearClickHandler = addCapture(new Capture<ClickHandler>());
+      capturedNotificationEventHandler = addCapture(new Capture<NotificationEventHandler>());
    }
 
    @BeforeMethod
    void beforeMethod()
    {
-      resetAllMocks();
-      resetAllCaptures();
-
-      setupDefaultMockExpectations();
-
+      resetAll();
       notificationPresenter = new NotificationPresenter(mockDisplay, mockEventBus);
    }
 
@@ -183,52 +168,29 @@ public class NotificationPresenterTest
       verifyAllMocks();
    }
 
-   private void setupDefaultMockExpectations()
+   @Override
+   protected void setDefaultBindExpectations()
    {
       expectHandlerRegistrations();
       expectPresenterSetupActions();
       setupMockGetterReturnValues();
    }
 
-   @SuppressWarnings("unchecked")
    private void expectHandlerRegistrations()
    {
       expectClickHandlerRegistration(mockDismiss, capturedDismissClickHandler);
       expectClickHandlerRegistration(mockClear, capturedClearClickHandler);
-      expectEventHandlerRegistration(NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
-   }
-
-   /**
-    * Expect a single handler registration on a mock object, and capture the
-    * click handler in the given {@link Capture}
-    * 
-    * @param mockObjectToClick
-    * @param captureForHandler
-    */
-   private void expectClickHandlerRegistration(HasClickHandlers mockObjectToClick, Capture<ClickHandler> captureForHandler)
-   {
-      expect(mockObjectToClick.addClickHandler(and(capture(captureForHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-   }
-
-   private <H extends EventHandler> void expectEventHandlerRegistration(Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
-   {
-      expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expectEventHandlerRegistration(mockEventBus, NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
    }
 
    private void expectPresenterSetupActions()
    {
       mockDisplay.setModal(false);
-      expectLastCall().once();
       mockDisplay.setAutoHideEnabled(true);
-      expectLastCall().once();
       mockDisplay.setAnimationEnabled(true);
-      expectLastCall().once();
       mockDisplay.hide(true);
-      expectLastCall().once();
       mockDisplay.setMessagesToKeep(MSG_TO_KEEP);
-      expectLastCall().once();
       mockDisplay.setPopupTopRightCorner();
-      expectLastCall().once();
       mockDisplay.setMessageOrder(DisplayOrder.ASCENDING);
    }
 
@@ -236,28 +198,5 @@ public class NotificationPresenterTest
    {
       expect(mockDisplay.getDismissButton()).andReturn(mockDismiss).anyTimes();
       expect(mockDisplay.getClearButton()).andReturn(mockClear).anyTimes();
-   }
-
-
-   private void resetAllCaptures()
-   {
-      capturedNotificationEventHandler.reset();
-      capturedDismissClickHandler.reset();
-      capturedClearClickHandler.reset();
-   }
-
-   private void resetAllMocks()
-   {
-      reset(mockDisplay, mockEventBus, mockDismiss, mockClear, mockListener);
-   }
-
-   private void replayAllMocks()
-   {
-      replay(mockDisplay, mockEventBus, mockDismiss, mockClear, mockListener);
-   }
-
-   private void verifyAllMocks()
-   {
-      verify(mockDisplay, mockEventBus, mockDismiss, mockClear, mockListener);
    }
 }

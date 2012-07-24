@@ -1,13 +1,12 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 
-public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
 {
-   private static final long serialVersionUID = 2559654736449082598L;
    private DocumentId id;
    private String name;
    private String path;

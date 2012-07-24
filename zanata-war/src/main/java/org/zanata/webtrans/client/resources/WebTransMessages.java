@@ -316,6 +316,12 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Editor navigation")
    String navigationScope();
+   
+   @DefaultMessage("Translation memory")
+   String tmScope();
+   
+   @DefaultMessage("Glossary")
+   String glossaryScope();
 
    @DefaultMessage("Toggle individual row action buttons (changes for next search)")
    String toggleRowActionButtons();
@@ -364,4 +370,13 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Show dashboard")
    String showDashboardKeyShortcut();
+   
+   @DefaultMessage("Search translation memory")
+   String searchTM();
+
+   @DefaultMessage("Search glossary")
+   String searchGlossary();
+
+   @DefaultMessage("Chat")
+   String chatScope();
 }
