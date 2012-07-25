@@ -723,6 +723,9 @@ public class DocumentListPresenterTest
       expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
       expect(mockWindowLocation.getParameterMap()).andReturn(windowLocationParameters).anyTimes();
       expect(mockWindowLocation.getQueryDocuments()).andReturn(windowLocationParameters.get("doc")).anyTimes();
+
+      mockUserWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats()));
+      expectLastCall().anyTimes();
    }
 
    @SuppressWarnings("unchecked")
