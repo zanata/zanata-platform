@@ -30,15 +30,11 @@ import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.client.history.History;
-import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -75,8 +71,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
    private final GlossaryDetailsPresenter glossaryDetailsPresenter;
-   private final DocumentListPresenter docListPresenter;
-   private final History history;
    private final WebTransMessages messages;
    private GetGlossary submittedRequest = null;
    private GetGlossary lastRequest = null;
@@ -108,15 +102,13 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    }
 
    @Inject
-   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, GlossaryDetailsPresenter glossaryDetailsPresenter, DocumentListPresenter docListPresenter, History history, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter)
+   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, GlossaryDetailsPresenter glossaryDetailsPresenter, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.userWorkspaceContext = userWorkspaceContext;
       this.glossaryDetailsPresenter = glossaryDetailsPresenter;
-      this.docListPresenter = docListPresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
-      this.history = history;
       this.messages = messages;
       dataProvider = new ListDataProvider<GlossaryResultItem>();
       display.setDataProvider(dataProvider);
@@ -203,14 +195,10 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private void createGlossaryRequest(final String query, GetGlossary.SearchType searchType)
    {
       display.startProcessing();
-
-      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-      DocumentId docId = docListPresenter.getDocumentId(token.getDocumentPath());
-      DocumentInfo docInfo = docListPresenter.getDocumentInfo(docId);
       LocaleId srcLocale = LocaleId.EN_US;
-      if (docInfo != null)
+      if (userWorkspaceContext.getSelectedDoc().getSourceLocale() != null)
       {
-         srcLocale = docInfo.getSourceLocale();
+         srcLocale = userWorkspaceContext.getSelectedDoc().getSourceLocale();
       }
       final GetGlossary action = new GetGlossary(query, userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(), srcLocale, searchType);
       scheduleGlossaryRequest(action);

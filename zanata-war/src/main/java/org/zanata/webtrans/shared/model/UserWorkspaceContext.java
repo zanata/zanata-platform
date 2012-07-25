@@ -6,6 +6,7 @@ public class UserWorkspaceContext implements IsSerializable
 {
    private boolean isProjectActive;
    private boolean hasWriteAccess;
+   private DocumentInfo selectedDoc;
 
    private WorkspaceContext workspaceContext;
 
@@ -46,9 +47,19 @@ public class UserWorkspaceContext implements IsSerializable
    {
       return workspaceContext;
    }
-   
+
    public boolean hasReadOnlyAccess()
    {
       return (!isProjectActive() || !hasWriteAccess());
+   }
+
+   public void setSelectedDoc(DocumentInfo selectedDoc)
+   {
+      this.selectedDoc = selectedDoc;
+   }
+
+   public DocumentInfo getSelectedDoc()
+   {
+      return selectedDoc;
    }
 }

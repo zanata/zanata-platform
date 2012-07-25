@@ -127,6 +127,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                token.setView(MainView.Editor);
                token.setDocumentPath(object.getDocInfo().getPath() + object.getDocInfo().getName());
                history.newItem(token);
+               userworkspaceContext.setSelectedDoc(object.getDocInfo());
             }
          }
          super.setSelected(object, selected);
@@ -192,6 +193,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                // don't carry searches over to the next document
                token.setSearchText("");
                history.newItem(token);
+               userworkspaceContext.setSelectedDoc(event.getSelectedItem());
             }
          }
       }));
