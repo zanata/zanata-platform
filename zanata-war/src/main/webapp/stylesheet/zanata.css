@@ -2,7 +2,6 @@
 	width: 1024px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top:32px;
 	background-color: #ffffff;
 }
 
@@ -29,9 +28,9 @@
 #bd {
 	min-height: 400px;
 	width: 100%;
-	padding: 10px 0;
 	float: left;
 	text-align: left;
+	margin-bottom:35px
 }
 
 .code {
@@ -492,7 +491,6 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	background: -moz-linear-gradient(top, #354F71 0%, #1A2D45 100%);
 	background: -o-linear-gradient(top, #354F71 0%, #1A2D45 100%);
 	background: -ms-linear-gradient(top, #354F71 0%, #1A2D45 100%);
-	position:fixed;
 	top:0px;
 }
 
@@ -586,7 +584,8 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 #userCol img.avatar {
 	padding: 0;
-	border: 1px solid white;
+	border: 1px solid grey;
+	background:#FFFFFF;
 }
 
 #menuCol a.text {

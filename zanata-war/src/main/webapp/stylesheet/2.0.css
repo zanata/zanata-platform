@@ -259,9 +259,9 @@
 	background-color: #EEE;
 	empty-cells: show;
 	border-collapse: collapse;
-	border-radius: 10px;
+	border-radius: 5px;
 	/* This is for the faux 3D effect */
-	box-shadow: 5px 5px 5px #888888;
+	box-shadow: 1px 1px 5px #888888;
 }
 
 .rich-table tbody tr:hover {
@@ -281,15 +281,15 @@ table {
 }
 
 .rich-table-subheader th:first-child {
-	border-top-left-radius: 10px;
+	border-top-left-radius: 5px;
 }
 
 .rich-table-subheader th:last-child {
-	border-top-right-radius: 10px;
+	border-top-right-radius: 5px;
 }
 
 .rich-table-subheadercell { /*border-right: solid 1px silver;*/
-	padding: 10px 10px 10px 10px;
+	padding: 8px 8px 8px 8px;
 	text-align: center;
 	font-size: 11px;
 	/*color: black;*/
@@ -311,7 +311,7 @@ th,td {
 .rich-table-cell { /*border-right: solid 1px silver;
         border-bottom: solid 1px silver;*/
 	border-top: solid 2px white;
-	padding: 10px 10px 10px 10px;
+	padding: 8px 8px 8px 8px;
 	font-size: 11px;
 	color: black;
 	font-family: Arial, Verdana, sans-serif;
@@ -329,7 +329,7 @@ th,td {
 	background-color: #EEE;
 	border-color: silver;
 	/* This is for the faux 3D effect */
-	box-shadow: 5px 5px 5px #888888;
+	box-shadow: 1px 1px 5px #888888;
 }
 
 .rich-panel .rich-panel-header {
@@ -378,15 +378,8 @@ th,td {
 }
 /* End of Richfaces Panel styles */
 
-/* Richfaces Data Scroller styles */
-.rich-dtascroller-table { /*border-color: silver;
-        background-color: white;*/
-	
-}
-
-.rich-dtascroller-table { /*border-width: 1px;
-        border-style: solid;*/
-	
+.rich-dtascroller-table { 
+	border:none;
 }
 
 .rich-datascr-button-dsbld {
@@ -448,7 +441,7 @@ th,td {
 .rich-datascr-button {
 	border-width: 1px;
 	border-style: solid;
-	width: 25px;
+	width: 23px;
 	cursor: pointer;
 	text-align: center;
 }
@@ -463,7 +456,7 @@ th,td {
 
 .rich-datascr-act { /*border-top-width: 2px;
         border-top-style: solid;*/
-	width: 25px;
+	width: 23px;
 	text-align: center;
 	border-radius: 5px;
 	padding: 5px;
@@ -478,14 +471,14 @@ th,td {
 
 .rich-datascr-inact { /* border-top-width: 2px;
         border-top-style: solid;*/
-	width: 25px;
+	width: 23px;
 	cursor: pointer;
 	text-align: center;
 	border-width: 1px;
 	border-color: #5F5F5F;
 	border-style: solid;
 	border-radius: 5px;
-	padding: 5px;
+	padding: 3px;
 }
 
 .rich-datascr-inact:hover {
