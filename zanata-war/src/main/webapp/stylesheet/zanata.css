@@ -1,8 +1,20 @@
 #container {
+	width: 900px;
+	margin: 0 auto;
+	background-color: #ffffff;
+}
+
+/* new container
+#container {
 	width: 1024px;
 	margin-left: auto;
 	margin-right: auto;
 	background-color: #ffffff;
+} */
+
+#localeSelector {
+	float: left;
+	width: 100px;
 }
 
 #yui-main {
@@ -28,10 +40,18 @@
 #bd {
 	min-height: 400px;
 	width: 100%;
+	padding: 10px 0;
+	float: left;
+	text-align: left;
+}
+
+/* new #bd {
+	min-height: 400px;
+	width: 100%;
 	float: left;
 	text-align: left;
 	margin-bottom:35px
-}
+} */
 
 .code {
 	color: grey;
@@ -341,7 +361,29 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* ----------------------- End Header CSS  -------------------------*/
 
 /* -----------------------  Footer CSS  -------------------------*/
+#ft {
+	background: url('../images/footer_background.png') 0 0 repeat-x;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	float: left;
+}
 
+#footer {
+	width: 100%;
+	line-height: 20px;
+	text-align: center;
+	padding-top: 10px;
+}
+
+#footer-text {
+	float: left;
+	margin-left: 100px;
+	width: 700px;
+}
+
+/* new footer */
 .footer
 {
 	width: 100%;
@@ -480,7 +522,123 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* -----------------------  End JSF components CSS  -------------------------*/
 
 /* -----------------------  Top menu CSS  -------------------------*/
+/* Caution! Ensure accessibility in print and other media types... */
+@media projection , screen {
+	/* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
+	.ui-tabs-hide {
+		display: none;
+	}
+}
 
+/* Hide useless elements in print layouts... */
+@media print {
+	.ui-tabs-nav {
+		display: none;
+	}
+}
+
+#tabs-menu {
+	background: url('../images/bar_background.png') 0 0 repeat-x;
+	border: 1px solid #EAEAEA;
+	border-bottom-color: #CACACA;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	float: left;
+	width: 900px;
+	height: 40px;
+}
+
+#tabs .ui-tabs-nav {
+	margin: 0 0;
+	padding:0;
+	position:relative;
+	z-index:1;
+}
+
+#tabs .ui-tabs-nav li {
+	line-height: 40px;
+	list-style: none;
+	float: left;
+	min-width: 84px; /* be nice to Opera */
+}
+
+#tabs .ui-tabs-nav li a {
+	color: #000000;
+	white-space: nowrap; /* required in IE 6 */
+	height:40px;
+	font-weight:bold;
+	padding: 0 15px;
+}
+
+#tabs .ui-tabs-nav li.ui-tabs-selected {
+	border-top: 1px solid #C1BFBF;
+	border-left: 1px solid #C1BFBF;
+}
+
+#tabs .ui-tabs-nav li.ui-tabs-selected a {
+	background-color: #d3d3d3;
+	color: black;
+	margin-top: 0;
+	height:40px;
+	display:block;
+}
+
+#tabs img {
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+#tabs .ui-tabs-nav a,.ui-tabs-nav a span {
+	display: block;
+	width:auto;
+	cursor:pointer;
+	outline: 0 none;
+}
+
+.ui-tabs-nav-issues {
+	position: relative;
+}
+
+.ui-tabs-nav-issues ul {
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	display: none;
+	border: 1px solid #ddd;
+	margin:0;
+	padding-left:0px;
+}
+
+.ui-tabs-nav-issues:hover ul {
+	display: block;
+	position: absolute;
+}
+
+.ui-tabs-nav-issues ul li a {
+	background: #eeeeee !important;
+	padding: 0 !important;
+	text-align: left !important;
+	border-bottom: 1px solid #ddd;
+	height: 12px !important;
+	font-weight: normal !important;
+	padding: 8px 10px !important;
+	line-height: 1.2em;
+	margin:0px;
+}
+
+.ui-tabs-loading em {
+	padding: 0 0 0 20px;
+	background: url(../images/loading.gif) no-repeat 0 50%;
+}
+
+.ui-tabs-nav-issues ul li a:hover {
+	background-color: #dddddd !important;
+}
+
+.ui-tabs-nav-issues ul li {
+	width: 180px;
+}
 
 /* new menu bar */
 .header {
