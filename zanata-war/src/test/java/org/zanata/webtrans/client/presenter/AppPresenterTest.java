@@ -146,6 +146,8 @@ public class AppPresenterTest extends PresenterTest
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
       mockNotificationPresenter = createAndAddMock(NotificationPresenter.class);
+      mockLayoutPresenter = createAndAddMock(LayoutSelectorPresenter.class);
+      mockDashboardPresenter = createAndAddMock(DashboardPresenter.class);
    }
 
    private void createAllCaptures()
@@ -748,6 +750,9 @@ public class AppPresenterTest extends PresenterTest
 
       mockTranslationPresenter.concealDisplay();
       expectLastCall().once();
+
+      mockDashboardPresenter.concealDisplay();
+      expectLastCall().anyTimes();
 
       // due to this display beginning as concealed
       mockSearchResultsPresenter.concealDisplay();
