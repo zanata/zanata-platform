@@ -47,7 +47,9 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
+
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -60,7 +62,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display>
+
+public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements HasLayoutSelection
 {
    public interface Display extends WidgetDisplay
    {
@@ -165,6 +168,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       translationEditorPresenter.bind();
       optionsPanelPresenter.bind();
 
+
       registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {
          @Override
@@ -236,16 +240,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             boolean shouldShowOptions = event.getValue();
-            if (shouldShowOptions)
-            {
-               display.setSidePanelVisible(true);
-               display.setOptionsToggleTooltip(messages.hideEditorOptions());
-            }
-            else
-            {
-               display.setSidePanelVisible(false);
-               display.setOptionsToggleTooltip(messages.showEditorOptions());
-            }
+            setOptionsExpended(shouldShowOptions);
          }
       }));
 
@@ -371,6 +366,19 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          unbindSouthPanelPresenters();
       }
    }
+   
+   private void setOptionsExpended(boolean shouldShowOptions){
+      if (shouldShowOptions)
+      {
+         display.setSidePanelVisible(true);
+         display.setOptionsToggleTooltip(messages.hideOptions());
+      }
+      else
+      {
+         display.setSidePanelVisible(false);
+         display.setOptionsToggleTooltip(messages.showOptions());
+      }
+   }
 
    private void bindSouthPanelPresenters()
    {
@@ -384,6 +392,18 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       transMemoryPresenter.unbind();
       glossaryPresenter.unbind();
       workspaceUsersPresenter.unbind();
+   }
+
+   @Override
+   public void setSouthPanelVisible(boolean visible)
+   {
+      display.getSouthPanelToggle().setValue(visible, true);
+   }
+
+   @Override
+   public void setSidePanelVisible(boolean visible)
+   {
+      display.getOptionsToggle().setValue(visible, true);
    }
 
    public void concealDisplay()

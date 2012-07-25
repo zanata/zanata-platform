@@ -46,10 +46,12 @@ import org.zanata.webtrans.client.history.WindowLocationImpl;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.EventWrapperImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.DashboardPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
+import org.zanata.webtrans.client.presenter.LayoutSelectorPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
@@ -73,10 +75,12 @@ import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.view.AppView;
+import org.zanata.webtrans.client.view.DashboardView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryView;
 import org.zanata.webtrans.client.view.KeyShortcutView;
+import org.zanata.webtrans.client.view.LayoutSelectorView;
 import org.zanata.webtrans.client.view.NotificationView;
 import org.zanata.webtrans.client.view.SearchResultsView;
 import org.zanata.webtrans.client.view.TransMemoryDetailsView;
@@ -110,6 +114,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(ValidationService.class).in(Singleton.class);
 
       bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
+      bindPresenter(DashboardPresenter.class, DashboardPresenter.Display.class, DashboardView.class);
       bindPresenter(KeyShortcutPresenter.class, KeyShortcutPresenter.Display.class, KeyShortcutView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
@@ -126,6 +131,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationPresenter.Display.class, NotificationView.class);
+      bindPresenter(LayoutSelectorPresenter.class, LayoutSelectorPresenter.Display.class, LayoutSelectorView.class);
 
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);

@@ -378,9 +378,10 @@ public class TranslationPresenterTest extends PresenterTest
       expect(mockMessages.navigateToNextRow()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
       expect(mockMessages.navigateToPreviousRow()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
       expect(mockMessages.openEditorInSelectedRow()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
-      expect(mockMessages.showEditorOptions()).andReturn(TEST_SHOW_OPTIONS_TOOLTIP).anyTimes();
-      expect(mockMessages.hideEditorOptions()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
       
+      expect(mockMessages.showOptions()).andReturn(TEST_SHOW_OPTIONS_TOOLTIP).anyTimes();
+      expect(mockMessages.hideOptions()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
+
       expect(mockKeyShortcutPresenter.register(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(3);
       
       expectEventHandlerRegistration(mockEventBus, EnterWorkspaceEvent.getType(), EnterWorkspaceEventHandler.class, capturedEnterWorkspaceEventHandler);

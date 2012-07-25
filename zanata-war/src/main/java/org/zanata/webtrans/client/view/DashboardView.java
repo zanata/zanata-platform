@@ -18,20 +18,46 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui;
+package org.zanata.webtrans.client.view;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.MenuItem;
+import org.zanata.webtrans.client.presenter.DashboardPresenter;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.UiMessages;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
- **/
-public class MenuCommandItem extends MenuItem implements HasCommand
+ *
+ */
+public class DashboardView extends Composite implements DashboardPresenter.Display
 {
-   public MenuCommandItem(String text, Command cmd)
+   private static DashboardViewUiBinder uiBinder = GWT.create(DashboardViewUiBinder.class);
+
+   @UiField
+   FlexTable rootTable;
+   
+   interface DashboardViewUiBinder extends UiBinder<Widget, DashboardView>
    {
-      super(text, cmd);
    }
+   
+   @Inject
+   public DashboardView(final UiMessages messages, Resources resources)
+   {
+      initWidget(uiBinder.createAndBindUi(this));
+   }
+   
+   @Override
+   public Widget asWidget()
+   {
+      return this;
+   }
+
 }

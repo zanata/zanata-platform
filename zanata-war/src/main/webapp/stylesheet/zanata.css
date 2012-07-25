@@ -4,6 +4,14 @@
 	background-color: #ffffff;
 }
 
+/* new container
+#container {
+	width: 1024px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #ffffff;
+} */
+
 #localeSelector {
 	float: left;
 	width: 100px;
@@ -36,6 +44,14 @@
 	float: left;
 	text-align: left;
 }
+
+/* new #bd {
+	min-height: 400px;
+	width: 100%;
+	float: left;
+	text-align: left;
+	margin-bottom:35px
+} */
 
 .code {
 	color: grey;
@@ -366,6 +382,43 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	margin-left: 100px;
 	width: 700px;
 }
+
+/* new footer */
+.footer
+{
+	width: 100%;
+	height: 34px;
+	background: -webkit-linear-gradient(top, #1A2D45  0%,  #354F71 100%);
+	background: -moz-linear-gradient(top, #1A2D45 0%, #354F71 100%);
+	background: -o-linear-gradient(top, #1A2D45 0%, #354F71 100%);
+	background: -ms-linear-gradient(top, #1A2D45 0%,#354F71 100%);
+	position:fixed;
+	bottom:0px;
+	color:#D3D3D3;
+	text-align:center;
+}
+
+.footer a
+{
+	color:#D3D3D3;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+.footer a:hover
+{
+	color:white;
+}
+
+.footer #localeSelector {
+	float: right;
+}
+
+.footer div
+{
+	display:inline-table;
+}
+
 /* -----------------------  End Footer CSS  -------------------------*/
 
 /* -----------------------  Loading Frame CSS (loading.xhtml)  -------------------------*/
@@ -586,6 +639,195 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 .ui-tabs-nav-issues ul li {
 	width: 180px;
 }
+
+/* new menu bar */
+.header {
+	width: 100%;
+	height: 34px;
+	margin: 0;
+	background: -webkit-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -moz-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -o-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -ms-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	top:0px;
+}
+
+.logo {
+	width: 145px;
+}
+
+.navBar {
+	width: 1024px;
+	height: 100%;
+	margin: 0 auto;
+}
+
+.navBar ul {
+	display: table;
+	width: 100%;
+	float: none;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0px;
+}
+
+.navBar ul li {
+	display: table-cell;
+	float: none;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	vertical-align: middle;
+	border-right: 1px solid #000000;
+	box-shadow: inset 1px 0 0 #6A7D95;
+}
+
+.navBar ul li:hover {
+	background: #1A2D45;
+}
+
+.navBar ul li a {
+	display: block;
+	height: 33px;
+	line-height: 33px;
+	font-size: 13px;
+	color: white;
+	font-family: helvetica;
+	font-weight: bold;
+	text-decoration: none;
+	outline: none;
+	width: 160px;
+	margin: 0 auto;
+}
+
+.navBar ul li:hover a {
+	border-right: none;
+	box-shadow: none;
+}
+
+.navBar ul li img {
+	margin-right: 4px;
+	vertical-align: middle;
+}
+
+#logoCol, #logoCol:hover {
+	width: 750px;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background: none;
+}
+
+#logoCol a {
+	margin-left: 0px;
+}
+
+#logoCol a:hover {
+	background: none;
+}
+
+#logoCol img {
+	padding-top: 3px;
+}
+
+
+#translationCol {
+	box-shadow: none;
+}
+
+#userCol {
+	width: auto;
+}
+
+#userCol img.avatar {
+	padding: 0;
+	border: 1px solid grey;
+	background:#FFFFFF;
+}
+
+#menuCol a.text {
+	text-align: center;
+	width: 30px;
+	font-size: 18px;
+}
+
+#menuCol, #menuCol:hover {
+	border-right: none;
+}
+
+#menuCol:hover {
+	background: #7E91A9;
+}
+
+#menuCol .submenu {
+    margin-left:-130px;
+}
+
+div.submenu {
+	height: 0px;
+	position: absolute;
+	width: 160px;
+	overflow: hidden;
+	z-index: 999;
+}
+
+.navBar li:hover div.submenu {
+	height: auto;
+	position: absolute;
+	-webkit-transition: ease-in-out .1s;
+	-moz-transition: ease-in-out .1s;
+	-o-transition: ease-in-out .1s;
+	-ms-transition: ease-in-out .1s;
+	transition: ease-in-out .1s;
+	border-top: 1px solid #1A2D45;
+	-webkit-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	-moz-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+}
+
+div.submenu ul {
+	border: 1px solid lightgrey;
+}
+
+div.submenu ul li {
+	display: block;
+	width: 100%;
+	float: left;
+	text-align: left;
+	height: auto;
+	color: black;
+	border-bottom: 1px solid #DDDDDD;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background:#FFFFFF;
+}
+
+div.submenu ul li:last-child {
+	border-bottom: none;
+}
+
+div.submenu ul li:hover {
+	background: #BACDE5;
+}
+
+div.submenu ul li a {
+	color: #454545;
+	font-size: 12px;
+	text-shadow: none;
+	line-height: 28px;
+	text-align: left;
+	width: 160px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+div.submenu img {
+	border: none;
+}
+
 /* -----------------------  End Top menu CSS  -------------------------*/
 
 /* -----------------------  Login form CSS  -------------------------*/

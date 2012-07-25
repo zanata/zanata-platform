@@ -38,7 +38,6 @@ import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -87,15 +86,13 @@ public class AppPresenterTest extends PresenterTest
    WebTransMessages mockMessages;
    Person mockPerson;
 
-   HasCommand mockLeaveWorkspaceMenuItem;
-   HasCommand mockSignoutMenuItem;
-   HasCommand mockHelpMenuItem;
-
    KeyShortcutPresenter mockKeyShortcutPresenter;
    DocumentListPresenter mockDocumentListPresenter;
    SearchResultsPresenter mockSearchResultsPresenter;
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
+   LayoutSelectorPresenter mockLayoutPresenter;
+   DashboardPresenter mockDashboardPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -115,10 +112,6 @@ public class AppPresenterTest extends PresenterTest
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
    private Capture<PresenterRevealedHandler> capturedPresenterRevealedHandler;
-
-   private Capture<Command> capturedLeaveWorkspaceLinkCommand;
-   private Capture<Command> capturedSignoutLinkCommand;
-   private Capture<Command> capturedHelpLinkCommand;
 
    private DocumentInfo testDocInfo;
    private DocumentId testDocId;
@@ -144,18 +137,15 @@ public class AppPresenterTest extends PresenterTest
       mockHistory = createAndAddMock(History.class);
       mockIdentity = createAndAddMock(Identity.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
-      mockLeaveWorkspaceMenuItem = createAndAddMock(HasCommand.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
       mockPerson = createAndAddMock(Person.class);
       mockSearchResultsPresenter = createAndAddMock(SearchResultsPresenter.class);
-      mockSignoutMenuItem = createAndAddMock(HasCommand.class);
       mockTranslationPresenter = createAndAddMock(TranslationPresenter.class);
       mockWindow = createAndAddMock(Window.class);
       mockWindowLocation = createAndAddMock(Window.Location.class);
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
       mockNotificationPresenter = createAndAddMock(NotificationPresenter.class);
-      mockHelpMenuItem = createAndAddMock(HasCommand.class);
    }
 
    private void createAllCaptures()
@@ -172,17 +162,13 @@ public class AppPresenterTest extends PresenterTest
       capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
       capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
       capturedPresenterRevealedHandler = new Capture<PresenterRevealedHandler>();
-
-      capturedSignoutLinkCommand = new Capture<Command>();
-      capturedLeaveWorkspaceLinkCommand = new Capture<Command>();
-      capturedHelpLinkCommand = new Capture<Command>();
    }
 
    @BeforeMethod
    void beforeMethod()
    {
       resetAll();
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockDashboardPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
    }
@@ -716,6 +702,14 @@ public class AppPresenterTest extends PresenterTest
       expectLastCall().once();
       mockNotificationPresenter.bind();
       expectLastCall().once();
+
+      mockLayoutPresenter.bind();
+      expectLastCall().once();
+      mockLayoutPresenter.setLayoutListener(mockTranslationPresenter);
+      expectLastCall().once();
+      mockDashboardPresenter.bind();
+      expectLastCall().once();
+
    }
 
    @SuppressWarnings("unchecked")
@@ -738,8 +732,6 @@ public class AppPresenterTest extends PresenterTest
    {
       mockWindow.setTitle(TEST_WINDOW_TITLE);
       expectLastCall().once();
-      mockDisplay.setUserLabel(TEST_PERSON_NAME);
-      expectLastCall().anyTimes();
       mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
       expectLastCall().anyTimes();
       mockDisplay.setReadOnlyVisible(false);
@@ -760,24 +752,21 @@ public class AppPresenterTest extends PresenterTest
       // due to this display beginning as concealed
       mockSearchResultsPresenter.concealDisplay();
       expectLastCall().once();
-
-      mockLeaveWorkspaceMenuItem.setCommand(and(capture(capturedLeaveWorkspaceLinkCommand), isA(Command.class)));
+      
+      mockDisplay.initMenuList(isA(String.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
       expectLastCall().once();
-
-      mockHelpMenuItem.setCommand(and(capture(capturedHelpLinkCommand), isA(Command.class)));
-      expectLastCall().once();
-
-      mockSignoutMenuItem.setCommand(and(capture(capturedSignoutLinkCommand), isA(Command.class)));
-      expectLastCall().once();
+      
+      mockDisplay.setLayoutMenuVisible(false);
+      expectLastCall().anyTimes();
+      
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().anyTimes();
 
       expect(mockKeyShortcutPresenter.register(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
    }
 
    private void setupMockGetterReturnValues()
    {
-      expect(mockDisplay.getSignOutMenuItem()).andReturn(mockSignoutMenuItem).anyTimes();
-      expect(mockDisplay.getHelpMenuItem()).andReturn(mockHelpMenuItem).anyTimes();
-      expect(mockDisplay.getLeaveWorkspaceMenuItem()).andReturn(mockLeaveWorkspaceMenuItem).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
       expect(mockDisplay.getNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
 

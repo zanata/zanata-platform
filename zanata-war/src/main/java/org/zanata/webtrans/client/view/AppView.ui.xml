@@ -121,6 +121,16 @@
 		}
 
 		
+		.menuBar
+		{
+			width:150px;
+		}
+		
+		.menuItem
+		{
+			width:150px;
+		}
+		
 	</ui:style>
 	<g:LayoutPanel>
 		<g:layer top="0px" height="35px">

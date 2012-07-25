@@ -61,16 +61,16 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
 
-   @DefaultMessage("Show Editor Options")
-   String showEditorOptions();
+   @DefaultMessage("Show Options")
+   String showOptions();
 
-   @DefaultMessage("Hide Editor Options")
-   String hideEditorOptions();
+   @DefaultMessage("Hide Options")
+   String hideOptions();
 
-   @DefaultMessage("► Options")
+   @DefaultMessage("▲ Options")
    String showEditorOptionsLabel();
 
-   @DefaultMessage("◄ Options")
+   @DefaultMessage("▼ Options")
    String hideEditorOptionsLabel();
 
    @DefaultMessage("▼ Minimise")
@@ -286,6 +286,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("▼")
    String downArrow();
+   
+   @DefaultMessage("Layout Selection")
+   String layoutSelection();
 
    @DefaultMessage("Notification")
    String notification();
@@ -361,6 +364,12 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Close keyboard shortcuts list")
    String closeShortcutView();
+
+   @DefaultMessage("Dashboard")
+   String dashboard();
+
+   @DefaultMessage("Show dashboard")
+   String showDashboardKeyShortcut();
    
    @DefaultMessage("Search translation memory")
    String searchTM();
