@@ -33,7 +33,6 @@ import org.jboss.seam.log.Log;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -95,7 +94,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          filterConstraints.ignoreTarget();
       }
       // TODO handle exception thrown by search service
-      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
+      List<HTextFlow> matchingFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
       log.info("Returned {0} results for search", matchingFlows.size());
 
       HLocale hLocale;
@@ -117,7 +116,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
       }
 
 
-      for (HTextFlowTarget htft : matchingFlows)
+      for (HTextFlow textFlow : matchingFlows)
       {
          // FIXME temporary check for leading and trailing whitespace to compensate
          // for NGramAnalyzer trimming strings before tokenization. This should
@@ -126,9 +125,9 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          if (needsWhitespaceCheck)
          {
             boolean whitespaceMatch = false;
-            if (action.isSearchInTarget())
+            if (action.isSearchInSource())
             {
-               for (String content : htft.getContents())
+               for (String content : textFlow.getContents())
                {
                   String contentStr = content;
                   if (!action.isCaseSensitive())
@@ -142,9 +141,10 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
                   }
                }
             }
-            if (!whitespaceMatch && action.isSearchInSource())
+            if (!whitespaceMatch && action.isSearchInTarget())
             {
-               for (String content : htft.getTextFlow().getContents())
+               List<String> targetContents = textFlow.getTargets().get(hLocale.getId()).getContents();
+               for (String content : targetContents)
                {
                   String contentStr = content;
                   if (!action.isCaseSensitive())
@@ -164,17 +164,16 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
             }
          }
 
-         HTextFlow htf = htft.getTextFlow();
-         List<TransUnit> listForDoc = matchingTUs.get(htf.getDocument().getId());
+         List<TransUnit> listForDoc = matchingTUs.get(textFlow.getDocument().getId());
          if (listForDoc == null)
          {
             listForDoc = new ArrayList<TransUnit>();
          }
 
-         TransUnit transUnit = transUnitTransformer.transform(htf, hLocale);
+         TransUnit transUnit = transUnitTransformer.transform(textFlow, hLocale);
          listForDoc.add(transUnit);
-         matchingTUs.put(htf.getDocument().getId(), listForDoc);
-         docPaths.put(htf.getDocument().getId(), htf.getDocument().getDocId());
+         matchingTUs.put(textFlow.getDocument().getId(), listForDoc);
+         docPaths.put(textFlow.getDocument().getId(), textFlow.getDocument().getDocId());
       }
 
       return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
