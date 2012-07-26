@@ -211,17 +211,11 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          @SuppressWarnings("unchecked")
          List<HTextFlow> matchedSources = (List<HTextFlow>) ftQuery.getResultList();
          log.info("got {} HTextFLow results", matchedSources.size());
-         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
          for (HTextFlow htf : matchedSources)
          {
-            HTextFlowTarget htft = htf.getTargets().get(hLocale.getId());
-            if (htft != null && htft.getState() != ContentState.New)
+            if (!resultList.contains(htf))
             {
-               // TODO filter other states?
-               if (!resultList.contains(htf))
-               {
-                  resultList.add(htf);
-               }
+               resultList.add(htf);
             }
          }
       }
