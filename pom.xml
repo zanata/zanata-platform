@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+		<relativePath></relativePath>
+	</parent>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
 	<version>6-SNAPSHOT</version>
@@ -962,21 +968,5 @@
         <maven>3.0</maven>
     </prerequisites>
 
-	<distributionManagement>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>cloudbees-private-release-repository</id>
-			<name>cloudbees-private-release-repository</name>
-			<url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
-			<layout>default</layout>
-		</repository>
-		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>cloudbees-private-snapshot-repository</id>
-			<name>cloudbees-private-snapshot-repository</name>
-			<url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
-			<layout>default</layout>
-		</snapshotRepository>
-	</distributionManagement>
-
 </project>
+
