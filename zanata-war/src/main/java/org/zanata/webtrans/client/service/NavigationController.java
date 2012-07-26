@@ -69,20 +69,18 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final TransUnitNavigationService navigationService;
-   private final TransUnitsDataModel dataModel;
    private final UserConfigHolder configHolder;
    private final TableEditorMessages messages;
-   private final TransUnitsPageModel pageModel;
+   private final SinglePageDataModel pageModel;
    //tracking variables
    private GetTransUnitActionContext context;
 
    @Inject
-   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder, TableEditorMessages messages, TransUnitsPageModel pageModel)
+   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModel pageModel)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.navigationService = navigationService;
-      this.dataModel = dataModel;
       this.configHolder = configHolder;
       this.messages = messages;
       this.pageModel = pageModel;
@@ -132,8 +130,6 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
             ArrayList<TransUnit> units = result.getUnits();
             Log.info("result unit: " + units.size());
             pageModel.setData(units);
-//            dataModel.setList(units);
-//            dataModel.refresh(); // force the display to re-render
 
             // default values
             int gotoRow = 0;
@@ -146,9 +142,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
                gotoRow = result.getGotoRow() % itemPerPage;
             }
             navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
-//            TransUnitId goToRowId = result.getUnits().get(gotoRow).getId();
             pageModel.setSelected(gotoRow);
-//            dataModel.selectById(goToRowId);
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
          }
       });
@@ -248,9 +242,9 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       }
    }
 
-   public TransUnitsDataModel getDataModel()
+   public SinglePageDataModel getDataModel()
    {
-      return dataModel;
+      return pageModel;
    }
 
    //TODO clean up this class dependency mess
@@ -287,8 +281,9 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
 
       if (navigationService.getCurrentPage() == targetPage)
       {
-         dataModel.selectById(targetTransUnitId);
-         navigationService.updateCurrentPageAndRowIndex(targetPage, dataModel.getIndexOnPage(targetTransUnitId));
+         int rowIndexOnPage = pageModel.findIndexById(targetTransUnitId);
+         pageModel.setSelected(rowIndexOnPage);
+         navigationService.updateCurrentPageAndRowIndex(targetPage, rowIndexOnPage);
       }
       else
       {
@@ -303,7 +298,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
-         dataModel.update(updatedTU);
+         pageModel.update(updatedTU);
       }
    }
 
@@ -355,7 +350,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
 
    private GetTransUnitActionContext setTargetTransUnitIdIfApplicable(GetTransUnitActionContext context)
    {
-      TransUnit selected = dataModel.getSelectedOrNull();
+      TransUnit selected = pageModel.getSelectedOrNull();
       return selected != null ? context.setTargetTransUnitId(selected.getId()) : context;
    }
 
@@ -364,8 +359,4 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext);
    }
 
-   public TransUnitsPageModel getPageModel()
-   {
-      return pageModel;
-   }
 }

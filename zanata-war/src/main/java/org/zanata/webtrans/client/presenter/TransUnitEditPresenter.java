@@ -34,18 +34,18 @@ import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
+import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
+import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
-import org.zanata.webtrans.client.service.TransUnitsDataModel;
-import org.zanata.webtrans.client.service.TransUnitsPageModel;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
-import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay2;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -54,7 +54,6 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
-import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -65,7 +64,7 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay2> implements
-      SelectionChangeEvent.Handler,
+      TransUnitSelectionHandler,
       WorkspaceContextUpdateEventHandler,
       NavTransUnitHandler,
       LoadingStateChangeEvent.Handler,
@@ -73,7 +72,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       FindMessageHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
-      TransUnitUpdatedEventHandler
+      TransUnitUpdatedEventHandler,
+      SinglePageDataModel.PageDataChangeListener
 {
 
    private final TransUnitEditDisplay2 display;
@@ -87,12 +87,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TargetContentsPresenter targetContentsPresenter;
    private final TransUnitSaveService saveService;
    private final TranslatorInteractionService translatorService;
-//   private final TransUnitsDataModel dataModel;
 
    //state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
    private FindMessageEvent findMessage = FindMessageEvent.DEFAULT;
-   private final TransUnitsPageModel pageModel;
+   private final SinglePageDataModel pageModel;
 
    //TODO too many constructor dependency
    @Inject
@@ -125,10 +124,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       targetContentsPresenter.initWidgets(5);
       initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
 
-//      dataModel = navigationController.getDataModel();
-      pageModel = navigationController.getPageModel();
+      pageModel = navigationController.getDataModel();
       pageModel.addDataChangeListener(this);
-//      dataModel.addDataDisplay(transUnitListDisplay);
    }
 
    //TODO read only is not handled
@@ -146,8 +143,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
+      eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
       transUnitListDisplay.addLoadingStateChangeHandler(this);
-//      dataModel.addSelectionChangeHandler(this);
    }
 
    @Override
@@ -161,10 +158,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    }
 
    @Override
-   public void onSelectionChange(SelectionChangeEvent event)
+   public void onTransUnitSelected(TransUnitSelectionEvent event)
    {
       if (hasTargetContentsChanged())
       {
+         Log.info("has pending change");
          savePendingChangeBeforeShowingNewSelection();
       }
       else
@@ -179,9 +177,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       if (selectedTransUnit != null)
       {
          Log.info("selected id: " + selectedTransUnit.getId());
-         sourceContentsPresenter.setValue(selectedTransUnit);
-         targetContentsPresenter.setValue(selectedTransUnit, null);
-         sourceContentsPresenter.setSelectedSource(0);
+         sourceContentsPresenter.setSelectedSource(pageModel.getCurrentRow());
          targetContentsPresenter.showEditors(pageModel.getCurrentRow());
          translatorService.transUnitSelected(selectedTransUnit);
       }
@@ -195,7 +191,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            pageModel.update(updatedTU);
             Log.info("pending change saved. now show selection.");
             showSelection();
          }
@@ -227,7 +222,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            pageModel.update(updatedTU);
             Log.info("pending change saved. now got to page number" + pageNumber);
             navigationController.gotoPage(pageNumber - 1, false);
          }
@@ -319,7 +313,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            pageModel.update(updatedTU);
             if (event.andMove())
             {
                Log.info("save success and now move to " + event.getNavigationType());
@@ -330,7 +323,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveFail()
          {
-            targetContentsPresenter.showEditors(pageModel.getCurrentRow());
+            //TODO implement
+//            targetContentsPresenter.showEditors(pageModel.getCurrentRow());
          }
       });
    }
@@ -339,9 +333,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onFindMessage(FindMessageEvent event)
    {
       findMessage = event;
-      transUnitListDisplay.setHighlightString(event.getMessage());
-      sourceContentsPresenter.getDisplay().highlightSearch(event.getMessage());
-      targetContentsPresenter.getDisplay().setFindMessage(event.getMessage());
+//      transUnitListDisplay.setHighlightString(event.getMessage());
+      sourceContentsPresenter.highlightSearch(event.getMessage());
+      targetContentsPresenter.highlightSearch(event.getMessage());
    }
 
    @Override
@@ -391,7 +385,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            pageModel.update(updatedTU);
             hideFilterConfirmationAndDoFiltering();
          }
 
@@ -432,15 +425,22 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          Log.info("detect concurrent edit. Closing editor");
          // TODO localise
          eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
-//         targetContentsPresenter.setToViewMode();
+         targetContentsPresenter.setToViewMode();
 //         targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
-//         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
+         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
       }
    }
 
-   public void showData(List<TransUnit> transUnits)
+   @Override
+   public void showDataForCurrentPage(List<TransUnit> transUnits)
    {
       sourceContentsPresenter.showData(transUnits);
       targetContentsPresenter.showData(transUnits);
+   }
+
+   @Override
+   public void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit)
+   {
+      targetContentsPresenter.updateRow(rowIndexOnPage, updatedTransUnit.getTargets());
    }
 }

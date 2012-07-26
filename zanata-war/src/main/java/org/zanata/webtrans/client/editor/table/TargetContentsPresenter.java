@@ -141,7 +141,7 @@ public class TargetContentsPresenter implements
    @Inject
    //TODO too many constructor dependencies
    // @formatter:off
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final TargetContentsDisplay display, Identity identity, final EventBus eventBus,
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, Identity identity, final EventBus eventBus,
                                   TableEditorMessages messages,
                                   SourceContentsPresenter sourceContentsPresenter,
                                   UserSessionService sessionService,
@@ -153,9 +153,8 @@ public class TargetContentsPresenter implements
    // @formatter:on
    {
       this.displayProvider = displayProvider;
-      this.display = display;
       this.userWorkspaceContext = userWorkspaceContext;
-      this.display.setListener(this);
+//      this.display.setListener(this);
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.debug("read only mode. Hide buttons");
@@ -470,20 +469,7 @@ public class TargetContentsPresenter implements
       }
    }
 
-   //TODO this should replace below setValue()
-   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit, String findMessages)
-   {
-      TargetContentsDisplay result = displayList.get(rowIndex);
-      result.setFindMessage(findMessages);
-      result.setTargets(transUnit.getTargets());
-      if (userWorkspaceContext.hasReadOnlyAccess())
-      {
-         Log.debug("read only mode. Hide buttons");
-         result.showButtons(false);
-      }
-      return result;
-   }
-
+   //This method is used to  cancel edited change and set back view
    public TargetContentsDisplay setValue(TransUnit transUnit, String findMessages)
    {
       currentTransUnitId = transUnit.getId();
@@ -605,7 +591,7 @@ public class TargetContentsPresenter implements
 
    public ArrayList<String> getNewTargets()
    {
-      return display.getNewTargets();
+      return display == null ? null : display.getNewTargets();
    }
 
    @Override
@@ -748,14 +734,8 @@ public class TargetContentsPresenter implements
 
    public void addUndoLink(int row, UndoLink undoLink)
    {
-      //FIXME undo where to put undo link if editor always display?
-//      TargetContentsDisplay targetContentsDisplay = displayList.get(row);
-//      targetContentsDisplay.addUndo(undoLink);
-   }
-
-   public TargetContentsDisplay getDisplay()
-   {
-      return display;
+      TargetContentsDisplay targetContentsDisplay = displayList.get(row);
+      targetContentsDisplay.addUndo(undoLink);
    }
 
    public void showData(List<TransUnit> transUnits)
@@ -770,5 +750,19 @@ public class TargetContentsPresenter implements
    public List<TargetContentsDisplay> getDisplays()
    {
       return displayList;
+   }
+
+   public void highlightSearch(String message)
+   {
+      for (TargetContentsDisplay targetContentsDisplay : displayList)
+      {
+         targetContentsDisplay.setFindMessage(message);
+      }
+   }
+
+   public void updateRow(int rowNum, List<String> updatedTargets)
+   {
+      TargetContentsDisplay contentsDisplay = displayList.get(rowNum);
+      contentsDisplay.setTargets(updatedTargets);
    }
 }

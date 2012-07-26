@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
+import org.zanata.webtrans.client.service.SinglePageDataModelImpl;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -23,12 +26,31 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
    private Grid transUnitTable = new Grid(0, 2);
    private ScrollPanel container= new ScrollPanel(transUnitTable);
    private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
+   private final SinglePageDataModelImpl pageModel;
 
    @Inject
-   public TransUnitEditView2( FilterViewConfirmationDisplay filterViewConfirmationDisplay)
+   public TransUnitEditView2(FilterViewConfirmationDisplay filterViewConfirmationDisplay, SinglePageDataModelImpl pageModel)
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
+      this.pageModel = pageModel;
       transUnitTable.setWidth("100%");
+      transUnitTable.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            HTMLTable.Cell cellForEvent = transUnitTable.getCellForEvent(event);
+            if (cellForEvent != null)
+            {
+               selectRow(cellForEvent.getRowIndex());
+            }
+         }
+      });
+   }
+
+   private void selectRow(int rowIndex)
+   {
+      pageModel.setSelected(rowIndex);
    }
 
    @Override
@@ -71,4 +93,6 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
    {
       return container;
    }
+
+
 }

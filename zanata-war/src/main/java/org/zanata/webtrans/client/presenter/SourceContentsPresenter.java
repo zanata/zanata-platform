@@ -43,12 +43,11 @@ import net.customware.gwt.presenter.client.EventBus;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class SourceContentsPresenter
+public class SourceContentsPresenter implements ClickHandler
 {
    private HasSelectableSource selectedSource;
 
    private final EventBus eventBus;
-   private SourceContentsDisplay display;
    private Provider<SourceContentsDisplay> displayProvider;
    private ArrayList<SourceContentsDisplay> displayList;
 
@@ -58,27 +57,6 @@ public class SourceContentsPresenter
       this.eventBus = eventBus;
       this.displayProvider = displayProvider;
    }
-
-   private final ClickHandler selectSourceHandler = new ClickHandler()
-   {
-      @Override
-      public void onClick(ClickEvent event)
-      {
-         HasSelectableSource previousSource = selectedSource;
-         selectedSource = (HasSelectableSource) event.getSource();
-
-         if (previousSource != null)
-         {
-            previousSource.setSelected(false);
-         }
-
-         selectedSource.setSelected(true);
-
-         Log.info("Selected source: " + selectedSource.getSource());
-         eventBus.fireEvent(new RequestValidationEvent());
-
-      }
-   };
 
    /**
     * Select first source in the list when row is selected or reselect previous selected one
@@ -116,22 +94,6 @@ public class SourceContentsPresenter
       return selectedSource.getSource();
    }
 
-   //TODO replace below setValue
-   public SourceContentsDisplay getSourceContent(int row, TransUnit value)
-   {
-      SourceContentsDisplay sourceContentsView = displayList.get(row);
-
-      sourceContentsView.setValue(value);
-
-      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
-
-      for (HasClickHandlers sourcePanel : sourcePanelList)
-      {
-         sourcePanel.addClickHandler(selectSourceHandler);
-      }
-      return sourceContentsView;
-   }
-
    public void initWidgets(int pageSize)
    {
       displayList = Lists.newArrayList();
@@ -142,22 +104,18 @@ public class SourceContentsPresenter
       }
    }
 
+   //TODO to be removed
    public SourceContentsDisplay setValue(TransUnit value)
    {
-      display.setValue(value);
+//      display.setValue(value);
 
-      List<HasSelectableSource> sourcePanelList = display.getSourcePanelList();
+//      List<HasSelectableSource> sourcePanelList = display.getSourcePanelList();
 
-      for (HasClickHandlers sourcePanel : sourcePanelList)
-      {
-         sourcePanel.addClickHandler(selectSourceHandler);
-      }
-      return display;
-   }
-
-   public SourceContentsDisplay getDisplay()
-   {
-      return display;
+//      for (HasClickHandlers sourcePanel : sourcePanelList)
+//      {
+//         sourcePanel.addClickHandler(selectSourceHandler);
+//      }
+      return null;
    }
 
    public void showData(List<TransUnit> transUnits)
@@ -166,11 +124,41 @@ public class SourceContentsPresenter
       {
          SourceContentsDisplay sourceContentsDisplay = displayList.get(i);
          sourceContentsDisplay.setValue(transUnits.get(i));
+         sourceContentsDisplay.setSourceSelectionHandler(this);
       }
    }
 
    public List<SourceContentsDisplay> getDisplays()
    {
       return displayList;
+   }
+
+   public void highlightSearch(String message)
+   {
+      for (SourceContentsDisplay sourceContentsDisplay : displayList)
+      {
+         sourceContentsDisplay.highlightSearch(message);
+      }
+   }
+
+   @Override
+   public void onClick(ClickEvent event)
+   {
+      if (event.getSource() instanceof HasSelectableSource)
+      {
+         HasSelectableSource previousSource = selectedSource;
+
+         selectedSource = (HasSelectableSource) event.getSource();
+
+         if (previousSource != null)
+         {
+            previousSource.setSelected(false);
+         }
+
+         selectedSource.setSelected(true);
+
+         Log.info("Selected source: " + selectedSource.getSource());
+         eventBus.fireEvent(new RequestValidationEvent());
+      }
    }
 }

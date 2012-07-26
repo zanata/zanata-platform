@@ -44,9 +44,9 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
@@ -63,7 +63,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.shared.Action;
@@ -139,10 +138,8 @@ public class NavigationControllerTest
    private GetTransUnitsNavigationHandler getTransUnitsNavigationHandler;
 
    private GetTransUnitActionContext context;
-   @Mock private SingleSelectionModel<TransUnit> selectionModel;
    @Mock private TableEditorMessages messages;
-   @Mock
-   private TransUnitsPageModel pageModel;
+   @Mock private TransUnitEditPresenter transUnitEditPresenter;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -152,9 +149,10 @@ public class NavigationControllerTest
       setupGetTransUnitNavigationHandler();
       navigationService = new TransUnitNavigationService();
       UserConfigHolder configHolder = new UserConfigHolder();
-      TransUnitsDataModel dataModel = new TransUnitsDataModel(selectionModel);
 
-      controller = new NavigationController(eventBus, dispatcher, navigationService, dataModel, configHolder, messages, pageModel);
+      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus);
+      pageModel.addDataChangeListener(transUnitEditPresenter);
+      controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages, pageModel);
 
       context = GetTransUnitActionContext.of(documentId);
    }
@@ -265,14 +263,20 @@ public class NavigationControllerTest
       simulateRPCCallback();
       controller.gotoFirstPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(0, 1, 2));
+      assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       //go again won't cause another call to server
       controller.gotoFirstPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(asIds(controller.getDataModel().getList()), contains(0, 1, 2));
+      assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
+   }
+
+   private List<Integer> getPageDataModelAsIds()
+   {
+      SinglePageDataModelImpl dataModel = (SinglePageDataModelImpl) controller.getDataModel();
+      return asIds(dataModel.getData());
    }
 
    @Test
@@ -282,7 +286,7 @@ public class NavigationControllerTest
       simulateRPCCallback();
       controller.gotoLastPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(4, 5));
+      assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       controller.gotoLastPage();
@@ -295,12 +299,12 @@ public class NavigationControllerTest
       simulateRPCCallback();
       controller.gotoLastPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(3, 4, 5));
+      assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       controller.gotoLastPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(asIds(controller.getDataModel().getList()), contains(3, 4, 5));
+      assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
    }
 
@@ -310,12 +314,12 @@ public class NavigationControllerTest
       simulateRPCCallback();
       controller.gotoLastPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(0, 1, 2, 3, 4, 5));
+      assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       controller.gotoFirstPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(0, 1, 2, 3, 4, 5));
+      assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(0));
    }
 
@@ -326,18 +330,18 @@ public class NavigationControllerTest
       simulateRPCCallback();
       controller.gotoNextPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(2, 3));
+      assertThat(getPageDataModelAsIds(), contains(2, 3));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       controller.gotoNextPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(4, 5));
+      assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
 
       //can't go any further
       controller.gotoNextPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(asIds(controller.getDataModel().getList()), contains(4, 5));
+      assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
    }
 
@@ -349,22 +353,22 @@ public class NavigationControllerTest
       //should be on first page already
       controller.gotoPreviousPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(asIds(controller.getDataModel().getList()), contains(0, 1));
+      assertThat(getPageDataModelAsIds(), contains(0, 1));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       controller.gotoLastPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(4, 5));
+      assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
 
       controller.gotoPreviousPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(2, 3));
+      assertThat(getPageDataModelAsIds(), contains(2, 3));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       controller.gotoPreviousPage();
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(0, 1));
+      assertThat(getPageDataModelAsIds(), contains(0, 1));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       //can't go any further
@@ -380,19 +384,19 @@ public class NavigationControllerTest
       simulateRPCCallback();
       controller.gotoPage(1, NOT_FORCE_RELOAD);
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(3, 4, 5));
+      assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       //page out of bound
       controller.gotoPage(7, NOT_FORCE_RELOAD);
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(3, 4, 5));
+      assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       //page is negative
       controller.gotoPage(-1, NOT_FORCE_RELOAD);
       simulateRPCCallback();
-      assertThat(asIds(controller.getDataModel().getList()), contains(0, 1, 2));
+      assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
    }
 

@@ -28,6 +28,8 @@ import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -40,7 +42,6 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    public static final int COLUMNS = 1;
    public static final int DEFAULT_ROWS = 1;
    private final Grid sourcePanelContainer;
-   private TransUnit value;
    private List<HasSelectableSource> sourcePanelList;
 
    public SourceContentsView()
@@ -72,22 +73,17 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void setValue(TransUnit value, boolean fireEvents)
    {
-      if (this.value != value)
+      sourcePanelContainer.resizeRows(value.getSources().size());
+      sourcePanelList.clear();
+
+      int rowIndex = 0;
+      for (String source : value.getSources())
       {
-         this.value = value;
-
-         sourcePanelContainer.resizeRows(value.getSources().size());
-         sourcePanelList.clear();
-
-         int rowIndex = 0;
-         for (String source : value.getSources())
-         {
-            SourcePanel sourcePanel = new SourcePanel();
-            sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
-            sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
-            sourcePanelList.add(sourcePanel);
-            rowIndex++;
-         }
+         SourcePanel sourcePanel = new SourcePanel();
+         sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
+         sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
+         sourcePanelList.add(sourcePanel);
+         rowIndex++;
       }
    }
 
@@ -97,6 +93,16 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       for (Widget sourceLabel : sourcePanelContainer)
       {
          ((SourcePanel) sourceLabel).highlightSearch(search);
+      }
+   }
+
+   @Override
+   public void setSourceSelectionHandler(ClickHandler clickHandler)
+   {
+      Preconditions.checkState(!sourcePanelList.isEmpty(), "empty source panel list. Did you forget to call setValue() before this?");
+      for (HasSelectableSource hasSelectableSource : sourcePanelList)
+      {
+         hasSelectableSource.addClickHandler(clickHandler);
       }
    }
 }
