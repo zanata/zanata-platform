@@ -23,12 +23,9 @@ package org.zanata.service;
 import java.util.List;
 
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-
-
 
 /**
  * Provides methods to retrieve filtered lists of text flows
@@ -54,22 +51,23 @@ public interface TextFlowSearchService
    List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints);
 
    /**
-    * Find matching textflow targets within a project iteration for a locale
+    * Find matching textflows within a set of documents in a given workspace. 
     * 
     * @param workspace
-    * @param documents list of documents to search
+    * @param documents list of documents to search, null or empty to search all
+    *           documents in the workspace
     * @param constraints determine fields that will be checked for searchTerm
     * @return
     */
-   List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, List<String> documents, FilterConstraints constraints);
+   List<HTextFlow> findTextFlows(WorkspaceId workspace, List<String> documents, FilterConstraints constraints);
 
    /**
-    * Find matching textflow targets within a project iteration for a locale
+    * Find matching textflows in a given workspace. 
     * 
     * @param workspace
     * @param constraints determine fields that will be checked for searchTerm
     * @return
     */
-   List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, FilterConstraints constraints);
+   List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints);
 
 }

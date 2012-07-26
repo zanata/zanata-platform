@@ -86,15 +86,15 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    private FullTextEntityManager entityManager;
 
    @Override
-   public List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, FilterConstraints constraints)
+   public List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints)
    {
-      return findTextFlowTargetsByDocumentPaths(workspace, null, constraints);
+      return findTextFlowsByDocumentPaths(workspace, null, constraints);
    }
 
    @Override
-   public List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, List<String> documents, FilterConstraints constraints)
+   public List<HTextFlow> findTextFlows(WorkspaceId workspace, List<String> documents, FilterConstraints constraints)
    {
-      return findTextFlowTargetsByDocumentPaths(workspace, documents, constraints);
+      return findTextFlowsByDocumentPaths(workspace, documents, constraints);
    }
 
    /**
@@ -104,7 +104,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
     * @param constraints
     * @return
     */
-   private List<HTextFlowTarget> findTextFlowTargetsByDocumentPaths(WorkspaceId workspace, List<String> documentPaths, FilterConstraints constraints)
+   private List<HTextFlow> findTextFlowsByDocumentPaths(WorkspaceId workspace, List<String> documentPaths, FilterConstraints constraints)
    {
       LocaleId localeId = workspace.getLocaleId();
       String projectSlug = workspace.getProjectIterationId().getProjectSlug();
@@ -172,7 +172,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          sourceQuery.add(documentsQuery, Occur.MUST);
       }
 
-      List<HTextFlowTarget> resultList = new ArrayList<HTextFlowTarget>();
+      List<HTextFlow> resultList = new ArrayList<HTextFlow>();
       if (constraints.isSearchInTarget())
       {
          BooleanQuery targetQuery = (BooleanQuery) sourceQuery.clone();
@@ -199,7 +199,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          @SuppressWarnings("unchecked")
          List<HTextFlowTarget> matchedTargets = (List<HTextFlowTarget>) ftQuery.getResultList();
          log.info("got {} HTextFLowTarget results", matchedTargets.size());
-         resultList.addAll(matchedTargets);
+         for (HTextFlowTarget htft : matchedTargets)
+         {
+            resultList.add(htft.getTextFlow());
+         }
       }
 
       if (constraints.isSearchInSource())
@@ -215,9 +218,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
             if (htft != null && htft.getState() != ContentState.New)
             {
                // TODO filter other states?
-               if (!resultList.contains(htft))
+               if (!resultList.contains(htf))
                {
-                  resultList.add(htf.getTargets().get(hLocale.getId()));
+                  resultList.add(htf);
                }
             }
          }
