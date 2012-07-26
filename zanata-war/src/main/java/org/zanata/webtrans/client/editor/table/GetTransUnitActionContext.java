@@ -36,7 +36,7 @@ public class GetTransUnitActionContext
    private final DocumentId documentId;
    private String findMessage;
    private int offset = 0;
-   private int count = 10; // default page count
+   private int count = 5; // default page count
    private boolean filterTranslated;
    private boolean filterNeedReview;
    private boolean filterUntranslated;

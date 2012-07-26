@@ -72,11 +72,12 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    private final TransUnitsDataModel dataModel;
    private final UserConfigHolder configHolder;
    private final TableEditorMessages messages;
+   private final TransUnitsPageModel pageModel;
    //tracking variables
    private GetTransUnitActionContext context;
 
    @Inject
-   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder, TableEditorMessages messages)
+   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder, TableEditorMessages messages, TransUnitsPageModel pageModel)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
@@ -84,6 +85,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       this.dataModel = dataModel;
       this.configHolder = configHolder;
       this.messages = messages;
+      this.pageModel = pageModel;
       bindHandlers();
    }
 
@@ -129,8 +131,9 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
          {
             ArrayList<TransUnit> units = result.getUnits();
             Log.info("result unit: " + units.size());
-            dataModel.setList(units);
-            dataModel.refresh(); // force the display to re-render
+            pageModel.setData(units);
+//            dataModel.setList(units);
+//            dataModel.refresh(); // force the display to re-render
 
             // default values
             int gotoRow = 0;
@@ -143,8 +146,9 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
                gotoRow = result.getGotoRow() % itemPerPage;
             }
             navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
-            TransUnitId goToRowId = result.getUnits().get(gotoRow).getId();
-            dataModel.selectById(goToRowId);
+//            TransUnitId goToRowId = result.getUnits().get(gotoRow).getId();
+            pageModel.setSelected(gotoRow);
+//            dataModel.selectById(goToRowId);
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
          }
       });
@@ -358,5 +362,10 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    public static interface UpdateContextCommand
    {
       GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext);
+   }
+
+   public TransUnitsPageModel getPageModel()
+   {
+      return pageModel;
    }
 }

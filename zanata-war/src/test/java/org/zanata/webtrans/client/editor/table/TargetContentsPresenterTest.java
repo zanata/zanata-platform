@@ -24,7 +24,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -70,7 +69,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.collect.Lists;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.inject.Provider;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
@@ -98,6 +97,8 @@ public class TargetContentsPresenterTest
 
    @Mock
    private UserSessionService sessionService;
+   @Mock
+   private Provider<TargetContentsDisplay> displayProvider;
 
    @Mock
    private TranslationHistoryPresenter historyPresenter;
@@ -106,7 +107,7 @@ public class TargetContentsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(display, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, validationPanel, keyShortcutPresenter, historyPresenter);
+      presenter = new TargetContentsPresenter(displayProvider, display, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, validationPanel, keyShortcutPresenter, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -224,7 +225,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors();
+      presenter.showEditors(0);
       when(display.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -280,7 +281,7 @@ public class TargetContentsPresenterTest
    {
       when(display.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
       when(display.isEditing()).thenReturn(true);
-      presenter.showEditors();
+      presenter.showEditors(0);
    }
 
    @Test

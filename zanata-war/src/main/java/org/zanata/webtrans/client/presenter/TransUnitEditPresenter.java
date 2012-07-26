@@ -21,6 +21,8 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import java.util.List;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.FilterViewEvent;
@@ -34,21 +36,21 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TransUnitsDataModel;
+import org.zanata.webtrans.client.service.TransUnitsPageModel;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
+import org.zanata.webtrans.client.view.TransUnitEditDisplay2;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
@@ -62,7 +64,7 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
+public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay2> implements
       SelectionChangeEvent.Handler,
       WorkspaceContextUpdateEventHandler,
       NavTransUnitHandler,
@@ -74,7 +76,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       TransUnitUpdatedEventHandler
 {
 
-   private final TransUnitEditDisplay display;
+   private final TransUnitEditDisplay2 display;
    private final UserWorkspaceContext userWorkspaceContext;
    private final Identity identity;
    private final TableEditorMessages messages;
@@ -85,15 +87,16 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TargetContentsPresenter targetContentsPresenter;
    private final TransUnitSaveService saveService;
    private final TranslatorInteractionService translatorService;
-   private final TransUnitsDataModel dataModel;
+//   private final TransUnitsDataModel dataModel;
 
    //state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
    private FindMessageEvent findMessage = FindMessageEvent.DEFAULT;
+   private final TransUnitsPageModel pageModel;
 
    //TODO too many constructor dependency
    @Inject
-   public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationController navigationController,
+   public TransUnitEditPresenter(TransUnitEditDisplay2 display, EventBus eventBus, NavigationController navigationController,
                                  TransUnitListDisplay transUnitListDisplay,
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
@@ -117,22 +120,21 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       this.saveService = saveService;
       this.translatorService = translatorService;
 
+      //FIXME this is hardcoded
+      sourceContentsPresenter.initWidgets(5);
+      targetContentsPresenter.initWidgets(5);
       initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
 
-      dataModel = navigationController.getDataModel();
-      dataModel.addDataDisplay(transUnitListDisplay);
+//      dataModel = navigationController.getDataModel();
+      pageModel = navigationController.getPageModel();
+      pageModel.addDataChangeListener(this);
+//      dataModel.addDataDisplay(transUnitListDisplay);
    }
 
+   //TODO read only is not handled
    private void initViewOnWorkspaceContext(boolean readOnly)
    {
-      if (readOnly)
-      {
-         display.init(transUnitListDisplay, null, null);
-      }
-      else
-      {
-         display.init(transUnitListDisplay, sourceContentsPresenter.getDisplay(), targetContentsPresenter.getDisplay());
-      }
+      display.initView(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
    }
 
    @Override
@@ -145,7 +147,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(FilterViewEvent.getType(), this);
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
       transUnitListDisplay.addLoadingStateChangeHandler(this);
-      dataModel.addSelectionChangeHandler(this);
+//      dataModel.addSelectionChangeHandler(this);
    }
 
    @Override
@@ -173,27 +175,27 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void showSelection()
    {
-      TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
+      TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
          Log.info("selected id: " + selectedTransUnit.getId());
          sourceContentsPresenter.setValue(selectedTransUnit);
          targetContentsPresenter.setValue(selectedTransUnit, null);
-         sourceContentsPresenter.selectedSource();
-         targetContentsPresenter.showEditors();
+         sourceContentsPresenter.setSelectedSource(0);
+         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
          translatorService.transUnitSelected(selectedTransUnit);
       }
    }
 
    private void savePendingChangeBeforeShowingNewSelection()
    {
-      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
-      saveService.saveTranslation(dataModel.getStaleSelection(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
+//      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
+      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            dataModel.update(updatedTU);
+            pageModel.update(updatedTU);
             Log.info("pending change saved. now show selection.");
             showSelection();
          }
@@ -219,13 +221,13 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void savePendingChangeAndGoToPageNumber(final int pageNumber)
    {
-      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
-      saveService.saveTranslation(dataModel.getStaleSelection(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
+//      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
+      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            dataModel.update(updatedTU);
+            pageModel.update(updatedTU);
             Log.info("pending change saved. now got to page number" + pageNumber);
             navigationController.gotoPage(pageNumber - 1, false);
          }
@@ -255,7 +257,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
-      TransUnit selected = dataModel.getSelectedOrNull();
+      TransUnit selected = pageModel.getSelectedOrNull();
       if (selected == null)
       {
          navigationController.navigateTo(event.getRowType());
@@ -273,14 +275,14 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       if (event.getLoadingState() == LoadingStateChangeEvent.LoadingState.LOADED)
       {
          Log.debug("finish loading. scroll to selected");
-         display.scrollToRow(dataModel.getSelectedOrNull());
+//         display.scrollToRow(dataModel.getSelectedOrNull());
       }
    }
 
    @Override
    public void onTransUnitSave(final TransUnitSaveEvent event)
    {
-      TransUnit selected = dataModel.getSelectedOrNull();
+      TransUnit selected = pageModel.getSelectedOrNull();
       if (selected == null)
       {
          return;
@@ -317,7 +319,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            dataModel.update(updatedTU);
+            pageModel.update(updatedTU);
             if (event.andMove())
             {
                Log.info("save success and now move to " + event.getNavigationType());
@@ -328,7 +330,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveFail()
          {
-            targetContentsPresenter.showEditors();
+            targetContentsPresenter.showEditors(pageModel.getCurrentRow());
          }
       });
    }
@@ -367,7 +369,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private boolean hasTargetContentsChanged()
    {
-      return dataModel.hasStaleData(targetContentsPresenter.getNewTargets());
+      return pageModel.hasStaleData(targetContentsPresenter.getNewTargets());
    }
 
    @Override
@@ -384,12 +386,12 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void saveAndFilter(ContentState status)
    {
-      saveService.saveTranslation(dataModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), status, new TransUnitSaveService.SaveResultCallback()
+      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), status, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
          {
-            dataModel.update(updatedTU);
+            pageModel.update(updatedTU);
             hideFilterConfirmationAndDoFiltering();
          }
 
@@ -404,7 +406,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void discardChangesAndFilter()
    {
-      targetContentsPresenter.setValue(dataModel.getSelectedOrNull(), findMessage.getMessage());
+      targetContentsPresenter.setValue(pageModel.getSelectedOrNull(), findMessage.getMessage());
       hideFilterConfirmationAndDoFiltering();
    }
 
@@ -418,7 +420,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
+      TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
       if (selectedTransUnit == null)
       {
          return;
@@ -430,9 +432,15 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          Log.info("detect concurrent edit. Closing editor");
          // TODO localise
          eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
-         targetContentsPresenter.setToViewMode();
-         targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
-         targetContentsPresenter.showEditors();
+//         targetContentsPresenter.setToViewMode();
+//         targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
+//         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
       }
+   }
+
+   public void showData(List<TransUnit> transUnits)
+   {
+      sourceContentsPresenter.showData(transUnits);
+      targetContentsPresenter.showData(transUnits);
    }
 }

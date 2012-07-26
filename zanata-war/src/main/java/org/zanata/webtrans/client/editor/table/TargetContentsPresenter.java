@@ -75,10 +75,12 @@ import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -110,14 +112,16 @@ public class TargetContentsPresenter implements
 
 
    private final ValidationMessagePanelDisplay validationMessagePanel;
-   private final TargetContentsDisplay display;
-   private final UserWorkspaceContext userWorkspaceContext;
+   private TargetContentsDisplay display;
+   private Provider<TargetContentsDisplay> displayProvider;
+   private ArrayList<TargetContentsDisplay> displayList = Lists.newArrayList();
    private int currentEditorIndex = 0;
    private ArrayList<ToggleEditor> currentEditors;
 
    private boolean isModalNavEnabled = true;
 
    private final Identity identity;
+   private final UserWorkspaceContext userWorkspaceContext;
    private TransUnitId currentTransUnitId;
 
    private boolean enterSavesApprovedRegistered;
@@ -137,7 +141,7 @@ public class TargetContentsPresenter implements
    @Inject
    //TODO too many constructor dependencies
    // @formatter:off
-   public TargetContentsPresenter(final TargetContentsDisplay display, Identity identity, final EventBus eventBus,
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final TargetContentsDisplay display, Identity identity, final EventBus eventBus,
                                   TableEditorMessages messages,
                                   SourceContentsPresenter sourceContentsPresenter,
                                   UserSessionService sessionService,
@@ -148,6 +152,7 @@ public class TargetContentsPresenter implements
                                   TranslationHistoryPresenter historyPresenter)
    // @formatter:on
    {
+      this.displayProvider = displayProvider;
       this.display = display;
       this.userWorkspaceContext = userWorkspaceContext;
       this.display.setListener(this);
@@ -389,9 +394,10 @@ public class TargetContentsPresenter implements
       }
    }
 
-   public void showEditors()
+   public void showEditors(int rowIndex)
    {
       Log.debug("enter show editor current editor index:" + currentEditorIndex);
+      display = displayList.get(rowIndex);
       currentEditors = display.getEditors();
 
       for (ToggleEditor editor : display.getEditors())
@@ -447,18 +453,35 @@ public class TargetContentsPresenter implements
 
    public void updateTranslators()
    {
-      for (ToggleEditor editor : currentEditors)
+      if (isEditing())
       {
-         editor.clearTranslatorList();
-      }
-
-      for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
-      {
-         if (entry.getValue().getSelectedTransUnit() != null)
+         for (ToggleEditor editor : currentEditors)
          {
-            updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
+            editor.clearTranslatorList();
+         }
+
+         for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+         {
+            if (entry.getValue().getSelectedTransUnit() != null)
+            {
+               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
+            }
          }
       }
+   }
+
+   //TODO this should replace below setValue()
+   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit, String findMessages)
+   {
+      TargetContentsDisplay result = displayList.get(rowIndex);
+      result.setFindMessage(findMessages);
+      result.setTargets(transUnit.getTargets());
+      if (userWorkspaceContext.hasReadOnlyAccess())
+      {
+         Log.debug("read only mode. Hide buttons");
+         result.showButtons(false);
+      }
+      return result;
    }
 
    public TargetContentsDisplay setValue(TransUnit transUnit, String findMessages)
@@ -467,6 +490,17 @@ public class TargetContentsPresenter implements
       display.setFindMessage(findMessages);
       display.setTargets(transUnit.getTargets());
       return display;
+   }
+
+   public void initWidgets(int pageSize)
+   {
+      displayList = Lists.newArrayList();
+      for (int i = 0; i < pageSize; i++)
+      {
+         TargetContentsDisplay display = displayProvider.get();
+         display.setListener(this);
+         displayList.add(display);
+      }
    }
 
    @Override
@@ -653,12 +687,15 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      for (ToggleEditor editor : display.getEditors())
+      if (isEditing())
       {
-         editor.setViewMode(ToggleEditor.ViewMode.EDIT);
-         validate(editor);
+         for (ToggleEditor editor : display.getEditors())
+         {
+            editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+            validate(editor);
+         }
+         revealDisplay();
       }
-      revealDisplay();
    }
 
    @Override
@@ -719,5 +756,19 @@ public class TargetContentsPresenter implements
    public TargetContentsDisplay getDisplay()
    {
       return display;
+   }
+
+   public void showData(List<TransUnit> transUnits)
+   {
+      for (int i = 0; i < displayList.size(); i++)
+      {
+         TargetContentsDisplay targetContentsDisplay = displayList.get(i);
+         targetContentsDisplay.setTargets(transUnits.get(i).getTargets());
+      }
+   }
+
+   public List<TargetContentsDisplay> getDisplays()
+   {
+      return displayList;
    }
 }

@@ -141,6 +141,8 @@ public class NavigationControllerTest
    private GetTransUnitActionContext context;
    @Mock private SingleSelectionModel<TransUnit> selectionModel;
    @Mock private TableEditorMessages messages;
+   @Mock
+   private TransUnitsPageModel pageModel;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -152,7 +154,7 @@ public class NavigationControllerTest
       UserConfigHolder configHolder = new UserConfigHolder();
       TransUnitsDataModel dataModel = new TransUnitsDataModel(selectionModel);
 
-      controller = new NavigationController(eventBus, dispatcher, navigationService, dataModel, configHolder, messages);
+      controller = new NavigationController(eventBus, dispatcher, navigationService, dataModel, configHolder, messages, pageModel);
 
       context = GetTransUnitActionContext.of(documentId);
    }

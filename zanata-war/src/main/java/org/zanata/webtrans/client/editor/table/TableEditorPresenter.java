@@ -999,7 +999,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
             display.setTransUnitDetails(transUnit);
 
-            sourceContentsPresenter.selectedSource();
+            sourceContentsPresenter.setSelectedSource(0);
             if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
             {
                selectedTransUnit = transUnit;

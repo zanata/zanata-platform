@@ -20,13 +20,17 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Provider;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -45,12 +49,14 @@ public class SourceContentsPresenter
 
    private final EventBus eventBus;
    private SourceContentsDisplay display;
+   private Provider<SourceContentsDisplay> displayProvider;
+   private ArrayList<SourceContentsDisplay> displayList;
 
    @Inject
-   public SourceContentsPresenter(final EventBus eventBus, SourceContentsDisplay sourceContentsDisplay)
+   public SourceContentsPresenter(final EventBus eventBus, Provider<SourceContentsDisplay> displayProvider)
    {
       this.eventBus = eventBus;
-      display = sourceContentsDisplay;
+      this.displayProvider = displayProvider;
    }
 
    private final ClickHandler selectSourceHandler = new ClickHandler()
@@ -78,14 +84,15 @@ public class SourceContentsPresenter
     * Select first source in the list when row is selected or reselect previous selected one
     *
     */
-   public void selectedSource()
+   public void setSelectedSource(int row)
    {
-      if (display != null)
+      SourceContentsDisplay sourceContentsView = displayList.get(row);
+      if (sourceContentsView != null)
       {
          // after save as fuzzy re-render(will call
          // SourceContentsView.setValue(TransUnit) which cause re-creation of
          // SourcePanel list), we want to re-select the radio button
-         List<HasSelectableSource> sourcePanelList = display.getSourcePanelList();
+         List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
          for (HasSelectableSource sourcePanel : sourcePanelList)
          {
             if (selectedSource != null && selectedSource.getSource().equals(sourcePanel.getSource()))
@@ -95,7 +102,7 @@ public class SourceContentsPresenter
             }
          }
          //else by default it will select the first one
-         fireClickEventToSelectSource(display.getSourcePanelList().get(0));
+         fireClickEventToSelectSource(sourceContentsView.getSourcePanelList().get(0));
       }
    }
 
@@ -107,6 +114,32 @@ public class SourceContentsPresenter
    public String getSelectedSource()
    {
       return selectedSource.getSource();
+   }
+
+   //TODO replace below setValue
+   public SourceContentsDisplay getSourceContent(int row, TransUnit value)
+   {
+      SourceContentsDisplay sourceContentsView = displayList.get(row);
+
+      sourceContentsView.setValue(value);
+
+      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
+
+      for (HasClickHandlers sourcePanel : sourcePanelList)
+      {
+         sourcePanel.addClickHandler(selectSourceHandler);
+      }
+      return sourceContentsView;
+   }
+
+   public void initWidgets(int pageSize)
+   {
+      displayList = Lists.newArrayList();
+      for (int i = 0; i < pageSize; i++)
+      {
+         SourceContentsDisplay display = displayProvider.get();
+         displayList.add(display);
+      }
    }
 
    public SourceContentsDisplay setValue(TransUnit value)
@@ -125,5 +158,19 @@ public class SourceContentsPresenter
    public SourceContentsDisplay getDisplay()
    {
       return display;
+   }
+
+   public void showData(List<TransUnit> transUnits)
+   {
+      for (int i = 0; i < displayList.size(); i++)
+      {
+         SourceContentsDisplay sourceContentsDisplay = displayList.get(i);
+         sourceContentsDisplay.setValue(transUnits.get(i));
+      }
+   }
+
+   public List<SourceContentsDisplay> getDisplays()
+   {
+      return displayList;
    }
 }
