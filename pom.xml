@@ -5,11 +5,11 @@
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
-		<relativePath></relativePath>
+		<relativePath />
 	</parent>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
-	<version>6-SNAPSHOT</version>
+	<version>6</version>
 	<name>Zanata Parent POM</name>
 	<description>Parent pom for Zanata modules</description>
 	<url>http://zanata.org/</url>
