@@ -19,7 +19,7 @@
 	</scm>
     
     <properties>
-      <zanata.api.version>1.7.0</zanata.api.version>
+      <zanata.api.version>1.7.1-SNAPSHOT</zanata.api.version>
       <zanata.client.version>1.6.0</zanata.client.version>
       <zanata.common.version>1.6.1</zanata.common.version>
 
