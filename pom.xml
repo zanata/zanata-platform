@@ -5,6 +5,7 @@
 	<artifactId>zanata-parent</artifactId>
 	<version>6-SNAPSHOT</version>
 	<name>Zanata Parent POM</name>
+	<description>Parent pom for Zanata modules</description>
 	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
 
