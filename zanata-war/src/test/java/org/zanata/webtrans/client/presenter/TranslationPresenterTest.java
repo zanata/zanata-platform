@@ -404,6 +404,9 @@ public class TranslationPresenterTest extends PresenterTest
       expect(mockSouthPanelToggle.getValue()).andReturn(true);
       
       expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false);
+
+      mockOptionsToggle.setValue(false, true);
+      expectLastCall().once();
    }
 
    @SuppressWarnings("unchecked")

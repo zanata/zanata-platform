@@ -47,9 +47,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
-
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
-
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -231,8 +229,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-
       registerHandler(display.getOptionsToggle().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
 
@@ -253,6 +249,9 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             setSouthPanelExpanded(shouldShowSouthPanel);
          }
       }));
+
+      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+      display.getOptionsToggle().setValue(false, true);
 
       KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
       {

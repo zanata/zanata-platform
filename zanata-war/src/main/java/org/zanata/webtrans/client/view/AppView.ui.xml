@@ -93,14 +93,9 @@
 			margin-left:2px;
 		}
 		
-		.hasError
-		{
-			background:#FF6E6E;
-		}
-		
 		.hasWarning
 		{
-			background:#FFFF00;
+			background:#FFC000;
 		}
 		
 		.topMenuBar table
