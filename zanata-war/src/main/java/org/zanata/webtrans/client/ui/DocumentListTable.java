@@ -61,11 +61,17 @@ public class DocumentListTable extends CellTable<DocumentNode>
       remainingColumn.setSortable(true);
 
       addColumn(directoryColumn, messages.columnHeaderDirectory());
+      directoryColumn.setCellStyleNames("directoryCol");
       addColumn(documentColumn, messages.columnHeaderDocument());
+      documentColumn.setCellStyleNames("documentCol");
       addColumn(statisticColumn, messages.columnHeaderStatistic());
+      statisticColumn.setCellStyleNames("statisticCol");
       addColumn(translatedColumn, messages.columnHeaderTranslated());
+      translatedColumn.setCellStyleNames("translatedCol");
       addColumn(untranslatedColumn, messages.columnHeaderUntranslated());
+      untranslatedColumn.setCellStyleNames("untranslatedCol");
       addColumn(remainingColumn, messages.columnHeaderRemaining());
+      remainingColumn.setCellStyleNames("remainingCol");
 
       ListHandler<DocumentNode> columnSortHandler = new ListHandler<DocumentNode>(dataProvider.getList());
       columnSortHandler.setComparator(directoryColumn, new Comparator<DocumentNode>()
@@ -152,8 +158,6 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return -1;
          }
       });
-      addColumnStyleName(getColumnIndex(directoryColumn), "DocumentListTable_folderCol");
-      addColumnStyleName(getColumnIndex(documentColumn), "DocumentListTable_docCol");
       addColumnSortHandler(columnSortHandler);
 
       getColumnSortList().push(directoryColumn);
