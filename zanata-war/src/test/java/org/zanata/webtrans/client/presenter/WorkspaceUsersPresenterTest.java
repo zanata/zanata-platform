@@ -11,9 +11,11 @@ import static org.easymock.EasyMock.isA;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
+import org.easymock.IAnswer;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,13 +34,18 @@ import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasText;
 
 @Test(groups = { "unit-tests" })
 public class WorkspaceUsersPresenterTest extends PresenterTest
@@ -65,6 +72,9 @@ public class WorkspaceUsersPresenterTest extends PresenterTest
    private Capture<KeyShortcut> capturedKeyShortcuts;
    private Capture<FocusHandler> capturedFocusHandler;
    private Capture<BlurHandler> capturedBlurHandler;
+   private Capture<PublishWorkspaceChatAction> capturedDispatchedChat;
+   private Capture<AsyncCallback<PublishWorkspaceChatResult>> capturedDispatchedChatCallback;
+
 
    @BeforeClass
    public void createMocks()
@@ -84,6 +94,8 @@ public class WorkspaceUsersPresenterTest extends PresenterTest
       capturedKeyShortcuts = addCapture(new Capture<KeyShortcut>());
       capturedFocusHandler = addCapture(new Capture<FocusHandler>());
       capturedBlurHandler = addCapture(new Capture<BlurHandler>());
+      capturedDispatchedChat = addCapture(new Capture<PublishWorkspaceChatAction>());
+      capturedDispatchedChatCallback = addCapture(new Capture<AsyncCallback<PublishWorkspaceChatResult>>());
    }
 
    @BeforeMethod
@@ -93,6 +105,44 @@ public class WorkspaceUsersPresenterTest extends PresenterTest
       workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages, mockSessionService, mockKeyShortcutPresenter);
    }
 
+   public void testChat()
+   {
+      HasText mockHasText = createAndAddMock(HasText.class);
+      expect(mockHasText.getText()).andReturn("Test chat message").anyTimes();
+      
+      mockHasText.setText("");
+      expectLastCall().once();
+      
+      expect(mockDisplay.getInputText()).andReturn(mockHasText).anyTimes();
+      
+      Person person = new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16");
+      expect(mockIdentity.getPerson()).andReturn(person);
+      
+      IAnswer<PublishWorkspaceChatResult> chatResponse = new IAnswer<PublishWorkspaceChatResult>()
+      {
+         @Override
+         public PublishWorkspaceChatResult answer() throws Throwable
+         {
+            capturedDispatchedChatCallback.getValue().onSuccess(new PublishWorkspaceChatResult());
+            return null;
+         }
+      };
+      
+      mockDispatcher.execute(and(capture(capturedDispatchedChat), isA(Action.class)), and(capture(capturedDispatchedChatCallback), isA(AsyncCallback.class)));
+      expectLastCall().andAnswer(chatResponse);
+      
+      replayAllMocks();
+      
+      //simulate click 'send' button
+      workspaceUsersPresenter.bind();
+      workspaceUsersPresenter.initUserList(new HashMap<EditorClientId, PersonSessionDetails>());
+      
+      ClickEvent clickEvent = createMock(ClickEvent.class);
+      capturedSendButtonClickHandler.getValue().onClick(clickEvent);
+      
+      verifyAllMocks();
+   }
+   
    public void setEmptyUserList()
    {
       replayAllMocks();
