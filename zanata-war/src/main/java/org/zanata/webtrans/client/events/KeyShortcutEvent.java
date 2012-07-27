@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.events;
 
+import org.zanata.webtrans.client.keys.Keys;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -28,24 +30,16 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class KeyShortcutEvent extends GwtEvent<KeyShortcutEventHandler>
 {
+   private final Keys keys;
 
-   private final int modifiers;
-   private final int keyCode;
-
-   public int getModifiers()
+   public Keys getKeys()
    {
-      return modifiers;
+      return keys;
    }
 
-   public int getKeyCode()
+   public KeyShortcutEvent(Keys keys)
    {
-      return keyCode;
-   }
-
-   public KeyShortcutEvent(int modifiers, int keyCode)
-   {
-      this.modifiers = modifiers;
-      this.keyCode = keyCode;
+      this.keys = keys;
    }
 
    @Override
