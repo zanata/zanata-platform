@@ -70,15 +70,12 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
-import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -154,7 +151,6 @@ public class TargetContentsPresenter implements
    {
       this.displayProvider = displayProvider;
       this.userWorkspaceContext = userWorkspaceContext;
-//      this.display.setListener(this);
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.debug("read only mode. Hide buttons");
@@ -474,7 +470,7 @@ public class TargetContentsPresenter implements
    {
       currentTransUnitId = transUnit.getId();
       display.setFindMessage(findMessages);
-      display.setTargets(transUnit.getTargets());
+      display.setValue(transUnit);
       return display;
    }
 
@@ -518,21 +514,6 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = 0;
          eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(NextEntry));
-      }
-   }
-
-   @Override
-   public void saveAsApprovedAndMovePrevious()
-   {
-      if (currentEditorIndex - 1 >= 0)
-      {
-         display.focusEditor(currentEditorIndex - 1);
-         currentEditorIndex--;
-      }
-      else
-      {
-         currentEditorIndex = LAST_INDEX;
-         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(PrevEntry));
       }
    }
 
@@ -743,7 +724,7 @@ public class TargetContentsPresenter implements
       for (int i = 0; i < displayList.size(); i++)
       {
          TargetContentsDisplay targetContentsDisplay = displayList.get(i);
-         targetContentsDisplay.setTargets(transUnits.get(i).getTargets());
+         targetContentsDisplay.setValue(transUnits.get(i));
       }
    }
 
@@ -760,9 +741,9 @@ public class TargetContentsPresenter implements
       }
    }
 
-   public void updateRow(int rowNum, List<String> updatedTargets)
+   public void updateRow(int rowNum, TransUnit updatedTransUnit)
    {
       TargetContentsDisplay contentsDisplay = displayList.get(rowNum);
-      contentsDisplay.setTargets(updatedTargets);
+      contentsDisplay.setValue(updatedTransUnit);
    }
 }

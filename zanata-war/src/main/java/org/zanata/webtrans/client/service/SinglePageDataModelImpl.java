@@ -18,19 +18,21 @@ import net.customware.gwt.presenter.client.EventBus;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
+//TODO move methods accessed by TransUnitEditPresenter to NavigationController so that this class can become package private
 public class SinglePageDataModelImpl implements SinglePageDataModel
 {
    private final EventBus eventBus;
-   //TODO this class should listener to display selection change event
+   private final TransUnitNavigationService navigationService;
    private List<TransUnit> data = Lists.newArrayList();
    private int currentRow = -1;
    private PageDataChangeListener pageDataChangeListener;
    private int oldSelection = -2;
 
    @Inject
-   public SinglePageDataModelImpl(EventBus eventBus)
+   public SinglePageDataModelImpl(EventBus eventBus, TransUnitNavigationService navigationService)
    {
       this.eventBus = eventBus;
+      this.navigationService = navigationService;
    }
 
    @Override
@@ -41,6 +43,7 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
       {
          oldSelection = currentRow;
          currentRow = rowIndex;
+         navigationService.updateCurrentPageAndRowIndex(navigationService.getCurrentPage(), currentRow);
          eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
       }
    }
@@ -89,7 +92,12 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    public boolean hasStaleData(ArrayList<String> newTargets)
    {
       TransUnit oldOrNull = getOldSelectionOrNull();
-      return oldOrNull != null && !Objects.equal(oldOrNull.getTargets(), newTargets);
+      boolean hasStaleData = oldOrNull != null && !Objects.equal(oldOrNull.getTargets(), newTargets);
+      if (oldOrNull != null && hasStaleData)
+      {
+         Log.info("detect stale data. old: " + oldOrNull.getTargets() + " new: " + newTargets);
+      }
+      return hasStaleData;
    }
 
    @Override

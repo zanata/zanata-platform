@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.service.SinglePageDataModelImpl;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,13 +27,14 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
    private Grid transUnitTable = new Grid(0, 2);
    private ScrollPanel container= new ScrollPanel(transUnitTable);
    private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
-   private final SinglePageDataModelImpl pageModel;
+   private final NavigationController navigationController;
 
    @Inject
-   public TransUnitEditView2(FilterViewConfirmationDisplay filterViewConfirmationDisplay, SinglePageDataModelImpl pageModel)
+   public TransUnitEditView2(FilterViewConfirmationDisplay filterViewConfirmationDisplay, NavigationController navigationController
+   )
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
-      this.pageModel = pageModel;
+      this.navigationController = navigationController;
       transUnitTable.setWidth("100%");
       transUnitTable.addClickHandler(new ClickHandler()
       {
@@ -50,7 +52,7 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
 
    private void selectRow(int rowIndex)
    {
-      pageModel.setSelected(rowIndex);
+      navigationController.selectByRowIndex(rowIndex);
    }
 
    @Override

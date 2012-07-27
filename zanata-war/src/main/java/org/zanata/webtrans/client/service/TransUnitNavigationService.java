@@ -26,13 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.inject.Singleton;
 
@@ -50,7 +47,7 @@ public class TransUnitNavigationService
    private ArrayList<Long> idIndexList;
 
    private int pageSize;
-   private int curRowIndex = 0;
+   private int rowIndexInDocument = 0;
    private int curPage = 0;
    private int totalCount;
    private int pageCount;
@@ -71,7 +68,7 @@ public class TransUnitNavigationService
 
    public int getNextStateRowIndex(Predicate<ContentState> condition)
    {
-      for (int i = curRowIndex + 1; i <= maxRowIndex(); i++)
+      for (int i = rowIndexInDocument + 1; i <= maxRowIndex(); i++)
       {
          ContentState contentState = idAndStateMap.get(idIndexList.get(i));
          if (condition.apply(contentState))
@@ -79,7 +76,7 @@ public class TransUnitNavigationService
             return i;
          }
       }
-      return curRowIndex;
+      return rowIndexInDocument;
    }
 
    public int maxRowIndex()
@@ -89,7 +86,7 @@ public class TransUnitNavigationService
 
    public int getPreviousStateRowIndex(Predicate<ContentState> condition)
    {
-      for (int i = curRowIndex - 1; i >= 0; i--)
+      for (int i = rowIndexInDocument - 1; i >= 0; i--)
       {
          ContentState contentState = idAndStateMap.get(idIndexList.get(i));
          if (condition.apply(contentState))
@@ -97,7 +94,7 @@ public class TransUnitNavigationService
             return i;
          }
       }
-      return curRowIndex;
+      return rowIndexInDocument;
    }
 
    public Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
@@ -151,8 +148,8 @@ public class TransUnitNavigationService
    public void updateCurrentPageAndRowIndex(int curPage, int selectedRow)
    {
       this.curPage = curPage;
-      curRowIndex = this.curPage * pageSize + selectedRow;
-      Log.info("update current page:" + curPage + ", current row index:" + curRowIndex);
+      rowIndexInDocument = this.curPage * pageSize + selectedRow;
+      Log.debug("update current page:" + curPage + ", current row index:" + rowIndexInDocument);
    }
 
    public int getCurrentPage()
@@ -162,22 +159,22 @@ public class TransUnitNavigationService
 
    public int getCurrentRowIndex()
    {
-      return curRowIndex;
+      return rowIndexInDocument;
    }
 
    public int getCurrentRowNumber()
    {
-      return curRowIndex - (curPage * pageSize);
+      return rowIndexInDocument - (curPage * pageSize);
    }
 
    public int getNextRowIndex()
    {
-      return Math.min(curRowIndex + 1, maxRowIndex());
+      return Math.min(rowIndexInDocument + 1, maxRowIndex());
    }
 
    public int getPrevRowIndex()
    {
-      return Math.max(curRowIndex - 1, 0);
+      return Math.max(rowIndexInDocument - 1, 0);
    }
 
    public int getTargetPage(int targetIndex)

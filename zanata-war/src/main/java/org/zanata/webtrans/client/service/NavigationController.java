@@ -226,7 +226,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    {
       int page = normalizePageIndex(pageIndex);
       GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(transUnitId);
-      Log.info("page index: " + pageIndex + " page context: " + newContext);
+      Log.debug("page index: " + pageIndex + " page context: " + newContext);
       requestTransUnitsAndUpdatePageIndex(newContext);
    }
 
@@ -277,7 +277,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       }
       int targetPage = navigationService.getTargetPage(rowIndex);
       TransUnitId targetTransUnitId = navigationService.getTargetTransUnitId(rowIndex);
-      Log.info("target page : [" + targetPage + "] target TU id: " + targetTransUnitId);
+      Log.debug("target page : [" + targetPage + "] target TU id: " + targetTransUnitId + " rowIndex: " + rowIndex);
 
       if (navigationService.getCurrentPage() == targetPage)
       {
@@ -352,6 +352,12 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    {
       TransUnit selected = pageModel.getSelectedOrNull();
       return selected != null ? context.setTargetTransUnitId(selected.getId()) : context;
+   }
+
+   public void selectByRowIndex(int rowIndex)
+   {
+      pageModel.setSelected(rowIndex);
+      navigationService.updateCurrentPageAndRowIndex(navigationService.getCurrentPage(), rowIndex);
    }
 
    public static interface UpdateContextCommand

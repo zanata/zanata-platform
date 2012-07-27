@@ -150,7 +150,7 @@ public class TargetContentsPresenterTest
       TargetContentsDisplay result = presenter.setValue(transUnit, findMessages);
 
       assertThat(result, sameInstance(display));
-      verify(display).setTargets(targetContents);
+      verify(display).setValue(transUnit);
       verify(display).setFindMessage(findMessages);
       verifyNoMoreInteractions(display);
    }

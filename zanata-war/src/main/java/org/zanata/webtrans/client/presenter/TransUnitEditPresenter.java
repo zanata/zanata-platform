@@ -91,6 +91,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    //state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
    private FindMessageEvent findMessage = FindMessageEvent.DEFAULT;
+
    private final SinglePageDataModel pageModel;
 
    //TODO too many constructor dependency
@@ -216,7 +217,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void savePendingChangeAndGoToPageNumber(final int pageNumber)
    {
-//      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
       saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
@@ -441,6 +441,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit)
    {
-      targetContentsPresenter.updateRow(rowIndexOnPage, updatedTransUnit.getTargets());
+      targetContentsPresenter.updateRow(rowIndexOnPage, updatedTransUnit);
    }
 }

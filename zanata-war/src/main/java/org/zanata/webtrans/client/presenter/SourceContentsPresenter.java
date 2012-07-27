@@ -157,7 +157,7 @@ public class SourceContentsPresenter implements ClickHandler
 
          selectedSource.setSelected(true);
 
-         Log.info("Selected source: " + selectedSource.getSource());
+         Log.debug("Selected source: " + selectedSource.getSource());
          eventBus.fireEvent(new RequestValidationEvent());
       }
    }

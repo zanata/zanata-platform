@@ -150,7 +150,7 @@ public class NavigationControllerTest
       navigationService = new TransUnitNavigationService();
       UserConfigHolder configHolder = new UserConfigHolder();
 
-      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus);
+      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus, navigationService);
       pageModel.addDataChangeListener(transUnitEditPresenter);
       controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages, pageModel);
 

@@ -23,9 +23,11 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -123,8 +125,9 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void setTargets(List<String> targets)
+   public void setValue(TransUnit transUnit)
    {
+      List<String> targets = transUnit.getTargets();
       editors.clear();
       if (targets == null || targets.size() <= 0)
       {
@@ -140,6 +143,27 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          editors.add(editor);
          rowIndex++;
       }
+      editorGrid.setStyleName(resolveStyleName(transUnit.getStatus()));
+   }
+
+   private static String resolveStyleName(ContentState status)
+   {
+      String styles = "TableEditorRow ";
+      String state = "";
+      switch (status)
+      {
+         case Approved:
+            state = " Approved";
+            break;
+         case NeedReview:
+            state = " Fuzzy";
+            break;
+         case New:
+            state = " New";
+            break;
+      }
+      styles += state + "StateDecoration";
+      return styles;
    }
 
    @UiHandler("saveButton")
@@ -197,6 +221,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
+   //TODO do we need this?
    public boolean isEditing()
    {
       for (ToggleEditor editor : editors)

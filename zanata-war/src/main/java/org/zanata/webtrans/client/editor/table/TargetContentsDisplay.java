@@ -27,6 +27,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -39,13 +40,13 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
    void addUndo(UndoLink undoLink);
 
+   void setValue(TransUnit transUnit);
+
    interface Listener
    {
       void validate(ToggleEditor editor);
 
       void saveAsApprovedAndMoveNext();
-      
-      void saveAsApprovedAndMovePrevious();
 
       void copySource(ToggleEditor editor);
 
@@ -63,8 +64,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
       void showHistory();
    }
-
-   void setTargets(List<String> targets);
 
    void setFindMessage(String findMessage);
 
