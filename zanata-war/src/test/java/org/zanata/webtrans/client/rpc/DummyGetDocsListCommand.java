@@ -16,9 +16,9 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
 
 final class DummyGetDocsListCommand implements Command
 {
@@ -54,11 +54,10 @@ final class DummyGetDocsListCommand implements Command
       names.add(new DocumentInfo(new DocumentId(6), "name1", "", LocaleId.EN_US, newStats(6)));
       names.add(new DocumentInfo(new DocumentId(7), "long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "", LocaleId.EN_US, newStats(7)));
       names.add(new DocumentInfo(new DocumentId(8), "another long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "long path, a path which is, again, really quite long, and also too wide to be displayed without scrolling (in most cases)", LocaleId.EN_US, newStats(8)));
-      for (int n = 10; n < 9; n++)
+      for (int n = 0; n < 100; n++)
       {
          // two digit numbers, to make sorting happier
-         // names.add(new DocumentInfo(new DocumentId(n), "multi" + n, "",
-         // newStats(n)));
+         names.add(new DocumentInfo(new DocumentId(n), "multi" + n, "", LocaleId.EN_US, newStats(n)));
       }
       return names;
    }

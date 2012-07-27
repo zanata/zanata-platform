@@ -89,6 +89,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       void renderTable(SingleSelectionModel<DocumentNode> selectionModel);
    }
 
+   private static final int PAGE_SIZE = 20;
+
    private final DispatchAsync dispatcher;
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
@@ -344,6 +346,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       }));
 
       loadDocumentList();
+      display.setPageSize(PAGE_SIZE);
 
       history.fireCurrentHistoryState();
    }
@@ -484,7 +487,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          nodes.put(doc.getId(), node);
       }
       Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
-      display.setPageSize(dataProvider.getList().size());
       dataProvider.refresh();
    }
 
@@ -503,7 +505,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             dataProvider.getList().add(docNode);
          }
       }
-      display.setPageSize(dataProvider.getList().size());
       dataProvider.refresh();
    }
 

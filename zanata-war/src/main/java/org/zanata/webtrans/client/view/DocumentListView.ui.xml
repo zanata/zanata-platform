@@ -35,8 +35,13 @@
                         </g:layer>
                     </g:LayoutPanel>
                 </g:layer>
-                <g:layer top='50px' bottom="2px">
-                    <g:ScrollPanel ui:field='documentScrollPanel'/>
+                <g:layer top='35px' bottom="2px">
+                	<g:ScrollPanel>
+                		<g:VerticalPanel width="100%">
+	                		<g:FlowPanel ui:field="documentListContainer"/>
+		                    <c:SimplePager ui:field="pager" location='CENTER'/> 
+	                    </g:VerticalPanel>
+                    </g:ScrollPanel> 
                 </g:layer>
                 
             </g:LayoutPanel>

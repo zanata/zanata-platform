@@ -685,17 +685,43 @@ td.ApprovedStateDecoration div div div
 }
 
 .DocumentListTable td {
-	font-size: 16px;
+	font-size: 15px;
 	cursor: pointer;
 }
 
-.DocumentListTable_folderCol {
+.DocumentListTable td.directoryCol {
 	width: 25%;
 }
 
-.DocumentListTable_docCol {
+.DocumentListTable td.documentCol {
 	width: 25%;
 }
+
+.DocumentListTable td.statisticCol {
+	font-size:14px;
+}
+
+.DocumentListTable td.translatedCol {
+	font-weight:bold;
+	font-size:14px;
+	color:#006200;
+	text-align:center;
+}
+
+.DocumentListTable td.untranslatedCol {
+	font-weight:bold;
+	font-size:14px;
+	color:#818181;
+	text-align:center;
+}
+
+.DocumentListTable td.remainingCol {
+	font-weight:bold;
+	font-size:14px;
+	color:#910000;
+	text-align:center;
+}
+
 
 .transUnitCountTooltip {
 	background-color:#FBFBFB;

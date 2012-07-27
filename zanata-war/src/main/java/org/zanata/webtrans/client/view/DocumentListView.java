@@ -40,11 +40,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -61,13 +62,16 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    }
 
    @UiField
-   ScrollPanel documentScrollPanel;
+   FlowPanel documentListContainer;
 
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
 
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
+
+   @UiField
+   SimplePager pager;
 
    CellTable<DocumentNode> documentListTable;
 
@@ -90,7 +94,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       // TODO set this from the presenter if possible
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
-
    }
 
    @Override
@@ -128,6 +131,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public void setPageSize(int pageSize)
    {
       documentListTable.setPageSize(pageSize);
+      pager.setDisplay(documentListTable);
    }
 
    @Override
@@ -151,12 +155,10 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @Override
    public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
    {
-      // documentListTable = DocumentListTable.initDocumentListTable(this,
-      // resources, messages, dataProvider);
       documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel);
       dataProvider.addDataDisplay(documentListTable);
 
-      documentScrollPanel.clear();
-      documentScrollPanel.add(documentListTable);
+      documentListContainer.clear();
+      documentListContainer.add(documentListTable);
    }
 }
