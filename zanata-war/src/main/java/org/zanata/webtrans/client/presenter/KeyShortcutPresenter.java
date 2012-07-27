@@ -234,7 +234,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(pressedKeys);
       boolean shortcutFound = false;
       // TODO replace modifiers + keycode in event with Keys
-      KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(pressedKeys.getModifiers(), pressedKeys.getKeyCode());
+      KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(pressedKeys);
       if (shortcuts != null && !shortcuts.isEmpty())
       {
          for (KeyShortcut shortcut : shortcuts)
