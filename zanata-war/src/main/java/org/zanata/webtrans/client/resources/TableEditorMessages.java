@@ -55,11 +55,23 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Move to previous row")
    String moveToPreviousRow();
    
-   @DefaultMessage("Move to next state row")
-   String moveToNextStateRow();
-   
-   @DefaultMessage("Move to previous state row")
-   String moveToPreviousStateRow();
+   @DefaultMessage("Move to next Fuzzy")
+   String nextFuzzy();
+
+   @DefaultMessage("Move to prev Fuzzy")
+   String prevFuzzy();
+
+   @DefaultMessage("Move to next Untranslated")
+   String nextUntranslated();
+
+   @DefaultMessage("Move to prev Untranslated")
+   String prevUntranslated();
+
+   @DefaultMessage("Move to next Fuzzy/Untranslated")
+   String nextFuzzyOrUntranslated();
+
+   @DefaultMessage("Move to prev Fuzzy/Untranslated")
+   String prevFuzzyOrUntranslated();
 
    @DefaultMessage("Save as fuzzy")
    String saveAsFuzzy();

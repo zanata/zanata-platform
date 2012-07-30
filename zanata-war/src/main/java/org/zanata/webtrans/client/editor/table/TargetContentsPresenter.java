@@ -121,6 +121,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private HandlerRegistration enterTriggersAutoSizeHandlerRegistration;
    private HandlerRegistration escClosesEditorHandlerRegistration;
 
+   private final KeyShortcut nextStateShortcut;
+   private final KeyShortcut prevStateShortcut;
 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter)
@@ -217,7 +219,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       // Register shortcut ALT+(PageDown) to move next state entry - if modal
       // navigation is enabled
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN), ShortcutContext.Edit, messages.moveToNextStateRow(), new KeyShortcutEventHandler()
+      nextStateShortcut = new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN), ShortcutContext.Edit, messages.nextFuzzyOrUntranslated(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -227,12 +229,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
                moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
             }
          }
-      }));
+      });
+      keyShortcutPresenter.register(nextStateShortcut);
 
       // Register shortcut ALT+(PageUp) to move previous state entry - if modal
       // navigation is enabled
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP),
-            ShortcutContext.Edit, messages.moveToPreviousStateRow(), new KeyShortcutEventHandler()
+	  prevStateShortcut = new KeyShortcut(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP), ShortcutContext.Edit, messages.prevFuzzyOrUntranslated(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -242,7 +244,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
                moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
             }
          }
-      }));
+      });
+      keyShortcutPresenter.register(prevStateShortcut);
 
       // Register shortcut CTRL+S to save as fuzzy
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_KEY, 'S'),
@@ -336,7 +339,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             }
          }
       }));
-
    }
 
    private ToggleEditor getCurrentEditor()
@@ -707,6 +709,24 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
          escClosesEditorRegistered = escClosesEditor;
       }
+
+
+      if (configHolder.isButtonFuzzy() && !configHolder.isButtonUntranslated())
+      {
+         nextStateShortcut.setDescription(messages.nextFuzzy());
+         prevStateShortcut.setDescription(messages.prevFuzzy());
+      }
+      else if (configHolder.isButtonUntranslated() && !configHolder.isButtonFuzzy())
+      {
+         nextStateShortcut.setDescription(messages.nextUntranslated());
+         prevStateShortcut.setDescription(messages.prevUntranslated());
+      }
+      else if (configHolder.isButtonUntranslated() && configHolder.isButtonFuzzy())
+      {
+         nextStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
+         prevStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
+      }
+
    }
 
    @Override

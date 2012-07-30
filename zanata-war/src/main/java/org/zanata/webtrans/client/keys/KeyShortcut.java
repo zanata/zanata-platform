@@ -212,4 +212,9 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       return keys.iterator().next().compareTo(o.keys.iterator().next());
    }
 
+   public void setDescription(String description)
+   {
+      this.description = description;
+   }
+
 }
