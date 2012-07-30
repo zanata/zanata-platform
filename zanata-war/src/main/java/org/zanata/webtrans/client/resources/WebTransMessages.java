@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.resources;
 
-import java.util.List;
-
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -379,4 +377,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Chat")
    String chatScope();
+
+   @DefaultMessage("Report a problem")
+   String reportAProblem();
 }

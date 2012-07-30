@@ -120,4 +120,7 @@ public interface Resources extends ClientBundle
    @Source("images/crystal_project/_24x24/apps/kfind.png")
    ImageResource search();
 
+   @Source("images/crystal_project/_16x16/apps/bug.png")
+   ImageResource bug();
+
 }
