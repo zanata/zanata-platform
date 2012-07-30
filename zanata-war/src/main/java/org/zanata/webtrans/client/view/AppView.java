@@ -104,6 +104,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    MenuItem helpMenuItem;
    
+   MenuItem reportProblemMenuItem;
+
    MenuItem leaveWorkspaceMenuItem;
 
    MenuItem signOutMenuItem;
@@ -219,13 +221,16 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void initMenuList(String userLabel, Command helpMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand)
+   public void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand)
    {
       MenuBar menuBar = new MenuBar(true);
       menuBar.addStyleName(style.menuBar());
 
       ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help());
       helpImageLabel.setImageStyle(style.image());
+
+      ImageLabel reportProblemImageLabel = new ImageLabel(resources.bug(), messages.reportAProblem());
+      reportProblemImageLabel.setImageStyle(style.image());
 
       ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.layoutSelection());
       layoutImageLabel.setImageStyle(style.image());
@@ -238,6 +243,10 @@ public class AppView extends Composite implements AppPresenter.Display
 
       helpMenuItem = menuBar.addItem(helpImageLabel.getElement().getString(), true, helpMenuCommand);
       helpMenuItem.addStyleName(style.menuItem());
+      menuBar.addSeparator();
+
+      reportProblemMenuItem = menuBar.addItem(reportProblemImageLabel.getElement().getString(), true, reportProblemMenuCommand);
+      reportProblemMenuItem.addStyleName(style.menuItem());
       menuBar.addSeparator();
 
       layoutMenuItem = menuBar.addItem(layoutImageLabel.getElement().getString(), true, layoutMenuCommand);

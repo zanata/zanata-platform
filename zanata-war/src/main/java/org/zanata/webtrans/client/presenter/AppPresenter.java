@@ -69,8 +69,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getDocumentsLink();
 
-      void initMenuList(String userLabel, Command helpMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
-
       void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
       void setDocumentLabel(String docPath, String docName);
@@ -92,6 +90,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void startNotificationAlert(int periodMillis);
 
       void cancelNotificationAlert();
+
+      void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
 
    }
 
@@ -118,6 +118,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private MainView currentView = null;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
+   private static final String REPORT_PROBLEM_LINK = "https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata";
 
    private boolean enableDashBoard = false;
 
@@ -302,6 +303,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       };
 
+      Command reportProblemCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            com.google.gwt.user.client.Window.open(REPORT_PROBLEM_LINK, REPORT_PROBLEM_LINK, null);
+         }
+      };
+
       Command signOutMenuCommand = new Command()
       {
          @Override
@@ -330,7 +340,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       };
 
-      display.initMenuList(identity.getPerson().getName(), helpMenuCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
+      display.initMenuList(identity.getPerson().getName(), helpMenuCommand, reportProblemCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
 
       if (enableDashBoard)
       {

@@ -758,7 +758,7 @@ public class AppPresenterTest extends PresenterTest
       mockSearchResultsPresenter.concealDisplay();
       expectLastCall().once();
       
-      mockDisplay.initMenuList(isA(String.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
+      mockDisplay.initMenuList(isA(String.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
       expectLastCall().once();
       
       mockDisplay.setLayoutMenuVisible(false);
