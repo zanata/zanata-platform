@@ -122,7 +122,14 @@
 			</script><script type="text/javascript">
 			try {
 			var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", #{applicationConfiguration.piwikIdSite});
-			piwikTracker.setCustomVariable (1, "username", "#{identity.username}", "visit" ) ; 
+			var username =  "#{identity.username}";
+			if(#{identity.loggedIn} == false)
+			{
+				username = "anonymous";
+			} 
+			piwikTracker.setCustomVariable (1, "Visit", username, "visit" ); 
+			piwikTracker.setCustomVariable (2, "View page", username, "page" ); 
+			
 			piwikTracker.trackPageView();
 			piwikTracker.enableLinkTracking();
 			} catch( err ) {}
