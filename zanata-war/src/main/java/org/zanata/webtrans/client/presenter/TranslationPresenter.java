@@ -227,8 +227,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-
       registerHandler(display.getOptionsToggle().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
 
@@ -258,6 +256,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             setSouthPanelExpanded(shouldShowSouthPanel);
          }
       }));
+
+      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
       KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
       {

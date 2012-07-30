@@ -43,6 +43,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -68,8 +69,6 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       String userName();
 
-      String hasError();
-      
       String hasWarning();
 
       String image();
@@ -313,22 +312,50 @@ public class AppView extends Composite implements AppPresenter.Display
       notificationBtn.getUpDisabledFace().setText(String.valueOf(count));
       notificationBtn.getUpFace().setText(String.valueOf(count));
       notificationBtn.getUpHoveringFace().setText(String.valueOf(count));
+   }
 
-      if (severity == Severity.Error)
+   private boolean isAlert = false;
+
+   private final Timer msgAlertTimer = new Timer()
+   {
+      @Override
+      public void run()
       {
-         notificationBtn.removeStyleName(style.hasWarning());
-         notificationBtn.addStyleName(style.hasError());
+         if (!isAlert)
+         {
+            setNotificationAlert();
+            isAlert = true;
+         }
+         else
+         {
+            removeNotificationAlert();
+            isAlert = false;
+         }
       }
-      else if(severity == Severity.Warning)
-      {
-         notificationBtn.addStyleName(style.hasWarning());
-         notificationBtn.removeStyleName(style.hasError());
-      } 
-      else
-      {
-         notificationBtn.removeStyleName(style.hasError());
-         notificationBtn.removeStyleName(style.hasWarning());
-      }
+   };
+
+   private void setNotificationAlert()
+   {
+      notificationBtn.addStyleName(style.hasWarning());
+   }
+
+   private void removeNotificationAlert()
+   {
+      notificationBtn.removeStyleName(style.hasWarning());
+   }
+
+   @Override
+   public void startNotificationAlert(int periodMillis)
+   {
+      msgAlertTimer.scheduleRepeating(periodMillis);
+      msgAlertTimer.run();
+   }
+
+   @Override
+   public void cancelNotificationAlert()
+   {
+      msgAlertTimer.cancel();
+      removeNotificationAlert();
    }
 
 }

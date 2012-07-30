@@ -28,13 +28,8 @@ import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.InlineLink;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.CssResource;
@@ -43,9 +38,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -248,22 +241,6 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    {
       hidePopupTimer.cancel();
       super.hide(autoClosed);
-   }
-
-   @Override
-   public void show(int delayMillisToClose)
-   {
-      hidePopupTimer.cancel();
-      super.show();
-      if (displayOrder == DisplayOrder.ASCENDING)
-      {
-         scrollPanel.scrollToTop();
-      }
-      else
-      {
-         scrollPanel.scrollToBottom();
-      }
-      hidePopupTimer.schedule(delayMillisToClose);
    }
 
    @Override

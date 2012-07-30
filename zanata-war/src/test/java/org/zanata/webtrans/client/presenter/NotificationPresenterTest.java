@@ -86,6 +86,9 @@ public class NotificationPresenterTest extends PresenterTest
       mockListener.setNotificationLabel(1, Severity.Error);
       expectLastCall().once();
       
+      mockListener.cancelNotificationAlert();
+      expectLastCall().once();
+
       replayAllMocks();
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
@@ -114,11 +117,14 @@ public class NotificationPresenterTest extends PresenterTest
 
          mockListener.setNotificationLabel(count, Severity.Error);
          expectLastCall().once();
+
+         mockListener.cancelNotificationAlert();
+         expectLastCall().once();
       }
 
       mockListener.setNotificationLabel(0, Severity.Info);
       expectLastCall().once();
-      
+
       replayAllMocks();
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
@@ -146,6 +152,9 @@ public class NotificationPresenterTest extends PresenterTest
          expect(mockDisplay.getMessageCount()).andReturn(count);
 
          mockListener.setNotificationLabel(count, Severity.Error);
+         expectLastCall().once();
+
+         mockListener.cancelNotificationAlert();
          expectLastCall().once();
       }
       
@@ -187,7 +196,7 @@ public class NotificationPresenterTest extends PresenterTest
    {
       mockDisplay.setModal(false);
       mockDisplay.setAutoHideEnabled(true);
-      mockDisplay.setAnimationEnabled(true);
+      mockDisplay.setAnimationEnabled(false);
       mockDisplay.hide(true);
       mockDisplay.setMessagesToKeep(MSG_TO_KEEP);
       mockDisplay.setPopupTopRightCorner();

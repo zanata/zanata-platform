@@ -93,6 +93,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       HasClickHandlers getNotificationBtn();
 
       void setNotificationText(int count, Severity severity);
+
+      void startNotificationAlert(int periodMillis);
+
+      void cancelNotificationAlert();
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -148,6 +152,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    public void setNotificationLabel(int count, Severity severity)
    {
       display.setNotificationText(count, severity);
+   }
+
+   @Override
+   public void startNotificationAlert(int periodMillis)
+   {
+      display.startNotificationAlert(periodMillis);
+   }
+
+   @Override
+   public void cancelNotificationAlert()
+   {
+      display.cancelNotificationAlert();
    }
 
    @Override
