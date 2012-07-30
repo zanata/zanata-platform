@@ -833,7 +833,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void addUndoLink(int row, UndoLink undoLink)
    {
-      TargetContentsDisplay targetContentsDisplay = displayList.get(row);
-      targetContentsDisplay.addUndo(undoLink);
+      if (row >=0 && row < displayList.size())
+      {
+         TargetContentsDisplay targetContentsDisplay = displayList.get(row);
+         targetContentsDisplay.addUndo(undoLink);
+      }
    }
 }
