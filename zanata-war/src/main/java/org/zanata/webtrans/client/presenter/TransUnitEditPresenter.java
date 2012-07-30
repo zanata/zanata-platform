@@ -69,12 +69,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       TransUnitSelectionHandler,
       WorkspaceContextUpdateEventHandler,
       NavTransUnitHandler,
-      LoadingStateChangeEvent.Handler,
       TransUnitSaveEventHandler,
       FindMessageHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
-//      TransUnitUpdatedEventHandler,
       SinglePageDataModel.PageDataChangeListener
 {
 
@@ -84,7 +82,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TableEditorMessages messages;
    private final EventBus eventBus;
    private final NavigationController navigationController;
-   private final TransUnitListDisplay transUnitListDisplay;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
    private final TransUnitSaveService saveService;
@@ -99,7 +96,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    //TODO too many constructor dependency
    @Inject
    public TransUnitEditPresenter(TransUnitEditDisplay2 display, EventBus eventBus, NavigationController navigationController,
-                                 TransUnitListDisplay transUnitListDisplay,
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
                                  TransUnitSaveService saveService,
@@ -116,7 +112,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
-      this.transUnitListDisplay = transUnitListDisplay;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.saveService = saveService;
@@ -145,9 +140,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(TransUnitSaveEvent.TYPE, this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
-//      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
-      transUnitListDisplay.addLoadingStateChangeHandler(this);
    }
 
    @Override
@@ -262,16 +255,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       {
          //we want to save any pending state and then move
          onTransUnitSave(new TransUnitSaveEvent(targetContentsPresenter.getNewTargets(), selected.getStatus()).andMoveTo(event.getRowType()));
-      }
-   }
-
-   @Override
-   public void onLoadingStateChanged(LoadingStateChangeEvent event)
-   {
-      if (event.getLoadingState() == LoadingStateChangeEvent.LoadingState.LOADED)
-      {
-         Log.debug("finish loading. scroll to selected");
-//         display.scrollToRow(dataModel.getSelectedOrNull());
       }
    }
 
@@ -412,27 +395,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.fireEvent(new FilterViewEvent(filterOptions.isFilterTranslated(), filterOptions.isFilterNeedReview(), filterOptions.isFilterUntranslated(), true));
       display.hideFilterConfirmation();
    }
-
-//   @Override
-//   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-//   {
-//      TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
-//      if (selectedTransUnit == null)
-//      {
-//         return;
-//      }
-//      TransUnit updatedTransUnit = event.getUpdateInfo().getTransUnit();
-//      if (Objects.equal(selectedTransUnit.getId(), updatedTransUnit.getId()) && !Objects.equal(event.getEditorClientId(), identity.getEditorClientId()))
-//      {
-//         //TODO current edit has happened. What's the best way to show it to user.
-//         Log.info("detect concurrent edit. Closing editor");
-//         // TODO localise
-//         eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
-//         targetContentsPresenter.setToViewMode();
-////         targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
-//         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
-//      }
-//   }
 
    @Override
    public void showDataForCurrentPage(List<TransUnit> transUnits)

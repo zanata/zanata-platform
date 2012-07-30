@@ -65,7 +65,7 @@ public class TransUnitSaveService
    {
       TransUnitUpdated.UpdateType updateType = status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
       final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(old.getId(), newTargets, status, old.getVerNum()), updateType);
-      Log.info("about to save translation: " + updateTransUnit);
+      Log.debug("about to save translation: " + updateTransUnit);
       dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
       {
          @Override
@@ -81,7 +81,7 @@ public class TransUnitSaveService
          {
             // FIXME check result.success
             TransUnit updatedTU = result.getUpdateInfoList().get(0).getTransUnit();
-            Log.info("update resulted TU: " + updatedTU.debugString());
+            Log.debug("save resulted TU: " + updatedTU.debugString());
             if (result.isSingleSuccess())
             {
                UndoLink undoLink = undoLinkProvider.get();

@@ -37,7 +37,7 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    @Override
    public void setSelected(int rowIndex)
    {
-      Log.info("current row:" + currentRow + " about to select row:" + rowIndex);
+      Log.debug("current row:" + currentRow + " about to select row:" + rowIndex);
       if (currentRow != rowIndex)
       {
          oldSelection = currentRow;
