@@ -1,13 +1,12 @@
 package org.zanata.webtrans.client.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -62,13 +61,13 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    }
    
    @Override
-   public void update(TransUnit updatedTransUnit)
+   public void updateIfInCurrentPage(TransUnit updatedTransUnit, EditorClientId editorClientId)
    {
       int index = findIndexById(updatedTransUnit.getId());
       if (validIndex(index))
       {
          data.set(index, updatedTransUnit);
-         pageDataChangeListener.refreshView(index, updatedTransUnit);
+         pageDataChangeListener.refreshView(index, updatedTransUnit, editorClientId);
       }
    }
 
@@ -89,23 +88,12 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    }
 
    @Override
-   public boolean hasStaleData(ArrayList<String> newTargets)
-   {
-      TransUnit oldOrNull = getOldSelectionOrNull();
-      boolean hasStaleData = oldOrNull != null && !Objects.equal(oldOrNull.getTargets(), newTargets);
-      if (oldOrNull != null && hasStaleData)
-      {
-         Log.info("detect stale data. old: " + oldOrNull.getTargets() + " new: " + newTargets);
-      }
-      return hasStaleData;
-   }
-
-   @Override
    public void addDataChangeListener(PageDataChangeListener pageDataChangeListener)
    {
       this.pageDataChangeListener = pageDataChangeListener;
    }
 
+   @Override
    public TransUnit getOldSelectionOrNull()
    {
       if (validIndex(oldSelection))

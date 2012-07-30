@@ -41,7 +41,6 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
-import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -298,7 +297,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
-         pageModel.update(updatedTU);
+         pageModel.updateIfInCurrentPage(updatedTU, event.getEditorClientId());
       }
    }
 

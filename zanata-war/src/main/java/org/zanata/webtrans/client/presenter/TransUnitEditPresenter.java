@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -48,6 +49,7 @@ import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay2;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -72,7 +74,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       FindMessageHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
-      TransUnitUpdatedEventHandler,
+//      TransUnitUpdatedEventHandler,
       SinglePageDataModel.PageDataChangeListener
 {
 
@@ -143,7 +145,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(TransUnitSaveEvent.TYPE, this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
-      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
+//      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
       transUnitListDisplay.addLoadingStateChangeHandler(this);
    }
@@ -161,10 +163,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onTransUnitSelected(TransUnitSelectionEvent event)
    {
-      if (hasTargetContentsChanged())
+      TransUnit oldSelection = pageModel.getOldSelectionOrNull();
+      ArrayList<String> currentEditorValues = targetContentsPresenter.getNewTargets();
+      if (oldSelection != null && currentEditorValues != null && !Objects.equal(currentEditorValues, oldSelection.getTargets()))
       {
-         Log.info("has pending change");
-         savePendingChangeBeforeShowingNewSelection();
+         savePendingChangeBeforeShowingNewSelection(oldSelection, currentEditorValues);
       }
       else
       {
@@ -184,10 +187,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       }
    }
 
-   private void savePendingChangeBeforeShowingNewSelection()
+   private void savePendingChangeBeforeShowingNewSelection(TransUnit old, ArrayList<String> newTargets)
    {
-//      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
-      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
+      saveService.saveTranslation(old, newTargets, ContentState.Approved, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
@@ -217,7 +219,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void savePendingChangeAndGoToPageNumber(final int pageNumber)
    {
-      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
+      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.Approved, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
          public void onSaveSuccess(TransUnit updatedTU)
@@ -333,7 +335,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onFindMessage(FindMessageEvent event)
    {
       findMessage = event;
-//      transUnitListDisplay.setHighlightString(event.getMessage());
       sourceContentsPresenter.highlightSearch(event.getMessage());
       targetContentsPresenter.highlightSearch(event.getMessage());
    }
@@ -363,7 +364,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private boolean hasTargetContentsChanged()
    {
-      return pageModel.hasStaleData(targetContentsPresenter.getNewTargets());
+      TransUnit current = pageModel.getSelectedOrNull();
+      ArrayList<String> editorValues = targetContentsPresenter.getNewTargets();
+      return current != null && !Objects.equal(current.getTargets(), editorValues);
    }
 
    @Override
@@ -410,26 +413,26 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       display.hideFilterConfirmation();
    }
 
-   @Override
-   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-   {
-      TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
-      if (selectedTransUnit == null)
-      {
-         return;
-      }
-      TransUnit updatedTransUnit = event.getUpdateInfo().getTransUnit();
-      if (Objects.equal(selectedTransUnit.getId(), updatedTransUnit.getId()) && !Objects.equal(event.getEditorClientId(), identity.getEditorClientId()))
-      {
-         //TODO current edit has happened. What's the best way to show it to user.
-         Log.info("detect concurrent edit. Closing editor");
-         // TODO localise
-         eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
-         targetContentsPresenter.setToViewMode();
-//         targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
-         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
-      }
-   }
+//   @Override
+//   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+//   {
+//      TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
+//      if (selectedTransUnit == null)
+//      {
+//         return;
+//      }
+//      TransUnit updatedTransUnit = event.getUpdateInfo().getTransUnit();
+//      if (Objects.equal(selectedTransUnit.getId(), updatedTransUnit.getId()) && !Objects.equal(event.getEditorClientId(), identity.getEditorClientId()))
+//      {
+//         //TODO current edit has happened. What's the best way to show it to user.
+//         Log.info("detect concurrent edit. Closing editor");
+//         // TODO localise
+//         eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
+//         targetContentsPresenter.setToViewMode();
+////         targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
+//         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
+//      }
+//   }
 
    @Override
    public void showDataForCurrentPage(List<TransUnit> transUnits)
@@ -439,8 +442,30 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    }
 
    @Override
-   public void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit)
+   public void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit, EditorClientId editorClientId)
    {
+      TransUnit selected = pageModel.getSelectedOrNull();
+      boolean setFocus = false;
+      if (selected != null && Objects.equal(selected.getId(), updatedTransUnit.getId()))
+      {
+         //updatedTU is our active row
+         if (!Objects.equal(editorClientId, identity.getEditorClientId()))
+         {
+            //TODO current edit has happened. What's the best way to show it to user.
+            Log.info("detect concurrent edit. Closing editor");
+            // TODO localise
+            eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
+         }
+         else if (updatedTransUnit.getStatus() == ContentState.NeedReview)
+         {
+            //same user and state is fuzzy
+            setFocus = true;
+         }
+      }
       targetContentsPresenter.updateRow(rowIndexOnPage, updatedTransUnit);
+      if (setFocus)
+      {
+         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
+      }
    }
 }
