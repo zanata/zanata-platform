@@ -30,12 +30,6 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Validation error - See validation message")
    String notifyValidationError();
 
-   @DefaultMessage("Workspace is set to read only")
-   String notifyReadOnlyWorkspace();
-
-   @DefaultMessage("Workspace is set to edit mode")
-   String notifyEditableWorkspace();
-
    @DefaultMessage("Validation Warnings: {0}")
    @AlternateMessage({
       "one", "Validation Warnings: 1",

@@ -76,7 +76,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private final TransUnitEditDisplay2 display;
    private final UserWorkspaceContext userWorkspaceContext;
-   private final TableEditorMessages messages;
    private final EventBus eventBus;
    private final NavigationController navigationController;
    private final SourceContentsPresenter sourceContentsPresenter;
@@ -97,13 +96,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  TargetContentsPresenter targetContentsPresenter,
                                  TransUnitSaveService saveService,
                                  TranslatorInteractionService translatorService,
-                                 UserWorkspaceContext userWorkspaceContext,
-                                 TableEditorMessages messages)
+                                 UserWorkspaceContext userWorkspaceContext)
    {
       super(display, eventBus);
       this.display = display;
       this.userWorkspaceContext = userWorkspaceContext;
-      this.messages = messages;
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
@@ -229,14 +226,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
-      if (userWorkspaceContext.hasReadOnlyAccess())
-      {
-         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyReadOnlyWorkspace()));
-      }
-      else
-      {
-         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyEditableWorkspace()));
-      }
       initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
    }
 
@@ -428,7 +417,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          }
          else if (updatedTransUnit.getStatus() == ContentState.NeedReview)
          {
-            //same user and state is fuzzy
+            //same user and state is fuzzy means this user is trying to save as fuzzy.
             setFocus = true;
          }
       }

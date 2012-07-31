@@ -416,4 +416,10 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Flip entries")
    String flipComparingEntries();
+
+   @DefaultMessage("Workspace is set to read only")
+   String notifyReadOnlyWorkspace();
+
+   @DefaultMessage("Workspace is set to edit mode")
+   String notifyEditableWorkspace();
 }

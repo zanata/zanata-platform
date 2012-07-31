@@ -180,6 +180,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
             userWorkspaceContext.setProjectActive(event.isProjectActive());
+            if (userWorkspaceContext.hasReadOnlyAccess())
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyReadOnlyWorkspace()));
+            }
+            else
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyEditableWorkspace()));
+            }
             display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
          }
       }));
