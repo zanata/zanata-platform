@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.Session;
@@ -54,7 +55,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
    private static final long serialVersionUID = 1L;
 
    public static final String PROJECT_UPDATE = "project.update";
-   
+
    private String slug;
 
    @In
@@ -80,6 +81,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    @In(create = true)
    ProjectDAO projectDAO;
+
+   @In
+   private EntityManager entityManager;
 
    @Override
    protected HIterationProject loadInstance()
@@ -194,6 +198,32 @@ public class ProjectHome extends SlugHome<HIterationProject>
       updateOverrideLocales();
       String state = super.update();
       Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
+
+      if (getInstance().getStatus() == EntityStatus.READONLY)
+      {
+         for (HProjectIteration version : getInstance().getProjectIterations())
+         {
+            if (version.getStatus() == EntityStatus.ACTIVE)
+            {
+               version.setStatus(EntityStatus.READONLY);
+               entityManager.merge(version);
+               Events.instance().raiseEvent(ProjectIterationHome.PROJECT_ITERATION_UPDATE, version);
+            }
+         }
+      }
+      else if (getInstance().getStatus() == EntityStatus.OBSOLETE)
+      {
+         for (HProjectIteration version : getInstance().getProjectIterations())
+         {
+            if (version.getStatus() != EntityStatus.OBSOLETE)
+            {
+               version.setStatus(EntityStatus.OBSOLETE);
+               entityManager.merge(version);
+               Events.instance().raiseEvent(ProjectIterationHome.PROJECT_ITERATION_UPDATE, version);
+            }
+         }
+      }
+
       return state;
    }
 
