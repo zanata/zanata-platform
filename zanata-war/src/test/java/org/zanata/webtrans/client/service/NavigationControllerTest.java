@@ -44,6 +44,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -140,6 +141,10 @@ public class NavigationControllerTest
    private GetTransUnitActionContext context;
    @Mock private TableEditorMessages messages;
    @Mock private TransUnitEditPresenter transUnitEditPresenter;
+   @Mock
+   private TargetContentsPresenter targetContentsPresenter;
+   @Mock
+   private TransUnitSaveService transUnitSaveService;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -150,7 +155,7 @@ public class NavigationControllerTest
       navigationService = new TransUnitNavigationService();
       UserConfigHolder configHolder = new UserConfigHolder();
 
-      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus, navigationService);
+      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus, targetContentsPresenter, transUnitSaveService);
       pageModel.addDataChangeListener(transUnitEditPresenter);
       controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages, pageModel);
 

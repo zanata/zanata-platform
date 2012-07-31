@@ -28,6 +28,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -41,6 +42,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
    void addUndo(UndoLink undoLink);
 
    void setValue(TransUnit transUnit);
+
+   TransUnitId getTransUnitId();
 
    interface Listener
    {

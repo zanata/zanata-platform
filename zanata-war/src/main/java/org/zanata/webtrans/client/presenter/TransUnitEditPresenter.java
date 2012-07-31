@@ -39,7 +39,6 @@ import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
@@ -54,7 +53,6 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -148,20 +146,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onTransUnitSelected(TransUnitSelectionEvent event)
    {
-      TransUnit oldSelection = pageModel.getOldSelectionOrNull();
-      ArrayList<String> currentEditorValues = targetContentsPresenter.getNewTargets();
-      if (oldSelection != null && currentEditorValues != null && !Objects.equal(currentEditorValues, oldSelection.getTargets()))
-      {
-         savePendingChangeBeforeShowingNewSelection(oldSelection, currentEditorValues);
-      }
-      else
-      {
-         showSelection();
-      }
-   }
-
-   private void showSelection()
-   {
       TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
@@ -172,54 +156,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       }
    }
 
-   private void savePendingChangeBeforeShowingNewSelection(TransUnit old, ArrayList<String> newTargets)
-   {
-      saveService.saveTranslation(old, newTargets, ContentState.Approved, new TransUnitSaveService.SaveResultCallback()
-      {
-         @Override
-         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
-         {
-            Log.info("pending change saved. now show selection.");
-            insertUndoLink(updatedTU.getId(), undoLink);
-            showSelection();
-         }
-
-         @Override
-         public void onSaveFail()
-         {
-         }
-      });
-   }
-
    public void goToPage(int pageNumber)
    {
-      if (hasTargetContentsChanged())
-      {
-         savePendingChangeAndGoToPageNumber(pageNumber);
-      }
-      else
-      {
-         navigationController.gotoPage(pageNumber - 1, false);
-      }
-   }
-
-   private void savePendingChangeAndGoToPageNumber(final int pageNumber)
-   {
-      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.Approved, new TransUnitSaveService.SaveResultCallback()
-      {
-         @Override
-         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
-         {
-            Log.info("pending change saved. now got to page number" + pageNumber);
-            insertUndoLink(updatedTU.getId(), undoLink);
-            navigationController.gotoPage(pageNumber - 1, false);
-         }
-
-         @Override
-         public void onSaveFail()
-         {
-         }
-      });
+      navigationController.gotoPage(pageNumber - 1, false);
    }
 
    @Override
@@ -232,19 +171,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
-      TransUnit selected = pageModel.getSelectedOrNull();
-      if (selected == null)
-      {
-         navigationController.navigateTo(event.getRowType());
-      }
-      else
-      {
-         //we want to save any pending state and then move
-         onTransUnitSave(new TransUnitSaveEvent(targetContentsPresenter.getNewTargets(), selected.getStatus()).andMoveTo(event.getRowType()));
-      }
+      navigationController.navigateTo(event.getRowType());
    }
 
    @Override
+   //TODO should this handler move to TransUnitSaveService? The save event will fire navigation separately
    public void onTransUnitSave(final TransUnitSaveEvent event)
    {
       TransUnit selected = pageModel.getSelectedOrNull();
@@ -295,7 +226,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveFail()
          {
-            //TODO implement
+            //TODO implement, may need to revert value back to what it was
 //            targetContentsPresenter.showEditors(pageModel.getCurrentRow());
          }
       });
@@ -427,4 +358,5 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          targetContentsPresenter.setFocus();
       }
    }
+
 }

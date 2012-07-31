@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -10,6 +11,8 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(SinglePageDataModelImpl.class)
 public interface SinglePageDataModel
 {
+   int UNSELECTED = -1;
+
    void setSelected(int rowIndex);
 
    void setData(List<TransUnit> data);
@@ -25,6 +28,8 @@ public interface SinglePageDataModel
    int findIndexById(TransUnitId id);
 
    TransUnit getOldSelectionOrNull();
+
+   void savePendingChangeIfApplicable();
 
    interface PageDataChangeListener
    {

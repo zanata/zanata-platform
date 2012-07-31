@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -75,6 +76,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private String findMessage;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
+   private TransUnitId transUnitId;
 
    public TargetContentsView()
    {
@@ -127,6 +129,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void setValue(TransUnit transUnit)
    {
+      transUnitId = transUnit.getId();
       List<String> targets = transUnit.getTargets();
       editors.clear();
       if (targets == null || targets.size() <= 0)
@@ -244,6 +247,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setListener(Listener listener)
    {
       this.listener = listener;
+   }
+
+   @Override
+   public TransUnitId getTransUnitId()
+   {
+      return transUnitId;
    }
 
    @Override
