@@ -327,7 +327,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 	}
 
 	public void showEditors(int rowIndex, int editorIndex) {
-		targetContentsPresenter.showEditors(rowIndex);
+		targetContentsPresenter.showEditors(rowIndex, cellValue.getId());
 
 	}
 

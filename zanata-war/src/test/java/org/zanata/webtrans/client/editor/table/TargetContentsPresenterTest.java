@@ -225,7 +225,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(0);
+      presenter.showEditors(0, transUnit.getId());
       when(display.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -281,7 +281,7 @@ public class TargetContentsPresenterTest
    {
       when(display.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
       when(display.isEditing()).thenReturn(true);
-      presenter.showEditors(0);
+      presenter.showEditors(0, transUnit.getId());
    }
 
    @Test

@@ -389,11 +389,12 @@ public class TargetContentsPresenter implements
       }
    }
 
-   public void showEditors(int rowIndex)
+   public void showEditors(int rowIndex, TransUnitId currentTransUnitId)
    {
       Log.debug("enter show editor current editor index:" + currentEditorIndex);
       display = displayList.get(rowIndex);
       currentEditors = display.getEditors();
+      this.currentTransUnitId = currentTransUnitId;
 
       for (ToggleEditor editor : display.getEditors())
       {
@@ -403,7 +404,16 @@ public class TargetContentsPresenter implements
       }
       revealDisplay();
       display.showButtons(isDisplayButtons());
-      
+
+      normaliseCurrentEditorIndex();
+
+      validationMessagePanel.clear();
+      display.focusEditor(currentEditorIndex);
+      updateTranslators();
+   }
+
+   private void normaliseCurrentEditorIndex()
+   {
       if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;
@@ -413,10 +423,6 @@ public class TargetContentsPresenter implements
          Log.warn("editor index is invalid:" + currentEditorIndex + ". Set to 0");
          currentEditorIndex = 0;
       }
-
-      validationMessagePanel.clear();
-      display.focusEditor(currentEditorIndex);
-      updateTranslators();
    }
 
    @Override
@@ -448,19 +454,16 @@ public class TargetContentsPresenter implements
 
    public void updateTranslators()
    {
-      if (isEditing())
+      for (ToggleEditor editor : currentEditors)
       {
-         for (ToggleEditor editor : currentEditors)
-         {
-            editor.clearTranslatorList();
-         }
+         editor.clearTranslatorList();
+      }
 
-         for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+      for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+      {
+         if (entry.getValue().getSelectedTransUnit() != null)
          {
-            if (entry.getValue().getSelectedTransUnit() != null)
-            {
-               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
-            }
+            updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
          }
       }
    }
@@ -468,7 +471,6 @@ public class TargetContentsPresenter implements
    //This method is used to  cancel edited change and set back view
    public TargetContentsDisplay setValue(TransUnit transUnit, String findMessages)
    {
-      currentTransUnitId = transUnit.getId();
       display.setFindMessage(findMessages);
       display.setValue(transUnit);
       return display;
@@ -745,5 +747,14 @@ public class TargetContentsPresenter implements
    {
       TargetContentsDisplay contentsDisplay = displayList.get(rowNum);
       contentsDisplay.setValue(updatedTransUnit);
+   }
+
+   public void setFocus()
+   {
+      if (display != null)
+      {
+         normaliseCurrentEditorIndex();
+         display.focusEditor(currentEditorIndex);
+      }
    }
 }

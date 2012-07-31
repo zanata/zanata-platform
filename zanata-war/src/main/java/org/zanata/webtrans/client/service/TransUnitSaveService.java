@@ -24,6 +24,7 @@ package org.zanata.webtrans.client.service;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -87,7 +88,7 @@ public class TransUnitSaveService
                UndoLink undoLink = undoLinkProvider.get();
                undoLink.prepareUndoFor(result);
                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(), undoLink));
-               callback.onSaveSuccess(updatedTU);
+               callback.onSaveSuccess(updatedTU, undoLink);
             }
             else
             {
@@ -106,7 +107,7 @@ public class TransUnitSaveService
 
    public static interface SaveResultCallback
    {
-      void onSaveSuccess(TransUnit updatedTU);
+      void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink);
       void onSaveFail();
    }
 }

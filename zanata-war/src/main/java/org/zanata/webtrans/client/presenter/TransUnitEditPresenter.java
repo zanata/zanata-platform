@@ -37,8 +37,6 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -47,16 +45,16 @@ import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay2;
-import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
-import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -78,7 +76,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private final TransUnitEditDisplay2 display;
    private final UserWorkspaceContext userWorkspaceContext;
-   private final Identity identity;
    private final TableEditorMessages messages;
    private final EventBus eventBus;
    private final NavigationController navigationController;
@@ -101,13 +98,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  TransUnitSaveService saveService,
                                  TranslatorInteractionService translatorService,
                                  UserWorkspaceContext userWorkspaceContext,
-                                 Identity identity,
                                  TableEditorMessages messages)
    {
       super(display, eventBus);
       this.display = display;
       this.userWorkspaceContext = userWorkspaceContext;
-      this.identity = identity;
       this.messages = messages;
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
@@ -175,7 +170,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       {
          Log.info("selected id: " + selectedTransUnit.getId());
          sourceContentsPresenter.setSelectedSource(pageModel.getCurrentRow());
-         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
+         targetContentsPresenter.showEditors(pageModel.getCurrentRow(), selectedTransUnit.getId());
          translatorService.transUnitSelected(selectedTransUnit);
       }
    }
@@ -185,9 +180,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       saveService.saveTranslation(old, newTargets, ContentState.Approved, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
-         public void onSaveSuccess(TransUnit updatedTU)
+         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
          {
             Log.info("pending change saved. now show selection.");
+            insertUndoLink(updatedTU.getId(), undoLink);
             showSelection();
          }
 
@@ -215,9 +211,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), ContentState.Approved, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
-         public void onSaveSuccess(TransUnit updatedTU)
+         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
          {
             Log.info("pending change saved. now got to page number" + pageNumber);
+            insertUndoLink(updatedTU.getId(), undoLink);
             navigationController.gotoPage(pageNumber - 1, false);
          }
 
@@ -296,8 +293,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       saveService.saveTranslation(selected, targetContentsPresenter.getNewTargets(), event.getStatus(), new TransUnitSaveService.SaveResultCallback()
       {
          @Override
-         public void onSaveSuccess(TransUnit updatedTU)
+         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
          {
+            insertUndoLink(updatedTU.getId(), undoLink);
             if (event.andMove())
             {
                Log.info("save success and now move to " + event.getNavigationType());
@@ -312,6 +310,15 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 //            targetContentsPresenter.showEditors(pageModel.getCurrentRow());
          }
       });
+   }
+
+   private void insertUndoLink(TransUnitId id, UndoLink undoLink)
+   {
+      int row = pageModel.findIndexById(id);
+      if (row != -1)
+      {
+         targetContentsPresenter.addUndoLink(row, undoLink);
+      }
    }
 
    @Override
@@ -369,8 +376,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), status, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
-         public void onSaveSuccess(TransUnit updatedTU)
+         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
          {
+            insertUndoLink(updatedTU.getId(), undoLink);
             hideFilterConfirmationAndDoFiltering();
          }
 
@@ -411,7 +419,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       if (selected != null && Objects.equal(selected.getId(), updatedTransUnit.getId()))
       {
          //updatedTU is our active row
-         if (!Objects.equal(editorClientId, identity.getEditorClientId()))
+         if (!Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
          {
             //TODO current edit has happened. What's the best way to show it to user.
             Log.info("detect concurrent edit. Closing editor");
@@ -427,7 +435,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       targetContentsPresenter.updateRow(rowIndexOnPage, updatedTransUnit);
       if (setFocus)
       {
-         targetContentsPresenter.showEditors(pageModel.getCurrentRow());
+         targetContentsPresenter.setFocus();
       }
    }
 }
