@@ -38,7 +38,7 @@ import com.google.gwt.regexp.shared.RegExp;
 public class XmlEntityValidation extends AbstractValidation
 {
 
-   private final static String entityRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
+   private final static String entityRegex = "&#?[a-z_A-Z0-9.-]+;";
    private final static RegExp entityExp = RegExp.compile(entityRegex);
 
    private final static RegExp entityGlobalExp = RegExp.compile(entityRegex, "g");

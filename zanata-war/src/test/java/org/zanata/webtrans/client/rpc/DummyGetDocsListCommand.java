@@ -58,7 +58,7 @@ final class DummyGetDocsListCommand implements Command
       {
          // two digit numbers, to make sorting happier
          // names.add(new DocumentInfo(new DocumentId(n), "multi" + n, "",
-         // newStats(n)));
+         // LocaleId.EN_US, newStats(n)));
       }
       return names;
    }
