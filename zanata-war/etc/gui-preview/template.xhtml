@@ -118,7 +118,9 @@
 		
 		<div id="container">
 			<div id="bd">
-			    <ui:include src="search_panel.xhtml" />
+				<div id="submenu"> 
+			    	<ui:include src="search_panel.xhtml" />
+			    </div>
 				<div id="yui-main">
 					<div class="yui-b">
 						<a:outputPanel ajaxRendered="true">
@@ -161,6 +163,14 @@
 			</script><script type="text/javascript">
 			try {
 			var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", #{applicationConfiguration.piwikIdSite});
+			var username =  "#{identity.username}";
+			if(#{identity.loggedIn} == false)
+			{
+				username = "anonymous";
+			} 
+			piwikTracker.setCustomVariable (1, "Visit", username, "visit" ); 
+			piwikTracker.setCustomVariable (2, "View page", username, "page" ); 
+			
 			piwikTracker.trackPageView();
 			piwikTracker.enableLinkTracking();
 			} catch( err ) {}

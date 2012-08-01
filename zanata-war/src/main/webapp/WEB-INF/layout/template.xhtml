@@ -17,48 +17,94 @@
 		  href="#{request.contextPath}/images/favicon.ico" type="image/x-icon" />
 		<a:loadStyle src="/stylesheet/base.css" />
 		<a:loadStyle src="/stylesheet/zanata.css" />
+		<a:loadStyle src="/stylesheet/2.0.css" />
 		<ui:insert name="head" />
 	</head>
 
 	<body>
-
-		<div id="container">
-			<div id="banner">
-        		<div id="headerlogo">
-					<s:link view="/home.xhtml" propagation="none">
-						<img src="#{requestContextPath}/images/logo.png" alt="#{messages['jsf.ZanataMainDescription']}" />
-					</s:link>
-				</div>
-        		<div id="header_top_right">
-					<s:fragment rendered="#{identity.loggedIn}">
-					   
-					   <h:outputText value="#{identity.username} " />
-					   
-					   <rich:spacer width="10px" /> 
-					   
-					   <s:link id="Sign_out" view="/account/sign_out" value="#{messages['jsf.SignOut']}" propagation="none" />
-                    </s:fragment>
-                    
-					<s:fragment rendered="#{not identity.loggedIn}">
-                       <s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" value="#{messages['jsf.SignIn']}" propagation="none" />
-					   
-					   <rich:spacer width="10px" /> 
-					   
-					   <s:link id="Register" view="/account/register.xhtml"
-					       value="#{messages['jsf.Register']}" propagation="none" rendered="#{applicationConfiguration.internalAuth}"/>
-					   <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
-					       <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
-					   </s:fragment>
-					</s:fragment>
-					
-					
-				</div>
-
-				<a href="http://gravatar.com" target="_blank" id="UserImgLink">
-					<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(35)}" height="35" rendered="#{identity.loggedIn}"
-						styleClass="user_img"/>
-				</a>
-				<rich:toolTip value="#{messages['jsf.ChangeYourGravatar']}" for="UserImgLink" direction="bottom-left"/>
+		<div class="header">
+			<div class="navBar">
+				<ul>
+					<li id="logoCol">
+						<s:link view="/home.xhtml" propagation="none">
+							<img src="#{requestContextPath}/images/logo2.png" alt="#{messages['jsf.ZanataMainDescription']}" class="logo" />
+						</s:link>
+					</li>
+					<li id="translationCol">
+						<a href="#">
+						<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/easymoblog.png" />Translation</a>
+						<div class="submenu">
+							<ul>
+								<li>
+									<s:link id="Projects" view="/project/home.xhtml" propagation="none">
+										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kllckety.png" />#{messages['jsf.Projects']}
+									</s:link>
+								</li>
+								<li>
+									<s:link id="version-groups" view="/version-group/home.xhtml" propagation="none">
+										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kdf.png" />#{messages['jsf.Groups']}
+									</s:link>
+								</li>
+								<li>
+									<s:link id="Languages" view="/language/home.xhtml" propagation="none">
+										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/locale.png" />#{messages['jsf.Languages']}
+									</s:link>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li id="userCol">
+						<s:fragment rendered="#{identity.loggedIn}">
+							<a href="#"> 
+								<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar"/> 
+								<span><h:outputText value="#{identity.username} " /></span>
+							</a>
+							<div class="submenu">
+								<ul>
+									<li>
+										<s:link id="MyProfile" view="/profile/view.xhtml" propagation="none">
+											<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/kuser.png" />#{messages['jsf.MyProfile']}
+										</s:link>
+									</li>
+									<li>
+										<s:link id="Sign_out" view="/account/sign_out" value="#{messages['jsf.SignOut']}" propagation="none" />
+									</li>
+								</ul>
+							</div>
+						</s:fragment>
+						<s:fragment rendered="#{not identity.loggedIn}">
+                       		<s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" value="#{messages['jsf.SignIn']}" propagation="none" />
+						</s:fragment>
+					</li>
+					<li id="menuCol">
+						<a href="#" class="text">&#9660;</a>
+						<div class="submenu">
+							<ul>
+								<s:fragment rendered="#{not identity.loggedIn}">
+									<li>
+									   <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{applicationConfiguration.internalAuth}"/>
+									   <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+									       <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
+									   </s:fragment>
+									</li>
+								</s:fragment>
+						
+								<li>
+									<s:link id="help" view="/help/view.xhtml" propagation="none">
+										<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/help.png" />#{messages['jsf.Help']}
+									</s:link>
+								</li>
+								<s:fragment rendered="#{s:hasRole('admin')}">
+									<li>
+										<s:link id="Administration" view="/admin/home.xhtml" propagation="none">
+											<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/lin_agt_wrench.png" />#{messages['jsf.Administration']}
+										</s:link>
+									</li>
+								</s:fragment>
+							</ul>
+						</div>
+					</li>
+				</ul>
 				
 				<div id="loading_top_right">
 					<a:status>
@@ -67,18 +113,14 @@
 					</f:facet>
 					</a:status>
 				</div>
-				
 			</div>
-	
-			<div id="tabs-menu">
-        		<ui:include src="menu.xhtml">
-				<ui:param name="projectName" value="zanata" />
-				</ui:include>
-			</div>
-			   
-
+		</div>
+		
+		<div id="container">
 			<div id="bd">
-			    <ui:include src="search_panel.xhtml" />
+				<div id="submenu"> 
+			    	<ui:include src="search_panel.xhtml" />
+			    </div>
 				<div id="yui-main">
 					<div class="yui-b">
 						<a:outputPanel ajaxRendered="true">
@@ -95,16 +137,17 @@
         			<ui:insert name="left_content" />
 				</div>
 			</div>
+		</div>
+		
+		<div class="footer">
+				<div>
+					#{messages['jsf.Copyright']} #{messages['jsf.CopyrightYearInfo']} 
+					<a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> #{messages['jsf.AndOthers']}.
+					#{messages['jsf.PoweredBy']} <a href="http://zanata.org/">#{messages['jsf.Zanata']}</a>.
+					<br/>#{messages['jsf.RunningVersionInfo']}
+				</div>
 				
-			<div id="ft">
-				<div id="footer">
-					<div id="footer-text">
-						#{messages['jsf.Copyright']} #{messages['jsf.CopyrightYearInfo']}
-						<a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> #{messages['jsf.AndOthers']}.
-						#{messages['jsf.PoweredBy']} <a href="http://zanata.org/">#{messages['jsf.Zanata']}</a>.
-						<br/>#{messages['jsf.RunningVersionInfo']}
-					</div>
-					<div id="localeSelector">
+				<div id="localeSelector">
 						<h:form id="localeSelector_form">
 						<h:selectOneMenu id="Select"
 						value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" >
@@ -112,9 +155,7 @@
 						</h:selectOneMenu>
 						</h:form>
 					</div>
-				</div>
 			</div>
-		</div>
 		<s:fragment rendered="#{not empty applicationConfiguration.piwikUrl and not empty applicationConfiguration.piwikIdSite}">
 			<!-- Piwik --> <script type="text/javascript">
 			var pkBaseURL = (("https:" == document.location.protocol) ? "https://#{applicationConfiguration.piwikUrl}/" : "http://#{applicationConfiguration.piwikUrl}/");
@@ -139,4 +180,3 @@
 	</body>
 </html>
 </f:view>
-

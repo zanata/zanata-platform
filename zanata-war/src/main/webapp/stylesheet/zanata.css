@@ -1,16 +1,9 @@
 #container {
-	width: 900px;
-	margin: 0 auto;
-	background-color: #ffffff;
-}
-
-/* new container
-#container {
 	width: 1024px;
 	margin-left: auto;
 	margin-right: auto;
 	background-color: #ffffff;
-} */
+}
 
 #localeSelector {
 	float: left;
@@ -45,13 +38,21 @@
 	text-align: left;
 }
 
-/* new #bd {
+#bd {
 	min-height: 400px;
 	width: 100%;
 	float: left;
 	text-align: left;
 	margin-bottom:35px
-} */
+}
+
+#submenu {
+	width:100%;
+	border:1px dotted #D9D9D9;
+	height:30px;
+	border-radius:3px;
+	padding:2px;
+}
 
 .code {
 	color: grey;
@@ -117,11 +118,12 @@
 .name {
 	vertical-align: top;
 	font-weight: bold;
-	width: 130px;
+	width: 140px;
 	float: left;
 	padding: 5px;
-	margin-top: 3px;
+	margin-top: 5px;
 	clear: left;
+	font-size:13px;
 }
 
 .prop {
@@ -131,6 +133,7 @@
 .value {
 	float: left;
 	padding: 5px;
+	font-size:13px;
 }
 
 .error {
@@ -172,6 +175,21 @@ img.errors {
 .actionButtons select {
 	margin: 5px 5px 5px 0;
 	vertical-align: bottom;
+}
+
+input[type="submit"].projectSearchButton
+{
+	background-image:-webkit-linear-gradient(top,#D87132,#A63F00);
+	color:#FFFFFF;
+	border:1px solid #D87132;
+	background-color:#A63F00;
+	
+}
+
+input[type="submit"].projectSearchButton:hover
+{
+	background-image:none;
+	border-color:#C45D1E;
 }
 
 div.info {
@@ -236,7 +254,7 @@ a.action_link {
 	font-weight: bold;
 	background-color: #FFFFFF;
 	border: 1px solid #A2C4F5;
-	padding: 4px;
+	padding: 6px;
 	border-radius: 5px;
 	color: #7092C3;
 	margin-top: 4px;
@@ -261,7 +279,6 @@ a.table_link {
 	border-radius: 5px;
 	color: #7092C3;
 	text-decoration: none;
-	margin: 1px;
 	text-align: right;
 	outline:none;
 }
@@ -383,7 +400,6 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	width: 700px;
 }
 
-/* new footer */
 .footer
 {
 	width: 100%;
@@ -453,13 +469,11 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* -----------------------  JSF components CSS  -------------------------*/
 .rich-panel-header, .rich-table-headercell {
 	border-radius: 5px;
-	-moz-border-radius: 5px;
 	text-align: center;
 }
 
 .rich-panel {
-	border-radius: 5px;
-	-moz-border-radius: 5px;
+	border-radius: 3px;
 	margin-bottom:10px;
 }
 
@@ -522,125 +536,6 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* -----------------------  End JSF components CSS  -------------------------*/
 
 /* -----------------------  Top menu CSS  -------------------------*/
-/* Caution! Ensure accessibility in print and other media types... */
-@media projection , screen {
-	/* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
-	.ui-tabs-hide {
-		display: none;
-	}
-}
-
-/* Hide useless elements in print layouts... */
-@media print {
-	.ui-tabs-nav {
-		display: none;
-	}
-}
-
-#tabs-menu {
-	background: url('../images/bar_background.png') 0 0 repeat-x;
-	border: 1px solid #EAEAEA;
-	border-bottom-color: #CACACA;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	float: left;
-	width: 900px;
-	height: 40px;
-}
-
-#tabs .ui-tabs-nav {
-	margin: 0 0;
-	padding:0;
-	position:relative;
-	z-index:1;
-}
-
-#tabs .ui-tabs-nav li {
-	line-height: 40px;
-	list-style: none;
-	float: left;
-	min-width: 84px; /* be nice to Opera */
-}
-
-#tabs .ui-tabs-nav li a {
-	color: #000000;
-	white-space: nowrap; /* required in IE 6 */
-	height:40px;
-	font-weight:bold;
-	padding: 0 15px;
-}
-
-#tabs .ui-tabs-nav li.ui-tabs-selected {
-	border-top: 1px solid #C1BFBF;
-	border-left: 1px solid #C1BFBF;
-}
-
-#tabs .ui-tabs-nav li.ui-tabs-selected a {
-	background-color: #d3d3d3;
-	color: black;
-	margin-top: 0;
-	height:40px;
-	display:block;
-}
-
-#tabs img {
-	margin-right: 5px;
-	vertical-align: middle;
-}
-
-#tabs .ui-tabs-nav a,.ui-tabs-nav a span {
-	display: block;
-	width:auto;
-	cursor:pointer;
-	outline: 0 none;
-}
-
-.ui-tabs-nav-issues {
-	position: relative;
-}
-
-.ui-tabs-nav-issues ul {
-	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px;
-	-moz-border-radius-bottomright: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	display: none;
-	border: 1px solid #ddd;
-	margin:0;
-	padding-left:0px;
-}
-
-.ui-tabs-nav-issues:hover ul {
-	display: block;
-	position: absolute;
-}
-
-.ui-tabs-nav-issues ul li a {
-	background: #eeeeee !important;
-	padding: 0 !important;
-	text-align: left !important;
-	border-bottom: 1px solid #ddd;
-	height: 12px !important;
-	font-weight: normal !important;
-	padding: 8px 10px !important;
-	line-height: 1.2em;
-	margin:0px;
-}
-
-.ui-tabs-loading em {
-	padding: 0 0 0 20px;
-	background: url(../images/loading.gif) no-repeat 0 50%;
-}
-
-.ui-tabs-nav-issues ul li a:hover {
-	background-color: #dddddd !important;
-}
-
-.ui-tabs-nav-issues ul li {
-	width: 180px;
-}
-
-/* new menu bar */
 .header {
 	width: 100%;
 	height: 34px;
@@ -833,8 +728,8 @@ div.submenu img {
 /* -----------------------  Login form CSS  -------------------------*/
 .loginForm_input {
 	height: 22px;
-	width: 200px;
-	font-size: 14px;
+	width: 250px;
+	font-size: 16px;
 	font-weight: normal;
 }
 
@@ -916,6 +811,11 @@ div.submenu img {
 
 .iterations table {
 	border: none;
+	background:#FFFFFF;
+}
+
+.iterations table tr:hover {
+	background-color:transperant;
 }
 
 .iteration_grid_col {
@@ -932,7 +832,6 @@ div.submenu img {
 
 .version_link_div {
 	border:1px solid #7092C3;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 	padding:5px;
 	margin-bottom:3px;
@@ -948,13 +847,18 @@ div.submenu img {
 .version_link_div .version_title {
 	word-break: break-word; 
 	word-wrap: break-word; 
-	width: 100px;
+	width: 84px;
+	float:left;
+}
+
+.version_link_div img
+{
+	float:right;
 }
 
 .version_link_div .version_info {
-	margin-top:20px; 
-	font-size: 10px; 
-	font-style: normal;
+	margin-top:30px; 
+	font-size: 11px; 
 }
 
 a.version_link {
