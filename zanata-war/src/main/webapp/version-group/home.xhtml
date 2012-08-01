@@ -28,7 +28,7 @@
 	   	<h:outputText value="#{messages['jsf.NoGroupExists']}" />
       </s:fragment>
     
-      <rich:panel rendered="#{!empty versionGroupAction.allVersionGroups}">
+      <s:fragment rendered="#{!empty versionGroupAction.allVersionGroups}">
         <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
 
           <a4j:form>
@@ -95,7 +95,7 @@
                     
               </rich:dataTable>
           </a4j:form>
-      </rich:panel>
+      </s:fragment>
     </ui:define>
     
   </ui:composition>
