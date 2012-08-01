@@ -147,7 +147,7 @@ public class TargetContentsPresenterTest
       when(navMessages.editSaveShortcut()).thenReturn(buttonTitle);
 
       //when selecting row 1
-      TargetContentsDisplay result = presenter.setValue(transUnit, findMessages);
+      TargetContentsDisplay result = presenter.setValue(transUnit);
 
       assertThat(result, sameInstance(display));
       verify(display).setValue(transUnit);

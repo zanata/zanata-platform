@@ -45,6 +45,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
    TransUnitId getTransUnitId();
 
+   Integer getVerNum();
+
    interface Listener
    {
       void validate(ToggleEditor editor);

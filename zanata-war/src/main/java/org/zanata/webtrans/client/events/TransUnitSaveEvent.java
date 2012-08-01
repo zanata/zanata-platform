@@ -24,6 +24,8 @@ package org.zanata.webtrans.client.events;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -33,16 +35,19 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
 {
    public static Type<TransUnitSaveEventHandler> TYPE = new Type<TransUnitSaveEventHandler>();
-   public static final TransUnitSaveEvent CANCEL_EDIT_EVENT = new TransUnitSaveEvent(null, null);
+   public static final TransUnitSaveEvent CANCEL_EDIT_EVENT = new TransUnitSaveEvent(null, null, null, null);
 
+   private TransUnitId transUnitId;
+   private Integer verNum;
    private List<String> targets = Lists.newArrayList();
    private ContentState status;
-   private NavTransUnitEvent.NavigationType navigationType;
 
-   public TransUnitSaveEvent(List<String> targets, ContentState status)
+   public TransUnitSaveEvent(List<String> targets, ContentState status, TransUnitId transUnitId, Integer verNum)
    {
       this.targets = targets;
       this.status = status;
+      this.transUnitId = transUnitId;
+      this.verNum = verNum;
    }
 
    public Type<TransUnitSaveEventHandler> getAssociatedType()
@@ -65,19 +70,43 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
       return status;
    }
 
-   public TransUnitSaveEvent andMoveTo(NavTransUnitEvent.NavigationType navigationType)
+   public TransUnitId getTransUnitId()
    {
-      this.navigationType = navigationType;
-      return this;
+      return transUnitId;
    }
 
-   public boolean andMove()
+   public Integer getVerNum()
    {
-      return navigationType != null;
+      return verNum;
    }
 
-   public NavTransUnitEvent.NavigationType getNavigationType()
+   @Override
+   public boolean equals(Object o)
    {
-      return navigationType;
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TransUnitSaveEvent that = (TransUnitSaveEvent) o;
+      // @formatter:off
+      return Objects.equal(transUnitId, that.transUnitId)
+            && Objects.equal(verNum, that.verNum)
+            && Objects.equal(status, that.status)
+            && Objects.equal(targets, that.targets);
+      // @formatter:on
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return Objects.hashCode(transUnitId, verNum, targets, status);
+   }
+
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("transUnitId", transUnitId).
+            add("verNum", verNum).
+            toString();
    }
 }

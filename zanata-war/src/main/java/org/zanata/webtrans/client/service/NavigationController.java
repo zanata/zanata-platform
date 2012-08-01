@@ -212,7 +212,6 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    @Override
    public void gotoPage(int pageIndex, boolean forceReload)
    {
-      pageModel.savePendingChangeIfApplicable();
       int page = normalizePageIndex(pageIndex);
       if (page != navigationService.getCurrentPage() || forceReload)
       {
@@ -277,7 +276,6 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       }
       int targetPage = navigationService.getTargetPage(rowIndex);
       TransUnitId targetTransUnitId = navigationService.getTargetTransUnitId(rowIndex);
-      pageModel.savePendingChangeIfApplicable();
       Log.debug("target page : [" + targetPage + "] target TU id: " + targetTransUnitId + " rowIndex: " + rowIndex);
 
       if (navigationService.getCurrentPage() == targetPage)

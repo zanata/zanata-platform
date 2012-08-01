@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +74,8 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -80,7 +83,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import net.customware.gwt.presenter.client.EventBus;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
@@ -134,6 +136,7 @@ public class TargetContentsPresenter implements
 
    private final KeyShortcut nextStateShortcut;
    private final KeyShortcut prevStateShortcut;
+   private String findMessage;
 
    @Inject
    //TODO too many constructor dependencies
@@ -469,9 +472,9 @@ public class TargetContentsPresenter implements
    }
 
    //This method is used to  cancel edited change and set back view
-   public TargetContentsDisplay setValue(TransUnit transUnit, String findMessages)
+   public TargetContentsDisplay setValue(TransUnit transUnit)
    {
-      display.setFindMessage(findMessages);
+      display.setFindMessage(this.findMessage);
       display.setValue(transUnit);
       return display;
    }
@@ -515,14 +518,25 @@ public class TargetContentsPresenter implements
       else
       {
          currentEditorIndex = 0;
-         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(NextEntry));
+         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved, getCurrentTransUnitIdOrNull(), getCurrentVersionOrNull()));
+         eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
       }
    }
 
    @Override
    public void saveAsFuzzy()
    {
-      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.NeedReview));
+      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.NeedReview, getCurrentTransUnitIdOrNull(), getCurrentVersionOrNull()));
+   }
+
+   private Integer getCurrentVersionOrNull()
+   {
+      return display == null ? null : display.getVerNum();
+   }
+
+   private TransUnitId getCurrentTransUnitIdOrNull()
+   {
+      return display == null ? null : display.getTransUnitId();
    }
 
    @Override
@@ -721,6 +735,22 @@ public class TargetContentsPresenter implements
       targetContentsDisplay.addUndo(undoLink);
    }
 
+   public void addUndoLink(final TransUnitId transUnitId, UndoLink undoLink)
+   {
+      Collection<TargetContentsDisplay> matched = Collections2.filter(displayList, new Predicate<TargetContentsDisplay>()
+      {
+         @Override
+         public boolean apply(TargetContentsDisplay input)
+         {
+            return Objects.equal(input.getTransUnitId(), transUnitId);
+         }
+      });
+      if (matched.size() == 1)
+      {
+         matched.iterator().next().addUndo(undoLink);
+      }
+   }
+
    public void showData(List<TransUnit> transUnits)
    {
       for (int i = 0; i < displayList.size(); i++)
@@ -737,6 +767,7 @@ public class TargetContentsPresenter implements
 
    public void highlightSearch(String message)
    {
+      findMessage = message;
       for (TargetContentsDisplay targetContentsDisplay : displayList)
       {
          targetContentsDisplay.setFindMessage(message);

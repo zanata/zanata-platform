@@ -35,7 +35,6 @@ import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
@@ -154,7 +153,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
 
-         TargetContentsDisplay contentsDisplay = targetContentsPresenter.setValue(rowValue, findMessage);
+         TargetContentsDisplay contentsDisplay = targetContentsPresenter.setValue(rowValue);
          targetContentsPresenter.setToViewMode();
 
          targetPanel.add(contentsDisplay.asWidget());

@@ -27,14 +27,13 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
    private Grid transUnitTable = new Grid(0, 2);
    private ScrollPanel container= new ScrollPanel(transUnitTable);
    private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
-   private final NavigationController navigationController;
+   private Listener listener;
 
    @Inject
-   public TransUnitEditView2(FilterViewConfirmationDisplay filterViewConfirmationDisplay, NavigationController navigationController
+   public TransUnitEditView2(FilterViewConfirmationDisplay filterViewConfirmationDisplay
    )
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
-      this.navigationController = navigationController;
       transUnitTable.setWidth("100%");
       transUnitTable.addClickHandler(new ClickHandler()
       {
@@ -52,7 +51,7 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
 
    private void selectRow(int rowIndex)
    {
-      navigationController.selectByRowIndex(rowIndex);
+      listener.onRowSelected(rowIndex);
    }
 
    @Override
@@ -88,6 +87,12 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
       }
       transUnitTable.getColumnFormatter().setWidth(0, "50%");
       transUnitTable.getColumnFormatter().setWidth(1, "50%");
+   }
+
+   @Override
+   public void setRowSelectionListener(Listener listener)
+   {
+      this.listener = listener;
    }
 
    @Override

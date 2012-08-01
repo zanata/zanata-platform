@@ -20,11 +20,6 @@
  */
 package org.zanata.webtrans.client.gin;
 
-import net.customware.gwt.presenter.client.DefaultEventBus;
-import net.customware.gwt.presenter.client.Display;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
-
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
@@ -86,8 +81,8 @@ import org.zanata.webtrans.client.view.NotificationView;
 import org.zanata.webtrans.client.view.SearchResultsView;
 import org.zanata.webtrans.client.view.TransMemoryDetailsView;
 import org.zanata.webtrans.client.view.TransMemoryView;
-import org.zanata.webtrans.client.view.TransUnitEditDisplay;
-import org.zanata.webtrans.client.view.TransUnitEditView;
+import org.zanata.webtrans.client.view.TransUnitEditDisplay2;
+import org.zanata.webtrans.client.view.TransUnitEditView2;
 import org.zanata.webtrans.client.view.TransUnitNavigationView;
 import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationView;
@@ -95,11 +90,15 @@ import org.zanata.webtrans.client.view.ValidationOptionsView;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.DefaultEventBus;
+import net.customware.gwt.presenter.client.Display;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 
 public class WebTransClientModule extends AbstractPresenterModule
 {
@@ -134,7 +133,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationPresenter.Display.class, NotificationView.class);
-      bindPresenter(TransUnitEditPresenter.class, TransUnitEditDisplay.class, TransUnitEditView.class);
+      bindPresenter(TransUnitEditPresenter.class, TransUnitEditDisplay2.class, TransUnitEditView2.class);
       bindPresenter(LayoutSelectorPresenter.class, LayoutSelectorPresenter.Display.class, LayoutSelectorView.class);
 
       bind(SourceContentsPresenter.class).in(Singleton.class);

@@ -27,9 +27,9 @@ public interface SinglePageDataModel
 
    int findIndexById(TransUnitId id);
 
-   TransUnit getOldSelectionOrNull();
+   void savePendingChangeIfApplicable(ArrayList<String> newTargets);
 
-   void savePendingChangeIfApplicable();
+   TransUnit getByIdOrNull(TransUnitId transUnitId);
 
    interface PageDataChangeListener
    {

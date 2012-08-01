@@ -143,8 +143,6 @@ public class NavigationControllerTest
    @Mock private TransUnitEditPresenter transUnitEditPresenter;
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
-   @Mock
-   private TransUnitSaveService transUnitSaveService;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -155,7 +153,7 @@ public class NavigationControllerTest
       navigationService = new TransUnitNavigationService();
       UserConfigHolder configHolder = new UserConfigHolder();
 
-      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus, targetContentsPresenter, transUnitSaveService);
+      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus);
       pageModel.addDataChangeListener(transUnitEditPresenter);
       controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages, pageModel);
 

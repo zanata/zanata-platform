@@ -65,11 +65,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       TransUnitSelectionHandler,
       WorkspaceContextUpdateEventHandler,
       NavTransUnitHandler,
-      TransUnitSaveEventHandler,
       FindMessageHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
-      SinglePageDataModel.PageDataChangeListener
+      SinglePageDataModel.PageDataChangeListener,
+      TransUnitEditDisplay2.Listener
 {
 
    private final TransUnitEditDisplay2 display;
@@ -78,35 +78,35 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final NavigationController navigationController;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
-   private final TransUnitSaveService saveService;
    private final TranslatorInteractionService translatorService;
 
    //state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-   private FindMessageEvent findMessage = FindMessageEvent.DEFAULT;
 
    private final SinglePageDataModel pageModel;
 
-   //TODO too many constructor dependency
    @Inject
    public TransUnitEditPresenter(TransUnitEditDisplay2 display, EventBus eventBus, NavigationController navigationController,
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
-                                 TransUnitSaveService saveService,
                                  TranslatorInteractionService translatorService,
+                                 TransUnitSaveService transUnitSaveService,
                                  UserWorkspaceContext userWorkspaceContext)
    {
       super(display, eventBus);
       this.display = display;
+      this.display.setRowSelectionListener(this);
+
       this.userWorkspaceContext = userWorkspaceContext;
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
-      this.saveService = saveService;
       this.translatorService = translatorService;
 
+      // we register it here because we can't use eager singleton on it (it references TargetContentsPresenter). And if it's not eagerly created, it won't get created at all!!
+      eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
       //FIXME this is hardcoded
       sourceContentsPresenter.initWidgets(5);
       targetContentsPresenter.initWidgets(5);
@@ -127,7 +127,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
-      eventBus.addHandler(TransUnitSaveEvent.TYPE, this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
@@ -149,7 +148,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
-         Log.info("selected id: " + selectedTransUnit.getId());
+         Log.debug("selected id: " + selectedTransUnit.getId());
          sourceContentsPresenter.setSelectedSource(pageModel.getCurrentRow());
          targetContentsPresenter.showEditors(pageModel.getCurrentRow(), selectedTransUnit.getId());
          translatorService.transUnitSelected(selectedTransUnit);
@@ -158,6 +157,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    public void goToPage(int pageNumber)
    {
+      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
       navigationController.gotoPage(pageNumber - 1, false);
    }
 
@@ -171,80 +171,13 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
+      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
       navigationController.navigateTo(event.getRowType());
-   }
-
-   @Override
-   //TODO should this handler move to TransUnitSaveService? The save event will fire navigation separately
-   public void onTransUnitSave(final TransUnitSaveEvent event)
-   {
-      TransUnit selected = pageModel.getSelectedOrNull();
-      if (selected == null)
-      {
-         return;
-      }
-      if (event == TransUnitSaveEvent.CANCEL_EDIT_EVENT)
-      {
-         targetContentsPresenter.setValue(selected, findMessage.getMessage());
-      }
-      else if (hasStateChange(selected, event.getStatus()))
-      {
-         proceedToSave(event, selected);
-      }
-      else if (event.andMove())
-      {
-         //nothing has changed and it's not cancelling
-         navigationController.navigateTo(event.getNavigationType());
-      }
-   }
-
-   private boolean hasStateChange(TransUnit old, ContentState newStatus)
-   {
-      //check whether target contents or status has changed
-      return !(old.getStatus() == newStatus && Objects.equal(targetContentsPresenter.getNewTargets(), old.getTargets()));
-   }
-
-   private void proceedToSave(final TransUnitSaveEvent event, TransUnit selected)
-   {
-      if (event.getStatus() != ContentState.NeedReview)
-      {
-         targetContentsPresenter.setToViewMode();
-      }
-      saveService.saveTranslation(selected, targetContentsPresenter.getNewTargets(), event.getStatus(), new TransUnitSaveService.SaveResultCallback()
-      {
-         @Override
-         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
-         {
-            insertUndoLink(updatedTU.getId(), undoLink);
-            if (event.andMove())
-            {
-               Log.info("save success and now move to " + event.getNavigationType());
-               navigationController.navigateTo(event.getNavigationType());
-            }
-         }
-
-         @Override
-         public void onSaveFail()
-         {
-            //TODO implement, may need to revert value back to what it was
-//            targetContentsPresenter.showEditors(pageModel.getCurrentRow());
-         }
-      });
-   }
-
-   private void insertUndoLink(TransUnitId id, UndoLink undoLink)
-   {
-      int row = pageModel.findIndexById(id);
-      if (row != -1)
-      {
-         targetContentsPresenter.addUndoLink(row, undoLink);
-      }
    }
 
    @Override
    public void onFindMessage(FindMessageEvent event)
    {
-      findMessage = event;
       sourceContentsPresenter.highlightSearch(event.getMessage());
       targetContentsPresenter.highlightSearch(event.getMessage());
    }
@@ -293,27 +226,19 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void saveAndFilter(ContentState status)
    {
-      saveService.saveTranslation(pageModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), status, new TransUnitSaveService.SaveResultCallback()
+      TransUnit selectedOrNull = pageModel.getSelectedOrNull();
+      if (selectedOrNull == null)
       {
-         @Override
-         public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
-         {
-            insertUndoLink(updatedTU.getId(), undoLink);
-            hideFilterConfirmationAndDoFiltering();
-         }
-
-         @Override
-         public void onSaveFail()
-         {
-            display.hideFilterConfirmation();
-         }
-      });
+         return;
+      }
+      eventBus.fireEvent(new TransUnitSaveEvent(targetContentsPresenter.getNewTargets(), status, selectedOrNull.getId(), selectedOrNull.getVerNum()));
+      hideFilterConfirmationAndDoFiltering();
    }
 
    @Override
    public void discardChangesAndFilter()
    {
-      targetContentsPresenter.setValue(pageModel.getSelectedOrNull(), findMessage.getMessage());
+      targetContentsPresenter.setValue(pageModel.getSelectedOrNull());
       hideFilterConfirmationAndDoFiltering();
    }
 
@@ -359,4 +284,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       }
    }
 
+   @Override
+   public void onRowSelected(int rowIndex)
+   {
+      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
+      navigationController.selectByRowIndex(rowIndex);
+   }
 }

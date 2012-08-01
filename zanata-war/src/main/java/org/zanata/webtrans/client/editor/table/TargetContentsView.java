@@ -77,6 +77,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
    private TransUnitId transUnitId;
+   private Integer verNum;
 
    public TargetContentsView()
    {
@@ -130,6 +131,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setValue(TransUnit transUnit)
    {
       transUnitId = transUnit.getId();
+      verNum = transUnit.getVerNum();
       List<String> targets = transUnit.getTargets();
       editors.clear();
       if (targets == null || targets.size() <= 0)
@@ -147,6 +149,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          rowIndex++;
       }
       editorGrid.setStyleName(resolveStyleName(transUnit.getStatus()));
+      undoContainer.clear();
    }
 
    private static String resolveStyleName(ContentState status)
@@ -253,6 +256,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public TransUnitId getTransUnitId()
    {
       return transUnitId;
+   }
+
+   @Override
+   public Integer getVerNum()
+   {
+      return verNum;
    }
 
    @Override

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
-import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -25,19 +25,14 @@ import net.customware.gwt.presenter.client.EventBus;
 public class SinglePageDataModelImpl implements SinglePageDataModel
 {
    private final EventBus eventBus;
-   private final TargetContentsPresenter targetContentsPresenter;
-   private final TransUnitSaveService transUnitSaveService;
    private List<TransUnit> data = Lists.newArrayList();
    private int currentRow = UNSELECTED;
    private PageDataChangeListener pageDataChangeListener;
-   private int oldSelection = UNSELECTED;
 
    @Inject
-   public SinglePageDataModelImpl(EventBus eventBus, TargetContentsPresenter targetContentsPresenter, TransUnitSaveService transUnitSaveService)
+   public SinglePageDataModelImpl(EventBus eventBus)
    {
       this.eventBus = eventBus;
-      this.targetContentsPresenter = targetContentsPresenter;
-      this.transUnitSaveService = transUnitSaveService;
    }
 
    @Override
@@ -47,38 +42,30 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
       Log.debug("current row:" + currentRow + " about to select row:" + rowIndex);
       if (currentRow != rowIndex)
       {
-         savePendingChangeIfApplicable();
-         oldSelection = currentRow;
          currentRow = rowIndex;
          eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
       }
    }
 
    @Override
-   public void savePendingChangeIfApplicable()
+   public void savePendingChangeIfApplicable(ArrayList<String> newTargets)
    {
-      ArrayList<String> contentsInEditor = targetContentsPresenter.getNewTargets();
       TransUnit currentSelection = getSelectedOrNull();
-      if (hasPendingChange(contentsInEditor, currentSelection))
+      if (hasPendingChange(newTargets, currentSelection))
       {
-          transUnitSaveService.saveTranslation(currentSelection, contentsInEditor, currentSelection.getStatus(), new TransUnitSaveService.SaveResultCallback()
-          {
-             @Override
-             public void onSaveSuccess(TransUnit updatedTU, UndoLink undoLink)
-             {
-                int rowIndex = findIndexById(updatedTU.getId());
-                if (validIndex(rowIndex))
-                {
-                   targetContentsPresenter.addUndoLink(rowIndex, undoLink);
-                }
-             }
-
-             @Override
-             public void onSaveFail()
-             {
-             }
-          });
+         eventBus.fireEvent(new TransUnitSaveEvent(newTargets, currentSelection.getStatus(), currentSelection.getId(), currentSelection.getVerNum()));
       }
+   }
+
+   @Override
+   public TransUnit getByIdOrNull(TransUnitId transUnitId)
+   {
+      int indexById = findIndexById(transUnitId);
+      if (validIndex(indexById))
+      {
+         return data.get(indexById);
+      }
+      return null;
    }
 
    private boolean hasPendingChange(ArrayList<String> contentsInEditor, TransUnit currentSelection)
@@ -89,11 +76,9 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    @Override
    public void setData(List<TransUnit> data)
    {
-      //TODO we may be able to save pending change here??
       this.data = Lists.newArrayList(data);
       pageDataChangeListener.showDataForCurrentPage(this.data);
       currentRow = UNSELECTED;
-      oldSelection = UNSELECTED;
    }
 
    //for testing
@@ -133,16 +118,6 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    public void addDataChangeListener(PageDataChangeListener pageDataChangeListener)
    {
       this.pageDataChangeListener = pageDataChangeListener;
-   }
-
-   @Override
-   public TransUnit getOldSelectionOrNull()
-   {
-      if (validIndex(oldSelection))
-      {
-         return data.get(oldSelection);
-      }
-      return null;
    }
 
    private boolean validIndex(int rowIndex)
