@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.service.NavigationController;
-import org.zanata.webtrans.client.service.SinglePageDataModelImpl;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,7 +20,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TransUnitEditView2 extends Composite implements TransUnitEditDisplay2
+public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 {
    private Grid transUnitTable = new Grid(0, 2);
    private ScrollPanel container= new ScrollPanel(transUnitTable);
@@ -30,7 +28,7 @@ public class TransUnitEditView2 extends Composite implements TransUnitEditDispla
    private Listener listener;
 
    @Inject
-   public TransUnitEditView2(FilterViewConfirmationDisplay filterViewConfirmationDisplay
+   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay
    )
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;

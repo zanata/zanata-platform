@@ -25,16 +25,14 @@ import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
-import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.inject.ImplementedBy;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-@ImplementedBy(TransUnitEditView2.class)
-public interface TransUnitEditDisplay2 extends WidgetDisplay
+@ImplementedBy(TransUnitEditView.class)
+public interface TransUnitEditDisplay extends WidgetDisplay
 {
    void addFilterConfirmationHandler(FilterViewConfirmationDisplay.Listener listener);
 

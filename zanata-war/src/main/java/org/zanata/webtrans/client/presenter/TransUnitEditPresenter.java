@@ -34,7 +34,6 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
-import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -44,11 +43,9 @@ import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
-import org.zanata.webtrans.client.ui.UndoLink;
-import org.zanata.webtrans.client.view.TransUnitEditDisplay2;
+import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
@@ -61,7 +58,7 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay2> implements
+public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
       TransUnitSelectionHandler,
       WorkspaceContextUpdateEventHandler,
       NavTransUnitHandler,
@@ -69,10 +66,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
       SinglePageDataModel.PageDataChangeListener,
-      TransUnitEditDisplay2.Listener
+      TransUnitEditDisplay.Listener
 {
 
-   private final TransUnitEditDisplay2 display;
+   private final TransUnitEditDisplay display;
    private final UserWorkspaceContext userWorkspaceContext;
    private final EventBus eventBus;
    private final NavigationController navigationController;
@@ -86,7 +83,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final SinglePageDataModel pageModel;
 
    @Inject
-   public TransUnitEditPresenter(TransUnitEditDisplay2 display, EventBus eventBus, NavigationController navigationController,
+   public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationController navigationController,
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
                                  TranslatorInteractionService translatorService,
