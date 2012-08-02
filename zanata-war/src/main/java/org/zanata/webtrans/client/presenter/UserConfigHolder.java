@@ -57,6 +57,7 @@ public class UserConfigHolder
    private boolean buttonFuzzy = true;
    private boolean buttonUntranslated = true;
    private boolean displayButtons = true;
+   private int pageSize = 5;
 
    public boolean isEnterSavesApproved()
    {
@@ -128,5 +129,15 @@ public class UserConfigHolder
       {
          return NEW_PREDICATE;
       }
+   }
+
+   public int getPageSize()
+   {
+      return pageSize;
+   }
+
+   void setPageSize(int pageSize)
+   {
+      this.pageSize = pageSize;
    }
 }

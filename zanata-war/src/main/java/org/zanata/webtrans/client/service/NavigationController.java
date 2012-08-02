@@ -331,7 +331,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       {
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
          DocumentId documentId = ((DocumentSelectionEvent) command).getDocumentId();
-         init(GetTransUnitActionContext.of(documentId));
+         init(GetTransUnitActionContext.of(documentId).setCount(configHolder.getPageSize()));
       }
       else
       {

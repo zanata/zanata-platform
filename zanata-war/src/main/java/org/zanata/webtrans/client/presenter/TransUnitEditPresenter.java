@@ -88,7 +88,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  TargetContentsPresenter targetContentsPresenter,
                                  TranslatorInteractionService translatorService,
                                  TransUnitSaveService transUnitSaveService,
-                                 UserWorkspaceContext userWorkspaceContext)
+                                 UserWorkspaceContext userWorkspaceContext,
+                                 UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.display = display;
@@ -104,9 +105,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
       // we register it here because we can't use eager singleton on it (it references TargetContentsPresenter). And if it's not eagerly created, it won't get created at all!!
       eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
-      //FIXME this is hardcoded
-      sourceContentsPresenter.initWidgets(5);
-      targetContentsPresenter.initWidgets(5);
+      //TODO need to listen to user config change event for page size changes
+      sourceContentsPresenter.initWidgets(configHolder.getPageSize());
+      targetContentsPresenter.initWidgets(configHolder.getPageSize());
       initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
 
       pageModel = navigationController.getDataModel();
