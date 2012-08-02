@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.resources;
 
+import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -75,4 +76,10 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Close editor")
    String closeEditor();
+
+   @DefaultMessage("Translation Unit Details")
+   String transUnitDetailsHeading();
+
+   @DefaultMessage("Row {0}, Id {1} Translation Unit Details {2}")
+   String transUnitDetailsHeadingWithInfo(int rowIndex, String transUnitId, String info);
 }

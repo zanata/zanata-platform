@@ -1,9 +1,12 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -12,6 +15,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class TransUnitDetailsPanel extends Composite
 {
@@ -25,6 +29,7 @@ public class TransUnitDetailsPanel extends Composite
    HorizontalPanel msgContextPanel;
 
    private static TransUnitDetailsPanelUiBinder uiBinder = GWT.create(TransUnitDetailsPanelUiBinder.class);
+   private final TableEditorMessages messages;
 
    interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
    {
@@ -33,10 +38,12 @@ public class TransUnitDetailsPanel extends Composite
    @UiField
    Label resIdLabel, resId, sourceCommentLabel, msgContextLabel, msgContext, sourceComment, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
 
-   public TransUnitDetailsPanel(String header)
+   @Inject
+   public TransUnitDetailsPanel(TableEditorMessages messages)
    {
+      this.messages = messages;
       initWidget(uiBinder.createAndBindUi(this));
-      headerLabel.setText(header);
+      headerLabel.setText(messages.transUnitDetailsHeading());
    }
 
    public void setDetails(TransUnit transUnit)
@@ -77,18 +84,45 @@ public class TransUnitDetailsPanel extends Composite
          lastModifiedTime.setText("");
       }
 
-      expand();
+      if (!Strings.isNullOrEmpty(context) || !Strings.isNullOrEmpty(transUnit.getSourceComment()))
+      {
+         headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), "(I)"));
+      }
+      else
+      {
+         headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), ""));
+      }
+//      expand();
+      collapse();
    }
 
-   @UiHandler("headerLabel")
-   public void onHeaderLabelClick(ClickEvent event)
-   {
+//   @UiHandler("headerLabel")
+//   public void onHeaderLabelClick(ClickEvent event)
+//   {
+//
+//      if (!contentPanel.isVisible())
+//      {
+//         expand();
+//      }
+//      else if (contentPanel.isVisible())
+//      {
+//         collapse();
+//      }
+//   }
 
+   @UiHandler("headerLabel")
+   public void onMouseHover(MouseOverEvent event)
+   {
       if (!contentPanel.isVisible())
       {
          expand();
       }
-      else if (contentPanel.isVisible())
+   }
+
+   @UiHandler("headerLabel")
+   public void onMouseOut(MouseOutEvent event)
+   {
+      if (contentPanel.isVisible())
       {
          collapse();
       }

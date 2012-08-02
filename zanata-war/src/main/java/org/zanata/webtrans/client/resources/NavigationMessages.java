@@ -115,9 +115,6 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Click here for more info")
    String clickHereForMoreInfo();
 
-   @DefaultMessage("Translation Unit Details")
-   String transUnitDetailsHeading();
-
    @DefaultMessage("No content")
    String noContent();
 }

@@ -41,7 +41,7 @@ import com.google.inject.Singleton;
 
 @Singleton
 //TODO after retiring TableEditorPresenter remove unused methods and maybe rename it to something else (NavigationStateHolder?) and get the NavigationController to be named after Service.
-class TransUnitNavigationService
+public class TransUnitNavigationService
 {
    private Map<Long, ContentState> idAndStateMap;
    private ArrayList<Long> idIndexList;
