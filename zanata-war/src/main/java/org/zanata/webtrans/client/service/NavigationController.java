@@ -62,7 +62,7 @@ import net.customware.gwt.presenter.client.EventBus;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationController implements HasPageNavigation, TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler
+public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler
 {
    public static final int FIRST_PAGE = 0;
    private final EventBus eventBus;
@@ -162,54 +162,6 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       });
    }
 
-   @Override
-   public void gotoFirstPage()
-   {
-      if (navigationService.getCurrentPage() != FIRST_PAGE)
-      {
-         GetTransUnitActionContext firstPageContext = context.setOffset(0).setTargetTransUnitId(null);
-         Log.info("first page context: " + firstPageContext);
-         requestTransUnitsAndUpdatePageIndex(firstPageContext);
-      }
-   }
-
-   @Override
-   public void gotoLastPage()
-   {
-      if (navigationService.getCurrentPage() != navigationService.lastPage())
-      {
-         GetTransUnitActionContext lastPageContext = context.setOffset(context.getCount() * navigationService.lastPage()).setTargetTransUnitId(null);
-         Log.info("last page context: " + lastPageContext);
-         requestTransUnitsAndUpdatePageIndex(lastPageContext);
-      }
-   }
-
-   @Override
-   public void gotoNextPage()
-   {
-      if (navigationService.getCurrentPage() < navigationService.lastPage())
-      {
-         int nextPage = navigationService.getCurrentPage() + 1;
-
-         GetTransUnitActionContext nextPageContext = context.setOffset(context.getCount() * nextPage).setTargetTransUnitId(null);
-         Log.info("next page context: " + nextPageContext);
-         requestTransUnitsAndUpdatePageIndex(nextPageContext);
-      }
-   }
-
-   @Override
-   public void gotoPreviousPage()
-   {
-      if (navigationService.getCurrentPage() > FIRST_PAGE)
-      {
-         int previousPage = navigationService.getCurrentPage() - 1;
-         GetTransUnitActionContext previousPageContext = context.setOffset(context.getCount() * previousPage).setTargetTransUnitId(null);
-         Log.info("previous page context: " + previousPageContext);
-         requestTransUnitsAndUpdatePageIndex(previousPageContext);
-      }
-   }
-
-   @Override
    public void gotoPage(int pageIndex, boolean forceReload)
    {
       int page = normalizePageIndex(pageIndex);
@@ -331,6 +283,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       {
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
          DocumentId documentId = ((DocumentSelectionEvent) command).getDocumentId();
+         //TODO need to listen to user config change event for page size changes
          init(GetTransUnitActionContext.of(documentId).setCount(configHolder.getPageSize()));
       }
       else
