@@ -21,7 +21,11 @@
 
 package org.zanata.webtrans.client.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
@@ -39,6 +43,9 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -77,6 +84,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
    @Override
    public void onTransUnitSave(final TransUnitSaveEvent event)
    {
+      //savePending and actual save may happen together. One of it will fail. see TargetContentsPresenter.saveAsApprovedAndMoveNext()
       if (pendingSaves.contains(event))
       {
          Log.info("NO OP! pending save detected: " + event);
@@ -93,49 +101,15 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          return;
       }
 
-      //savePending and actual save may happen together. One of it will fail. see TargetContentsPresenter.saveAsApprovedAndMoveNext()
       pendingSaves.add(event);
       ContentState status = event.getStatus();
       final TransUnitId id = event.getTransUnitId();
       TransUnitUpdated.UpdateType updateType = workoutUpdateType(status);
-      final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(id, event.getTargets(), status, event.getVerNum()), updateType);
-      Log.info("about to save translation: " + updateTransUnit);
-      dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
-      {
-         @Override
-         public void onFailure(Throwable e)
-         {
-            pendingSaves.remove(event);
-            Log.error("UpdateTransUnit failure ", e);
-            String message = e.getLocalizedMessage();
-            saveFailure(message);
-         }
 
-         @Override
-         public void onSuccess(UpdateTransUnitResult result)
-         {
-            pendingSaves.remove(event);
-            // FIXME check result.success
-            TransUnit updatedTU = result.getUpdateInfoList().get(0).getTransUnit();
-            Log.debug("save resulted TU: " + updatedTU.debugString());
-            if (result.isSingleSuccess())
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved()));
-               int rowIndexOnPage = pageModel.findIndexById(updatedTU.getId());
-               if (rowIndexOnPage != SinglePageDataModel.UNSELECTED)
-               {
-                  UndoLink undoLink = undoLinkProvider.get();
-                  undoLink.prepareUndoFor(result);
-                  targetContentsPresenter.addUndoLink(rowIndexOnPage, undoLink);
-               }
-            }
-            else
-            {
-               // TODO localised message
-               saveFailure("id " + id);
-            }
-         }
-      });
+      ContentState stateToSet = determineStatus(event.getTargets(), status);
+      final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(id, event.getTargets(), stateToSet, event.getVerNum()), updateType);
+      Log.info("about to save translation: " + updateTransUnit);
+      dispatcher.execute(updateTransUnit, new UpdateTransUnitCallback(event, id));
    }
 
    private boolean stateHasNotChanged(TransUnitSaveEvent event)
@@ -149,8 +123,91 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       return status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
    }
 
+   /**
+    *
+    *
+    * @param newContents
+    * @param requestedState
+    * @see org.zanata.service.impl.TranslationServiceImpl#adjustContentsAndState
+    */
+   private static ContentState determineStatus(List<String> newContents, ContentState requestedState)
+   {
+      int emptyCount = Iterables.size(Iterables.filter(newContents, new Predicate<String>()
+      {
+         @Override
+         public boolean apply(@Nullable String input)
+         {
+            return Strings.isNullOrEmpty(input);
+         }
+      }));
+
+      // TODO use ContentStateUtil.determineState.
+      // ContentState stateToSet = ContentStateUtil.determineState(requestedState, newContents);
+
+      // NB until then, make sure this stays consistent
+      ContentState stateToSet = requestedState;
+      if (requestedState == ContentState.New && emptyCount == 0)
+      {
+         stateToSet = ContentState.NeedReview;
+      }
+      else if (requestedState == ContentState.Approved && emptyCount != 0)
+      {
+         stateToSet = ContentState.New;
+      }
+      else if (requestedState == ContentState.NeedReview && emptyCount == newContents.size())
+      {
+         stateToSet = ContentState.New;
+      }
+      return stateToSet;
+   }
+
    private void saveFailure(String message)
    {
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message)));
+   }
+
+   private class UpdateTransUnitCallback implements AsyncCallback<UpdateTransUnitResult>
+   {
+      private final TransUnitSaveEvent event;
+      private final TransUnitId id;
+
+      public UpdateTransUnitCallback(TransUnitSaveEvent event, TransUnitId id)
+      {
+         this.event = event;
+         this.id = id;
+      }
+
+      @Override
+      public void onFailure(Throwable e)
+      {
+         pendingSaves.remove(event);
+         Log.error("UpdateTransUnit failure ", e);
+         String message = e.getLocalizedMessage();
+         saveFailure(message);
+      }
+
+      @Override
+      public void onSuccess(UpdateTransUnitResult result)
+      {
+         pendingSaves.remove(event);
+         // FIXME check result.success
+         TransUnit updatedTU = result.getUpdateInfoList().get(0).getTransUnit();
+         Log.debug("save resulted TU: " + updatedTU.debugString());
+         if (result.isSingleSuccess())
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved()));
+            int rowIndexOnPage = pageModel.findIndexById(updatedTU.getId());
+            if (rowIndexOnPage != SinglePageDataModel.UNSELECTED)
+            {
+               UndoLink undoLink = undoLinkProvider.get();
+               undoLink.prepareUndoFor(result);
+               targetContentsPresenter.addUndoLink(rowIndexOnPage, undoLink);
+            }
+         } else
+         {
+            // TODO localised message
+            saveFailure("id " + id);
+         }
+      }
    }
 }
