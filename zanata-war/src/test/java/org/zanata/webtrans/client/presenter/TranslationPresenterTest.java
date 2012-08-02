@@ -33,6 +33,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.TranslationPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -70,7 +71,6 @@ public class TranslationPresenterTest extends PresenterTest
    private EventBus mockEventBus;
    private GlossaryPresenter mockGlossaryPresenter;
    private WebTransMessages mockMessages;
-   private NativeEvent mockNativeEvent;
 
    // TODO use real presenters
    private OptionsPanelPresenter mockSidePanelPresenter;
@@ -80,6 +80,7 @@ public class TranslationPresenterTest extends PresenterTest
    private WorkspaceUsersPresenter mockWorkspaceUsersPresenter;
    private TargetContentsPresenter mockTargetContentsPresenter;
    private KeyShortcutPresenter mockKeyShortcutPresenter;
+   private SinglePageDataModel mockPageModel;
 
    // mock view components
    private HasValue<Boolean> mockOptionsToggle;
@@ -106,7 +107,6 @@ public class TranslationPresenterTest extends PresenterTest
       mockEventBus = createAndAddMock(EventBus.class);
       mockGlossaryPresenter = createAndAddMock(GlossaryPresenter.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
-      mockNativeEvent = createAndAddMock(NativeEvent.class);
       mockSidePanelPresenter = createAndAddMock(OptionsPanelPresenter.class);
       mockTranslationEditorPresenter = createAndAddMock(TranslationEditorPresenter.class);
       mockTransMemoryPresenter = createAndAddMock(TransMemoryPresenter.class);
@@ -114,6 +114,7 @@ public class TranslationPresenterTest extends PresenterTest
       mockWorkspaceUsersPresenter = createAndAddMock(WorkspaceUsersPresenter.class);
       mockTargetContentsPresenter = createAndAddMock(TargetContentsPresenter.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
+      mockPageModel = createAndAddMock(SinglePageDataModel.class);
 
       mockOptionsToggle = createAndAddMock(HasValue.class);
       mockSouthPanelToggle = createAndAddMock(HasValue.class);
@@ -135,7 +136,7 @@ public class TranslationPresenterTest extends PresenterTest
    public void resetEverything()
    {
       resetAll();
-      translationPresenter = new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockUserWorkspaceContext, mockKeyShortcutPresenter);
+      translationPresenter = new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockUserWorkspaceContext, mockKeyShortcutPresenter, mockPageModel);
    }
 
    @Test
@@ -330,7 +331,7 @@ public class TranslationPresenterTest extends PresenterTest
       mockWorkspaceUsersPresenter.bind();
 
       // When shown, TM will try to fire a search for currently selected TU.
-      expect(mockTranslationEditorPresenter.getSelectedTransUnit()).andReturn(selectedTransUnit);
+      expect(mockPageModel.getSelectedOrNull()).andReturn(selectedTransUnit);
    }
 
    private void expectHideSouthPanel()

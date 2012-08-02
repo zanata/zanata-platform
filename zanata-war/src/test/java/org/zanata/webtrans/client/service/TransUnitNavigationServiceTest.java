@@ -13,7 +13,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
-import org.zanata.webtrans.client.editor.table.TableConstants;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -65,7 +64,7 @@ public class TransUnitNavigationServiceTest
    protected void setUp() throws Exception
    {
       navigationService = new TransUnitNavigationService();
-      navigationService.init(transIdStateMap, idIndexList, TableConstants.PAGE_SIZE);
+      navigationService.init(transIdStateMap, idIndexList, 50);
    }
 
    @Test

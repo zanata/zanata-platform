@@ -31,7 +31,6 @@ public interface TableResources extends ClientBundle
 
    /**
     * An {@link ClientBundle} that provides images for
-    * {@link InlineTargetCellEditor}.
     */
    @Source("images/crystal_project/_16x16/actions/3floppy_unmount.png")
    ImageResource cellEditorAccept();

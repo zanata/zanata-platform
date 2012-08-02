@@ -81,8 +81,8 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
       currentRow = UNSELECTED;
    }
 
-   //for testing
-   protected List<TransUnit> getData()
+   @Override
+   public List<TransUnit> getData()
    {
       return data;
    }

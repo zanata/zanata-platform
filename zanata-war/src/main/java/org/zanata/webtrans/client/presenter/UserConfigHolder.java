@@ -104,8 +104,7 @@ public class UserConfigHolder
       return displayButtons;
    }
 
-   //TODO TableEditorPresenter will call this one workspaceContext change event. Thus the method must be public.
-   public void setDisplayButtons(boolean displayButtons)
+   void setDisplayButtons(boolean displayButtons)
    {
       this.displayButtons = displayButtons;
    }

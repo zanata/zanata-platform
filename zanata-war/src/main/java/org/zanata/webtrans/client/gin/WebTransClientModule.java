@@ -22,13 +22,10 @@ package org.zanata.webtrans.client.gin;
 
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.EventProcessor;
-import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.SourceContentsView;
-import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
-import org.zanata.webtrans.client.editor.table.TableEditorView;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsView;
 import org.zanata.webtrans.client.events.NativeEvent;
@@ -122,7 +119,6 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
       bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
-      bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
       bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
       bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
       bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
@@ -143,7 +139,6 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
 
       bind(EventWrapper.class).to(EventWrapperImpl.class).in(Singleton.class);
-      bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);
       bind(History.class).to(HistoryImpl.class).in(Singleton.class);
       bind(Window.class).to(WindowImpl.class).in(Singleton.class);

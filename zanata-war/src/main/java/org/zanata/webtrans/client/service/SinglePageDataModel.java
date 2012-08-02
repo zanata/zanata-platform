@@ -31,6 +31,8 @@ public interface SinglePageDataModel
 
    TransUnit getByIdOrNull(TransUnitId transUnitId);
 
+   List<TransUnit> getData();
+
    interface PageDataChangeListener
    {
 

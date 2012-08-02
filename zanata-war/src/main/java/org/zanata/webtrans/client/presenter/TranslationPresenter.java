@@ -44,6 +44,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -113,13 +114,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final KeyShortcutPresenter keyShortcutPresenter;
 
    private UserWorkspaceContext userWorkspaceContext;
+   private final SinglePageDataModel pageModel;
 
    private final WebTransMessages messages;
 
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, SinglePageDataModel pageModel)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -132,6 +134,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.dispatcher = dispatcher;
       this.userWorkspaceContext = userWorkspaceContext;
+      this.pageModel = pageModel;
    }
 
    @Override
@@ -314,7 +317,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    public void saveEditorPendingChange()
    {
-      translationEditorPresenter.saveEditorPendingChange();
+      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
    }
 
    /**
@@ -356,7 +359,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       {
          bindSouthPanelPresenters();
 
-         TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
+         TransUnit tu = pageModel.getSelectedOrNull();
          if (tu != null)
          {
             transMemoryPresenter.createTMRequestForTransUnit(tu);

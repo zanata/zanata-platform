@@ -25,12 +25,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
@@ -59,18 +59,18 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    private TransMemoryMergePopupPanelDisplay display;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
-   private final TableEditorPresenter tableEditorPresenter;
+   private final SinglePageDataModel pageModel;
    private final UiMessages messages;
    private final Provider<UndoLink> undoLinkProvider;
 
    @Inject
-   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter, UiMessages messages, Provider<UndoLink> undoLinkProvider)
+   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, SinglePageDataModel pageModel, UiMessages messages, Provider<UndoLink> undoLinkProvider)
    {
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
-      this.tableEditorPresenter = tableEditorPresenter;
+      this.pageModel = pageModel;
       this.messages = messages;
       this.undoLinkProvider = undoLinkProvider;
       display.setListener(this);
@@ -121,7 +121,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
 
    private Collection<TransUnit> getUntranslatedItems()
    {
-      List<TransUnit> currentItems = tableEditorPresenter.getDisplay().getRowValues();
+      List<TransUnit> currentItems = pageModel.getData();
       return Collections2.filter(currentItems, new Predicate<TransUnit>()
       {
          @Override

@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;

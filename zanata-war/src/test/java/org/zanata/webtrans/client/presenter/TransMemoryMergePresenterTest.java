@@ -21,17 +21,7 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.zanata.model.TestFixture.makeTransUnit;
-
 import java.util.List;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -42,10 +32,10 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -55,12 +45,20 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
+
+import net.customware.gwt.presenter.client.EventBus;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.zanata.model.TestFixture.makeTransUnit;
 
 /**
  * @author Patrick Huang <a
@@ -77,25 +75,23 @@ public class TransMemoryMergePresenterTest
    @Mock
    private CachingDispatchAsync dispatcher;
    @Mock
-   private TableEditorPresenter tableEditorPresenter;
-   @Mock
    private UiMessages messages;
    @Mock
    private Provider<UndoLink> undoLinkProvider;
-   @Mock
-   private TableEditorPresenter.Display tableEditorDisplay;
    @Captor
    private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
    @Captor
    private ArgumentCaptor<TransMemoryMerge> transMemoryMergeCaptor;
    @Captor
    private ArgumentCaptor<AsyncCallback<UpdateTransUnitResult>> callbackCaptor;
+   @Mock
+   private SinglePageDataModel pageModel;
 
    @BeforeMethod
    public void setUp()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransMemoryMergePresenter(display, eventBus, dispatcher, tableEditorPresenter, messages, undoLinkProvider);
+      presenter = new TransMemoryMergePresenter(display, eventBus, dispatcher, pageModel, messages, undoLinkProvider);
 
       verify(display).setListener(presenter);
    }
@@ -141,8 +137,7 @@ public class TransMemoryMergePresenterTest
 
    private void mockCurrentPageToReturn(List<TransUnit> allRowValues)
    {
-      when(tableEditorPresenter.getDisplay()).thenReturn(tableEditorDisplay);
-      when(tableEditorDisplay.getRowValues()).thenReturn(allRowValues);
+      when(pageModel.getData()).thenReturn(allRowValues);
    }
 
    @Test
