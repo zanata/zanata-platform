@@ -88,8 +88,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  TargetContentsPresenter targetContentsPresenter,
                                  TranslatorInteractionService translatorService,
                                  TransUnitSaveService transUnitSaveService,
-                                 UserWorkspaceContext userWorkspaceContext,
-                                 UserConfigHolder configHolder)
+                                 UserWorkspaceContext userWorkspaceContext)
    {
       super(display, eventBus);
       this.display = display;
@@ -105,10 +104,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
       // we register it here because we can't use eager singleton on it (it references TargetContentsPresenter). And if it's not eagerly created, it won't get created at all!!
       eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
-      //TODO need to listen to user config change event for page size changes
-      sourceContentsPresenter.initWidgets(configHolder.getPageSize());
-      targetContentsPresenter.initWidgets(configHolder.getPageSize());
-      initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
+//      initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
 
       pageModel = navigationController.getDataModel();
       pageModel.addDataChangeListener(this);
@@ -117,7 +113,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    //TODO read only is not handled
    private void initViewOnWorkspaceContext(boolean readOnly)
    {
-      display.initView(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
+      display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
    }
 
    @Override
@@ -252,6 +248,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       sourceContentsPresenter.showData(transUnits);
       targetContentsPresenter.showData(transUnits);
+      display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
    }
 
    @Override

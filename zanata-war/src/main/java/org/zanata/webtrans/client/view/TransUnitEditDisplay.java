@@ -40,7 +40,7 @@ public interface TransUnitEditDisplay extends WidgetDisplay
 
    void hideFilterConfirmation();
 
-   void initView(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays);
+   void buildTable(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays);
 
    void setRowSelectionListener(Listener listener);
 

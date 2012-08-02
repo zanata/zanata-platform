@@ -71,7 +71,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    }
 
    @Override
-   public void initView(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays)
+   public void buildTable(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays)
    {
       transUnitTable.resizeRows(sourceDisplays.size());
       for (int i = 0; i < sourceDisplays.size(); i++)

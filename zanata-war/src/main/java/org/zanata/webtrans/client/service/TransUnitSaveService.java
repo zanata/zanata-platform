@@ -99,7 +99,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       final TransUnitId id = event.getTransUnitId();
       TransUnitUpdated.UpdateType updateType = workoutUpdateType(status);
       final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(id, event.getTargets(), status, event.getVerNum()), updateType);
-      Log.debug("about to save translation: " + updateTransUnit);
+      Log.info("about to save translation: " + updateTransUnit);
       dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
       {
          @Override

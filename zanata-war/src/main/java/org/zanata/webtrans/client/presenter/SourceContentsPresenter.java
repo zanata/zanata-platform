@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Provider;
@@ -30,6 +31,7 @@ import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,7 +51,7 @@ public class SourceContentsPresenter implements ClickHandler
 
    private final EventBus eventBus;
    private Provider<SourceContentsDisplay> displayProvider;
-   private ArrayList<SourceContentsDisplay> displayList;
+   private List<SourceContentsDisplay> displayList = Collections.emptyList();
 
    @Inject
    public SourceContentsPresenter(final EventBus eventBus, Provider<SourceContentsDisplay> displayProvider)
@@ -94,16 +96,6 @@ public class SourceContentsPresenter implements ClickHandler
       return selectedSource.getSource();
    }
 
-   public void initWidgets(int pageSize)
-   {
-      displayList = Lists.newArrayList();
-      for (int i = 0; i < pageSize; i++)
-      {
-         SourceContentsDisplay display = displayProvider.get();
-         displayList.add(display);
-      }
-   }
-
    //TODO to be removed
    public SourceContentsDisplay setValue(TransUnit value)
    {
@@ -120,12 +112,15 @@ public class SourceContentsPresenter implements ClickHandler
 
    public void showData(List<TransUnit> transUnits)
    {
-      for (int i = 0; i < displayList.size(); i++)
+      ImmutableList.Builder<SourceContentsDisplay> builder = ImmutableList.builder();
+      for (TransUnit transUnit : transUnits)
       {
-         SourceContentsDisplay sourceContentsDisplay = displayList.get(i);
-         sourceContentsDisplay.setValue(transUnits.get(i));
-         sourceContentsDisplay.setSourceSelectionHandler(this);
+         SourceContentsDisplay display = displayProvider.get();
+         display.setValue(transUnit);
+         display.setSourceSelectionHandler(this);
+         builder.add(display);
       }
+      displayList = builder.build();
    }
 
    public List<SourceContentsDisplay> getDisplays()

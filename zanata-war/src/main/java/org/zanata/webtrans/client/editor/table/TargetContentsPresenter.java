@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +77,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -113,7 +115,7 @@ public class TargetContentsPresenter implements
    private final ValidationMessagePanelDisplay validationMessagePanel;
    private TargetContentsDisplay display;
    private Provider<TargetContentsDisplay> displayProvider;
-   private ArrayList<TargetContentsDisplay> displayList = Lists.newArrayList();
+   private List<TargetContentsDisplay> displayList = Collections.emptyList();
    private int currentEditorIndex = 0;
    private ArrayList<ToggleEditor> currentEditors;
 
@@ -154,11 +156,6 @@ public class TargetContentsPresenter implements
    {
       this.displayProvider = displayProvider;
       this.userWorkspaceContext = userWorkspaceContext;
-      if (userWorkspaceContext.hasReadOnlyAccess())
-      {
-         Log.debug("read only mode. Hide buttons");
-         this.display.showButtons(false);
-      }
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
@@ -479,17 +476,6 @@ public class TargetContentsPresenter implements
       return display;
    }
 
-   public void initWidgets(int pageSize)
-   {
-      displayList = Lists.newArrayList();
-      for (int i = 0; i < pageSize; i++)
-      {
-         TargetContentsDisplay display = displayProvider.get();
-         display.setListener(this);
-         displayList.add(display);
-      }
-   }
-
    @Override
    public void validate(ToggleEditor editor)
    {
@@ -735,29 +721,18 @@ public class TargetContentsPresenter implements
       targetContentsDisplay.addUndo(undoLink);
    }
 
-   public void addUndoLink(final TransUnitId transUnitId, UndoLink undoLink)
-   {
-      Collection<TargetContentsDisplay> matched = Collections2.filter(displayList, new Predicate<TargetContentsDisplay>()
-      {
-         @Override
-         public boolean apply(TargetContentsDisplay input)
-         {
-            return Objects.equal(input.getTransUnitId(), transUnitId);
-         }
-      });
-      if (matched.size() == 1)
-      {
-         matched.iterator().next().addUndo(undoLink);
-      }
-   }
-
    public void showData(List<TransUnit> transUnits)
    {
-      for (int i = 0; i < displayList.size(); i++)
+      ImmutableList.Builder<TargetContentsDisplay> builder = ImmutableList.builder();
+      for (TransUnit transUnit : transUnits)
       {
-         TargetContentsDisplay targetContentsDisplay = displayList.get(i);
-         targetContentsDisplay.setValue(transUnits.get(i));
+         TargetContentsDisplay display = displayProvider.get();
+         display.setListener(this);
+         // TODO need to set readonly according to userWorkspaceContext
+         display.setValue(transUnit);
+         builder.add(display);
       }
+      displayList = builder.build();
    }
 
    public List<TargetContentsDisplay> getDisplays()
