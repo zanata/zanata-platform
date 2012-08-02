@@ -127,7 +127,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          public void onSuccess(GetTransUnitListResult result)
          {
             ArrayList<TransUnit> units = result.getUnits();
-            Log.info("result unit: " + units.size());
+            Log.debug("result unit: " + units.size());
             pageModel.setData(units);
 
             // default values

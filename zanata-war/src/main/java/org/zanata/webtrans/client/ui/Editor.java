@@ -140,6 +140,10 @@ public class Editor extends Composite implements ToggleEditor
          label.setTitle(messages.clickHere());
          setViewMode(ViewMode.EDIT);
       }
+      else
+      {
+         setViewMode(ViewMode.VIEW);
+      }
    }
 
    private void setLabelText(String displayString)
@@ -188,7 +192,7 @@ public class Editor extends Composite implements ToggleEditor
    public void onTextAreaFocus(FocusEvent event)
    {
       listener.setValidationMessagePanel(this);
-      listener.toggleView(Editor.this);
+      listener.toggleView(this);
       fireValidationEvent();
       event.stopPropagation();
       isFocused = true;

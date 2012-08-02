@@ -110,12 +110,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       pageModel.addDataChangeListener(this);
    }
 
-   //TODO read only is not handled
-   private void initViewOnWorkspaceContext(boolean readOnly)
-   {
-      display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
-   }
-
    @Override
    protected void onBind()
    {
@@ -159,7 +153,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
-      initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
+      //FIXME need to handle readonly/writable switch
+//      initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
    }
 
    @Override

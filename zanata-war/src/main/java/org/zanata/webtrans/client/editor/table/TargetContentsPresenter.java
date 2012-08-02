@@ -22,7 +22,6 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -75,10 +74,7 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
@@ -382,10 +378,10 @@ public class TargetContentsPresenter implements
 
    public void setToViewMode()
    {
-      if (display != null)
+      for (TargetContentsDisplay targetContentsDisplay : displayList)
       {
-         display.setToView();
-         display.showButtons(false);
+         targetContentsDisplay.setToView();
+         targetContentsDisplay.showButtons(false);
       }
    }
 
@@ -398,7 +394,10 @@ public class TargetContentsPresenter implements
 
       for (ToggleEditor editor : display.getEditors())
       {
-         editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         if (!userWorkspaceContext.hasReadOnlyAccess())
+         {
+            editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         }
          editor.clearTranslatorList();
          validate(editor);
       }
@@ -528,7 +527,7 @@ public class TargetContentsPresenter implements
    @Override
    public boolean isDisplayButtons()
    {
-      return configHolder.isDisplayButtons();
+      return configHolder.isDisplayButtons() && !userWorkspaceContext.hasReadOnlyAccess();
    }
 
    @Override
@@ -728,8 +727,8 @@ public class TargetContentsPresenter implements
       {
          TargetContentsDisplay display = displayProvider.get();
          display.setListener(this);
-         // TODO need to set readonly according to userWorkspaceContext
          display.setValue(transUnit);
+         display.showButtons(isDisplayButtons());
          builder.add(display);
       }
       displayList = builder.build();
