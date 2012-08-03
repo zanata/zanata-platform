@@ -64,27 +64,52 @@ table {
 
 input,textarea {
 	border-radius: 3px;
-	border: 1px solid #CFCFCF;
+	border: 1px solid #C5C5C5;
 	padding: 5px;
 	color: #222222;
 	font-weight: bold;
 	font-size:14px;
 }
 
+input[type="text"]
+{
+	width:210px;
+	font-size:12px;
+}
+
 button,input[type="checkbox"],input[type="radio"],input[type="reset"],input[type="submit"],input[type="button"]
 {
-	color: #6C6C6C;
+	color: #626262;
 	padding: 2px;
 	margin-left: 2px;
 	margin-right: 2px;
 }
-
-button,input[type="reset"],input[type="submit"],input[type="button"] {
-	background-color: #EEEEEE;
-	border-radius: 3px;
-	font-size:14px;
-	padding:3px;
-	cursor:pointer;
+	
+	
+button,input[type="reset"],input[type="submit"],input[type="button"] {	
+	border: 1px solid #999;
+	border-radius: 4px;
+	cursor: pointer;
+	background: #CCC;
+	background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #EEE),
+		color-stop(100%, #CCC) );
+	background: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -o-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -ms-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: linear-gradient(top, #EEE 0%, #CCC 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#eeeeee',
+		endColorstr='#cccccc', GradientType=0 );
+	/* Text (previously on the a tag) */
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 5px;
+	text-align: center;
+	text-decoration: none;
+	color: #444;
+	text-shadow: 0 1px 1px white;
+	width:auto;
 }
 
 input.with_icon {
@@ -100,7 +125,15 @@ input.with_icon {
 
 button:hover,input[type="reset"]:hover,input[type="submit"]:hover,input[type="button"]:hover 
 {
-	border-color:#898989;
+	background: #CCC;
+	background: -moz-linear-gradient(top, white 0%, #DDD 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white),
+		color-stop(100%, #DDD) );
+	background: -webkit-linear-gradient(top, white 0%, #DDD 100%);
+	background: -o-linear-gradient(top, white 0%, #DDD 100%);
+	background: -ms-linear-gradient(top, white 0%, #DDD 100%);
+	background: linear-gradient(top, white 0%, #DDD 100%);
+	filter: progid:DXImageTransform.Microsoft.
 }
 
 textarea.code_editor {

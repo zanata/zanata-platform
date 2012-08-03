@@ -33,12 +33,11 @@
 
         <h:form>
             <s:token allowMultiplePosts="true" />
-	        <h:dataTable 
+	        <rich:dataTable 
 	            id="threads"
 	            value="#{roles}" 
 	            var="role"
 	            cellspacing="0"
-	            headerClass="columnHeader"
 	            rowClasses="odd,even"
 	            columnClasses="centered,centered,centered"
 	            styleClass="fullwidth">
@@ -60,7 +59,7 @@
 	                    rendered="#{s:hasPermission('seam.role', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
-	  	    </h:dataTable>
+	  	    </rich:dataTable>
         </h:form>              
       </rich:panel>
     </ui:define>

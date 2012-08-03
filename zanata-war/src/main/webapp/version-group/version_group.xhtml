@@ -93,7 +93,7 @@
   </s:fragment>
  
  
-    <rich:modalPanel id="versionAddPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
+    <rich:modalPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
             <a4j:form>
                 <h1>Find Project Version</h1>
@@ -115,8 +115,6 @@
                     <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <a4j:outputPanel  layout="block" style="overflow:auto;height:320px" rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable" value="#{versionGroupAction.searchResults}" var="selectableVersion">
-                            <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
-
                             <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
                                 <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                                 #{selectableVersion.projectIteration.project.name}
