@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonValue;
 public class LocaleId implements Serializable
 {
 
-   private static final long serialVersionUID = -7977805381672178179L;
+   private static final long serialVersionUID = 1L;
 
    private String id;
    // TODO split up to language code, country code, qualifier etc..
