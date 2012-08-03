@@ -194,7 +194,7 @@ public class ViewAllStatusAction implements Serializable
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
       Map<String, TransUnitWords> stats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
       List<HLocale> locale = this.getDisplayLocales();
-      Long total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
+      Long total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
       for (HLocale var : locale)
       {
          TransUnitWords words = stats.get(var.getLocaleId().getId());

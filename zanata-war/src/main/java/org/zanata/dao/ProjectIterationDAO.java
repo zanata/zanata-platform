@@ -113,7 +113,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          stat.set(count.status, count.count.intValue());
       }
 
-      Long totalCount = getTotalCountForIteration(iterationId);
+      Long totalCount = getTotalWordCountForIteration(iterationId);
 
       stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
 
@@ -152,7 +152,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          stat.set(count.status, count.count.intValue());
       }
 
-      Long totalCount = getTotalCountForIteration(iterationId);
+      Long totalCount = getTotalWordCountForIteration(iterationId);
 
       stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
 
@@ -220,7 +220,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          stat.set(state, word.intValue());
       }
 
-      Long totalCount = getTotalCountForIteration(iterationId);
+      Long totalCount = getTotalWordCountForIteration(iterationId);
       for (TransUnitWords count : result.values())
       {
          count.set(ContentState.New, totalCount.intValue() - (count.getApproved() + count.getNeedReview()));
@@ -280,13 +280,32 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    {
       // @formatter:off
       Query q = getSession().createQuery(
+            "select count(tf) from HTextFlow tf " +
+                  "where tf.document.projectIteration.id = :id" +
+                  " and tf.obsolete = false" +
+                  " and tf.document.obsolete = false");
+      // @formatter:on
+      q.setParameter("id", iterationId);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalCountForIteration");
+      Long totalCount = (Long) q.uniqueResult();
+      if (totalCount == null)
+      {
+         totalCount = 0L;
+      }
+      return totalCount;
+   }
+
+   public Long getTotalWordCountForIteration(Long iterationId)
+   {
+      // @formatter:off
+      Query q = getSession().createQuery(
             "select sum(tf.wordCount) from HTextFlow tf " +
             "where tf.document.projectIteration.id = :id" +
             " and tf.obsolete = false" +
             " and tf.document.obsolete = false");
       // @formatter:on
       q.setParameter("id", iterationId);
-      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalCountForIteration");
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalWordCountForIteration");
       Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
       {

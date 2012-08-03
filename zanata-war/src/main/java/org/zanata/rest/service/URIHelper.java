@@ -2,6 +2,9 @@ package org.zanata.rest.service;
 
 import org.zanata.rest.RestUtil;
 
+/**
+ * @see {@link ZPathService}
+ */
 public final class URIHelper
 {
 
@@ -11,7 +14,7 @@ public final class URIHelper
 
    public static String getProject(String projectSlug)
    {
-      return "projects/p/" + projectSlug;
+      return "/projects/p/" + projectSlug;
    }
 
    public static String getIteration(String projectSlug, String iterationSlug)
@@ -21,7 +24,7 @@ public final class URIHelper
 
    public static String getDocument(String projectSlug, String iterationSlug, String documentId)
    {
-      return getIteration(projectSlug, iterationSlug) + "/documents/d/" + RestUtil.convertToDocumentURIId(documentId);
+      return getIteration(projectSlug, iterationSlug) + "/r/" + RestUtil.convertToDocumentURIId(documentId);
    }
 
    public static String convertFromDocumentURIId(String uriId)

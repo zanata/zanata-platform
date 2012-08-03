@@ -47,6 +47,7 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.URIHelper;
+import org.zanata.rest.service.ZPathService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,6 +70,9 @@ public class StatisticsServiceImpl implements StatisticsResource
 
    @In
    private DocumentDAO documentDAO;
+
+   @In
+   private ZPathService zPathService;
 
 
    /**
@@ -109,7 +113,7 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       ContainerTranslationStatistics iterationStats = new ContainerTranslationStatistics();
       iterationStats.setId(iterationSlug);
-      iterationStats.addRef( new Link(URI.create(URIHelper.getIteration(projectSlug, iterationSlug)), "", "Iteration"));
+      iterationStats.addRef( new Link(URI.create(zPathService.generatePathForProjectIteration(iteration)), "statSource", "PROJ_ITER"));
 
       for( String locale : transUnitIterationStats.keySet() )
       {
@@ -179,7 +183,7 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       ContainerTranslationStatistics docStats = new ContainerTranslationStatistics();
       docStats.setId(docId);
-      docStats.addRef(new Link(URI.create(URIHelper.getDocument(projectSlug, iterationSlug, docId)), "", "Document"));
+      docStats.addRef(new Link(URI.create(zPathService.generatePathForDocument(document)), "statSource", "DOC"));
 
       for( LocaleId locale : statsMap.keySet() )
       {
@@ -201,7 +205,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          if( includeWordStats )
          {
             TranslationStatistics wordStats = new TranslationStatistics();
-            transUnitStats.setLocale( locale.getId() );
+            wordStats.setLocale( locale.getId() );
             wordStats.setUnit(TranslationStatistics.StatUnit.WORD);
             wordStats.setTranslated( wordCount.get(ContentState.Approved) );
             wordStats.setUntranslated( wordCount.get(ContentState.New) );
