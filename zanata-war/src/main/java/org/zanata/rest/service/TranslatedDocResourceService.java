@@ -163,22 +163,10 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       }
       catch (ZanataServiceException e)
       {
+         log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
          throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
       }
    }
-
-   private HLocale validateSourceLocale(LocaleId locale)
-   {
-      try
-      {
-         return localeServiceImpl.validateSourceLocale(locale);
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
-   
 
    /**
     * Retrieves a set of translations for a given locale.

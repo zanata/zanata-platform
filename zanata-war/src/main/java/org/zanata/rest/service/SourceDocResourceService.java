@@ -536,18 +536,6 @@ public class SourceDocResourceService implements SourceDocResource
       }
    }
 
-   private HLocale validateSourceLocale(LocaleId locale)
-   {
-      try
-      {
-         return localeServiceImpl.validateSourceLocale(locale);
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
-
    private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
    {
       HLocale hLocale;
@@ -558,6 +546,7 @@ public class SourceDocResourceService implements SourceDocResource
       }
       catch (ZanataServiceException e)
       {
+         log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
          throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build());
       }
    }
