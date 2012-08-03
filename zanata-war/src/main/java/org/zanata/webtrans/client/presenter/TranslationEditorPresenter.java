@@ -124,6 +124,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
    public void openEditorOnSelectedRow()
    {
+      transUnitEditPresenter.startEditing();
 //      tableEditorPresenter.getDisplay().gotoRow(tableEditorPresenter.getSelectedRowIndex(), true);
 //      tableEditorPresenter.getDisplay().getTargetCellEditor().showEditors(tableEditorPresenter.getSelectedRowIndex(), 0);
 

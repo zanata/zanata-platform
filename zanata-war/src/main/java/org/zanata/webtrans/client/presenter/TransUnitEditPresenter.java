@@ -281,4 +281,18 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
       navigationController.selectByRowIndex(rowIndex);
    }
+
+   public void startEditing()
+   {
+      TransUnit selectedOrNull = pageModel.getSelectedOrNull();
+      if (selectedOrNull != null)
+      {
+         targetContentsPresenter.setFocus();
+      }
+      else
+      {
+         // select first row
+         onRowSelected(0);
+      }
+   }
 }
