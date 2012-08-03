@@ -72,7 +72,7 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
       handler.onValidate(this);
    }
 
-   public String getSource()
+   public String getSourceContent()
    {
       return source;
    }

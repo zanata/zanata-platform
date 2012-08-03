@@ -138,7 +138,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       if (selectedTransUnit != null)
       {
          Log.debug("selected id: " + selectedTransUnit.getId());
-         sourceContentsPresenter.setSelectedSource(pageModel.getCurrentRow());
+         sourceContentsPresenter.setSelectedSource(pageModel.getCurrentRow(), selectedTransUnit.getId());
          targetContentsPresenter.showEditors(pageModel.getCurrentRow(), selectedTransUnit.getId());
          translatorService.transUnitSelected(selectedTransUnit);
       }

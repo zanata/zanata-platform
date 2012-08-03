@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -52,6 +53,7 @@ public class SourceContentsPresenter implements ClickHandler
    private final EventBus eventBus;
    private Provider<SourceContentsDisplay> displayProvider;
    private List<SourceContentsDisplay> displayList = Collections.emptyList();
+   private TransUnitId currentTransUnitId;
 
    @Inject
    public SourceContentsPresenter(final EventBus eventBus, Provider<SourceContentsDisplay> displayProvider)
@@ -64,8 +66,11 @@ public class SourceContentsPresenter implements ClickHandler
     * Select first source in the list when row is selected or reselect previous selected one
     *
     */
-   public void setSelectedSource(int row)
+   public void setSelectedSource(int row, TransUnitId id)
    {
+      currentTransUnitId = id;
+      Log.debug("source content selected row:" + row + " id:" + id);
+
       SourceContentsDisplay sourceContentsView = displayList.get(row);
       if (sourceContentsView != null)
       {
@@ -153,7 +158,13 @@ public class SourceContentsPresenter implements ClickHandler
          selectedSource.setSelected(true);
 
          Log.debug("Selected source: " + selectedSource.getSource());
+         //TODO this is firing every time we click.
          eventBus.fireEvent(new RequestValidationEvent());
       }
+   }
+
+   public TransUnitId getCurrentTransUnitIdOrNull()
+   {
+      return currentTransUnitId;
    }
 }

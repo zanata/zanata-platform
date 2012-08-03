@@ -166,7 +166,7 @@ public class TargetContentsPresenterTest
 
       verify(eventBus).fireEvent(runValidationEventCaptor.capture());
       RunValidationEvent event = runValidationEventCaptor.getValue();
-      assertThat(event.getSource(), equalTo("source"));
+      assertThat(event.getSourceContent(), equalTo("source"));
       assertThat(event.getTarget(), equalTo("target"));
       assertThat(event.isFireNotification(), equalTo(false));
    }

@@ -76,7 +76,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private String findMessage;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
-   private TransUnitId transUnitId;
    private Integer verNum;
 
    public TargetContentsView()
@@ -130,7 +129,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void setValue(TransUnit transUnit)
    {
-      transUnitId = transUnit.getId();
       verNum = transUnit.getVerNum();
       List<String> targets = transUnit.getTargets();
       editors.clear();
@@ -250,12 +248,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setListener(Listener listener)
    {
       this.listener = listener;
-   }
-
-   @Override
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
    }
 
    @Override

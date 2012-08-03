@@ -387,7 +387,7 @@ public class TargetContentsPresenter implements
 
    public void showEditors(int rowIndex, TransUnitId currentTransUnitId)
    {
-      Log.debug("enter show editor current editor index:" + currentEditorIndex);
+      Log.info("enter show editor with rowIndex:" + rowIndex);
       display = displayList.get(rowIndex);
       currentEditors = display.getEditors();
       this.currentTransUnitId = currentTransUnitId;
@@ -521,7 +521,7 @@ public class TargetContentsPresenter implements
 
    private TransUnitId getCurrentTransUnitIdOrNull()
    {
-      return display == null ? null : display.getTransUnitId();
+      return currentTransUnitId;
    }
 
    @Override
@@ -655,14 +655,14 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (isEditing())
+      //If event.getTransUnitId is null it's fired from ValidationService which is caused by changing validation options.
+      if (Objects.equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
       {
          for (ToggleEditor editor : display.getEditors())
          {
             editor.setViewMode(ToggleEditor.ViewMode.EDIT);
             validate(editor);
          }
-         revealDisplay();
       }
    }
 

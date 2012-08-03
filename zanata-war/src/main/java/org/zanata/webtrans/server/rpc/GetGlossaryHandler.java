@@ -77,7 +77,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       final String searchText = action.getQuery();
       ShortString abbrev = new ShortString(searchText);
       final SearchType searchType = action.getSearchType();
-      log.info("Fetching Glossary matches({0}) for \"{1}\"", searchType, abbrev);
+      log.debug("Fetching Glossary matches({0}) for \"{1}\"", searchType, abbrev);
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
@@ -179,7 +179,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
 
       Collections.sort(results, comp);
 
-      log.info("Returning {0} Glossary matches for \"{1}\"", results.size(), abbrev);
+      log.debug("Returning {0} Glossary matches for \"{1}\"", results.size(), abbrev);
       return new GetGlossaryResult(action, results);
    }
 

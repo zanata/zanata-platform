@@ -43,8 +43,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
    void setValue(TransUnit transUnit);
 
-   TransUnitId getTransUnitId();
-
    Integer getVerNum();
 
    interface Listener

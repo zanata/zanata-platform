@@ -193,7 +193,6 @@ public class Editor extends Composite implements ToggleEditor
    {
       listener.setValidationMessagePanel(this);
       listener.toggleView(this);
-      fireValidationEvent();
       event.stopPropagation();
       isFocused = true;
    }
