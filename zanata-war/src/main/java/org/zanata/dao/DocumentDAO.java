@@ -176,7 +176,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
     *
     * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
     * @param docId
-    * @param localeIds
+    * @param localeIds If empty or null, data for all locales will be returned.
     * @return Map of document statistics indexed by locale. Some locales may not have entries if there is
     * no data stored for them.
     */
@@ -188,20 +188,30 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       Map<String, TransUnitCount> transUnitCountMap = new HashMap<String, TransUnitCount>();
       Map<String, TransUnitWords> transUnitWordsMap = new HashMap<String, TransUnitWords>();
 
+      StringBuilder query = new StringBuilder();
+      query.append("select new map (tft.state as state, count(tft) as count, ");
+      query.append("          sum(tft.textFlow.wordCount) as wordCount, tft.locale.localeId as locale) ");
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.id = :id ");
+      if( localeIds != null && localeIds.length > 0 )
+      {
+         query.append("  and tft.locale.localeId in (:locales) ");
+      }
+      query.append("  and tft.textFlow.obsolete = false ");
+      query.append("group by tft.state, tft.locale");
+
       // calculate unit counts
       @SuppressWarnings("unchecked")
-      List<Map> stats = session.createQuery(
-            "select new map (tft.state as state, count(tft) as count, " +
-                  "          sum(tft.textFlow.wordCount) as wordCount, tft.locale.localeId as locale) " +
-                  "from HTextFlowTarget tft " +
-                  "where tft.textFlow.document.id = :id " +
-                  "  and tft.locale.localeId in (:locales) " +
-                  "  and tft.textFlow.obsolete = false " +
-                  "group by tft.state, tft.locale")
+      Query hQuery = session.createQuery( query.toString() )
             .setParameter("id", docId)
-            .setParameterList("locales", localeIds)
-            .setCacheable(true)
-            .list();
+            .setCacheable(true);
+
+      if(localeIds != null && localeIds.length > 0)
+      {
+         hQuery.setParameterList("locales", localeIds);
+      }
+
+      List<Map> stats = hQuery.list();
       Map totalCounts = (Map) session.createQuery(
             "select new map ( count(tf) as count, sum(tf.wordCount) as wordCount ) " +
                   "from HTextFlow tf " +
@@ -250,14 +260,14 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       }
 
       // Merge into a single Stats object
-      for( LocaleId locale : localeIds )
+      for( String locale : transUnitCountMap.keySet() )
       {
          TranslationStats newStats = new TranslationStats(
-               transUnitCountMap.get(locale.getId()), transUnitWordsMap.get(locale.getId()) );
+               transUnitCountMap.get(locale), transUnitWordsMap.get(locale) );
 
          if( newStats.getUnitCount() != null && newStats.getWordCount() != null )
          {
-            returnStats.put(locale, newStats);
+            returnStats.put(new LocaleId(locale), newStats);
          }
       }
 

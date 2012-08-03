@@ -57,6 +57,7 @@ import static org.hamcrest.Matchers.notNullValue;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Test(groups = { "business-tests" })
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
