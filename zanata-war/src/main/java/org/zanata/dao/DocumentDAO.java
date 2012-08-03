@@ -1,7 +1,9 @@
 package org.zanata.dao;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Criteria;
@@ -167,6 +169,109 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       TranslationStats transStats = new TranslationStats(stat, wordCount);
       return transStats;
       // @formatter:on
+   }
+
+   /**
+    * Returns document statistics for multiple locales.
+    *
+    * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
+    * @param docId
+    * @param localeIds If empty or null, data for all locales will be returned.
+    * @return Map of document statistics indexed by locale. Some locales may not have entries if there is
+    * no data stored for them.
+    */
+   public Map<LocaleId, TranslationStats> getStatistics(long docId, LocaleId ... localeIds)
+   {
+      // @formatter:off
+      Session session = getSession();
+      Map<LocaleId, TranslationStats> returnStats = new HashMap<LocaleId, TranslationStats>();
+      Map<String, TransUnitCount> transUnitCountMap = new HashMap<String, TransUnitCount>();
+      Map<String, TransUnitWords> transUnitWordsMap = new HashMap<String, TransUnitWords>();
+
+      StringBuilder query = new StringBuilder();
+      query.append("select new map (tft.state as state, count(tft) as count, ");
+      query.append("          sum(tft.textFlow.wordCount) as wordCount, tft.locale.localeId as locale) ");
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.id = :id ");
+      if( localeIds != null && localeIds.length > 0 )
+      {
+         query.append("  and tft.locale.localeId in (:locales) ");
+      }
+      query.append("  and tft.textFlow.obsolete = false ");
+      query.append("group by tft.state, tft.locale");
+
+      // calculate unit counts
+      @SuppressWarnings("unchecked")
+      Query hQuery = session.createQuery( query.toString() )
+            .setParameter("id", docId)
+            .setCacheable(true);
+
+      if(localeIds != null && localeIds.length > 0)
+      {
+         hQuery.setParameterList("locales", localeIds);
+      }
+
+      List<Map> stats = hQuery.list();
+      Map totalCounts = (Map) session.createQuery(
+            "select new map ( count(tf) as count, sum(tf.wordCount) as wordCount ) " +
+                  "from HTextFlow tf " +
+                  "where tf.document.id = :id and tf.obsolete = false")
+            .setParameter("id", docId)
+            .setCacheable(true).uniqueResult();
+
+      // Collect the results for all states
+      for (Map row : stats)
+      {
+         ContentState state = (ContentState)row.get("state");
+         Long count = (Long)row.get("count");
+         Long wordCount = (Long) row.get("wordCount");
+         LocaleId localeId = (LocaleId)row.get("locale");
+
+         TransUnitCount transUnitCount = transUnitCountMap.get( localeId.getId() );
+         if( transUnitCount == null )
+         {
+            transUnitCount = new TransUnitCount();
+            transUnitCountMap.put(localeId.getId(), transUnitCount);
+         }
+
+         TransUnitWords transUnitWords = transUnitWordsMap.get( localeId.getId() );
+         if( transUnitWords == null )
+         {
+            transUnitWords = new TransUnitWords();
+            transUnitWordsMap.put(localeId.getId(), transUnitWords);
+         }
+
+         transUnitCount.set( state, count.intValue() );
+         transUnitWords.set( state, wordCount.intValue() );
+      }
+
+      // Calculate the 'New' counts
+      Long totalCount = (Long)totalCounts.get("count");
+      Long totalWordCount = (Long)totalCounts.get("wordCount");
+      for( TransUnitCount stat : transUnitCountMap.values() )
+      {
+         int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
+         stat.set(ContentState.New, newCount);
+      }
+      for( TransUnitWords stat : transUnitWordsMap.values() )
+      {
+         int newCount = totalWordCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
+         stat.set(ContentState.New, newCount);
+      }
+
+      // Merge into a single Stats object
+      for( String locale : transUnitCountMap.keySet() )
+      {
+         TranslationStats newStats = new TranslationStats(
+               transUnitCountMap.get(locale), transUnitWordsMap.get(locale) );
+
+         if( newStats.getUnitCount() != null && newStats.getWordCount() != null )
+         {
+            returnStats.put(new LocaleId(locale), newStats);
+         }
+      }
+
+      return returnStats;
    }
 
    public void syncRevisions(HDocument doc, HTextFlow... textFlows)

@@ -23,7 +23,6 @@ package org.zanata.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.EntityTag;
 
 import org.hibernate.Criteria;
@@ -114,7 +113,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          stat.set(count.status, count.count.intValue());
       }
 
-      Long totalCount = getTotalCountForIteration(iterationId);
+      Long totalCount = getTotalWordCountForIteration(iterationId);
 
       stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
 
@@ -153,7 +152,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          stat.set(count.status, count.count.intValue());
       }
 
-      Long totalCount = getTotalCountForIteration(iterationId);
+      Long totalCount = getTotalWordCountForIteration(iterationId);
 
       stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
 
@@ -186,7 +185,6 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    /**
     * @param iterationId
-    * @param localeId
     * @return
     */
    public Map<String, TransUnitWords> getAllWordStatsStatistics(Long iterationId)
@@ -222,7 +220,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          stat.set(state, word.intValue());
       }
 
-      Long totalCount = getTotalCountForIteration(iterationId);
+      Long totalCount = getTotalWordCountForIteration(iterationId);
       for (TransUnitWords count : result.values())
       {
          count.set(ContentState.New, totalCount.intValue() - (count.getApproved() + count.getNeedReview()));
@@ -230,7 +228,74 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       return result;
    }
 
+   /**
+    * Retreives translation unit level statistics for a project iteration.
+    *
+    * @param iterationId The numeric id for a Project iteration.
+    * @return A map of translation unit counts indexed by a locale id string.
+    */
+   public Map<String, TransUnitCount> getAllStatisticsForContainer(Long iterationId)
+   {
+      // @formatter:off
+      Query q = getSession().createQuery(
+            "select new map(tft.state as state, count(tft) as count, tft.locale.localeId as locale) " +
+            "from HTextFlowTarget tft " +
+            "where tft.textFlow.document.projectIteration.id = :id " +
+            " and tft.textFlow.obsolete = false" +
+            " and tft.textFlow.document.obsolete = false" +
+            " group by tft.state, tft.locale");
+      // @formatter:on
+      q.setParameter("id", iterationId);
+
+      @SuppressWarnings("unchecked")
+      List<Map> stats = q.list();
+      Map<String, TransUnitCount> retVal = new HashMap<String, TransUnitCount>();
+
+      for( Map row : stats )
+      {
+         ContentState state = (ContentState)row.get("state");
+         Long count = (Long)row.get("count");
+         LocaleId localeId = (LocaleId)row.get("locale");
+
+         TransUnitCount transUnitCount = retVal.get( localeId.getId() );
+         if( transUnitCount == null )
+         {
+            transUnitCount = new TransUnitCount();
+            retVal.put(localeId.getId(), transUnitCount);
+         }
+
+         transUnitCount.set( state, count.intValue() );
+      }
+
+      for( TransUnitCount stat : retVal.values() )
+      {
+         Long totalCount = getTotalCountForIteration(iterationId);
+         stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
+      }
+
+      return retVal;
+   }
+
    public Long getTotalCountForIteration(Long iterationId)
+   {
+      // @formatter:off
+      Query q = getSession().createQuery(
+            "select count(tf) from HTextFlow tf " +
+                  "where tf.document.projectIteration.id = :id" +
+                  " and tf.obsolete = false" +
+                  " and tf.document.obsolete = false");
+      // @formatter:on
+      q.setParameter("id", iterationId);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalCountForIteration");
+      Long totalCount = (Long) q.uniqueResult();
+      if (totalCount == null)
+      {
+         totalCount = 0L;
+      }
+      return totalCount;
+   }
+
+   public Long getTotalWordCountForIteration(Long iterationId)
    {
       // @formatter:off
       Query q = getSession().createQuery(
@@ -240,7 +305,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
             " and tf.document.obsolete = false");
       // @formatter:on
       q.setParameter("id", iterationId);
-      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalCountForIteration");
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalWordCountForIteration");
       Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
       {
