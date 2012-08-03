@@ -140,10 +140,6 @@ public class Editor extends Composite implements ToggleEditor
          label.setTitle(messages.clickHere());
          setViewMode(ViewMode.EDIT);
       }
-      else
-      {
-         setViewMode(ViewMode.VIEW);
-      }
    }
 
    private void setLabelText(String displayString)
@@ -338,7 +334,13 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public String toString()
    {
-      return Objects.toStringHelper(this).add("label", label.getText()).add("textArea", textArea.getText()).add("isOpen", textArea.isVisible()).toString();
+      // @formatter:off
+      return Objects.toStringHelper(this)
+//            .add("label", label.getText())
+//            .add("textArea", textArea.getText())
+            .add("isOpen", textArea.isVisible())
+            .toString();
+      // @formatter:on
    }
 
    @Override

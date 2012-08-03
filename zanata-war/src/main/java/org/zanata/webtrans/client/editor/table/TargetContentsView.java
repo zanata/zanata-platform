@@ -28,7 +28,6 @@ import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -114,7 +113,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          @Override
          public void preUndo()
          {
-            setToView();
          }
 
          @Override
@@ -147,7 +145,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          rowIndex++;
       }
       editorGrid.setStyleName(resolveStyleName(transUnit.getStatus()));
-      undoContainer.clear();
    }
 
    private static String resolveStyleName(ContentState status)
@@ -215,17 +212,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void setToView()
-   {
-      for (ToggleEditor editor : editors)
-      {
-         editor.removeValidationMessagePanel();
-         editor.setViewMode(ToggleEditor.ViewMode.VIEW);
-      }
-   }
-
-   @Override
-   //TODO do we need this?
    public boolean isEditing()
    {
       for (ToggleEditor editor : editors)
@@ -254,6 +240,19 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public Integer getVerNum()
    {
       return verNum;
+   }
+
+   @Override
+   public void setToMode(ToggleEditor.ViewMode viewMode)
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.setViewMode(viewMode);
+         if (viewMode == ToggleEditor.ViewMode.VIEW)
+         {
+            editor.removeValidationMessagePanel();
+         }
+      }
    }
 
    @Override

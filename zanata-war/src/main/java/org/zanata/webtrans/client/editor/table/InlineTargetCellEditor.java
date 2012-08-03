@@ -125,7 +125,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 	}
 
 	public boolean isEditing() {
-		return cellValue != null && targetContentsPresenter.isEditing();
+		return cellValue != null && targetContentsPresenter.displayIsEditable();
 	}
 
 	public boolean isOpened() {
@@ -184,7 +184,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 			Log.debug("savePendingChange- cancel edit");
 			cancelEdit();
 		}
-		targetContentsPresenter.setToViewMode();
+//		targetContentsPresenter.setToViewMode();
 	}
 
 	public boolean hasTargetContentsChanged() {
@@ -211,7 +211,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 		cellValue.setTargets(newTargets);
 		determineStatus(newTargets, ContentState.Approved);
 
-		targetContentsPresenter.setToViewMode();
+//		targetContentsPresenter.setToViewMode();
 		isOpened = false;
 
 		// Send the new cell value to the callback
@@ -277,7 +277,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 			return;
 		}
 
-		targetContentsPresenter.setToViewMode();
+//		targetContentsPresenter.setToViewMode();
 		isOpened = false;
 
 		// Call the callback

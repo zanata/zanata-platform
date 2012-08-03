@@ -49,6 +49,8 @@ import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.Keys;
@@ -95,7 +97,8 @@ public class TargetContentsPresenter implements
       UserConfigChangeHandler,
       RequestValidationEventHandler,
       InsertStringInEditorHandler,
-      CopyDataToEditorHandler
+      CopyDataToEditorHandler,
+      WorkspaceContextUpdateEventHandler
 // @formatter:on
 {
    private static final int LAST_INDEX = -2;
@@ -363,6 +366,7 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
+      eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
    }
 
    private ToggleEditor getCurrentEditor()
@@ -370,19 +374,9 @@ public class TargetContentsPresenter implements
       return currentEditors.get(currentEditorIndex);
    }
 
-   //TODO to be removed
-   public boolean isEditing()
+   public boolean displayIsEditable()
    {
       return display != null && display.isEditing();
-   }
-
-   public void setToViewMode()
-   {
-      for (TargetContentsDisplay targetContentsDisplay : displayList)
-      {
-         targetContentsDisplay.setToView();
-         targetContentsDisplay.showButtons(false);
-      }
    }
 
    public void showEditors(int rowIndex, TransUnitId currentTransUnitId)
@@ -394,10 +388,6 @@ public class TargetContentsPresenter implements
 
       for (ToggleEditor editor : display.getEditors())
       {
-         if (!userWorkspaceContext.hasReadOnlyAccess())
-         {
-            editor.setViewMode(ToggleEditor.ViewMode.EDIT);
-         }
          editor.clearTranslatorList();
          validate(editor);
       }
@@ -406,9 +396,16 @@ public class TargetContentsPresenter implements
 
       normaliseCurrentEditorIndex();
 
-      validationMessagePanel.clear();
-      display.focusEditor(currentEditorIndex);
-      updateTranslators();
+      if (!userWorkspaceContext.hasReadOnlyAccess())
+      {
+         validationMessagePanel.clear();
+         display.focusEditor(currentEditorIndex);
+         updateTranslators();
+      }
+      else
+      {
+         display.setToMode(ViewMode.VIEW);
+      }
    }
 
    private void normaliseCurrentEditorIndex()
@@ -556,7 +553,6 @@ public class TargetContentsPresenter implements
       currentEditorIndex = editor.getIndex();
       display.showButtons(isDisplayButtons());
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
-      editor.setViewMode(ViewMode.EDIT);
       editor.autoSize();
       editor.setFocus();
 
@@ -660,7 +656,6 @@ public class TargetContentsPresenter implements
       {
          for (ToggleEditor editor : display.getEditors())
          {
-            editor.setViewMode(ToggleEditor.ViewMode.EDIT);
             validate(editor);
          }
       }
@@ -728,6 +723,10 @@ public class TargetContentsPresenter implements
          TargetContentsDisplay display = displayProvider.get();
          display.setListener(this);
          display.setValue(transUnit);
+         if (userWorkspaceContext.hasReadOnlyAccess())
+         {
+            display.setToMode(ViewMode.VIEW);
+         }
          display.showButtons(isDisplayButtons());
          builder.add(display);
       }
@@ -761,5 +760,30 @@ public class TargetContentsPresenter implements
          normaliseCurrentEditorIndex();
          display.focusEditor(currentEditorIndex);
       }
+   }
+
+   @Override
+   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+   {
+      userWorkspaceContext.setProjectActive(event.isProjectActive());
+      if (displayIsEditable() && userWorkspaceContext.hasReadOnlyAccess())
+      {
+         Log.debug("from editable to readonly");
+         for (TargetContentsDisplay targetContentsDisplay : displayList)
+         {
+            targetContentsDisplay.setToMode(ViewMode.VIEW);
+            targetContentsDisplay.showButtons(false);
+         }
+      }
+      else if (!displayIsEditable() && !userWorkspaceContext.hasReadOnlyAccess())
+      {
+         Log.debug("from readonly mode to writable");
+         for (TargetContentsDisplay targetContentsDisplay : displayList)
+         {
+            targetContentsDisplay.setToMode(ViewMode.EDIT);
+            targetContentsDisplay.showButtons(isDisplayButtons());
+         }
+      }
+
    }
 }

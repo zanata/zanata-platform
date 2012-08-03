@@ -45,6 +45,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
    Integer getVerNum();
 
+   void setToMode(ToggleEditor.ViewMode viewMode);
+
    interface Listener
    {
       void validate(ToggleEditor editor);
@@ -71,8 +73,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
    void setFindMessage(String findMessage);
 
    ArrayList<String> getNewTargets();
-
-   void setToView();
 
    boolean isEditing();
     
