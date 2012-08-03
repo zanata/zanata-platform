@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -51,17 +52,16 @@ import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+import com.google.common.base.Objects;
 
 @Name("webtrans.gwt.GetGlossaryHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetGlossary.class)
+@Slf4j
 public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGlossaryResult>
 {
 
    private static final int MAX_RESULTS = 20;
-
-   @Logger
-   private Log log;
 
    @In
    private LocaleService localeServiceImpl;
@@ -77,7 +77,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       final String searchText = action.getQuery();
       ShortString abbrev = new ShortString(searchText);
       final SearchType searchType = action.getSearchType();
-      log.debug("Fetching Glossary matches({0}) for \"{1}\"", searchType, abbrev);
+      log.debug("Fetching Glossary matches({}) for \"{}\"", searchType, abbrev);
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
@@ -155,23 +155,33 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             int result;
             result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
             if (result != 0)
+            {
                return -result;
+            }
             result = compare(m1.getSource().length(), m2.getSource().length());
             if (result != 0)
-               return result; // shorter matches are preferred, if similarity is
-                              // the same
+            {
+               // shorter matches are preferred, if similarity is the same
+               return result;
+            }
             result = Double.compare(m1.getRelevanceScore(), m2.getRelevanceScore());
             if (result != 0)
+            {
                return -result;
+            }
             return m1.getSource().compareTo(m2.getSource());
          }
 
          private int compare(int a, int b)
          {
             if (a < b)
+            {
                return -1;
+            }
             if (a > b)
+            {
                return 1;
+            }
             return 0;
          }
 
@@ -179,7 +189,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
 
       Collections.sort(results, comp);
 
-      log.debug("Returning {0} Glossary matches for \"{1}\"", results.size(), abbrev);
+      log.debug("Returning {} Glossary matches for \"{}\"", results.size(), abbrev);
       return new GetGlossaryResult(action, results);
    }
 
@@ -200,38 +210,21 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
          this.targetTermContent = targetTermContent;
       }
 
-      public String getSrcTermContent()
-      {
-         return srcTermContent;
-      }
-
-      public String getTargetTermContent()
-      {
-         return targetTermContent;
-      }
-
       @Override
       public boolean equals(Object obj)
       {
          if (obj instanceof GlossaryKey)
          {
             GlossaryKey o = (GlossaryKey) obj;
-            return equal(srcTermContent, o.srcTermContent) && equal(targetTermContent, o.targetTermContent);
+            return Objects.equal(srcTermContent, o.srcTermContent) && Objects.equal(targetTermContent, o.targetTermContent);
          }
          return false;
-      }
-
-      private static boolean equal(String s1, String s2)
-      {
-         return s1 == null ? s2 == null : s1.equals(s2);
       }
 
       @Override
       public int hashCode()
       {
-         int result = srcTermContent != null ? srcTermContent.hashCode() : 0;
-         result = 31 * result + (targetTermContent != null ? targetTermContent.hashCode() : 0);
-         return result;
+         return Objects.hashCode(srcTermContent, targetTermContent);
       }
    }
 
