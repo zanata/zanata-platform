@@ -47,6 +47,7 @@ import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
@@ -247,23 +248,23 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    }
 
    @Override
-   public void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit, EditorClientId editorClientId)
+   public void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
       TransUnit selected = pageModel.getSelectedOrNull();
       boolean setFocus = false;
       if (selected != null && Objects.equal(selected.getId(), updatedTransUnit.getId()))
       {
-         //updatedTU is our active row
          if (!Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
          {
-            //TODO current edit has happened. What's the best way to show it to user.
+            //updatedTU is our active row but done by another user
+            //TODO current edit has happened. What's the best way to show it to user? May need to put current editing value in some place
             Log.info("detect concurrent edit. Closing editor");
             // TODO localise
             eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
          }
-         else if (updatedTransUnit.getStatus() == ContentState.NeedReview)
+         else if (updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy)
          {
-            //same user and state is fuzzy means this user is trying to save as fuzzy.
+            //same user and update type is save fuzzy
             setFocus = true;
          }
       }

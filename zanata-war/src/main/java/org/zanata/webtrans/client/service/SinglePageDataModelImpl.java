@@ -3,12 +3,12 @@ package org.zanata.webtrans.client.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -88,13 +88,13 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    }
    
    @Override
-   public void updateIfInCurrentPage(TransUnit updatedTransUnit, EditorClientId editorClientId)
+   public void updateIfInCurrentPage(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
       int index = findIndexById(updatedTransUnit.getId());
       if (validIndex(index))
       {
          data.set(index, updatedTransUnit);
-         pageDataChangeListener.refreshView(index, updatedTransUnit, editorClientId);
+         pageDataChangeListener.refreshView(index, updatedTransUnit, editorClientId, updateType);
       }
    }
 

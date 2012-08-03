@@ -47,6 +47,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -248,7 +249,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
-         pageModel.updateIfInCurrentPage(updatedTU, event.getEditorClientId());
+         pageModel.updateIfInCurrentPage(updatedTU, event.getEditorClientId(), event.getUpdateType());
       }
    }
 

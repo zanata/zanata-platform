@@ -6,6 +6,7 @@ import java.util.List;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(SinglePageDataModelImpl.class)
@@ -17,7 +18,7 @@ public interface SinglePageDataModel
 
    void setData(List<TransUnit> data);
 
-   void updateIfInCurrentPage(TransUnit updatedTransUnit, EditorClientId editorClientId);
+   void updateIfInCurrentPage(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
 
    TransUnit getSelectedOrNull();
 
@@ -38,6 +39,6 @@ public interface SinglePageDataModel
 
       void showDataForCurrentPage(List<TransUnit> transUnits);
 
-      void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit, EditorClientId editorClientId);
+      void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
    }
 }
