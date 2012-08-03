@@ -71,7 +71,7 @@ input,textarea {
 	font-size:14px;
 }
 
-input[type="text"]
+input[type="text"], input[type="password"]
 {
 	width:210px;
 	font-size:12px;

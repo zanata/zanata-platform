@@ -839,8 +839,8 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 	background:#FFFFFF;
 }
 
-.iterations table tr:hover {
-	background-color:transperant;
+.iterations table.rich-table tbody tr:hover {
+	background:none;
 }
 
 .iteration_grid_col {
