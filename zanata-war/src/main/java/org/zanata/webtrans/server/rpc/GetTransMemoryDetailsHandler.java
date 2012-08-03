@@ -83,12 +83,21 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       String projectName = tf.getDocument().getProjectIteration().getProject().getName();
       String msgContext = (tf.getPotEntryData() == null) ? null : tf.getPotEntryData().getContext();
       SimpleDateFormat dateFormat = new SimpleDateFormat();
-      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, tft.getLastModifiedBy().getAccount().getUsername(), dateFormat.format(tft.getLastChanged()));
+      String username  = null;
+      if(tft.getLastModifiedBy() != null && tft.getLastModifiedBy().hasAccount())
+      {
+         username = tft.getLastModifiedBy().getAccount().getUsername();
+      }
+      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, username, dateFormat.format(tft.getLastChanged()));
    }
 
    @Override
    public void rollback(GetTransMemoryDetailsAction action, TransMemoryDetailsList result, ExecutionContext context) throws ActionException
    {
    }
-
+   
+   public static void main(String args[])
+   {
+      SimpleDateFormat dateFormat = new SimpleDateFormat();
+   }
 }

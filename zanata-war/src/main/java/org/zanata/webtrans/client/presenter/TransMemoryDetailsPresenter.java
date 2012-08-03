@@ -11,6 +11,7 @@ import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -125,7 +126,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       String doc = "";
       String lastModifiedBy = "";
       String lastModifiedDate = "";
-      
+
       if (selected >= 0)
       {
          TransMemoryDetails item = tmDetails.getItems().get(selected);
@@ -142,7 +143,14 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       display.getProjectName().setText(project);
       display.getIterationName().setText(iter);
       display.getDocumentName().setText(doc);
-      display.getLastModified().setText("Last modified by " + lastModifiedBy + " on " + lastModifiedDate);
+      if (!Strings.isNullOrEmpty(lastModifiedBy))
+      {
+         display.getLastModified().setText("Last modified by " + lastModifiedBy + " on " + lastModifiedDate);
+      }
+      else
+      {
+         display.getLastModified().setText("Last modified on " + lastModifiedDate);
+      }
    }
 
    @Override
