@@ -317,6 +317,32 @@ th,td {
 }
 /* End of richfaces table styles */
 
+.rich-stglpanel-header {
+	background-image: none;
+	padding: 4px;
+	font-size:12px;
+	border-radius: 3px;
+	border-style: solid;
+	background-color: #5F5F5F;
+	border-color: #5F5F5F;
+	color: white;
+	font-weight: bold;
+	font-family: Arial, Verdana, sans-serif;
+}
+
+.rich-stglpanel-body {
+	background:#FFFFFF;
+} 
+
+.rich-stglpanel-body .noBorderTable {
+	background:#FFFFFF;
+	box-shadow:none;
+}
+
+.rich-stglpanel-body .noBorderTable tr:hover {
+	background-color:inherit;
+}
+
 /* Copy of Richfaces Panel styles*/
 .rich-panel {
 	border-radius: 3px;
@@ -339,24 +365,13 @@ th,td {
 .rich-panel-header {
 	border-radius: 3px;
 	text-align: center;
-}
-
-.rich-panel-header {
-	padding: 2px;
-	/*border-width: 1px;*/
 	border-style: solid;
-	background-position: top left;
-	background-repeat: repeat-x;
-}
-
-.rich-panel-header {
 	background-color: #5F5F5F;
 	border-color: #5F5F5F;
 	font-size: 11px;
 	color: white;
 	font-weight: bold;
 	font-family: Arial, Verdana, sans-serif;
-	/*background-image: url(/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.GradientA/DATB/eAF7emTy1lIvJgASigOz);*/
 }
 
 .rich-panel-body {

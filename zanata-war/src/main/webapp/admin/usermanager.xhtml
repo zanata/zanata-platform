@@ -30,37 +30,28 @@
   	    
         <a4j:form>
             <s:token allowMultiplePosts="true" />
-	        <h:dataTable 
+	        <rich:dataTable 
 	            id="threads"
 	            value="#{users}" 
 	            var="user" 
 	            cellspacing="0"
-	            headerClass="columnHeader"
 	            rowClasses="odd,even"
 	            columnClasses="centered,centered,centered,centered"
 	            styleClass="fullwidth">
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              User name
-	            </f:facet>
+	            <f:facet name="header">User name</f:facet>
 	            #{user}
 	          </h:column>
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              #{messages['jsf.MemberOf']}
-	            </f:facet>
+	            <f:facet name="header">#{messages['jsf.MemberOf']}</f:facet>
 	            #{userSearch.getUserRoles(user)}
 	          </h:column>
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              #{messages['jsf.Enabled']}
-	            </f:facet>
+	            <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
 	            <div class="#{identityManager.isUserEnabled(user) ? 'checkmark' : 'cross'}"/>
 	          </h:column>
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              #{messages['jsf.Actions']}
-	            </f:facet>
+	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
 	              <h:commandButton value="#{messages['jsf.Edit']}" action="#{userAction.editUser(userSearch.selectedUser)}"/>
 	            </s:fragment>
@@ -68,7 +59,7 @@
 	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
-	  	    </h:dataTable>
+	  	    </rich:dataTable>
         </a4j:form>
       </rich:panel>	    
     </ui:define>

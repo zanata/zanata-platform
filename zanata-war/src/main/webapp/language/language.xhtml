@@ -121,7 +121,6 @@
               <h:form rendered="#{not empty languageTeamAction.searchResults}">
                 <rich:dataTable id="personTable"
                                 value="#{languageTeamAction.searchResults}" var="person">
-                  <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
                   <rich:column sortBy="#{person.name}">
                     <f:facet name="header">#{messages['jsf.Name']}</f:facet>
                     #{person.name}
