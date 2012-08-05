@@ -61,7 +61,6 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
  */
 public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
       TransUnitSelectionHandler,
-      WorkspaceContextUpdateEventHandler,
       NavTransUnitHandler,
       FindMessageHandler,
       FilterViewEventHandler,
@@ -71,7 +70,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 {
 
    private final TransUnitEditDisplay display;
-   private final UserWorkspaceContext userWorkspaceContext;
    private final EventBus eventBus;
    private final NavigationController navigationController;
    private final SourceContentsPresenter sourceContentsPresenter;
@@ -88,14 +86,12 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
                                  TranslatorInteractionService translatorService,
-                                 TransUnitSaveService transUnitSaveService,
-                                 UserWorkspaceContext userWorkspaceContext)
+                                 TransUnitSaveService transUnitSaveService)
    {
       super(display, eventBus);
       this.display = display;
       this.display.setRowSelectionListener(this);
 
-      this.userWorkspaceContext = userWorkspaceContext;
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
@@ -105,7 +101,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
       // we register it here because we can't use eager singleton on it (it references TargetContentsPresenter). And if it's not eagerly created, it won't get created at all!!
       eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
-//      initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
 
       pageModel = navigationController.getDataModel();
       pageModel.addDataChangeListener(this);
@@ -115,7 +110,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    protected void onBind()
    {
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
-      eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
@@ -148,14 +142,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
       navigationController.gotoPage(pageNumber - 1, false);
-   }
-
-   @Override
-   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-   {
-      userWorkspaceContext.setProjectActive(event.isProjectActive());
-      //FIXME need to handle readonly/writable switch
-//      initViewOnWorkspaceContext(userWorkspaceContext.hasReadOnlyAccess());
    }
 
    @Override
