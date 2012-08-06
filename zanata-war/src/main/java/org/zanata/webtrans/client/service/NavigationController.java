@@ -102,7 +102,6 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
 
    private void requestTransUnitsAndUpdatePageIndex(final GetTransUnitActionContext context)
    {
-      this.context = context;
       Log.info("requesting transUnits: " + context);
       final int itemPerPage = context.getCount();
       final int offset = context.getOffset();
@@ -149,7 +148,6 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
 
    private void requestNavigationIndex(GetTransUnitActionContext context)
    {
-      this.context = context;
       final int itemPerPage = context.getCount();
       dispatcher.execute(GetTransUnitsNavigation.newAction(context), new AbstractAsyncCallback<GetTransUnitsNavigationResult>()
       {
@@ -297,6 +295,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          {
             requestNavigationIndex(newContext);
          }
+         this.context = newContext;
       }
    }
 
