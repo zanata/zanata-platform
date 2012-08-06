@@ -106,15 +106,15 @@ public class XMLEntityValidationTests
    }
 
    @Test
-   public void testWithIncompleteEntity()
+   public void testWithIncompleteEntityCharRef()
    {
       mockMessages = createMock(ValidationMessages.class);
 
       expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
       expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
 
-      expect(mockMessages.incompleteXMLEntity("&mash")).andReturn("Mock incomplete messages");
-      expect(mockMessages.incompleteXMLEntity("&test")).andReturn("Mock incomplete messages");
+      expect(mockMessages.invalidXMLEntity("&mash")).andReturn("Mock invalid messages");
+      expect(mockMessages.invalidXMLEntity("&test")).andReturn("Mock invalid messages");
       replay(mockMessages);
 
       xmlEntityValidation = new XmlEntityValidation(mockMessages);
@@ -127,6 +127,48 @@ public class XMLEntityValidationTests
    }
    
    @Test
+   public void testWithIncompleteEntityDecimalRef()
+   {
+      mockMessages = createMock(ValidationMessages.class);
+
+      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
+      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
+
+      expect(mockMessages.invalidXMLEntity("&#1234")).andReturn("Mock invalid messages");
+      expect(mockMessages.invalidXMLEntity("&#BC;")).andReturn("Mock invalid messages");
+      replay(mockMessages);
+
+      xmlEntityValidation = new XmlEntityValidation(mockMessages);
+      String source = "Source string";
+      String target = "Target string: &#1234 bla bla &#BC;";
+      xmlEntityValidation.validate(source, target);
+
+      assertThat(xmlEntityValidation.hasError(), is(true));
+      assertThat(xmlEntityValidation.getError().size(), is(2));
+   }
+
+   @Test
+   public void testWithIncompleteEntityHexadecimalRef()
+   {
+      mockMessages = createMock(ValidationMessages.class);
+
+      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
+      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
+
+      expect(mockMessages.invalidXMLEntity("&#x1234")).andReturn("Mock invalid messages");
+      expect(mockMessages.invalidXMLEntity("&#x09Z")).andReturn("Mock invalid messages");
+      replay(mockMessages);
+
+      xmlEntityValidation = new XmlEntityValidation(mockMessages);
+      String source = "Source string";
+      String target = "Target string: &#x1234 bla bla &#x09Z";
+      xmlEntityValidation.validate(source, target);
+
+      assertThat(xmlEntityValidation.hasError(), is(true));
+      assertThat(xmlEntityValidation.getError().size(), is(2));
+   }
+
+   @Test
    public void testWithMissingEntity()
    {
       mockMessages = createMock(ValidationMessages.class);
@@ -137,12 +179,14 @@ public class XMLEntityValidationTests
       ArrayList<String> missingEntities = new ArrayList<String>();
       missingEntities.add(" [&amp;] ");
       missingEntities.add(" [&RedHat;] ");
+      missingEntities.add(" [&#123;] ");
+      missingEntities.add(" [&#x123F;] ");
       
       expect(mockMessages.entityMissing(missingEntities)).andReturn("Mock missing messages");
       replay(mockMessages);
 
       xmlEntityValidation = new XmlEntityValidation(mockMessages);
-      String source = "Source string &amp; and &RedHat;";
+      String source = "Source string &amp; and &RedHat; and &#123; and &#x123F;";
       String target = "Target string";
       xmlEntityValidation.validate(source, target);
 
