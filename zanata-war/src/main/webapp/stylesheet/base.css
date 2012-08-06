@@ -116,11 +116,9 @@ input.with_icon {
 	background-position: 5px 50%;
 	background-repeat: no-repeat;
 	padding: 3px 3px 3px 25px;
-	border-radius: 5px;
 	height:22px;
 	width:280px;
 	font-size:16px;
-	outline:none;
 }
 
 button:hover,input[type="reset"]:hover,input[type="submit"]:hover,input[type="button"]:hover 
