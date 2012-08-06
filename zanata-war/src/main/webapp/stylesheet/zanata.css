@@ -426,30 +426,32 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 {
 	width: 100%;
 	height: 34px;
-	background: -webkit-linear-gradient(top, #1A2D45  0%,  #354F71 100%);
-	background: -moz-linear-gradient(top, #1A2D45 0%, #354F71 100%);
-	background: -o-linear-gradient(top, #1A2D45 0%, #354F71 100%);
-	background: -ms-linear-gradient(top, #1A2D45 0%,#354F71 100%);
+	background: #DDD;
 	position:fixed;
 	bottom:0px;
-	color:#D3D3D3;
+	color:#808080;
 	text-align:center;
+	font-weight:bold;
+	font-size:13px;
+	padding:3px;
+	
 }
 
 .footer a
 {
-	color:#D3D3D3;
+	color:#C35817;
 	font-weight:bold;
 	text-decoration:none;
 }
 
 .footer a:hover
 {
-	color:white;
+	color:#FBB117;
 }
 
 .footer #localeSelector {
 	float: right;
+	padding-top:7px;
 }
 
 .footer div
@@ -1040,7 +1042,4 @@ a.admin_link:hover {
 
 .iteration_inline_tribes {
 	
-}
-
-.footer {
 }
