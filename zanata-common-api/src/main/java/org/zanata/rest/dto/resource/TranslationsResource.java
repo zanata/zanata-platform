@@ -37,8 +37,8 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    private List<TextFlowTarget> textFlowTargets;
    private Integer revision;
 
-   @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement(name = "extension")
+   @XmlElementWrapper(name = "extensions", required = false, namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "extension", namespace = Namespaces.ZANATA_OLD)
    public ExtensionSet<TranslationsResourceExtension> getExtensions()
    {
       return extensions;
@@ -57,7 +57,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return extensions;
    }
 
-   @XmlElementWrapper(name = "targets", required = false)
+   @XmlElementWrapper(name = "targets", required = false, namespace = Namespaces.ZANATA_OLD)
    @XmlElement(name = "text-flow-target", namespace=Namespaces.ZANATA_API)
    public List<TextFlowTarget> getTextFlowTargets()
    {
@@ -69,7 +69,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    }
 
 
-   @XmlElement(name = "links")
+   @XmlElement(name = "links", namespace = Namespaces.ZANATA_OLD)
    public Links getLinks()
    {
       return links;

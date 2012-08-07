@@ -102,6 +102,7 @@ public class TextFlow extends TextContainer implements Extensible<TextFlowExtens
    /**
     * @return whether this message supports plurals
     */
+   @XmlElement(namespace = Namespaces.ZANATA_OLD)
    public boolean isPlural()
    {
       return plural;
@@ -127,8 +128,8 @@ public class TextFlow extends TextContainer implements Extensible<TextFlowExtens
       this.lang = lang;
    }
 
-   @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement(name = "extension")
+   @XmlElementWrapper(name = "extensions", required = false, namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "extension", namespace = Namespaces.ZANATA_OLD)
    public ExtensionSet<TextFlowExtension> getExtensions()
    {
       return extensions;

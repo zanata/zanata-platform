@@ -13,6 +13,7 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.zanata.common.Namespaces;
 
 @XmlType(name = "personType")
 @XmlRootElement(name = "person")
@@ -69,7 +70,7 @@ public class Person implements Serializable, HasSample<Person>
     * 
     * @return set of Links managed by this resource
     */
-   @XmlElement(name = "link", required = false)
+   @XmlElement(name = "link", required = false, namespace = Namespaces.ZANATA_OLD)
    public Links getLinks()
    {
       return links;

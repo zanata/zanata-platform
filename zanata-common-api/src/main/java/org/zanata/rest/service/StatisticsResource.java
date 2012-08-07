@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -34,20 +35,48 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 public interface StatisticsResource
 {
 
+   /**
+    * Get translation statistics for a Project iteration and (optionally) it's underlying documents.
+    *
+    * @param projectSlug Project identifier.
+    * @param iterationSlug Project Iteration identifier.
+    * @param includeDetails Indicates whether to include detailed statistics for the project iteration's documents.
+    * @param includeWordStats Indicates whether to include word-level statistics. Default is only message level stats.
+    * @param locales Locale statistics to be fetched. If this is empty, all locale statistics will be returned. This
+    *                parameter may be specified multiple times if multiple locales are to be fetched.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response containing translation statistics for the specified parameters.<br>
+    * NOT FOUND(404) - If a project iteration could not be found for the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @GET
    @Path("/proj/{projectSlug}/iter/{iterationSlug}")
    public ContainerTranslationStatistics getStatistics(@PathParam("projectSlug") String projectSlug,
                                  @PathParam("iterationSlug") String iterationSlug,
-                                 @QueryParam("detail") boolean includeDetails,
-                                 @QueryParam("word") boolean includeWordStats,
+                                 @QueryParam("detail") @DefaultValue("false") boolean includeDetails,
+                                 @QueryParam("word") @DefaultValue("false") boolean includeWordStats,
                                  @QueryParam("locale") String[] locales);
 
+   /**
+    * Get translation statistics for a Document.
+    *
+    * @param projectSlug Project identifier.
+    * @param iterationSlug Project Iteration identifier.
+    * @param docId Document identifier.
+    * @param includeWordStats Indicates whether to include word-level statistics. Default is only message level stats.
+    * @param locales Locale statistics to be fetched. If this is empty, all locale statistics will be returned. This
+    *                parameter may be specified multiple times if multiple locales are to be fetched.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response containing translation statistics for the specified parameters.<br>
+    * NOT FOUND(404) - If a document could not be found for the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @GET
    @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.*}")
    public ContainerTranslationStatistics getStatistics(@PathParam("projectSlug") String projectSlug,
                                  @PathParam("iterationSlug") String iterationSlug,
                                  @PathParam("docId") String docId,
-                                 @QueryParam("word") boolean includeWordStats,
+                                 @QueryParam("word") @DefaultValue("false") boolean includeWordStats,
                                  @QueryParam("locale") String[] locales);
 
 }

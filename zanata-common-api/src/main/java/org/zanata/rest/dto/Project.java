@@ -88,7 +88,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
 
    @NotEmpty
    @Length(max = 80)
-   @XmlElement(name = "name", required = true)
+   @XmlElement(name = "name", required = true, namespace = Namespaces.ZANATA_OLD)
    public String getName()
    {
       return name;
@@ -100,7 +100,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    }
 
    @Length(max = 80)
-   @XmlElement(name = "description", required = false)
+   @XmlElement(name = "description", required = false, namespace = Namespaces.ZANATA_OLD)
    public String getDescription()
    {
       return description;
@@ -130,8 +130,8 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       return links;
    }
 
-   @XmlElementWrapper(name = "project-iterations")
-   @XmlElementRef
+   @XmlElementWrapper(name = "project-iterations", namespace = Namespaces.ZANATA_OLD)
+   @XmlElementRef(namespace = Namespaces.ZANATA_OLD)
    public List<ProjectIteration> getIterations()
    {
       return iterations;
@@ -149,7 +149,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       return getIterations();
    }
    
-   @XmlElement(name = "status", required = false)
+   @XmlElement(name = "status", required = false, namespace = Namespaces.ZANATA_OLD)
    public EntityStatus getStatus()
    {
       return status;

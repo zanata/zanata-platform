@@ -33,6 +33,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
@@ -80,7 +81,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
     * 
     * @return set of Links managed by this resource
     */
-   @XmlElement(name = "link", required = false)
+   @XmlElement(name = "link", required = false, namespace = Namespaces.ZANATA_OLD)
    public Links getLinks()
    {
       return links;
@@ -98,7 +99,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
       return links;
    }
    
-   @XmlElement(name = "status", required = false)
+   @XmlElement(name = "status", required = false, namespace = Namespaces.ZANATA_OLD)
    public EntityStatus getStatus()
    {
       return status;

@@ -16,6 +16,7 @@ import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
@@ -129,7 +130,7 @@ public class Account implements Serializable, HasMediaType
       this.enabled = enabled;
    }
 
-   @XmlElement(name = "role")
+   @XmlElement(name = "role", namespace = Namespaces.ZANATA_OLD)
    public Set<String> getRoles()
    {
       return roles;
@@ -140,7 +141,7 @@ public class Account implements Serializable, HasMediaType
       this.roles = roles;
    }
 
-   @XmlElement(name = "tribe")
+   @XmlElement(name = "tribe", namespace = Namespaces.ZANATA_OLD)
    public Set<String> getTribes()
    {
       return tribes;

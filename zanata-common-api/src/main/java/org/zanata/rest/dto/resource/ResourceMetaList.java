@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonValue;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.HasSample;
 
@@ -25,7 +26,7 @@ public class ResourceMetaList implements Serializable, HasSample<ResourceMetaLis
 
    private List<ResourceMeta> resources;
 
-   @XmlElement(name = "resource", required = true)
+   @XmlElement(name = "resource", required = true, namespace = Namespaces.ZANATA_OLD)
    @JsonValue
    public List<ResourceMeta> getResources()
    {

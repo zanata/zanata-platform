@@ -33,6 +33,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.zanata.common.LocaleId;
+import org.zanata.common.Namespaces;
 
 /**
  *
@@ -56,7 +57,7 @@ public class GlossaryEntry implements Serializable
 
    private String sourcereference;
 
-   @XmlElement(name = "glossary-term")
+   @XmlElement(name = "glossary-term", namespace = Namespaces.ZANATA_OLD)
    public List<GlossaryTerm> getGlossaryTerms()
    {
       if (glossaryTerms == null)
@@ -83,7 +84,7 @@ public class GlossaryEntry implements Serializable
       this.srcLang = srcLang;
    }
 
-   @XmlElement(name = "source-reference", required = false)
+   @XmlElement(name = "source-reference", required = false, namespace = Namespaces.ZANATA_OLD)
    public String getSourcereference()
    {
       return sourcereference;

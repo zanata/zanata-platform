@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.zanata.common.Namespaces;
 
 /**
  * Holds version info
@@ -43,13 +44,13 @@ public final class VersionInfo implements Serializable
       this(other.versionNo, other.buildTimeStamp);
    }
 
-   @XmlElement(name = "versionNo")
+   @XmlElement(name = "versionNo", namespace = Namespaces.ZANATA_OLD)
    public String getVersionNo()
    {
       return versionNo;
    }
 
-   @XmlElement(name = "buildTimeStamp")
+   @XmlElement(name = "buildTimeStamp", namespace = Namespaces.ZANATA_OLD)
    public String getBuildTimeStamp()
    {
       return buildTimeStamp;

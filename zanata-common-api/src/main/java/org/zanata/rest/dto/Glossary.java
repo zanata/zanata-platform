@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 import org.zanata.rest.dto.resource.LocaleList;
@@ -60,8 +61,8 @@ public class Glossary implements Serializable, HasMediaType
 
    private LocaleList targetLocales = new LocaleList();
 
-   @XmlElementWrapper(name = "source-locales", required = false)
-   @XmlElement(name = "locale")
+   @XmlElementWrapper(name = "source-locales", required = false, namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "locale", namespace = Namespaces.ZANATA_OLD)
    public LocaleList getSourceLocales()
    {
       return sourceLocales;
@@ -72,8 +73,8 @@ public class Glossary implements Serializable, HasMediaType
       this.sourceLocales = sourceLocales;
    }
 
-   @XmlElementWrapper(name = "target-locales", required = false)
-   @XmlElement(name = "locale")
+   @XmlElementWrapper(name = "target-locales", required = false, namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "locale", namespace = Namespaces.ZANATA_OLD)
    public LocaleList getTargetLocales()
    {
       return targetLocales;
@@ -84,8 +85,8 @@ public class Glossary implements Serializable, HasMediaType
       this.targetLocales = targetLocales;
    }
 
-   @XmlElementWrapper(name = "glossary-entries")
-   @XmlElement(name="glossary-entry")
+   @XmlElementWrapper(name = "glossary-entries", namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name="glossary-entry", namespace = Namespaces.ZANATA_OLD)
    public List<GlossaryEntry> getGlossaryEntries()
    {
       if (glossaryEntries == null)

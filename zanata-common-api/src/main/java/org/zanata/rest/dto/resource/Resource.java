@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.DTOUtil;
 
 @XmlType(name = "resourceType", propOrder = { "textFlows" })
@@ -33,7 +34,7 @@ public class Resource extends AbstractResourceMeta
       super(name);
    }
 
-   @XmlElementWrapper(name = "text-flows", required = false)
+   @XmlElementWrapper(name = "text-flows", required = false, namespace = Namespaces.ZANATA_OLD)
    @XmlElement(name = "text-flow", namespace=org.zanata.common.Namespaces.ZANATA_API)
    public List<TextFlow> getTextFlows()
    {

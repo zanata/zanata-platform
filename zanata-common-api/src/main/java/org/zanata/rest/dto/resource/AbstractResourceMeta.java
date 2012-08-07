@@ -47,8 +47,8 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       this.name = name;
    }
 
-   @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement(name = "extension")
+   @XmlElementWrapper(name = "extensions", required = false, namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "extension", namespace = Namespaces.ZANATA_OLD)
    public ExtensionSet<AbstractResourceMetaExtension> getExtensions()
    {
       return extensions;
@@ -102,7 +102,7 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       this.contentType = contentType;
    }
 
-   @XmlElement(name = "name", required = true)
+   @XmlElement(name = "name", required = true, namespace = Namespaces.ZANATA_OLD)
    public String getName()
    {
       return name;

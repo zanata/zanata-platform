@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonValue;
+import org.zanata.common.Namespaces;
 
 /**
  * 
@@ -22,7 +23,7 @@ public class ProjectList implements Serializable, HasSample<ProjectList>
 
    private List<Project> projects;
 
-   @XmlElementRef
+   @XmlElementRef(namespace = Namespaces.ZANATA_OLD)
    @JsonValue
    public List<Project> getProjects()
    {

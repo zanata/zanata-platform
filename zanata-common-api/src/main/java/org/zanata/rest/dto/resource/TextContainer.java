@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.zanata.common.HasContents;
+import org.zanata.common.Namespaces;
 
 /**
  * This class contains string contents for a single translatable message.
@@ -52,7 +53,7 @@ class TextContainer implements Serializable, HasContents
     * NB: If this message has plural forms, this field will be empty.
     * @see #contents
     */
-   @XmlElement(name = "content", required = false)
+   @XmlElement(name = "content", required = false, namespace = Namespaces.ZANATA_OLD)
    @JsonProperty("content")
    private String content;
 
@@ -61,8 +62,8 @@ class TextContainer implements Serializable, HasContents
     * NB: If this message has no plural forms, this field will be empty.
     * @see #content
     */
-   @XmlElementWrapper(name = "contents")
-   @XmlElement(name = "content")
+   @XmlElementWrapper(name = "contents", namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "content", namespace = Namespaces.ZANATA_OLD)
    @JsonProperty("contents")
    private List<String> contents;
 

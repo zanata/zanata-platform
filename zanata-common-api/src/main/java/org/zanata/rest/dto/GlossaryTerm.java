@@ -72,7 +72,7 @@ public class GlossaryTerm implements Serializable
       this.locale = locale;
    }
 
-   @XmlElement(name = "content", required = false)
+   @XmlElement(name = "content", required = false, namespace = Namespaces.ZANATA_OLD)
    public String getContent()
    {
       return content;
@@ -83,7 +83,7 @@ public class GlossaryTerm implements Serializable
       this.content = content;
    }
 
-   @XmlElement(name = "comment")
+   @XmlElement(name = "comment", namespace = Namespaces.ZANATA_OLD)
    public List<String> getComments()
    {
       if (comments == null)

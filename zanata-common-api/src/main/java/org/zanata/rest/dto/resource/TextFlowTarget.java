@@ -73,7 +73,7 @@ public class TextFlowTarget extends TextContainer implements Serializable, Exten
     * 
     * @return
     */
-   @XmlElement(name = "description", required = false)
+   @XmlElement(name = "description", required = false, namespace = Namespaces.ZANATA_OLD)
    public String getDescription()
    {
       return description;
@@ -84,8 +84,8 @@ public class TextFlowTarget extends TextContainer implements Serializable, Exten
       this.description = description;
    }
 
-   @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement(name = "extension")
+   @XmlElementWrapper(name = "extensions", required = false, namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "extension", namespace = Namespaces.ZANATA_OLD)
    public ExtensionSet<TextFlowTargetExtension> getExtensions()
    {
       return extensions;
