@@ -45,6 +45,7 @@
      			<class name="org.zanata.rest.service.raw.ProjectRestTest"/>
      			<class name="org.zanata.rest.service.raw.FileRestTest"/>
      			<class name="org.zanata.rest.service.raw.VersionRestTest"/>
+                <class name="org.zanata.rest.service.raw.StatisticsRestTest"/>
      		</classes>
      	</test>
      	<test name="Backwards Compatibility Tests">
