@@ -2,9 +2,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.jboss.seam.ScopeType;
@@ -25,8 +22,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -72,14 +68,20 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
 
       HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
       Map<Integer,HTextFlowTargetHistory> history = Maps.newHashMap();
+      TransHistoryItem latest = null;
+      SimpleDateFormat dateFormat = new SimpleDateFormat();
       if (hTextFlowTarget != null)
       {
+         latest = new TransHistoryItem(hTextFlowTarget.getVersionNum().toString(), hTextFlowTarget.getContents(),
+               hTextFlowTarget.getState(), hTextFlowTarget.getLastModifiedBy().getName(),
+               dateFormat.format(hTextFlowTarget.getLastChanged()));
+         // history translation
          history = hTextFlowTarget.getHistory();
       }
 
-      Collection<TransHistoryItem> historyItems = Collections2.transform(history.values(), new TargetHistoryToTransHistoryItemFunction());
-      log.debug("found {} history for text flow id {}", historyItems.size(), action.getTransUnitId());
-      return new GetTranslationHistoryResult(historyItems);
+      Iterable<TransHistoryItem> historyItems = Iterables.transform(history.values(), new TargetHistoryToTransHistoryItemFunction(dateFormat));
+      log.debug("found {} history for text flow id {}", Iterables.size(historyItems), action.getTransUnitId());
+      return new GetTranslationHistoryResult(historyItems, latest);
    }
 
    @Override
@@ -91,17 +93,15 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
    {
       private final SimpleDateFormat dateFormat;
 
-      public TargetHistoryToTransHistoryItemFunction()
+      public TargetHistoryToTransHistoryItemFunction(SimpleDateFormat simpleDateFormat)
       {
-         this.dateFormat = new SimpleDateFormat();
+         this.dateFormat = simpleDateFormat;
       }
 
       @Override
       public TransHistoryItem apply(HTextFlowTargetHistory targetHistory)
       {
-         //targetHistory.getContents will return Hibernate persistentList which RPC can't handle
-         ArrayList<String> contents = Lists.newArrayList(targetHistory.getContents());
-         return new TransHistoryItem(targetHistory.getVersionNum(), contents, targetHistory.getState(), targetHistory.getLastModifiedBy().getName(), dateFormat.format(targetHistory.getLastChanged()));
+         return new TransHistoryItem(targetHistory.getVersionNum().toString(), targetHistory.getContents(), targetHistory.getState(), targetHistory.getLastModifiedBy().getName(), dateFormat.format(targetHistory.getLastChanged()));
       }
    }
 }

@@ -2,18 +2,23 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
+
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,13 +29,14 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 @Singleton
 public class TranslationHistoryView extends DialogBox implements TranslationHistoryDisplay
@@ -44,15 +50,14 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @UiField
    WebTransMessages messages;
    @UiField
-   Styles style;
-   @UiField
    VerticalPanel historyPanel;
    @UiField
-   VerticalPanel originPanel;
+   HistoryEntryComparisonPanel comparisonPanel;
    @UiField
-   VerticalPanel diffPanel;
+   Styles style;
 
    private Column<TransHistoryItem,String> versionColumn;
+   private final PushButton compareButton;
 
    @Inject
    public TranslationHistoryView(EventBus eventBus)
@@ -63,7 +68,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       ensureDebugId("transHistory");
       setGlassEnabled(true);
 
-      getCaption().setText(messages.translationHistoryManagement());
+      getCaption().setText(messages.translationHistory());
 
       historyTable = setUpHistoryTable();
 
@@ -72,6 +77,17 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 
       historyPanel.add(historyTable);
       historyPanel.add(simplePager);
+      compareButton = new PushButton(messages.translationHistoryComparisonTitle());
+      compareButton.addStyleName(style.compareButton());
+      compareButton.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            container.selectTab(1);
+         }
+      });
+      historyPanel.add(compareButton);
       setWidget(container);
    }
 
@@ -106,6 +122,18 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       return historyTable;
    }
 
+   private static Column<TransHistoryItem, Boolean> createCheckboxColumn(final SelectionModel<TransHistoryItem> selectionModel)
+   {
+      return new Column<TransHistoryItem, Boolean>(
+            new CheckboxCell(true, false)) {
+         @Override
+         public Boolean getValue(TransHistoryItem object) {
+            // Get the value from the selection model.
+            return selectionModel.isSelected(object);
+         }
+      };
+   }
+
    private Column<TransHistoryItem, TransHistoryItem> createCopyActionColumn(WebTransMessages messages)
    {
       Cell<TransHistoryItem> copyActionCell = new ActionCell<TransHistoryItem>(messages.copy(), new ActionCell.Delegate<TransHistoryItem>()
@@ -135,34 +163,18 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
-   public void showDiff(List<String> one, List<String> other, String description)
+   public void showDiff(TransHistoryItem one, TransHistoryItem two, String description)
    {
+      compareButton.setEnabled(true);
+      comparisonPanel.compare(one, two);
       setComparisonTitle(description);
-      originPanel.clear();
-      diffPanel.clear();
-
-      for (String content : one)
-      {
-         HighlightingLabel label = new HighlightingLabel(content);
-         label.addStyleName(style.historyEntry());
-         originPanel.add(label);
-      }
-
-      for (int i = 0; i < one.size(); i++)
-      {
-         String content1 = one.get(i);
-         String content2 = other.get(i);
-         DiffMatchPatchLabel label = new DiffMatchPatchLabel(content1, content2);
-         label.addStyleName(style.historyEntry());
-         diffPanel.add(label);
-      }
    }
 
    @Override
-   public void resetComparison()
+   public void disableComparison()
    {
-      originPanel.clear();
-      diffPanel.clear();
+      compareButton.setEnabled(false);
+      comparisonPanel.clear();
       setComparisonTitle(messages.translationHistoryComparisonTitle());
    }
 
@@ -170,6 +182,15 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public Column<TransHistoryItem, String> getVersionColumn()
    {
       return versionColumn;
+   }
+
+   @Override
+   public void setSelectionModel(SelectionModel<TransHistoryItem> multiSelectionModel)
+   {
+      historyTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<TransHistoryItem>createCheckboxManager());
+      Column<TransHistoryItem, Boolean> checkboxColumn = createCheckboxColumn(multiSelectionModel);
+      historyTable.insertColumn(0, checkboxColumn);
+      historyTable.setColumnWidth(checkboxColumn, 10, Style.Unit.PX);
    }
 
    @Override
@@ -182,6 +203,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private void setComparisonTitle(String description)
    {
       container.setTabText(1, description);
+      compareButton.setText(description);
    }
 
    @Override
@@ -192,7 +214,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 //      {
 //         handlerRegistration.removeHandler();//remove the column sort handler
 //      }
-      resetComparison();
+      disableComparison();
    }
 
    private static Column<TransHistoryItem, String> createVersionColumn()
@@ -283,8 +305,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    interface Styles extends CssResource
    {
 
-      String origin();
-
-      String historyEntry();
+      String compareButton();
    }
 }

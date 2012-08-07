@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -15,6 +16,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -57,7 +59,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
       selectionModel = new MultiSelectionModel<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
       selectionModel.addSelectionChangeHandler(this);
-      display.getHistoryTable().setSelectionModel(selectionModel);
+      display.setSelectionModel(selectionModel);
    }
 
    public void showTranslationHistory(final TransUnitId transUnitId)
@@ -79,6 +81,17 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
             Log.info("get back " + result.getHistoryItems().size() + " items for " + transUnitId);
             //here we CANNOT use listDataProvider.setList() because we need to retain the same list reference which is used by ColumnSortEvent.ListHandler
             listDataProvider.getList().clear();
+            TransHistoryItem latest = result.getLatest();
+            if (latest != null)
+            {
+               //add indicator for latest version
+               latest.setVersionNum(messages.latestVersion(latest.getVersionNum()));
+               if (!Objects.equal(latest.getContents(), targetContentsPresenter.getNewTargets()))
+               {
+                  listDataProvider.getList().add(new TransHistoryItem(messages.current(), targetContentsPresenter.getNewTargets(), ContentState.New, "", ""));
+               }
+               listDataProvider.getList().add(latest);
+            }
             listDataProvider.getList().addAll(result.getHistoryItems());
          }
       });
@@ -88,24 +101,17 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    public void onSelectionChange(SelectionChangeEvent event)
    {
       Set<TransHistoryItem> historyItems = selectionModel.getSelectedSet();
-      if (historyItems.size() == 1)
-      {
-         //selected one. Compare against current value
-         TransHistoryItem selected = historyItems.iterator().next();
-         ArrayList<String> currentTargets = targetContentsPresenter.getNewTargets();
-         display.showDiff(selected.getContents(), currentTargets, messages.translationHistoryComparison(Lists.newArrayList(selected.getVersionNum())));
-      }
-      else if (historyItems.size() == 2)
+      if (historyItems.size() == 2)
       {
          //selected two. Compare against each other
          Iterator<TransHistoryItem> iterator = historyItems.iterator();
          TransHistoryItem one = iterator.next();
          TransHistoryItem two = iterator.next();
-         display.showDiff(one.getContents(), two.getContents(), messages.translationHistoryComparison(Lists.newArrayList(one.getVersionNum(), two.getVersionNum())));
+         display.showDiff(one, two, messages.translationHistoryComparison(one.getVersionNum(), two.getVersionNum()));
       }
       else
       {
-         display.resetComparison();
+         display.disableComparison();
       }
    }
 
@@ -136,9 +142,39 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       @Override
       public int compare(TransHistoryItem one, TransHistoryItem two)
       {
-         Integer verOne = Integer.parseInt(one.getVersionNum());
-         Integer verTwo = Integer.parseInt(two.getVersionNum());
-         return verOne.compareTo(verTwo);
+         if (itemIsOldVersion(one) && itemIsOldVersion(two))
+         {
+            Integer verOne = Integer.parseInt(one.getVersionNum());
+            Integer verTwo = Integer.parseInt(two.getVersionNum());
+            return verOne.compareTo(verTwo);
+         }
+         if (itemIsCurrentValue(one))
+         {
+            //first is current value
+            return 1;
+         }
+         if (itemIsLatestVersion(one) && itemIsCurrentValue(two))
+         {
+            //first is latest version but second is current value
+            return -1;
+         }
+         //else first is old version and second is not old version
+         return -1;
+      }
+
+      private static boolean itemIsOldVersion(TransHistoryItem one)
+      {
+         return one.getVersionNum().matches("\\d+");
+      }
+
+      private static boolean itemIsLatestVersion(TransHistoryItem one)
+      {
+         return one.getVersionNum().matches("\\d+\\w+");
+      }
+
+      private static boolean itemIsCurrentValue(TransHistoryItem one)
+      {
+         return one.getVersionNum().matches("\\w+");
       }
    }
 }

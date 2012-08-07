@@ -384,7 +384,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Report a problem")
    String reportAProblem();
 
-   @DefaultMessage("Version No.")
+   @DefaultMessage("Version")
    String versionNumber();
 
    @DefaultMessage("Modified By")
@@ -396,22 +396,24 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Copy")
    String copy();
 
-   @DefaultMessage("Translation History Management")
-   String translationHistoryManagement();
-
    @DefaultMessage("Translation History")
    String translationHistory();
 
-   // @formatter:off
    @Description("Tab text for translation history comparison")
-   @DefaultMessage("Compare ver. {0,list,string}")
-   @AlternateMessage({
-         "one", "Comparison of ver. {0,list,string} and current",
-         "other", "Comparison of ver. {0,list,string}"
-   })
-   String translationHistoryComparison(@PluralCount List<String> versions);
-   // @formatter:on
+   @DefaultMessage("Compare ver. {0} and {1}")
+   String translationHistoryComparison(String versionOne, String versionTwo);
 
-   @DefaultMessage("Select 1 or 2 entries to compare")
+   @DefaultMessage("Select 2 entries to compare")
    String translationHistoryComparisonTitle();
+
+   @Description("latest version in translation history")
+   @DefaultMessage("{0} Latest")
+   String latestVersion(String versionNum);
+
+   @Description("current value in editor for translation history display")
+   @DefaultMessage("Current")
+   String current();
+
+   @DefaultMessage("Flip entries")
+   String flipComparingEntries();
 }
