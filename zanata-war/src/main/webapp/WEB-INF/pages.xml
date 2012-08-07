@@ -297,12 +297,12 @@
     <param name="slug" value="#{projectHome.slug}" />
     <action execute="#{projectHome.validateSuppliedId}" />
     <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('', projectHome.instance.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('', projectHome.instance.slug)}"/>
   </page>
 
   <page view-id="/project/create_project.xhtml">
     <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
-    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateANewProject'])}"/>
     <navigation from-action="#{projectHome.persist}">
       <rule if="#{projectHome.managed}">
@@ -328,8 +328,8 @@
       -->
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     
-    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectHome.slug), projectHome.instance.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
         
     <navigation from-action="#{projectHome.update}">
@@ -355,8 +355,8 @@
       -->
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     
-    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectHome.slug), projectHome.instance.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.project.EditHomePage.label'])}"/>
     
     <navigation from-action="#{projectHome.update}">
@@ -376,8 +376,8 @@
     <param name="projectSlug" value="#{projectHome.slug}" />
     <action execute="#{projectMaintainerManageAction.loadAllMaintainers()}" />
     
-    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectHome.slug), projectHome.instance.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageMaintainers'])}"/>
   </page>
 
@@ -388,8 +388,8 @@
     <!-- can't use <restrict> here either --> 
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
     
-    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectIterationHome.projectSlug), projectIterationHome.instance.project.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationHome.projectSlug), projectIterationHome.instance.project.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateVersion'])}"/>
     
     <navigation from-action="#{projectIterationHome.persist}">
@@ -413,6 +413,10 @@
     <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
     <action execute="#{viewAllStatusAction.validateIteration}"/>
+    
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(viewAllStatusAction.projectSlug), viewAllStatusAction.project.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('', viewAllStatusAction.iterationSlug)}"/>
 
     <navigation from-action="#{viewAllStatusAction.startCopyTrans}">
       <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
@@ -432,16 +436,28 @@
     <param name="localeId" value="#{projectIterationZipFileAction.localeId}" />
     
     <action execute="#{projectIterationFilesAction.initialize()}" />
+    
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/language/view/'.concat(projectIterationFilesAction.localeId), projectIterationFilesAction.localeId)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Files'])}"/>
+    
   </page>
   
   <page view-id="/iteration/edit.xhtml">
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-    <param name="slug" value="#{projectIterationLocaleAction.iterationSlug}" />
-    <param name="projectSlug" value="#{projectIterationLocaleAction.projectSlug}" />
+   
     <action execute="#{projectIterationHome.validateSuppliedId}" />
     <!-- can't use <restrict> here either -->
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
+    
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationHome.projectSlug), projectIterationHome.instance.project.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationHome.projectSlug).concat('/').concat(projectIterationHome.slug), projectIterationHome.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditVersion'])}"/>
+    
     <navigation from-action="#{projectIterationHome.update}">
       <redirect view-id="/iteration/view.xhtml">
       	<param name="projectSlug" value="#{projectIterationHome.projectSlug}"/>
@@ -465,6 +481,13 @@
 
         <action execute="#{versionGroupJoinAction.searchProjectVersion()}"/>
 
+		<action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+	    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(versionGroupJoinAction.projectSlug), versionGroupJoinAction.projectSlug)}"/>
+	    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(versionGroupJoinAction.projectSlug).concat('/').concat(versionGroupJoinAction.iterationSlug), versionGroupJoinAction.iterationSlug)}"/>
+	    <action execute="#{breadcrumbs.addLocation('/version-group/view/'.concat(versionGroupJoinAction.group.slug), versionGroupJoinAction.group.slug)}"/>
+	    <action execute="#{breadcrumbs.addLocation('', messages['jsf.RequestToJoinVersionGroup'])}"/>
+    
+    
         <navigation from-action="#{versionGroupJoinAction.send}">
             <rule if-outcome="success">
                 <redirect view-id="/iteration/view.xhtml">
@@ -491,6 +514,11 @@
       <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
       <!-- can't use <restrict> here either -->
       <action execute="#{identity.checkPermission(copyTransAction.projectIteration, 'copy-trans')}" />
+      
+      <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+      <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(copyTransAction.projectSlug), copyTransAction.projectSlug)}"/>
+      <action execute="#{breadcrumbs.addLocation('/iteration/view.seam?projectSlug='.concat(copyTransAction.projectSlug).concat('&amp;iterationSlug=').concat(copyTransAction.iterationSlug), copyTransAction.iterationSlug)}"/>
+      <action execute="#{breadcrumbs.addLocation('', messages['jsf.iteration.CopyTrans'])}"/>
 
       <navigation from-action="#{copyTransAction.startCopyTrans}">
         <redirect view-id="/iteration/view.xhtml" include-page-params="true">

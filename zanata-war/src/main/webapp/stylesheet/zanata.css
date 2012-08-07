@@ -13,6 +13,7 @@
 #yui-main {
 	float: left;
 	width: 680px !important;
+	margin-bottom:55px;
 }
 
 .bold-larger {
@@ -69,10 +70,8 @@ a.breadcrumbs_link:hover
 
 
 #bd {
-	min-height: 700px;
 	width: 100%;
 	padding: 10px 0;
-	margin-bottom:35px
 }
 
 

@@ -41,29 +41,6 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
     <ui:define name="center_content">
-        <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')"/>
-
-        <h1>
-            #{messages['jsf.ProjectId']}:&nbsp;
-            <s:link view="/project/view/#{projectIterationFilesAction.projectSlug}">
-                #{projectIterationFilesAction.projectSlug}
-            </s:link>
-        </h1>
-
-        <h1>
-            #{messages['jsf.Version']}:&nbsp;
-            <s:link view="/iteration/view/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}">
-                #{projectIterationFilesAction.iterationSlug}
-            </s:link>
-        </h1>
-
-        <h1>
-            #{messages['jsf.iteration.files.LocaleId']}:&nbsp;
-            <s:link view="/language/view/#{projectIterationFilesAction.localeId}">
-                #{projectIterationFilesAction.localeId}
-            </s:link>
-        </h1>
-
         <rich:panel id="iteration-files-panel">
             <f:facet name="header">
                 #{messages['jsf.iteration.files.PanelTitle']}
