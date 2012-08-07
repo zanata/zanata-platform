@@ -261,7 +261,7 @@
 	border-collapse: collapse;
 	border-radius: 5px;
 	/* This is for the faux 3D effect */
-	box-shadow: 1px 1px 5px #888888;
+	box-shadow: 2px 2px 5px #888888;
 }
 
 .rich-table tbody tr:hover {

@@ -1,0 +1,20 @@
+<div id="breadcrumbs_panel"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:rich="http://richfaces.org/rich">
+  
+     <h:form>
+     	<s:link view="/home.xhtml" propagation="none">
+			<img src="#{requestContextPath}/images/HouseBlack.png" alt="#{messages['jsf.ZanataMainDescription']}" style="width:12px;"/>
+		</s:link>
+						
+	     <ui:repeat value="#{breadcrumbs.locations}" var="breadcrumb" styleClass="breadcrumbs">
+	     	<img src="/zanata/images/seperator.png"/>
+		    <s:link value="#{breadcrumb.display}" view="#{breadcrumb.location}" styleClass="breadcrumbs_link" rendered="#{not empty breadcrumb.location}"/>
+		    <s:span styleClass="breadcrumbs_display" rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
+		</ui:repeat>
+	</h:form>
+</div>

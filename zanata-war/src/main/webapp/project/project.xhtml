@@ -15,22 +15,6 @@
 
 <ui:define name="center_content">
     <s:decorate id="main_content">
-    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
-
-    <s:fragment rendered="#{projectHome.instance.status == 'ACTIVE'}">
-        <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
-        <h1>#{messages['jsf.Name']}: #{projectHome.instance.name}</h1>
-    </s:fragment>
-    
-    <s:fragment rendered="#{projectHome.instance.status == 'READONLY'}">
-        <h1>#{messages['jsf.ProjectId']}: <span class="readonly">#{projectHome.instance.slug}</span></h1>
-        <h1>#{messages['jsf.Name']}: <span class="readonly">#{projectHome.instance.name}</span></h1>
-    </s:fragment>
-    
-    <s:fragment rendered="#{projectHome.instance.status == 'OBSOLETE'}">
-        <h1>#{messages['jsf.ProjectId']}: <span class="obsolete">#{projectHome.instance.slug}</span></h1>
-        <h1>#{messages['jsf.Name']}: <span class="obsolete">#{projectHome.instance.name}</span></h1>
-    </s:fragment>
 
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"/>
     <s:formattedText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>

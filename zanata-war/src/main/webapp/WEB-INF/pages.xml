@@ -28,8 +28,6 @@
      </navigation>
   </page>
 
- 
-  
   <page view-id="/edit_home_content.xhtml">
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
@@ -291,13 +289,21 @@
 
   
   <!-- Project -->
+  <page view-id="/project/home.xhtml">
+  	<action execute="#{breadcrumbs.addLocation('', 'Projects')}"/>
+  </page>
+  
   <page view-id="/project/project.xhtml">
     <param name="slug" value="#{projectHome.slug}" />
     <action execute="#{projectHome.validateSuppliedId}" />
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', projectHome.instance.name)}"/>
   </page>
 
   <page view-id="/project/create_project.xhtml">
     <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateANewProject'])}"/>
     <navigation from-action="#{projectHome.persist}">
       <rule if="#{projectHome.managed}">
         <redirect view-id="/project/project.xhtml">
@@ -314,11 +320,17 @@
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{localeListAction.slug}" />
     
+  
+    
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
          (at some stages of the JSF lifecycle)
       -->
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
+    
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectHome.slug), projectHome.instance.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
         
     <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">
@@ -343,6 +355,10 @@
       -->
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectHome.slug), projectHome.instance.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.project.EditHomePage.label'])}"/>
+    
     <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">
         <param name="slug" value="#{projectHome.slug}" />
@@ -359,6 +375,10 @@
     <param name="projectSlug" value="#{projectMaintainerManageAction.slug}" />
     <param name="projectSlug" value="#{projectHome.slug}" />
     <action execute="#{projectMaintainerManageAction.loadAllMaintainers()}" />
+    
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectHome.slug), projectHome.instance.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageMaintainers'])}"/>
   </page>
 
   <page view-id="/project/add_iteration.xhtml">
@@ -367,6 +387,11 @@
     <action execute="#{projectIterationHome.validateProjectSlug}" />
     <!-- can't use <restrict> here either --> 
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
+    
+    <action execute="#{breadcrumbs.addLocation('/project/home.seam', 'Projects')}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.seam?slug='.concat(projectIterationHome.projectSlug), projectIterationHome.instance.project.name)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateVersion'])}"/>
+    
     <navigation from-action="#{projectIterationHome.persist}">
       <rule if="#{projectIterationHome.managed}">
         <redirect view-id="/iteration/view.xhtml">

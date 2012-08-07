@@ -18,7 +18,6 @@
     </ui:define>
    
     <ui:define name="center_content">
-      <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
         
       <script type="text/javascript">
         function confirmDelete()
@@ -27,16 +26,8 @@
         }
       </script>
       
-      <h1>
-	      #{messages['jsf.ProjectName']}:&nbsp;
-	      <s:link id="project" styleClass="table_link" value="#{projectHome.instance.name}" view="/project/project.xhtml"> 
-          	<f:param name="slug" value="#{projectHome.instance.slug}"/>
-          </s:link>
-	  </h1>
 	
-	
-      <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
-        <f:facet name="header">#{messages['jsf.ProjectMaintainerManager']}</f:facet>
+      <s:fragment rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
 		<h:messages />
 		
         <h:form>
@@ -65,7 +56,7 @@
 	          </rich:column>
 	  	    </rich:dataTable>
         </h:form>              
-      </rich:panel>
+      </s:fragment>
 
 
         <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">

@@ -28,28 +28,61 @@
 	float: right;
 }
 
-#bd {
-	min-height: 400px;
-	width: 100%;
-	padding: 10px 0;
-	float: left;
-	text-align: left;
+#breadcrumbs_panel
+{
+	height:100%;
 }
 
+#breadcrumbs_panel img
+{
+	width:6px;
+	padding:0 5px;
+}
+
+#breadcrumbs_div
+{
+	margin-bottom:3px;
+	width:100%;
+	padding:3px;
+}
+
+a.breadcrumbs_link
+{
+	font-size:14px;
+	font-weight:bold;
+	color:#0085CC;
+	padding:2px;
+}
+
+a.breadcrumbs_link:hover
+{
+	text-decoration:underline;
+}
+
+.breadcrumbs_display
+{
+	font-size:14px;
+	font-weight:bold;
+	color:#B62918;
+	padding:2px;
+}
+
+
 #bd {
-	min-height: 400px;
+	min-height: 700px;
 	width: 100%;
-	float: left;
-	text-align: left;
+	padding: 10px 0;
 	margin-bottom:35px
 }
 
-#submenu {
+
+#search_div {
 	width:100%;
 	border:1px dotted #D9D9D9;
 	height:32px;
 	border-radius:3px;
 	padding:2px;
+	margin-bottom:2px;
 }
 
 .code {
@@ -396,6 +429,21 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	top: 2px;
 }
 
+.downArrow
+{
+	margin-right:9px;
+	font-size:10px;
+	vertical-align:top;
+	line-height:20px;
+	color:#C35817;
+	float:right;
+}
+
+.navBar ul li:hover .downArrow
+{
+	color:#FBB117;
+}
+
 
 /* ----------------------- End Header CSS  -------------------------*/
 
@@ -429,7 +477,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	background: #DDD;
 	position:fixed;
 	bottom:0px;
-	color:#808080;
+	color:#777777;
 	text-align:center;
 	font-weight:bold;
 	font-size:13px;
@@ -565,10 +613,10 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* 	background: -o-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
 /* 	background: -ms-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
 	
-	background: -webkit-linear-gradient(top, #F1F1F1 0%, #DDDDDD 100%);
-	background: -moz-linear-gradient(top, #F1F1F1 0%, #DDDDDD 100%);
-	background: -o-linear-gradient(top, #F1F1F1 0%, #DDDDDD 100%);
-	background: -ms-linear-gradient(top, #F1F1F1 0%, #DDDDDD 100%);
+	background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -o-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -ms-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	
 	top:0px;
 }
