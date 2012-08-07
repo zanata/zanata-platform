@@ -26,21 +26,33 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * Translation statistics. Contains actual numbers and other information about the state of
+ * translation.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @XmlType(name = "translationStatistics",
          propOrder = {"total", "untranslated", "needReview", "translated", "unit", "locale"})
 @XmlRootElement(name = "translationStats")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder( { "total", "untranslated", "needReview", "translated", "unit", "locale" })
+@JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
 {
 
    public enum StatUnit
    {
+      /** Statistics are measured in words. */
       WORD,
+      /** Statistics are measured in messages (i.e. entries, text flows) */
       MESSAGE;
    }
 
@@ -51,6 +63,9 @@ public class TranslationStatistics implements Serializable
    private StatUnit unit;
    private String locale;
 
+   /**
+    * Number of translated elements.
+    */
    @XmlAttribute
    public long getTranslated()
    {
@@ -62,6 +77,9 @@ public class TranslationStatistics implements Serializable
       this.translated = translated;
    }
 
+   /**
+    * Number of elements that need review (i.e. Fuzzy).
+    */
    @XmlAttribute
    public long getNeedReview()
    {
@@ -73,6 +91,9 @@ public class TranslationStatistics implements Serializable
       this.needReview = needReview;
    }
 
+   /**
+    * Number of untranslated elements.
+    */
    @XmlAttribute
    public long getUntranslated()
    {
@@ -84,6 +105,9 @@ public class TranslationStatistics implements Serializable
       this.untranslated = untranslated;
    }
 
+   /**
+    * Total number of elements.
+    */
    @XmlAttribute
    public long getTotal()
    {
@@ -95,6 +119,9 @@ public class TranslationStatistics implements Serializable
       this.total = total;
    }
 
+   /**
+    * Element unit being used to measure the translation counts.
+    */
    @XmlAttribute
    public StatUnit getUnit()
    {
@@ -106,6 +133,9 @@ public class TranslationStatistics implements Serializable
       this.unit = unit;
    }
 
+   /**
+    * Locale for the translation statistics.
+    */
    @XmlAttribute
    public String getLocale()
    {

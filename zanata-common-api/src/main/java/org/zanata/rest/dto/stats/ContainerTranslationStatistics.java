@@ -28,14 +28,21 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Links;
 
 /**
+ * Generic Container for translation statistics.
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @XmlType(name = "containerTranslationStatisticsType", propOrder = {"refs", "stats", "detailedStats"})
 @XmlRootElement(name = "containerStats")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder( { "id", "refs", "stats", "detailedStats" })
+@JsonWriteNullProperties(false)
 public class ContainerTranslationStatistics
 {
 
@@ -45,6 +52,9 @@ public class ContainerTranslationStatistics
    private List<ContainerTranslationStatistics> detailedStats;
 
 
+   /**
+    * Identifier for the container (i.e. Project, Project Iteration, Document, etc).
+    */
    @XmlAttribute
    public String getId()
    {
@@ -56,6 +66,9 @@ public class ContainerTranslationStatistics
       this.id = id;
    }
 
+   /**
+    * References to related elements (i.e. Reference to the container).
+    */
    @XmlElementWrapper(name = "refs")
    @XmlElement(name = "containerRef")
    public Links getRefs()
@@ -68,6 +81,9 @@ public class ContainerTranslationStatistics
       this.refs = refs;
    }
 
+   /**
+    * Actual translation statistics.
+    */
    @XmlElementWrapper(name = "stats")
    @XmlElement(name = "stat")
    public List<TranslationStatistics> getStats()
@@ -80,6 +96,9 @@ public class ContainerTranslationStatistics
       this.stats = stats;
    }
 
+   /**
+    * Detailed Statistics if so requested.
+    */
    @XmlElementWrapper(name = "detailedStats")
    @XmlElement(name = "containerStats")
    public List<ContainerTranslationStatistics> getDetailedStats()
