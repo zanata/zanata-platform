@@ -52,8 +52,11 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       if (workspaceContext == null)
          throw new IllegalArgumentException("workspaceContext is null");
       this.workspaceContext = workspaceContext;
-      this.domain = DomainFactory.getDomain(workspaceContext.getWorkspaceId().toString());
-      this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService(workspaceContext.getWorkspaceId().toString());
+      String workspaceId = workspaceContext.getWorkspaceId().toString();
+      this.domain = DomainFactory.getDomain(workspaceId);
+      EventExecutorServiceFactory factory = EventExecutorServiceFactory.getInstance();
+      this.eventExecutorService = factory.getEventExecutorService(workspaceId);
+
       UserManager userManager = UserManagerFactory.getInstance().getUserManager();
       userManager.getUserActivityScheduler().addTimeoutListener(new UserTimeoutListener()
       {
