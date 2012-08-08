@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,17 +147,43 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public List<HProjectIteration> getActiveIterations()
    {
-      return projectDAO.getActiveIterations(slug);
+      if (getInstance().getStatus() == EntityStatus.ACTIVE)
+      {
+         return projectDAO.getActiveIterations(slug);
+      }
+      return null;
    }
 
    public List<HProjectIteration> getReadOnlyIterations()
    {
-      return projectDAO.getReadOnlyIterations(slug);
+      List<HProjectIteration> results = new ArrayList<HProjectIteration>();
+      if (getInstance().getStatus() == EntityStatus.ACTIVE)
+      {
+         results = projectDAO.getReadOnlyIterations(slug);
+      }
+      else if (getInstance().getStatus() == EntityStatus.READONLY)
+      {
+         results.addAll(projectDAO.getActiveIterations(slug));
+         results.addAll(projectDAO.getReadOnlyIterations(slug));
+      }
+      return results;
    }
 
    public List<HProjectIteration> getObsoleteIterations()
    {
-      return projectDAO.getObsoleteIterations(slug);
+      List<HProjectIteration> results = new ArrayList<HProjectIteration>();
+      if (getInstance().getStatus() == EntityStatus.ACTIVE || getInstance().getStatus() == EntityStatus.READONLY)
+      {
+         results = projectDAO.getObsoleteIterations(slug);
+      }
+      else
+      {
+         results.addAll(projectDAO.getActiveIterations(slug));
+         results.addAll(projectDAO.getReadOnlyIterations(slug));
+         results.addAll(projectDAO.getObsoleteIterations(slug));
+      }
+      return results;
+
    }
 
    public String cancel()

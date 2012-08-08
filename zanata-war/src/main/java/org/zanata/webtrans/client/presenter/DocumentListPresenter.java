@@ -146,15 +146,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.history = history;
       this.windowLocation = windowLocation;
 
-      dataProvider = display.getDataProvider();
-
-      display.renderTable(selectionModel);
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
 
    @Override
    protected void onBind()
    {
+      dataProvider = display.getDataProvider();
+      display.renderTable(selectionModel);
+
       selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
       {
          public void onSelectionChange(SelectionChangeEvent event)
