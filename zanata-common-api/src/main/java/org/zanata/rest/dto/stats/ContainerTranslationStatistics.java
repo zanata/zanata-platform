@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -94,6 +95,26 @@ public class ContainerTranslationStatistics
    public void setStats(List<TranslationStatistics> stats)
    {
       this.stats = stats;
+   }
+
+   /**
+    * Finds a specific translation for a locale and detail level.
+    *
+    * @return The specified translation statistics element, or null if one cannot be found.
+    */
+   public TranslationStatistics getStats(String localeId, TranslationStatistics.StatUnit unit)
+   {
+      if( this.stats != null )
+      {
+         for( TranslationStatistics stat : this.stats )
+         {
+            if( stat.getLocale().equals(localeId) && stat.getUnit() == unit )
+            {
+               return stat;
+            }
+         }
+      }
+      return null;
    }
 
    /**

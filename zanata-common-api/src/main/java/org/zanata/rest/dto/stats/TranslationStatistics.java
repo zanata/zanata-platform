@@ -24,6 +24,7 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -42,7 +43,7 @@ import lombok.Setter;
 @XmlType(name = "translationStatistics",
          propOrder = {"total", "untranslated", "needReview", "translated", "unit", "locale"})
 @XmlRootElement(name = "translationStats")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"percentTranslated", "percentNeedReview", "percentUntranslated"}, ignoreUnknown = true)
 @JsonPropertyOrder( { "total", "untranslated", "needReview", "translated", "unit", "locale" })
 @JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
@@ -146,4 +147,50 @@ public class TranslationStatistics implements Serializable
    {
       this.locale = locale;
    }
+
+   @XmlTransient
+   public int getPercentTranslated()
+   {
+      long total = getTotal();
+      if (total <= 0)
+      {
+         return 0;
+      }
+      else
+      {
+         double per = 100 * getTranslated() / total;
+         return (int) Math.ceil(per);
+      }
+   }
+
+   @XmlTransient
+   public int getPercentNeedReview()
+   {
+      long total = getTotal();
+      if (total <= 0)
+      {
+         return 0;
+      }
+      else
+      {
+         double per = 100 * getNeedReview() / total;
+         return (int) Math.ceil(per);
+      }
+   }
+
+   @XmlTransient
+   public int getPercentUntranslated()
+   {
+      long total = getTotal();
+      if (total <= 0)
+      {
+         return 0;
+      }
+      else
+      {
+         double per = 100 * getUntranslated() / total;
+         return (int) Math.ceil(per);
+      }
+   }
+
 }
