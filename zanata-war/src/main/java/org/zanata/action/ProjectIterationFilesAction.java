@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.InputStream;
 import java.util.List;
+import javax.faces.context.FacesContext;
 
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
@@ -34,8 +35,6 @@ import org.jboss.seam.international.StatusMessage.Severity;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -47,16 +46,18 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
-import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
-import javax.faces.context.FacesContext;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -89,6 +90,9 @@ public class ProjectIterationFilesAction
 
    @In
    private DocumentService documentServiceImpl;
+
+   @In
+   private StatisticsResource statisticsServiceImpl;
 
    private List<HDocument> iterationDocuments;
    
@@ -125,10 +129,11 @@ public class ProjectIterationFilesAction
       }
    }
    
-   public TransUnitWords getTransUnitWordsForDocument(HDocument doc)
+   public TranslationStatistics getTransUnitWordsForDocument(HDocument doc)
    {
-      TranslationStats documentStats = this.documentDAO.getStatistics(doc.getId(), new LocaleId(this.localeId));
-      return documentStats.getWordCount();
+      ContainerTranslationStatistics docStatistics =
+         this.statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, doc.getDocId(), true, new String[]{this.localeId});
+      return docStatistics.getStats( this.localeId, WORD );
    }
 
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")

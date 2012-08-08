@@ -162,7 +162,7 @@
 						<rich:column sortBy="#{stats.per}"
 							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.iteration.stats.Percentage']}</f:facet>
-							<ui:param name="tstatus" value="#{stats.words}" />
+							<ui:param name="tstatus" value="#{stats.wordStats}" />
 							<ui:include src="../WEB-INF/layout/statsbar.xhtml">
 								<ui:param name="status" value="#{tstatus}" />
 							</ui:include>
