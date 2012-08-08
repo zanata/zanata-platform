@@ -1,6 +1,7 @@
 package org.zanata.webtrans.server;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,9 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.ibm.icu.util.ULocale;
 
+import de.novanic.eventservice.service.registry.EventRegistry;
+import de.novanic.eventservice.service.registry.EventRegistryFactory;
+
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
 @Synchronized
@@ -75,18 +79,29 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
 
    private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
    private final Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
+   private final EventRegistry eventRegistry;
 
    public TranslationWorkspaceManagerImpl()
    {
       this.workspaceMap = new ConcurrentHashMap<WorkspaceId, TranslationWorkspace>();
       Multimap<ProjectIterationId, TranslationWorkspace> piwm = HashMultimap.create();
       this.projIterWorkspaceMap = Multimaps.synchronizedMultimap(piwm);
+      this.eventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
    }
 
    @Observer(ZanataInit.EVENT_Zanata_Startup)
    public void start()
    {
       LOGGER.info("starting...");
+
+      Runtime.getRuntime().addShutdownHook(new Thread()
+      {
+         @Override
+         public void run()
+         {
+            stopListeners();
+         }
+      });
    }
 
    @Observer(ZanataIdentity.USER_LOGOUT_EVENT)
@@ -174,6 +189,23 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    {
       LOGGER.info("stopping...");
       LOGGER.info("closing down {} workspaces: ", workspaceMap.size());
+   }
+
+   private void stopListeners()
+   {
+      // Stopping the listeners frees up the EventServiceImpl servlet, which
+      // would otherwise prevent Apache Coyote from shutting down quickly.
+      // Note that the servlet may still hang around up to the max timeout
+      // configured in eventservice.properties.
+      Set<String> registeredUserIds = eventRegistry.getRegisteredUserIds();
+      int clientCount = registeredUserIds.size();
+      LOGGER.info("Removing {} client(s)", clientCount);
+      for (String userId : registeredUserIds)
+      {
+         LOGGER.debug("Removing client {}", userId);
+         eventRegistry.unlisten(userId);
+      }
+      LOGGER.info("Removed {} client(s).  Waiting for outstanding polls to time out...", clientCount);
    }
 
    public int getWorkspaceCount()
