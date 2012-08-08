@@ -248,22 +248,15 @@
 	margin-bottom: 18px;
 }
 
-/* Copy of rich table styles */
-.rich-table {
+.rich-table { 
 	width: 100%;
-}
-
-.rich-table { /*border-top: solid 1px silver;
-        border-left: solid 1px silver;*/
-	/*background-color: #E8EDFF;*/
-	background-color: #EEE;
 	empty-cells: show;
-	border-collapse: collapse;
-	border-radius: 5px;
+	border:0;
+	background-color:#EEEEEE;
 }
 
 .rich-table tbody tr:hover {
-	background-color: white;
+	background-color: #FFFFFF;
 }
 
 table {
@@ -284,16 +277,17 @@ table {
 
 .rich-table-subheader th:last-child {
 	border-top-right-radius: 5px;
+	border-right:0;
 }
 
-.rich-table-subheadercell { /*border-right: solid 1px silver;*/
-	padding: 8px 8px 8px 8px;
+.rich-table-subheadercell { 
+	padding: 15px 8px 15px 8px;
 	text-align: center;
-	font-size: 11px;
-	/*color: black;*/
+	font-size: 13px;
 	color: #ffffff;
 	font-family: Arial, Verdana, sans-serif;
 	white-space: nowrap;
+	background-color:#461446;
 }
 
 th {
@@ -306,12 +300,13 @@ th,td {
 	padding: 0px;
 }
 
-.rich-table-cell { /*border-right: solid 1px silver;
-        border-bottom: solid 1px silver;*/
-	padding: 8px 8px 8px 8px;
+.rich-table-cell {
+	padding: 10px;
 	font-size: 11px;
-	color: black;
+	color: #595959;
 	font-family: Arial, Verdana, sans-serif;
+	border-left:0;
+	border-right:0;
 }
 /* End of richfaces table styles */
 

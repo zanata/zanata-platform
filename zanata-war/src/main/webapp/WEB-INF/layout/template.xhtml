@@ -65,11 +65,13 @@
 								<ul>
 									<li>
 										<s:link id="MyProfile" view="/profile/view.xhtml" propagation="none">
-											<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/kuser.png" />#{messages['jsf.MyProfile']}
+											<img src="#{request.contextPath}/images/zanata-icon/16x16/user.png" />#{messages['jsf.MyProfile']}
 										</s:link>
 									</li>
 									<li>
-										<s:link id="Sign_out" view="/account/sign_out" value="#{messages['jsf.SignOut']}" propagation="none" />
+										<s:link id="Sign_out" view="/account/sign_out" propagation="none">
+											<img src="#{requestContextPath}/images/zanata-icon/16x16/signout.png" alt="#{messages['jsf.ZanataMainDescription']}"/>#{messages['jsf.SignOut']}
+										</s:link>
 									</li>
 								</ul>
 							</div>
@@ -80,11 +82,9 @@
 							<div class="submenu">
 								<ul>
 									<li>
-									   <s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" value="#{messages['jsf.SignIn']}" propagation="none" />
-									   
-									   <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
-									       <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
-									   </s:fragment>
+									   <s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
+									   		<img src="#{requestContextPath}/images/zanata-icon/16x16/signin.png" alt="#{messages['jsf.ZanataMainDescription']}"/>#{messages['jsf.SignIn']}
+									   </s:link>
 									</li>
 									
 									<li>
@@ -163,19 +163,71 @@
 		</div>
 		
 		<div class="footer">
-				<div>
-					<a href="http://zanata.org/">#{messages['jsf.Zanata']}</a> #{messages['jsf.RunningVersionInfo']} <br/>
-					&#169; #{messages['jsf.CopyrightYearInfo']} <a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> #{messages['jsf.AndOthers']}
+				<div class="footer_container">
+				<div class="section_block">
+					<h4>Zanata</h4>
+					<div class="content">
+						<ul>
+							<li>
+								<a href="http://zanata.org/">About Zanata</a>
+							</li>
+							<li>
+								<a href="http://zanata.org/documentation.html">Documentation</a>
+							</li>
+							<li>
+								<a href="https://github.com/zanata/zanata/wiki">Zanata Wiki</a>
+							</li>
+							<li>
+								<a href="http://blog-zanatatm.rhcloud.com/">Blog</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 				
-				<div id="localeSelector">
-						<h:form id="localeSelector_form">
-						<h:selectOneMenu id="Select"
-						value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" >
-		                <f:selectItems value="#{localeSelector.supportedLocales}"/>
-						</h:selectOneMenu>
-						</h:form>
+				<div class="section_block">
+					<h4>Support</h4>
+					<div class="content">
+						<ul>
+							<li>
+							    <s:link view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link>
+							</li>
+							<li>
+								<a href="http://webchat.freenode.net/?channels=zanata">IRC Help</a>
+							</li>
+							<li>
+								<a href="http://zanata.org/faq.html">FAQ</a>
+							</li>
+						</ul>
 					</div>
+				</div>
+				
+				<div class="section_block">
+					<h4>Issues</h4>
+					<div class="content">
+						<ul>
+							<li>
+								<a href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata">#{messages['jsf.ReportAProblem']}</a>
+							</li>
+							<li>
+								<a href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__">Known issues</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="locale_selector_block">
+					<h:form id="localeSelector_form">
+					<h:selectOneMenu id="Select"
+					value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" >
+	                <f:selectItems value="#{localeSelector.supportedLocales}"/>
+					</h:selectOneMenu>
+					</h:form>
+				</div>
+				<div style="clear:both;display:block;"/>
+				<div class="copyright_block">
+					<a href="http://zanata.org/">#{messages['jsf.Zanata']}</a> #{messages['jsf.RunningVersionInfo']}
+					&#169; #{messages['jsf.CopyrightYearInfo']} <a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> #{messages['jsf.AndOthers']}
+				</div>
+				</div>
 			</div>
 		<s:fragment rendered="#{not empty applicationConfiguration.piwikUrl and not empty applicationConfiguration.piwikIdSite}">
 			<!-- Piwik --> <script type="text/javascript">
