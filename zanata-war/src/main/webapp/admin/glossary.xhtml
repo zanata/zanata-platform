@@ -10,10 +10,6 @@
   
     <ui:define name="page_title">Manage Glossary</ui:define>
     <ui:define name="center_content">
-        <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />  
-        <rich:panel id="glossary-status-panel">
-        <f:facet name="header">#{messages['jsf.GlossaryStatistics']}</f:facet>
-        
         <h:form>
             <s:token allowMultiplePosts="true" />
             <rich:dataTable id="data_table" width="100%" value="#{glossaryStatsAction.getAllStatus().toArray()}" 
@@ -28,8 +24,6 @@
                     </rich:column>
           </rich:dataTable>
         </h:form>              
-      </rich:panel>
-    
     </ui:define>
     
   </ui:composition>

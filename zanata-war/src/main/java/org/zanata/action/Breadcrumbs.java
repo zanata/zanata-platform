@@ -33,6 +33,11 @@ public class Breadcrumbs implements Serializable
       return locations;
    }
 
+   public void clear()
+   {
+      getLocations().clear();
+   }
+
    public void addLocation(String location, String display)
    {
       getLocations().add(new Breadcrumb(location, display));

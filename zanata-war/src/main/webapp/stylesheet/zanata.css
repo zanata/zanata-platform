@@ -2,6 +2,7 @@
 	width: 1024px;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top:5px;
 	background-color: #ffffff;
 }
 
@@ -26,7 +27,7 @@
 }
 
 #search_panel {
-	float: right;
+	float: left;
 }
 
 #breadcrumbs_panel
@@ -42,7 +43,7 @@
 
 #breadcrumbs_div
 {
-	margin-bottom:3px;
+	margin:5px;
 	width:100%;
 	padding:3px;
 }
@@ -71,7 +72,7 @@ a.breadcrumbs_link:hover
 
 #bd {
 	width: 100%;
-	padding: 10px 0;
+	padding: 8px 0;
 }
 
 
@@ -607,17 +608,12 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	width: 100%;
 	height: 35px;
 	margin: 0;
-/* 	background: -webkit-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
-/* 	background: -moz-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
-/* 	background: -o-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
-/* 	background: -ms-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
-	
 	background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	background: -o-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	background: -ms-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
-	
 	top:0px;
+	box-shadow:1px 1px 8px #778899;
 }
 
 .logo {
@@ -652,7 +648,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	padding: 0;
 	text-align: center;
 	vertical-align: middle;
-	border-right: 1px solid #EFEFEF;
+	border-right: 1px solid #E5E5E5;
 	box-shadow: inset 1px 0 0 #959595;
 }
 

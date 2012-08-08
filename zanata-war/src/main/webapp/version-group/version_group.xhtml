@@ -25,13 +25,8 @@
 </ui:define>
 
 <ui:define name="center_content">
-    <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
     <a4j:form>
-    	
-    	 <h1>#{messages['jsf.GroupId']}: #{versionGroupHome.instance.slug}</h1>
-    	 <h1>#{messages['jsf.Name']}: #{versionGroupHome.instance.name}</h1>
-    	 
-    	 <s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
+    	<s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
                         var="_iteration">

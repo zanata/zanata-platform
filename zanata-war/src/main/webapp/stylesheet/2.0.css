@@ -260,8 +260,6 @@
 	empty-cells: show;
 	border-collapse: collapse;
 	border-radius: 5px;
-	/* This is for the faux 3D effect */
-	box-shadow: 2px 2px 5px #888888;
 }
 
 .rich-table tbody tr:hover {
@@ -352,8 +350,6 @@ th,td {
 	padding: 1px;
 	background-color: #EEE;
 	border-color: silver;
-	/* This is for the faux 3D effect */
-	box-shadow: 2px 2px 1px #888888;
 }
 
 .rich-panel .rich-panel-header {

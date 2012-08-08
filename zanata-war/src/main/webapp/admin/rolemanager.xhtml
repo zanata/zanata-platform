@@ -28,9 +28,6 @@
           return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisRoleThisActionCannotBeUndone']}");
         }
       </script>
-      <rich:panel>
-        <f:facet name="header">#{messages['jsf.RoleManager']}</f:facet>
-
         <h:form>
             <s:token allowMultiplePosts="true" />
 	        <rich:dataTable 
@@ -61,7 +58,6 @@
 	          </h:column>
 	  	    </rich:dataTable>
         </h:form>              
-      </rich:panel>
     </ui:define>
     
   </ui:composition>
