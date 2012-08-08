@@ -10,8 +10,6 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.notNull;
 import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -79,7 +77,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 @SuppressWarnings("rawtypes")
 @Test(groups = { "unit-tests" })
-public class DocumentListPresenterTest
+public class DocumentListPresenterTest extends PresenterTest
 {
    private static String testProjectSlug = "test-project";
    private static String testIterationSlug = "test-iteration";
@@ -128,55 +126,40 @@ public class DocumentListPresenterTest
    @BeforeClass
    public void createMocks()
    {
-      mockCaseSensitiveCheckbox = createMock(HasValue.class);
-      mockDataProvider = createMock(ListDataProvider.class);
-      mockDispatcher = createMock(CachingDispatchAsync.class);
-      mockDisplay = createMock(DocumentListPresenter.Display.class);
-      mockDocList = createMock(HasSelectionHandlers.class);
-      mockDocListTable = createMock(HasData.class);
-      mockEventBus = createMock(EventBus.class);
-      mockExactSearchCheckbox = createMock(HasValue.class);
-      mockFilterTextbox = createMock(HasValue.class);
-      mockHistory = createMock(History.class);
-      mockMessages = createMock(WebTransMessages.class);
-      mockWindowLocation = createMock(Window.Location.class);
-      mockUserWorkspaceContext = createMock(UserWorkspaceContext.class);
-      mockWorkspaceContext = createMock(WorkspaceContext.class);
+      mockCaseSensitiveCheckbox = createAndAddMock(HasValue.class);
+      mockDataProvider = createAndAddMock(ListDataProvider.class);
+      mockDispatcher = createAndAddMock(CachingDispatchAsync.class);
+      mockDisplay = createAndAddMock(DocumentListPresenter.Display.class);
+      mockDocList = createAndAddMock(HasSelectionHandlers.class);
+      mockDocListTable = createAndAddMock(HasData.class);
+      mockEventBus = createAndAddMock(EventBus.class);
+      mockExactSearchCheckbox = createAndAddMock(HasValue.class);
+      mockFilterTextbox = createAndAddMock(HasValue.class);
+      mockHistory = createAndAddMock(History.class);
+      mockMessages = createAndAddMock(WebTransMessages.class);
+      mockWindowLocation = createAndAddMock(Window.Location.class);
+      mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
+      mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
 
-      capturedHistoryValueChangeHandler = new Capture<ValueChangeHandler<String>>();
-      capturedTextboxChangeHandler = new Capture<ValueChangeHandler<String>>();
-      capturedCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
-      capturedCaseSensitiveCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
-      capturedDocumentSelectionHandler = new Capture<SelectionHandler<DocumentInfo>>();
-      capturedDocListRequest = new Capture<GetDocumentList>();
-      capturedDocListRequestCallback = new Capture<AsyncCallback<GetDocumentListResult>>();
-      capturedTransUnitUpdatedEventHandler = new Capture<TransUnitUpdatedEventHandler>();
-      capturedEventBusEvent = new Capture<GwtEvent>(CaptureType.ALL);
-      capturedPageSize = new Capture<Integer>();
-      capturedHistoryTokenString = new Capture<String>();
-      capturedHistoryToken = new Capture<HistoryToken>();
-      capturedSingleSelectionModel = new Capture<SingleSelectionModel<DocumentNode>>();
+      capturedHistoryValueChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
+      capturedTextboxChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
+      capturedCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
+      capturedCaseSensitiveCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
+      capturedDocumentSelectionHandler = addCapture(new Capture<SelectionHandler<DocumentInfo>>());
+      capturedDocListRequest = addCapture(new Capture<GetDocumentList>());
+      capturedDocListRequestCallback = addCapture(new Capture<AsyncCallback<GetDocumentListResult>>());
+      capturedTransUnitUpdatedEventHandler = addCapture(new Capture<TransUnitUpdatedEventHandler>());
+      capturedEventBusEvent = addCapture(new Capture<GwtEvent>(CaptureType.ALL));
+      capturedPageSize = addCapture(new Capture<Integer>());
+      capturedHistoryTokenString = addCapture(new Capture<String>());
+      capturedHistoryToken = addCapture(new Capture<HistoryToken>());
+      capturedSingleSelectionModel = addCapture(new Capture<SingleSelectionModel<DocumentNode>>());
    }
 
    @BeforeMethod
    public void resetMocks()
    {
-      capturedHistoryValueChangeHandler.reset();
-      capturedTextboxChangeHandler.reset();
-      capturedCheckboxChangeHandler.reset();
-      capturedCaseSensitiveCheckboxChangeHandler.reset();
-      capturedDocumentSelectionHandler.reset();
-      capturedDocListRequest.reset();
-      capturedDocListRequestCallback.reset();
-      capturedTransUnitUpdatedEventHandler.reset();
-      capturedEventBusEvent.reset();
-      capturedPageSize.reset();
-      capturedHistoryTokenString.reset();
-      capturedHistoryToken.reset();
-      capturedSingleSelectionModel.reset();
-
-      resetAllMocks();
-      setDefaultBindExpectations();
+      resetAll();
       documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockDispatcher, mockMessages, mockHistory, mockWindowLocation);
    }
 
@@ -706,6 +689,10 @@ public class DocumentListPresenterTest
       return docList;
    }
 
+   /**
+    * Default mock behaviour in addition to setDefaultBindExpectations, suitable
+    * for most tests but kept separate for a few requiring different behaviour
+    */
    private void setDefaultMockBehaviour()
    {
       setupDefaultDoclistRequestAnswer();
@@ -730,7 +717,8 @@ public class DocumentListPresenterTest
    }
 
    @SuppressWarnings("unchecked")
-   private void setDefaultBindExpectations()
+   @Override
+   protected void setDefaultBindExpectations()
    {
       setupMockDataProvider();
 
@@ -807,60 +795,6 @@ public class DocumentListPresenterTest
       expect(mockDisplay.getCaseSensitiveCheckbox()).andReturn(mockCaseSensitiveCheckbox).anyTimes();
       expect(mockDisplay.getExactSearchCheckbox()).andReturn(mockExactSearchCheckbox).anyTimes();
       expect(mockDisplay.getDocumentListTable()).andReturn(mockDocListTable).anyTimes();
-   }
-
-   private void resetAllMocks()
-   {
-      reset(mockCaseSensitiveCheckbox);
-      reset(mockDataProvider);
-      reset(mockDispatcher);
-      reset(mockDisplay);
-      reset(mockDocList);
-      reset(mockDocListTable);
-      reset(mockEventBus);
-      reset(mockExactSearchCheckbox);
-      reset(mockFilterTextbox);
-      reset(mockHistory);
-      reset(mockMessages);
-      reset(mockWindowLocation);
-      reset(mockUserWorkspaceContext);
-      reset(mockWorkspaceContext);
-   }
-
-   private void replayAllMocks()
-   {
-      replay(mockCaseSensitiveCheckbox);
-      replay(mockDataProvider);
-      replay(mockDispatcher);
-      replay(mockDisplay);
-      replay(mockDocList);
-      replay(mockDocListTable);
-      replay(mockEventBus);
-      replay(mockExactSearchCheckbox);
-      replay(mockFilterTextbox);
-      replay(mockHistory);
-      replay(mockMessages);
-      replay(mockWindowLocation);
-      replay(mockUserWorkspaceContext);
-      replay(mockWorkspaceContext);
-   }
-
-   private void verifyAllMocks()
-   {
-      verify(mockCaseSensitiveCheckbox);
-      verify(mockDataProvider);
-      verify(mockDispatcher);
-      verify(mockDisplay);
-      verify(mockDocList);
-      verify(mockDocListTable);
-      verify(mockEventBus);
-      verify(mockExactSearchCheckbox);
-      verify(mockFilterTextbox);
-      verify(mockHistory);
-      verify(mockMessages);
-      verify(mockWindowLocation);
-      verify(mockUserWorkspaceContext);
-      verify(mockWorkspaceContext);
    }
 
    private class DoclistSuccessAnswer implements IAnswer<GetDocumentListResult>
