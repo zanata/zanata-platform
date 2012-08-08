@@ -57,15 +57,7 @@
 				<a4j:region id="langTableRegion">
 					<s:token allowMultiplePosts="true" />
 					
-					<h:selectBooleanCheckbox id="show_all_locales" 
-						value="#{viewAllStatusAction.showAllLocales}"
-						title="#{messages['jsf.iteration.ShowAllLocales.title']}"
-						rendered="#{identity.loggedIn}">
-						<a4j:support event="onclick"
-	                            ajaxSingle="true"
-	                            reRender="data_table"/>
-					</h:selectBooleanCheckbox>
-					<h:outputText value="#{messages['jsf.iteration.ShowAllLocales']}" rendered="#{identity.loggedIn}"/>
+					<h:outputText escape="false" value="#{messages['jsf.iteration.ShowAllLocales.title']}" rendered="#{identity.loggedIn}"/>
 					<rich:spacer width="10px;"/>
 					<br/>
 					<rich:spacer height="10px;"/>
@@ -74,7 +66,7 @@
 						value="#{viewAllStatusAction.getAllStatus().toArray()}" var="stats"
 						styleClass="iteration_inline_tribes" rowClasses="odd,even">
 						<rich:column sortBy="#{stats.locale}"
-							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.Language']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.html"
@@ -89,7 +81,7 @@
 								rendered="#{not identity.loggedIn}" />
 						</rich:column>
 						<rich:column sortBy="#{stats.nativeName}"
-							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.Name']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.html"
@@ -105,7 +97,7 @@
 						</rich:column>
 						<rich:column id="translate" 
 							rendered="#{identity.loggedIn and not viewAllStatusAction.isIterationObsolete()}"
-							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<h:outputLink
 								rendered="#{not applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale) }"
 								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
@@ -150,7 +142,7 @@
 						</rich:column>
 						<rich:column id="files"
 							rendered="#{identity.loggedIn}"
-							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<s:link
 								view="/iteration/files.xhtml" propagation="none"
 								value="#{messages['jsf.Files']}" styleClass="iteration_link">
@@ -160,7 +152,7 @@
 							</s:link>
 						</rich:column>
 						<rich:column sortBy="#{stats.per}"
-							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.iteration.stats.Percentage']}</f:facet>
 							<ui:param name="tstatus" value="#{stats.wordStats}" />
 							<ui:include src="../WEB-INF/layout/statsbar.xhtml">

@@ -38,6 +38,8 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
@@ -60,6 +62,7 @@ import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
+@CachedMethods
 public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -110,8 +113,6 @@ public class ViewAllStatusAction implements Serializable
    private String projectSlug;
 
    private String searchTerm;
-
-   private boolean showAllLocales = false;
 
    private HProjectIteration projectIteration;
 
@@ -195,6 +196,7 @@ public class ViewAllStatusAction implements Serializable
       }
    }
 
+   @CachedMethodResult
    public List<Status> getAllStatus()
    {
       List<Status> result = new ArrayList<Status>();
@@ -238,17 +240,6 @@ public class ViewAllStatusAction implements Serializable
       }
       Collections.sort(result);
       return result;
-   }
-
-
-   public boolean getShowAllLocales()
-   {
-      return showAllLocales;
-   }
-
-   public void setShowAllLocales(boolean showAllLocales)
-   {
-      this.showAllLocales = showAllLocales;
    }
 
    public HProjectIteration getProjectIteration()
@@ -419,14 +410,7 @@ public class ViewAllStatusAction implements Serializable
    
    private List<HLocale> getDisplayLocales()
    {
-      if (this.showAllLocales || authenticatedAccount == null)
-      {
-         return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
-      }
-      else
-      {
-         return localeServiceImpl.getTranslation(projectSlug, iterationSlug, authenticatedAccount.getUsername());
-      }
+      return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
    }
 
    public List<HIterationGroup> getSearchResults()
