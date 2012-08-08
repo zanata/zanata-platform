@@ -53,6 +53,7 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
       TransUnit currentSelection = getSelectedOrNull();
       if (hasPendingChange(newTargets, currentSelection))
       {
+         Log.info("saving pending change:" + currentSelection.getTargets() + " new:" + newTargets);
          eventBus.fireEvent(new TransUnitSaveEvent(newTargets, currentSelection.getStatus(), currentSelection.getId(), currentSelection.getVerNum()));
       }
    }

@@ -46,6 +46,7 @@ import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
@@ -264,8 +265,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onRowSelected(int rowIndex)
    {
-      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
-      navigationController.selectByRowIndex(rowIndex);
+      if (pageModel.getCurrentRow() != rowIndex)
+      {
+         pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
+         navigationController.selectByRowIndex(rowIndex);
+      }
    }
 
    public void startEditing()
