@@ -63,12 +63,10 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
@@ -402,9 +400,7 @@ public class DocumentListPresenterTest extends PresenterTest
       replayAllMocks();
       documentListPresenter.bind();
 
-      capturedTextboxChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(filterText)
-            { // overriding gives access to protected constructor
-            });
+      valueChangeEvent(capturedTextboxChangeHandler, filterText);
 
       verifyAllMocks();
 
@@ -421,9 +417,7 @@ public class DocumentListPresenterTest extends PresenterTest
       documentListPresenter.bind();
 
       // simulate checking 'exact search' checkbox
-      capturedCheckboxChangeHandler.getValue().onValueChange(new ValueChangeEvent<Boolean>(true)
-      {
-      });
+      valueChangeEvent(capturedCheckboxChangeHandler, true);
 
       verifyAllMocks();
 
@@ -446,9 +440,7 @@ public class DocumentListPresenterTest extends PresenterTest
       replayAllMocks();
       documentListPresenter.bind();
 
-      capturedCheckboxChangeHandler.getValue().onValueChange(new ValueChangeEvent<Boolean>(false)
-      {
-      });
+      valueChangeEvent(capturedCheckboxChangeHandler, false);
 
       verifyAllMocks();
 
@@ -494,9 +486,7 @@ public class DocumentListPresenterTest extends PresenterTest
       // simulate firing history change event
       HistoryToken historyTokenWithFilter = new HistoryToken();
       historyTokenWithFilter.setDocFilterText(filterText);
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(historyTokenWithFilter.toTokenString())
-      {
-      });
+      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithFilter.toTokenString());
       verifyAllMocks();
 
       ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
@@ -528,9 +518,7 @@ public class DocumentListPresenterTest extends PresenterTest
       HistoryToken historyTokenWithExactFilter = new HistoryToken();
       historyTokenWithExactFilter.setDocFilterText(filterText);
       historyTokenWithExactFilter.setDocFilterExact(true);
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(historyTokenWithExactFilter.toTokenString())
-      {
-      });
+      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithExactFilter.toTokenString());
 
       verifyAllMocks();
 
@@ -567,9 +555,7 @@ public class DocumentListPresenterTest extends PresenterTest
       // simulate firing history change event
       HistoryToken historyTokenWithFilter = new HistoryToken();
       historyTokenWithFilter.setDocFilterText(filterText);
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(historyTokenWithFilter.toTokenString())
-      {
-      });
+      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithFilter.toTokenString());
 
       verifyAllMocks();
 
@@ -605,9 +591,7 @@ public class DocumentListPresenterTest extends PresenterTest
       // simulate firing history change event
       HistoryToken historyTokenWithFilter = new HistoryToken();
       historyTokenWithFilter.setDocFilterText(filterText);
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(historyTokenWithFilter.toTokenString())
-      {
-      });
+      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithFilter.toTokenString());
       verifyAllMocks();
    }
 
@@ -627,9 +611,7 @@ public class DocumentListPresenterTest extends PresenterTest
       // simulate firing history change event
       HistoryToken historyTokenWithExactFilter = new HistoryToken();
       historyTokenWithExactFilter.setDocFilterExact(true);
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(historyTokenWithExactFilter.toTokenString())
-      {
-      });
+      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithExactFilter.toTokenString());
       verifyAllMocks();
    }
 
@@ -726,11 +708,11 @@ public class DocumentListPresenterTest extends PresenterTest
 
       expect(mockMessages.loadDocFailed()).andReturn(TEST_DOC_LOAD_FAIL_MESSAGE).anyTimes();
 
-      expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler), isA(SelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class));
+      expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler), isA(SelectionHandler.class)))).andReturn(mockHandlerRegistration());
       setupMockEventBus(true);
-      expect(mockExactSearchCheckbox.addValueChangeHandler(and(capture(capturedCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      expect(mockCaseSensitiveCheckbox.addValueChangeHandler(and(capture(capturedCaseSensitiveCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expectValueChangeHandlerRegistration(mockExactSearchCheckbox, capturedCheckboxChangeHandler);
+      expectValueChangeHandlerRegistration(mockCaseSensitiveCheckbox, capturedCaseSensitiveCheckboxChangeHandler);
+      expectValueChangeHandlerRegistration(mockFilterTextbox, capturedTextboxChangeHandler);
 
       expect(mockUserWorkspaceContext.getWorkspaceContext()).andReturn(mockWorkspaceContext).anyTimes();
       expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
@@ -742,7 +724,8 @@ public class DocumentListPresenterTest extends PresenterTest
    @SuppressWarnings("unchecked")
    private void setupMockHistory(String tokenToReturn)
    {
-      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).anyTimes();
+      // TODO set up History to properly extend ValueChangeHandler<String>, then use convenience method for handler registration
+      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(mockHandlerRegistration()).anyTimes();
       expect(mockHistory.getToken()).andReturn(tokenToReturn).anyTimes();
       expect(mockHistory.getHistoryToken()).andReturn(HistoryToken.fromTokenString(tokenToReturn)).anyTimes();
       mockHistory.fireCurrentHistoryState();
@@ -766,8 +749,8 @@ public class DocumentListPresenterTest extends PresenterTest
    @SuppressWarnings("unchecked")
    private void setupMockEventBus(boolean expectAllEvents)
    {
-      expect(mockEventBus.addHandler(eq(TransUnitUpdatedEvent.getType()), and(capture(capturedTransUnitUpdatedEventHandler), isA(TransUnitUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      expect(mockEventBus.addHandler((GwtEvent.Type<EventHandler>) notNull(), (EventHandler) notNull())).andReturn(createMock(HandlerRegistration.class)).anyTimes();
+      expect(mockEventBus.addHandler(eq(TransUnitUpdatedEvent.getType()), and(capture(capturedTransUnitUpdatedEventHandler), isA(TransUnitUpdatedEventHandler.class)))).andReturn(mockHandlerRegistration());
+      expect(mockEventBus.addHandler((GwtEvent.Type<EventHandler>) notNull(), (EventHandler) notNull())).andReturn(mockHandlerRegistration()).anyTimes();
 
       mockEventBus.fireEvent(and(capture(capturedEventBusEvent), isA(GwtEvent.class)));
       expectLastCall().anyTimes();
