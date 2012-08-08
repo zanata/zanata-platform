@@ -119,8 +119,8 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Check that XML entity are complete")
    String xmlEntityValidatorDescription();
 
-   @DefaultMessage("XML entity [ {0} ] is incomplete")
-   String incompleteXMLEntity(String entity);
+   @DefaultMessage("Invalid XML entity [ {0} ]")
+   String invalidXMLEntity(String entity);
    
    @Description("List of XML entity in original string have not been included in the target")
    @DefaultMessage("Missing entity: {0,list,string}")

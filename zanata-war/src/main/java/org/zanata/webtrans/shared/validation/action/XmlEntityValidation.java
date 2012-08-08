@@ -38,10 +38,22 @@ import com.google.gwt.regexp.shared.RegExp;
 public class XmlEntityValidation extends AbstractValidation
 {
 
-   private final static String entityRegex = "&#?[a-z_A-Z0-9.-]+;";
-   private final static RegExp entityExp = RegExp.compile(entityRegex);
+   // &amp;, &quot;
+   private final static String charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
+   private final static RegExp charRefExp = RegExp.compile(charRefRegex);
 
-   private final static RegExp entityGlobalExp = RegExp.compile(entityRegex, "g");
+   // &#[numeric]
+   private final static String decimalRefRegex = "&#[0-9]+;";
+   private final static RegExp decimalRefExp = RegExp.compile(decimalRefRegex);
+
+   // &#x[hexadecimal]
+   private final static String hexadecimalRefRegex = "&#x[0-9a-f_A-F]+;";
+   private final static RegExp hexadecimalRefExp = RegExp.compile(hexadecimalRefRegex);
+
+
+   private final static RegExp charRefGlobalExp = RegExp.compile(charRefRegex, "g");
+   private final static RegExp decimalRefGlobalExp = RegExp.compile(decimalRefRegex, "g");
+   private final static RegExp hexadecimalRefGlobalExp = RegExp.compile(hexadecimalRefRegex, "g");
 
    private final static String ENTITY_START_CHAR = "&";
 
@@ -68,9 +80,25 @@ public class XmlEntityValidation extends AbstractValidation
          return;
       }
 
-      String tmp = target;
       ArrayList<String> unmatched = new ArrayList<String>();
-      MatchResult result = entityGlobalExp.exec(source);
+      unmatched.addAll(validate(source, target, charRefGlobalExp));
+      unmatched.addAll(validate(source, target, decimalRefGlobalExp));
+      unmatched.addAll(validate(source, target, hexadecimalRefGlobalExp));
+
+
+      if (!unmatched.isEmpty())
+      {
+         addError(getMessages().entityMissing(unmatched));
+      }
+
+   }
+
+   private ArrayList<String> validate(String source, String target, RegExp regExp)
+   {
+      ArrayList<String> unmatched = new ArrayList<String>();
+
+      String tmp = target;
+      MatchResult result = regExp.exec(source);
 
       while (result != null)
       {
@@ -84,14 +112,9 @@ public class XmlEntityValidation extends AbstractValidation
          {
             tmp = tmp.replaceFirst(entity, ""); // remove matched entity from
          }
-         result = entityGlobalExp.exec(source);
+         result = regExp.exec(source);
       }
-      
-      if (!unmatched.isEmpty())
-      {
-         addError(getMessages().entityMissing(unmatched));
-      }
-
+      return unmatched;
    }
 
    private void validateIncompleteEntity(String target)
@@ -107,9 +130,9 @@ public class XmlEntityValidation extends AbstractValidation
       {
          if (word.startsWith(ENTITY_START_CHAR) && word.length() > 1)
          {
-            if (!entityExp.test(word))
+            if (!charRefExp.test(word) && !decimalRefExp.test(word) && !hexadecimalRefExp.test(word))
             {
-               addError(getMessages().incompleteXMLEntity(word));
+               addError(getMessages().invalidXMLEntity(word));
             }
          }
       }
