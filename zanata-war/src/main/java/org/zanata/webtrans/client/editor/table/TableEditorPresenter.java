@@ -359,7 +359,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                navigationService.updateMap(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
 
                boolean editing = targetContentsPresenter.isEditing();
-               Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
+               Integer rowIndex = navigationService.getRowNumber(event.getUpdateInfo().getTransUnit(), display.getRowValues());
                boolean updateRow = true;
                boolean reopen = false;
 
