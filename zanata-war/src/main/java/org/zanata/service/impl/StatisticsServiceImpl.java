@@ -21,10 +21,11 @@
 package org.zanata.service.impl;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -32,7 +33,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.framework.EntityNotFoundException;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
@@ -42,11 +42,11 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
-import org.zanata.rest.service.URIHelper;
 import org.zanata.rest.service.ZPathService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path("/stats")
+@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
@@ -75,15 +76,6 @@ public class StatisticsServiceImpl implements StatisticsResource
    private ZPathService zPathService;
 
 
-   /**
-    *
-    * @param projectSlug
-    * @param iterationSlug
-    * @param includeDetails
-    * @param includeWordStats
-    * @param locales Locale statistics to be fetched. If this is empty, all locale statistics will be returned.
-    * @return
-    */
    @Override
    public ContainerTranslationStatistics
    getStatistics(String projectSlug, String iterationSlug, boolean includeDetails, boolean includeWordStats, String[] locales)
@@ -99,7 +91,7 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       if( iteration == null )
       {
-         throw new EntityNotFoundException(projectSlug + "/" + iterationSlug, HProjectIteration.class);
+         throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
       }
 
       Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
@@ -176,7 +168,7 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       if( document == null )
       {
-         throw new EntityNotFoundException(projectSlug + "/" + iterationSlug + "/" + docId, HDocument.class);
+         throw new NoSuchEntityException(projectSlug + "/" + iterationSlug + "/" + docId);
       }
 
       Map<LocaleId, TranslationStats> statsMap = documentDAO.getStatistics(document.getId(), localeIds);

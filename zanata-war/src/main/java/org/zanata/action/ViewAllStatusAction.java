@@ -38,7 +38,8 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-import org.zanata.common.ContentState;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
@@ -48,14 +49,20 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.process.CopyTransProcessHandle;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.service.StatisticsResource;
 import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
 
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
+@CachedMethods
 public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -90,7 +97,10 @@ public class ViewAllStatusAction implements Serializable
    Map<String, String> messages;
 
    @In
-   private VersionGroupService versionGroupServiceImpl;
+   VersionGroupService versionGroupServiceImpl;
+
+   @In
+   StatisticsResource statisticsServiceImpl;
 
    @In
    CopyTransManager copyTransManager;
@@ -104,8 +114,6 @@ public class ViewAllStatusAction implements Serializable
 
    private String searchTerm;
 
-   private boolean showAllLocales = false;
-
    private HProjectIteration projectIteration;
 
    private List<HIterationGroup> searchResults;
@@ -114,15 +122,15 @@ public class ViewAllStatusAction implements Serializable
    {
       private String locale;
       private String nativeName;
-      private TransUnitWords words;
+      private TranslationStatistics wordStats;
       private int per;
       private boolean userInLanguageTeam;
 
-      public Status(String locale, String nativeName, TransUnitWords words, int per, boolean userInLanguageTeam)
+      public Status(String locale, String nativeName, TranslationStatistics wordStats, int per, boolean userInLanguageTeam)
       {
          this.locale = locale;
          this.nativeName = nativeName;
-         this.words = words;
+         this.wordStats = wordStats;
          this.per = per;
          this.userInLanguageTeam = userInLanguageTeam;
       }
@@ -137,9 +145,9 @@ public class ViewAllStatusAction implements Serializable
          return nativeName;
       }
 
-      public TransUnitWords getWords()
+      public TranslationStatistics getWordStats()
       {
-         return words;
+         return wordStats;
       }
 
       public double getPer()
@@ -188,21 +196,32 @@ public class ViewAllStatusAction implements Serializable
       }
    }
 
+   @CachedMethodResult
    public List<Status> getAllStatus()
    {
       List<Status> result = new ArrayList<Status>();
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
-      Map<String, TransUnitWords> stats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
+
       List<HLocale> locale = this.getDisplayLocales();
+      String[] localeIds = new String[locale.size()];
+      for (int i = 0, localeSize = locale.size(); i < localeSize; i++)
+      {
+         HLocale l = locale.get(i);
+         localeIds[i] = l.getLocaleId().getId();
+      }
+      
+      ContainerTranslationStatistics iterationStats =
+         statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
+
       Long total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
       for (HLocale var : locale)
       {
-         TransUnitWords words = stats.get(var.getLocaleId().getId());
-         if (words == null)
+         TranslationStatistics wordStats = iterationStats.getStats(var.getLocaleId().getId(), WORD);
+         if (wordStats == null)
          {
-            words = new TransUnitWords();
-            words.set(ContentState.New, total.intValue());
-
+            wordStats = new TranslationStatistics();
+            wordStats.setUntranslated( total );
+            wordStats.setTotal( total );
          }
          int per;
          if (total.intValue() == 0)
@@ -211,27 +230,16 @@ public class ViewAllStatusAction implements Serializable
          }
          else
          {
-            per = (int) Math.ceil(100 * words.getApproved() / words.getTotal());
+            per = (int) Math.ceil(100 * wordStats.getTranslated() / wordStats.getTotal());
 
          }
          boolean isMember = authenticatedAccount != null ? authenticatedAccount.getPerson().isMember(var) : false;
 
-         Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), words, per, isMember);
+         Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), wordStats, per, isMember);
          result.add(op);
       }
       Collections.sort(result);
       return result;
-   }
-
-
-   public boolean getShowAllLocales()
-   {
-      return showAllLocales;
-   }
-
-   public void setShowAllLocales(boolean showAllLocales)
-   {
-      this.showAllLocales = showAllLocales;
    }
 
    public HProjectIteration getProjectIteration()
@@ -402,14 +410,7 @@ public class ViewAllStatusAction implements Serializable
    
    private List<HLocale> getDisplayLocales()
    {
-      if (this.showAllLocales || authenticatedAccount == null)
-      {
-         return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
-      }
-      else
-      {
-         return localeServiceImpl.getTranslation(projectSlug, iterationSlug, authenticatedAccount.getUsername());
-      }
+      return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
    }
 
    public List<HIterationGroup> getSearchResults()
