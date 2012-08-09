@@ -261,13 +261,6 @@ div.cross {
 	margin-right: auto;
 }
 
-tr.odd {
-	background-color: #ffffff;
-}
-
-tr.even {
-	background-color: #fafaff;
-}
 
 tr.hover-row { 
 	cursor: pointer;
@@ -328,7 +321,6 @@ input[type="text"].api_key
 
 a.table_link {
 	font-size: 14px;
-	font-weight:bold;
 	padding: 4px;
 	border-radius: 5px;
 	color: #454545;
@@ -340,17 +332,6 @@ a.table_link {
 a.table_link:hover {
 	color: #990000;
 }
-
-
-a.iteration_link {
-	font-weight: bold;
-	color: #7092C3;
-}
-
-a.iteration_link:hover {
-	color: #990000;
-}
-
 
 .obsolete {
 	font-style: italic;
@@ -461,7 +442,8 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	color:#777777;
 	font-weight:bold;
 	font-size:13px;
-	padding:3px;
+	padding-top:3px;
+	padding-bottom:3px;
 	float:left;
 	margin-top:10px;
 }
@@ -877,7 +859,7 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 }
 
 .statusBar_untranslated {
-	background-color: #e5e5e5;
+	background-color: #C6C6C6;
 }
 /* -----------------------  End Stats bar CSS  -------------------------*/
 
@@ -959,22 +941,6 @@ a.version_link {
 
 a.version_link:hover {
 	color: #990000;
-}
-
-.iterationHeader_active {
-	background-image: none;
-	border-width: medium;
-	background-color: #ffffff;
-	color: #000000;
-	border-color: #ffffff;
-}
-
-.iterationHeader_readOnly,.iterationHeader_obsolete {
-	background-image: none;
-	border-width: medium;
-	background-color: #e5e5e5;
-	color: #000000;
-	border-color: #e5e5e5;
 }
 
 .list_view_header {

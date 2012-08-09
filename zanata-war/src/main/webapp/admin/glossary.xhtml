@@ -13,7 +13,7 @@
         <h:form>
             <s:token allowMultiplePosts="true" />
             <rich:dataTable id="data_table" width="100%" value="#{glossaryStatsAction.getAllStatus().toArray()}" 
-                  var="language" styleClass="iteration_inline_tribes" rowClasses="odd,even">
+                  var="language" styleClass="iteration_inline_tribes">
                     <rich:column sortBy="#{language.locale}">
                         <f:facet name="header">#{messages['jsf.Language']}</f:facet>
                         #{language.locale}

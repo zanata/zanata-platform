@@ -34,7 +34,7 @@
                     <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
                     #{language.retrieveNativeName()}
                 </rich:column>
-                <rich:column sortBy="#{language.members.size}">
+                <rich:column sortBy="#{language.members.size}" styleClass="centered">
                     <f:facet name="header">#{messages['jsf.Members']}</f:facet>
                     #{language.members.size}
                 </rich:column>
