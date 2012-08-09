@@ -10,8 +10,6 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
 
    void setViewMode(ViewMode viewMode);
 
-   void autoSize();
-
    void insertTextInCursorPosition(String suggestion);
 
    void addValidationMessagePanel(IsWidget validationMessagePanel);
@@ -21,8 +19,6 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
    int getIndex();
 
    void showCopySourceButton(boolean displayButtons);
-
-   void autoSizePlusOne();
 
    void setFocus();
    

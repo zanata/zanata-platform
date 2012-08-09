@@ -53,8 +53,6 @@ public class Editor extends Composite implements ToggleEditor
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
 
-   private static final int INITIAL_LINES = 3;
-
    private static final int TYPING_TIMER_INTERVAL = 500; // ms
    private static final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
@@ -179,7 +177,6 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("textArea")
    public void onValueChange(ValueChangeEvent<String> event)
    {
-      autoSize();
       fireValidationEvent();
       setLabelText(event.getValue());
    }
@@ -242,10 +239,6 @@ public class Editor extends Composite implements ToggleEditor
       label.setVisible(viewMode == ViewMode.VIEW);
       textArea.setVisible(viewMode == ViewMode.EDIT);
       translatorList.setVisible(viewMode == ViewMode.EDIT);
-      if (viewMode == ViewMode.EDIT)
-      {
-         autoSize();
-      }
    }
 
    @Override
@@ -278,28 +271,6 @@ public class Editor extends Composite implements ToggleEditor
          setLabelText(textAreaText);
       }
       return textAreaText;
-   }
-
-   @Override
-   public void autoSize()
-   {
-      textArea.setVisibleLines(INITIAL_LINES);
-      while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
-      {
-         textArea.setVisibleLines(textArea.getVisibleLines() + 1);
-      }
-   }
-
-   /**
-    * when user press enter, it will autosize first and then the enter itself
-    * will increase one line
-    * 
-    */
-   @Override
-   public void autoSizePlusOne()
-   {
-      autoSize();
-      textArea.setVisibleLines(textArea.getVisibleLines() + 1);
    }
 
    @Override

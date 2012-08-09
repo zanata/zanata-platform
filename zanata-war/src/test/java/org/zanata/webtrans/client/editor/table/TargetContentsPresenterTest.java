@@ -206,7 +206,6 @@ public class TargetContentsPresenterTest
       verify(editor).setTextAndValidate("source");
       verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
       verify(display).showButtons(false);
-      verify(editor).autoSize();
       verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
       verifyRevealDisplay();

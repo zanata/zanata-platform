@@ -128,7 +128,6 @@ public class TargetContentsPresenter implements
    private boolean escClosesEditorRegistered;
 
    private KeyShortcut enterSavesApprovedShortcut;
-   private KeyShortcut enterTriggersAutoSizeShortcut;
    private KeyShortcut escClosesEditorShortcut;
 
    private HandlerRegistration enterSavesApprovedHandlerRegistration;
@@ -293,15 +292,6 @@ public class TargetContentsPresenter implements
 
       enterSavesApprovedShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true, saveAsApprovedKeyShortcutHandler);
 
-      enterTriggersAutoSizeShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Edit, KeyShortcut.DO_NOT_DISPLAY_DESCRIPTION, KeyEvent.KEY_DOWN, false, false, new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            getCurrentEditor().autoSizePlusOne();
-         }
-      });
-
       if (configHolder.isEnterSavesApproved())
       {
          enterSavesApprovedRegistered = true;
@@ -310,18 +300,7 @@ public class TargetContentsPresenter implements
       else
       {
          enterSavesApprovedRegistered = false;
-         enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.register(enterTriggersAutoSizeShortcut);
       }
-
-      // Auto-size for any non-shortcut key presses
-      keyShortcutPresenter.register(new SurplusKeyListener(KeyEvent.KEY_DOWN, ShortcutContext.Edit, new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            getCurrentEditor().autoSize();
-         }
-      }));
 
       escClosesEditorShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE), ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
       {
@@ -553,7 +532,6 @@ public class TargetContentsPresenter implements
       currentEditorIndex = editor.getIndex();
       display.showButtons(isDisplayButtons());
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
-      editor.autoSize();
       editor.setFocus();
 
       revealDisplay();
@@ -607,7 +585,6 @@ public class TargetContentsPresenter implements
             {
                enterSavesApprovedHandlerRegistration.removeHandler();
             }
-            enterTriggersAutoSizeHandlerRegistration = keyShortcutPresenter.register(enterTriggersAutoSizeShortcut);
          }
          enterSavesApprovedRegistered = enterSavesApproved;
       }
