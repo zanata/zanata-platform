@@ -30,7 +30,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Parameter;
 import org.zanata.common.HasContents;
@@ -46,18 +45,11 @@ abstract class HTextContainer implements HasContents, Serializable
    private static final long serialVersionUID = 1L;
 
    @SuppressWarnings("unused")
-   @Fields({
-      @Field(name=IndexFieldLabels.CONTENT_CASE_FOLDED,
-             index = Index.TOKENIZED,
-             bridge = @FieldBridge(impl = StringListBridge.class,
-                                   params = {@Parameter(name="case", value="fold"),
-                                             @Parameter(name="ngrams", value="multisize")})),
-      @Field(name = IndexFieldLabels.CONTENT_CASE_PRESERVED,
-             index = Index.TOKENIZED,
-             bridge = @FieldBridge(impl = StringListBridge.class,
-                                   params = {@Parameter(name="case", value="preserve"),
-                                             @Parameter(name="ngrams", value="multisize")}))
-   })
+   @Field(name=IndexFieldLabels.CONTENT,
+          index = Index.TOKENIZED,
+          bridge = @FieldBridge(impl = StringListBridge.class,
+                                params = {@Parameter(name="case", value="fold"),
+                                          @Parameter(name="ngrams", value="multisize")}))
    private List<String> getContentsToIndex()
    {
       return getContents();
@@ -75,7 +67,7 @@ abstract class HTextContainer implements HasContents, Serializable
    }
 
    /**
-    * As of release 1.6, replaced by {@link #setContents()}
+    * As of release 1.6, replaced by {@link #setContents(String...)}
     * @return
     */
    @Deprecated

@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -138,10 +139,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       }
       Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
 
-      String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED);
+      //String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.TF_CONTENT_FIELDS);
 
       Query searchPhraseQuery;
-      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, searchFields, ngramAnalyzer);
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.CONTENT_FIELDS, ngramAnalyzer);
       try
       {
          searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
@@ -201,7 +202,11 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          log.info("got {} HTextFLowTarget results", matchedTargets.size());
          for (HTextFlowTarget htft : matchedTargets)
          {
-            resultList.add(htft.getTextFlow());
+            // manually check for case sensitive matches
+            if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htft.getContents(), constraints)) )
+            {
+               resultList.add(htft.getTextFlow());
+            }
          }
       }
 
@@ -215,7 +220,11 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          {
             if (!resultList.contains(htf))
             {
-               resultList.add(htf);
+               // manually check for case sensitive matches
+               if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htf.getContents(), constraints)) )
+               {
+                  resultList.add(htf);
+               }
             }
          }
       }
@@ -247,10 +256,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       }
       Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
 
-      String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED);
+      //String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.TF_CONTENT_FIELDS);
 
       Query searchPhraseQuery;
-      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, searchFields, ngramAnalyzer);
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.TF_CONTENT_FIELDS, ngramAnalyzer);
       try
       {
          searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
@@ -346,6 +355,37 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
                (constraints.isIncludeFuzzy() && state == ContentState.NeedReview) ||
                (constraints.isIncludeNew() && state == ContentState.New);
       }
+   }
+
+   private static boolean contentIsValid(Collection<String> contents, FilterConstraints constraints)
+   {
+      boolean valid = false;
+      if( constraints.isSearchInSource() )
+      {
+         for( String content : contents )
+         {
+            // make sure contents are EXACTLY the same (they should already be the same case insensitively)
+            if( constraints.isCaseSensitive() && content.contains( constraints.getSearchString() ) )
+            {
+               valid = true;
+               break;
+            }
+         }
+      }
+      if( constraints.isSearchInTarget() )
+      {
+         for( String content : contents )
+         {
+            // make sure contents are EXACTLY the same (they should already be the same case insensitively)
+            if( constraints.isCaseSensitive() && content.contains( constraints.getSearchString() ) )
+            {
+               valid = true;
+               break;
+            }
+         }
+      }
+
+      return valid;
    }
 
 }

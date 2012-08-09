@@ -35,19 +35,15 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
@@ -55,6 +51,7 @@ import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.util.HTextFlowPosComparator;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
@@ -120,16 +117,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<Long> findIdsWithTranslations(LocaleId locale)
-   {
-      Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
-      q.setParameter("locale", locale);
-      // TextFlowFilter does its own caching, no need for double caching
-      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
-      return q.list();
-   }
-
-   @SuppressWarnings("unchecked")
    public List<HTextFlow> getNavigationByDocumentId(Long documentId)
    {
       Criteria c = getSession().createCriteria(HTextFlow.class);
@@ -142,7 +129,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return c.list();
    }
 
-   public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, final int maxResult) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -178,22 +165,21 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;
-         if (queriesSize > IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length)
+         if (queriesSize > IndexFieldLabels.TF_CONTENT_FIELDS.length)
          {
-            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length);
+            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.TF_CONTENT_FIELDS.length);
          }
          String[] searchFields = new String[queriesSize];
-         System.arraycopy(IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, 0, searchFields, 0, queriesSize);
+         System.arraycopy(IndexFieldLabels.TF_CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
 
          textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
-         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, analyzer);
+         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.TF_CONTENT_FIELDS, analyzer);
          textQuery = parser.parse(queryText);
       }
-      FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-      ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
+      FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
 
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
