@@ -12,7 +12,7 @@
 		</s:link>
 						
 	     <ui:repeat value="#{breadcrumbs.locations}" var="breadcrumb" styleClass="breadcrumbs">
-	     	<img src="/zanata/images/zanata-icon/16x16/chevron-right.png"/>
+	     	<img src="/images/zanata-icon/16x16/chevron-right.png"/>
 		    <s:link value="#{breadcrumb.display}" view="#{breadcrumb.location}" styleClass="breadcrumbs_link" rendered="#{not empty breadcrumb.location}"/>
 		    <s:span styleClass="breadcrumbs_display" rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
 		</ui:repeat>
