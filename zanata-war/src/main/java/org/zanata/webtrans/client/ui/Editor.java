@@ -46,8 +46,6 @@ public class Editor extends Composite implements ToggleEditor
 
       String translatorList();
 
-      String textArea();
-
       String bottomContainer();
    }
 
@@ -85,9 +83,6 @@ public class Editor extends Composite implements ToggleEditor
 
    @UiField
    EditorTextArea textArea;
-
-   @UiField
-   HighlightingLabel label;
 
    @UiField
    PushButton copySourceButton;
@@ -131,38 +126,9 @@ public class Editor extends Composite implements ToggleEditor
       // determine whether to show or hide buttons
       showCopySourceButton(listener.isDisplayButtons());
 
-      setLabelText(displayString);
-
       if (!listener.isReadOnly())
       {
-         label.setTitle(messages.clickHere());
          setViewMode(ViewMode.EDIT);
-      }
-   }
-
-   private void setLabelText(String displayString)
-   {
-      if (Strings.isNullOrEmpty(displayString))
-      {
-         if (listener.isReadOnly())
-         {
-            label.setText(messages.noContent());
-         }
-         else
-         {
-            label.setText(messages.clickHere());
-         }
-         label.setStylePrimaryName("TableEditorContent-Empty");
-      }
-      else
-      {
-         label.setText(displayString);
-         label.setStylePrimaryName("TableEditorContent");
-      }
-
-      if (!Strings.isNullOrEmpty(findMessage))
-      {
-         label.highlightSearch(findMessage);
       }
    }
 
@@ -178,7 +144,6 @@ public class Editor extends Composite implements ToggleEditor
    public void onValueChange(ValueChangeEvent<String> event)
    {
       fireValidationEvent();
-      setLabelText(event.getValue());
    }
 
    @UiHandler("textArea")
@@ -223,7 +188,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public ViewMode getViewMode()
    {
-      if (label.isVisible())
+      if (textArea.isReadOnly())
       {
          return ViewMode.VIEW;
       }
@@ -236,8 +201,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void setViewMode(ViewMode viewMode)
    {
-      label.setVisible(viewMode == ViewMode.VIEW);
-      textArea.setVisible(viewMode == ViewMode.EDIT);
+      textArea.setReadOnly(viewMode == ViewMode.VIEW);
       translatorList.setVisible(viewMode == ViewMode.EDIT);
    }
 
@@ -259,7 +223,6 @@ public class Editor extends Composite implements ToggleEditor
       {
          textArea.setText("");
       }
-      setLabelText(text);
    }
 
    @Override

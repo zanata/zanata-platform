@@ -175,6 +175,53 @@ public class EditorTextArea extends TextArea
    }-*/;
 
    @Override
+   public void setReadOnly(boolean readOnly)
+   {
+      if (useCodeMirrorFlag)
+      {
+         if (readOnly)
+         {
+            setEditorOption("readOnly", "nocursor");
+         }
+         else
+         {
+            setEditorOption("readOnly", "false");
+         }
+      }
+      else
+      {
+         super.setReadOnly(readOnly);
+      }
+   }
+
+   private native void setEditorOption(String option, String value) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      if (editor)
+      {
+         editor.setOption(option, value);
+      }
+   }-*/;
+
+   private native String getEditorOption(String option, String defaultValue) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      if (editor)
+      {
+         return '' + editor.getOption(option);
+      }
+      return defaultValue;
+   }-*/;
+
+   @Override
+   public boolean isReadOnly()
+   {
+      if (useCodeMirrorFlag)
+      {
+         return Boolean.parseBoolean(getEditorOption("readOnly", "false"));
+      }
+      return super.isReadOnly();
+   }
+
+   @Override
    public void onBrowserEvent(Event event)
    {
       super.onBrowserEvent(event);

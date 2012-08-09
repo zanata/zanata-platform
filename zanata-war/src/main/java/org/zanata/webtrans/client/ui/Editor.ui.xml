@@ -16,12 +16,6 @@
 			padding-left:28px;
 		}
 
-		.textArea {
-			width:98%;
-			margin-left:3px;
-			margin-top:0px;
-		}
-		
 		.userLabel{
 			font-size:10px;
 			text-align:center;
@@ -48,9 +42,8 @@
                 </g:cell>
                 <g:cell>
                 	<g:FlowPanel styleName="TableEditorCell-Target">
-		                <fui:HighlightingLabel ui:field="label" />
 		                <g:HorizontalPanel ui:field="translatorList" styleName="{style.translatorList}" spacing="1"/>
-		                <tui:EditorTextArea ui:field="textArea" styleName="{style.textArea}"/>
+		                <tui:EditorTextArea ui:field="textArea" />
 	                </g:FlowPanel>
                 </g:cell>
 			</g:HorizontalPanel>
