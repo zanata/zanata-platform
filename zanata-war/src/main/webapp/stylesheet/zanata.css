@@ -1,5 +1,5 @@
 #container {
-	width: 1024px;
+	width: 960px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top:5px;
@@ -246,7 +246,7 @@ div.info {
 
 /* Styles from the security-stuff in seamspace*/
 div.checkmark {
-	background: url(../images/crystal_project/_16x16/actions/button_ok.png) top left no-repeat;
+	background: url(../images/zanata-icon/16x16/tick.png) top left no-repeat;
 	width: 16px;
 	height: 16px;
 	margin-left: auto;
@@ -254,7 +254,7 @@ div.checkmark {
 }
 
 div.cross {
-	background: url(../images/crystal_project/_16x16/actions/button_cancel.png) top left no-repeat;
+	background: url(../images/zanata-icon/16x16/cross.png) top left no-repeat;
 	width: 16px;
 	height: 16px;
 	margin-left: auto;
@@ -330,7 +330,7 @@ a.table_link {
 }
 
 a.table_link:hover {
-	color: #990000;
+	color: #0085CC;
 }
 
 .obsolete {
@@ -340,7 +340,7 @@ a.table_link:hover {
 
 a.obsolete_link,a.obsolete_link:visited,a.obsolete_link:link {
 	font-style: italic;
-	color: #ACC2E1;
+	color: #C35817;
 	text-decoration: line-through;
 }
 
@@ -350,7 +350,7 @@ a.obsolete_link,a.obsolete_link:visited,a.obsolete_link:link {
 
 a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	font-style: italic;
-	color: #ACC2E1;
+	color: #C35817;
 }
 
 
@@ -409,19 +409,10 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 .downArrow
 {
-	margin-right:9px;
-	font-size:10px;
-	vertical-align:top;
-	line-height:20px;
-	color:#C35817;
 	float:right;
+	padding-right:10px;
+	padding-top:7px;
 }
-
-.navBar ul li:hover .downArrow
-{
-	color:#FBB117;
-}
-
 
 /* ----------------------- End Header CSS  -------------------------*/
 
@@ -429,7 +420,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 .footer div.footer_container
 {
-	width:800px;
+	width:960px;
 	margin-left:auto;
 	margin-right:auto;
 	display:block;
@@ -483,7 +474,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 .footer div.section_block h4
 {
 	margin-top:10px;
-	margin-bottom:5px;
+	margin-bottom:0;
 	color:#777;
 }
 
@@ -619,7 +610,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 }
 
 .navBar {
-	width: 1024px;
+	width: 960px;
 	height: 100%;
 	margin: 0 auto;
 /* 	background: -webkit-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
@@ -652,7 +643,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 .navBar ul li:hover {
 	background: #7E91A9;
-	border-right: 1px solid #7E91A9;
+	border-right-color:#7E91A9;
 }
 
 .navBar ul li a {
@@ -665,7 +656,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	font-weight: bold;
 	text-decoration: none;
 	outline: none;
-	width: 160px;
+	width: 120px;
 	margin: 0 auto;
 }
 
@@ -701,8 +692,11 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 }
 
 
-#translationCol {
+#projectCol {
 	box-shadow: none;
+}
+#userCol, #userCol:hover {
+	border-right: none;
 }
 
 #userCol {
@@ -715,22 +709,8 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	background:#FFFFFF;
 }
 
-#menuCol a.text {
-	text-align: center;
-	width: 30px;
-	font-size: 18px;
-}
-
-#menuCol, #menuCol:hover {
-	border-right: none;
-}
-
-#menuCol:hover {
-	background: #7E91A9;
-}
-
-#menuCol .submenu {
-    margin-left:-130px;
+#userCol .submenu {
+    margin-left:-39px;
 }
 
 div.submenu {
@@ -739,6 +719,7 @@ div.submenu {
 	width: 160px;
 	overflow: hidden;
 	z-index: 999;
+	margin-top:1px;
 }
 
 .navBar li:hover div.submenu {
@@ -792,7 +773,6 @@ div.submenu ul li a {
 	text-shadow: none;
 	line-height: 28px;
 	text-align: left;
-	width: 160px;
 	margin-left: 5px;
 	margin-right: 5px;
 }
@@ -973,7 +953,7 @@ a.version_link:hover {
 }
 
 .highlighted_datatable_row {
-	background-color: #ffff00;
+	background-color:#FFFFD5;
 }
 /* -----------------------  End project iteration CSS  -------------------------*/
 

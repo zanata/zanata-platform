@@ -30,28 +30,52 @@
 							<img src="#{requestContextPath}/images/logo.png" alt="#{messages['jsf.ZanataMainDescription']}" class="logo" />
 						</s:link>
 					</li>
-					<li id="translationCol">
-						<a href="#">
-							<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/easymoblog.png" />Translation
-							<span class="downArrow">∨</span>
+					<li id="projectCol">
+						<s:link id="Projects" view="/project/home.xhtml" propagation="none">
+							<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kllckety.png" />#{messages['jsf.Projects']}
+						</s:link>
+					</li>
+					<li id="groupCol">
+						<s:link id="version-groups" view="/version-group/home.xhtml" propagation="none">
+							<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kdf.png" />#{messages['jsf.Groups']}
+						</s:link>
+					</li>
+					<li id="languageCol">
+						<s:link id="Languages" view="/language/home.xhtml" propagation="none">
+							<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/locale.png" />#{messages['jsf.Languages']}
+						</s:link>
+					</li>
+					<li id="systemCol">
+					    <a href="#">
+							#{messages['jsf.System']}<img src="#{request.contextPath}/images/zanata-icon/16x16/chevron-down.png" class="downArrow" />
 						</a>
 						<div class="submenu">
 							<ul>
 								<li>
-									<s:link id="Projects" view="/project/home.xhtml" propagation="none">
-										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kllckety.png" />#{messages['jsf.Projects']}
+									<s:link id="help" view="/help/view.xhtml" propagation="none">
+										<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/help.png" />#{messages['jsf.Help']}
 									</s:link>
 								</li>
 								<li>
-									<s:link id="version-groups" view="/version-group/home.xhtml" propagation="none">
-										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kdf.png" />#{messages['jsf.Groups']}
-									</s:link>
+									<a href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata" target="_blank" id="reportBug">
+										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/bug.png" />#{messages['jsf.ReportAProblem']}
+									</a>
 								</li>
-								<li>
-									<s:link id="Languages" view="/language/home.xhtml" propagation="none">
-										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/locale.png" />#{messages['jsf.Languages']}
-									</s:link>
-								</li>
+								<s:fragment rendered="#{not identity.loggedIn}">
+									<li>
+									   <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{applicationConfiguration.internalAuth}"/>
+									   <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+									       <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
+									   </s:fragment>
+									</li>
+								</s:fragment>
+								<s:fragment rendered="#{s:hasRole('admin')}">
+									<li>
+										<s:link id="Administration" view="/admin/home.xhtml" propagation="none">
+											<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/admin_icon.png" />#{messages['jsf.Administration']}
+										</s:link>
+									</li>
+								</s:fragment>
 							</ul>
 						</div>
 					</li>
@@ -59,7 +83,7 @@
 						<s:fragment rendered="#{identity.loggedIn}">
 							<a href="#"> 
 								<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar"/> 
-								<span><h:outputText value="#{identity.username} "/></span><span class="downArrow">∨</span>
+								<span><h:outputText value="#{identity.username} "/></span><img src="#{request.contextPath}/images/zanata-icon/16x16/chevron-down.png" class="downArrow"/>
 							</a>
 							<div class="submenu">
 								<ul>
@@ -77,52 +101,10 @@
 							</div>
 						</s:fragment>
 						<s:fragment rendered="#{not identity.loggedIn}">
-						    <a href="#" class="text">#{messages['jsf.SignIn']}/#{messages['jsf.Register']}<span class="downArrow">∨</span></a>
-						    
-							<div class="submenu">
-								<ul>
-									<li>
-									   <s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
-									   		<img src="#{requestContextPath}/images/zanata-icon/16x16/signin.png" alt="#{messages['jsf.ZanataMainDescription']}"/>#{messages['jsf.SignIn']}
-									   </s:link>
-									</li>
-									
-									<li>
-									   <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{applicationConfiguration.internalAuth}"/>
-									   <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
-									       <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
-									   </s:fragment>
-									</li>
-								</ul>
-							</div>
+						    <s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
+						   		<img src="#{requestContextPath}/images/zanata-icon/16x16/signin.png" alt="#{messages['jsf.ZanataMainDescription']}"/>#{messages['jsf.SignIn']}
+						   </s:link>
 						</s:fragment>
-					</li>
-					<li id="menuCol">
-						<a href="#" class="text">&#9660;</a>
-						<div class="submenu">
-							<ul>
-								<li>
-									<s:link id="help" view="/help/view.xhtml" propagation="none">
-										<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/help.png" />#{messages['jsf.Help']}
-									</s:link>
-								</li>
-								
-								<li>
-									<a href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata" target="_blank" id="reportBug">
-										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/bug.png" />#{messages['jsf.ReportAProblem']}
-									</a>
-								</li>
-								
-								
-								<s:fragment rendered="#{s:hasRole('admin')}">
-									<li>
-										<s:link id="Administration" view="/admin/home.xhtml" propagation="none">
-											<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/lin_agt_wrench.png" />#{messages['jsf.Administration']}
-										</s:link>
-									</li>
-								</s:fragment>
-							</ul>
-						</div>
 					</li>
 				</ul>
 				
@@ -169,47 +151,59 @@
 					<div class="content">
 						<ul>
 							<li>
-								<a href="http://zanata.org/">About Zanata</a>
+								<a href="http://zanata.org/">#{messages['jsf.AboutZanata']}</a>
 							</li>
 							<li>
-								<a href="http://zanata.org/documentation.html">Documentation</a>
+								<a href="http://zanata.org/documentation.html">#{messages['jsf.Documentation']}</a>
 							</li>
 							<li>
-								<a href="https://github.com/zanata/zanata/wiki">Zanata Wiki</a>
+								<a href="https://github.com/zanata/zanata/wiki">#{messages['jsf.Wiki']}</a>
 							</li>
 							<li>
-								<a href="http://blog-zanatatm.rhcloud.com/">Blog</a>
+								<a href="http://blog-zanatatm.rhcloud.com/">#{messages['jsf.Blog']}</a>
 							</li>
 						</ul>
 					</div>
 				</div>
 				
 				<div class="section_block">
-					<h4>Support</h4>
+					<h4>#{messages['jsf.Support']}</h4>
 					<div class="content">
 						<ul>
 							<li>
 							    <s:link view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link>
 							</li>
 							<li>
-								<a href="http://webchat.freenode.net/?channels=zanata">IRC Help</a>
+								<a href="http://webchat.freenode.net/?channels=zanata">#{messages['jsf.IrcHelp']}</a>
 							</li>
 							<li>
-								<a href="http://zanata.org/faq.html">FAQ</a>
+								<a href="http://zanata.org/faq.html">#{messages['jsf.FAQ']}</a>
+							</li>
+							<li>
+								<a href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata">#{messages['jsf.ReportAProblem']}</a>
+							</li>
+							<li>
+								<a href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__">#{messages['jsf.KnownIssues']}</a>
 							</li>
 						</ul>
 					</div>
 				</div>
 				
 				<div class="section_block">
-					<h4>Issues</h4>
+					<h4>#{messages['jsf.SiteMap']}</h4>
 					<div class="content">
 						<ul>
 							<li>
-								<a href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata">#{messages['jsf.ReportAProblem']}</a>
+							   <s:link id="Projects_sitemap" view="/project/home.xhtml" propagation="none" value="#{messages['jsf.Projects']}"/>
 							</li>
 							<li>
-								<a href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__">Known issues</a>
+							   <s:link id="Groups_sitemap" view="/version-group/home.xhtml" propagation="none" value="#{messages['jsf.Groups']}"/>
+							</li>
+							<li>
+							   <s:link id="Languages_sitemap" view="/language/home.xhtml" propagation="none" value="#{messages['jsf.Languages']}"/>
+							</li>
+							<li>
+							   <s:link id="Help_sitemap" view="/help/view.xhtml" propagation="none" value="#{messages['jsf.Help']}"/>
 							</li>
 						</ul>
 					</div>
