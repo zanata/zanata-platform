@@ -65,23 +65,6 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
 
    }
 
-   // FIXME TextFlowDAO can't find the named query during the test
-   @Test(enabled = false)
-   public void getIdsWithTranslations()
-   {
-      List<Long> de = dao.findIdsWithTranslations(new LocaleId("de"));
-      System.out.println(de);
-      assertThat(de.size(), is(1));
-
-      List<Long> es = dao.findIdsWithTranslations(new LocaleId("es"));
-      System.out.println(es);
-      assertThat(es.size(), is(0));
-
-      List<Long> fr = dao.findIdsWithTranslations(new LocaleId("fr"));
-      System.out.println(fr);
-      assertThat(fr.size(), is(0));
-   }
-
    @Test
    public void canGetAllUntranslatedTextFlowForADocument() {
       HLocale deLocale = getEm().find(HLocale.class, 3L);
