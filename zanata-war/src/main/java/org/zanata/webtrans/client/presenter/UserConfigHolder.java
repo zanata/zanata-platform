@@ -57,7 +57,7 @@ public class UserConfigHolder
    private boolean buttonFuzzy = true;
    private boolean buttonUntranslated = true;
    private boolean displayButtons = true;
-   private int pageSize = 5;
+   private int pageSize = 10;
 
    public boolean isEnterSavesApproved()
    {
