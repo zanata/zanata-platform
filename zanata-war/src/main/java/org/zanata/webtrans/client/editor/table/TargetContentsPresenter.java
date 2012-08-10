@@ -531,8 +531,7 @@ public class TargetContentsPresenter implements
    @Override
    public void showHistory()
    {
-      TransUnitId transUnitId = cellEditor.getTargetCell().getId();
-      historyPresenter.showTranslationHistory(transUnitId);
+      historyPresenter.showTranslationHistory(currentTransUnitId);
    }
 
    @Override
