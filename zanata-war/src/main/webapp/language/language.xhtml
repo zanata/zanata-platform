@@ -25,9 +25,7 @@
     </ui:define>
 
     <ui:define name="center_content">
-        <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
-        <a4j:form>
-            <rich:panel id="memberPanel" >
+        <a4j:form id="memberPanel">
                 <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
                 <p>#{messages['jsf.SizeMembers']}</p>
                 <rich:dataTable
@@ -71,7 +69,6 @@
                           reRender="memberPanel,actionPanel, userAddPanel" />
                   </rich:column>
                 </rich:dataTable>
-            </rich:panel>
         </a4j:form>
     </ui:define>
 
@@ -121,7 +118,6 @@
               <h:form rendered="#{not empty languageTeamAction.searchResults}">
                 <rich:dataTable id="personTable"
                                 value="#{languageTeamAction.searchResults}" var="person">
-                  <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
                   <rich:column sortBy="#{person.name}">
                     <f:facet name="header">#{messages['jsf.Name']}</f:facet>
                     #{person.name}

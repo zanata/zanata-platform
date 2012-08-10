@@ -25,13 +25,8 @@
 </ui:define>
 
 <ui:define name="center_content">
-    <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
     <a4j:form>
-    	
-    	 <h1>#{messages['jsf.GroupId']}: #{versionGroupHome.instance.slug}</h1>
-    	 <h1>#{messages['jsf.Name']}: #{versionGroupHome.instance.name}</h1>
-    	 
-    	 <s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
+    	<s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
                         var="_iteration">
@@ -93,7 +88,7 @@
   </s:fragment>
  
  
-    <rich:modalPanel id="versionAddPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
+    <rich:modalPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
             <a4j:form>
                 <h1>Find Project Version</h1>
@@ -115,8 +110,6 @@
                     <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <a4j:outputPanel  layout="block" style="overflow:auto;height:320px" rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable" value="#{versionGroupAction.searchResults}" var="selectableVersion">
-                            <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
-
                             <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
                                 <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                                 #{selectableVersion.projectIteration.project.name}

@@ -25,8 +25,6 @@
     </ui:define>
 
     <ui:define name="center_content">
-		<rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
-
         <ui:remove>
             <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests -->
         </ui:remove>
@@ -36,19 +34,6 @@
             </ul>
         </a4j:outputPanel>
 
-		<h1>
-	       #{messages['jsf.ProjectId']}:&nbsp;
-	       <s:link view="/project/view/#{viewAllStatusAction.projectSlug}" styleClass="table_link">
-	           #{viewAllStatusAction.projectSlug}
-	       </s:link>
-	    </h1>
-        <h1>
-            #{messages['jsf.Version']}:&nbsp;
-            #{viewAllStatusAction.iterationSlug}
-        </h1>
-
-		<rich:panel id="iteration-status-panel">
-		
 			<ui:include src="/WEB-INF/layout/loading.xhtml">
 				<ui:param name="regionId" value="langTableRegion"/>
 			</ui:include>
@@ -64,13 +49,13 @@
 					
 					<rich:dataTable id="data_table" width="100%"
 						value="#{viewAllStatusAction.getAllStatus().toArray()}" var="stats"
-						styleClass="iteration_inline_tribes" rowClasses="odd,even">
+						styleClass="iteration_inline_tribes">
 						<rich:column sortBy="#{stats.locale}"
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.Language']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.html"
-								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="iteration_link">
+								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -85,7 +70,7 @@
 							<f:facet name="header">#{messages['jsf.Name']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.html"
-								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="iteration_link">
+								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -97,58 +82,60 @@
 						</rich:column>
 						<rich:column id="translate" 
 							rendered="#{identity.loggedIn and not viewAllStatusAction.isIterationObsolete()}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+							<f:facet name="header">#{messages['jsf.View']}</f:facet>
+							
 							<h:outputLink
 								rendered="#{not applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale) }"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
-								#{messages['jsf.Open']}
+								<img src="#{request.contextPath}/images/zanata-icon/16x16/eye-open.png" title="#{messages['jsf.Open']}"/>
 							</h:outputLink>
 	
 							<h:outputLink
 								rendered="#{applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
 								<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-								#{messages['jsf.OpenGWTDevMode']}
+								<img src="#{request.contextPath}/images/zanata-icon/16x16/eye-open.png" title="#{messages['jsf.OpenGWTDevMode']}"/>
 	      					</h:outputLink>
 	
 							<h:outputLink
 								rendered="#{not applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
-								#{messages['jsf.Translate']}
+								<img src="#{request.contextPath}/images/zanata-icon/16x16/edit.png" title="#{messages['jsf.Translate']}"/>
 	      					</h:outputLink>
 	      					
 							<h:outputLink
 								rendered="#{applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
 								<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-								#{messages['jsf.TranslateGWTDevMode']}
+								<img src="#{request.contextPath}/images/zanata-icon/16x16/edit.png" title="#{messages['jsf.TranslateGWTDevMode']}"/>
 	      					</h:outputLink>
 						</rich:column>
 						<rich:column id="files"
 							rendered="#{identity.loggedIn}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<s:link
-								view="/iteration/files.xhtml" propagation="none"
-								value="#{messages['jsf.Files']}" styleClass="iteration_link">
+							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+							<f:facet name="header">#{messages['jsf.Files']}</f:facet>
+							<s:link view="/iteration/files.xhtml" propagation="none" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
+								<img src="#{request.contextPath}/images/zanata-icon/16x16/file.png" />
 							</s:link>
 						</rich:column>
 						<rich:column sortBy="#{stats.per}"
@@ -163,20 +150,6 @@
 					</rich:dataTable>
 				</a4j:region>
 			</a4j:form>
-		</rich:panel>
-
-        <rich:simpleTogglePanel label="#{messages['jsf.JoinedGroups']}" switchType="client">
-            <h:form>
-                <rich:dataGrid value="#{viewAllStatusAction.projectIteration.groups.toArray()}" var="group" columns="3" styleClass="noBorderTable noBackgroundTable" style="border:0px">
-                    <s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="table_link">
-                        <f:param name="versionGroupSlug" value="#{group.slug}" />
-                    </s:link>
-                </rich:dataGrid>
-            </h:form>
-        </rich:simpleTogglePanel>
-
-
-
 	</ui:define>
 
 	<ui:define name="left_content">
@@ -210,6 +183,15 @@
             <s:fragment rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
                 <a href="#" class="action_link" onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
             </s:fragment>
+		</rich:panel>
+		
+		<rich:panel>
+			<f:facet name="header">#{messages['jsf.JoinedGroups']}</f:facet>
+			<ui:repeat value="#{viewAllStatusAction.projectIteration.groups.toArray()}" var="group" styleClass="breadcrumbs">
+				<s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="action_link">
+                   <f:param name="versionGroupSlug" value="#{group.slug}" />
+               </s:link>
+			</ui:repeat>	
 		</rich:panel>
 
         <a4j:form>

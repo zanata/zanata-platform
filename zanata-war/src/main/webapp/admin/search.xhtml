@@ -11,17 +11,12 @@
 
     <ui:define name="page_title">#{messages['jsf.ManageSearch']}</ui:define>
     <ui:define name="center_content">
-      <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
-      <rich:panel>
-        <h1>#{messages['jsf.ManageSearch']}</h1>
-
         <a4j:form>
           <s:token allowMultiplePosts="true" />
           <a4j:region>
 
             <a4j:outputPanel id="actions">
               <a4j:outputPanel rendered="#{reindexAction.canceled || !reindexAction.inProgress}">
-                <h2>#{messages['jsf.manageSearch.Actions']}</h2>
                 <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
                                 value="#{reindexAction.classes.toArray()}" var="clazz"
                                 reRender="actions">
@@ -129,7 +124,6 @@
 
           </a4j:region>
         </a4j:form>
-      </rich:panel>
     </ui:define>
     
 </ui:composition>

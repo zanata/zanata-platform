@@ -18,49 +18,35 @@
   
     <ui:define name="page_title">Manage Users</ui:define>
     <ui:define name="center_content">
-      <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />  
       <script type="text/javascript">
         function confirmDelete()
         {
           return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
         }
       </script>
-      <rich:panel>
-        <f:facet name="header">#{messages['jsf.UserManager']}</f:facet>
-  	    
         <a4j:form>
             <s:token allowMultiplePosts="true" />
-	        <h:dataTable 
+	        <rich:dataTable 
 	            id="threads"
 	            value="#{users}" 
 	            var="user" 
 	            cellspacing="0"
-	            headerClass="columnHeader"
-	            rowClasses="odd,even"
 	            columnClasses="centered,centered,centered,centered"
 	            styleClass="fullwidth">
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              User name
-	            </f:facet>
+	            <f:facet name="header">User name</f:facet>
 	            #{user}
 	          </h:column>
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              #{messages['jsf.MemberOf']}
-	            </f:facet>
+	            <f:facet name="header">#{messages['jsf.MemberOf']}</f:facet>
 	            #{userSearch.getUserRoles(user)}
 	          </h:column>
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              #{messages['jsf.Enabled']}
-	            </f:facet>
+	            <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
 	            <div class="#{identityManager.isUserEnabled(user) ? 'checkmark' : 'cross'}"/>
 	          </h:column>
 	          <h:column width="auto">
-	            <f:facet name="header">
-	              #{messages['jsf.Actions']}
-	            </f:facet>
+	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
 	              <h:commandButton value="#{messages['jsf.Edit']}" action="#{userAction.editUser(userSearch.selectedUser)}"/>
 	            </s:fragment>
@@ -68,9 +54,8 @@
 	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
-	  	    </h:dataTable>
+	  	    </rich:dataTable>
         </a4j:form>
-      </rich:panel>	    
     </ui:define>
     
   </ui:composition>

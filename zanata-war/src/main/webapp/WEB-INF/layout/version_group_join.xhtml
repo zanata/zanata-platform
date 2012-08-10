@@ -9,12 +9,9 @@
         <h:outputText id="noResultsMessage" rendered="#{empty versionGroupJoinAction.projectVersions}" value="#{messages['jsf.NoProjects']}" />
         <h:form rendered="#{not empty versionGroupJoinAction.projectVersions}">
             <s:token allowMultiplePosts="true" />
-            <h2>#{messages['jsf.RequestToJoinVersionGroupTitle']}</h2>
-
             <h4>#{messages['jsf.SelectProjectVersions']}</h4>
             <rich:panel style="height:170px;overflow:auto">
                 <rich:dataTable id="resultTable" value="#{versionGroupJoinAction.projectVersions}" var="selectableVersion">
-                    <f:facet name="header">#{messages['jsf.MaintainedProjects']}</f:facet>
                     <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
                         <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                         #{selectableVersion.projectIteration.project.name}

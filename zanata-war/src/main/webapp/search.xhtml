@@ -9,8 +9,6 @@
 
    <ui:define name="page_title">Search Results for '#{projectSearch.searchQuery}'</ui:define>
 	<ui:define name="center_content">
-		<rich:jQuery selector="#tab_projects"
-			query="addClass('ui-tabs-selected')" />
 		<h1>#{messages['jsf.FoundResultsizeProjectsMatchingQuerySearchquery']}</h1>
 
         <rich:dataTable id="searchResults" columnsWidth="200px,200px,80px" value="#{projectSearch.searchResults}" var="project">

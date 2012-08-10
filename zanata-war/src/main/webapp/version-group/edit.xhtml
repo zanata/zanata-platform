@@ -10,16 +10,6 @@
 
 <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name} - Edit</ui:define>
 <ui:define name="center_content">
-    <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
-    
-    <h1>
-	      #{messages['jsf.GroupName']}:&nbsp;
-	      <s:link id="versionGroup" styleClass="table_link" value="#{versionGroupHome.instance.name}" view="/version-group/version_group.xhtml"> 
-          	<f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
-          </s:link>
-	</h1>
-	    
-	    
 
     <ui:include src="../WEB-INF/layout/version_group_edit_form.xhtml" />
 

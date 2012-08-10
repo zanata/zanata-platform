@@ -10,14 +10,14 @@
 
     <ui:define name="page_title">Languages</ui:define>
     <ui:define name="left_content">
-      <rich:panel rendered="#{identity.loggedIn}">
+      <rich:panel rendered="#{identity.loggedIn and s:hasRole('admin')}">
         <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+        <s:link styleClass="action_link" view="/admin/supportedlanguagedetail.xhtml"
+			value="#{messages['jsf.CreateSupportedLanguage']}" />
       </rich:panel>
     </ui:define>
 
     <ui:define name="center_content">
-        <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
-        <h1>#{messages['jsf.Languages']}</h1>
         <h:form>
             <rich:dataTable id="latestTribes" value="#{supportedLanguageAction.supportedLanguages}" var="language">
                 <rich:column sortBy="#{language.localeId.id}">
@@ -34,7 +34,7 @@
                     <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
                     #{language.retrieveNativeName()}
                 </rich:column>
-                <rich:column sortBy="#{language.members.size}">
+                <rich:column sortBy="#{language.members.size}" styleClass="centered">
                     <f:facet name="header">#{messages['jsf.Members']}</f:facet>
                     #{language.members.size}
                 </rich:column>

@@ -687,6 +687,7 @@ td.ApprovedStateDecoration div div div
 .DocumentListTable td {
 	font-size: 15px;
 	cursor: pointer;
+	padding:8px;
 }
 
 .DocumentListTable td.directoryCol {

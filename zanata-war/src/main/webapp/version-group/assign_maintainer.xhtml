@@ -19,24 +19,14 @@
    
     <ui:define name="center_content">
 
-      <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
-
       <script type="text/javascript">
         function confirmDelete()
         {
           return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsGroupMaintainer']}");
         }
       </script>
-      
-      	<h1>
-	      #{messages['jsf.GroupName']}:&nbsp;
-	      <s:link id="versionGroup" styleClass="table_link" value="#{versionGroupMaintainerManageAction.group.name}" view="/version-group/version_group.xhtml"> 
-          	<f:param name="versionGroupSlug" value="#{versionGroupMaintainerManageAction.group.slug}"/>
-          </s:link>
-	    </h1>
                       
-      <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
-        <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
+      <s:fragment rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
 		<h:messages />
 		
         <h:form>
@@ -65,7 +55,7 @@
 	          </rich:column>
 	  	    </rich:dataTable>
         </h:form>              
-      </rich:panel>
+      </s:fragment>
 
         <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
             <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">

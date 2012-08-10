@@ -13,10 +13,8 @@
    
    <ui:define name="page_title">#{messages['jsf.RequestToJoinLanguageTeamTitle']}</ui:define>
    <ui:define name="center_content">
-      <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
       <h:form>
          <s:token allowMultiplePosts="true" />
-         <h1>#{messages['jsf.RequestToJoinLanguageTeamTitle']}</h1>
          <rich:panel>
             
             <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">

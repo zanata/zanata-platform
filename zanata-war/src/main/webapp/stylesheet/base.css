@@ -63,35 +63,75 @@ table {
 }
 
 input,textarea {
-	-moz-border-radius: 3px;
 	border-radius: 3px;
-	border: 1px solid #BBBBBB;
-	padding: 3px;
+	border: 1px solid #C5C5C5;
+	padding: 5px;
 	color: #222222;
 	font-weight: bold;
+	font-size:14px;
+}
+
+input[type="text"], input[type="password"]
+{
+	width:210px;
+	font-size:12px;
 }
 
 button,input[type="checkbox"],input[type="radio"],input[type="reset"],input[type="submit"],input[type="button"]
-	{
-	color: #222222;
+{
+	color: #626262;
 	padding: 2px;
 	margin-left: 2px;
 	margin-right: 2px;
 }
-
-button,input[type="reset"],input[type="submit"],input[type="button"] {
-	background-color: #fafafa;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
+	
+	
+button,input[type="reset"],input[type="submit"],input[type="button"] {	
+	border: 1px solid #999;
+	border-radius: 4px;
+	cursor: pointer;
+	background: #CCC;
+	background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #EEE),
+		color-stop(100%, #CCC) );
+	background: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -o-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -ms-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: linear-gradient(top, #EEE 0%, #CCC 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#eeeeee',
+		endColorstr='#cccccc', GradientType=0 );
+	/* Text (previously on the a tag) */
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 5px;
+	text-align: center;
+	text-decoration: none;
+	color: #444;
+	text-shadow: 0 1px 1px white;
+	width:auto;
 }
 
 input.with_icon {
 	background-position: 5px 50%;
 	background-repeat: no-repeat;
-	padding: 0 0 0 25px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	height:18px;
+	padding: 3px 3px 3px 25px;
+	height:22px;
+	width:280px;
+	font-size:16px;
+}
+
+button:hover,input[type="reset"]:hover,input[type="submit"]:hover,input[type="button"]:hover 
+{
+	background: #CCC;
+	background: -moz-linear-gradient(top, white 0%, #DDD 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white),
+		color-stop(100%, #DDD) );
+	background: -webkit-linear-gradient(top, white 0%, #DDD 100%);
+	background: -o-linear-gradient(top, white 0%, #DDD 100%);
+	background: -ms-linear-gradient(top, white 0%, #DDD 100%);
+	background: linear-gradient(top, white 0%, #DDD 100%);
+	filter: progid:DXImageTransform.Microsoft.
 }
 
 textarea.code_editor {
@@ -121,35 +161,4 @@ td.centered {
 .rich-tool-tip p {
 	margin-top: 3px;
 	margin-bottom: 3px;
-}
-
-/* -----------------------  Browser specific  ----------------------- */
-
-/* Additional IE specific bug fixes... */
-* html .ui-tabs-nav { /* auto clear, @ IE 6 & IE 7 Quirks Mode */
-	display: inline-block;
-}
-
-/* @ IE 7 Standards Mode - do not group selectors, otherwise IE 6 will ignore complete rule (because of the unknown + combinator)... */
-*:first-child+html .ui-tabs-nav {
-	display: inline-block;
-}
-
-/* IE 6 treats width as min-width */
-/* IE 6 treats height as min-height */
-#tabs .ui-tabs-nav a span {
-	min-width: 64px;
-	min-height: 18px;
-}
-
-/* @ Opera, use pseudo classes otherwise it confuses cursor... */
-.ui-tabs-nav .ui-tabs-selected a:link,.ui-tabs-nav .ui-tabs-selected a:visited,.ui-tabs-nav .ui-tabs-disabled a:link,.ui-tabs-nav .ui-tabs-disabled a:visited
-	{
-	cursor: text;
-}
-
-/* @ Opera, we need to be explicit again here now... */
-.ui-tabs-nav a:hover,.ui-tabs-nav a:focus,.ui-tabs-nav a:active,.ui-tabs-nav .ui-tabs-unselect a:hover,.ui-tabs-nav .ui-tabs-unselect a:focus,.ui-tabs-nav .ui-tabs-unselect a:active
-	{
-	cursor: pointer;
 }

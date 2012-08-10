@@ -21,25 +21,19 @@
     </ui:define>
    
     <ui:define name="center_content">
-      <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
       <script type="text/javascript">
         function confirmDelete()
         {
           return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisRoleThisActionCannotBeUndone']}");
         }
       </script>
-      <rich:panel>
-        <f:facet name="header">#{messages['jsf.RoleManager']}</f:facet>
-
         <h:form>
             <s:token allowMultiplePosts="true" />
-	        <h:dataTable 
+	        <rich:dataTable 
 	            id="threads"
 	            value="#{roles}" 
 	            var="role"
 	            cellspacing="0"
-	            headerClass="columnHeader"
-	            rowClasses="odd,even"
 	            columnClasses="centered,centered,centered"
 	            styleClass="fullwidth">
 	
@@ -60,9 +54,8 @@
 	                    rendered="#{s:hasPermission('seam.role', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
-	  	    </h:dataTable>
+	  	    </rich:dataTable>
         </h:form>              
-      </rich:panel>
     </ui:define>
     
   </ui:composition>

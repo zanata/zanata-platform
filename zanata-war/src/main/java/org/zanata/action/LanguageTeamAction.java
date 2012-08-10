@@ -69,7 +69,7 @@ public class LanguageTeamAction implements Serializable
    @Logger
    Log log;
    
-   @In
+   @In(create= true)
    private List<HLocale> memberLanguage;
 
    private String language;

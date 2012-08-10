@@ -24,7 +24,6 @@
 
   <ui:define name="center_content" >
     <s:decorate id="main_content">
-    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
     <s:fragment rendered="#{projectAction.getEmpty()}">
 	   <h:outputText value="#{messages['jsf.NoProjectExists']}" />
     </s:fragment>

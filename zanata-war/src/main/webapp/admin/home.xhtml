@@ -10,12 +10,6 @@
 
     <ui:define name="page_title">Administration</ui:define>
     <ui:define name="center_content">
-        <rich:jQuery selector="#tab_admin"
-                     query="addClass('ui-tabs-selected')"/>
-
-        <h1>#{messages['jsf.Administration']}</h1>
-
-
         <h:panelGrid columns="4" border="0">
             <s:link id="Admin_Server_configuration_home" view="/admin/server_configuration.xhtml" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">

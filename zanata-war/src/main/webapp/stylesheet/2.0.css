@@ -248,24 +248,15 @@
 	margin-bottom: 18px;
 }
 
-/* Copy of rich table styles */
-.rich-table {
+.rich-table { 
 	width: 100%;
-}
-
-.rich-table { /*border-top: solid 1px silver;
-        border-left: solid 1px silver;*/
-	/*background-color: #E8EDFF;*/
-	background-color: #EEE;
 	empty-cells: show;
-	border-collapse: collapse;
-	border-radius: 5px;
-	/* This is for the faux 3D effect */
-	box-shadow: 1px 1px 5px #888888;
+	border:0;
+	background-color:#EEEEEE;
 }
 
 .rich-table tbody tr:hover {
-	background-color: white;
+	background-color: #FFFFFF;
 }
 
 table {
@@ -286,16 +277,17 @@ table {
 
 .rich-table-subheader th:last-child {
 	border-top-right-radius: 5px;
+	border-right:0;
 }
 
-.rich-table-subheadercell { /*border-right: solid 1px silver;*/
-	padding: 8px 8px 8px 8px;
+.rich-table-subheadercell { 
+	padding: 15px 8px 15px 8px;
 	text-align: center;
-	font-size: 11px;
-	/*color: black;*/
+	font-size: 13px;
 	color: #ffffff;
 	font-family: Arial, Verdana, sans-serif;
 	white-space: nowrap;
+	background-color:#461446;
 }
 
 th {
@@ -308,58 +300,76 @@ th,td {
 	padding: 0px;
 }
 
-.rich-table-cell { /*border-right: solid 1px silver;
-        border-bottom: solid 1px silver;*/
-	border-top: solid 2px white;
-	padding: 8px 8px 8px 8px;
-	font-size: 11px;
-	color: black;
+.rich-table-cell {
+	padding: 10px;
+	font-size: 12px;
+	color: #595959;
 	font-family: Arial, Verdana, sans-serif;
+	border-left:0;
+	border-right:0;
 }
 /* End of richfaces table styles */
 
+.rich-stglpanel-header {
+	background-image: none;
+	padding: 4px;
+	font-size:12px;
+	border-radius: 3px;
+	border-style: solid;
+	background-color: #5F5F5F;
+	border-color: #5F5F5F;
+	color: white;
+	font-weight: bold;
+	font-family: Arial, Verdana, sans-serif;
+}
+
+.rich-stglpanel-body {
+	background:#FFFFFF;
+} 
+
+.rich-stglpanel-body .noBorderTable {
+	background:#FFFFFF;
+	box-shadow:none;
+}
+
+.rich-stglpanel-body .noBorderTable tr:hover {
+	background-color:inherit;
+}
+
+.rich-mpnl-header
+{
+	background:#461446;
+	border-color:#461446;
+		
+}
+
 /* Copy of Richfaces Panel styles*/
 .rich-panel {
-	border-radius: 5px;
-	-moz-border-radius: 5px;
+	border-radius: 3px;
 	margin-bottom: 10px;
 	border-width: 1px;
 	border-style: solid;
 	padding: 1px;
 	background-color: #EEE;
 	border-color: silver;
-	/* This is for the faux 3D effect */
-	box-shadow: 1px 1px 5px #888888;
 }
 
 .rich-panel .rich-panel-header {
 	background-image: none;
-	padding: 2px 3px;
+	padding: 4px;
+	font-size:12px;
 }
 
 .rich-panel-header {
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	-moz-border-radius: 5px;
+	border-radius: 3px;
 	text-align: center;
-}
-
-.rich-panel-header {
-	padding: 2px;
-	/*border-width: 1px;*/
 	border-style: solid;
-	background-position: top left;
-	background-repeat: repeat-x;
-}
-
-.rich-panel-header {
-	background-color: #5F5F5F;
-	border-color: #5F5F5F;
+	border-color: #461446;
+	background-color: #461446;
 	font-size: 11px;
 	color: white;
 	font-weight: bold;
 	font-family: Arial, Verdana, sans-serif;
-	/*background-image: url(/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.GradientA/DATB/eAF7emTy1lIvJgASigOz);*/
 }
 
 .rich-panel-body {
@@ -446,31 +456,19 @@ th,td {
 	text-align: center;
 }
 
-.rich-datascr-act { /*border-top-color: black;*/
+.rich-datascr-act { 
 	color: #ffffff;
 	background-color: #5F5F5F;
 	font-family: Arial, Verdana, sans-serif;
 	font-size: 11px;
 	font-weight: bold;
-}
-
-.rich-datascr-act { /*border-top-width: 2px;
-        border-top-style: solid;*/
 	width: 23px;
 	text-align: center;
 	border-radius: 5px;
-	padding: 5px;
+	padding: 3px;
 }
 
-.rich-datascr-inact { /*border-top-color: #4A75B5;*/
-	/*color: #4A75B5;*/
-	color: #5F5F5F;
-	font-family: Arial, Verdana, sans-serif;
-	font-size: 11px;
-}
-
-.rich-datascr-inact { /* border-top-width: 2px;
-        border-top-style: solid;*/
+.rich-datascr-inact { 
 	width: 23px;
 	cursor: pointer;
 	text-align: center;
@@ -478,7 +476,9 @@ th,td {
 	border-color: #5F5F5F;
 	border-style: solid;
 	border-radius: 5px;
-	padding: 3px;
+	color: #5F5F5F;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
 }
 
 .rich-datascr-inact:hover {

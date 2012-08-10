@@ -19,7 +19,6 @@
 	</ui:define>
 
 	<ui:define name="center_content">
-        <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
 		<script type="text/javascript">
         function confirmDelete()
         {
@@ -48,9 +47,6 @@
             }
         }
       </script>
-		<rich:panel>
-			<f:facet name="header">#{messages['jsf.LanguageManager']}</f:facet>
-
 			<a4j:form>
 				<s:token allowMultiplePosts="true" />
 				<rich:dataTable id="threads" value="#{allLanguages}"
@@ -102,7 +98,6 @@
 					</rich:column>
 				</rich:dataTable>
 			</a4j:form>
-		</rich:panel>
 	</ui:define>
 
 </ui:composition>
