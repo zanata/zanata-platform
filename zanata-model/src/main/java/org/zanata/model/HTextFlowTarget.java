@@ -61,9 +61,9 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
@@ -192,6 +192,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @JoinColumn(name = "tf_id")
    @Field(index = Index.UN_TOKENIZED)
    @FieldBridge(impl = ContainingWorkspaceBridge.class)
+   @IndexedEmbedded
    public HTextFlow getTextFlow()
    {
       return textFlow;
@@ -230,19 +231,11 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @IndexColumn(name = "pos", nullable = false)
    @Column(name = "content", nullable = false)
    // TODO extend HTextContainer and remove this
-   @Fields({
-      @Field(name=IndexFieldLabels.CONTENT_CASE_FOLDED,
-             index = Index.TOKENIZED,
-             bridge = @FieldBridge(impl = StringListBridge.class,
-                                   params = {@Parameter(name="case", value="fold"),
-                                             @Parameter(name="ngrams", value="multisize")})),
-      @Field(name = IndexFieldLabels.CONTENT_CASE_PRESERVED,
-             index = Index.TOKENIZED,
-             bridge = @FieldBridge(impl = StringListBridge.class,
-                                   params = {@Parameter(name="case", value="preserve"),
-                                             @Parameter(name="ngrams", value="multisize")}))
-   })
-
+   @Field(name=IndexFieldLabels.CONTENT,
+          index = Index.TOKENIZED,
+          bridge = @FieldBridge(impl = StringListBridge.class,
+                                params = {@Parameter(name="case", value="fold"),
+                                          @Parameter(name="ngrams", value="multisize")}))
    public List<String> getContents()
    {
       // Copy lazily loaded relations to the history object as this cannot be

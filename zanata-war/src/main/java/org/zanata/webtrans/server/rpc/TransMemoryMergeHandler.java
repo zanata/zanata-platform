@@ -90,9 +90,6 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       Map<Long, TransUnitUpdateRequest> requestMap = transformToMap(action.getUpdateRequests());
       List<HTextFlow> hTextFlows = textFlowDAO.findByIdList(Lists.newArrayList(requestMap.keySet()));
 
-      // FIXME this won't scale well (copy from GetTransMemoryHandler)
-      List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId());
-
       TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getThresholdPercent());
 
       List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
@@ -104,7 +101,7 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
             log.warn("Text flow id {} is not untranslated. Ignored.", hTextFlow.getId());
             continue;
          }
-         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), idsWithTranslations);
+         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL));
          TransMemoryResultItem tmResult = findTMAboveThreshold(tmResults, predicate);
          TransUnitUpdateRequest request = createRequest(action, hLocale, requestMap, hTextFlow, tmResult);
          if (request != null)

@@ -152,12 +152,11 @@ public class TransMemoryMergeHandlerTest
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
-      when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
       // Given: there are three TM results returned for text flow id 1, and the most matched one is text flow id 11
       HTextFlow tmResultSource = TestFixture.makeApprovedHTextFlow(11L, hLocale);
       TransMemoryResultItem mostSimilarTM = tmResult(tmResultSource.getId(), 100);
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
-      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, idsWithTranslations))
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery))
             .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
       // Given: tm detail of text flow id 11
@@ -185,12 +184,11 @@ public class TransMemoryMergeHandlerTest
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
       hTextFlow.getTargets().put(hLocale.getId(), null); //make sure target is null
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
-      when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
       // Given: there is TM results returned for text flow id 1
       HTextFlow tmResultSource = TestFixture.makeApprovedHTextFlow(11L, hLocale);
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
       TransMemoryResultItem tmResult = tmResult(tmResultSource.getId(), 100);
-      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, idsWithTranslations))
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery))
             .thenReturn(newArrayList(tmResult));
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
       // Given: tm detail of text flow id 11
@@ -215,10 +213,9 @@ public class TransMemoryMergeHandlerTest
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
-      when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
       // Given: there is no TM results returned for text flow id 1
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
-      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, idsWithTranslations))
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery))
             .thenReturn(Lists.<TransMemoryResultItem>newArrayList());
 
       // When: execute the action
@@ -238,10 +235,9 @@ public class TransMemoryMergeHandlerTest
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
-      when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
       // Given: there are three TM results returned for text flow id 1, and the most matched one has percentage 79
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
-      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, idsWithTranslations))
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery))
             .thenReturn(newArrayList(tmResult(11L, 79), tmResult(12L, 60), tmResult(13L, 50)));
 
       // When: execute the action
@@ -281,12 +277,11 @@ public class TransMemoryMergeHandlerTest
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
-      when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
       // Given: there are three TM results returned for text flow id 1, and the most matched one is text flow id 11
       HTextFlow tmResultSource = TestFixture.makeApprovedHTextFlow(11L, hLocale);
       TransMemoryResultItem mostSimilarTM = tmResult(tmResultSource.getId(), 100);
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
-      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, idsWithTranslations))
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery))
             .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
       // Given: tm detail of text flow id 11 which has different doc id
@@ -318,17 +313,16 @@ public class TransMemoryMergeHandlerTest
 
       when(textFlowDAO.findByIdList(newArrayList(idWith100MatchTM, idWithoutTM, idWith80MatchTM, idWith90MatchTM)))
             .thenReturn(newArrayList(textFlow100TM, textFlowNoTM, textFlow80TM, textFLow90TM));
-      when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
       // Given: TM results
       HTextFlow tmResultSource = TestFixture.makeApprovedHTextFlow(11L, hLocale);
       TransMemoryResultItem tm100 = tmResult(tmResultSource.getId(), 100);
       TransMemoryResultItem tm90 = tmResult(tmResultSource.getId(), 90);
       TransMemoryResultItem tm80 = tmResult(tmResultSource.getId(), 80);
 
-      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlow100TM.getContents(), FUZZY_PLURAL), idsWithTranslations)).thenReturn(newArrayList(tm100));
-      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFLow90TM.getContents(), FUZZY_PLURAL), idsWithTranslations)).thenReturn(newArrayList(tm90));
-      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlow80TM.getContents(), FUZZY_PLURAL), idsWithTranslations)).thenReturn(newArrayList(tm80));
-      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlowNoTM.getContents(), FUZZY_PLURAL), idsWithTranslations)).thenReturn(Lists.<TransMemoryResultItem>newArrayList());
+      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlow100TM.getContents(), FUZZY_PLURAL))).thenReturn(newArrayList(tm100));
+      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFLow90TM.getContents(), FUZZY_PLURAL))).thenReturn(newArrayList(tm90));
+      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlow80TM.getContents(), FUZZY_PLURAL))).thenReturn(newArrayList(tm80));
+      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlowNoTM.getContents(), FUZZY_PLURAL))).thenReturn(Lists.<TransMemoryResultItem>newArrayList());
 
 
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
