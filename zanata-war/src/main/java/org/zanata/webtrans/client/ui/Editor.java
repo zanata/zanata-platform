@@ -274,7 +274,12 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public String getText()
    {
-      return textArea.getText();
+      String textAreaText = textArea.getText();
+      if (!label.getText().equals(textAreaText))
+      {
+         setLabelText(textAreaText);
+      }
+      return textAreaText;
    }
 
    @Override
