@@ -39,7 +39,9 @@ public abstract class AbstractDAOImpl<T, ID extends Serializable> implements Gen
    protected Session getSession()
    {
       if (session == null)
+      {
          throw new IllegalStateException("Session has not been set on DAO before usage");
+      }
       return session;
    }
 
@@ -54,9 +56,13 @@ public abstract class AbstractDAOImpl<T, ID extends Serializable> implements Gen
    {
       T entity;
       if (lock)
+      {
          entity = (T) getSession().load(getPersistentClass(), id, LockMode.UPGRADE);
+      }
       else
+      {
          entity = (T) getSession().load(getPersistentClass(), id);
+      }
 
       return entity;
    }

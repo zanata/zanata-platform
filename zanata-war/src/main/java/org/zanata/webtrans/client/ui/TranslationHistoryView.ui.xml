@@ -1,0 +1,29 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:z='urn:import:org.zanata.webtrans.client.ui'>
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
+
+    <ui:style field="style" type="org.zanata.webtrans.client.ui.TranslationHistoryView.Styles" >
+        .compareButton {
+            margin: 5px;
+            width: 30%;
+        }
+    </ui:style>
+
+    <g:TabLayoutPanel barUnit='PX' barHeight='20' width="800px" height="600px">
+        <g:tab>
+            <g:customHeader>
+                <g:InlineHTML text="{messages.translationHistory}" />
+            </g:customHeader>
+            <g:ScrollPanel>
+                <g:VerticalPanel ui:field="historyPanel" width="100%" height="100%" />
+            </g:ScrollPanel>
+            <!--TODO add a compare button-->
+        </g:tab>
+        <g:tab>
+            <g:customHeader size='7'>
+                <g:InlineHTML text="{messages.translationHistoryComparisonTitle}" />
+            </g:customHeader>
+            <z:HistoryEntryComparisonPanel ui:field="comparisonPanel" visible="false"/>
+        </g:tab>
+    </g:TabLayoutPanel>
+</ui:UiBinder>

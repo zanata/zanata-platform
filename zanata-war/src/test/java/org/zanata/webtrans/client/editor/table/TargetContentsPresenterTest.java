@@ -57,6 +57,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
+import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -106,13 +107,15 @@ public class TargetContentsPresenterTest
    
    @Mock
    private CachingDispatchAsync dispatcher;
+   @Mock
+   private TranslationHistoryPresenter historyPresenter;
 
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, dispatcher, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, scheduler, validationPanel, keyShortcutPresenter);
+      presenter = new TargetContentsPresenter(displayProvider, dispatcher, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, scheduler, validationPanel, keyShortcutPresenter, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -397,7 +400,7 @@ public class TargetContentsPresenterTest
       givenCurrentEditorsAs(editor);
 
       // TODO update for plurals
-      presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
+      presenter.onDataCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
       verify(editor).setTextAndValidate("target");
       verify(eventBus, atLeastOnce()).fireEvent(notificationEventCaptor.capture());

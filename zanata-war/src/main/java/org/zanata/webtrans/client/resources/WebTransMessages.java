@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.resources;
 
+import java.util.List;
+
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -378,6 +380,40 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Chat")
    String chatScope();
 
+
    @DefaultMessage("Report a problem")
    String reportAProblem();
+
+   @DefaultMessage("Version")
+   String versionNumber();
+
+   @DefaultMessage("Modified By")
+   String modifiedBy();
+
+   @DefaultMessage("Modified Date")
+   String modifiedDate();
+
+   @DefaultMessage("Copy")
+   String copy();
+
+   @DefaultMessage("Translation History")
+   String translationHistory();
+
+   @Description("Tab text for translation history comparison")
+   @DefaultMessage("Compare ver. {0} and {1}")
+   String translationHistoryComparison(String versionOne, String versionTwo);
+
+   @DefaultMessage("Select 2 entries to compare")
+   String translationHistoryComparisonTitle();
+
+   @Description("latest version in translation history")
+   @DefaultMessage("{0} Latest")
+   String latestVersion(String versionNum);
+
+   @Description("current value in editor for translation history display")
+   @DefaultMessage("Current")
+   String current();
+
+   @DefaultMessage("Flip entries")
+   String flipComparingEntries();
 }
