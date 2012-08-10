@@ -141,14 +141,13 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    public void goToPage(int pageNumber)
    {
-      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
+      targetContentsPresenter.savePendingChangesIfApplicable();
       navigationController.gotoPage(pageNumber - 1, false);
    }
 
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
-      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
       navigationController.navigateTo(event.getRowType());
    }
 
@@ -267,7 +266,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       if (pageModel.getCurrentRow() != rowIndex)
       {
-         pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
+         targetContentsPresenter.savePendingChangesIfApplicable();
          navigationController.selectByRowIndex(rowIndex);
       }
    }

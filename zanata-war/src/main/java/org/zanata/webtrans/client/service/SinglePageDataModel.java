@@ -28,8 +28,6 @@ public interface SinglePageDataModel
 
    int findIndexById(TransUnitId id);
 
-   void savePendingChangeIfApplicable(ArrayList<String> newTargets);
-
    TransUnit getByIdOrNull(TransUnitId transUnitId);
 
    List<TransUnit> getData();

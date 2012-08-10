@@ -3,7 +3,6 @@ package org.zanata.webtrans.client.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -48,17 +47,6 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    }
 
    @Override
-   public void savePendingChangeIfApplicable(ArrayList<String> newTargets)
-   {
-      TransUnit currentSelection = getSelectedOrNull();
-      if (hasPendingChange(newTargets, currentSelection))
-      {
-         Log.info("saving pending change:" + currentSelection.getTargets() + " new:" + newTargets);
-         eventBus.fireEvent(new TransUnitSaveEvent(newTargets, currentSelection.getStatus(), currentSelection.getId(), currentSelection.getVerNum()));
-      }
-   }
-
-   @Override
    public TransUnit getByIdOrNull(TransUnitId transUnitId)
    {
       int indexById = findIndexById(transUnitId);
@@ -67,11 +55,6 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
          return data.get(indexById);
       }
       return null;
-   }
-
-   private boolean hasPendingChange(ArrayList<String> contentsInEditor, TransUnit currentSelection)
-   {
-      return currentSelection != null && contentsInEditor != null && !Objects.equal(currentSelection.getTargets(), contentsInEditor);
    }
 
    @Override

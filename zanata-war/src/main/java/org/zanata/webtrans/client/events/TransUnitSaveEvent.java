@@ -87,12 +87,7 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
       if (o == null || getClass() != o.getClass()) return false;
 
       TransUnitSaveEvent that = (TransUnitSaveEvent) o;
-      // @formatter:off
-      return Objects.equal(transUnitId, that.transUnitId)
-            && Objects.equal(verNum, that.verNum)
-            && Objects.equal(status, that.status)
-            && Objects.equal(targets, that.targets);
-      // @formatter:on
+      return Objects.equal(transUnitId, that.transUnitId) && Objects.equal(verNum, that.verNum);
    }
 
    @Override

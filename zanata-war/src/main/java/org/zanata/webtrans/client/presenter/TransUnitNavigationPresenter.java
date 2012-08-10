@@ -24,6 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
@@ -43,6 +44,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 {
 
    private UserConfigHolder configHolder;
+   private final TargetContentsPresenter targetContentsPresenter;
 
    public interface Display extends WidgetDisplay
    {
@@ -64,10 +66,11 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    }
 
    @Inject
-   public TransUnitNavigationPresenter(Display display, EventBus eventBus, UserConfigHolder configHolder)
+   public TransUnitNavigationPresenter(Display display, EventBus eventBus, UserConfigHolder configHolder, TargetContentsPresenter targetContentsPresenter)
    {
       super(display, eventBus);
       this.configHolder = configHolder;
+      this.targetContentsPresenter = targetContentsPresenter;
    }
 
    @Override
@@ -78,6 +81,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
+            targetContentsPresenter.savePendingChangesIfApplicable();
             fireEvent(new NavTransUnitEvent(NavigationType.PrevEntry));
          }
       });
@@ -87,6 +91,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
+            targetContentsPresenter.savePendingChangesIfApplicable();
             fireEvent(new NavTransUnitEvent(NavigationType.NextEntry));
          }
       });
@@ -96,6 +101,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
+            targetContentsPresenter.savePendingChangesIfApplicable();
             fireEvent(new NavTransUnitEvent(NavigationType.FirstEntry));
          }
       });
@@ -105,6 +111,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
+            targetContentsPresenter.savePendingChangesIfApplicable();
             fireEvent(new NavTransUnitEvent(NavigationType.LastEntry));
          }
       });
@@ -114,6 +121,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
+            targetContentsPresenter.savePendingChangesIfApplicable();
             fireEvent(new NavTransUnitEvent(NavigationType.PrevState));
          }
       });
@@ -123,6 +131,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
+            targetContentsPresenter.savePendingChangesIfApplicable();
             fireEvent(new NavTransUnitEvent(NavigationType.NextState));
          }
       });
@@ -150,7 +159,6 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    @Override
    public HandlerRegistration addNavTransUnitHandler(NavTransUnitHandler handler)
    {
-      // TODO Auto-generated method stub
       return eventBus.addHandler(NavTransUnitEvent.getType(), handler);
    }
 

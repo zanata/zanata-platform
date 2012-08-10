@@ -263,6 +263,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onKeyShortcut(KeyShortcutEvent event)
          {
 //            translationEditorPresenter.gotoPrevRow(false);
+            targetContentsPresenter.savePendingChangesIfApplicable();
             eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.PrevEntry));
          }
       };
@@ -273,6 +274,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onKeyShortcut(KeyShortcutEvent event)
          {
 //            translationEditorPresenter.gotoNextRow(false);
+            targetContentsPresenter.savePendingChangesIfApplicable();
             eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
          }
       };
@@ -317,7 +319,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    public void saveEditorPendingChange()
    {
-      pageModel.savePendingChangeIfApplicable(targetContentsPresenter.getNewTargets());
+      targetContentsPresenter.savePendingChangesIfApplicable();
    }
 
    /**

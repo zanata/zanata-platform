@@ -72,6 +72,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
    void setFindMessage(String findMessage);
 
+   List<String> getCachedTargets();
+
    ArrayList<String> getNewTargets();
 
    boolean isEditing();

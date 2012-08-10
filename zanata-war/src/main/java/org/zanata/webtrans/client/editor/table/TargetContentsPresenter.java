@@ -55,7 +55,6 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
@@ -216,6 +215,7 @@ public class TargetContentsPresenter implements
             else
             {
                currentEditorIndex = 0;
+               savePendingChangesIfApplicable();
                eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
             }
          }
@@ -234,6 +234,7 @@ public class TargetContentsPresenter implements
             else
             {
                currentEditorIndex = LAST_INDEX;
+               savePendingChangesIfApplicable();
                eventBus.fireEvent(new NavTransUnitEvent(PrevEntry));
             }
          }
@@ -248,6 +249,7 @@ public class TargetContentsPresenter implements
          {
             if (isModalNavEnabled)
             {
+               savePendingChangesIfApplicable();
                eventBus.fireEvent(new NavTransUnitEvent(NextState));
             }
          }
@@ -263,6 +265,7 @@ public class TargetContentsPresenter implements
          {
             if (isModalNavEnabled)
             {
+               savePendingChangesIfApplicable();
                eventBus.fireEvent(new NavTransUnitEvent(PrevState));
             }
          }
@@ -346,6 +349,19 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
+   }
+
+   public void savePendingChangesIfApplicable()
+   {
+      if (currentEditorContentHasChanged())
+      {
+         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.NeedReview, currentTransUnitId, display.getVerNum()));
+      }
+   }
+
+   private boolean currentEditorContentHasChanged()
+   {
+      return display != null && !Objects.equal(display.getCachedTargets(), display.getNewTargets());
    }
 
    private ToggleEditor getCurrentEditor()

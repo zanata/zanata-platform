@@ -76,6 +76,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
    private Integer verNum;
+   private List<String> targets;
 
    public TargetContentsView()
    {
@@ -128,7 +129,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setValue(TransUnit transUnit)
    {
       verNum = transUnit.getVerNum();
-      List<String> targets = transUnit.getTargets();
+      targets = transUnit.getTargets();
       editors.clear();
       if (targets == null || targets.size() <= 0)
       {
@@ -209,6 +210,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          result.add(editor.getText());
       }
       return result;
+   }
+
+   @Override
+   public List<String> getCachedTargets()
+   {
+      return targets;
    }
 
    @Override
