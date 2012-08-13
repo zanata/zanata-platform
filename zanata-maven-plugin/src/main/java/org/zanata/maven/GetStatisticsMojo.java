@@ -20,9 +20,106 @@
  */
 package org.zanata.maven;
 
+import org.zanata.client.commands.ConfigurableCommand;
+import org.zanata.client.commands.stats.GetStatisticsCommand;
+import org.zanata.client.commands.stats.GetStatisticsOptions;
+
 /**
+ * Get translation statistics from Zanata.
+ *
+ * @goal stats
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class GetStatisticsMojo extends ConfigurableMojo
+public class GetStatisticsMojo extends ConfigurableProjectMojo<GetStatisticsOptions> implements GetStatisticsOptions
 {
+   /**
+    * Include detailed statistics.
+    *
+    * @parameter expression="${zanata.details}" default-value="false"
+    */
+   private boolean includeDetails;
+
+   /**
+    * Include word-level stats. By default, only message-level statistics will be fetched.
+    *
+    * @parameter expression="${zanata.word}" default-value="false"
+    */
+   private boolean includeWordLevelStats;
+
+   /**
+    * Output format for the statistics. Valid options are:
+    * csv - For a csv format (via the console).
+    * console (default) - For regular console printing.
+    *
+    * @parameter expression="${zanata.format}" default-value="console"
+    */
+   private String format;
+
+   /**
+    * Document id to fetch statistics for.
+    *
+    * @parameter expression="${zanata.docId}"
+    */
+   private String documentId;
+
+
+   @Override
+   public ConfigurableCommand<GetStatisticsOptions> initCommand()
+   {
+      return new GetStatisticsCommand(this);
+   }
+
+   @Override
+   public boolean getIncludeDetails()
+   {
+      return includeDetails;
+   }
+
+   @Override
+   public void setIncludeDetails(boolean includeDetails)
+   {
+      this.includeDetails = includeDetails;
+   }
+
+   @Override
+   public boolean getIncludeWordLevelStats()
+   {
+      return includeWordLevelStats;
+   }
+
+   @Override
+   public void setIncludeWordLevelStats(boolean includeWordLevelStats)
+   {
+      this.includeWordLevelStats = includeWordLevelStats;
+   }
+
+   @Override
+   public String getFormat()
+   {
+      return format;
+   }
+
+   @Override
+   public void setFormat(String format)
+   {
+      this.format = format;
+   }
+
+   @Override
+   public String getDocumentId()
+   {
+      return documentId;
+   }
+
+   @Override
+   public void setDocumentId(String documentId)
+   {
+      this.documentId = documentId;
+   }
+
+   @Override
+   public String getCommandName()
+   {
+      return "stats";
+   }
 }
