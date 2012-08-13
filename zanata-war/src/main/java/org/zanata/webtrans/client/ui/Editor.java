@@ -6,10 +6,13 @@ import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -55,6 +58,7 @@ public class Editor extends Composite implements ToggleEditor
    private static final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
    private final int index;
+   private final TransUnitId id;
 
    private boolean isFocused;
 
@@ -116,11 +120,12 @@ public class Editor extends Composite implements ToggleEditor
       }
    };
 
-   public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener)
+   public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
    {
       this.findMessage = findMessage;
       this.listener = listener;
       this.index = index;
+      this.id = id;
       initWidget(uiBinder.createAndBindUi(this));
 
       // determine whether to show or hide buttons
@@ -130,6 +135,7 @@ public class Editor extends Composite implements ToggleEditor
       {
          setViewMode(ViewMode.EDIT);
       }
+      setText(displayString);
    }
 
    private void fireValidationEvent()
@@ -150,8 +156,7 @@ public class Editor extends Composite implements ToggleEditor
    public void onTextAreaFocus(FocusEvent event)
    {
       listener.setValidationMessagePanel(this);
-      listener.toggleView(this);
-      event.stopPropagation();
+      listener.onFocus(id, index);
       isFocused = true;
    }
 

@@ -7,7 +7,7 @@
         }
 
         .evenRow {
-
+            background-color: #F3F7FB;
         }
 
         .cellFormat {
@@ -16,18 +16,20 @@
 
         .table {
             border-collapse: collapse;
+            /* setting width to 99% to leave some space from the scroll bar */
+            width: 99%;
+            margin: 5px;
+            table-layout: fixed;
+        }
+
+        .selected {
+            /*background-color: #EEEEEE;*/
+            border-right: 5px solid #8a2be2;
+            border-left: 5px solid #8a2be2;
         }
     </ui:style>
 
-    <g:SplitLayoutPanel>
-        <g:center min-size="300">
-            <g:ScrollPanel width="100%" ui:field="tuTablePanel">
-
-            </g:ScrollPanel>
-        </g:center>
-        <g:south size="300" min-size="200">
-            <g:ScrollPanel width="100%" ui:field="editorPanel">
-            </g:ScrollPanel>
-        </g:south>
-    </g:SplitLayoutPanel>
+    <g:ScrollPanel>
+        <g:Grid ui:field="transUnitTable" styleName="{style.table}" />
+    </g:ScrollPanel>
 </ui:UiBinder>

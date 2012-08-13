@@ -43,6 +43,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
@@ -130,7 +131,6 @@ public class TargetContentsPresenter implements
    private KeyShortcut escClosesEditorShortcut;
 
    private HandlerRegistration enterSavesApprovedHandlerRegistration;
-   private HandlerRegistration enterTriggersAutoSizeHandlerRegistration;
    private HandlerRegistration escClosesEditorHandlerRegistration;
 
    private final KeyShortcut nextStateShortcut;
@@ -376,7 +376,7 @@ public class TargetContentsPresenter implements
 
    public void showEditors(int rowIndex, TransUnitId currentTransUnitId)
    {
-      Log.info("enter show editor with rowIndex:" + rowIndex);
+      Log.info("enter show editor with rowIndex:" + rowIndex + " id:" + currentTransUnitId);
       display = displayList.get(rowIndex);
       currentEditors = display.getEditors();
       this.currentTransUnitId = currentTransUnitId;
@@ -535,6 +535,13 @@ public class TargetContentsPresenter implements
    }
 
    @Override
+   public void onFocus(TransUnitId id, int editorIndex)
+   {
+      currentEditorIndex = editorIndex;
+      eventBus.fireEvent(new TableRowSelectedEvent(id));
+   }
+
+   @Override
    public void onCancel()
    {
       eventBus.fireEvent(TransUnitSaveEvent.CANCEL_EDIT_EVENT);
@@ -552,12 +559,6 @@ public class TargetContentsPresenter implements
       revealDisplay();
 
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-   }
-
-   @Override
-   public void toggleView(final ToggleEditor editor)
-   {
-      currentEditorIndex = editor.getIndex();
    }
 
    public ArrayList<String> getNewTargets()
@@ -588,10 +589,6 @@ public class TargetContentsPresenter implements
       {
          if (enterSavesApproved)
          {
-            if (enterTriggersAutoSizeHandlerRegistration != null)
-            {
-               enterTriggersAutoSizeHandlerRegistration.removeHandler();
-            }
             enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
          }
          else

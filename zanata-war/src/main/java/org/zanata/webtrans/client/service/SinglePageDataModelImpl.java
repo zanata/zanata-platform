@@ -38,7 +38,7 @@ public class SinglePageDataModelImpl implements SinglePageDataModel
    public void setSelected(int rowIndex)
    {
       //TODO change index to transUnitID?
-      Log.debug("current row:" + currentRow + " about to select row:" + rowIndex);
+      Log.info("current row:" + currentRow + " about to select row:" + rowIndex);
       if (currentRow != rowIndex)
       {
          currentRow = rowIndex;

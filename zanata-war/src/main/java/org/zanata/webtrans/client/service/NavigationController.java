@@ -29,10 +29,12 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
+import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -47,7 +49,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -103,6 +104,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    private void requestTransUnitsAndUpdatePageIndex(final GetTransUnitActionContext context)
    {
       Log.info("requesting transUnits: " + context);
+      eventBus.fireEvent(LoadingEvent.START_EVENT);
       final int itemPerPage = context.getCount();
       final int offset = context.getOffset();
 
@@ -120,6 +122,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
                Log.error("GetTransUnits failure " + caught, caught);
                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyLoadFailed()));
             }
+            eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
          }
 
          @Override
@@ -140,8 +143,10 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
                gotoRow = result.getGotoRow() % itemPerPage;
             }
             navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
-            pageModel.setSelected(gotoRow);
+
+            eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
+            eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
          }
       });
    }
@@ -230,9 +235,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
 
       if (navigationService.getCurrentPage() == targetPage)
       {
-         int rowIndexOnPage = pageModel.findIndexById(targetTransUnitId);
-         pageModel.setSelected(rowIndexOnPage);
-         navigationService.updateCurrentPageAndRowIndex(targetPage, rowIndexOnPage);
+         eventBus.fireEvent(new TableRowSelectedEvent(targetTransUnitId));
       }
       else
       {

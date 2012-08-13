@@ -5,7 +5,9 @@ import java.util.List;
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.client.ui.LoadingPanel;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,20 +31,22 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 {
    private static TransUnitEditViewUiBinder uiBinder = GWT.create(TransUnitEditViewUiBinder.class);
 
-   private Grid transUnitTable = new Grid(0, 2);
-   private ScrollPanel container= new ScrollPanel(transUnitTable);
-   private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
-   private Listener listener;
-
+   @UiField
+   Grid transUnitTable;
    @UiField
    Styles style;
 
+   private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
+   private final LoadingPanel loadingPanel;
+   private Listener listener;
+
    @Inject
-   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay)
+   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel)
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
-      transUnitTable.setWidth("100%");
-      transUnitTable.setStyleName(style.table());
+      this.loadingPanel = loadingPanel;
+      initWidget(uiBinder.createAndBindUi(this));
+
       transUnitTable.addClickHandler(new ClickHandler()
       {
          @Override
@@ -55,7 +59,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
             }
          }
       });
-      initWidget(uiBinder.createAndBindUi(this));
+      transUnitTable.resize(0, 2);
    }
 
    private void selectRow(int rowIndex)
@@ -120,15 +124,38 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    }
 
    @Override
+   public void applySelectedStyle(int rowIndex)
+   {
+      HTMLTable.RowFormatter rowFormatter = transUnitTable.getRowFormatter();
+      for (int i = 0; i < transUnitTable.getRowCount(); i++)
+      {
+         if (i == rowIndex)
+         {
+            rowFormatter.addStyleName(i, style.selected());
+         }
+         else
+         {
+            rowFormatter.removeStyleName(i, style.selected());
+         }
+      }
+   }
+
+   @Override
    public void setRowSelectionListener(Listener listener)
    {
       this.listener = listener;
    }
 
    @Override
-   public Widget asWidget()
+   public void showLoading()
    {
-      return container;
+      loadingPanel.center();
+   }
+
+   @Override
+   public void hideLoading()
+   {
+      loadingPanel.hide();
    }
 
    interface Styles extends CssResource
@@ -140,6 +167,8 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       String cellFormat();
 
       String table();
+
+      String selected();
    }
 
    interface TransUnitEditViewUiBinder extends UiBinder<Widget, TransUnitEditView>

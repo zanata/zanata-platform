@@ -55,8 +55,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
       void copySource(ToggleEditor editor);
 
-      void toggleView(ToggleEditor editor);
-
       void setValidationMessagePanel(ToggleEditor editor);
       
       void onCancel();
@@ -68,6 +66,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
       boolean isReadOnly();
 
       void showHistory();
+
+      void onFocus(TransUnitId id, int editorIndex);
    }
 
    void setFindMessage(String findMessage);

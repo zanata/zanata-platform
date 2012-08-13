@@ -15,7 +15,7 @@
             text-align: left;
             text-indent: 5px;
             cursor: pointer;
-            background: #F3F2F2;
+            background: #FFFFFF;
             border: 1px solid #E0E8EE;
             color: #686868;
             text-decoration: none;

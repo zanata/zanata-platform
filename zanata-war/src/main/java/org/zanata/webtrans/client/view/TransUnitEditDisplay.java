@@ -44,6 +44,12 @@ public interface TransUnitEditDisplay extends WidgetDisplay
 
    void setRowSelectionListener(Listener listener);
 
+   void showLoading();
+
+   void hideLoading();
+
+   void applySelectedStyle(int rowIndex);
+
    interface Listener
    {
       void onRowSelected(int rowIndex);

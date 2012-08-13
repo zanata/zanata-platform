@@ -30,9 +30,13 @@ import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
+import org.zanata.webtrans.client.events.LoadingEvent;
+import org.zanata.webtrans.client.events.LoadingEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
@@ -67,7 +71,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
       SinglePageDataModel.PageDataChangeListener,
-      TransUnitEditDisplay.Listener
+      TransUnitEditDisplay.Listener,
+      TableRowSelectedEventHandler,
+      LoadingEventHandler
 {
 
    private final TransUnitEditDisplay display;
@@ -114,6 +120,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
+      eventBus.addHandler(TableRowSelectedEvent.TYPE, this);
+      eventBus.addHandler(LoadingEvent.TYPE, this);
    }
 
    @Override
@@ -266,8 +274,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       if (pageModel.getCurrentRow() != rowIndex)
       {
+         Log.info("current row:" + pageModel.getCurrentRow() + " rowSelected:" + rowIndex);
          targetContentsPresenter.savePendingChangesIfApplicable();
          navigationController.selectByRowIndex(rowIndex);
+         display.applySelectedStyle(rowIndex);
       }
    }
 
@@ -282,6 +292,30 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       {
          // select first row
          onRowSelected(0);
+      }
+   }
+
+   @Override
+   public void onTableRowSelected(TableRowSelectedEvent event)
+   {
+      TransUnitId selectedId = event.getSelectedId();
+      int rowIndex = pageModel.findIndexById(selectedId);
+      if (rowIndex != SinglePageDataModel.UNSELECTED)
+      {
+         onRowSelected(rowIndex);
+      }
+   }
+
+   @Override
+   public void onLoading(LoadingEvent event)
+   {
+      if (event == LoadingEvent.START_EVENT)
+      {
+         display.showLoading();
+      }
+      else if (event == LoadingEvent.FINISH_EVENT)
+      {
+         display.hideLoading();
       }
    }
 }

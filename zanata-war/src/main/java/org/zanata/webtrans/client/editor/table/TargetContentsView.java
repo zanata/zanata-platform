@@ -139,8 +139,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       int rowIndex = 0;
       for (String target : targets)
       {
-         Editor editor = new Editor(target, findMessage, rowIndex, listener);
-         editor.setText(target);
+         Editor editor = new Editor(target, findMessage, rowIndex, listener, transUnit.getId());
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);
          rowIndex++;
