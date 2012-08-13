@@ -84,127 +84,26 @@ public class GetStatisticsCommand extends ConfigurableCommand<GetStatisticsOptio
                      getOpts().getIncludeWordLevelStats(), localeListArg);
       }
 
-      printContainerStats(containerStats);
+      if( getOpts().getFormat() == null )
+      {
+         log.warn("Output format not specified; defaulting to Console output.");
+      }
+
+      // Select the format (output)
+      ContainerStatisticsCommandOutput statsOutput;
+      // csv
+      if( "csv".equalsIgnoreCase( getOpts().getFormat() ) )
+      {
+         statsOutput = new CsvStatisticsOutput();
+      }
+      // Default: console
+      else
+      {
+         statsOutput = new ConsoleStatisticsOutput();
+      }
+
+      statsOutput.write( containerStats );
    }
 
-   private static void printContainerStats( ContainerTranslationStatistics containerStats )
-   {
-      List<TranslationStatistics> stats = containerStats.getStats();
 
-      if( stats == null )
-      {
-         stats = new ArrayList<TranslationStatistics>();
-      }
-
-      // Display headers
-      Link sourceRef = containerStats.getRefs().findLinkByRel("statSource");
-      if( sourceRef.getType().equals("PROJ_ITER") )
-      {
-         System.out.println("Project Version: " + containerStats.getId() );
-      }
-      else if( sourceRef.getType().equals("DOC") )
-      {
-         System.out.println();
-         System.out.println("Document: " + containerStats.getId());
-      }
-
-      Collections.sort(stats, new Comparator<TranslationStatistics>()
-      {
-         @Override
-         public int compare(TranslationStatistics o1, TranslationStatistics o2)
-         {
-            int localeComparisson = o1.getLocale().compareTo(o2.getLocale());
-            if( localeComparisson == 0 )
-            {
-               return o1.getUnit().toString().compareTo( o2.getUnit().toString() );
-            }
-            else
-            {
-               return localeComparisson;
-            }
-         }
-      });
-
-      String[] headers = new String[]{"Locale", "Unit", "Total", "Translated", "Need Review", "Untranslated"};
-      Object[][] data = new Object[stats.size()][headers.length];
-
-      for (int i = 0, statsSize = stats.size(); i < statsSize; i++)
-      {
-         TranslationStatistics s = stats.get(i);
-         data[i] = new Object[]{s.getLocale(), s.getUnit(), s.getTotal(), s.getTranslated(),
-               s.getNeedReview(), s.getUntranslated()};
-      }
-
-      printTable(headers, data);
-
-      // Print detailed stats
-      if( containerStats.getDetailedStats() != null )
-      {
-         for( ContainerTranslationStatistics detailedStats : containerStats.getDetailedStats() )
-         {
-            printContainerStats(detailedStats);
-         }
-      }
-   }
-
-   private static void printTable( String[] headers, Object[][] rows )
-   {
-      // Calculate the column widths (max column content + 1)
-      int[] colWidths = new int[ headers.length ];
-      int tableWidth = 0;
-
-      for(int i=0; i<headers.length; i++)
-      {
-         int maxWidth = headers[i].length() + 3;
-
-         for( Object[] row : rows )
-         {
-            if( row[i].toString().length() + 3 > maxWidth )
-            {
-               maxWidth = row[i].toString().length() + 3;
-            }
-         }
-
-         colWidths[i] = maxWidth;
-         tableWidth += maxWidth;
-      }
-
-      System.out.println();
-      for( int i=0; i<tableWidth; i++ )
-      {
-         System.out.print("=");
-      }
-      System.out.println();
-
-      // Print the headers
-      for(int i=0; i<headers.length; i++)
-      {
-         System.out.printf("%1$" + colWidths[i] + "s", headers[i]);
-      }
-
-      System.out.println();
-      for( int i=0; i<tableWidth; i++ )
-      {
-         System.out.print("=");
-      }
-      System.out.println();
-
-      // Print the results
-      for(Object[] row : rows)
-      {
-         for (int i = 0, rowLength = row.length; i < rowLength; i++)
-         {
-            Object column = row[i];
-            System.out.printf("%1$" + colWidths[i] + "s", column);
-         }
-         System.out.println();
-      }
-
-      // Horizontal line
-      for( int i=0; i<tableWidth; i++ )
-      {
-         System.out.print("=");
-      }
-      System.out.println();
-   }
 }
