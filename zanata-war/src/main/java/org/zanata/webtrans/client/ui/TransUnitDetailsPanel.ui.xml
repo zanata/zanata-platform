@@ -1,84 +1,76 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 	
 	<ui:style>
-		 .container {
-           width:100%;
-           padding-top:15px;
+        .container {
+            width: 18%;
+            padding-top: 5px;
         }
-        
+
         .header {
             font-size: 11px;
-            font-weight:bold;
-            text-align:center;
-            cursor:pointer;
-            background:#F3F2F2;
-            border:1px solid #E0E8EE;
-            color:#686868;
-            
+            font-weight: bold;
+            text-align: left;
+            text-indent: 5px;
+            cursor: pointer;
+            background: #F3F2F2;
+            border: 1px solid #E0E8EE;
+            color: #686868;
+            text-decoration: none;
         }
-        
-        .content {
-           height:100%;
+
+        .tuDetailsLabel {
+            font-weight: bold;
+            font-size: 11px;
+            padding: 5px 5px 0px 5px;
+            color: #686868;
+            text-align: right;
         }
-        
-        .scrollSection {
-           border-bottom:1px solid #E0E8EE;
-           border-left:1px solid #E0E8EE;
-           border-right:1px solid #E0E8EE;
+
+        .tuDetails {
+            padding-top: 5px;
+            font-size: 11px;
+            color: #686868;
         }
-		
-		.tuDetailsLabel {
-			font-weight: bold;
-			padding-top: 5px;
-			font-size:11px;
-			padding-right:5px;
-			padding-left:5px;
-			color:#686868;
-		}
-		.tuDetails {
-	       padding-top: 5px;
-	       font-size:11px;
-	       color:#686868;
-	   }
-	   
-	</ui:style>
-    <g:VerticalPanel styleName="{style.container}">
-        <g:Label ui:field="headerLabel" styleName="{style.header}"/>
+    </ui:style>
 
-        <g:ScrollPanel styleName="{style.scrollSection}">
-            <g:LayoutPanel ui:field="contentPanel" styleName="{style.content}">
-                <g:layer width="100%">
-                    <g:VerticalPanel height="100%">
-                        <g:HorizontalPanel>
-                            <g:Label ui:field="resIdLabel" styleName="{style.tuDetailsLabel}"/>
-                            <g:Label ui:field="resId" styleName="{style.tuDetails}"/>
-                        </g:HorizontalPanel>
-
-                        <g:HorizontalPanel ui:field="msgContextPanel">
-                            <g:Label ui:field="msgContextLabel" styleName="{style.tuDetailsLabel}"/>
-                            <g:Label ui:field="msgContext" styleName="{style.tuDetails}"/>
-                        </g:HorizontalPanel>
-
-                        <g:HorizontalPanel>
-                            <g:Label ui:field="sourceCommentLabel" styleName="{style.tuDetailsLabel}"/>
-                            <g:Label ui:field="sourceComment" styleName="{style.tuDetails}"/>
-                        </g:HorizontalPanel>
-
-                        <g:HorizontalPanel>
-                            <g:Label ui:field="lastModifiedByLabel" styleName="{style.tuDetailsLabel}"/>
-                            <g:Label ui:field="lastModifiedBy" styleName="{style.tuDetails}"/>
-                        </g:HorizontalPanel>
-
-                        <g:HorizontalPanel>
-                            <g:Label ui:field="lastModifiedTimeLabel" styleName="{style.tuDetailsLabel}"/>
-                            <g:Label ui:field="lastModifiedTime" styleName="{style.tuDetails}"/>
-                        </g:HorizontalPanel>
-                    </g:VerticalPanel>
-
-                </g:layer>
-            </g:LayoutPanel>
-        </g:ScrollPanel>
-    </g:VerticalPanel>
+    <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container}" ui:field="disclosurePanel">
+        <g:customHeader>
+            <g:Label ui:field="headerLabel" styleName="{style.header}" />
+        </g:customHeader>
+        <g:Grid>
+            <g:row>
+               <g:cell styleName="{style.tuDetailsLabel}">Resource ID:</g:cell>
+               <g:customCell>
+                   <g:Label ui:field="resId" styleName="{style.tuDetails}"/>
+               </g:customCell>
+            </g:row>
+            <g:row>
+                <g:cell styleName="{style.tuDetailsLabel}">Message Context:</g:cell>
+                <g:customCell>
+                    <g:Label ui:field="msgContext" styleName="{style.tuDetails}"/>
+                </g:customCell>
+            </g:row>
+            <g:row>
+                <g:cell styleName="{style.tuDetailsLabel}">Source Comment:</g:cell>
+                <g:customCell>
+                    <g:Label ui:field="sourceComment" styleName="{style.tuDetails}"/>
+                </g:customCell>
+            </g:row>
+            <g:row>
+                <g:cell styleName="{style.tuDetailsLabel}">Last Modified By:</g:cell>
+                <g:customCell>
+                    <g:Label ui:field="lastModifiedBy" styleName="{style.tuDetails}"/>
+                </g:customCell>
+            </g:row>
+            <g:row>
+                <g:cell styleName="{style.tuDetailsLabel}">Last Modified Time:</g:cell>
+                <g:customCell>
+                    <g:Label ui:field="lastModifiedTime" styleName="{style.tuDetails}"/>
+                </g:customCell>
+            </g:row>
+        </g:Grid>
+    </g:DisclosurePanel>
 </ui:UiBinder>

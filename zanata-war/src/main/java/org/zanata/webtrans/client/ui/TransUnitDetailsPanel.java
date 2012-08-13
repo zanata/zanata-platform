@@ -11,6 +11,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -19,68 +21,38 @@ import com.google.inject.Inject;
 
 public class TransUnitDetailsPanel extends Composite
 {
+   private static TransUnitDetailsPanelUiBinder uiBinder = GWT.create(TransUnitDetailsPanelUiBinder.class);
+   @UiField
+   TableEditorMessages messages;
+
    @UiField
    Label headerLabel;
-
    @UiField
-   LayoutPanel contentPanel;
+   Label resId, msgContext, sourceComment, lastModifiedBy, lastModifiedTime;
 
-   @UiField
-   HorizontalPanel msgContextPanel;
-
-   private static TransUnitDetailsPanelUiBinder uiBinder = GWT.create(TransUnitDetailsPanelUiBinder.class);
-   private final TableEditorMessages messages;
-
-   interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
+   public TransUnitDetailsPanel()
    {
-   }
-
-   @UiField
-   Label resIdLabel, resId, sourceCommentLabel, msgContextLabel, msgContext, sourceComment, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
-
-   @Inject
-   public TransUnitDetailsPanel(TableEditorMessages messages)
-   {
-      this.messages = messages;
       initWidget(uiBinder.createAndBindUi(this));
       headerLabel.setText(messages.transUnitDetailsHeading());
    }
 
    public void setDetails(TransUnit transUnit)
    {
-      resIdLabel.setText("Resource ID: ");
       resId.setText(transUnit.getResId());
-      
+
       String context = transUnit.getMsgContext();
+      msgContext.setText(Strings.nullToEmpty(context));
 
-      if (context == null)
-      {
-         msgContextPanel.setVisible(false);
-      }
-      else
-      {
-         msgContextLabel.setText("Message Context: ");
-         msgContext.setText(context);
-         
-         msgContextPanel.setVisible(true);
-      }
-
-
-      sourceCommentLabel.setText("Source Comment: ");
       sourceComment.setText(transUnit.getSourceComment());
       String person = transUnit.getLastModifiedBy();
       if (person != null && !person.isEmpty())
       {
-         lastModifiedByLabel.setText("Last Modified By:");
          lastModifiedBy.setText(person);
-         lastModifiedTimeLabel.setText("Last Modified Time:");
          lastModifiedTime.setText(transUnit.getLastModifiedTime());
       }
       else
       {
-         lastModifiedByLabel.setText("");
          lastModifiedBy.setText("");
-         lastModifiedTimeLabel.setText("");
          lastModifiedTime.setText("");
       }
 
@@ -92,51 +64,9 @@ public class TransUnitDetailsPanel extends Composite
       {
          headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), ""));
       }
-//      expand();
-      collapse();
    }
 
-//   @UiHandler("headerLabel")
-//   public void onHeaderLabelClick(ClickEvent event)
-//   {
-//
-//      if (!contentPanel.isVisible())
-//      {
-//         expand();
-//      }
-//      else if (contentPanel.isVisible())
-//      {
-//         collapse();
-//      }
-//   }
-
-   @UiHandler("headerLabel")
-   public void onMouseHover(MouseOverEvent event)
+   interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
    {
-      if (!contentPanel.isVisible())
-      {
-         expand();
-      }
-   }
-
-   @UiHandler("headerLabel")
-   public void onMouseOut(MouseOutEvent event)
-   {
-      if (contentPanel.isVisible())
-      {
-         collapse();
-      }
-   }
-
-   public void expand()
-   {
-      contentPanel.setHeight("95px");
-      contentPanel.setVisible(true);
-   }
-
-   public void collapse()
-   {
-      contentPanel.setHeight("0px");
-      contentPanel.setVisible(false);
    }
 }
