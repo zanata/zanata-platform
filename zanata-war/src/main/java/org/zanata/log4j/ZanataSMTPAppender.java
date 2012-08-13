@@ -27,8 +27,11 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.TriggeringEventEvaluator;
 import org.jboss.seam.Component;
 
 import it.openutils.log4j.AlternateSMTPAppender;
@@ -42,6 +45,11 @@ import it.openutils.log4j.AlternateSMTPAppender;
  */
 public class ZanataSMTPAppender extends AlternateSMTPAppender
 {
+   public ZanataSMTPAppender()
+   {
+      this.setEvaluator( new LevelBasedEventEvaluator() );
+   }
+
    @Override
    public void activateOptions()
    {
@@ -92,6 +100,18 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender
       {
          errorHandler.error("Could not parse address [" + addressStr + "].", e, ErrorCode.ADDRESS_PARSE_FAILURE);
          return null;
+      }
+   }
+
+   /**
+    * Evaluates events based on a predetermined event level threshold.
+    */
+   private class LevelBasedEventEvaluator implements TriggeringEventEvaluator
+   {
+      @Override
+      public boolean isTriggeringEvent(LoggingEvent event)
+      {
+         return event.getLevel().isGreaterOrEqual( getThreshold() );
       }
    }
 }
