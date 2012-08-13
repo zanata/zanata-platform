@@ -1,6 +1,24 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
+    <ui:style field="style" type="org.zanata.webtrans.client.view.TransUnitEditView.Styles">
+        .oddRow {
+
+        }
+
+        .evenRow {
+
+        }
+
+        .cellFormat {
+            border-bottom: 1px solid silver;
+        }
+
+        .table {
+            border-collapse: collapse;
+        }
+    </ui:style>
+
     <g:SplitLayoutPanel>
         <g:center min-size="300">
             <g:ScrollPanel width="100%" ui:field="tuTablePanel">
