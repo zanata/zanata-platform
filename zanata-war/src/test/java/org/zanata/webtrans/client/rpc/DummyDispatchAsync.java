@@ -7,6 +7,7 @@ import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
@@ -22,6 +23,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
@@ -122,6 +124,12 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final PublishWorkspaceChatAction _action = (PublishWorkspaceChatAction) action;
          AsyncCallback<PublishWorkspaceChatResult> _callback = (AsyncCallback<PublishWorkspaceChatResult>) callback;
          Scheduler.get().scheduleDeferred(new DummyPublishWorkspaceChatCommand(_action, _callback));
+      }
+      else if(action instanceof EventServiceConnectedAction)
+      {
+         final EventServiceConnectedAction _action = (EventServiceConnectedAction) action;
+         AsyncCallback<NoOpResult> _callback = (AsyncCallback<NoOpResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyEventServiceConnectedCommand(_action, _callback));
       }
       else
       {
