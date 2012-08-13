@@ -30,8 +30,15 @@
     <s:fragment rendered="#{!projectAction.getEmpty()}">
       <a4j:form>
       
-	 <rich:datascroller align="center" for="projectList" maxPages="10"
-		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" />
+	<rich:datascroller align="center" for="projectList" maxPages="10"
+		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" >
+        <f:facet name="next">
+            <h:outputText value="next" style="font-size: 0.8em"/>
+        </f:facet>
+        <f:facet name="previous">
+            <h:outputText value="prev" style="font-size: 0.8em"/>
+        </f:facet>
+    </rich:datascroller>
 	<rich:spacer height="15" />
         
         <s:div styleClass="float-right">
@@ -94,8 +101,15 @@
         </rich:dataTable>
         
         <rich:spacer height="15" />
-	 <rich:datascroller align="center" for="projectList" maxPages="10"
-		    page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller" />    
+	    <rich:datascroller align="center" for="projectList" maxPages="10"
+		    page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller" >
+            <f:facet name="next">
+                <h:outputText value="next" style="font-size: 0.8em"/>
+            </f:facet>
+            <f:facet name="previous">
+                <h:outputText value="prev" style="font-size: 0.8em"/>
+            </f:facet>
+        </rich:datascroller>
 	</a4j:form>
 </s:fragment>
     </s:decorate>

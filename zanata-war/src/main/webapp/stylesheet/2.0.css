@@ -396,39 +396,18 @@ th,td {
 	color: silver;
 }
 
-.rich-datascr-button { /*background-color: #EAF0F8;*/
+.rich-datascr-button {
 	border-radius: 5px;
 	border-color: silver;
 	font-family: Arial, Verdana, sans-serif;
 	font-size: 11px;
 	border: 1px solid #999;
 	border-radius: 4px;
-	-webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-	box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
 	background: #CCC;
-	background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #EEE),
-		color-stop(100%, #CCC) );
-	background: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
-	background: -o-linear-gradient(top, #EEE 0%, #CCC 100%);
-	background: -ms-linear-gradient(top, #EEE 0%, #CCC 100%);
-	background: linear-gradient(top, #EEE 0%, #CCC 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#eeeeee',
-		endColorstr='#cccccc', GradientType=0 );
 }
 
 .rich-datascr-button:hover {
-	-webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-	box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-	background: #CCC;
-	background: -moz-linear-gradient(top, white 0%, #DDD 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white),
-		color-stop(100%, #DDD) );
-	background: -webkit-linear-gradient(top, white 0%, #DDD 100%);
-	background: -o-linear-gradient(top, white 0%, #DDD 100%);
-	background: -ms-linear-gradient(top, white 0%, #DDD 100%);
-	background: linear-gradient(top, white 0%, #DDD 100%);
-	filter: progid:DXImageTransform.Microsoft.
+	background: #e2e2e2;
 }
 
 .rich-datascr-button:active {
@@ -448,6 +427,11 @@ th,td {
 	cursor: default;
 }
 
+.rich-datascr-button-dsbld:hover {
+    cursor: default;
+    background: #CCC;
+}
+
 .rich-datascr-button {
 	border-width: 1px;
 	border-style: solid;
@@ -457,24 +441,20 @@ th,td {
 }
 
 .rich-datascr-act { 
-	color: #ffffff;
-	background-color: #5F5F5F;
+	color: #5F5F5F;
+    border: 0px;
 	font-family: Arial, Verdana, sans-serif;
 	font-size: 11px;
 	font-weight: bold;
-	width: 23px;
 	text-align: center;
 	border-radius: 5px;
 	padding: 3px;
 }
 
-.rich-datascr-inact { 
-	width: 23px;
+.rich-datascr-inact {
 	cursor: pointer;
 	text-align: center;
-	border-width: 1px;
-	border-color: #5F5F5F;
-	border-style: solid;
+    border: 0px;
 	border-radius: 5px;
 	color: #5F5F5F;
 	font-family: Arial, Verdana, sans-serif;
@@ -482,6 +462,6 @@ th,td {
 }
 
 .rich-datascr-inact:hover {
-	box-shadow: 0 0 5px grey inset;
+	/*box-shadow: 0 0 5px grey inset;*/
 }
 /* End Richfaces Data scroller styles */

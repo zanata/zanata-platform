@@ -185,7 +185,7 @@
             </s:fragment>
 		</rich:panel>
 		
-		<rich:panel>
+		<rich:panel rendered="#{not viewAllStatusAction.projectIteration.groups.isEmpty()}">
 			<f:facet name="header">#{messages['jsf.JoinedGroups']}</f:facet>
 			<ui:repeat value="#{viewAllStatusAction.projectIteration.groups.toArray()}" var="group" styleClass="breadcrumbs">
 				<s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="action_link">
