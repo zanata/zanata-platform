@@ -61,6 +61,11 @@
 										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/bug.png" />#{messages['jsf.ReportAProblem']}
 									</a>
 								</li>
+								<li>
+									<a href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__" target="_blank">
+										<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/error.png" />#{messages['jsf.KnownIssues']}
+									</a>
+								</li>
 								<s:fragment rendered="#{not identity.loggedIn}">
 									<li>
 									   <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{applicationConfiguration.internalAuth}"/>

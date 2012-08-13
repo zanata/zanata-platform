@@ -66,6 +66,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    PushButton cancelButton;
    @UiField
    SimplePanel undoContainer;
+   @UiField
+   PushButton historyButton;
 
    private VerticalPanel rootPanel;
    private String findMessage;
@@ -159,6 +161,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    {
       listener.onCancel();
       event.stopPropagation();
+   }
+
+   @UiHandler("historyButton")
+   public void onHistoryClick(ClickEvent event)
+   {
+      listener.showHistory();
    }
 
    @Override

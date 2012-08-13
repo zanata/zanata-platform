@@ -25,7 +25,6 @@ public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler>
    private List<String> targetResult;
 
    /**
-    * ContentState may be New, NeedApproved or null. stepValue may be -1 or +1.
     * @param targetResult
     */
    public CopyDataToEditorEvent(List<String> targetResult)
@@ -36,7 +35,7 @@ public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler>
    @Override
    protected void dispatch(CopyDataToEditorHandler handler)
    {
-      handler.onTransMemoryCopy(this);
+      handler.onDataCopy(this);
    }
 
    @Override

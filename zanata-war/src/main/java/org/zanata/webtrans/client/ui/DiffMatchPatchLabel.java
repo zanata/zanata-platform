@@ -37,7 +37,7 @@ public class DiffMatchPatchLabel extends HTML
    public DiffMatchPatchLabel(String orig, String text)
    {
       this();
-      this.original = orig;
+      this.original = Strings.nullToEmpty(orig);
       setText(text);
    }
 
@@ -51,12 +51,8 @@ public class DiffMatchPatchLabel extends HTML
    public void setText(String text)
    {
       this.plainText = text;
-      if (Strings.isNullOrEmpty(original))
-      {
-         return;
-      }
-      String diffHtml = Highlighting.diffAsHtml(original, plainText);
       Element preElement = getElement().getFirstChildElement();
+      String diffHtml = Highlighting.diffAsHtml(original, plainText);
       preElement.setInnerHTML(diffHtml);
    }
 

@@ -55,12 +55,14 @@ import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
+import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
+import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -92,6 +94,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
+   private final TranslationHistoryPresenter historyPresenter;
    private final UserSessionService sessionService;
    private final UserConfigHolder configHolder;
 
@@ -125,7 +128,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final KeyShortcut prevStateShortcut;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter, TranslationHistoryPresenter historyPresenter)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -139,6 +142,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.identity = identity;
       this.dispatcher = dispatcher;
       this.keyShortcutPresenter = keyShortcutPresenter;
+      this.historyPresenter = historyPresenter;
+      this.historyPresenter.addCurrentValueHolder(this);
 
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
@@ -574,6 +579,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
+   public void showHistory()
+   {
+      TransUnitId transUnitId = cellEditor.getTargetCell().getId();
+      historyPresenter.showTranslationHistory(transUnitId);
+   }
+
+   @Override
    public void onCancel()
    {
       List<String> targets = cellEditor.getTargetCell().getTargets();
@@ -729,7 +741,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onTransMemoryCopy(final CopyDataToEditorEvent event)
+   public void onDataCopy(final CopyDataToEditorEvent event)
    {
       copyTextWhenIsEditing(event.getTargetResult(), false);
    }
