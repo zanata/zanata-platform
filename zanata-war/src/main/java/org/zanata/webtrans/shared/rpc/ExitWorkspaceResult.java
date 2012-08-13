@@ -1,6 +1,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 
+// TODO replace this class with NoOpResult
 public class ExitWorkspaceResult implements DispatchResult
 {
 

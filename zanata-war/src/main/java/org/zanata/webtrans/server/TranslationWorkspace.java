@@ -46,4 +46,5 @@ public interface TranslationWorkspace
    WorkspaceContext getWorkspaceContext();
    void updateUserSelection(EditorClientId editorClientId, TransUnit selectedTransUnit);
    TransUnit getUserSelection(EditorClientId editorClientId);
+   public void onEventServiceConnected(EditorClientId editorClientId, String connectionId);
 }

@@ -10,10 +10,12 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
@@ -127,9 +129,22 @@ public class Application implements EntryPoint
       eventProcessor.start(new StartCallback()
       {
          @Override
-         public void onSuccess()
+         public void onSuccess(String connectionId)
          {
-            delayedStartApp();
+            // tell server the ConnectionId for this EditorClientId
+            injector.getDispatcher().execute(new EventServiceConnectedAction(connectionId), new AsyncCallback<NoOpResult>()
+            {
+               @Override
+               public void onFailure(Throwable e)
+               {
+                  RootLayoutPanel.get().add(new HTML("<h1>Server communication failed...</h1>" + "<b>Exception:</b> " + e.getMessage()));
+               }
+               @Override
+               public void onSuccess(NoOpResult result)
+               {
+                  delayedStartApp();
+               }
+            });
          }
 
          @Override
