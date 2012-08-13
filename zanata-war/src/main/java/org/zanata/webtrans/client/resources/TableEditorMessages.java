@@ -77,9 +77,6 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Close editor")
    String closeEditor();
 
-   @DefaultMessage("Translation Unit Details")
-   String transUnitDetailsHeading();
-
-   @DefaultMessage("Row {0}, Id {1} Translation Unit Details {2}")
+   @DefaultMessage("Translation Unit Details: Row {0}; Id {1}; {2}")
    String transUnitDetailsHeadingWithInfo(int rowIndex, String transUnitId, String info);
 }

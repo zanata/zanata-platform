@@ -33,37 +33,40 @@ public class TransUnitDetailsPanel extends Composite
    public TransUnitDetailsPanel()
    {
       initWidget(uiBinder.createAndBindUi(this));
-      headerLabel.setText(messages.transUnitDetailsHeading());
    }
 
    public void setDetails(TransUnit transUnit)
    {
       resId.setText(transUnit.getResId());
 
-      String context = transUnit.getMsgContext();
-      msgContext.setText(Strings.nullToEmpty(context));
+      String context = Strings.nullToEmpty(transUnit.getMsgContext());
+      msgContext.setText(context);
 
-      sourceComment.setText(transUnit.getSourceComment());
+      String comment = Strings.nullToEmpty(transUnit.getSourceComment());
+      sourceComment.setText(comment);
+
       String person = transUnit.getLastModifiedBy();
-      if (person != null && !person.isEmpty())
-      {
-         lastModifiedBy.setText(person);
-         lastModifiedTime.setText(transUnit.getLastModifiedTime());
-      }
-      else
+      if (Strings.isNullOrEmpty(person))
       {
          lastModifiedBy.setText("");
          lastModifiedTime.setText("");
       }
-
-      if (!Strings.isNullOrEmpty(context) || !Strings.isNullOrEmpty(transUnit.getSourceComment()))
-      {
-         headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), "(I)"));
-      }
       else
       {
-         headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), ""));
+         lastModifiedBy.setText(person);
+         lastModifiedTime.setText(transUnit.getLastModifiedTime());
       }
+
+      StringBuilder headerSummary = new StringBuilder();
+      if (!context.isEmpty())
+      {
+         headerSummary.append(" MsgCtx: ").append(context.substring(0, 6)).append("...");
+      }
+      if (!comment.isEmpty())
+      {
+         headerSummary.append(" Comment: ").append(comment.substring(0, 6)).append("...");
+      }
+      headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), headerSummary.toString()));
    }
 
    interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
