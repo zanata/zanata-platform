@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
+import org.zanata.rest.service.StatisticsResource;
 
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory
@@ -85,6 +87,31 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       T proxy = crf.createProxy(clazz, baseUri);
       //      CacheFactory.makeCacheable(proxy);
       return proxy;
+   }
+
+   /**
+    * Returns a client proxy, provided all information is on the proxied interface.
+    * (i.e. The interface is marked with a {@link javax.ws.rs.Path} annotation.)
+    *
+    * @param clazz Client interface to proxy.
+    * @return Client proxy for the class.
+    * @see {@link ZanataProxyFactory#createProxy(Class, java.net.URI)}
+    */
+   public <T> T createProxy(Class<T> clazz)
+   {
+      try
+      {
+         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX );
+         return createProxy(clazz, url.toURI());
+      }
+      catch(MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
    private static URI fixBase(URI base)
@@ -213,6 +240,11 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    public ISourceDocResource getSourceDocResource(String projectSlug, String versionSlug)
    {
       return createProxy(ISourceDocResource.class, getResourceURI(projectSlug, versionSlug));
+   }
+
+   public StatisticsResource getStatisticsResource()
+   {
+      return createProxy(StatisticsResource.class);
    }
 
 

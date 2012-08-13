@@ -19,7 +19,7 @@
 	</scm>
 
     <properties>
-      <zanata.api.version>1.6.0</zanata.api.version>
+      <zanata.api.version>1.8.0-SNAPSHOT</zanata.api.version>
       <zanata.common.version>1.6.1</zanata.common.version>
     </properties>
 
@@ -39,6 +39,11 @@
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-po</artifactId>
             <version>${zanata.common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-common-api</artifactId>
+            <version>${zanata.api.version}</version>
         </dependency>
       </dependencies>
    </dependencyManagement>

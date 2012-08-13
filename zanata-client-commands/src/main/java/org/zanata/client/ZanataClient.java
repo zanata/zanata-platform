@@ -21,6 +21,7 @@ import org.zanata.client.commands.PutUserOptionsImpl;
 import org.zanata.client.commands.PutVersionOptionsImpl;
 import org.zanata.client.commands.SystemExitStrategy;
 import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
 import org.zanata.util.VersionUtility;
 
 @SuppressWarnings("deprecation")
@@ -69,6 +70,7 @@ public class ZanataClient extends BasicOptionsImpl
       getOptionsMap().put("putproject", new PutProjectOptionsImpl());
       getOptionsMap().put("putuser", new PutUserOptionsImpl());
       getOptionsMap().put("putversion", new PutVersionOptionsImpl());
+      getOptionsMap().put("getstatistics", new GetStatisticsOptionsImpl());
    }
 
    public String getCommandName()
