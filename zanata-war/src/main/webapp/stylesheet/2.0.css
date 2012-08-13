@@ -267,10 +267,6 @@ table {
 	
 }
 
-.rich-table-subheader { /*background-color: #B9C9FE;*/
-	background-color: #5F5F5F;
-}
-
 .rich-table-subheader th:first-child {
 	border-top-left-radius: 5px;
 }
