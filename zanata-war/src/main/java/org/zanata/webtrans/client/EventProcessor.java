@@ -32,6 +32,7 @@ import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
@@ -49,8 +50,7 @@ public class EventProcessor implements RemoteEventListener
 
    public static interface StartCallback
    {
-      void onSuccess();
-
+      void onSuccess(String connectionId);
       void onFailure(Throwable e);
    }
 
@@ -153,7 +153,8 @@ public class EventProcessor implements RemoteEventListener
          public void onSuccess(Void result)
          {
             Log.info("EventProcessor is now listening for events in the domain " + domain.getName());
-            callback.onSuccess();
+            String connectionId = ConfigurationTransferableDependentFactory.getConfiguration().getConnectionId();
+            callback.onSuccess(connectionId);
          }
 
          @Override

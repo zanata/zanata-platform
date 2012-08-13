@@ -1,6 +1,7 @@
 package org.zanata.webtrans.server;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
@@ -14,11 +15,13 @@ import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
@@ -38,6 +41,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    private final Domain domain;
    private final ConcurrentMap<EditorClientId, PersonSessionDetails> sessions = new MapMaker().makeMap();
    private final Multimap<String, EditorClientId> httpSessionToEditorClientId;
+   private final Map<String, EditorClientId> connectionIdToEditorClientId;
    private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
 
    private final EventExecutorService eventExecutorService;
@@ -45,6 +49,8 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    {
       ArrayListMultimap<String, EditorClientId> almm = ArrayListMultimap.create();
       httpSessionToEditorClientId = Multimaps.synchronizedListMultimap(almm);
+      Map<String, EditorClientId> connMap = Maps.newHashMap();
+      connectionIdToEditorClientId = Collections.synchronizedMap(connMap);
    }
 
    public TranslationWorkspaceImpl(WorkspaceContext workspaceContext)
@@ -64,9 +70,16 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
          public void onTimeout(UserInfo userInfo)
          {
             String connectionId = userInfo.getUserId();
-            log.info("Timeout for GWTEventService connectionId {0}", connectionId);
-            // TODO look up EditorClientId for connectionId
-            // removeEditorClient(editorClientId);
+            EditorClientId editorClientId = connectionIdToEditorClientId.remove(connectionId);
+            if (editorClientId != null)
+            {
+               log.info("Timeout for GWTEventService connectionId {0}; removing EditorClientId {1}", connectionId, editorClientId);
+               removeEditorClient(editorClientId);
+            }
+            else
+            {
+               log.info("Timeout for GWTEventService connectionId {0}; nothing to do", connectionId);
+            }
          }
       });
    }
@@ -137,6 +150,13 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    }
 
    @Override
+   public void onEventServiceConnected(EditorClientId editorClientId, String connectionId)
+   {
+      log.info("EditorClientId {0} has connectionId {1}", editorClientId, connectionId);
+      connectionIdToEditorClientId.put(connectionId, editorClientId);
+   }
+
+   @Override
    public Collection<EditorClientId> removeEditorClients(String httpSessionId)
    {
       Collection<EditorClientId> editorClients = httpSessionToEditorClientId.removeAll(httpSessionId);
@@ -160,6 +180,11 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
             if (clientIds != null)
             {
                clientIds.remove(editorClientId);
+
+               // Send GWT Event to clients to update the user list
+               ExitWorkspace event = new ExitWorkspace(editorClientId, details.getPerson());
+               publish(event);
+
                log.info("Removed user {0} with editorClientId {1} from workspace {2}", details.getPerson().getId(), editorClientId, workspaceContext);
                return true;
             }

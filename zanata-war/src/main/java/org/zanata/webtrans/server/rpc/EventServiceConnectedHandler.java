@@ -11,33 +11,29 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
-import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 
-@Name("webtrans.gwt.ExitWorkspaceHandler")
+@Name("webtrans.gwt.ActivateEventServiceHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(ExitWorkspaceAction.class)
-public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, ExitWorkspaceResult>
+@ActionHandlerFor(EventServiceConnectedAction.class)
+public class EventServiceConnectedHandler extends AbstractActionHandler<EventServiceConnectedAction, NoOpResult>
 {
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
-   public ExitWorkspaceResult execute(ExitWorkspaceAction action, ExecutionContext context) throws ActionException
+   public NoOpResult execute(EventServiceConnectedAction action, ExecutionContext context) throws ActionException
    {
-
       ZanataIdentity.instance().checkLoggedIn();
-
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-
-      // Send ExitWorkspace event to client
-      workspace.removeEditorClient(action.getEditorClientId());
-      return new ExitWorkspaceResult(action.getPerson().getId().toString());
+      workspace.onEventServiceConnected(action.getEditorClientId(), action.getConnectionId());
+      return new NoOpResult();
    }
 
    @Override
-   public void rollback(ExitWorkspaceAction action, ExitWorkspaceResult result, ExecutionContext context) throws ActionException
+   public void rollback(EventServiceConnectedAction action, NoOpResult result, ExecutionContext context) throws ActionException
    {
    }
 }
