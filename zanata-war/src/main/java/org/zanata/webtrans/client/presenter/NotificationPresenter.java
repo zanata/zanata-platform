@@ -160,7 +160,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       {
          if (!display.isShowing())
          {
-            listener.startNotificationAlert(500);
+            listener.showNotificationAlert();
          }
       }
    }

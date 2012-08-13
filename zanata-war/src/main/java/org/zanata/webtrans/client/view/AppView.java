@@ -43,7 +43,6 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -333,48 +332,16 @@ public class AppView extends Composite implements AppPresenter.Display
       notificationBtn.getUpHoveringFace().setText(String.valueOf(count));
    }
 
-   private boolean isAlert = false;
-
-   private final Timer msgAlertTimer = new Timer()
-   {
-      @Override
-      public void run()
-      {
-         if (!isAlert)
-         {
-            setNotificationAlert();
-            isAlert = true;
-         }
-         else
-         {
-            removeNotificationAlert();
-            isAlert = false;
-         }
-      }
-   };
-
-   private void setNotificationAlert()
+   @Override
+   public void showNotificationAlert()
    {
       notificationBtn.addStyleName(style.hasWarning());
-   }
-
-   private void removeNotificationAlert()
-   {
-      notificationBtn.removeStyleName(style.hasWarning());
-   }
-
-   @Override
-   public void startNotificationAlert(int periodMillis)
-   {
-      msgAlertTimer.scheduleRepeating(periodMillis);
-      msgAlertTimer.run();
+      
    }
 
    @Override
    public void cancelNotificationAlert()
    {
-      msgAlertTimer.cancel();
-      removeNotificationAlert();
+      notificationBtn.removeStyleName(style.hasWarning());
    }
-
 }

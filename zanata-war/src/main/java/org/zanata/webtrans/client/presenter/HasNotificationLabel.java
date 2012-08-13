@@ -6,7 +6,7 @@ public interface HasNotificationLabel
 {
    void setNotificationLabel(int count, Severity severity);
 
+   void showNotificationAlert();
+   
    void cancelNotificationAlert();
-
-   void startNotificationAlert(int periodMillis);
 }

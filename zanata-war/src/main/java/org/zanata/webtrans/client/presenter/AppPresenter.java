@@ -87,10 +87,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       void setNotificationText(int count, Severity severity);
 
-      void startNotificationAlert(int periodMillis);
+      void showNotificationAlert();
 
       void cancelNotificationAlert();
-
+      
       void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
 
    }
@@ -148,9 +148,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    }
 
    @Override
-   public void startNotificationAlert(int periodMillis)
+   public void showNotificationAlert()
    {
-      display.startNotificationAlert(periodMillis);
+      display.showNotificationAlert();
    }
 
    @Override
@@ -158,7 +158,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    {
       display.cancelNotificationAlert();
    }
-
+   
    @Override
    protected void onBind()
    {
