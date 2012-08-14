@@ -49,6 +49,9 @@
     </ui:define>
 
     <ui:define name="center_content">
+        <!-- Simply needed to load jQuery -->
+        <rich:jQuery query="jquery" />
+
         <a4j:form>
             <a4j:outputPanel id="copyTransOptionsPanel" rendered="#{not copyTransAction.copyTransRunning}">
 
