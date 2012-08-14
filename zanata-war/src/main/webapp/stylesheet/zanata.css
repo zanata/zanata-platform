@@ -305,8 +305,7 @@ a.action_link {
 
 a.action_link:hover, a.button:hover {
 	background-color: #FFFFFF;
-	border:1px solid #990000;
-	color:#990000;
+    box-shadow: 0 0 3px #7092C3 inset;
 }
 
 .hightlight_button:hover {
@@ -865,6 +864,16 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 }
 /* -----------------------  End Language Administration CSS  -------------------------*/
 
+/* -----------------------  Project CSS  -------------------------*/
+.project_home_content {
+    border-top: 1px dotted #6D6D6D;
+    border-bottom: 1px dotted #6D6D6D;
+    background-color: #eeeeee;
+    padding: 0px 10px 0px 10px;
+    margin-bottom: 10px;
+}
+/* -----------------------  End Project CSS  -------------------------*/
+
 /* -----------------------  Project iteration CSS  -------------------------*/
 
 .iterations table {
@@ -891,8 +900,10 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 }
 
 .version_link_div:hover {
-	border:1px solid #990000;
-	background-color: #F3F2F2;
+	/*border:1px solid #990000;
+	background-color: #F3F2F2;*/
+    background-color: #FFFFFF;
+    box-shadow: 0 0 3px #7092C3 inset;
 }
 
 .version_link_div .version_title {
@@ -920,7 +931,7 @@ a.version_link {
 }
 
 a.version_link:hover {
-	color: #990000;
+	/*color: #990000;*/
 }
 
 .list_view_header {
