@@ -62,7 +62,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
-import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -143,7 +142,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.dispatcher = dispatcher;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.historyPresenter = historyPresenter;
-      this.historyPresenter.addCurrentValueHolder(this);
+      this.historyPresenter.setCurrentValueHolder(this);
 
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);

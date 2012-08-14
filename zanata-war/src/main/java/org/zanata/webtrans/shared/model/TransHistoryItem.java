@@ -3,6 +3,7 @@ package org.zanata.webtrans.shared.model;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -60,5 +61,19 @@ public class TransHistoryItem implements IsSerializable
    public void setVersionNum(String newVersionNum)
    {
       versionNum = newVersionNum;
+   }
+
+   @Override
+   public String toString()
+   {
+      // @formatter:off
+      return Objects.toStringHelper(this).
+            add("versionNum", versionNum).
+            add("contents", contents).
+            add("status", status).
+            add("modifiedBy", modifiedBy).
+            add("modifiedDate", modifiedDate).
+            toString();
+      // @formatter:on
    }
 }
