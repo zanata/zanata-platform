@@ -92,7 +92,6 @@ public class AppPresenterTest extends PresenterTest
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
    LayoutSelectorPresenter mockLayoutPresenter;
-   DashboardPresenter mockDashboardPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -147,7 +146,6 @@ public class AppPresenterTest extends PresenterTest
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
       mockNotificationPresenter = createAndAddMock(NotificationPresenter.class);
       mockLayoutPresenter = createAndAddMock(LayoutSelectorPresenter.class);
-      mockDashboardPresenter = createAndAddMock(DashboardPresenter.class);
    }
 
    private void createAllCaptures()
@@ -170,7 +168,7 @@ public class AppPresenterTest extends PresenterTest
    void beforeMethod()
    {
       resetAll();
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockDashboardPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
    }
@@ -709,9 +707,6 @@ public class AppPresenterTest extends PresenterTest
       expectLastCall().once();
       mockLayoutPresenter.setLayoutListener(mockTranslationPresenter);
       expectLastCall().once();
-      mockDashboardPresenter.bind();
-      expectLastCall().once();
-
    }
 
    @SuppressWarnings("unchecked")
@@ -750,9 +745,6 @@ public class AppPresenterTest extends PresenterTest
 
       mockTranslationPresenter.concealDisplay();
       expectLastCall().once();
-
-      mockDashboardPresenter.concealDisplay();
-      expectLastCall().anyTimes();
 
       // due to this display beginning as concealed
       mockSearchResultsPresenter.concealDisplay();

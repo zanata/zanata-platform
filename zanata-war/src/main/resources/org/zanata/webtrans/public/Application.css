@@ -3,6 +3,14 @@ body {
 	background-color: #f8f9fa;
 }
 
+.banner 
+{
+	background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -o-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -ms-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+}
+		
 /*
 Styling for errors when webtrans fails to load
 */

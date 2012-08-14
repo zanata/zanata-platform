@@ -364,12 +364,6 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Close keyboard shortcuts list")
    String closeShortcutView();
-
-   @DefaultMessage("Dashboard")
-   String dashboard();
-
-   @DefaultMessage("Show dashboard")
-   String showDashboardKeyShortcut();
    
    @DefaultMessage("Search translation memory")
    String searchTM();
@@ -379,7 +373,6 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Chat")
    String chatScope();
-
 
    @DefaultMessage("Report a problem")
    String reportAProblem();

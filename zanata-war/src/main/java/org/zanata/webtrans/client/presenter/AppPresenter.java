@@ -95,7 +95,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
    }
 
-   private final DashboardPresenter dashboardPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
@@ -120,15 +119,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
    private static final String REPORT_PROBLEM_LINK = "https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata";
 
-   private boolean enableDashBoard = false;
-
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final DashboardPresenter dashboardPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
-      this.dashboardPresenter = dashboardPresenter;
       this.history = history;
       this.identity = identity;
       this.messages = messages;
@@ -146,23 +142,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    {
       display.setNotificationText(count, severity);
    }
-
-   @Override
-   public void showNotificationAlert()
-   {
-      display.showNotificationAlert();
-   }
-
-   @Override
-   public void cancelNotificationAlert()
-   {
-      display.cancelNotificationAlert();
-   }
    
    @Override
    protected void onBind()
    {
-      dashboardPresenter.bind();
       keyShortcutPresenter.bind();
       documentListPresenter.bind();
       translationPresenter.bind();
@@ -251,7 +234,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onClick(ClickEvent event)
          {
-            notificationPresenter.showNotificationWithNoTimer();
+            notificationPresenter.showNotification();
          }
       }));
 
@@ -341,20 +324,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       };
 
       display.initMenuList(identity.getPerson().getName(), helpMenuCommand, reportProblemCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
-
-      if (enableDashBoard)
-      {
-         keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'B'), ShortcutContext.Application, messages.showDashboardKeyShortcut(), new KeyShortcutEventHandler()
-         {
-            @Override
-            public void onKeyShortcut(KeyShortcutEvent event)
-            {
-               HistoryToken token = history.getHistoryToken();
-               token.setView(MainView.Dashboard);
-               history.newItem(token.toTokenString());
-            }
-         }));
-      }
 
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
       {
@@ -461,16 +430,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = selectedDocumentStats;
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
-            dashboardPresenter.concealDisplay();
             display.setLayoutMenuVisible(true);
-            break;
-         case Dashboard:
-            display.setDocumentLabel("", messages.dashboard());
-            currentDisplayStats = projectStats;
-            translationPresenter.concealDisplay();
-            searchResultsPresenter.concealDisplay();
-            dashboardPresenter.revealDisplay();
-            display.setLayoutMenuVisible(false);
             break;
          case Search:
             // these two lines temporarily here until PresenterRevealedHandler
@@ -479,7 +439,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
-            dashboardPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
             display.setLayoutMenuVisible(false);
             break;
@@ -491,7 +450,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
-            dashboardPresenter.concealDisplay();
             display.setLayoutMenuVisible(false);
             break;
          }

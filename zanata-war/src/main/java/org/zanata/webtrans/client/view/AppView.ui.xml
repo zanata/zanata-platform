@@ -27,7 +27,7 @@
 
 		.topPanel-Workspace {
 			font-size: 1.1em;
-			color: white;
+			color: #595959;
 			padding:2px;
 		}
 
@@ -40,7 +40,7 @@
 		.translationStats {
 			width: 140px;
 			height: 1.2em;
-			color: white;
+			color: #595959;
 		}
 		
         .readOnly {
@@ -71,26 +71,33 @@
             cursor: pointer;
             display: inline;
             font-weight:bold;
+            color:#0085CC;
         }
         
          .documents-link:hover 
         {
-			color:#ADD8E6;
+			text-decoration:underline;
         }
         
-        .banner 
-        {
-			background:#5F5F5F;	
-		}
-		
 		.notificationBtn
 		{
-			width:14px;
 			height:17px;
-			font-weight:bold;
-			color:#5F5F5F;
 			margin-right:5px;
 			margin-left:2px;
+		}
+		
+		.notificationLabel
+		{
+			font-size: 10px;
+		    font-weight: bold;
+		    color: white;
+		    position: absolute;
+		    margin-left: 3px;
+		    margin-right:10px;
+		    margin-top: -4px;
+		    background: orange;
+		    border-radius: 2px;
+		    min-width:10px;
 		}
 		
 		.hasWarning
@@ -111,7 +118,7 @@
 		.topMenuButton
 		{
 			outline: none;
-			padding-top: 6px;
+			padding-top: 4px;
             cursor: pointer;
 		}
 
@@ -129,7 +136,7 @@
 	</ui:style>
 	<g:LayoutPanel>
 		<g:layer top="0px" height="35px">
-			<g:LayoutPanel ui:field='topPanel' styleName="{style.banner}">
+			<g:LayoutPanel ui:field='topPanel' styleName="banner">
 				<g:layer left="0px" right="0px">
 					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE">
 						<g:cell horizontalAlignment="ALIGN_LEFT" width="16px">
@@ -140,7 +147,7 @@
 								<nobr>
 									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.readOnly}"><ui:msg>Read-only mode</ui:msg></g:InlineLabel>
 								    <g:InlineLabel ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:InlineLabel>
-									<span class="{style.divider}">></span>
+									<g:Image resource="{resources.chevronRight}" styleName="{style.divider}"/>
 									<em>
 										<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
 									</em>
@@ -164,7 +171,10 @@
 	                    	<g:MenuBar ui:field="topMenuBar" addStyleNames="{style.topMenuBar}"/>
 	                    </g:cell>
 	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="18px">
-	                    	<g:PushButton ui:field="notificationBtn" addStyleNames="{style.notificationBtn}"/>
+	                    	<g:HTMLPanel>
+	                    			<g:Label ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
+			                    	<g:PushButton ui:field="notificationBtn" addStyleNames="{style.notificationBtn}"/>
+	                    	</g:HTMLPanel>
 	                    </g:cell>
 					</g:HorizontalPanel>
 				</g:layer>
