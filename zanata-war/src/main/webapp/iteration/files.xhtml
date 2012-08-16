@@ -98,6 +98,11 @@
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
                     </s:link>
+                    <s:link styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/txt">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <!-- TODO replace with original format link, only if available -->
+                        <h:outputText value=".txt"/>
+                    </s:link>
                 </rich:column>
                 <rich:column rendered="#{projectIterationFilesAction.fileUploadAllowed}">
                     <f:facet name="header">

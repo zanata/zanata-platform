@@ -23,8 +23,12 @@ package org.zanata.rest.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -42,13 +46,17 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.FileSystemService;
+import org.zanata.service.TranslationFileService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 
 @Name("fileService")
@@ -66,7 +74,10 @@ public class FileService implements FileResource
    
    @In
    private FileSystemService fileSystemServiceImpl;
-   
+
+   @In
+   private TranslationFileService translationFileServiceImpl;
+
    @In
    private ResourceUtils resourceUtils;
 
@@ -97,12 +108,12 @@ public class FileService implements FileResource
    {
       final Response response; 
       HDocument document = this.documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
-      
+
       if( document == null )
       {
          response = Response.status(Status.NOT_FOUND).build();
       }
-      else
+      else if ("po".equals(fileExtension))
       {
          final Set<String> extensions = new HashSet<String>();
          extensions.add("gettext");
@@ -112,16 +123,47 @@ public class FileService implements FileResource
          TranslationsResource transRes = 
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
-               
+
          StreamingOutput output = new POStreamingOutput(res, transRes);
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
                .entity(output).build();
       }
+
+      // TODO decide whether to have one URL for original format, or use fileExtension for all
+      else if (translationFileServiceImpl.hasAdapterFor(fileExtension) &&
+            translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+      {
+         final Set<String> extensions = Collections.<String>emptySet();
+         TranslationsResource transRes = 
+               (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
+         // Filter translations to only provide approved translations.
+         // "Preview" downloads should include fuzzy as well.
+         // New list is used as transRes list appears not to be a modifiable implementation.
+         List<TextFlowTarget> translations = new ArrayList<TextFlowTarget>();
+         for (TextFlowTarget target : transRes.getTextFlowTargets())
+         {
+            if (target.getState() == ContentState.Approved)
+            {
+               translations.add(target);
+            }
+         }
+
+         InputStream fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, document.getPath(), document.getName());
+         StreamingOutput output = new FormatAdapterStreamingOutput(fileContents, translations, locale, translationFileServiceImpl.getAdapterFor(fileExtension));
+         response = Response.ok()
+               .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
+               .entity(output).build();
+      }
+      else
+      {
+         // TODO check if this media type is appropriate
+         response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
+      }
       
       return response;
    }
-   
+
    /**
     * Downloads a previously generated file.
     * 
@@ -173,8 +215,8 @@ public class FileService implements FileResource
          return Response.serverError().status( Status.INTERNAL_SERVER_ERROR ).build();
       }
    }
-   
-   
+
+
    /*
     * Private class that implements PO file streaming of a document.
     */
@@ -182,13 +224,13 @@ public class FileService implements FileResource
    {
       private Resource resource;
       private TranslationsResource transRes;
-      
+
       public POStreamingOutput( Resource resource, TranslationsResource transRes )
       {
          this.resource = resource;
          this.transRes = transRes;
       }
-      
+
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {         
@@ -196,7 +238,29 @@ public class FileService implements FileResource
          writer.writePo(output, "UTF-8", this.resource, this.transRes);
       }
    }
-   
+
+   private class FormatAdapterStreamingOutput implements StreamingOutput
+   {
+      private List<TextFlowTarget> translations;
+      private String locale;
+      private InputStream fileContents;
+      private FileFormatAdapter adapter;
+
+      public FormatAdapterStreamingOutput(InputStream fileContents, List<TextFlowTarget> translations, String locale, FileFormatAdapter adapter)
+      {
+         this.translations = translations;
+         this.locale = locale;
+         this.fileContents = fileContents;
+         this.adapter = adapter;
+      }
+
+      @Override
+      public void write(OutputStream output) throws IOException, WebApplicationException
+      {
+         adapter.writeTranslatedFile(output, fileContents, translations, locale);
+      }
+   }
+
    /*
     * Private class that implements downloading from a previously prepared file. 
     */
@@ -208,7 +272,7 @@ public class FileService implements FileResource
       {
          this.file = file;
       }
-      
+
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {

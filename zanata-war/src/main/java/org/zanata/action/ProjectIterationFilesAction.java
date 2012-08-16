@@ -21,7 +21,10 @@
 package org.zanata.action;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
 import javax.faces.context.FacesContext;
 
 import org.hibernate.validator.InvalidStateException;
@@ -177,17 +180,35 @@ public class ProjectIterationFilesAction
    @Restrict("#{projectIterationFilesAction.documentUploadAllowed}")
    public String uploadDocumentFile()
    {
+      InputStream fileContents = this.documentFileUpload.getFileContents();
+
+      if (translationFileServiceImpl.hasAdapterFor(documentFileUpload.getFileName()))
+      {
+         translationFileServiceImpl.persistDocument(fileContents, projectSlug, iterationSlug, documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
+         fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
+      }
+
       try
       {
-         Resource doc = this.translationFileServiceImpl.parseDocumentFile(this.documentFileUpload.getFileContents(),
+         Resource doc = this.translationFileServiceImpl.parseDocumentFile(fileContents,
               this.documentFileUpload.getDocumentPath(), this.documentFileUpload.getFileName());
 
          doc.setLang( new LocaleId(this.documentFileUpload.getSourceLang()) );
 
+         // Temporary solution to hard-coded GetText extensions.
+         Set<String> extensions;
+         if (this.documentFileUpload.getFileName().endsWith(".pot"))
+         {
+            extensions = new StringSet(ExtensionType.GetText.toString());
+         }
+         else
+         {
+            extensions = Collections.<String>emptySet();
+         }
+
          // TODO Copy Trans values
-         // Extensions are hard-coded to GetText, since it is the only supported format at the time
          this.documentServiceImpl.saveDocument(this.projectSlug, this.iterationSlug,
-               doc, new StringSet(ExtensionType.GetText.toString()),
+               doc, extensions,
                false);
 
          FacesMessages.instance().add(Severity.INFO, "Document file {0} uploaded.", this.documentFileUpload.getFileName());
@@ -200,6 +221,8 @@ public class ProjectIterationFilesAction
       {
          FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
       }
+
+      // TODO if Resource (document) can't be saved properly, remove the persisted file.
 
       // NB This needs to be done as for some reason seam is losing the parameters when redirecting
       // This is efectively the same as returning void

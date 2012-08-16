@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -35,4 +36,43 @@ public interface TranslationFileService
    TranslationsResource parseTranslationFile(InputStream fileContents, String fileName);
 
    Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
+
+   /**
+    * Check whether a handler for the given file type is available.
+    * 
+    * @param fileNameOrExtension full filename with extension, or just extension
+    * @return
+    */
+   boolean hasAdapterFor(String fileNameOrExtension);
+
+   FileFormatAdapter getAdapterFor(String fileNameOrExtension);
+
+
+   /**
+    * Add a document to persistent storage, overwriting any equivalent existing document.
+    * 
+    * A document is equivalent if it has the same project and version slug, docPath and docName.
+    * 
+    * @param docContents contents of the document, will be in a closed state when this method completes.
+    * @param projectSlug
+    * @param iterationSlug
+    * @param docPath
+    * @param docNameAndExt
+    */
+   void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName);
+
+   boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName);
+
+   /**
+    * Stream the contents of a document from persistence.
+    * 
+    * @param projectSlug
+    * @param iterationSlug
+    * @param docPath
+    * @param docNameAndExt
+    * @return the document as an InputStream, or null if no document is in persistence with the given credentials.
+    */
+   InputStream streamDocument(String projectSlug, String iterationSlug, String docPath, String docName);
+
+
 }
