@@ -92,7 +92,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void cancelNotificationAlert();
       
       void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
-
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -101,6 +100,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
    private final LayoutSelectorPresenter layoutSelectorPresenter;
+   private final HeaderPresenter headerPresenter;
 
    private final History history;
    private final Identity identity;
@@ -120,7 +120,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private static final String REPORT_PROBLEM_LINK = "https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final HeaderPresenter headerPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
@@ -133,6 +133,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter = notificationPresenter;
       this.layoutSelectorPresenter = layoutSelectorPresenter;
+      this.headerPresenter = headerPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
    }
@@ -152,6 +153,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
+      headerPresenter.bind();
 
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);

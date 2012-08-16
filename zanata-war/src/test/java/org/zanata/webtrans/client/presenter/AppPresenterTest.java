@@ -92,6 +92,7 @@ public class AppPresenterTest extends PresenterTest
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
    LayoutSelectorPresenter mockLayoutPresenter;
+   HeaderPresenter mockHeaderPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -168,7 +169,7 @@ public class AppPresenterTest extends PresenterTest
    void beforeMethod()
    {
       resetAll();
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockHeaderPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
    }

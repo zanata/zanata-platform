@@ -39,6 +39,9 @@ public interface Resources extends ClientBundle
    @Source("images/z-logo-16px.png")
    ImageResource logo();
 
+   @Source("images/logo-small.png")
+   ImageResource logo2();
+
    @Source("images/x.png")
    ImageResource xButton();
 
@@ -114,6 +117,18 @@ public interface Resources extends ClientBundle
    @Source("images/crystal_project/_16x16/actions/logout.png")
    ImageResource logout();
 
+   @Source("images/crystal_project/_16x16/apps/kllckety.png")
+   ImageResource projects();
+
+   @Source("images/crystal_project/_16x16/apps/kdf.png")
+   ImageResource groups();
+
+   @Source("images/crystal_project/_16x16/apps/locale.png")
+   ImageResource languages();
+
+   @Source("images/crystal_project/_16x16/apps/error.png")
+   ImageResource error();
+
 //   @Source("images/crystal_project/_24x24/devices/Keyboard.png")
    @Source("images/zanata-icon/24x24/keyboard.png")
    ImageResource keyboard();
@@ -130,5 +145,8 @@ public interface Resources extends ClientBundle
    
    @Source("images/zanata-icon/16x16/chevron-right.png")
    ImageResource chevronRight();
+
+   @Source("images/zanata-icon/16x16/chevron-down.png")
+   ImageResource chevronDown();
 
 }

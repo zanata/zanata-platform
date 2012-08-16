@@ -49,6 +49,7 @@ import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
+import org.zanata.webtrans.client.presenter.HeaderPresenter;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.LayoutSelectorPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
@@ -77,6 +78,7 @@ import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryView;
+import org.zanata.webtrans.client.view.HeaderView;
 import org.zanata.webtrans.client.view.KeyShortcutView;
 import org.zanata.webtrans.client.view.LayoutSelectorView;
 import org.zanata.webtrans.client.view.NotificationView;
@@ -129,6 +131,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationPresenter.Display.class, NotificationView.class);
       bindPresenter(LayoutSelectorPresenter.class, LayoutSelectorPresenter.Display.class, LayoutSelectorView.class);
+      bindPresenter(HeaderPresenter.class, HeaderPresenter.Display.class, HeaderView.class);
 
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);

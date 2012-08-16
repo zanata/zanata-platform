@@ -13,14 +13,11 @@
         }
         .mainPanel {
             background-color: #ffffff;
-            border: 3px solid #e0e8ee;
-            -moz-border-radius: 7px;
-            border-radius: 7px;
         }
         
     </ui:style>
     <g:LayoutPanel>
-        <g:layer top="0px" bottom="8px">
+        <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
                 <g:layer top='2px' height='20px' left="2px" right="2px">
                     <g:LayoutPanel>

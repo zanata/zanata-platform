@@ -10,9 +10,9 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -159,7 +160,8 @@ public class Application implements EntryPoint
    private void delayedStartApp()
    {
       final AppPresenter appPresenter = injector.getAppPresenter();
-      RootLayoutPanel.get().add(appPresenter.getDisplay().asWidget());
+      RootPanel.get("test").add(appPresenter.getDisplay().asWidget());
+      // RootLayoutPanel.get().add(appPresenter.getDisplay().asWidget());
       appPresenter.bind();
    }
 
@@ -199,9 +201,38 @@ public class Application implements EntryPoint
    {
       redirectToUrl(getModuleParentBaseUrl() + "project/view/" + workspaceId.getProjectIterationId().getProjectSlug());
    }
+   
+   public static void redirectToZanataProject()
+   {
+      redirectToUrl(getModuleParentBaseUrl() + "project");
+   }
+
+   public static void redirectToZanataGroup()
+   {
+      redirectToUrl(getModuleParentBaseUrl() + "version-group");
+   }
+   
+   public static void redirectToZanataLanguage()
+   {
+      redirectToUrl(getModuleParentBaseUrl() + "language");
+   }
+
+   public static void redirectToZanataHelp()
+   {
+      redirectToUrl(getModuleParentBaseUrl() + "help");
+   }
+
+   public static void redirectToZanataHome()
+   {
+      redirectToUrl(getModuleParentBaseUrl());
+   }
 
    public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
+   }-*/;
+
+   public static native void openNewWindowToUrl(String url)/*-{
+		$wnd.open(url);
    }-*/;
 
    public static native void closeWindow()/*-{

@@ -10,7 +10,17 @@
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
 	<ui:style type="org.zanata.webtrans.client.view.AppView.Styles">
-	
+		.rootContainer
+		{
+			min-width:1024px;
+			background-color:#FFFFFF;
+		}
+		
+		.container
+		{
+			margin:8px 25px;
+		}
+		
 		.topPanel-Navigation {
 
 		}
@@ -82,7 +92,6 @@
 		.notificationBtn
 		{
 			height:17px;
-			margin-right:5px;
 			margin-left:2px;
 		}
 		
@@ -134,14 +143,15 @@
 		}
 		
 	</ui:style>
-	<g:LayoutPanel>
-		<g:layer top="0px" height="35px">
-			<g:LayoutPanel ui:field='topPanel' styleName="banner">
-				<g:layer left="0px" right="0px">
+	<g:LayoutPanel styleName="{style.rootContainer}">
+		<g:layer top="0" height="200px">
+			<g:LayoutPanel ui:field='headerContainer'/>	
+		</g:layer>
+		
+		<g:layer top="35px" height="35px">
+			<g:LayoutPanel styleName="subHeader">
+				<g:layer left="5px" right="5px">
 					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE">
-						<g:cell horizontalAlignment="ALIGN_LEFT" width="16px">
-			         		<g:Image resource="{resources.logo}" styleName="{style.logo}"/>
-			      		</g:cell>
 						<g:cell>
 							<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 								<nobr>
@@ -180,8 +190,8 @@
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="35px" bottom="0px" left='0px' right='0px' >
-		   <g:LayoutPanel ui:field="container" />
+		<g:layer top="70px" bottom="0px" left='0px' right='0px' >
+		   <g:LayoutPanel ui:field="container" styleName="{style.container}"/>
 		</g:layer>
 	</g:LayoutPanel>
 </ui:UiBinder>

@@ -24,6 +24,7 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
+import org.zanata.webtrans.client.presenter.HeaderPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
@@ -90,7 +91,7 @@ public class AppView extends Composite implements AppPresenter.Display
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel container, topPanel;
+   LayoutPanel container;
 
    @UiField(provided = true)
    final Resources resources;
@@ -107,6 +108,9 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField(provided = true)
    PushButton notificationBtn;
    
+   @UiField
+   LayoutPanel headerContainer;
+
    MenuItem helpMenuItem;
    
    MenuItem reportProblemMenuItem;
@@ -129,7 +133,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private final String userAvatarUrl;
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, HeaderPresenter.Display headerView, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
    {
       this.resources = resources;
       this.messages = messages;
@@ -146,6 +150,8 @@ public class AppView extends Composite implements AppPresenter.Display
       
       initWidget(uiBinder.createAndBindUi(this));
 
+      headerContainer.add(headerView.asWidget());
+
       userAvatarUrl = identity.getPerson().getAvatarUrl();
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
@@ -159,8 +165,9 @@ public class AppView extends Composite implements AppPresenter.Display
 
       this.searchResultsView = searchResultsView.asWidget();
       this.container.add(this.searchResultsView);
-
+      
       Window.enableScrolling(false);
+      headerContainer.setVisible(false);
    }
 
    @Override
@@ -216,16 +223,16 @@ public class AppView extends Composite implements AppPresenter.Display
       MenuBar menuBar = new MenuBar(true);
       menuBar.addStyleName(style.menuBar());
 
-      ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help());
+      ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help(), null);
       helpImageLabel.setImageStyle(style.image());
 
-      ImageLabel reportProblemImageLabel = new ImageLabel(resources.bug(), messages.reportAProblem());
+      ImageLabel reportProblemImageLabel = new ImageLabel(resources.bug(), messages.reportAProblem(), null);
       reportProblemImageLabel.setImageStyle(style.image());
 
-      ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.layoutSelection());
+      ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.layoutSelection(), null);
       layoutImageLabel.setImageStyle(style.image());
 
-      ImageLabel signOutImageLabel = new ImageLabel(resources.logout(), messages.signOut());
+      ImageLabel signOutImageLabel = new ImageLabel(resources.logout(), messages.signOut(), null);
       signOutImageLabel.setImageStyle(style.image());
 
       ImageLabel leaveWorkspaceImageLabel = new ImageLabel("", messages.leaveWorkspace());
