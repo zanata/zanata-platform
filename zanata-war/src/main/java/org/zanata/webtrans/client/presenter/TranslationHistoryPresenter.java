@@ -1,9 +1,12 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
@@ -15,9 +18,9 @@ import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
@@ -25,9 +28,6 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -39,27 +39,28 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final WebTransMessages messages;
-   private final ListDataProvider<TransHistoryItem> listDataProvider;
-   private final MultiSelectionModel<TransHistoryItem> selectionModel;
+   private final TransHistoryDataProvider listDataProvider;
+   private final TransHistorySelectionModel selectionModel;
    private TargetContentsPresenter targetContentsPresenter;
 
    @Inject
-   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages)
+   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, TransHistorySelectionModel selectionModel, TransHistoryDataProvider dataProvider)
    {
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.messages = messages;
-      listDataProvider = new ListDataProvider<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
-      listDataProvider.addDataDisplay(display.getHistoryTable());
-      ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler = new ColumnSortEvent.ListHandler<TransHistoryItem>(listDataProvider.getList());
-      sortHandler.setComparator(display.getVersionColumn(), TransHistoryVersionComparator.COMPARATOR);
-      display.addVersionSortHandler(sortHandler);
+      this.selectionModel = selectionModel;
 
-      selectionModel = new MultiSelectionModel<TransHistoryItem>(TranslationHistoryDisplay.HISTORY_ITEM_PROVIDES_KEY);
-      selectionModel.addSelectionChangeHandler(this);
-      display.setSelectionModel(selectionModel);
+      listDataProvider = dataProvider;
+      this.display.setDataProvider(listDataProvider);
+
+      ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler = new ColumnSortEvent.ListHandler<TransHistoryItem>(listDataProvider.getList());
+      this.display.addVersionSortHandler(sortHandler);
+
+      this.selectionModel.addSelectionChangeHandler(this);
+      this.display.setSelectionModel(this.selectionModel);
    }
 
    public void showTranslationHistory(final TransUnitId transUnitId)
@@ -93,6 +94,8 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
                listDataProvider.getList().add(latest);
             }
             listDataProvider.getList().addAll(result.getHistoryItems());
+            Comparator<TransHistoryItem> reverseComparator = Collections.reverseOrder(TransHistoryVersionComparator.COMPARATOR);
+            Collections.sort(listDataProvider.getList(), reverseComparator);
          }
       });
    }
@@ -130,51 +133,9 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    {
    }
 
-   public void addCurrentValueHolder(TargetContentsPresenter targetContentsPresenter)
+   public void setCurrentValueHolder(TargetContentsPresenter targetContentsPresenter)
    {
       this.targetContentsPresenter = targetContentsPresenter;
    }
 
-   private static enum TransHistoryVersionComparator implements Comparator<TransHistoryItem>
-   {
-      COMPARATOR;
-
-      @Override
-      public int compare(TransHistoryItem one, TransHistoryItem two)
-      {
-         if (itemIsOldVersion(one) && itemIsOldVersion(two))
-         {
-            Integer verOne = Integer.parseInt(one.getVersionNum());
-            Integer verTwo = Integer.parseInt(two.getVersionNum());
-            return verOne.compareTo(verTwo);
-         }
-         if (itemIsCurrentValue(one))
-         {
-            //first is current value
-            return 1;
-         }
-         if (itemIsLatestVersion(one) && itemIsCurrentValue(two))
-         {
-            //first is latest version but second is current value
-            return -1;
-         }
-         //else first is old version and second is not old version
-         return -1;
-      }
-
-      private static boolean itemIsOldVersion(TransHistoryItem one)
-      {
-         return one.getVersionNum().matches("\\d+");
-      }
-
-      private static boolean itemIsLatestVersion(TransHistoryItem one)
-      {
-         return one.getVersionNum().matches("\\d+\\w+");
-      }
-
-      private static boolean itemIsCurrentValue(TransHistoryItem one)
-      {
-         return one.getVersionNum().matches("\\w+");
-      }
-   }
 }

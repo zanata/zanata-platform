@@ -97,8 +97,14 @@ public class HistoryEntryComparisonPanel extends Composite
 
       String historyEntry();
 
-      String versionLabel();
-
       String header();
+
+      String grid();
+
+      String contentCell();
+
+      String originRow();
+
+      String versionCell();
    }
 }

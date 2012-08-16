@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.presenter.TransHistoryVersionComparator;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
@@ -33,7 +34,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -157,12 +158,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
-   public HasData<TransHistoryItem> getHistoryTable()
-   {
-      return historyTable;
-   }
-
-   @Override
    public void showDiff(TransHistoryItem one, TransHistoryItem two, String description)
    {
       compareButton.setEnabled(true);
@@ -179,12 +174,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
-   public Column<TransHistoryItem, String> getVersionColumn()
-   {
-      return versionColumn;
-   }
-
-   @Override
    public void setSelectionModel(SelectionModel<TransHistoryItem> multiSelectionModel)
    {
       historyTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<TransHistoryItem>createCheckboxManager());
@@ -194,10 +183,18 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
+   public void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider)
+   {
+      dataProvider.addDataDisplay(historyTable);
+   }
+
+   @Override
    public void addVersionSortHandler(ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler)
    {
-//      handlerRegistration = historyTable.addColumnSortHandler(sortHandler);
+      sortHandler.setComparator(versionColumn, TransHistoryVersionComparator.COMPARATOR);
       historyTable.addColumnSortHandler(sortHandler);
+      //push it to make column sort in desc order at start
+      historyTable.getColumnSortList().push(versionColumn);
    }
 
    private void setComparisonTitle(String description)
@@ -210,10 +207,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public void resetView()
    {
       historyTable.setPageStart(0);
-//      if (handlerRegistration != null)
-//      {
-//         handlerRegistration.removeHandler();//remove the column sort handler
-//      }
       disableComparison();
    }
 
