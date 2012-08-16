@@ -347,7 +347,7 @@ th,td {
 	border-style: solid;
 	padding: 1px;
 	background-color: #EEE;
-	border-color: silver;
+	border-color: #EEEEEE;
 }
 
 .rich-panel .rich-panel-header {
@@ -370,7 +370,7 @@ th,td {
 
 .rich-panel-body {
 	border: 1px solid;
-	border-color: #F4F4F4;
+	border-color: #EEEEEE;
 }
 
 .rich-panel-body {
