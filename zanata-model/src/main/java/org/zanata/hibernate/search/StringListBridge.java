@@ -5,8 +5,11 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.util.Version;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.ParameterizedBridge;
@@ -31,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StringListBridge implements FieldBridge, ParameterizedBridge
 {
 
-   private ConfigurableNgramAnalyzer analyzer;
+   private Analyzer analyzer;
    private boolean caseSensitive = false;
    private boolean multiNgrams = false;
 
@@ -73,14 +76,17 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    @Override
    public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)
    {
-      if (multiNgrams)
+      // Using word search now, so no n-grams
+      /*if (multiNgrams)
       {
          analyzer = new ConfigurableNgramAnalyzer(1, 3, !caseSensitive);
       }
       else
       {
          analyzer = new ConfigurableNgramAnalyzer(3, !caseSensitive);
-      }
+      }*/
+
+      analyzer = new StandardAnalyzer(Version.LUCENE_29);
 
       if (!(value instanceof List<?>))
       {

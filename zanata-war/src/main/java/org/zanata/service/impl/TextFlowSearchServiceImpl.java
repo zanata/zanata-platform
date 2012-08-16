@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
@@ -131,36 +132,27 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          return Collections.emptyList();
       }
 
-      // FIXME remove .trim() and zero-length check when ngram analyzer is updated to respect leading and trailing whitespace
-      int searchLength = Math.min(3, constraints.getSearchString().trim().length());
-      if (searchLength == 0)
-      {
-         return Collections.emptyList();
-      }
-      Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
+      Analyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_29);
 
-      //String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.TF_CONTENT_FIELDS);
+      // Common query terms between source and targets
+      TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
+      TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
+      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
 
-      Query searchPhraseQuery;
-      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.CONTENT_FIELDS, ngramAnalyzer);
+      Query contentPhraseQuery;
+      QueryParser contentQueryParser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.CONTENT_FIELDS, standardAnalyzer);
       try
       {
-         searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
+         // add a wilcard at the end to search for partial words
+         // NB: No search for partial word endings.
+         contentPhraseQuery = contentQueryParser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
       }
       catch (ParseException e)
       {
          throw new ZanataServiceException("Failed to parse query", e);
       }
 
-      TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
-      TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
-      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
-
-      BooleanQuery sourceQuery = new BooleanQuery();
-      sourceQuery.add(projectQuery, Occur.MUST);
-      sourceQuery.add(iterationQuery, Occur.MUST);
-      sourceQuery.add(searchPhraseQuery, Occur.MUST);
-
+      MultiPhraseQuery documentsQuery = new MultiPhraseQuery();
       if (documentPaths != null && !documentPaths.isEmpty())
       {
          ArrayList<Term> docPathTerms = new ArrayList<Term>();
@@ -168,16 +160,23 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          {
             docPathTerms.add(new Term(IndexFieldLabels.DOCUMENT_ID_FIELD, s));
          }
-         MultiPhraseQuery documentsQuery = new MultiPhraseQuery();
          documentsQuery.add(docPathTerms.toArray(new Term[docPathTerms.size()]));
-         sourceQuery.add(documentsQuery, Occur.MUST);
       }
 
       List<HTextFlow> resultList = new ArrayList<HTextFlow>();
       if (constraints.isSearchInTarget())
       {
-         BooleanQuery targetQuery = (BooleanQuery) sourceQuery.clone();
+         // Target Query
+         BooleanQuery targetQuery = new BooleanQuery();
+         targetQuery.add(projectQuery, Occur.MUST);
+         targetQuery.add(iterationQuery, Occur.MUST);
+         targetQuery.add(contentPhraseQuery, Occur.MUST);
+         if( documentsQuery.getTermArrays().size() > 0 )
+         {
+            targetQuery.add(documentsQuery, Occur.MUST);
+         }
          targetQuery.add(localeQuery, Occur.MUST);
+
          if (!constraints.isIncludeApproved())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
@@ -212,6 +211,16 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
       if (constraints.isSearchInSource())
       {
+         // Source Query
+         BooleanQuery sourceQuery = new BooleanQuery();
+         sourceQuery.add(projectQuery, Occur.MUST);
+         sourceQuery.add(iterationQuery, Occur.MUST);
+         sourceQuery.add(contentPhraseQuery, Occur.MUST);
+         if( documentsQuery.getTermArrays().size() > 0 )
+         {
+            sourceQuery.add(documentsQuery, Occur.MUST);
+         }
+
          FullTextQuery ftQuery = entityManager.createFullTextQuery(sourceQuery, HTextFlow.class);
          @SuppressWarnings("unchecked")
          List<HTextFlow> matchedSources = (List<HTextFlow>) ftQuery.getResultList();
@@ -235,111 +244,11 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints)
    {
-      //TODO this method has high percentage of duplication from the above method. Refactor.
-      LocaleId localeId = workspace.getLocaleId();
-      String projectSlug = workspace.getProjectIterationId().getProjectSlug();
-      String iterationSlug = workspace.getProjectIterationId().getIterationSlug();
+      List<String> documentPaths = new ArrayList<String>(1);
+      HDocument document = documentDAO.getById( doc.getId() );
+      documentPaths.add( document.getDocId() );
 
-      localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug);
-
-      if (!constraints.isSearchInSource() && !constraints.isSearchInTarget())
-      {
-         //searching nowhere
-         return Collections.emptyList();
-      }
-
-      // FIXME remove .trim() and zero-length check when ngram analyzer is updated to respect leading and trailing whitespace
-      int searchLength = Math.min(3, constraints.getSearchString().trim().length());
-      if (searchLength == 0)
-      {
-         return Collections.emptyList();
-      }
-      Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
-
-      //String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.TF_CONTENT_FIELDS);
-
-      Query searchPhraseQuery;
-      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.TF_CONTENT_FIELDS, ngramAnalyzer);
-      try
-      {
-         searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
-      }
-      catch (ParseException e)
-      {
-         throw new ZanataServiceException("Failed to parse query", e);
-      }
-
-      TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
-      TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
-      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
-      HDocument hDocument = documentDAO.getById(doc.getId());
-      TermQuery documentQuery = new TermQuery(new Term(IndexFieldLabels.DOCUMENT_ID_FIELD, hDocument.getDocId()));
-
-      BooleanQuery sourceQuery = new BooleanQuery();
-      sourceQuery.add(projectQuery, Occur.MUST);
-      sourceQuery.add(iterationQuery, Occur.MUST);
-      sourceQuery.add(searchPhraseQuery, Occur.MUST);
-      sourceQuery.add(documentQuery, Occur.MUST);
-
-      List<HTextFlow> resultList = Lists.newArrayList();
-      if (constraints.isSearchInTarget())
-      {
-         BooleanQuery targetQuery = (BooleanQuery) sourceQuery.clone();
-         targetQuery.add(localeQuery, Occur.MUST);
-         if (!constraints.isIncludeApproved())
-         {
-            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
-            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
-         }
-
-         if (!constraints.isIncludeFuzzy())
-         {
-            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
-            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
-         }
-
-         if (!constraints.isIncludeNew())
-         {
-            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
-            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
-         }
-
-         FullTextQuery ftQuery = entityManager.createFullTextQuery(targetQuery, HTextFlowTarget.class);
-         @SuppressWarnings("unchecked")
-         List<HTextFlowTarget> matchedTargets = (List<HTextFlowTarget>) ftQuery.getResultList();
-         log.info("got {} HTextFLowTarget results", matchedTargets.size());
-         List<HTextFlow> hTextFlows = Lists.transform(matchedTargets, new Function<HTextFlowTarget, HTextFlow>()
-         {
-            @Override
-            public HTextFlow apply(HTextFlowTarget target)
-            {
-               return target.getTextFlow();
-            }
-         });
-         resultList.addAll(hTextFlows);
-      }
-
-      if (constraints.isSearchInSource())
-      {
-         FullTextQuery ftQuery = entityManager.createFullTextQuery(sourceQuery, HTextFlow.class);
-         @SuppressWarnings("unchecked")
-         List<HTextFlow> matchedSources = (List<HTextFlow>) ftQuery.getResultList();
-         log.info("got {} HTextFLow results", matchedSources.size());
-         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-         for (HTextFlow hTextFlow : matchedSources)
-         {
-            if (!resultList.contains(hTextFlow))
-            {
-               HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
-               if (isContentStateValid(hTextFlowTarget, constraints))
-               {
-                  resultList.add(hTextFlow);
-               }
-            }
-         }
-      }
-
-      return resultList;
+      return this.findTextFlows(workspace, documentPaths, constraints);
    }
 
    private static boolean isContentStateValid(HTextFlowTarget hTextFlowTarget, FilterConstraints constraints)

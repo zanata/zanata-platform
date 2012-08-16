@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -136,19 +138,22 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
       switch (query.getSearchType())
       {
+      // 'Lucene' in the editor
       case RAW:
          queryText = query.getQueries().get(0);
          break;
 
+      // 'Fuzzy' in the editor
       case FUZZY:
-         // search by N-grams
          queryText = QueryParser.escape(query.getQueries().get(0));
          break;
 
+      // 'Phrase' in the editor
       case EXACT:
          queryText = "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
          break;
 
+      // 'Fuzzy' in the editor, plus it is a plural entry
       case FUZZY_PLURAL:
          multiQueryText = new String[query.getQueries().size()];
          for (int i = 0; i < query.getQueries().size(); i++)
@@ -161,7 +166,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       }
 
       org.apache.lucene.search.Query textQuery;
-      CaseInsensitiveNgramAnalyzer analyzer = new CaseInsensitiveNgramAnalyzer();
+      Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_29);
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;
