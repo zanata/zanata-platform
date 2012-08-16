@@ -1,0 +1,109 @@
+<div class="navBar" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich">
+	
+	<ul>
+		<li id="logoCol">
+			<s:link view="/home.xhtml" propagation="none">
+				<img src="#{requestContextPath}/images/logo.png" alt="#{messages['jsf.ZanataMainDescription']}" class="logo" />
+			</s:link>
+		</li>
+		<li id="projectCol">
+			<s:link id="Projects" view="/project/home.xhtml" propagation="none">
+				<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kllckety.png" />#{messages['jsf.Projects']}
+			</s:link>
+		</li>
+		<li id="groupCol">
+			<s:link id="version-groups" view="/version-group/home.xhtml" propagation="none">
+				<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/kdf.png" />#{messages['jsf.Groups']}
+			</s:link>
+		</li>
+		<li id="languageCol">
+			<s:link id="Languages" view="/language/home.xhtml" propagation="none">
+				<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/locale.png" />#{messages['jsf.Languages']}
+			</s:link>
+		</li>
+		<li id="systemCol">
+			<a href="#"> #{messages['jsf.System']}
+				<img src="#{request.contextPath}/images/zanata-icon/16x16/chevron-down.png" class="downArrow" />
+			</a>
+			<div class="submenu">
+				<ul>
+					<li>
+						<s:link id="help" view="/help/view.xhtml" propagation="none">
+							<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/help.png" />#{messages['jsf.Help']}
+						</s:link>
+					</li>
+					<li>
+						<a href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata" target="_blank" id="reportBug"> 
+							<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/bug.png" />#{messages['jsf.ReportAProblem']}
+						</a>
+					</li>
+					<li>
+						<a href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__" target="_blank"> 
+							<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/error.png" />#{messages['jsf.KnownIssues']}
+						</a>
+					</li>
+					<s:fragment rendered="#{not identity.loggedIn}">
+						<li>
+							<s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none"
+								rendered="#{applicationConfiguration.internalAuth}" /> 
+								
+							<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+								<a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
+							</s:fragment>
+						</li>
+					</s:fragment>
+					<s:fragment rendered="#{s:hasRole('admin')}">
+						<li>
+							<s:link id="Administration" view="/admin/home.xhtml" propagation="none">
+								<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/admin_icon.png" />#{messages['jsf.Administration']}
+							</s:link>
+						</li>
+					</s:fragment>
+				</ul>
+			</div>
+		</li>
+		<li id="userCol">
+			<s:fragment rendered="#{identity.loggedIn}">
+				<a href="#"> 
+					<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar" /> 
+					<span><h:outputText value="#{identity.trimUsername} " /></span>
+					<img src="#{request.contextPath}/images/zanata-icon/16x16/chevron-down.png" class="downArrow" />
+				</a>
+				<div class="submenu">
+					<ul>
+						<li>
+							<s:link id="MyProfile" view="/profile/view.xhtml" propagation="none">
+								<img src="#{request.contextPath}/images/zanata-icon/16x16/user.png" />#{messages['jsf.MyProfile']}
+							</s:link>
+						</li>
+						<li>
+							<s:link id="Sign_out" view="/account/sign_out" propagation="none">
+								<img src="#{requestContextPath}/images/zanata-icon/16x16/signout.png" alt="#{messages['jsf.ZanataMainDescription']}" />#{messages['jsf.SignOut']}
+							</s:link>
+						</li>
+					</ul>
+				</div>
+			</s:fragment> 
+			<s:fragment rendered="#{not identity.loggedIn}">
+				<s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
+					<img src="#{requestContextPath}/images/zanata-icon/16x16/signin.png" alt="#{messages['jsf.ZanataMainDescription']}" />#{messages['jsf.SignIn']}
+				</s:link>
+			</s:fragment>
+		</li>
+	</ul>
+
+	<div id="loading_top_right">
+		<a:status>
+			<f:facet name="start">
+				<h:graphicImage value="/images/loading.gif" />
+			</f:facet>
+		</a:status>
+	</div>
+</div>

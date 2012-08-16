@@ -408,9 +408,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 .downArrow
 {
-	float:right;
-	padding-right:10px;
-	padding-top:7px;
+	padding-left:10px;
 }
 
 /* ----------------------- End Header CSS  -------------------------*/
@@ -698,24 +696,26 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	border-right: none;
 }
 
+#userCol a {
+	display:table;
+}
+
 #userCol {
 	width: auto;
+	white-space:nowrap;
 }
 
 #userCol img.avatar {
 	padding: 0;
 	border: 1px solid grey;
 	background:#FFFFFF;
-}
-
-#userCol .submenu {
-    margin-left:-39px;
+	margin-left:5px;
 }
 
 div.submenu {
 	height: 0px;
 	position: absolute;
-	width: 160px;
+	width: 150px;
 	overflow: hidden;
 	z-index: 999;
 	margin-top:1px;
