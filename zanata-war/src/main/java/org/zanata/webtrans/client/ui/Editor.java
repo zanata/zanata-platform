@@ -8,6 +8,7 @@ import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -270,9 +271,10 @@ public class Editor extends Composite implements ToggleEditor
    {
       // @formatter:off
       return Objects.toStringHelper(this)
+            .add("id", id)
 //            .add("label", label.getText())
 //            .add("textArea", textArea.getText())
-            .add("isOpen", textArea.isVisible())
+            .add("isFocused", isFocused())
             .toString();
       // @formatter:on
    }

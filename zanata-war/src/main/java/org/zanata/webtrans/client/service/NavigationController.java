@@ -231,7 +231,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       }
       int targetPage = navigationService.getTargetPage(rowIndex);
       TransUnitId targetTransUnitId = navigationService.getTargetTransUnitId(rowIndex);
-      Log.debug("target page : [" + targetPage + "] target TU id: " + targetTransUnitId + " rowIndex: " + rowIndex);
+      Log.info("target page : [" + targetPage + "] target TU id: " + targetTransUnitId + " rowIndex: " + rowIndex);
 
       if (navigationService.getCurrentPage() == targetPage)
       {

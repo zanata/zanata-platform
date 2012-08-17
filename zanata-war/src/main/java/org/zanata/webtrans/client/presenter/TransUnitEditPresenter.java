@@ -21,8 +21,13 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Warning;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
@@ -40,8 +45,6 @@ import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
@@ -51,15 +54,11 @@ import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
