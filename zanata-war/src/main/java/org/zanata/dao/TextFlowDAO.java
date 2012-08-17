@@ -50,6 +50,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -131,7 +132,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return c.list();
    }
 
-   public List<Object[]> getSearchResult(TransMemoryQuery query, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId locale, final int maxResult) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -166,7 +167,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       }
 
       org.apache.lucene.search.Query textQuery;
-      Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_29);
+      // Analyzer determined by the language
+      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName( locale.getId() );
+      Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
+
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;

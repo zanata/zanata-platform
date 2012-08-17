@@ -8,6 +8,7 @@ public class GetTranslationMemory implements DispatchAction<GetTranslationMemory
 {
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
+   private LocaleId sourceLocaleId;
    private TransMemoryQuery query;
 
    @SuppressWarnings("unused")
@@ -15,10 +16,11 @@ public class GetTranslationMemory implements DispatchAction<GetTranslationMemory
    {
    }
 
-   public GetTranslationMemory(TransMemoryQuery query, LocaleId localeId)
+   public GetTranslationMemory(TransMemoryQuery query, LocaleId localeId, LocaleId sourceLocaleId)
    {
       this.query = query;
       this.localeId = localeId;
+      this.sourceLocaleId = sourceLocaleId;
    }
 
    @Override
@@ -37,6 +39,16 @@ public class GetTranslationMemory implements DispatchAction<GetTranslationMemory
       return localeId;
    }
 
+   public LocaleId getSourceLocaleId()
+   {
+      return sourceLocaleId;
+   }
+
+   public void setSourceLocaleId(LocaleId sourceLocaleId)
+   {
+      this.sourceLocaleId = sourceLocaleId;
+   }
+
    public TransMemoryQuery getQuery()
    {
       return query;
@@ -47,6 +59,7 @@ public class GetTranslationMemory implements DispatchAction<GetTranslationMemory
    {
       final int prime = 31;
       int result = 1;
+      result = prime * result + ((sourceLocaleId == null) ? 0 : sourceLocaleId.hashCode());
       result = prime * result + ((localeId == null) ? 0 : localeId.hashCode());
       result = prime * result + ((query == null) ? 0 : query.hashCode());
       return result;
@@ -76,6 +89,17 @@ public class GetTranslationMemory implements DispatchAction<GetTranslationMemory
          }
       }
       else if (!localeId.equals(other.localeId))
+      {
+         return false;
+      }
+      if (sourceLocaleId == null)
+      {
+         if (other.sourceLocaleId != null)
+         {
+            return false;
+         }
+      }
+      else if (!sourceLocaleId.equals(other.sourceLocaleId))
       {
          return false;
       }

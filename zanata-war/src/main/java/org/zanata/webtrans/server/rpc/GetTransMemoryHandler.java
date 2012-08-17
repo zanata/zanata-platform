@@ -79,21 +79,21 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       TransMemoryQuery transMemoryQuery = action.getQuery();
       log.debug("Fetching matches for {}", transMemoryQuery);
 
-      LocaleId localeID = action.getLocaleId();
-      HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
+      HLocale hLocale = localeServiceImpl.getByLocaleId(action.getLocaleId().getId());
+      HLocale sourceLocale = localeServiceImpl.getByLocaleId(action.getSourceLocaleId().getId());
 
-      ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, transMemoryQuery);
+      ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, sourceLocale, transMemoryQuery);
 
       log.debug("Returning {} TM matches for {}", results.size(), transMemoryQuery);
       return new GetTranslationMemoryResult(action, results);
    }
 
-   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale hLocale, TransMemoryQuery transMemoryQuery)
+   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale hLocale, HLocale sourceLocale, TransMemoryQuery transMemoryQuery)
    {
       ArrayList<TransMemoryResultItem> results = Lists.newArrayList();
       try
       {
-         List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, MAX_RESULTS);
+         List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocale.getLocaleId(), MAX_RESULTS);
 
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
