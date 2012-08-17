@@ -76,18 +76,6 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    @Override
    public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)
    {
-      // Using word search now, so no n-grams
-      /*if (multiNgrams)
-      {
-         analyzer = new ConfigurableNgramAnalyzer(1, 3, !caseSensitive);
-      }
-      else
-      {
-         analyzer = new ConfigurableNgramAnalyzer(3, !caseSensitive);
-      }*/
-
-      analyzer = new StandardAnalyzer(Version.LUCENE_29);
-
       if (!(value instanceof List<?>))
       {
          throw new IllegalArgumentException("this bridge must be applied to a List");
@@ -104,18 +92,6 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    {
       Field field = new Field(fieldName, fieldValue, luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
       field.setBoost(luceneOptions.getBoost());
-
-      // manually apply token stream from analyzer, as hibernate search does not
-      // apply the specified analyzer properly
-      try
-      {
-         field.setTokenStream(analyzer.reusableTokenStream(fieldName, new StringReader(fieldValue)));
-      }
-      catch (IOException e)
-      {
-         log.error("Failed to get token stream from analyzer for field [{}] with [content {}]", fieldName, fieldValue);
-         log.error("exception", e);
-      }
       luceneDocument.add(field);
    }
 

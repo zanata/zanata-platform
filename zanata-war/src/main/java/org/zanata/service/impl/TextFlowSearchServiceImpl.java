@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
@@ -47,12 +46,14 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.hibernate.search.ConfigurableNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
@@ -60,8 +61,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,6 +82,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
    @In
    DocumentDAO documentDAO;
+
+   @In
+   ProjectIterationDAO projectIterationDAO;
 
    @In
    private FullTextEntityManager entityManager;
@@ -132,25 +134,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          return Collections.emptyList();
       }
 
-      Analyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_29);
-
       // Common query terms between source and targets
       TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
       TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
       TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
-
-      Query contentPhraseQuery;
-      QueryParser contentQueryParser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.CONTENT_FIELDS, standardAnalyzer);
-      try
-      {
-         // add a wilcard at the end to search for partial words
-         // NB: No search for partial word endings.
-         contentPhraseQuery = contentQueryParser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
-      }
-      catch (ParseException e)
-      {
-         throw new ZanataServiceException("Failed to parse query", e);
-      }
 
       MultiPhraseQuery documentsQuery = new MultiPhraseQuery();
       if (documentPaths != null && !documentPaths.isEmpty())
@@ -166,11 +153,26 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       List<HTextFlow> resultList = new ArrayList<HTextFlow>();
       if (constraints.isSearchInTarget())
       {
+         // Content query for target
+         String targetAnalyzerName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName( localeId.getId() );
+         Analyzer targetAnalyzer = entityManager.getSearchFactory().getAnalyzer( targetAnalyzerName );
+
+         Query tgtContentPhraseQuery;
+         QueryParser contentQueryParser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.CONTENT_FIELDS, targetAnalyzer);
+         try
+         {
+            tgtContentPhraseQuery = contentQueryParser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
+         }
+         catch (ParseException e)
+         {
+            throw new ZanataServiceException("Failed to parse query", e);
+         }
+
          // Target Query
          BooleanQuery targetQuery = new BooleanQuery();
          targetQuery.add(projectQuery, Occur.MUST);
          targetQuery.add(iterationQuery, Occur.MUST);
-         targetQuery.add(contentPhraseQuery, Occur.MUST);
+         targetQuery.add(tgtContentPhraseQuery, Occur.MUST);
          if( documentsQuery.getTermArrays().size() > 0 )
          {
             targetQuery.add(documentsQuery, Occur.MUST);
@@ -211,11 +213,36 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
       if (constraints.isSearchInSource())
       {
+         // Source locale
+         // NB: Assume the first document's locale, or the same target locale if there are no documents
+         // TODO Move source locale to the Project iteration level
+         LocaleId sourceLocaleId = localeId;
+         HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+         if( !projectIteration.getDocuments().isEmpty() )
+         {
+            sourceLocaleId = projectIteration.getDocuments().values().iterator().next().getLocale().getLocaleId();
+         }
+
+         // Content query for source
+         String sourceAnalyzerName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName( sourceLocaleId.getId() );
+         Analyzer sourceAnalyzer = entityManager.getSearchFactory().getAnalyzer( sourceAnalyzerName );
+
+         Query srcContentPhraseQuery;
+         QueryParser srcContentQueryParser = new MultiFieldQueryParser(Version.LUCENE_29, IndexFieldLabels.CONTENT_FIELDS, sourceAnalyzer);
+         try
+         {
+            srcContentPhraseQuery = srcContentQueryParser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
+         }
+         catch (ParseException e)
+         {
+            throw new ZanataServiceException("Failed to parse query", e);
+         }
+
          // Source Query
          BooleanQuery sourceQuery = new BooleanQuery();
          sourceQuery.add(projectQuery, Occur.MUST);
          sourceQuery.add(iterationQuery, Occur.MUST);
-         sourceQuery.add(contentPhraseQuery, Occur.MUST);
+         sourceQuery.add(srcContentPhraseQuery, Occur.MUST);
          if( documentsQuery.getTermArrays().size() > 0 )
          {
             sourceQuery.add(documentsQuery, Occur.MUST);

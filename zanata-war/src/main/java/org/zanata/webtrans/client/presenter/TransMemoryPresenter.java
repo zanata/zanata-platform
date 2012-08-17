@@ -240,7 +240,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       dataProvider.getList().clear();
       display.startProcessing();
-      final GetTranslationMemory action = new GetTranslationMemory(query, userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId());
+      final GetTranslationMemory action = new GetTranslationMemory(query,
+            userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(),
+            userWorkspaceContext.getSelectedDoc().getSourceLocale());
       scheduleTMRequest(action);
    }
 
