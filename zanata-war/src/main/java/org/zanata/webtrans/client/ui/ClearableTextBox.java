@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.ui;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,11 +30,9 @@ public class ClearableTextBox extends Composite
 
    interface Styles extends CssResource
    {
-      String emptyBox();
    }
 
    private boolean isFocused;
-   String emptyText;
 
    @UiField
    TextBox textBox;
@@ -51,73 +50,34 @@ public class ClearableTextBox extends Composite
    public ClearableTextBox(final Resources resources, final UiMessages messages)
    {
       this.resources = resources;
-      emptyText = messages.typeToEnter();
       initWidget(uiBinder.createAndBindUi(this));
       xButton.setVisible(!textBox.getValue().isEmpty());
-      textBox.setText(emptyText);
-      textBox.addStyleName(style.emptyBox());
    }
 
    @UiHandler("xButton")
    public void onXButtonClick(ClickEvent event)
    {
       textBox.setValue("", true);
-      textBox.setValue(emptyText);
-      textBox.addStyleName(style.emptyBox());
    }
 
    @UiHandler("textBox")
    public void onTextBoxValueChange(ValueChangeEvent<String> event)
    {
-      xButton.setVisible(!event.getValue().isEmpty());
-
-      boolean empty = event.getValue().isEmpty() || event.getValue().equals(emptyText);
-
-      if (empty && !textBox.getStyleName().contains(style.emptyBox()))
-      {
-         textBox.addStyleName(style.emptyBox());
-         refresh();
-      }
-      if (!empty && textBox.getStyleName().contains(style.emptyBox()))
-      {
-         textBox.removeStyleName(style.emptyBox());
-      }
+      xButton.setVisible(!Strings.isNullOrEmpty(event.getValue()));
    }
 
    @UiHandler("textBox")
    public void onTextBoxFocus(FocusEvent event)
    {
       isFocused = true;
-      if (textBox.getStyleName().contains(style.emptyBox()))
-      {
-         textBox.setValue("");
-         textBox.removeStyleName(style.emptyBox());
-      }
    }
 
    @UiHandler("textBox")
    public void onTextBoxBlur(BlurEvent event)
    {
       isFocused = false;
-      refresh();
    }
-
-   private void refresh()
-   {
-      if (textBox.getText().isEmpty() || textBox.getStyleName().contains(style.emptyBox()))
-      {
-         textBox.setValue("");
-         textBox.addStyleName(style.emptyBox());
-         textBox.setValue(emptyText);
-      }
-   }
-
-   public void setEmptyText(String emptyText)
-   {
-      this.emptyText = emptyText;
-      refresh();
-   }
-
+   
    public TextBox getTextBox()
    {
       return textBox;

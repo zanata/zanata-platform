@@ -24,13 +24,11 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
-import org.zanata.webtrans.client.presenter.HeaderPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.ImageLabel;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
 
@@ -42,16 +40,12 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -65,15 +59,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
    interface Styles extends CssResource
    {
-      String userName();
-
       String hasWarning();
-
-      String image();
-
-      String menuBar();
-
-      String menuItem();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -100,29 +86,11 @@ public class AppView extends Composite implements AppPresenter.Display
    Styles style;
 
    @UiField
-   MenuBar topMenuBar;
-
-   @UiField
    PushButton keyShortcuts, searchAndReplace;
    
    @UiField(provided = true)
    PushButton notificationBtn;
    
-   @UiField
-   LayoutPanel headerContainer;
-
-   MenuItem helpMenuItem;
-   
-   MenuItem reportProblemMenuItem;
-
-   MenuItem leaveWorkspaceMenuItem;
-
-   MenuItem signOutMenuItem;
-   
-   MenuItem layoutMenuItem;
-   
-   MenuItemSeparator layoutMenuSeperator;
-
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
    private Widget translationView;
@@ -130,10 +98,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private final WebTransMessages messages;
    
-   private final String userAvatarUrl;
-
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, HeaderPresenter.Display headerView, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
    {
       this.resources = resources;
       this.messages = messages;
@@ -150,10 +116,6 @@ public class AppView extends Composite implements AppPresenter.Display
       
       initWidget(uiBinder.createAndBindUi(this));
 
-      headerContainer.add(headerView.asWidget());
-
-      userAvatarUrl = identity.getPerson().getAvatarUrl();
-
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
 
@@ -167,7 +129,6 @@ public class AppView extends Composite implements AppPresenter.Display
       this.container.add(this.searchResultsView);
       
       Window.enableScrolling(false);
-      headerContainer.setVisible(false);
    }
 
    @Override
@@ -215,52 +176,6 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasClickHandlers getDocumentsLink()
    {
       return documentsLink;
-   }
-
-   @Override
-   public void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand)
-   {
-      MenuBar menuBar = new MenuBar(true);
-      menuBar.addStyleName(style.menuBar());
-
-      ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help(), null);
-      helpImageLabel.setImageStyle(style.image());
-
-      ImageLabel reportProblemImageLabel = new ImageLabel(resources.bug(), messages.reportAProblem(), null);
-      reportProblemImageLabel.setImageStyle(style.image());
-
-      ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.layoutSelection(), null);
-      layoutImageLabel.setImageStyle(style.image());
-
-      ImageLabel signOutImageLabel = new ImageLabel(resources.logout(), messages.signOut(), null);
-      signOutImageLabel.setImageStyle(style.image());
-
-      ImageLabel leaveWorkspaceImageLabel = new ImageLabel("", messages.leaveWorkspace());
-      leaveWorkspaceImageLabel.setImageStyle(style.image());
-
-      helpMenuItem = menuBar.addItem(helpImageLabel.getElement().getString(), true, helpMenuCommand);
-      helpMenuItem.addStyleName(style.menuItem());
-      menuBar.addSeparator();
-
-      reportProblemMenuItem = menuBar.addItem(reportProblemImageLabel.getElement().getString(), true, reportProblemMenuCommand);
-      reportProblemMenuItem.addStyleName(style.menuItem());
-      menuBar.addSeparator();
-
-      layoutMenuItem = menuBar.addItem(layoutImageLabel.getElement().getString(), true, layoutMenuCommand);
-      layoutMenuItem.addStyleName(style.menuItem());
-      layoutMenuSeperator = menuBar.addSeparator();
-
-      leaveWorkspaceMenuItem = menuBar.addItem(leaveWorkspaceImageLabel.getElement().getString(), true, leaveWorkspaceMenuCommand);
-      leaveWorkspaceMenuItem.addStyleName(style.menuItem());
-
-      signOutMenuItem = menuBar.addItem(signOutImageLabel.getElement().getString(), true, signOutMenuCommand);
-      signOutMenuItem.addStyleName(style.menuItem());
-
-      ImageLabel userMenu = new ImageLabel(userAvatarUrl, userLabel + " " + messages.downArrow());
-      userMenu.setLabelStyle(style.userName());
-      userMenu.setImageStyle(style.image());
-
-      topMenuBar.addItem(userMenu.getElement().getString(), true, menuBar);
    }
 
    @Override
@@ -313,8 +228,6 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void setLayoutMenuVisible(boolean visible)
    {
-      layoutMenuItem.setVisible(visible);
-      layoutMenuSeperator.setVisible(visible);
    }
 
    @Override

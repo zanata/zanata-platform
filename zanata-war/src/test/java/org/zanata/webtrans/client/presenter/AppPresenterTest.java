@@ -82,7 +82,6 @@ public class AppPresenterTest extends PresenterTest
    EventBus mockEventBus;
    Boolean mockIsReadOnly;
    History mockHistory;
-   Identity mockIdentity;
    WebTransMessages mockMessages;
    Person mockPerson;
 
@@ -92,7 +91,6 @@ public class AppPresenterTest extends PresenterTest
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
    LayoutSelectorPresenter mockLayoutPresenter;
-   HeaderPresenter mockHeaderPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -135,7 +133,6 @@ public class AppPresenterTest extends PresenterTest
       mockKeyShortcutButton = createAndAddMock(HasClickHandlers.class);
       mockEventBus = createAndAddMock(EventBus.class);
       mockHistory = createAndAddMock(History.class);
-      mockIdentity = createAndAddMock(Identity.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
       mockPerson = createAndAddMock(Person.class);
@@ -169,7 +166,7 @@ public class AppPresenterTest extends PresenterTest
    void beforeMethod()
    {
       resetAll();
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockHeaderPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
    }
@@ -751,9 +748,6 @@ public class AppPresenterTest extends PresenterTest
       mockSearchResultsPresenter.concealDisplay();
       expectLastCall().once();
       
-      mockDisplay.initMenuList(isA(String.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
-      expectLastCall().once();
-      
       mockDisplay.setLayoutMenuVisible(false);
       expectLastCall().anyTimes();
       
@@ -770,8 +764,7 @@ public class AppPresenterTest extends PresenterTest
 
       expect(mockDisplay.getSearchAndReplaceButton()).andReturn(mockSearchButton).anyTimes();
       expect(mockDisplay.getKeyShortcutButton()).andReturn(mockKeyShortcutButton).anyTimes();
-
-      expect(mockIdentity.getPerson()).andReturn(mockPerson).anyTimes();
+      
       expect(mockPerson.getName()).andReturn(TEST_PERSON_NAME).anyTimes();
 
       expect(mockWindowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY)).andReturn(TEST_WORKSPACE_TITLE).anyTimes();

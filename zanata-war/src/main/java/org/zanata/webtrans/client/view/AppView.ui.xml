@@ -14,6 +14,7 @@
 		{
 			min-width:1024px;
 			background-color:#FFFFFF;
+			height:100%;
 		}
 		
 		.container
@@ -58,24 +59,10 @@
             color: #ff6622;
         }
 		
-		.userName {
-			font-weight: bold;
-			color: #5F5F5F;
-			padding-left:5px;
-		}
-		
 		.divider {
 			color: #e0e0e0;
+			vertical-align:top;
 		}
-		
-		.logo {
-	       margin-left:6px;
-	       margin-top:2px;
-        }
-        
-        .topPanel-right-menu {
-	       margin-right:6px;
-        }
         
         .documents-link {
             cursor: pointer;
@@ -114,11 +101,6 @@
 			background:#FFC000;
 		}
 		
-		.topMenuBar table
-		{
-			width:100%;
-		}
-		
 		.image
 		{
 			margin-top:2px;
@@ -127,28 +109,13 @@
 		.topMenuButton
 		{
 			outline: none;
-			padding-top: 4px;
             cursor: pointer;
-		}
-
-		
-		.menuBar
-		{
-			width:150px;
-		}
-		
-		.menuItem
-		{
-			width:150px;
+            vertical-align:top;
 		}
 		
 	</ui:style>
-	<g:LayoutPanel styleName="{style.rootContainer}">
-		<g:layer top="0" height="200px">
-			<g:LayoutPanel ui:field='headerContainer'/>	
-		</g:layer>
-		
-		<g:layer top="35px" height="35px">
+	<g:LayoutPanel stylePrimaryName="{style.rootContainer}">
+		<g:layer top="0px" height="30px">
 			<g:LayoutPanel styleName="subHeader">
 				<g:layer left="5px" right="5px">
 					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE">
@@ -177,9 +144,6 @@
                                 <g:upFace image="{resources.search}" />
                             </g:PushButton>
 	                    </g:cell>
-	                    <g:cell horizontalAlignment="ALIGN_LEFT" width="200px">
-	                    	<g:MenuBar ui:field="topMenuBar" addStyleNames="{style.topMenuBar}"/>
-	                    </g:cell>
 	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="18px">
 	                    	<g:HTMLPanel>
 	                    			<g:Label ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
@@ -190,7 +154,7 @@
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="70px" bottom="0px" left='0px' right='0px' >
+		<g:layer top="30px" bottom="0px" left='0px' right='0px' >
 		   <g:LayoutPanel ui:field="container" styleName="{style.container}"/>
 		</g:layer>
 	</g:LayoutPanel>

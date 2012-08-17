@@ -26,7 +26,6 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
@@ -45,7 +44,6 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -56,7 +54,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasNotificationLabel
@@ -90,8 +87,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void showNotificationAlert();
 
       void cancelNotificationAlert();
-      
-      void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -100,10 +95,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
    private final LayoutSelectorPresenter layoutSelectorPresenter;
-   private final HeaderPresenter headerPresenter;
 
    private final History history;
-   private final Identity identity;
    private final Window window;
    private final Window.Location windowLocation;
    private final UserWorkspaceContext userWorkspaceContext;
@@ -117,23 +110,20 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private MainView currentView = null;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
-   private static final String REPORT_PROBLEM_LINK = "https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final HeaderPresenter headerPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
-      this.identity = identity;
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter = notificationPresenter;
       this.layoutSelectorPresenter = layoutSelectorPresenter;
-      this.headerPresenter = headerPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
    }
@@ -153,7 +143,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
-      headerPresenter.bind();
 
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
@@ -278,54 +267,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             // }
          }
       }));
-
-      Command helpMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
-         }
-      };
-
-      Command reportProblemCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            com.google.gwt.user.client.Window.open(REPORT_PROBLEM_LINK, REPORT_PROBLEM_LINK, null);
-         }
-      };
-
-      Command signOutMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            Application.redirectToLogout();
-         }
-      };
-
-      Command leaveWorkspaceMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
-         }
-      };
-
-      Command layoutMenuMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            layoutSelectorPresenter.show();
-         }
-      };
-
-      display.initMenuList(identity.getPerson().getName(), helpMenuCommand, reportProblemCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
 
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
       {

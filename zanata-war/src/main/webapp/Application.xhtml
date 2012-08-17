@@ -14,6 +14,7 @@
     <title>Application</title>
     
     <link rel="stylesheet" href="webtrans/gwt/standard/standard.css" />
+    <link rel="stylesheet" href="stylesheet/menu.css" />
      
     <script src="webtrans/codemirror-compressed.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="webtrans/codemirror.css"/>
@@ -35,9 +36,10 @@
   <!--                                           -->
   <body>
     <div class="header">
-			<ui:include src="menu.xhtml" />	
-		</div>
-	<div id="test"/>	
+		<ui:include src="WEB-INF/layout/menu.xhtml" />	
+	</div>
+	
+	<div id="contentDiv" style="position:absolute;left:0;right:0;top:36px;bottom:0"/>	
 		
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>

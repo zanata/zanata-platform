@@ -1,0 +1,192 @@
+/* -----------------------  Top menu CSS  -------------------------*/
+.header {
+	width: 100%;
+	height: 35px;
+	margin: 0;
+	background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -o-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	background: -ms-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+	top:0px;
+	box-shadow:1px 1px 8px #778899;
+}
+
+.logo {
+	width: 200px;
+}
+
+.navBar {
+	width: 960px;
+	height: 100%;
+	margin: 0 auto;
+/* 	background: -webkit-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
+/* 	background: -moz-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
+/* 	background: -o-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
+/* 	background: -ms-linear-gradient(top, #354F71 0%, #1A2D45 100%); */
+}
+
+.navBar ul {
+	display: table;
+	width: 100%;
+	height:100%;
+	float: none;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0px;
+}
+
+.navBar ul li {
+	display: table-cell;
+	float: none;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	vertical-align: middle;
+	border-right: 1px solid #E5E5E5;
+	box-shadow: inset 1px 0 0 #959595;
+}
+
+.navBar ul li:hover {
+	background: #7E91A9;
+	border-right-color:#7E91A9;
+}
+
+.navBar ul li a {
+	display: block;
+	height: 33px;
+	line-height: 33px;
+	font-size: 13px;
+	color: #595959;
+	font-family: helvetica;
+	font-weight: bold;
+	text-decoration: none;
+	outline: none;
+	width: 120px;
+	margin: 0 auto;
+}
+
+.navBar ul li:hover a {
+	border-right: none;
+	box-shadow: none;
+	color:#FFFFFF;
+}
+
+.navBar ul li img {
+	margin-right: 4px;
+	vertical-align: middle;
+}
+
+#logoCol, #logoCol:hover {
+	width: 750px;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background: none;
+}
+
+#logoCol a {
+	margin-left: 0px;
+}
+
+#logoCol a:hover {
+	background: none;
+}
+
+#logoCol img {
+	padding-top: 3px;
+}
+
+
+#projectCol {
+	box-shadow: none;
+}
+#userCol, #userCol:hover {
+	border-right: none;
+}
+
+#userCol a {
+	display:table;
+}
+
+#userCol {
+	width: auto;
+	white-space:nowrap;
+}
+
+#userCol img.avatar {
+	padding: 0;
+	border: 1px solid grey;
+	background:#FFFFFF;
+	margin-left:5px;
+}
+
+div.submenu {
+	height: 0px;
+	position: absolute;
+	width: 150px;
+	overflow: hidden;
+	z-index: 999;
+	margin-top:1px;
+}
+
+.navBar li:hover div.submenu {
+	height: auto;
+	position: absolute;
+	-webkit-transition: ease-in-out .1s;
+	-moz-transition: ease-in-out .1s;
+	-o-transition: ease-in-out .1s;
+	-ms-transition: ease-in-out .1s;
+	transition: ease-in-out .1s;
+	-webkit-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	-moz-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+}
+
+div.submenu ul {
+	border: 1px solid lightgrey;
+}
+
+div.submenu ul li {
+	display: block;
+	width: 100%;
+	float: left;
+	text-align: left;
+	height: auto;
+	color: black;
+	border-bottom: 1px solid #DDDDDD;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background:#FFFFFF;
+}
+
+div.submenu ul li:last-child {
+	border-bottom: none;
+}
+
+div.submenu ul li:hover {
+	background: #BACDE5;
+}
+
+.navBar ul li:hover div.submenu ul li a
+{
+	color: #454545;
+}
+
+div.submenu ul li a {
+	color: #454545;
+	font-size: 12px;
+	text-shadow: none;
+	line-height: 28px;
+	text-align: left;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+div.submenu img {
+	border: none;
+}
+
+/* -----------------------  End Top menu CSS  -------------------------*/

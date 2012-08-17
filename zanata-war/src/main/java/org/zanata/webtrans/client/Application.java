@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -138,7 +137,7 @@ public class Application implements EntryPoint
                @Override
                public void onFailure(Throwable e)
                {
-                  RootLayoutPanel.get().add(new HTML("<h1>Server communication failed...</h1>" + "<b>Exception:</b> " + e.getMessage()));
+                  RootPanel.get("contentDiv").add(new HTML("<h1>Server communication failed...</h1>" + "<b>Exception:</b> " + e.getMessage()));
                }
                @Override
                public void onSuccess(NoOpResult result)
@@ -151,7 +150,7 @@ public class Application implements EntryPoint
          @Override
          public void onFailure(Throwable e)
          {
-            RootLayoutPanel.get().add(new HTML("<h1>Failed to start Event Service...</h1>" + "<b>Exception:</b> " + e.getMessage()));
+            RootPanel.get("contentDiv").add(new HTML("<h1>Failed to start Event Service...</h1>" + "<b>Exception:</b> " + e.getMessage()));
          }
       });
 
@@ -160,8 +159,7 @@ public class Application implements EntryPoint
    private void delayedStartApp()
    {
       final AppPresenter appPresenter = injector.getAppPresenter();
-      RootPanel.get("test").add(appPresenter.getDisplay().asWidget());
-      // RootLayoutPanel.get().add(appPresenter.getDisplay().asWidget());
+      RootPanel.get("contentDiv").add(appPresenter.getDisplay().asWidget());
       appPresenter.bind();
    }
 
@@ -303,7 +301,7 @@ public class Application implements EntryPoint
          layoutPanel.add(stackTracePanel);
       }
 
-      RootLayoutPanel.get().add(layoutPanel);
+      RootPanel.get("contentDiv").get().add(layoutPanel);
    }
 
    private void registerUncaughtExceptionHandler()
