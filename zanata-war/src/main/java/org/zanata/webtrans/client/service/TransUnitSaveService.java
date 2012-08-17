@@ -21,11 +21,7 @@
 
 package org.zanata.webtrans.client.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
@@ -43,9 +39,6 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -102,12 +95,10 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       }
 
       pendingSaves.add(event);
-      ContentState status = event.getStatus();
       final TransUnitId id = event.getTransUnitId();
-      TransUnitUpdated.UpdateType updateType = workoutUpdateType(status);
+      TransUnitUpdated.UpdateType updateType = workoutUpdateType(event.getStatus());
 
-      ContentState stateToSet = determineStatus(event.getTargets(), status);
-      final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(id, event.getTargets(), stateToSet, event.getVerNum()), updateType);
+      final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(id, event.getTargets(), event.getAdjustedStatus(), event.getVerNum()), updateType);
       Log.info("about to save translation: " + updateTransUnit);
       dispatcher.execute(updateTransUnit, new UpdateTransUnitCallback(event, id));
    }
@@ -115,50 +106,17 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
    private boolean stateHasNotChanged(TransUnitSaveEvent event)
    {
       TransUnit transUnit = pageModel.getByIdOrNull(event.getTransUnitId());
-      return transUnit != null && Objects.equal(transUnit.getStatus(), event.getStatus()) && Objects.equal(transUnit.getTargets(), event.getTargets());
+      if (transUnit == null)
+      {
+         return false;
+      }
+      Log.info(transUnit.getId() + " old contents: " + transUnit.getTargets() + " state: " + transUnit.getStatus());
+      return Objects.equal(transUnit.getStatus(), event.getAdjustedStatus()) && Objects.equal(transUnit.getTargets(), event.getTargets());
    }
 
    private TransUnitUpdated.UpdateType workoutUpdateType(ContentState status)
    {
       return status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
-   }
-
-   /**
-    *
-    *
-    * @param newContents
-    * @param requestedState
-    * @see org.zanata.service.impl.TranslationServiceImpl#adjustContentsAndState
-    */
-   private static ContentState determineStatus(List<String> newContents, ContentState requestedState)
-   {
-      int emptyCount = Iterables.size(Iterables.filter(newContents, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(@Nullable String input)
-         {
-            return Strings.isNullOrEmpty(input);
-         }
-      }));
-
-      // TODO use ContentStateUtil.determineState.
-      // ContentState stateToSet = ContentStateUtil.determineState(requestedState, newContents);
-
-      // NB until then, make sure this stays consistent
-      ContentState stateToSet = requestedState;
-      if (requestedState == ContentState.New && emptyCount == 0)
-      {
-         stateToSet = ContentState.NeedReview;
-      }
-      else if (requestedState == ContentState.Approved && emptyCount != 0)
-      {
-         stateToSet = ContentState.New;
-      }
-      else if (requestedState == ContentState.NeedReview && emptyCount == newContents.size())
-      {
-         stateToSet = ContentState.New;
-      }
-      return stateToSet;
    }
 
    private void saveFailure(String message)

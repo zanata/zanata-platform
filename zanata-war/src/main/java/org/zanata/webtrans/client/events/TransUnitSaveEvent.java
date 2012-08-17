@@ -23,9 +23,14 @@ package org.zanata.webtrans.client.events;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -41,6 +46,7 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
    private Integer verNum;
    private List<String> targets = Lists.newArrayList();
    private ContentState status;
+   private ContentState adjustedState;
 
    public TransUnitSaveEvent(List<String> targets, ContentState status, TransUnitId transUnitId, Integer verNum)
    {
@@ -48,6 +54,7 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
       this.status = status;
       this.transUnitId = transUnitId;
       this.verNum = verNum;
+      adjustedState = adjustState(targets, status);
    }
 
    public Type<TransUnitSaveEventHandler> getAssociatedType()
@@ -68,6 +75,11 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
    public ContentState getStatus()
    {
       return status;
+   }
+
+   public ContentState getAdjustedStatus()
+   {
+      return adjustedState;
    }
 
    public TransUnitId getTransUnitId()
@@ -94,6 +106,48 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
    public int hashCode()
    {
       return Objects.hashCode(transUnitId, verNum, targets, status);
+   }
+
+   /**
+    *
+    *
+    * @param newContents
+    * @param requestedState
+    * @see org.zanata.service.impl.TranslationServiceImpl#adjustContentsAndState
+    */
+   public static ContentState adjustState(List<String> newContents, ContentState requestedState)
+   {
+      if (newContents == null)
+      {
+         return ContentState.New;
+      }
+      int emptyCount = Iterables.size(Iterables.filter(newContents, new Predicate<String>()
+      {
+         @Override
+         public boolean apply(@Nullable String input)
+         {
+            return Strings.isNullOrEmpty(input);
+         }
+      }));
+
+      // TODO use ContentStateUtil.determineState.
+      // ContentState stateToSet = ContentStateUtil.determineState(requestedState, newContents);
+
+      // NB until then, make sure this stays consistent
+      ContentState stateToSet = requestedState;
+      if (requestedState == ContentState.New && emptyCount == 0)
+      {
+         stateToSet = ContentState.NeedReview;
+      }
+      else if (requestedState == ContentState.Approved && emptyCount != 0)
+      {
+         stateToSet = ContentState.New;
+      }
+      else if (requestedState == ContentState.NeedReview && emptyCount == newContents.size())
+      {
+         stateToSet = ContentState.New;
+      }
+      return stateToSet;
    }
 
    @Override
