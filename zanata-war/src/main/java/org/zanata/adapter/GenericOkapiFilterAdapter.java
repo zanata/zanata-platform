@@ -38,6 +38,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.util.HashUtil;
 
 /**
  * 
@@ -48,10 +49,17 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 {
 
    private final IFilter filter;
+   private final boolean useContentHashId;
 
    public GenericOkapiFilterAdapter(IFilter filter)
    {
+      this(filter, false);
+   }
+
+   public GenericOkapiFilterAdapter(IFilter filter, boolean useContentHashId)
+   {
       this.filter = filter;
+      this.useContentHashId = useContentHashId;
    }
 
    @Override
@@ -74,7 +82,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
             TextUnit tu = (TextUnit) event.getResource();
             if (tu.isTranslatable())
             {
-               TextFlow tf = new TextFlow(tu.getId(), sourceLocale);
+               TextFlow tf = new TextFlow(getIdFor(tu), sourceLocale);
                tf.setPlural(false);
                tf.setContents(tu.getSource().toString());
                resources.add(tf);
@@ -103,7 +111,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          if (event.getEventType() == EventType.TEXT_UNIT)
          {
             TextUnit tu = (TextUnit) event.getResource();
-            TextFlowTarget tft = findTextFlowTarget(tu.getId(), translations);
+            TextFlowTarget tft = findTextFlowTarget(getIdFor(tu), translations);
             if (tft != null)
             {
                tu.setTargetContent(localeId, new TextFragment(tft.getContents().get(0)));
@@ -127,6 +135,18 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          }
       }
       return null;
+   }
+
+   private String getIdFor(TextUnit tu)
+   {
+      if (useContentHashId)
+      {
+         return HashUtil.generateHash(tu.getSource().toString());
+      }
+      else
+      {
+         return tu.getId();
+      }
    }
 
 }
