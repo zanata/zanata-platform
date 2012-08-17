@@ -60,11 +60,11 @@ public class TransUnitDetailsPanel extends Composite
       StringBuilder headerSummary = new StringBuilder();
       if (!context.isEmpty())
       {
-         headerSummary.append(" MsgCtx: ").append(context.substring(0, 6)).append("...");
+         headerSummary.append(" MsgCtx: ").append(context);
       }
       if (!comment.isEmpty())
       {
-         headerSummary.append(" Comment: ").append(comment.substring(0, 6)).append("...");
+         headerSummary.append(" Comment: ").append(comment);
       }
       headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), headerSummary.toString()));
    }

@@ -7,6 +7,7 @@
         .container {
             width: 50%;
             padding-top: 5px;
+            table-layout: fixed;
         }
 
         .header {
@@ -19,6 +20,9 @@
             border: 1px solid #E0E8EE;
             color: #686868;
             text-decoration: none;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
         .tuDetailsLabel {
