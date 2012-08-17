@@ -42,9 +42,6 @@ public interface Resources extends ClientBundle
    @Source("images/logo-small.png")
    ImageResource logo2();
 
-   @Source("images/x.png")
-   ImageResource xButton();
-
    @Source("images/crystal_project/_16x16/filesystems/file_doc.png")
    ImageResource documentImage();
 
@@ -137,6 +134,9 @@ public interface Resources extends ClientBundle
 
    @Source("images/zanata-icon/24x24/search.png")
    ImageResource search();
+   
+   @Source("images/zanata-icon/24x24/list.png")
+   ImageResource list();
 
    @Source("images/zanata-icon/16x16/envelope-black.png")
    ImageResource envelopeBlack();

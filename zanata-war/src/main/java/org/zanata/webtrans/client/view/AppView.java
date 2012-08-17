@@ -86,7 +86,7 @@ public class AppView extends Composite implements AppPresenter.Display
    Styles style;
 
    @UiField
-   PushButton keyShortcuts, searchAndReplace;
+   PushButton keyShortcuts, searchAndReplace, documentList;
    
    @UiField(provided = true)
    PushButton notificationBtn;
@@ -118,6 +118,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
+      documentList.setTitle(messages.documentListTitle());
 
       this.documentListView = documentListView.asWidget();
       this.container.add(this.documentListView);
@@ -217,6 +218,12 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasClickHandlers getSearchAndReplaceButton()
    {
       return searchAndReplace;
+   }
+   
+   @Override
+   public HasClickHandlers getDocumentListButton()
+   {
+      return documentList;
    }
 
    @Override

@@ -87,6 +87,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void showNotificationAlert();
 
       void cancelNotificationAlert();
+
+      HasClickHandlers getDocumentListButton();
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -192,21 +194,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onClick(ClickEvent event)
          {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-
-            if (token.getView().equals(MainView.Documents))
-            {
-               if (selectedDocument == null)
-               {
-                  return; // abort if no doc to edit
-               }
-               token.setView(MainView.Editor);
-            }
-            else
-            {
-               token.setView(MainView.Documents);
-            }
-            history.newItem(token.toTokenString());
+            gotoDocumentListView();
          }
       }));
 
@@ -240,6 +228,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
                token.setView(MainView.Search);
                history.newItem(token.toTokenString());
             }
+         }
+      });
+      
+      display.getDocumentListButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            gotoDocumentListView();
          }
       });
 
@@ -318,6 +315,25 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       showView(MainView.Documents);
 
       history.fireCurrentHistoryState();
+   }
+   
+   private void gotoDocumentListView()
+   {
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+
+      if (token.getView().equals(MainView.Documents))
+      {
+         if (selectedDocument == null)
+         {
+            return; // abort if no doc to edit
+         }
+         token.setView(MainView.Editor);
+      }
+      else
+      {
+         token.setView(MainView.Documents);
+      }
+      history.newItem(token.toTokenString());
    }
 
    @Override

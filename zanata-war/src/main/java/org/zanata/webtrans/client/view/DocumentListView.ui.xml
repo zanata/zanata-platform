@@ -23,31 +23,26 @@
 		
 		.filterTextBox
 		{
-			font-size:16px;
+			font-size:18px;
 			padding: 3px;
 			margin: 0px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
-		}
-		
-		.searchButton
-		{
-
 		}
         
     </ui:style>
     <g:LayoutPanel>
         <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
-                <g:layer top='0' height='30px' left="0px" right="0px">
+                <g:layer top='0' height='34px' left="0px" right="0px">
                     <g:LayoutPanel>
-                        <g:layer top="0px" height="30px" left="0px" width="500px">
+                        <g:layer top="0px" height="34px" left="0px" width="500px">
                             <g:TextBox ui:field='filterTextBox' styleName="{style.filterTextBox}"/>
                         </g:layer>
-                        <g:layer top="4px" height="30px" left="505px" width="120px">
+                        <g:layer top="6px" height="34px" left="505px" width="120px">
                             <g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.checkbox}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                         </g:layer>
-                        <g:layer top="4px" height="30px" left="620px" width="140px">
+                        <g:layer top="6px" height="34px" left="620px" width="140px">
                             <g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.checkbox}"><ui:msg>Exact match only</ui:msg></g:CheckBox>
                         </g:layer>
                     </g:LayoutPanel>

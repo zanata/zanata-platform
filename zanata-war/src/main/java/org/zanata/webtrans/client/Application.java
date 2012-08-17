@@ -124,6 +124,8 @@ public class Application implements EntryPoint
             exitWorkspace();
          }
       });
+      
+      Window.enableScrolling(true);
 
       final EventProcessor eventProcessor = injector.getEventProcessor();
       eventProcessor.start(new StartCallback()

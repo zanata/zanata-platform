@@ -12,7 +12,8 @@
 	<ui:style type="org.zanata.webtrans.client.view.AppView.Styles">
 		.rootContainer
 		{
-			min-width:1024px;
+			width:100%;
+			min-width:960px;
 			background-color:#FFFFFF;
 			height:100%;
 		}
@@ -142,6 +143,11 @@
 	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
 	                        <g:PushButton ui:field="searchAndReplace" styleName="{style.topMenuButton}">
                                 <g:upFace image="{resources.search}" />
+                            </g:PushButton>
+	                    </g:cell>
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
+	                        <g:PushButton ui:field="documentList" styleName="{style.topMenuButton}">
+                                <g:upFace image="{resources.list}" />
                             </g:PushButton>
 	                    </g:cell>
 	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="18px">

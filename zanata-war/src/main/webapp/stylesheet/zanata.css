@@ -5,6 +5,7 @@
 	margin-top:5px;
 	background-color: #ffffff;
 	min-height:400px;
+	min-width:960px
 }
 
 #yui-main {
@@ -40,7 +41,6 @@
 #breadcrumbs_div
 {
 	margin:5px;
-	width:100%;
 	padding:3px;
 }
 
@@ -70,12 +70,11 @@ a.breadcrumbs_link:hover
 
 #bd {
 	width: 100%;
-	padding: 8px 0;
+	padding: 8px 2px;
 }
 
 
 #search_div {
-	width:100%;
 	border:1px dotted #D9D9D9;
 	height:32px;
 	border-radius:3px;
@@ -355,7 +354,6 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 /* -----------------------   Left/right container CSS  -------------------------*/
 .yui-b {
-	padding: 5px;
 	width: 200px;
 	float:right;
 }
@@ -421,11 +419,13 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	margin-left:auto;
 	margin-right:auto;
 	display:block;
+	padding:0 2px;
 }
 
 .footer
 {
 	width: 100%;
+	min-width:960px;
 	background: #DDD;
 	color:#777777;
 	font-weight:bold;
