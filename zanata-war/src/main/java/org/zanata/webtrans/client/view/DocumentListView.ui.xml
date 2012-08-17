@@ -18,6 +18,21 @@
         .checkbox
         {
 			font-size:13px;
+			color:#595959;
+		}
+		
+		.filterTextBox
+		{
+			font-size:16px;
+			padding: 3px;
+			margin: 0px;
+			border: 2px solid #C5C5C5;
+			border-radius: 3px;
+		}
+		
+		.searchButton
+		{
+
 		}
         
     </ui:style>
@@ -27,7 +42,7 @@
                 <g:layer top='0' height='30px' left="0px" right="0px">
                     <g:LayoutPanel>
                         <g:layer top="0px" height="30px" left="0px" width="500px">
-                            <fui:ClearableTextBox ui:field='filterTextBox'/>
+                            <g:TextBox ui:field='filterTextBox' styleName="{style.filterTextBox}"/>
                         </g:layer>
                         <g:layer top="4px" height="30px" left="505px" width="120px">
                             <g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.checkbox}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>

@@ -19,7 +19,7 @@
 		
 		.container
 		{
-			margin:8px 25px;
+			margin:5px 25px;
 		}
 		
 		.topPanel-Navigation {
