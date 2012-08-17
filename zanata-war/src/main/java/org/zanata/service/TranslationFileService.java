@@ -74,5 +74,12 @@ public interface TranslationFileService
     */
    InputStream streamDocument(String projectSlug, String iterationSlug, String docPath, String docName);
 
+   /**
+    * 
+    * @param fileNameOrExtension
+    * @return the extension for a given filename, or the extension that was passed in
+    */
+   String extractExtension(String fileNameOrExtension);
+
 
 }

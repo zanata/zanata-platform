@@ -290,6 +290,16 @@ public class ProjectIterationFilesAction
       this.localeId = localeId;
    }
 
+   public boolean hasOriginal(String docPath, String docName)
+   {
+      return translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, docPath, docName);
+   }
+
+   public String extensionOf(String docName)
+   {
+      return "." + translationFileServiceImpl.extractExtension(docName);
+   }
+
    public String getDocumentNameFilter()
    {
       return documentNameFilter;

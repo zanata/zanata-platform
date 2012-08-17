@@ -180,7 +180,8 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
    }
 
-   private String extractExtension(String fileNameOrExtension)
+   @Override
+   public String extractExtension(String fileNameOrExtension)
    {
       if (fileNameOrExtension == null || fileNameOrExtension.length() == 0 || fileNameOrExtension.endsWith("."))
       {

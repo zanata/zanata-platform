@@ -65,7 +65,11 @@ import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 @Consumes( { MediaType.APPLICATION_OCTET_STREAM })
 public class FileService implements FileResource
 {
-   
+   public static final String RAW_DOWNLOAD_TEMPLATE = "/raw/{projectSlug}/{iterationSlug}";
+
+   private static final String SUBSTITUTE_APPROVED_AND_FUZZY = "half-baked";
+   private static final String SUBSTITUTE_APPROVED = "baked";
+
    @In
    private DocumentDAO documentDAO;
    
@@ -81,6 +85,30 @@ public class FileService implements FileResource
    @In
    private ResourceUtils resourceUtils;
 
+   @GET
+   @Path(RAW_DOWNLOAD_TEMPLATE)
+   // /file/raw/{projectSlug}/{iterationSlug}?docId={docId}
+   public Response downloadRawFile( @PathParam("projectSlug") String projectSlug,
+                                    @PathParam("iterationSlug") String iterationSlug,
+                                    @QueryParam("docId") String docId)
+   {
+      final Response response;
+      HDocument document = this.documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
+
+      if( document != null && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+      {
+         InputStream fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, document.getPath(), document.getName());
+         StreamingOutput output = new InputStreamStreamingOutput(fileContents);
+         response = Response.ok()
+               .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
+               .entity(output).build();
+      }
+      else
+      {
+         response = Response.status(Status.NOT_FOUND).build();
+      }
+      return response;
+   }
 
    /**
     * Downloads a single translation file.
@@ -106,7 +134,7 @@ public class FileService implements FileResource
                                             @PathParam("fileType") String fileExtension,
                                             @QueryParam("docId") String docId )
    {
-      final Response response; 
+      final Response response;
       HDocument document = this.documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
 
       if( document == null )
@@ -118,7 +146,7 @@ public class FileService implements FileResource
          final Set<String> extensions = new HashSet<String>();
          extensions.add("gettext");
          extensions.add("comment");
-         
+
          // Perform translation of Hibernate DTOs to JAXB DTOs
          TranslationsResource transRes = 
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
@@ -129,38 +157,35 @@ public class FileService implements FileResource
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
                .entity(output).build();
       }
-
-      // TODO decide whether to have one URL for original format, or use fileExtension for all
-      else if (translationFileServiceImpl.hasAdapterFor(fileExtension) &&
-            translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+      else if ( (SUBSTITUTE_APPROVED.equals(fileExtension) || SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileExtension))
+            && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
       {
          final Set<String> extensions = Collections.<String>emptySet();
          TranslationsResource transRes = 
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
-         // Filter translations to only provide approved translations.
-         // "Preview" downloads should include fuzzy as well.
-         // New list is used as transRes list appears not to be a modifiable implementation.
+         // Filter to only provide translated targets. "Preview" downloads include fuzzy.
+         // Using new list is used as transRes list appears not to be a modifiable implementation.
          List<TextFlowTarget> translations = new ArrayList<TextFlowTarget>();
+         boolean useFuzzy = SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileExtension);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
-            if (target.getState() == ContentState.Approved)
+            if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
             {
                translations.add(target);
             }
          }
 
          InputStream fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, document.getPath(), document.getName());
-         StreamingOutput output = new FormatAdapterStreamingOutput(fileContents, translations, locale, translationFileServiceImpl.getAdapterFor(fileExtension));
+         StreamingOutput output = new FormatAdapterStreamingOutput(fileContents, translations, locale, translationFileServiceImpl.getAdapterFor(docId));
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
       }
       else
       {
-         // TODO check if this media type is appropriate
          response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
       }
-      
+
       return response;
    }
 
@@ -236,6 +261,28 @@ public class FileService implements FileResource
       {         
          PoWriter2 writer = new PoWriter2();
          writer.writePo(output, "UTF-8", this.resource, this.transRes);
+      }
+   }
+
+   private class InputStreamStreamingOutput implements StreamingOutput
+   {
+      private InputStream input;
+
+      public InputStreamStreamingOutput(InputStream input)
+      {
+         this.input = input;
+      }
+
+      @Override
+      public void write(OutputStream output) throws IOException, WebApplicationException
+      {
+         byte[] buffer = new byte[4096]; // To hold file contents
+         int bytesRead; // How many bytes in buffer
+
+         while ((bytesRead = input.read(buffer)) != -1)
+         {
+            output.write(buffer, 0, bytesRead);
+         }
       }
    }
 
