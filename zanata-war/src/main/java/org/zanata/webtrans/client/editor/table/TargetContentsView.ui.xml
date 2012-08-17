@@ -32,14 +32,14 @@
         }
     </ui:style>
 
-    <g:VerticalPanel width="100%" addStyleNames="{style.targetContentsCell}">
+    <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
         <g:cell verticalAlignment="ALIGN_TOP">
         	<g:FlowPanel styleName="{style.editorGridWrapper}">
             	<g:Grid ui:field="editorGrid" />
             </g:FlowPanel>
         </g:cell>
-        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="100px">
-            <g:HorizontalPanel ui:field="buttons" styleName="gwt-Button">
+        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="20px">
+            <g:VerticalPanel ui:field="buttons" styleName="gwt-Button">
                 <g:SimplePanel ui:field="undoContainer" styleName="{style.undoContainer}" />
                 <g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editSaveShortcut}">
                     <g:upFace image="{images.cellEditorAccept}" />
@@ -53,7 +53,7 @@
                 <g:PushButton ui:field="historyButton" styleName="gwt-Button" title="{messages.history}" >
                     <g:upFace image="{images.copySrcButton}" />
                 </g:PushButton>
-            </g:HorizontalPanel>
+            </g:VerticalPanel>
         </g:cell>
-    </g:VerticalPanel>
+    </g:HorizontalPanel>
 </ui:UiBinder>

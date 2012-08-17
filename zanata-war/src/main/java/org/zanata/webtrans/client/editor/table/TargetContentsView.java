@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class TargetContentsView extends Composite implements TargetContentsDisplay
 {
-   interface Binder extends UiBinder<VerticalPanel, TargetContentsView>
+   interface Binder extends UiBinder<HorizontalPanel, TargetContentsView>
    {
    }
 
@@ -59,7 +59,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiField
    Grid editorGrid;
    @UiField
-   HorizontalPanel buttons;
+   VerticalPanel buttons;
    @UiField
    PushButton saveButton;
    @UiField
@@ -71,7 +71,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiField
    PushButton historyButton;
 
-   private VerticalPanel rootPanel;
+   private HorizontalPanel rootPanel;
    private String findMessage;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
