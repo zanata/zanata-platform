@@ -25,21 +25,51 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.persistence.Transient;
 
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.NGramTokenizerFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StopFilterFactory;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 import org.zanata.common.HasContents;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.StringListBridge;
+import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@AnalyzerDefs({
+      @AnalyzerDef(name = "StandardAnalyzer",
+            tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+            filters = {
+                  @TokenFilterDef(factory = StandardFilterFactory.class),
+                  @TokenFilterDef(factory = LowerCaseFilterFactory.class)
+                  //@TokenFilterDef(factory = StopFilterFactory.class)
+            }
+      ),
+      @AnalyzerDef(name = "UnigramAnalyzer",
+            tokenizer = @TokenizerDef(factory = NGramTokenizerFactory.class,
+                                      params = {@Parameter(name = "minGramSize", value = "1"),
+                                                @Parameter(name = "maxGramSize", value = "1")
+                                               }
+                                     ),
+            filters = {
+                  @TokenFilterDef(factory = LowerCaseFilterFactory.class)
+            }
+      )
+})
 abstract class HTextContainer implements HasContents, Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -50,6 +80,7 @@ abstract class HTextContainer implements HasContents, Serializable
           bridge = @FieldBridge(impl = StringListBridge.class,
                                 params = {@Parameter(name="case", value="fold"),
                                           @Parameter(name="ngrams", value="multisize")}))
+   @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
    private List<String> getContentsToIndex()
    {
       return getContents();

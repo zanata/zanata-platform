@@ -20,8 +20,12 @@
  */
 package org.zanata.security;
 
+import static org.jboss.seam.ScopeType.SESSION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -43,10 +47,8 @@ import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.Lists;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
+import com.google.common.collect.Lists;
 
 @Name("org.jboss.seam.security.identity")
 @Scope(SESSION)
@@ -239,5 +241,18 @@ public class ZanataIdentity extends Identity
          this.preAuthenticated = true;
       }
       return result;
+   }
+
+   /*
+    * Return trimmed username with length = 30
+    */
+   public String getTrimUsername()
+   {
+      String username = getCredentials().getUsername();
+      if (username.length() > 30)
+      {
+         return username.substring(0, 27) + "...";
+      }
+      return username;
    }
 }

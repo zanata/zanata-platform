@@ -5,8 +5,11 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.util.Version;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.ParameterizedBridge;
@@ -31,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StringListBridge implements FieldBridge, ParameterizedBridge
 {
 
-   private ConfigurableNgramAnalyzer analyzer;
+   private Analyzer analyzer;
    private boolean caseSensitive = false;
    private boolean multiNgrams = false;
 
@@ -73,15 +76,6 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    @Override
    public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)
    {
-      if (multiNgrams)
-      {
-         analyzer = new ConfigurableNgramAnalyzer(1, 3, !caseSensitive);
-      }
-      else
-      {
-         analyzer = new ConfigurableNgramAnalyzer(3, !caseSensitive);
-      }
-
       if (!(value instanceof List<?>))
       {
          throw new IllegalArgumentException("this bridge must be applied to a List");
@@ -98,18 +92,6 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    {
       Field field = new Field(fieldName, fieldValue, luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
       field.setBoost(luceneOptions.getBoost());
-
-      // manually apply token stream from analyzer, as hibernate search does not
-      // apply the specified analyzer properly
-      try
-      {
-         field.setTokenStream(analyzer.reusableTokenStream(fieldName, new StringReader(fieldValue)));
-      }
-      catch (IOException e)
-      {
-         log.error("Failed to get token stream from analyzer for field [{}] with [content {}]", fieldName, fieldValue);
-         log.error("exception", e);
-      }
       luceneDocument.add(field);
    }
 

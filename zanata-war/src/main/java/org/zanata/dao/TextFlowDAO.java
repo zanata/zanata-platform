@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -48,6 +50,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -129,26 +132,29 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return c.list();
    }
 
-   public List<Object[]> getSearchResult(TransMemoryQuery query, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId locale, final int maxResult) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
 
       switch (query.getSearchType())
       {
+      // 'Lucene' in the editor
       case RAW:
          queryText = query.getQueries().get(0);
          break;
 
+      // 'Fuzzy' in the editor
       case FUZZY:
-         // search by N-grams
          queryText = QueryParser.escape(query.getQueries().get(0));
          break;
 
+      // 'Phrase' in the editor
       case EXACT:
          queryText = "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
          break;
 
+      // 'Fuzzy' in the editor, plus it is a plural entry
       case FUZZY_PLURAL:
          multiQueryText = new String[query.getQueries().size()];
          for (int i = 0; i < query.getQueries().size(); i++)
@@ -161,7 +167,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       }
 
       org.apache.lucene.search.Query textQuery;
-      CaseInsensitiveNgramAnalyzer analyzer = new CaseInsensitiveNgramAnalyzer();
+      // Analyzer determined by the language
+      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName( locale.getId() );
+      Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
+
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;

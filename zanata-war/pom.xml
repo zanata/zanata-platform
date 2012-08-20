@@ -1011,6 +1011,17 @@
 			<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
 			<version>${lucene.version}</version>
 		</dependency>
+
+        <!-- Solr dependencies -->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-common</artifactId>
+        </dependency>
 		
 		<!-- JBoss 5 Provided Dependencies -->
 		<dependency>

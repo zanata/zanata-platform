@@ -7,6 +7,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionModel;
@@ -32,15 +33,13 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void resetView();
 
-   HasData<TransHistoryItem> getHistoryTable();
-
    void showDiff(TransHistoryItem one, TransHistoryItem two, String description);
 
    void disableComparison();
 
    void addVersionSortHandler(ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler);
 
-   Column<TransHistoryItem, String> getVersionColumn();
-
    void setSelectionModel(SelectionModel<TransHistoryItem> multiSelectionModel);
+
+   void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider);
 }

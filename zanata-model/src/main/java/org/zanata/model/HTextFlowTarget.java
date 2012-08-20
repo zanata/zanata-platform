@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,10 +46,6 @@ import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -59,6 +54,7 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
@@ -73,8 +69,12 @@ import org.zanata.hibernate.search.ContentStateBridge;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
-
+import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import com.google.common.base.Objects;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -178,8 +178,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "tf_id")
-   @Field(index = Index.UN_TOKENIZED)
-   @FieldBridge(impl = ContainingWorkspaceBridge.class)
+   //@Field(index = Index.UN_TOKENIZED)
+   //@FieldBridge(impl = ContainingWorkspaceBridge.class)
    @IndexedEmbedded
    public HTextFlow getTextFlow()
    {
@@ -224,6 +224,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
           bridge = @FieldBridge(impl = StringListBridge.class,
                                 params = {@Parameter(name="case", value="fold"),
                                           @Parameter(name="ngrams", value="multisize")}))
+   @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
    public List<String> getContents()
    {
       // Copy lazily loaded relations to the history object as this cannot be

@@ -96,12 +96,14 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       for (HTextFlow hTextFlow : hTextFlows)
       {
          HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
+         HLocale sourceLocale = hTextFlow.getDocument().getLocale();
+
          if (hTextFlowTarget != null && hTextFlowTarget.getState() != ContentState.New)
          {
             log.warn("Text flow id {} is not untranslated. Ignored.", hTextFlow.getId());
             continue;
          }
-         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL));
+         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, sourceLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL));
          TransMemoryResultItem tmResult = findTMAboveThreshold(tmResults, predicate);
          TransUnitUpdateRequest request = createRequest(action, hLocale, requestMap, hTextFlow, tmResult);
          if (request != null)
