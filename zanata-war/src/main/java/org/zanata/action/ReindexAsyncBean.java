@@ -80,6 +80,34 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
       }
    }
 
+   /**
+    * Sets reindex options for all indexable classes.
+    *
+    * @param purge Indicates whether to purge the indexes.
+    * @param reindex Indicates whether to reindex.
+    * @param optimize Indicates whether to optimize the indexes.
+    */
+   public void setOptions( boolean purge, boolean reindex, boolean optimize )
+   {
+      for( Class<?> c : indexables )
+      {
+         ReindexClassOptions classOptions;
+         if( indexingOptions.containsKey( c ) )
+         {
+            classOptions = indexingOptions.get( c );
+         }
+         else
+         {
+            classOptions = new ReindexClassOptions(c);
+            indexingOptions.put(c, classOptions);
+         }
+
+         classOptions.setPurge(purge);
+         classOptions.setReindex(reindex);
+         classOptions.setOptimize(optimize);
+      }
+   }
+
    public Collection<ReindexClassOptions> getReindexOptions()
    {
       return indexingOptions.values();
