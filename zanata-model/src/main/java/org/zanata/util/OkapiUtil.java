@@ -70,7 +70,7 @@ public class OkapiUtil
             locale = LocaleId.ENGLISH;
          }
 
-         Tokens tokens = StringTokenizer.tokenizeString(s, locale, "WORD");
+         Tokens tokens = new StringTokenizer().tokenizeString(s, locale, "WORD");
          return tokens.size();
       }
       catch (Exception e)
@@ -83,11 +83,11 @@ public class OkapiUtil
 
    private static class StringTokenizer extends Tokenizer
    {
-      public static Tokens tokenizeString(String text, LocaleId language, String... tokenNames)
+      public Tokens tokenizeString(String text, LocaleId language, String... tokenNames)
       {
          synchronized (Tokenizer.class)
          {
-            return Tokenizer.tokenizeString(text, language, tokenNames);
+            return super.tokenizeString(text, language, tokenNames);
          }
       }
    }
