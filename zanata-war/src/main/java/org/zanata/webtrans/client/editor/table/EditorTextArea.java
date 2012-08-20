@@ -21,16 +21,12 @@
 package org.zanata.webtrans.client.editor.table;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class EditorTextArea extends TextArea
@@ -43,13 +39,10 @@ public class EditorTextArea extends TextArea
    public EditorTextArea()
    {
       super();
-      sinkEvents(Event.ONPASTE);
    }
 
+   // see http://codemirror.net/doc/manual.html#usage
    public native JavaScriptObject initCodeMirror(Element element) /*-{
-      // TODO add onChange, event handler into codemirror editor
-      // see http://codemirror.net/doc/manual.html#usage
-
       var self = this;
       var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
          lineNumbers: true,
@@ -86,11 +79,7 @@ public class EditorTextArea extends TextArea
    @Override
    public String getText()
    {
-      if (useCodeMirrorFlag)
-      {
-         return getCodeMirrorContent();
-      }
-      return super.getText();
+      return useCodeMirrorFlag ? getCodeMirrorContent() : super.getText();
    }
 
    @Override
@@ -126,11 +115,7 @@ public class EditorTextArea extends TextArea
    @Override
    public String getValue()
    {
-      if (useCodeMirrorFlag)
-      {
-         return getCodeMirrorContent();
-      }
-      return super.getValue();
+      return useCodeMirrorFlag ? getCodeMirrorContent() : super.getValue();
    }
 
    @Override
@@ -188,10 +173,7 @@ public class EditorTextArea extends TextArea
             setEditorOption("readOnly", "false");
          }
       }
-      else
-      {
-         super.setReadOnly(readOnly);
-      }
+      super.setReadOnly(readOnly);
    }
 
    private native void setEditorOption(String option, String value) /*-{
@@ -214,29 +196,35 @@ public class EditorTextArea extends TextArea
    @Override
    public boolean isReadOnly()
    {
-      if (useCodeMirrorFlag)
-      {
-         return Boolean.parseBoolean(getEditorOption("readOnly", "false"));
-      }
-      return super.isReadOnly();
+      return useCodeMirrorFlag ? Boolean.parseBoolean(getEditorOption("readOnly", "false")) : super.isReadOnly();
    }
 
    @Override
-   public void onBrowserEvent(Event event)
+   public int getCursorPos()
    {
-      super.onBrowserEvent(event);
-      switch (DOM.eventGetType(event)) {
-      case Event.ONPASTE:
-         Scheduler.get().scheduleDeferred(new ScheduledCommand()
-         {
-                @Override
-                  public void execute() {
-                      ValueChangeEvent.fire(EditorTextArea.this, getText());
-                  }
-         });
-         break;
-      }
+      return useCodeMirrorFlag ? getCodeMirrorCursorPos() : super.getCursorPos();
    }
 
-}
+   private native int getCodeMirrorCursorPos() /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var pos = editor.getCursor();
+      return editor.indexFromPos(pos);
+   }-*/;
 
+   @Override
+   public void setCursorPos(int pos)
+   {
+      if (useCodeMirrorFlag)
+      {
+         setCodeMirrorCursorPos(pos);
+      }
+      super.setCursorPos(pos);
+   }
+
+   private native void setCodeMirrorCursorPos(int cursorIndex) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var pos = editor.posFromIndex(cursorIndex);
+      editor.setCursor(pos);
+   }-*/;
+
+}
