@@ -118,6 +118,9 @@
 			          <directory>src/main/webapp/WEB-INF/deploy</directory>
 			        </fileset>
 			      </filesets>
+			      <fileset>
+			          <directory>src/main/webapp/webtrans</directory>
+			        </fileset>
 		          <followSymlinks>false</followSymlinks>
 			    </configuration>
 			</plugin>

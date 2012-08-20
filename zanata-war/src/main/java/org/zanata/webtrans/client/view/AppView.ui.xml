@@ -109,9 +109,9 @@
 
 		.topMenuButton
 		{
-			outline: none;
             cursor: pointer;
-            vertical-align:top;
+            vertical-align:bottom;
+            font-size:20px;
 		}
 		
 	</ui:style>
@@ -141,9 +141,11 @@
                             </g:PushButton>
 	                    </g:cell>
 	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
-	                        <g:PushButton ui:field="searchAndReplace" styleName="{style.topMenuButton}">
-                                <g:upFace image="{resources.search}" />
-                            </g:PushButton>
+	                    	<g:InlineLabel ui:field="searchAndReplace" styleName="icon-search {style.topMenuButton}"/> 
+	                    	
+<!-- 	                        <g:PushButton ui:field="searchAndReplace" styleName="{style.topMenuButton}"> -->
+<!--                                 <g:upFace image="{resources.search}" /> -->
+<!--                             </g:PushButton> -->
 	                    </g:cell>
 	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
 	                        <g:PushButton ui:field="documentList" styleName="{style.topMenuButton}">

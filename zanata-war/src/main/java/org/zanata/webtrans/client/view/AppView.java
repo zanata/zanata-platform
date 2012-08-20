@@ -74,6 +74,9 @@ public class AppView extends Composite implements AppPresenter.Display
    Label notificationLabel;
 
    @UiField
+   InlineLabel searchAndReplace;
+
+   @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
@@ -86,7 +89,7 @@ public class AppView extends Composite implements AppPresenter.Display
    Styles style;
 
    @UiField
-   PushButton keyShortcuts, searchAndReplace, documentList;
+   PushButton keyShortcuts, documentList;
    
    @UiField(provided = true)
    PushButton notificationBtn;
