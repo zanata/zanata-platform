@@ -22,13 +22,10 @@ package org.zanata;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.lang.management.ManagementFactory;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.ObjectName;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.LinkRef;
@@ -37,19 +34,13 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.hibernate.jmx.StatisticsService;
-import org.jboss.mx.util.MBeanProxy;
-import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
-import org.jboss.security.auth.login.XMLLoginConfigMBean;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -68,11 +59,8 @@ public class ZanataInit
    public static final String EVENT_Zanata_Startup = "Zanata.startup";
    public static final String UNKNOWN_VERSION = "UNKNOWN";
 
-   private String[] additionalSecurityDomains;
-
    @In
    private ApplicationConfiguration applicationConfiguration;
-   private ObjectName hibernateMBeanName;
 
    @Observer("org.jboss.seam.postInitialization")
    public void initZanata() throws Exception
@@ -142,78 +130,9 @@ public class ZanataInit
          log.info("Using JAAS authentication");
       }
       log.info("Enable copyTrans: {}", this.applicationConfiguration.getEnableCopyTrans());
-
-      if (this.applicationConfiguration.isHibernateStatistics())
-      {
-         log.info("registering Hibernate statistics MBean");
-         try
-         {
-            hibernateMBeanName = new ObjectName("Hibernate:type=statistics,application=zanata");
-            StatisticsService mBean = new StatisticsService();
-            mBean.setSessionFactoryJNDIName("SessionFactories/zanataSF");
-            ManagementFactory.getPlatformMBeanServer().registerMBean(mBean, hibernateMBeanName);
-         }
-         catch (InstanceAlreadyExistsException e)
-         {
-            log.info("Hibernate statistics MBean is already started");
-         }
-         catch (Exception e)
-         {
-            log.error("Hibernate statistics MBean failed to start", e);
-         }
-      }
-
       Events.instance().raiseEvent(EVENT_Zanata_Startup);
 
       log.info("Started Zanata...");
-   }
-
-   @Destroy
-   public void shutdown() throws Exception
-   {
-      log.info("<<<<<<<<<<<<< Stopping Zanata...");
-
-      if (this.applicationConfiguration.isHibernateStatistics())
-      {
-         log.info("unregistering Hibernate statistics MBean");
-         try
-         {
-            ManagementFactory.getPlatformMBeanServer().unregisterMBean(hibernateMBeanName);
-         }
-         catch (Exception e)
-         {
-            log.error("Failed to unregister Hibernate statistics MBean", e);
-         }
-      }
-      
-      try
-      {
-         this.destroySecurityConfig();
-      }
-      catch (Exception e)
-      {
-         log.error("Failed to remove Zanata security config. A server restart might be required.", e);
-      }
-
-      log.info("Stopped Zanata...");
-   }
-   
-   /**
-    * Destroys the Zanata security configuration
-    */
-   private void destroySecurityConfig() throws Exception
-   {
-      log.info("Stopping Zanata Security...");
-      
-      if( this.additionalSecurityDomains != null )
-      {
-         log.info("Removing security domains: {}", ArrayUtils.toString(this.additionalSecurityDomains));
-         
-         XMLLoginConfigMBean config = (XMLLoginConfigMBean) MBeanProxy.get(XMLLoginConfigMBean.class,
-               new ObjectName("jboss.security:service=XMLLoginConfig"), 
-               MBeanServerLocator.locateJBoss());
-         config.removeConfigs( this.additionalSecurityDomains );
-      }
    }
 
    /** Utility to debug JBoss JNDI problems */

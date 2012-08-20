@@ -23,7 +23,19 @@
       <zanata.client.version>1.6.0</zanata.client.version>
       <zanata.common.version>1.6.1</zanata.common.version>
 
+	  <richfaces.version>3.3.3.Final</richfaces.version>
+
+	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
+	  <!-- see also the jboss7 profile below -->
+	  <hibernate.scope>provided</hibernate.scope>
+	  <hibernate.version>3.3.2.GA</hibernate.version>
+ 	  <hibernate.jmx.version>${hibernate.version}</hibernate.jmx.version>
+	  <hibernate.search.version>3.1.1.GA</hibernate.search.version>
+	  <hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
+	  <hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
+	  <hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
       <lucene.version>2.9.2</lucene.version>
+      <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
 
         <!--delombok properties-->
         <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
@@ -72,7 +84,51 @@
              <artifactId>zanata-model</artifactId>
              <version>${project.version}</version>
           </dependency>
-            
+          
+			<!-- TODO remove annotations and jmx after we move to v3.6 (AS7) -->
+          
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-annotations</artifactId>
+				<version>${hibernate.annotations.version}</version>
+				<scope>provided</scope>
+			</dependency>
+	        <dependency>
+	            <groupId>org.hibernate</groupId>
+	            <artifactId>hibernate-jmx</artifactId>
+				<version>${hibernate.jmx.version}</version>
+				<scope>provided</scope>
+	        </dependency>
+          
+
+			<dependency>
+				<groupId>org.richfaces.framework</groupId>
+				<artifactId>richfaces-api</artifactId>
+				<version>${richfaces.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces.framework</groupId>
+				<artifactId>richfaces-impl</artifactId>
+<!-- 
+				<artifactId>richfaces-impl-jsf2</artifactId>
+ -->
+				<version>${richfaces.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>richfaces-ui</artifactId>
+				<version>${richfaces.version}</version>
+			</dependency>
+
+            <dependency>
+               <groupId>net.customware.gwt.presenter</groupId>
+               <artifactId>gwt-presenter</artifactId>
+               <version>1.1.1</version>
+               <scope>compile</scope>
+            </dependency>
+
       </dependencies>
    </dependencyManagement>    
    <build>
@@ -92,6 +148,94 @@
    </build>
 
     <profiles>
+
+		<profile>
+			<!-- Profile to use more recent versions of hibernate etc. for jboss 7 -->
+			<id>jboss7</id>
+			<properties>
+				<hibernate.scope>compile</hibernate.scope>
+				<!-- more recent hibernate versions -->
+				<hibernate.version>3.6.8.Final</hibernate.version>
+				<hibernate.search.version>3.4.1.Final</hibernate.search.version>
+				<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
+				<!-- not needed, merged into hibernate-core 3.6: -->
+				<hibernate.annotations.version>3.5.6-Final</hibernate.annotations.version>
+				<hibernate.entitymanager.version>3.6.8.Final</hibernate.entitymanager.version>
+				<!-- not needed, merged into hibernate-core 3.6: -->
+				<hibernate.jmx.version>3.5.6-Final</hibernate.jmx.version>
+
+				<!-- slightly newer versions:
+				
+				<hibernate.version>3.6.10.Final</hibernate.version>
+				<hibernate.search.version>3.4.2.Final</hibernate.search.version>
+
+				<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
+
+				If this is used, <artifactId>hibernate-validator-legacy</artifactId>
+					may need to be added to each dependency element for validator.
+					If this is done, make a note to remove -legacy from artifactId when
+					moving to 4.2.0.GA for real
+				<hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
+				
+
+				<hibernate.entitymanager.version>3.6.10.Final</hibernate.entitymanager.version>
+				 -->
+
+				<lucene.version>3.1.0</lucene.version>
+
+		        <war_bundles_jsf_impl>true</war_bundles_jsf_impl>
+			</properties>
+         <dependencies>
+            <dependency>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>commons-collections</groupId>
+               <artifactId>commons-collections</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>javassist</groupId>
+               <artifactId>javassist</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>javax.faces</groupId>
+               <artifactId>jsf-api</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>javax.faces</groupId>
+               <artifactId>jsf-impl</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>com.google.gwt</groupId>
+               <artifactId>gwt-user</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>com.google.gwt</groupId>
+               <artifactId>gwt-incubator</artifactId>
+               <scope>provided</scope>
+            </dependency>
+            <dependency>
+               <groupId>net.customware.gwt.presenter</groupId>
+               <artifactId>gwt-presenter</artifactId>
+               <version>1.1.1</version>
+               <scope>provided</scope>
+            </dependency>
+         </dependencies>
+         
+		</profile>
+
         <profile>
             <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
             <id>delombok</id>

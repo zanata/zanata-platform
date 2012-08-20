@@ -138,18 +138,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       this.textFlowRevision = textFlow.getRevision();
    }
 
-   @Id
-   @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
-
-   protected void setId(Long id)
-   {
-      this.id = id;
-   }
-
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne

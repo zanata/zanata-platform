@@ -1,0 +1,17 @@
+<!-- May not be needed: https://community.jboss.org/message/620333#620333 -->
+<jboss-deployment-structure>
+   <deployment>
+        <exclusions>
+          <module name="javax.faces.api" slot="main"/>
+          <module name="com.sun.jsf-impl" slot="main"/>
+        </exclusions>
+        <dependencies>
+          <module name="org.apache.log4j" />
+          <module name="org.dom4j" />
+          <module name="org.apache.commons.logging" />
+          <module name="org.apache.commons.collections" />
+          <module name="javax.faces.api" slot="1.2"/>
+          <module name="com.sun.jsf-impl" slot="1.2"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

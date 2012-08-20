@@ -15,7 +15,12 @@
          <supported-locale>tr</supported-locale>
          <supported-locale>qc</supported-locale>
       </locale-config>
+
       <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+      <!-- this may or may not help for AS7 deployment:
+      <view-handler>org.ajax4jsf.application.AjaxViewHandler</view-handler>
+      -->
+
       <lifecycle>
     	<phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
 	  </lifecycle>
