@@ -124,8 +124,6 @@ public class Application implements EntryPoint
             exitWorkspace();
          }
       });
-      
-      Window.enableScrolling(true);
 
       final EventProcessor eventProcessor = injector.getEventProcessor();
       eventProcessor.start(new StartCallback()
@@ -156,6 +154,7 @@ public class Application implements EntryPoint
          }
       });
 
+      Window.enableScrolling(true);
    }
 
    private void delayedStartApp()
@@ -163,6 +162,7 @@ public class Application implements EntryPoint
       final AppPresenter appPresenter = injector.getAppPresenter();
       RootPanel.get("contentDiv").add(appPresenter.getDisplay().asWidget());
       appPresenter.bind();
+      Window.enableScrolling(true);
    }
 
    public static ProjectIterationId getProjectIterationId()
