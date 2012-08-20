@@ -380,6 +380,7 @@ public class TargetContentsPresenter implements
       display = displayList.get(rowIndex);
       currentEditors = display.getEditors();
       this.currentTransUnitId = currentTransUnitId;
+      normaliseCurrentEditorIndex();
 
       for (ToggleEditor editor : display.getEditors())
       {
@@ -388,8 +389,6 @@ public class TargetContentsPresenter implements
       }
       revealDisplay();
       display.showButtons(isDisplayButtons());
-
-      normaliseCurrentEditorIndex();
 
       if (!userWorkspaceContext.hasReadOnlyAccess())
       {
