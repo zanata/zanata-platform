@@ -27,6 +27,7 @@ import org.hibernate.search.analyzer.Discriminator;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import com.ibm.icu.util.ULocale;
 
 /**
  * Analyzer Discriminator to determine the analyzer to use based on the object being indexed.
@@ -78,8 +79,10 @@ public class TextContainerAnalyzerDiscriminator implements Discriminator
    public static String getAnalyzerDefinitionName( String localeId )
    {
       // CJK languages
-      String localeIdStr = localeId.toLowerCase();
-      if( localeIdStr.startsWith("zh") || localeIdStr.startsWith("ja") || localeIdStr.startsWith("ko") )
+      ULocale uLocale = new ULocale(localeId);
+      String langCode = uLocale.getLanguage();
+
+      if( langCode.equalsIgnoreCase("zh") || langCode.equalsIgnoreCase("ja") || langCode.equalsIgnoreCase("ko") )
       {
          return "UnigramAnalyzer";
       }

@@ -39,7 +39,7 @@ public class ReindexActionBean
 
    public boolean isInProgress()
    {
-      return reindexAsync.getProcessHandle().isInProgress();
+      return reindexAsync.getProcessHandle().isPrepared() || reindexAsync.getProcessHandle().isInProgress();
    }
 
    public String getCurrentClass()
@@ -67,7 +67,7 @@ public class ReindexActionBean
       if (!reindexAsync.getProcessHandle().isInProgress())
       {
          reindexAsync.prepareReindex();
-         reindexAsync.startReindex();
+         reindexAsync.startProcess();
       }
    }
 
