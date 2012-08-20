@@ -43,7 +43,7 @@
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
-	            <div class="#{identityManager.isUserEnabled(user) ? 'checkmark' : 'cross'}"/>
+	            <span class="#{identityManager.isUserEnabled(user) ? 'icon-ok checkmark' : 'icon-remove cross'}"/>
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>

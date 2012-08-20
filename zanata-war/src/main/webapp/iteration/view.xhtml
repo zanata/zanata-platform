@@ -54,7 +54,7 @@
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.Language']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
-								value="#{request.contextPath}/webtrans/Application.html"
+								value="#{request.contextPath}/webtrans/Application.seam"
 								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
@@ -69,7 +69,7 @@
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.Name']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
-								value="#{request.contextPath}/webtrans/Application.html"
+								value="#{request.contextPath}/webtrans/Application.seam"
 								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
@@ -80,62 +80,15 @@
 							<h:outputText value="#{stats.nativeName}"
 								rendered="#{not identity.loggedIn}" />
 						</rich:column>
-						<rich:column id="translate" 
-							rendered="#{identity.loggedIn and not viewAllStatusAction.isIterationObsolete()}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
-							<f:facet name="header">#{messages['jsf.View']}</f:facet>
-							
-							<h:outputLink
-								rendered="#{not applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale) }"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<f:param name="locale" value="#{locale.language}" />
-								<img src="#{request.contextPath}/images/zanata-icon/16x16/eye-open.png" title="#{messages['jsf.Open']}"/>
-							</h:outputLink>
-	
-							<h:outputLink
-								rendered="#{applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<f:param name="locale" value="#{locale.language}" />
-								<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-								<img src="#{request.contextPath}/images/zanata-icon/16x16/eye-open.png" title="#{messages['jsf.OpenGWTDevMode']}"/>
-	      					</h:outputLink>
-	
-							<h:outputLink
-								rendered="#{not applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<f:param name="locale" value="#{locale.language}" />
-								<img src="#{request.contextPath}/images/zanata-icon/16x16/edit.png" title="#{messages['jsf.Translate']}"/>
-	      					</h:outputLink>
-	      					
-							<h:outputLink
-								rendered="#{applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html" styleClass="table_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<f:param name="locale" value="#{locale.language}" />
-								<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-								<img src="#{request.contextPath}/images/zanata-icon/16x16/edit.png" title="#{messages['jsf.TranslateGWTDevMode']}"/>
-	      					</h:outputLink>
-						</rich:column>
 						<rich:column id="files"
 							rendered="#{identity.loggedIn}"
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
-							<f:facet name="header">#{messages['jsf.Files']}</f:facet>
+							<f:facet name="header">#{messages['jsf.Documents']}</f:facet>
 							<s:link view="/iteration/files.xhtml" propagation="none" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
-								<img src="#{request.contextPath}/images/zanata-icon/16x16/file.png" />
+								<span class="icon-file"/>
 							</s:link>
 						</rich:column>
 						<rich:column sortBy="#{stats.per}"

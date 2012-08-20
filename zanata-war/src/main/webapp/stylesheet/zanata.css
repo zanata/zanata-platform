@@ -1,3 +1,138 @@
+/* -------------------- Generic Base CSS ------------------------------ */
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #ffffff;
+	font: 12px helvetica, arial, Tahoma, Geneva, sans-serif;
+}
+
+select,input,button,textarea,button {
+	font: 99% arial, helvetica, clean, sans-serif;
+}
+
+a,a:link,a:visited {
+	text-decoration: none;
+}
+
+a:hover {
+	color: #990000;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	margin: 10px 0;
+	padding: 0;
+	font-weight: bold;
+}
+
+h1 {
+	font-size: 138.5%;
+}
+
+h2 {
+	font-size: 123.1%;
+}
+
+h3 {
+	font-size: 108%;
+}
+
+th,td {
+	border: none;
+	padding: 0px;
+}
+
+th {
+	font-weight: bold;
+	text-align: center;
+}
+
+html {
+	background-color: transparent;
+}
+
+
+fieldset,img {
+	border: 0;
+}
+
+table {
+	margin: 0px;
+}
+
+input,textarea {
+	border-radius: 3px;
+	border: 1px solid #C5C5C5;
+	padding: 5px;
+	color: #222222;
+	font-weight: bold;
+	font-size:14px;
+}
+
+input[type="text"], input[type="password"]
+{
+	width:210px;
+	font-size:12px;
+}
+
+button,input[type="checkbox"],input[type="radio"],input[type="reset"],input[type="submit"],input[type="button"]
+{
+	color: #626262;
+	padding: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+	
+	
+button,input[type="reset"],input[type="submit"],input[type="button"] {	
+	border: 1px solid #999;
+	border-radius: 4px;
+	cursor: pointer;
+	background: #CCC;
+	background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #EEE),
+		color-stop(100%, #CCC) );
+	background: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -o-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -ms-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: linear-gradient(top, #EEE 0%, #CCC 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#eeeeee',
+		endColorstr='#cccccc', GradientType=0 );
+	/* Text (previously on the a tag) */
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 5px;
+	text-align: center;
+	text-decoration: none;
+	color: #444;
+	text-shadow: 0 1px 1px white;
+	width:auto;
+}
+
+input.with_icon {
+	background-position: 5px 50%;
+	background-repeat: no-repeat;
+	padding: 3px 3px 3px 25px;
+	height:22px;
+	width:280px;
+	font-size:16px;
+}
+
+button:hover,input[type="reset"]:hover,input[type="submit"]:hover,input[type="button"]:hover 
+{
+	background: #CCC;
+	background: -moz-linear-gradient(top, white 0%, #DDD 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white),
+		color-stop(100%, #DDD) );
+	background: -webkit-linear-gradient(top, white 0%, #DDD 100%);
+	background: -o-linear-gradient(top, white 0%, #DDD 100%);
+	background: -ms-linear-gradient(top, white 0%, #DDD 100%);
+	background: linear-gradient(top, white 0%, #DDD 100%);
+	filter: progid:DXImageTransform.Microsoft.
+}
+
+/* -------------------- End Generic Base CSS ------------------------------ */
+
 #container {
 	width: 960px;
 	margin-left: auto;
@@ -6,6 +141,31 @@
 	background-color: #ffffff;
 	min-height:400px;
 	min-width:960px
+}
+
+#main_body_content>h1,#main_body_content>h2 {
+	margin: 5px 0 5px 0;
+}
+
+textarea.code_editor {
+	font-family: Courier;
+	font-size: 11px;
+	font-weight: normal;
+	width: 98%;
+	height: 300px;
+}
+
+td.centered {
+	text-align: center;
+}
+
+.leftalign {
+	text-align: left;
+}
+
+.rich-tool-tip p {
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
 
 #yui-main {
@@ -31,11 +191,9 @@
 	height:100%;
 }
 
-#breadcrumbs_panel img
+.breadcrumbs-seperator
 {
-	width:10px;
-	padding:0 5px;
-	vertical-align:middle;
+	padding:0 8px;
 }
 
 #breadcrumbs_div
@@ -44,13 +202,17 @@
 	padding:3px;
 }
 
+a.breadcrumbs_home, a.breadcrumbs_home:hover
+{
+	font-size:13px;
+	color:#000000;	
+}
+
 a.breadcrumbs_link
 {
 	font-size:14px;
 	font-weight:bold;
 	color:#0085CC;
-	padding:2px 0 2px 5px;
-	vertical-align:middle;
 }
 
 a.breadcrumbs_link:hover
@@ -63,8 +225,6 @@ a.breadcrumbs_link:hover
 	font-size:14px;
 	font-weight:bold;
 	color:#B62918;
-	padding:2px 0 2px 5px;
-	vertical-align:middle;
 }
 
 
@@ -82,6 +242,14 @@ a.breadcrumbs_link:hover
 	margin-bottom:2px;
 }
 
+.search-icon
+{
+	font-size:18px;
+	position:absolute;
+	margin-top:8px;
+	margin-left:5px;	
+}
+
 .code {
 	color: grey;
 }
@@ -91,10 +259,6 @@ a.breadcrumbs_link:hover
 	width:100%;
 	padding:0;
 	font-size:12px;
-}
-
-.search_icon {
-	background-image: url(../images/zanata-icon/16x16/search.png);
 }
 
 .input_help {
@@ -244,20 +408,18 @@ div.info {
 }
 
 /* Styles from the security-stuff in seamspace*/
-div.checkmark {
-	background: url(../images/zanata-icon/16x16/tick.png) top left no-repeat;
-	width: 16px;
-	height: 16px;
-	margin-left: auto;
-	margin-right: auto;
+.checkmark {
+	font-size:16px;
 }
 
-div.cross {
-	background: url(../images/zanata-icon/16x16/cross.png) top left no-repeat;
-	width: 16px;
-	height: 16px;
-	margin-left: auto;
-	margin-right: auto;
+.cross {
+	font-size:16px;
+}
+
+a.table_link span
+{
+	text-decoration:none;
+	font-size:20px;
 }
 
 
@@ -289,6 +451,11 @@ a.button {
 	text-align: center;
 }
 
+a.action_link span
+{
+	font-size:18px;
+}
+
 a.action_link {
 	display: block;
 	font-size: 14px;
@@ -304,7 +471,7 @@ a.action_link {
 
 a.action_link:hover, a.button:hover {
 	background-color: #FFFFFF;
-    box-shadow: 0 0 3px #7092C3 inset;
+    box-shadow: 0 0 5px #7092C3 inset;
 }
 
 .hightlight_button:hover {
@@ -722,9 +889,11 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 	float:left;
 }
 
-.version_link_div img
+.version_link_div span
 {
 	float:right;
+	font-size:16px;
+	color:#A91E1E;
 }
 
 .version_link_div .version_info {

@@ -144,7 +144,4 @@ public interface Resources extends ClientBundle
    @Source("images/zanata-icon/16x16/chevron-right.png")
    ImageResource chevronRight();
 
-   @Source("images/zanata-icon/16x16/chevron-down.png")
-   ImageResource chevronDown();
-
 }

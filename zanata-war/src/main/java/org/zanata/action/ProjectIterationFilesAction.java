@@ -20,9 +20,15 @@
  */
 package org.zanata.action;
 
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+
 import java.io.InputStream;
 import java.util.List;
+
 import javax.faces.context.FacesContext;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
@@ -53,11 +59,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -102,6 +103,7 @@ public class ProjectIterationFilesAction
 
    private DocumentFileUploadHelper documentFileUpload;
    
+   private HProjectIteration projectIteration;
    
    public void initialize()
    {
@@ -285,6 +287,30 @@ public class ProjectIterationFilesAction
    public DocumentFileUploadHelper getDocumentFileUpload()
    {
       return documentFileUpload;
+   }
+
+   public HProjectIteration getProjectIteration()
+   {
+      if (this.projectIteration == null)
+      {
+         this.projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      }
+      return this.projectIteration;
+   }
+
+   public boolean isUserAllowedToTranslate()
+   {
+      return !isIterationReadOnly() && !isIterationObsolete() && identity.hasPermission("add-translation", getProjectIteration().getProject(), getLocale());
+   }
+
+   public boolean isIterationReadOnly()
+   {
+      return getProjectIteration().getProject().getStatus() == EntityStatus.READONLY || getProjectIteration().getStatus() == EntityStatus.READONLY;
+   }
+
+   public boolean isIterationObsolete()
+   {
+      return getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
    }
 
    /**

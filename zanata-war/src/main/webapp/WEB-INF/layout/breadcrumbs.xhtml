@@ -7,12 +7,12 @@
     xmlns:rich="http://richfaces.org/rich">
   
      <h:form>
-     	<s:link view="/home.xhtml" propagation="none" rendered="#{not empty breadcrumbs.locations}">
-			<img src="#{requestContextPath}/images/zanata-icon/16x16/house.png" alt="#{messages['jsf.ZanataMainDescription']}" style="width:14px;"/>
+     	<s:link view="/home.xhtml" propagation="none" rendered="#{not empty breadcrumbs.locations}" styleClass="breadcrumbs_home">
+     		<span class="icon-home" title="#{messages['jsf.ZanataMainDescription']}"/>
 		</s:link>
 						
 	     <ui:repeat value="#{breadcrumbs.locations}" var="breadcrumb" styleClass="breadcrumbs">
-	     	<img src="#{requestContextPath}/images/zanata-icon/16x16/chevron-right.png"/>
+	     	<span class="icon-chevron-right breadcrumbs-seperator"/>
 		    <s:link value="#{breadcrumb.display}" view="#{breadcrumb.location}" styleClass="breadcrumbs_link" rendered="#{not empty breadcrumb.location}"/>
 		    <s:span styleClass="breadcrumbs_display" rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
 		</ui:repeat>
