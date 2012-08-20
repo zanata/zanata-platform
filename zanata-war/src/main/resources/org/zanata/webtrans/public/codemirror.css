@@ -55,7 +55,8 @@ is visible outside of the scrolling box. */
 
 .CodeMirror-gutter {
   position: absolute; left: 0; top: 0;
-  z-index: 10;
+    /* below z-index is commented out because it will lay gutter/line number on top of everything including gwt pop up */
+  /*z-index: 10;*/
   background-color: #f7f7f7;
   border-right: 1px solid #eee;
   min-width: 2em;
