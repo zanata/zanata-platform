@@ -101,6 +101,34 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    }
 
    /**
+    * Returns the total message count for a document
+    */
+   public Long getTotalCountForDocument(HDocument document)
+   {
+      Session session = getSession();
+
+      return
+      (Long) session.createQuery(
+            "select count(tf) from HTextFlow tf " +
+                  "where tf.document = :doc and tf.obsolete = false")
+            .setParameter("doc", document)
+            .setCacheable(true).uniqueResult();
+   }
+
+   public Long getTotalWordCountForDocument(HDocument document)
+   {
+      Session session = getSession();
+
+      return
+      (Long) session.createQuery(
+            "select sum(tf.wordCount) from HTextFlow tf " +
+                  "where tf.document = :doc and tf.obsolete = false")
+            .setParameter("doc", document)
+            .setCacheable(true)
+            .uniqueResult();
+   }
+
+   /**
     * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
     * @param docId
     * @param localeId
@@ -123,11 +151,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             .setParameter("id", docId)
             .setParameter("locale", localeId)
             .setCacheable(true).list();
-      Long totalCount = (Long) session.createQuery(
-         "select count(tf) from HTextFlow tf " +
-         "where tf.document.id = :id and tf.obsolete = false")
-            .setParameter("id", docId)
-            .setCacheable(true).uniqueResult();
+      Long totalCount = getTotalCountForDocument( getById(docId) );
 
       TransUnitCount stat = new TransUnitCount();
       for (StatusCount count : stats)
@@ -149,12 +173,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             .setParameter("locale", localeId)
             .setCacheable(true)
             .list();
-      Long totalWordCount = (Long) session.createQuery(
-         "select sum(tf.wordCount) from HTextFlow tf " +
-         "where tf.document.id = :id and tf.obsolete = false")
-            .setParameter("id", docId)
-            .setCacheable(true)
-            .uniqueResult();
+      Long totalWordCount = getTotalWordCountForDocument( getById(docId) );
       if (totalWordCount == null)
          totalWordCount = 0L;
 

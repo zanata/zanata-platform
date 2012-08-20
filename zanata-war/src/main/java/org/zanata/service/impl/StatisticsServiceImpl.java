@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -41,6 +42,7 @@ import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
@@ -73,6 +75,9 @@ public class StatisticsServiceImpl implements StatisticsResource
    private DocumentDAO documentDAO;
 
    @In
+   private LocaleServiceImpl localeServiceImpl;
+
+   @In
    private ZPathService zPathService;
 
 
@@ -80,12 +85,27 @@ public class StatisticsServiceImpl implements StatisticsResource
    public ContainerTranslationStatistics
    getStatistics(String projectSlug, String iterationSlug, boolean includeDetails, boolean includeWordStats, String[] locales)
    {
-      LocaleId[] localeIds = new LocaleId[ locales.length ];
-      for( int i=0; i<locales.length; i++ )
+      LocaleId[] localeIds;
+
+      // if no locales are specified, search in all locales
+      if( locales.length == 0 )
       {
-         localeIds[i] = new LocaleId( locales[i] );
+         List<HLocale> iterationLocales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
+         localeIds = new LocaleId[ iterationLocales.size() ];
+         for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++)
+         {
+            HLocale loc = iterationLocales.get(i);
+            localeIds[i] = loc.getLocaleId();
+         }
       }
-      Arrays.sort( locales ); // sort the array for binary search
+      else
+      {
+         localeIds = new LocaleId[ locales.length ];
+         for( int i=0; i<locales.length; i++ )
+         {
+            localeIds[i] = new LocaleId( locales[i] );
+         }
+      }
 
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
@@ -107,36 +127,58 @@ public class StatisticsServiceImpl implements StatisticsResource
       iterationStats.setId(iterationSlug);
       iterationStats.addRef( new Link(URI.create(zPathService.generatePathForProjectIteration(iteration)), "statSource", "PROJ_ITER"));
 
-      for( String locale : transUnitIterationStats.keySet() )
-      {
-         if( locales.length == 0 || Arrays.binarySearch(locales, locale) >= 0)
-         {
-            TransUnitCount count = transUnitIterationStats.get( locale );
+      long iterationTotalMssgs = projectIterationDAO.getTotalCountForIteration(iteration.getId());
+      long iterationTotalWords = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
 
-            // trans unit level stats
-            TranslationStatistics transUnitStats = new TranslationStatistics();
-            transUnitStats.setLocale( locale );
-            transUnitStats.setUnit(TranslationStatistics.StatUnit.MESSAGE);
+      for( LocaleId locId : localeIds )
+      {
+         TransUnitCount count = transUnitIterationStats.get( locId.getId() );
+
+         // trans unit level stats
+         TranslationStatistics transUnitStats = new TranslationStatistics();
+         transUnitStats.setLocale( locId.getId() );
+         transUnitStats.setUnit(TranslationStatistics.StatUnit.MESSAGE);
+         // Stats might not return anything if nothing is translated
+         if( count == null )
+         {
+            transUnitStats.setTranslated( 0 );
+            transUnitStats.setUntranslated( iterationTotalMssgs );
+            transUnitStats.setNeedReview( 0 );
+            transUnitStats.setTotal( iterationTotalMssgs );
+         }
+         else
+         {
             transUnitStats.setTranslated( count.get(ContentState.Approved) );
             transUnitStats.setUntranslated(count.get(ContentState.New));
             transUnitStats.setNeedReview(count.get(ContentState.NeedReview));
             transUnitStats.setTotal( count.getTotal() );
-            iterationStats.addStats(transUnitStats);
+         }
+         iterationStats.addStats(transUnitStats);
 
-            // word level stats
-            if( includeWordStats )
+         // word level stats
+         if( includeWordStats )
+         {
+            TransUnitWords wordCount = wordIterationStats.get(locId.getId());
+
+            TranslationStatistics wordStats = new TranslationStatistics();
+            wordStats.setLocale( locId.getId() );
+            wordStats.setUnit(TranslationStatistics.StatUnit.WORD);
+
+            if( wordCount == null )
             {
-               TransUnitWords wordCount = wordIterationStats.get(locale);
-
-               TranslationStatistics wordStats = new TranslationStatistics();
-               wordStats.setLocale( locale );
-               wordStats.setUnit(TranslationStatistics.StatUnit.WORD);
+               wordStats.setTranslated( 0 );
+               wordStats.setUntranslated( iterationTotalWords );
+               wordStats.setNeedReview( 0 );
+               wordStats.setTotal( iterationTotalWords );
+            }
+            else
+            {
                wordStats.setTranslated( wordCount.get(ContentState.Approved) );
                wordStats.setUntranslated( wordCount.get(ContentState.New) );
                wordStats.setNeedReview( wordCount.get(ContentState.NeedReview) );
                wordStats.setTotal( wordCount.getTotal() );
-               iterationStats.addStats(wordStats);
             }
+            iterationStats.addStats(wordStats);
          }
       }
 
@@ -158,10 +200,26 @@ public class StatisticsServiceImpl implements StatisticsResource
    public ContainerTranslationStatistics
    getStatistics(String projectSlug, String iterationSlug, String docId, boolean includeWordStats, String[] locales)
    {
-      LocaleId[] localeIds = new LocaleId[ locales.length ];
-      for( int i=0; i<locales.length; i++ )
+      LocaleId[] localeIds;
+
+      // if no locales are specified, search in all locales
+      if( locales.length == 0 )
       {
-         localeIds[i] = new LocaleId( locales[i] );
+         List<HLocale> iterationLocales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
+         localeIds = new LocaleId[ iterationLocales.size() ];
+         for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++)
+         {
+            HLocale loc = iterationLocales.get(i);
+            localeIds[i] = loc.getLocaleId();
+         }
+      }
+      else
+      {
+         localeIds = new LocaleId[ locales.length ];
+         for( int i=0; i<locales.length; i++ )
+         {
+            localeIds[i] = new LocaleId( locales[i] );
+         }
       }
 
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
@@ -177,11 +235,25 @@ public class StatisticsServiceImpl implements StatisticsResource
       docStats.setId(docId);
       docStats.addRef(new Link(URI.create(zPathService.generatePathForDocument(document)), "statSource", "DOC"));
 
-      for( LocaleId locale : statsMap.keySet() )
+      long docTotalMssgs = documentDAO.getTotalCountForDocument( document );
+      long docTotalWords = documentDAO.getTotalWordCountForDocument( document );
+
+      for( LocaleId locale : localeIds )
       {
          TranslationStats stats = statsMap.get( locale );
-         TransUnitCount count = stats.getUnitCount();
-         TransUnitWords wordCount = stats.getWordCount();
+         TransUnitCount count;
+         TransUnitWords wordCount;
+
+         if( stats == null )
+         {
+            count = new TransUnitCount(0, 0, (int)docTotalMssgs);
+            wordCount = new TransUnitWords(0, 0, (int)docTotalWords);
+         }
+         else
+         {
+            count = stats.getUnitCount();
+            wordCount = stats.getWordCount();
+         }
 
          // trans unit level stats
          TranslationStatistics transUnitStats = new TranslationStatistics();
