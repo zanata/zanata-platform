@@ -153,7 +153,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          Log.debug("save resulted TU: " + updatedTU.debugString());
          if (result.isSingleSuccess())
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved()));
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString())));
             int rowIndexOnPage = pageModel.findIndexById(updatedTU.getId());
             if (rowIndexOnPage != SinglePageDataModel.UNSELECTED)
             {

@@ -25,8 +25,8 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Save FAILED: {0}")
    String notifyUpdateFailed(String errorMessage);
 
-   @DefaultMessage("Saved")
-   String notifyUpdateSaved();
+   @DefaultMessage("Row {0} (Id {1}) Saved")
+   String notifyUpdateSaved(int rowIndex, String id);
 
    @DefaultMessage("Validation error - See validation message")
    String notifyValidationError();
