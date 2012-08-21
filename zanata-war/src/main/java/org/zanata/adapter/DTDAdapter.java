@@ -20,17 +20,18 @@
  */
 package org.zanata.adapter;
 
-import net.sf.okapi.filters.plaintext.PlainTextFilter;
+import net.sf.okapi.filters.dtd.DTDFilter;
 
 /**
+ * Adapter for DTD, including Mozilla DTD.
  * 
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
- *
+ * @see DTDFilter
  */
-public class PlainTextAdapter extends GenericOkapiFilterAdapter
+public class DTDAdapter extends GenericOkapiFilterAdapter
 {
-   public PlainTextAdapter()
+   public DTDAdapter()
    {
-      super(new PlainTextFilter(), IdSource.contentHash);
+      super(new DTDFilter(), IdSource.textUnitName);
    }
 }

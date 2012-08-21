@@ -33,14 +33,17 @@ import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
 
+import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.HashUtil;
 
 /**
+ * An adapter that uses a provided {@link IFilter} implementation to parse documents.
  * 
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
@@ -48,24 +51,44 @@ import org.zanata.util.HashUtil;
 public class GenericOkapiFilterAdapter implements FileFormatAdapter
 {
 
-   private final IFilter filter;
-   private final boolean useContentHashId;
+   /**
+    * Determines how TextFlow ids are assigned for Okapi TextUnits
+    */
+   public enum IdSource {
+      textUnitId,
+      textUnitName,
+      contentHash,
+   };
 
+   private final IFilter filter;
+   private final IdSource idSource;
+
+   /**
+    * Create an adapter that will use filter-provided id as TextFlow id.
+    * 
+    * @param filter {@link IFilter} used to parse the document
+    */
    public GenericOkapiFilterAdapter(IFilter filter)
    {
-      this(filter, false);
+      this.filter = filter;
+      this.idSource = IdSource.textUnitId;
    }
 
-   public GenericOkapiFilterAdapter(IFilter filter, boolean useContentHashId)
+   /**
+    * Create an adapter that will use the specified {@link IdSource} as TextFlow id.
+    * 
+    * @param filter {@link IFilter} used to parse the document
+    * @param idSource determines how ids are assigned to TextFlows
+    */
+   public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource)
    {
       this.filter = filter;
-      this.useContentHashId = useContentHashId;
+      this.idSource = idSource;
    }
 
    @Override
    public Resource parseDocumentFile(InputStream documentContent, LocaleId sourceLocale)
    {
-      // TODO may want to use a string locale id so it can be used both for Zanata and Okapi locale classes
       Resource document = new Resource();
       document.setLang(sourceLocale);
       document.setContentType(ContentType.TextPlain);
@@ -93,6 +116,37 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 
       return document;
    }
+
+   @Override
+   public TranslationsResource parseTranslationFile(InputStream fileContents)
+   {
+      TranslationsResource transRes = new TranslationsResource();
+      List<TextFlowTarget> translations = transRes.getTextFlowTargets();
+
+      // TODO look at passing the appropriate locale in to this if en is not appropriate.
+      // or make sure it is processed later.
+      RawDocument rawDoc = new RawDocument(fileContents, "UTF-8", net.sf.okapi.common.LocaleId.fromString("en"));
+      filter.open(rawDoc);
+
+      while (filter.hasNext()) {
+         Event event = filter.next();
+         if (event.getEventType() == EventType.TEXT_UNIT)
+         {
+            TextUnit tu = (TextUnit) event.getResource();
+            if (tu.isTranslatable())
+            {
+               TextFlowTarget tft = new TextFlowTarget(getIdFor(tu));
+               tft.setContents(tu.getSource().toString());
+               tft.setState(ContentState.Approved);
+               translations.add(tft);
+            }
+         }
+      }
+      filter.close();
+
+      return transRes;
+   }
+
 
    @Override
    public void writeTranslatedFile(OutputStream output, InputStream original, List<TextFlowTarget> translations, String locale) throws IOException
@@ -125,6 +179,14 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       writer.close();
    }
 
+   /**
+    * Attempt to locate a matching translation for the given id in the given list.
+    * 
+    * @param idToFind
+    * @param translationsToSearchIn
+    * @return the matching translation, or null if no translation matches the id
+    */
+   // TODO make targets a map against id
    private TextFlowTarget findTextFlowTarget(String idToFind, List<TextFlowTarget> translationsToSearchIn)
    {
       for (TextFlowTarget target : translationsToSearchIn)
@@ -137,16 +199,24 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       return null;
    }
 
-   private String getIdFor(TextUnit tu)
+   /**
+    * Return the id for a TextUnit based on id assignment rules.
+    * This method can be overridden for more complex id assignment.
+    * 
+    * @param tu for which to get id
+    * @return the id for the given tu
+    */
+   protected String getIdFor(TextUnit tu)
    {
-      if (useContentHashId)
+      switch (idSource)
       {
+      case contentHash:
          return HashUtil.generateHash(tu.getSource().toString());
-      }
-      else
-      {
+      case textUnitName:
+         return tu.getName();
+      case textUnitId:
+      default:
          return tu.getId();
       }
    }
-
 }

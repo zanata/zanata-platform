@@ -924,6 +924,15 @@
          <version>2.5.1</version>
       </dependency>
 
+        <!-- Okapi Filters -->
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-dtd</artifactId>
+            <version>0.17</version>
+        </dependency>
+
+
 		<!-- Other -->
 
 		<dependency>

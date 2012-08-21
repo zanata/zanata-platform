@@ -28,6 +28,7 @@ import java.util.List;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * Common interface for classes wrapping Okapi filters.
@@ -38,16 +39,33 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 public interface FileFormatAdapter
 {
 
+   /**
+    * Extract source strings from the given document content.
+    * 
+    * @param documentContent
+    * @param sourceLocale
+    * @return representation of the strings in the document
+    */
+   // TODO may want to use a string locale id so it can be used both for Zanata and Okapi locale classes
    Resource parseDocumentFile(InputStream documentContent, LocaleId sourceLocale);
 
    /**
-    * TODO could pass a TranslationsResource or a List<TextFlowTarget>
+    * Extract translation strings from the given translation document.
     * 
-    * @param output
-    * @param original
-    * @param translations
-    * @param locale
+    * @param translatedDocumentContent translated document to parse
+    * @return representation of the translations in the document
+    */
+   TranslationsResource parseTranslationFile(InputStream translatedDocumentContent);
+
+   /**
+    * Write translated file to the given output, using the given list of translations.
+    * 
+    * @param output stream to write translated document
+    * @param original source document
+    * @param translations to use in generating translated file
+    * @param locale to use for translated document
     * @throws IOException
     */
    void writeTranslatedFile(OutputStream output, InputStream original, List<TextFlowTarget> translations, String locale) throws IOException;
+
 }

@@ -25,7 +25,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.xml.sax.InputSource;
+import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
@@ -67,6 +69,11 @@ public class TranslationFileServiceImpl implements TranslationFileService
          {
             throw new ZanataServiceException("Invalid PO file contents on file: " + fileName);
          }
+      }
+      else if (hasAdapterFor(fileName))
+      {
+         // TODO handle exceptions
+         return getAdapterFor(fileName).parseTranslationFile(fileContents);
       }
       else
       {
@@ -154,7 +161,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       else
       {
          // TODO add real mapping
-         return extension.equals("txt");
+         return extension.equals("txt") || extension.equals("dtd");
       }
    }
 
@@ -172,6 +179,10 @@ public class TranslationFileServiceImpl implements TranslationFileService
          if (extension.equals("txt"))
          {
             return new PlainTextAdapter();
+         }
+         else if (extension.equals("dtd"))
+         {
+            return new DTDAdapter();
          }
          else
          {
