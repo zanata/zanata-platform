@@ -13,7 +13,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnit implements IsSerializable
+public class TransUnit implements IsSerializable, HasTransUnitId
 {
    private ContentState status;
 
@@ -73,7 +73,8 @@ public class TransUnit implements IsSerializable
       this.rowIndex = rowIndex;
       this.verNum = obj.getVerNum();
    }
-   
+
+   @Override
    public TransUnitId getId()
    {
       return id;

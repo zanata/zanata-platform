@@ -22,6 +22,7 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -36,6 +37,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -43,6 +45,7 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -50,10 +53,12 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -67,24 +72,27 @@ import net.customware.gwt.presenter.client.EventBus;
 public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler
 {
    public static final int FIRST_PAGE = 0;
+   public static final int UNSELECTED = -1;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final TransUnitNavigationService navigationService;
    private final UserConfigHolder configHolder;
    private final TableEditorMessages messages;
-   private final SinglePageDataModel pageModel;
+   private final SinglePageDataModelImpl pageModel;
+   private NavigationController.PageDataChangeListener pageDataChangeListener;
+
    //tracking variables
    private GetTransUnitActionContext context;
 
    @Inject
-   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModel pageModel)
+   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, UserConfigHolder configHolder, TableEditorMessages messages)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
-      this.navigationService = navigationService;
       this.configHolder = configHolder;
       this.messages = messages;
-      this.pageModel = pageModel;
+      this.pageModel = new SinglePageDataModelImpl();
+      this.navigationService = navigationService;
       bindHandlers();
    }
 
@@ -133,6 +141,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
             ArrayList<TransUnit> units = result.getUnits();
             Log.debug("result unit: " + units.size());
             pageModel.setData(units);
+            pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
 
             // default values
             int gotoRow = 0;
@@ -144,7 +153,8 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
                currentPageIndex = result.getGotoRow() / itemPerPage;
                gotoRow = result.getGotoRow() % itemPerPage;
             }
-            navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
+//            navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
+            navigationService.updateCurrentPage(currentPageIndex);
 
             eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
@@ -198,11 +208,6 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       }
    }
 
-   public SinglePageDataModel getDataModel()
-   {
-      return pageModel;
-   }
-
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
@@ -252,7 +257,11 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
-         pageModel.updateIfInCurrentPage(updatedTU, event.getEditorClientId(), event.getUpdateType());
+         boolean updated = pageModel.updateIfInCurrentPage(updatedTU);
+         if (updated)
+         {
+            pageDataChangeListener.refreshView(updatedTU, event.getEditorClientId(), event.getUpdateType());
+         }
       }
    }
 
@@ -310,10 +319,44 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       return selected != null ? context.setTargetTransUnitId(selected.getId()) : context;
    }
 
-   public void selectByRowIndex(int rowIndex)
+   public void selectByRowIndex(int rowIndexOnPage)
    {
-      pageModel.setSelected(rowIndex);
-      navigationService.updateCurrentPageAndRowIndex(navigationService.getCurrentPage(), rowIndex);
+      if (pageModel.getCurrentRow() != rowIndexOnPage)
+      {
+         pageModel.setSelected(rowIndexOnPage);
+         eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
+         navigationService.updateRowIndexInDocument(rowIndexOnPage);
+      }
+   }
+
+   public int getCurrentRowIndexOnPage()
+   {
+      return pageModel.getCurrentRow();
+   }
+
+   public int findRowIndexById(TransUnitId selectedId)
+   {
+      return pageModel.findIndexById(selectedId);
+   }
+
+   public void addPageDataChangeListener(PageDataChangeListener dataChangeListener)
+   {
+      pageDataChangeListener = dataChangeListener;
+   }
+
+   public TransUnit getSelectedOrNull()
+   {
+      return pageModel.getSelectedOrNull();
+   }
+
+   public List<TransUnit> getCurrentPageValues()
+   {
+      return ImmutableList.copyOf(pageModel.getData());
+   }
+
+   public TransUnit getByIdOrNull(TransUnitId transUnitId)
+   {
+      return pageModel.getByIdOrNull(transUnitId);
    }
 
    public static interface UpdateContextCommand
@@ -321,4 +364,10 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext);
    }
 
+   public static interface PageDataChangeListener
+   {
+      void showDataForCurrentPage(List<TransUnit> transUnits);
+
+      void refreshView(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
+   }
 }

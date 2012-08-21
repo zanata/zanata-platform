@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -73,10 +74,12 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
@@ -122,7 +125,6 @@ public class TargetContentsPresenter implements
 
    private final Identity identity;
    private final UserWorkspaceContext userWorkspaceContext;
-   private TransUnitId currentTransUnitId;
 
    private boolean enterSavesApprovedRegistered;
    private boolean escClosesEditorRegistered;
@@ -327,7 +329,7 @@ public class TargetContentsPresenter implements
          escClosesEditorRegistered = false;
       }
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'G'), ShortcutContext.Edit, "Copy from source", new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'G'), ShortcutContext.Edit, messages.copyFromSource(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -355,11 +357,16 @@ public class TargetContentsPresenter implements
    {
       if (currentEditorContentHasChanged())
       {
-         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.NeedReview, currentTransUnitId, display.getVerNum()));
+         saveCurrent(ContentState.NeedReview);
       }
    }
 
-   private boolean currentEditorContentHasChanged()
+   public void saveCurrent(ContentState status)
+   {
+      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status, display.getId(), display.getVerNum(), display.getCachedTargets()));
+   }
+
+   public boolean currentEditorContentHasChanged()
    {
       return display != null && !Objects.equal(display.getCachedTargets(), display.getNewTargets());
    }
@@ -374,12 +381,13 @@ public class TargetContentsPresenter implements
       return display != null && display.isEditing();
    }
 
-   public void showEditors(int rowIndex, TransUnitId currentTransUnitId)
+   public void showEditors(final TransUnitId currentTransUnitId)
    {
-      Log.info("enter show editor with rowIndex:" + rowIndex + " id:" + currentTransUnitId);
-      display = displayList.get(rowIndex);
+      Log.info("enter show editor with id:" + currentTransUnitId);
+      display = findDisplayById(currentTransUnitId);
+
       currentEditors = display.getEditors();
-      this.currentTransUnitId = currentTransUnitId;
+
       normaliseCurrentEditorIndex();
 
       for (ToggleEditor editor : display.getEditors())
@@ -399,6 +407,19 @@ public class TargetContentsPresenter implements
       else
       {
          display.setToMode(ViewMode.VIEW);
+      }
+   }
+
+   private TargetContentsDisplay findDisplayById(TransUnitId currentTransUnitId)
+   {
+      try
+      {
+         return Iterables.find(displayList, new FindByTransUnitIdPredicate(currentTransUnitId));
+      }
+      catch (NoSuchElementException e)
+      {
+         Log.error("cannot find display by id:" + currentTransUnitId + ". Page has changed?! returning null");
+         return null;
       }
    }
 
@@ -426,7 +447,7 @@ public class TargetContentsPresenter implements
 
    private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, EditorClientId editorClientId)
    {
-      if (!editorClientId.equals(identity.getEditorClientId()) && Objects.equal(currentTransUnitId, selectedTransUnitId))
+      if (!editorClientId.equals(identity.getEditorClientId()) && Objects.equal(getCurrentTransUnitIdOrNull(), selectedTransUnitId))
       {
          for (ToggleEditor editor : currentEditors)
          {
@@ -458,14 +479,6 @@ public class TargetContentsPresenter implements
       }
    }
 
-   //This method is used to  cancel edited change and set back view
-   public TargetContentsDisplay setValue(TransUnit transUnit)
-   {
-      display.setFindMessage(this.findMessage);
-      display.setValue(transUnit);
-      return display;
-   }
-
    @Override
    public void validate(ToggleEditor editor)
    {
@@ -483,6 +496,11 @@ public class TargetContentsPresenter implements
       eventBus.fireEvent(event);
    }
 
+   /**
+    * Will fire a save event and also update cached targets so that a following navigation event won't cause another pending save event.
+    * If the save failed, TransUnitSaveService will revert the value back to what it was.
+    * @see org.zanata.webtrans.client.service.TransUnitSaveService#onTransUnitSave(org.zanata.webtrans.client.events.TransUnitSaveEvent)
+    */
    @Override
    public void saveAsApprovedAndMoveNext()
    {
@@ -494,7 +512,8 @@ public class TargetContentsPresenter implements
       else
       {
          currentEditorIndex = 0;
-         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved, getCurrentTransUnitIdOrNull(), getCurrentVersionOrNull()));
+         saveCurrent(ContentState.Approved);
+         display.updateCachedAndInEditorTargets(getNewTargets());
          eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
       }
    }
@@ -502,17 +521,12 @@ public class TargetContentsPresenter implements
    @Override
    public void saveAsFuzzy()
    {
-      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.NeedReview, getCurrentTransUnitIdOrNull(), getCurrentVersionOrNull()));
+      saveCurrent(ContentState.NeedReview);
    }
 
-   private Integer getCurrentVersionOrNull()
+   public TransUnitId getCurrentTransUnitIdOrNull()
    {
-      return display == null ? null : display.getVerNum();
-   }
-
-   private TransUnitId getCurrentTransUnitIdOrNull()
-   {
-      return currentTransUnitId;
+      return display == null ? null : display.getId();
    }
 
    @Override
@@ -530,7 +544,7 @@ public class TargetContentsPresenter implements
    @Override
    public void showHistory()
    {
-      historyPresenter.showTranslationHistory(currentTransUnitId);
+      historyPresenter.showTranslationHistory(display.getId());
    }
 
    @Override
@@ -543,15 +557,14 @@ public class TargetContentsPresenter implements
    @Override
    public void onCancel()
    {
-      eventBus.fireEvent(TransUnitSaveEvent.CANCEL_EDIT_EVENT);
+      updateTargets(display.getId(), display.getCachedTargets());
+      setFocus();
    }
 
    @Override
    public void copySource(ToggleEditor editor)
    {
-      Log.debug("copy source");
       currentEditorIndex = editor.getIndex();
-      display.showButtons(isDisplayButtons());
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
       editor.setFocus();
 
@@ -639,7 +652,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (Objects.equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
+      if (Objects.equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), getCurrentTransUnitIdOrNull()))
       {
          for (ToggleEditor editor : display.getEditors())
          {
@@ -734,10 +747,17 @@ public class TargetContentsPresenter implements
       }
    }
 
-   public void updateRow(int rowNum, TransUnit updatedTransUnit)
+   /**
+    * Being called when there is a TransUnitUpdatedEvent
+    * @param updatedTransUnit updated trans unit
+    */
+   public void updateRow(TransUnit updatedTransUnit)
    {
-      TargetContentsDisplay contentsDisplay = displayList.get(rowNum);
-      contentsDisplay.setValue(updatedTransUnit);
+      TargetContentsDisplay contentsDisplay = findDisplayById(updatedTransUnit.getId());
+      if (contentsDisplay != null)
+      {
+         contentsDisplay.setValue(updatedTransUnit);
+      }
    }
 
    public void setFocus()
@@ -755,7 +775,7 @@ public class TargetContentsPresenter implements
       userWorkspaceContext.setProjectActive(event.isProjectActive());
       if (displayIsEditable() && userWorkspaceContext.hasReadOnlyAccess())
       {
-         Log.debug("from editable to readonly");
+         Log.info("from editable to readonly");
          for (TargetContentsDisplay targetContentsDisplay : displayList)
          {
             targetContentsDisplay.setToMode(ViewMode.VIEW);
@@ -764,7 +784,7 @@ public class TargetContentsPresenter implements
       }
       else if (!displayIsEditable() && !userWorkspaceContext.hasReadOnlyAccess())
       {
-         Log.debug("from readonly mode to writable");
+         Log.info("from readonly mode to writable");
          for (TargetContentsDisplay targetContentsDisplay : displayList)
          {
             targetContentsDisplay.setToMode(ViewMode.EDIT);
@@ -772,5 +792,19 @@ public class TargetContentsPresenter implements
          }
       }
 
+   }
+
+   /**
+    * Being used when cancelling edit and also when saved as approved (to prevent another save event triggered by navigation)
+    * @param transUnitId id
+    * @param targets translation that will be set in editor and cached state in display
+    */
+   public void updateTargets(TransUnitId transUnitId, List<String> targets)
+   {
+      TargetContentsDisplay display = findDisplayById(transUnitId);
+      if (display != null)
+      {
+         display.updateCachedAndInEditorTargets(targets);
+      }
    }
 }

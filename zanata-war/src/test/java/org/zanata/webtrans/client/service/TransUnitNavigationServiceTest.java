@@ -76,20 +76,22 @@ public class TransUnitNavigationServiceTest
    @Test
    public void testGetInitialRowIndex()
    {
-      assertEquals(navigationService.getCurrentRowIndex(), 0);
+//      assertEquals(navigationService.getCurrentRowIndex(), 0);
    }
 
    @Test
    public void testGetNextRowIndex()
    {
+      navigationService.updateRowIndexInDocument(0);
+
       assertEquals(navigationService.getNextRowIndex(), 1);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 3);
-      assertEquals(navigationService.getCurrentRowIndex(), 3);
+      navigationService.updateRowIndexInDocument(3);
+//      assertEquals(navigationService.getCurrentRowIndex(), 3);
       assertEquals(navigationService.getNextRowIndex(), 4);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 5);
-      assertEquals(navigationService.getCurrentRowIndex(), 5);
+      navigationService.updateRowIndexInDocument(5);
+//      assertEquals(navigationService.getCurrentRowIndex(), 5);
       assertEquals(navigationService.getNextRowIndex(), 6);
 
    }
@@ -97,12 +99,12 @@ public class TransUnitNavigationServiceTest
    @Test
    public void testGetPrevRowIndex()
    {
-      navigationService.updateCurrentPageAndRowIndex(0, 1);
-      assertEquals(navigationService.getCurrentRowIndex(), 1);
+      navigationService.updateRowIndexInDocument(1);
+//      assertEquals(navigationService.getCurrentRowIndex(), 1);
       assertEquals(navigationService.getPrevRowIndex(), 0);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 4);
-      assertEquals(navigationService.getCurrentRowIndex(), 4);
+      navigationService.updateRowIndexInDocument(4);
+//      assertEquals(navigationService.getCurrentRowIndex(), 4);
       assertEquals(navigationService.getPrevRowIndex(), 3);
    }
 
@@ -119,29 +121,29 @@ public class TransUnitNavigationServiceTest
    @Test
    public void testGetPreviousStateRowIndexNewAndFuzzy()
    {
-      navigationService.updateCurrentPageAndRowIndex(0, 9);
+      navigationService.updateRowIndexInDocument(9);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 8);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 8);
+      navigationService.updateRowIndexInDocument(8);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 6);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 4);
+      navigationService.updateRowIndexInDocument(4);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 2);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 0);
+      navigationService.updateRowIndexInDocument(0);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 0);
    }
 
    @Test
    public void testGetPreviousStateRowIndexNew()
    {
-      navigationService.updateCurrentPageAndRowIndex(0, 9);
+      navigationService.updateRowIndexInDocument(9);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.NEW_PREDICATE), 8);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 8);
+      navigationService.updateRowIndexInDocument(8);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.NEW_PREDICATE), 5);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 0);
+      navigationService.updateRowIndexInDocument(0);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.NEW_PREDICATE), 0);
 
    }
@@ -149,39 +151,39 @@ public class TransUnitNavigationServiceTest
    @Test
    public void testGetPreviousStateRowIndexFuzzy()
    {
-      navigationService.updateCurrentPageAndRowIndex(0, 9);
+      navigationService.updateRowIndexInDocument(9);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 6);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 6);
+      navigationService.updateRowIndexInDocument(6);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 3);
+      navigationService.updateRowIndexInDocument(3);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 2);
    }
 
    @Test
    public void testGetNextStateRowIndexNewAndFuzzy()
    {
-      navigationService.updateCurrentPageAndRowIndex(0, 2);
+      navigationService.updateRowIndexInDocument(2);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 4);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 4);
+      navigationService.updateRowIndexInDocument(4);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 5);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 7);
+      navigationService.updateRowIndexInDocument(7);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 8);
    }
 
    @Test
    public void testGetNextStateRowIndexNew()
    {
-      navigationService.updateCurrentPageAndRowIndex(0, 0);
+      navigationService.updateRowIndexInDocument(0);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.NEW_PREDICATE), 1);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 5);
+      navigationService.updateRowIndexInDocument(5);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.NEW_PREDICATE), 8);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 9);
+      navigationService.updateRowIndexInDocument(9);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.NEW_PREDICATE), 9);
 
    }
@@ -189,13 +191,13 @@ public class TransUnitNavigationServiceTest
    @Test
    public void testGetNextStateRowIndexFuzzy()
    {
-      navigationService.updateCurrentPageAndRowIndex(0, 0);
+      navigationService.updateRowIndexInDocument(0);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 2);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 3);
+      navigationService.updateRowIndexInDocument(3);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 10);
+      navigationService.updateRowIndexInDocument(10);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 10);
    }
 
@@ -204,12 +206,12 @@ public class TransUnitNavigationServiceTest
    {
       navigationService.updateState(9L, ContentState.Approved);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 10);
+      navigationService.updateRowIndexInDocument(10);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 8);
 
       navigationService.updateState(3L, ContentState.NeedReview);
 
-      navigationService.updateCurrentPageAndRowIndex(0, 2);
+      navigationService.updateRowIndexInDocument(2);
       assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 3);
    }
 

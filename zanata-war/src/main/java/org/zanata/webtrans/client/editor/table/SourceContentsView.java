@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -49,6 +50,8 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    private final Grid sourcePanelContainer;
    private List<HasSelectableSource> sourcePanelList;
    private final TransUnitDetailsPanel transUnitDetailsPanel;
+
+   private TransUnitId transUnitId;
 
    @Inject
    public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider)
@@ -86,6 +89,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void setValue(TransUnit value, boolean fireEvents)
    {
+      transUnitId = value.getId();
       transUnitDetailsPanel.setDetails(value);
       sourcePanelContainer.resizeRows(value.getSources().size());
       sourcePanelList.clear();
@@ -118,5 +122,11 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       {
          hasSelectableSource.addClickHandler(clickHandler);
       }
+   }
+
+   @Override
+   public TransUnitId getId()
+   {
+      return transUnitId;
    }
 }

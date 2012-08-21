@@ -27,13 +27,14 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.model.HasTransUnitId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
+public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTransUnitId
 {
    void showButtons(boolean displayButtons);
 
@@ -47,6 +48,20 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
    void setToMode(ToggleEditor.ViewMode viewMode);
 
+   void setFindMessage(String findMessage);
+
+   List<String> getCachedTargets();
+
+   ArrayList<String> getNewTargets();
+
+   boolean isEditing();
+
+   ArrayList<ToggleEditor> getEditors();
+
+   void setListener(Listener listener);
+
+   void updateCachedAndInEditorTargets(List<String> targets);
+
    interface Listener
    {
       void validate(ToggleEditor editor);
@@ -56,7 +71,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
       void copySource(ToggleEditor editor);
 
       void setValidationMessagePanel(ToggleEditor editor);
-      
+
       void onCancel();
 
       void saveAsFuzzy();
@@ -69,16 +84,4 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 
       void onFocus(TransUnitId id, int editorIndex);
    }
-
-   void setFindMessage(String findMessage);
-
-   List<String> getCachedTargets();
-
-   ArrayList<String> getNewTargets();
-
-   boolean isEditing();
-    
-   ArrayList<ToggleEditor> getEditors();
-
-   void setListener(Listener listener);
 }

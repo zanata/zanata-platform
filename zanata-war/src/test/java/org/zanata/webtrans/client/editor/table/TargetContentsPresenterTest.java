@@ -147,9 +147,8 @@ public class TargetContentsPresenterTest
       when(navMessages.editSaveShortcut()).thenReturn(buttonTitle);
 
       //when selecting row 1
-      TargetContentsDisplay result = presenter.setValue(transUnit);
+      presenter.showEditors(transUnit.getId());
 
-      assertThat(result, sameInstance(display));
       verify(display).setValue(transUnit);
       verify(display).setFindMessage(findMessages);
       verifyNoMoreInteractions(display);
@@ -224,7 +223,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(0, transUnit.getId());
+      presenter.showEditors(transUnit.getId());
       when(display.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -280,7 +279,7 @@ public class TargetContentsPresenterTest
    {
       when(display.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
       when(display.isEditing()).thenReturn(true);
-      presenter.showEditors(0, transUnit.getId());
+      presenter.showEditors(transUnit.getId());
    }
 
    @Test
@@ -288,7 +287,8 @@ public class TargetContentsPresenterTest
    {
       presenter.onCancel();
 
-      verify(eventBus).fireEvent(TransUnitSaveEvent.CANCEL_EDIT_EVENT);
+      verify(display).getId();
+      verify(display).getCachedTargets();
    }
 
    @Test

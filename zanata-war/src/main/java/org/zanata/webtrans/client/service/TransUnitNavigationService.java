@@ -47,12 +47,12 @@ public class TransUnitNavigationService
    private ArrayList<Long> idIndexList;
 
    private int pageSize;
-   private int rowIndexInDocument = 0;
+   private int rowIndexInDocument = -1;
    private int curPage = 0;
    private int totalCount;
    private int pageCount;
 
-   public void init(Map<Long, ContentState> transIdStateMap, ArrayList<Long> idIndexList, int pageSize)
+   protected void init(Map<Long, ContentState> transIdStateMap, ArrayList<Long> idIndexList, int pageSize)
    {
       this.idAndStateMap = transIdStateMap;
       this.idIndexList = idIndexList;
@@ -61,12 +61,12 @@ public class TransUnitNavigationService
       pageCount = (int) Math.ceil(totalCount * 1.0 / pageSize);
    }
 
-   public void updateState(Long id, ContentState newState)
+   protected void updateState(Long id, ContentState newState)
    {
       idAndStateMap.put(id, newState);
    }
 
-   public int getNextStateRowIndex(Predicate<ContentState> condition)
+   protected int getNextStateRowIndex(Predicate<ContentState> condition)
    {
       for (int i = rowIndexInDocument + 1; i <= maxRowIndex(); i++)
       {
@@ -79,12 +79,12 @@ public class TransUnitNavigationService
       return rowIndexInDocument;
    }
 
-   public int maxRowIndex()
+   protected int maxRowIndex()
    {
       return totalCount - 1;
    }
 
-   public int getPreviousStateRowIndex(Predicate<ContentState> condition)
+   protected int getPreviousStateRowIndex(Predicate<ContentState> condition)
    {
       for (int i = rowIndexInDocument - 1; i >= 0; i--)
       {
@@ -97,7 +97,7 @@ public class TransUnitNavigationService
       return rowIndexInDocument;
    }
 
-   public Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
+   protected Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
    {
       if (tu == null)
       {
@@ -123,77 +123,49 @@ public class TransUnitNavigationService
       return null;
    }
 
-   public Integer getRowNumber(TransUnit tu, List<TransUnit> rowValues)
-   {
-      if (tu == null)
-      {
-         return null;
-      }
-      else
-      {
-         TransUnitId transUnitId = tu.getId();
-         int n = 0;
-         for (TransUnit transUnit : rowValues)
-         {
-            if (transUnitId.equals(transUnit.getId()))
-            {
-               return n;
-            }
-            n++;
-         }
-      }
-      return null;
-   }
-
-   public void updateCurrentPageAndRowIndex(int curPage, int selectedRow)
-   {
-      this.curPage = curPage;
-      rowIndexInDocument = this.curPage * pageSize + selectedRow;
-      Log.debug("update current page:" + curPage + ", current row index:" + rowIndexInDocument);
-   }
-
-   public int getCurrentPage()
+   protected int getCurrentPage()
    {
       return curPage;
    }
 
-   public int getCurrentRowIndex()
-   {
-      return rowIndexInDocument;
-   }
-
-   public int getCurrentRowNumber()
-   {
-      return rowIndexInDocument - (curPage * pageSize);
-   }
-
-   public int getNextRowIndex()
+   protected int getNextRowIndex()
    {
       return Math.min(rowIndexInDocument + 1, maxRowIndex());
    }
 
-   public int getPrevRowIndex()
+   protected int getPrevRowIndex()
    {
       return Math.max(rowIndexInDocument - 1, 0);
    }
 
-   public int getTargetPage(int targetIndex)
+   protected int getTargetPage(int targetIndex)
    {
       return targetIndex / pageSize;
    }
 
-   public TransUnitId getTargetTransUnitId(int rowIndex)
+   protected TransUnitId getTargetTransUnitId(int rowIndex)
    {
       return new TransUnitId(idIndexList.get(rowIndex));
    }
 
-   public int lastPage()
+   protected int lastPage()
    {
       return pageCount - 1;
    }
 
-   public int getPageCount()
+   protected int getPageCount()
    {
       return pageCount;
+   }
+
+   protected void updateCurrentPage(int currentPageIndex)
+   {
+      curPage = currentPageIndex;
+   }
+
+   protected void updateRowIndexInDocument(int rowIndexOnPage)
+   {
+      rowIndexInDocument = this.curPage * pageSize + rowIndexOnPage;
+      Log.info("update current page:" + curPage + ", current row index in document:" + rowIndexInDocument);
    }
 }

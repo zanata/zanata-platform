@@ -31,8 +31,10 @@ import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -66,29 +68,26 @@ public class SourceContentsPresenter implements ClickHandler
     * Select first source in the list when row is selected or reselect previous selected one
     *
     */
-   public void setSelectedSource(int row, TransUnitId id)
+   public void setSelectedSource(TransUnitId id)
    {
       currentTransUnitId = id;
-      Log.debug("source content selected row:" + row + " id:" + id);
+      Log.debug("source content selected id:" + id);
 
-      SourceContentsDisplay sourceContentsView = displayList.get(row);
-      if (sourceContentsView != null)
+      SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(id));
+      // after save as fuzzy re-render(will call
+      // SourceContentsView.setValue(TransUnit) which cause re-creation of
+      // SourcePanel list), we want to re-select the radio button
+      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
+      for (HasSelectableSource sourcePanel : sourcePanelList)
       {
-         // after save as fuzzy re-render(will call
-         // SourceContentsView.setValue(TransUnit) which cause re-creation of
-         // SourcePanel list), we want to re-select the radio button
-         List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
-         for (HasSelectableSource sourcePanel : sourcePanelList)
+         if (selectedSource != null && selectedSource.getSource().equals(sourcePanel.getSource()))
          {
-            if (selectedSource != null && selectedSource.getSource().equals(sourcePanel.getSource()))
-            {
-               fireClickEventToSelectSource(sourcePanel);
-               return;
-            }
+            fireClickEventToSelectSource(sourcePanel);
+            return;
          }
-         //else by default it will select the first one
-         fireClickEventToSelectSource(sourceContentsView.getSourcePanelList().get(0));
       }
+      //else by default it will select the first one
+      fireClickEventToSelectSource(sourceContentsView.getSourcePanelList().get(0));
    }
 
    private static void fireClickEventToSelectSource(HasSelectableSource sourcePanel)
@@ -99,20 +98,6 @@ public class SourceContentsPresenter implements ClickHandler
    public String getSelectedSource()
    {
       return selectedSource.getSource();
-   }
-
-   //TODO to be removed
-   public SourceContentsDisplay setValue(TransUnit value)
-   {
-//      display.setValue(value);
-
-//      List<HasSelectableSource> sourcePanelList = display.getSourcePanelList();
-
-//      for (HasClickHandlers sourcePanel : sourcePanelList)
-//      {
-//         sourcePanel.addClickHandler(selectSourceHandler);
-//      }
-      return null;
    }
 
    public void showData(List<TransUnit> transUnits)

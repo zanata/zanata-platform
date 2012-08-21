@@ -8,6 +8,7 @@ public class TableRowSelectedEvent extends GwtEvent<TableRowSelectedEventHandler
    public static Type<TableRowSelectedEventHandler> TYPE = new Type<TableRowSelectedEventHandler>();
 
    private TransUnitId selectedId;
+   private boolean suppressSavePending = false;
 
    public TableRowSelectedEvent(TransUnitId transUnitId)
    {

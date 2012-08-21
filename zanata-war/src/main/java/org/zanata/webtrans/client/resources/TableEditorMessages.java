@@ -79,4 +79,7 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Translation Unit Details: Row {0}; Id {1}; {2}")
    String transUnitDetailsHeadingWithInfo(int rowIndex, String transUnitId, String info);
+
+   @DefaultMessage("Copy from source")
+   String copyFromSource();
 }

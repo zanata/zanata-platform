@@ -32,7 +32,6 @@ import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
-import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
@@ -44,7 +43,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.SinglePageDataModel;
+import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -114,14 +113,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final KeyShortcutPresenter keyShortcutPresenter;
 
    private UserWorkspaceContext userWorkspaceContext;
-   private final SinglePageDataModel pageModel;
+   private final NavigationController navigationController;
 
    private final WebTransMessages messages;
 
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, SinglePageDataModel pageModel)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, NavigationController navigationController)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -134,7 +133,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.dispatcher = dispatcher;
       this.userWorkspaceContext = userWorkspaceContext;
-      this.pageModel = pageModel;
+      this.navigationController = navigationController;
    }
 
    @Override
@@ -361,7 +360,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       {
          bindSouthPanelPresenters();
 
-         TransUnit tu = pageModel.getSelectedOrNull();
+         TransUnit tu = navigationController.getSelectedOrNull();
          if (tu != null)
          {
             transMemoryPresenter.createTMRequestForTransUnit(tu);

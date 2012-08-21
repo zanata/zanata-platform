@@ -153,9 +153,8 @@ public class NavigationControllerTest
       navigationService = new TransUnitNavigationService();
       UserConfigHolder configHolder = new UserConfigHolder();
 
-      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl(eventBus);
-      pageModel.addDataChangeListener(transUnitEditPresenter);
-      controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages, pageModel);
+      controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages);
+      controller.addPageDataChangeListener(transUnitEditPresenter);
 
       context = GetTransUnitActionContext.of(documentId);
    }
@@ -278,8 +277,7 @@ public class NavigationControllerTest
 
    private List<Integer> getPageDataModelAsIds()
    {
-      SinglePageDataModelImpl dataModel = (SinglePageDataModelImpl) controller.getDataModel();
-      return asIds(dataModel.getData());
+      return asIds(controller.getCurrentPageValues());
    }
 
    @Test

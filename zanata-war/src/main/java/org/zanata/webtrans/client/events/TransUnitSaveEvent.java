@@ -40,20 +40,22 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
 {
    public static Type<TransUnitSaveEventHandler> TYPE = new Type<TransUnitSaveEventHandler>();
-   public static final TransUnitSaveEvent CANCEL_EDIT_EVENT = new TransUnitSaveEvent(null, null, null, null);
+   public static final TransUnitSaveEvent CANCEL_EDIT_EVENT = new TransUnitSaveEvent(null, null, null, null, null);
 
    private TransUnitId transUnitId;
    private Integer verNum;
+   private List<String> oldContents = Lists.newArrayList();
    private List<String> targets = Lists.newArrayList();
    private ContentState status;
    private ContentState adjustedState;
 
-   public TransUnitSaveEvent(List<String> targets, ContentState status, TransUnitId transUnitId, Integer verNum)
+   public TransUnitSaveEvent(List<String> targets, ContentState status, TransUnitId transUnitId, Integer verNum, List<String> oldContents)
    {
       this.targets = targets;
       this.status = status;
       this.transUnitId = transUnitId;
       this.verNum = verNum;
+      this.oldContents = oldContents;
       adjustedState = adjustState(targets, status);
    }
 
@@ -90,6 +92,11 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
    public Integer getVerNum()
    {
       return verNum;
+   }
+
+   public List<String> getOldContents()
+   {
+      return oldContents;
    }
 
    @Override

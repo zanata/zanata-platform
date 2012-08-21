@@ -28,8 +28,10 @@ import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -75,8 +77,10 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private String findMessage;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
+
+   private TransUnitId transUnitId;
    private Integer verNum;
-   private List<String> targets;
+   private List<String> cachedTargets;
 
    public TargetContentsView()
    {
@@ -129,15 +133,17 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setValue(TransUnit transUnit)
    {
       verNum = transUnit.getVerNum();
-      targets = transUnit.getTargets();
+      cachedTargets = transUnit.getTargets();
+      transUnitId = transUnit.getId();
+
       editors.clear();
-      if (targets == null || targets.size() <= 0)
+      if (cachedTargets == null)
       {
-         targets = Lists.newArrayList("");
+         cachedTargets = Lists.newArrayList("");
       }
-      editorGrid.resize(targets.size(), COLUMNS);
+      editorGrid.resize(cachedTargets.size(), COLUMNS);
       int rowIndex = 0;
-      for (String target : targets)
+      for (String target : cachedTargets)
       {
          Editor editor = new Editor(target, findMessage, rowIndex, listener, transUnit.getId());
          editorGrid.setWidget(rowIndex, 0, editor);
@@ -214,7 +220,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public List<String> getCachedTargets()
    {
-      return targets;
+      return cachedTargets;
+   }
+
+   @Override
+   public TransUnitId getId()
+   {
+      return transUnitId;
    }
 
    @Override
@@ -240,6 +252,20 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setListener(Listener listener)
    {
       this.listener = listener;
+   }
+
+   @Override
+   public void updateCachedAndInEditorTargets(List<String> targets)
+   {
+      cachedTargets = ImmutableList.copyOf(targets);
+      if (!getNewTargets().equals(cachedTargets))
+      {
+         for (int i = 0; i < targets.size(); i++)
+         {
+            String target = targets.get(i);
+            editors.get(i).setTextAndValidate(target);
+         }
+      }
    }
 
    @Override

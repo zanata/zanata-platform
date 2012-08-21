@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Warning;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -37,8 +36,6 @@ import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.LoadingEventHandler;
-import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
@@ -46,7 +43,6 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.service.NavigationController;
-import org.zanata.webtrans.client.service.SinglePageDataModel;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
@@ -68,7 +64,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       FindMessageHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
-      SinglePageDataModel.PageDataChangeListener,
+      NavigationController.PageDataChangeListener,
       TransUnitEditDisplay.Listener,
       TableRowSelectedEventHandler,
       LoadingEventHandler
@@ -83,8 +79,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    //state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-
-   private final SinglePageDataModel pageModel;
+   private TransUnitId selectedId;
 
    @Inject
    public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationController navigationController,
@@ -100,15 +95,13 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
+      navigationController.addPageDataChangeListener(this);
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
 
       // we register it here because we can't use eager singleton on it (it references TargetContentsPresenter). And if it's not eagerly created, it won't get created at all!!
       eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
-
-      pageModel = navigationController.getDataModel();
-      pageModel.addDataChangeListener(this);
    }
 
    @Override
@@ -134,14 +127,12 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onTransUnitSelected(TransUnitSelectionEvent event)
    {
-      TransUnit selectedTransUnit = pageModel.getSelectedOrNull();
-      if (selectedTransUnit != null)
-      {
-         Log.debug("selected id: " + selectedTransUnit.getId());
-         sourceContentsPresenter.setSelectedSource(pageModel.getCurrentRow(), selectedTransUnit.getId());
-         targetContentsPresenter.showEditors(pageModel.getCurrentRow(), selectedTransUnit.getId());
-         translatorService.transUnitSelected(selectedTransUnit);
-      }
+      TransUnit selection = event.getSelection();
+      selectedId = selection.getId();
+      Log.debug("selected id: " + selectedId);
+      sourceContentsPresenter.setSelectedSource(selectedId);
+      targetContentsPresenter.showEditors(selectedId);
+      translatorService.transUnitSelected(selection);
    }
 
    public void goToPage(int pageNumber)
@@ -163,7 +154,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       filterOptions = event;
       if (!event.isCancelFilter())
       {
-         if (hasTargetContentsChanged())
+         if (targetContentsPresenter.currentEditorContentHasChanged())
          {
             display.showFilterConfirmation();
          }
@@ -180,13 +171,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       navigationController.execute(filterOptions);
    }
 
-   private boolean hasTargetContentsChanged()
-   {
-      TransUnit current = pageModel.getSelectedOrNull();
-      ArrayList<String> editorValues = targetContentsPresenter.getNewTargets();
-      return current != null && !Objects.equal(current.getTargets(), editorValues);
-   }
-
    @Override
    public void saveChangesAndFilter()
    {
@@ -201,19 +185,18 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void saveAndFilter(ContentState status)
    {
-      TransUnit selectedOrNull = pageModel.getSelectedOrNull();
-      if (selectedOrNull == null)
+      if (targetContentsPresenter.getCurrentTransUnitIdOrNull() == null)
       {
          return;
       }
-      eventBus.fireEvent(new TransUnitSaveEvent(targetContentsPresenter.getNewTargets(), status, selectedOrNull.getId(), selectedOrNull.getVerNum()));
+      targetContentsPresenter.saveCurrent(status);
       hideFilterConfirmationAndDoFiltering();
    }
 
    @Override
    public void discardChangesAndFilter()
    {
-      targetContentsPresenter.setValue(pageModel.getSelectedOrNull());
+      targetContentsPresenter.onCancel();
       hideFilterConfirmationAndDoFiltering();
    }
 
@@ -233,11 +216,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    }
 
    @Override
-   public void refreshView(int rowIndexOnPage, TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
+   public void refreshView(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      TransUnit selected = pageModel.getSelectedOrNull();
       boolean setFocus = false;
-      if (selected != null && Objects.equal(selected.getId(), updatedTransUnit.getId()))
+      if (Objects.equal(selectedId, updatedTransUnit.getId()))
       {
          if (!Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
          {
@@ -253,7 +235,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
             setFocus = true;
          }
       }
-      targetContentsPresenter.updateRow(rowIndexOnPage, updatedTransUnit);
+      targetContentsPresenter.updateRow(updatedTransUnit);
       if (setFocus)
       {
          targetContentsPresenter.setFocus();
@@ -261,21 +243,20 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    }
 
    @Override
-   public void onRowSelected(int rowIndex)
+   public void onRowSelected(int rowIndexOnPage)
    {
-      if (pageModel.getCurrentRow() != rowIndex)
+      if (navigationController.getCurrentRowIndexOnPage() != rowIndexOnPage)
       {
-         Log.info("current row:" + pageModel.getCurrentRow() + " rowSelected:" + rowIndex);
+         Log.info("current row:" + navigationController.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
          targetContentsPresenter.savePendingChangesIfApplicable();
-         navigationController.selectByRowIndex(rowIndex);
-         display.applySelectedStyle(rowIndex);
+         navigationController.selectByRowIndex(rowIndexOnPage);
+         display.applySelectedStyle(rowIndexOnPage);
       }
    }
 
    public void startEditing()
    {
-      TransUnit selectedOrNull = pageModel.getSelectedOrNull();
-      if (selectedOrNull != null)
+      if (selectedId != null)
       {
          targetContentsPresenter.setFocus();
       }
@@ -290,8 +271,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onTableRowSelected(TableRowSelectedEvent event)
    {
       TransUnitId selectedId = event.getSelectedId();
-      int rowIndex = pageModel.findIndexById(selectedId);
-      if (rowIndex != SinglePageDataModel.UNSELECTED)
+      int rowIndex = navigationController.findRowIndexById(selectedId);
+      if (rowIndex != NavigationController.UNSELECTED)
       {
          onRowSelected(rowIndex);
       }

@@ -21,8 +21,6 @@
 
 package org.zanata.webtrans.client.service;
 
-import java.util.Set;
-
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -37,9 +35,10 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Iterables;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -58,43 +57,28 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
    private final CachingDispatchAsync dispatcher;
    private final Provider<UndoLink> undoLinkProvider;
    private final TargetContentsPresenter targetContentsPresenter;
-   private final SinglePageDataModel pageModel;
-
-   //cached events
-   private Set<TransUnitSaveEvent> pendingSaves = Sets.newHashSet();
+   private final NavigationController navigationController;
 
    @Inject
-   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, TargetContentsPresenter targetContentsPresenter, SinglePageDataModel pageModel, TableEditorMessages messages)
+   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationController navigationController)
    {
       this.messages = messages;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.undoLinkProvider = undoLinkProvider;
       this.targetContentsPresenter = targetContentsPresenter;
-      this.pageModel = pageModel;
+      this.navigationController = navigationController;
    }
 
    @Override
    public void onTransUnitSave(final TransUnitSaveEvent event)
    {
-      //savePending and actual save may happen together. One of it will fail. see TargetContentsPresenter.saveAsApprovedAndMoveNext()
-      if (pendingSaves.contains(event))
-      {
-         Log.info("NO OP! pending save detected: " + event);
-         return;
-      }
-      if (event == TransUnitSaveEvent.CANCEL_EDIT_EVENT)
-      {
-         targetContentsPresenter.setValue(pageModel.getSelectedOrNull());
-         return;
-      }
       if (stateHasNotChanged(event))
       {
          Log.info("NO OP! state has not changed for " + event.getTransUnitId());
          return;
       }
 
-      pendingSaves.add(event);
       final TransUnitId id = event.getTransUnitId();
       TransUnitUpdated.UpdateType updateType = workoutUpdateType(event.getStatus());
 
@@ -105,7 +89,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
 
    private boolean stateHasNotChanged(TransUnitSaveEvent event)
    {
-      TransUnit transUnit = pageModel.getByIdOrNull(event.getTransUnitId());
+      TransUnit transUnit = navigationController.getByIdOrNull(event.getTransUnitId());
       if (transUnit == null)
       {
          return false;
@@ -138,24 +122,24 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       @Override
       public void onFailure(Throwable e)
       {
-         pendingSaves.remove(event);
+         // reset back the value
+         targetContentsPresenter.updateTargets(event.getTransUnitId(), event.getOldContents());
          Log.error("UpdateTransUnit failure ", e);
-         String message = e.getLocalizedMessage();
+         String message = e.getMessage();
          saveFailure(message);
       }
 
       @Override
       public void onSuccess(UpdateTransUnitResult result)
       {
-         pendingSaves.remove(event);
          // FIXME check result.success
          TransUnit updatedTU = result.getUpdateInfoList().get(0).getTransUnit();
          Log.debug("save resulted TU: " + updatedTU.debugString());
          if (result.isSingleSuccess())
          {
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString())));
-            int rowIndexOnPage = pageModel.findIndexById(updatedTU.getId());
-            if (rowIndexOnPage != SinglePageDataModel.UNSELECTED)
+            int rowIndexOnPage = navigationController.findRowIndexById(updatedTU.getId());
+            if (rowIndexOnPage != NavigationController.UNSELECTED)
             {
                UndoLink undoLink = undoLinkProvider.get();
                undoLink.prepareUndoFor(result);

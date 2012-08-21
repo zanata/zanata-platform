@@ -60,6 +60,8 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
       String scrollSection();
 
       String container();
+
+      String header();
    }
 
    @UiField
