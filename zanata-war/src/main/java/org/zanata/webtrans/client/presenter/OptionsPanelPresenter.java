@@ -59,11 +59,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
       HasValue<Boolean> getEscChk();
 
-      void setEditorOptionsVisible(boolean visible);
-
       void setNavOptionVisible(boolean visible);
-
-      void setValidationOptionsVisible(boolean visible);
 
       HasChangeHandlers getModalNavigationOptionsSelect();
 
@@ -73,6 +69,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
       static final String KEY_UNTRANSLATED = "U";
 
       String getSelectedFilter();
+
+      void setVisible(boolean visible);
    }
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
@@ -210,13 +208,11 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
       }));
    }
 
-   void setReadOnly(boolean readOnly)
+   private void setReadOnly(boolean readOnly)
    {
       boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
       configHolder.setDisplayButtons(displayButtons);
       eventBus.fireEvent(new UserConfigChangeEvent());
-      display.setEditorOptionsVisible(!readOnly);
-      display.setValidationOptionsVisible(!readOnly);
    }
 
    @Override
@@ -227,6 +223,11 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    @Override
    public void onRevealDisplay()
    {
+   }
+
+   public void setVisible(boolean visible)
+   {
+      display.setVisible(visible);
    }
 
 }

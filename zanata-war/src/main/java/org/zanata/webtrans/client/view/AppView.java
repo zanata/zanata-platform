@@ -66,7 +66,7 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel readOnlyLabel, documentsLink, notification, keyShortcuts;
+   InlineLabel readOnlyLabel, documentsLink, notification, keyShortcuts, options, userChat;
    
    @UiField
    Label notificationLabel;
@@ -112,6 +112,8 @@ public class AppView extends Composite implements AppPresenter.Display
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
       documentList.setTitle(messages.documentListTitle());
       notification.setTitle(messages.notification());
+      options.setTitle(messages.options());
+      userChat.setTitle(messages.chatRoom());
 
       this.documentListView = documentListView.asWidget();
       this.container.add(this.documentListView);
@@ -223,6 +225,18 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasClickHandlers getNotificationBtn()
    {
       return notification;
+   }
+
+   @Override
+   public HasClickHandlers getOptionsButton()
+   {
+      return options;
+   }
+
+   @Override
+   public HasClickHandlers getChatRoomButton()
+   {
+      return userChat;
    }
 
    @Override

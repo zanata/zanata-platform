@@ -89,6 +89,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void cancelNotificationAlert();
 
       HasClickHandlers getDocumentListButton();
+
+      HasClickHandlers getChatRoomButton();
+
+      HasClickHandlers getOptionsButton();
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -97,6 +101,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
    private final LayoutSelectorPresenter layoutSelectorPresenter;
+   private final OptionsPanelPresenter optionsPanelPresenter;
 
    private final History history;
    private final Window window;
@@ -114,7 +119,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
@@ -126,6 +131,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter = notificationPresenter;
       this.layoutSelectorPresenter = layoutSelectorPresenter;
+      this.optionsPanelPresenter = optionsPanelPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
    }
@@ -145,7 +151,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
+      optionsPanelPresenter.bind();
 
+      optionsPanelPresenter.setVisible(false);
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
 
@@ -246,6 +254,28 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          public void onClick(ClickEvent event)
          {
             keyShortcutPresenter.showShortcuts();
+         }
+      });
+
+      display.getOptionsButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (!userWorkspaceContext.hasReadOnlyAccess())
+            {
+               optionsPanelPresenter.setVisible(true);
+            }
+         }
+      });
+
+      display.getChatRoomButton().addClickHandler(new ClickHandler()
+      {
+
+         @Override
+         public void onClick(ClickEvent event)
+         {
+
          }
       });
 

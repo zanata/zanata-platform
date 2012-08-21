@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
@@ -61,8 +60,6 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
 
    @UiField
    ListBox optionsList;
-
-   private double validationPanelHeight = 200;
 
    @Inject
    public OptionsPanelView(WebTransMessages messages, ValidationOptionsPresenter.Display validationOptionsView)
@@ -126,38 +123,10 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
    }
 
    @Override
-   public void setEditorOptionsVisible(boolean visible)
-   {
-      editorButtonsChk.setVisible(visible);
-      enterChk.setVisible(visible);
-      escChk.setVisible(visible);
-   }
-
-   @Override
    public void setNavOptionVisible(boolean visible)
    {
       navOptionHeader.setVisible(visible);
       optionsList.setVisible(visible);
-   }
-
-   @Override
-   public void setValidationOptionsVisible(boolean visible)
-   {
-      mainPanel.forceLayout();
-
-      Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainPanel, validationOptionsContainer);
-      if (visible)
-      {
-         SplitLayoutPanelHelper.setSplitPosition(mainPanel, validationOptionsContainer, validationPanelHeight);
-      }
-      else
-      {
-         validationPanelHeight = mainPanel.getWidgetContainerElement(validationOptionsContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainPanel, validationOptionsContainer, 0);
-      }
-      splitter.setVisible(visible);
-
-      mainPanel.animate(200);
    }
 
    @Override
