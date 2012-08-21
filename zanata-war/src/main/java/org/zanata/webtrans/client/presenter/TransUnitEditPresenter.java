@@ -65,7 +65,6 @@ import com.google.inject.Inject;
  */
 public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
       TransUnitSelectionHandler,
-      NavTransUnitHandler,
       FindMessageHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
@@ -115,7 +114,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    protected void onBind()
    {
-      eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
@@ -150,12 +148,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       targetContentsPresenter.savePendingChangesIfApplicable();
       navigationController.gotoPage(pageNumber - 1, false);
-   }
-
-   @Override
-   public void onNavTransUnit(NavTransUnitEvent event)
-   {
-      navigationController.navigateTo(event.getRowType());
    }
 
    @Override

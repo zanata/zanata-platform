@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
@@ -63,7 +64,7 @@ import net.customware.gwt.presenter.client.EventBus;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler
+public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler
 {
    public static final int FIRST_PAGE = 0;
    private final EventBus eventBus;
@@ -92,6 +93,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       eventBus.addHandler(DocumentSelectionEvent.getType(), this);
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
+      eventBus.addHandler(NavTransUnitEvent.getType(), this);
    }
 
    protected void init(GetTransUnitActionContext context)
@@ -201,11 +203,11 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       return pageModel;
    }
 
-   //TODO clean up this class dependency mess
-   public void navigateTo(NavTransUnitEvent.NavigationType navigationType)
+   @Override
+   public void onNavTransUnit(NavTransUnitEvent event)
    {
       int rowIndex;
-      switch (navigationType)
+      switch (event.getRowType())
       {
          case PrevEntry:
             rowIndex = navigationService.getPrevRowIndex();
@@ -226,7 +228,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
             rowIndex = navigationService.maxRowIndex();
             break;
          default:
-            Log.warn("ignore unknown navigation type:" + navigationType);
+            Log.warn("ignore unknown navigation type:" + event.getRowType());
             return;
       }
       int targetPage = navigationService.getTargetPage(rowIndex);
