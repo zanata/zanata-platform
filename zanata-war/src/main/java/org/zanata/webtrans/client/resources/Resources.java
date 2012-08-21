@@ -128,20 +128,4 @@ public interface Resources extends ClientBundle
 
    @Source("images/crystal_project/_16x16/apps/bug.png")
    ImageResource bug();
-   
-   @Source("images/zanata-icon/24x24/keyboard.png")
-   ImageResource keyboard();
-
-   @Source("images/zanata-icon/24x24/search.png")
-   ImageResource search();
-   
-   @Source("images/zanata-icon/24x24/list.png")
-   ImageResource list();
-
-   @Source("images/zanata-icon/16x16/envelope-black.png")
-   ImageResource envelopeBlack();
-   
-   @Source("images/zanata-icon/16x16/chevron-right.png")
-   ImageResource chevronRight();
-
 }

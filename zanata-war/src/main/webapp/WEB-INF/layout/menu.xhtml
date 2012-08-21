@@ -30,7 +30,7 @@
 		</li>
 		<li id="systemCol">
 			<a href="#"> #{messages['jsf.System']}
-				<span class="icon-chevron-down downArrow"/>
+				<span class="icon-down-open downArrow"/>
 			</a>
 			<div class="submenu">
 				<ul>
@@ -74,7 +74,7 @@
 				<a href="#"> 
 					<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar" /> 
 					<span><h:outputText value="#{identity.trimUsername} " /></span>
-					<span class="icon-chevron-down downArrow"/>
+					<span class="icon-down-open downArrow"/>
 				</a>
 				<div class="submenu">
 					<ul>
@@ -85,7 +85,7 @@
 						</li>
 						<li>
 							<s:link id="Sign_out" view="/account/sign_out" propagation="none">
-								<span class="icon-signout"/>#{messages['jsf.SignOut']}
+								<span class="icon-logout"/>#{messages['jsf.SignOut']}
 							</s:link>
 						</li>
 					</ul>
@@ -93,7 +93,7 @@
 			</s:fragment> 
 			<s:fragment rendered="#{not identity.loggedIn}">
 				<s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
-					<span class="icon-signin"/>#{messages['jsf.SignIn']}
+					<span class="icon-login"/>#{messages['jsf.SignIn']}
 				</s:link>
 			</s:fragment>
 		</li>

@@ -8,11 +8,11 @@
   
      <h:form>
      	<s:link view="/home.xhtml" propagation="none" rendered="#{not empty breadcrumbs.locations}" styleClass="breadcrumbs_home">
-     		<span class="icon-home" title="#{messages['jsf.ZanataMainDescription']}"/>
+     		<span class="icon-home-1" title="#{messages['jsf.ZanataMainDescription']}"/>
 		</s:link>
 						
 	     <ui:repeat value="#{breadcrumbs.locations}" var="breadcrumb" styleClass="breadcrumbs">
-	     	<span class="icon-chevron-right breadcrumbs-seperator"/>
+	     	<span class="icon-right-open breadcrumbs-seperator"/>
 		    <s:link value="#{breadcrumb.display}" view="#{breadcrumb.location}" styleClass="breadcrumbs_link" rendered="#{not empty breadcrumb.location}"/>
 		    <s:span styleClass="breadcrumbs_display" rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
 		</ui:repeat>

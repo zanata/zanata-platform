@@ -61,8 +61,7 @@
         }
 		
 		.divider {
-			color: #e0e0e0;
-			vertical-align:top;
+			color: #000000;
 		}
         
         .documents-link {
@@ -76,12 +75,6 @@
         {
 			text-decoration:underline;
         }
-        
-		.notificationBtn
-		{
-			height:17px;
-			margin-left:2px;
-		}
 		
 		.notificationLabel
 		{
@@ -89,9 +82,8 @@
 		    font-weight: bold;
 		    color: white;
 		    position: absolute;
-		    margin-left: 3px;
-		    margin-right:10px;
-		    margin-top: -4px;
+		    margin-left: 1px;
+		    margin-top: 0px;
 		    background: orange;
 		    border-radius: 2px;
 		    min-width:10px;
@@ -114,6 +106,11 @@
             font-size:20px;
 		}
 		
+		.topMenuButton:hover
+		{
+            color:#0085CC;
+		}
+		
 	</ui:style>
 	<g:LayoutPanel stylePrimaryName="{style.rootContainer}">
 		<g:layer top="0px" height="30px">
@@ -125,7 +122,7 @@
 								<nobr>
 									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.readOnly}"><ui:msg>Read-only mode</ui:msg></g:InlineLabel>
 								    <g:InlineLabel ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:InlineLabel>
-									<g:Image resource="{resources.chevronRight}" styleName="{style.divider}"/>
+									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
 									<em>
 										<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
 									</em>
@@ -135,27 +132,19 @@
 						<g:cell width="200px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
-	                        <g:PushButton ui:field="keyShortcuts" styleName="{style.topMenuButton}">
-                                <g:upFace image="{resources.keyboard}" />
-                            </g:PushButton>
-	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
 	                    	<g:InlineLabel ui:field="searchAndReplace" styleName="icon-search {style.topMenuButton}"/> 
-	                    	
-<!-- 	                        <g:PushButton ui:field="searchAndReplace" styleName="{style.topMenuButton}"> -->
-<!--                                 <g:upFace image="{resources.search}" /> -->
-<!--                             </g:PushButton> -->
 	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="30px">
-	                        <g:PushButton ui:field="documentList" styleName="{style.topMenuButton}">
-                                <g:upFace image="{resources.list}" />
-                            </g:PushButton>
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
+	                        <g:InlineLabel ui:field="documentList" styleName="icon-list {style.topMenuButton}"/> 
 	                    </g:cell>
-	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="18px">
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
+	                    	<g:InlineLabel ui:field="keyShortcuts" styleName="icon-keyboard {style.topMenuButton}"/> 
+	                    </g:cell>
+	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="24px">
 	                    	<g:HTMLPanel>
 	                    			<g:Label ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
-			                    	<g:PushButton ui:field="notificationBtn" addStyleNames="{style.notificationBtn}"/>
+	                    			 <g:InlineLabel ui:field="notification" styleName="icon-mail {style.topMenuButton}"/> 
 	                    	</g:HTMLPanel>
 	                    </g:cell>
 					</g:HorizontalPanel>

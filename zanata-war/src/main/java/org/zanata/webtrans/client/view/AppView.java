@@ -42,11 +42,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -68,13 +66,13 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel readOnlyLabel, documentsLink;
+   InlineLabel readOnlyLabel, documentsLink, notification, keyShortcuts;
    
    @UiField
    Label notificationLabel;
 
    @UiField
-   InlineLabel searchAndReplace;
+   InlineLabel searchAndReplace, documentList;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
@@ -88,12 +86,6 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    Styles style;
 
-   @UiField
-   PushButton keyShortcuts, documentList;
-   
-   @UiField(provided = true)
-   PushButton notificationBtn;
-   
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
    private Widget translationView;
@@ -114,14 +106,12 @@ public class AppView extends Composite implements AppPresenter.Display
       translationStatsBar = new TransUnitCountBar(messages, true);
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
-      notificationBtn = new PushButton(new Image(resources.envelopeBlack()));
-      notificationBtn.setTitle(messages.notification());
-      
       initWidget(uiBinder.createAndBindUi(this));
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
       documentList.setTitle(messages.documentListTitle());
+      notification.setTitle(messages.notification());
 
       this.documentListView = documentListView.asWidget();
       this.container.add(this.documentListView);
@@ -232,7 +222,7 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public HasClickHandlers getNotificationBtn()
    {
-      return notificationBtn;
+      return notification;
    }
 
    @Override
@@ -249,13 +239,13 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void showNotificationAlert()
    {
-      notificationBtn.addStyleName(style.hasWarning());
+      notification.addStyleName(style.hasWarning());
       
    }
 
    @Override
    public void cancelNotificationAlert()
    {
-      notificationBtn.removeStyleName(style.hasWarning());
+      notification.removeStyleName(style.hasWarning());
    }
 }

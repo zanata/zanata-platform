@@ -246,7 +246,7 @@ a.breadcrumbs_link:hover
 {
 	font-size:18px;
 	position:absolute;
-	margin-top:8px;
+	margin-top:6px;
 	margin-left:5px;	
 }
 
@@ -893,7 +893,7 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 {
 	float:right;
 	font-size:16px;
-	color:#A91E1E;
+	color:#B62918;
 }
 
 .version_link_div .version_info {

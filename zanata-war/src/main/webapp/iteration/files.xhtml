@@ -98,7 +98,7 @@
 					<h:outputLink
                             title="#{messages['jsf.Open']}" styleClass="table_link" 
                             value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-                       		<span class="icon-eye-open" title="#{messages['jsf.Open']}"/>
+                       		<span class="icon-eye" title="#{messages['jsf.Open']}"/>
                     </h:outputLink>
 				</rich:column>
 				
@@ -111,7 +111,7 @@
                             value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
                        		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
                        		
-                            <span class="icon-eye-open" title="#{messages['jsf.OpenGWTDevMode']}"/>
+                            <span class="icon-eye" title="#{messages['jsf.OpenGWTDevMode']}"/>
                     </h:outputLink>
 				</rich:column>
 				
@@ -245,7 +245,7 @@
 					<f:param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
 					<f:param name="localeId" value="#{projectIterationFilesAction.localeId}" />
 					<f:param name="locale" value="#{locale.language}" />
-					<span class="icon-eye-open"/>#{messages['jsf.Open']}
+					<span class="icon-eye"/>#{messages['jsf.Open']}
 				</h:outputLink>
 
 				<h:outputLink
@@ -256,7 +256,7 @@
 					<f:param name="localeId" value="#{projectIterationFilesAction.localeId}" />
 					<f:param name="locale" value="#{locale.language}" />
 					<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-					<span class="icon-eye-open"/>#{messages['jsf.OpenGWTDevMode']}
+					<span class="icon-eye"/>#{messages['jsf.OpenGWTDevMode']}
     			</h:outputLink>
 
 				<h:outputLink
