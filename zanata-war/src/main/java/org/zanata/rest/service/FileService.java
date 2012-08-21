@@ -25,10 +25,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -165,13 +165,13 @@ public class FileService implements FileResource
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
          // Filter to only provide translated targets. "Preview" downloads include fuzzy.
          // Using new list is used as transRes list appears not to be a modifiable implementation.
-         List<TextFlowTarget> translations = new ArrayList<TextFlowTarget>();
+         Map<String, TextFlowTarget> translations = new HashMap<String, TextFlowTarget>();
          boolean useFuzzy = SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileExtension);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
             if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
             {
-               translations.add(target);
+               translations.put(target.getResId(), target);
             }
          }
 
@@ -288,12 +288,12 @@ public class FileService implements FileResource
 
    private class FormatAdapterStreamingOutput implements StreamingOutput
    {
-      private List<TextFlowTarget> translations;
+      private Map<String, TextFlowTarget> translations;
       private String locale;
       private InputStream fileContents;
       private FileFormatAdapter adapter;
 
-      public FormatAdapterStreamingOutput(InputStream fileContents, List<TextFlowTarget> translations, String locale, FileFormatAdapter adapter)
+      public FormatAdapterStreamingOutput(InputStream fileContents, Map<String, TextFlowTarget> translations, String locale, FileFormatAdapter adapter)
       {
          this.translations = translations;
          this.locale = locale;

@@ -23,7 +23,7 @@ package org.zanata.adapter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Map;
 
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
@@ -66,6 +66,6 @@ public interface FileFormatAdapter
     * @param locale to use for translated document
     * @throws IOException
     */
-   void writeTranslatedFile(OutputStream output, InputStream original, List<TextFlowTarget> translations, String locale) throws IOException;
+   void writeTranslatedFile(OutputStream output, InputStream original, Map<String, TextFlowTarget> translations, String locale) throws IOException;
 
 }

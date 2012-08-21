@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
@@ -149,7 +150,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 
 
    @Override
-   public void writeTranslatedFile(OutputStream output, InputStream original, List<TextFlowTarget> translations, String locale) throws IOException
+   public void writeTranslatedFile(OutputStream output, InputStream original, Map<String, TextFlowTarget> translations, String locale) throws IOException
    {
       net.sf.okapi.common.LocaleId localeId = net.sf.okapi.common.LocaleId.fromString(locale);
 
@@ -165,7 +166,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          if (event.getEventType() == EventType.TEXT_UNIT)
          {
             TextUnit tu = (TextUnit) event.getResource();
-            TextFlowTarget tft = findTextFlowTarget(getIdFor(tu), translations);
+            TextFlowTarget tft = translations.get(getIdFor(tu));
             if (tft != null)
             {
                tu.setTargetContent(localeId, new TextFragment(tft.getContents().get(0)));
@@ -174,29 +175,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          writer.handleEvent(event);
       }
       filter.close();
-      // TODO check if this is needed, or whether filter will close it.
-      original.close();
       writer.close();
-   }
-
-   /**
-    * Attempt to locate a matching translation for the given id in the given list.
-    * 
-    * @param idToFind
-    * @param translationsToSearchIn
-    * @return the matching translation, or null if no translation matches the id
-    */
-   // TODO make targets a map against id
-   private TextFlowTarget findTextFlowTarget(String idToFind, List<TextFlowTarget> translationsToSearchIn)
-   {
-      for (TextFlowTarget target : translationsToSearchIn)
-      {
-         if (target.getResId().equals(idToFind))
-         {
-            return target;
-         }
-      }
-      return null;
    }
 
    /**
