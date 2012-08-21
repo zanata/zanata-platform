@@ -371,7 +371,7 @@
             <drop>false</drop>
             <create>false</create>
             <outputfilename>schema.ddl</outputfilename>
-            <persistenceunit>zanataTestDatasource</persistenceunit>
+            <persistenceunit>zanataTestDatasourcePU</persistenceunit>
           </componentProperties>
         </configuration>
         <executions>
