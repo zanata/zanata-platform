@@ -66,7 +66,6 @@ import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.UndoLink;
-import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
@@ -114,12 +113,11 @@ public class TargetContentsPresenter implements
    private final UserConfigHolder configHolder;
 
 
-   private final ValidationMessagePanelDisplay validationMessagePanel;
    private TargetContentsDisplay display;
    private Provider<TargetContentsDisplay> displayProvider;
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
    private int currentEditorIndex = 0;
-   private ArrayList<ToggleEditor> currentEditors;
+   private List<ToggleEditor> currentEditors = Collections.emptyList();
 
    private boolean isModalNavEnabled = true;
 
@@ -146,7 +144,6 @@ public class TargetContentsPresenter implements
                                   UserSessionService sessionService,
                                   final UserConfigHolder configHolder,
                                   UserWorkspaceContext userWorkspaceContext,
-                                  ValidationMessagePanelDisplay validationMessagePanel,
                                   final KeyShortcutPresenter keyShortcutPresenter,
                                   TranslationHistoryPresenter historyPresenter)
    // @formatter:on
@@ -158,7 +155,6 @@ public class TargetContentsPresenter implements
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
       configuration = configHolder.getState();
-      this.validationMessagePanel = validationMessagePanel;
       this.sessionService = sessionService;
       this.identity = identity;
       this.keyShortcutPresenter = keyShortcutPresenter;
@@ -373,6 +369,8 @@ public class TargetContentsPresenter implements
    public void showEditors(final TransUnitId currentTransUnitId)
    {
       Log.info("enter show editor with id:" + currentTransUnitId);
+      clearTranslatorList(currentEditors); // clear previous selection's translator list
+
       display = findDisplayById(currentTransUnitId);
 
       currentEditors = display.getEditors();
@@ -389,7 +387,6 @@ public class TargetContentsPresenter implements
 
       if (!userWorkspaceContext.hasReadOnlyAccess())
       {
-         validationMessagePanel.clear();
          display.focusEditor(currentEditorIndex);
          updateTranslators();
       }
@@ -454,10 +451,7 @@ public class TargetContentsPresenter implements
 
    public void updateTranslators()
    {
-      for (ToggleEditor editor : currentEditors)
-      {
-         editor.clearTranslatorList();
-      }
+      clearTranslatorList(currentEditors);
 
       for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
       {
@@ -468,19 +462,22 @@ public class TargetContentsPresenter implements
       }
    }
 
+   private static void clearTranslatorList(List<ToggleEditor> editors)
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.clearTranslatorList();
+      }
+   }
+
    @Override
    public void validate(ToggleEditor editor)
    {
-      if (editor.getIndex() != currentEditorIndex)
-      {
-         // the timer may kickoff validation event when user press ctrl + enter
-         // etc to move editor around. We don't want to reset currentEditorIndex
-         // for such event.
-         return;
-      }
-      currentEditorIndex = editor.getIndex();
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
-      event.addWidget(validationMessagePanel);
+      if (display != null)
+      {
+         event.addWidget(display);
+      }
       event.addWidget(editor);
       eventBus.fireEvent(event);
    }
@@ -565,13 +562,6 @@ public class TargetContentsPresenter implements
    public ArrayList<String> getNewTargets()
    {
       return display == null ? null : display.getNewTargets();
-   }
-
-   @Override
-   public void setValidationMessagePanel(ToggleEditor editor)
-   {
-      validationMessagePanel.clear();
-      editor.addValidationMessagePanel(validationMessagePanel);
    }
 
    @Override

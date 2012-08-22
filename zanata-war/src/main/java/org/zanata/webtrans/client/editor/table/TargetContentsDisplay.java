@@ -25,6 +25,7 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.HasTransUnitId;
@@ -34,7 +35,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTransUnitId
+public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTransUnitId, HasUpdateValidationWarning
 {
    void showButtons(boolean displayButtons);
 
@@ -69,8 +70,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
       void saveAsApprovedAndMoveNext();
 
       void copySource(ToggleEditor editor);
-
-      void setValidationMessagePanel(ToggleEditor editor);
 
       void onCancel();
 

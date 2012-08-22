@@ -27,6 +27,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
@@ -47,6 +48,8 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class TargetContentsView extends Composite implements TargetContentsDisplay
 {
@@ -72,6 +75,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    SimplePanel undoContainer;
    @UiField
    PushButton historyButton;
+   @UiField(provided = true)
+   ValidationMessagePanelView validationPanel;
 
    private HorizontalPanel rootPanel;
    private String findMessage;
@@ -82,8 +87,10 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private Integer verNum;
    private List<String> cachedTargets;
 
-   public TargetContentsView()
+   @Inject
+   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
    {
+      validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);
       editorGrid.addStyleName("TableEditorCell-Target-Table");
       editorGrid.ensureDebugId("target-contents-grid");
@@ -284,11 +291,17 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       for (ToggleEditor editor : editors)
       {
          editor.setViewMode(viewMode);
-         if (viewMode == ToggleEditor.ViewMode.VIEW)
-         {
-            editor.removeValidationMessagePanel();
-         }
       }
+      if (viewMode == ToggleEditor.ViewMode.VIEW)
+      {
+         validationPanel.setVisible(false);
+      }
+   }
+
+   @Override
+   public void updateValidationWarning(List<String> errors)
+   {
+      validationPanel.updateValidationWarning(errors);
    }
 
    @Override

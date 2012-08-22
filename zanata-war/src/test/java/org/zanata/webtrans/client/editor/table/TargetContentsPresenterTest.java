@@ -63,7 +63,6 @@ import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
-import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -83,7 +82,6 @@ public class TargetContentsPresenterTest
    @Mock private NavigationMessages navMessages;
    @Mock private UserWorkspaceContext userWorkspaceContext;
    @Mock private TargetContentsDisplay display;
-   @Mock private ValidationMessagePanelDisplay validationPanel;
    @Mock
    private ToggleEditor editor, editor2, editor3;
    @Mock
@@ -107,7 +105,7 @@ public class TargetContentsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, validationPanel, keyShortcutPresenter, historyPresenter);
+      presenter = new TargetContentsPresenter(displayProvider, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, keyShortcutPresenter, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -234,10 +232,10 @@ public class TargetContentsPresenterTest
    @Test
    public void canSetValidationMessagePanel()
    {
-      presenter.setValidationMessagePanel(editor);
+//      presenter.setValidationMessagePanel(editor);
 
-      verify(validationPanel).clear();
-      verify(editor).addValidationMessagePanel(validationPanel);
+//      verify(validationPanel).clear();
+//      verify(editor).addValidationMessagePanel(validationPanel);
    }
    @Test
    public void canChangeViewOnUserConfigChange()

@@ -12,10 +12,6 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
 
    void insertTextInCursorPosition(String suggestion);
 
-   void addValidationMessagePanel(IsWidget validationMessagePanel);
-
-   void removeValidationMessagePanel();
-
    int getIndex();
 
    void showCopySourceButton(boolean displayButtons);

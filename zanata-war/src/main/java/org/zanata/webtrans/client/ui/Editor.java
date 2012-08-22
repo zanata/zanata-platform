@@ -8,12 +8,9 @@ import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -28,7 +25,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,7 +46,7 @@ public class Editor extends Composite implements ToggleEditor
 
       String translatorList();
 
-      String bottomContainer();
+      String hasValidationError();
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
@@ -71,12 +67,6 @@ public class Editor extends Composite implements ToggleEditor
 
    @UiField
    HorizontalPanel topContainer;
-
-   @UiField
-   HorizontalPanel bottomContainer;
-
-   @UiField
-   FlowPanel validationMessagePanelContainer;
 
    @UiField
    HorizontalPanel translatorList;
@@ -156,7 +146,6 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("textArea")
    public void onTextAreaFocus(FocusEvent event)
    {
-      listener.setValidationMessagePanel(this);
       listener.onFocus(id, index);
       fireValidationEvent();
       isFocused = true;
@@ -245,19 +234,6 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void addValidationMessagePanel(IsWidget validationMessagePanel)
-   {
-      removeValidationMessagePanel();
-      validationMessagePanelContainer.add(validationMessagePanel);
-   }
-
-   @Override
-   public void removeValidationMessagePanel()
-   {
-      validationMessagePanelContainer.clear();
-   }
-
-   @Override
    public void insertTextInCursorPosition(String suggestion)
    {
       String preCursor = textArea.getText().substring(0, textArea.getCursorPos());
@@ -297,11 +273,11 @@ public class Editor extends Composite implements ToggleEditor
    {
       if (!errors.isEmpty())
       {
-         textArea.addStyleName("HasValidationError");
+         addStyleName(style.hasValidationError());
       }
       else
       {
-         textArea.removeStyleName("HasValidationError");
+         removeStyleName(style.hasValidationError());
       }
    }
 

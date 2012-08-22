@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class ValidationMessagePanelView extends Composite implements ValidationMessagePanelDisplay
+public class ValidationMessagePanelView extends Composite implements HasUpdateValidationWarning
 {
 
    private static UI uiBinder = GWT.create(UI.class);
@@ -100,13 +100,6 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
       headerLabel.setText(header);
    }
 
-   @Override
-   public void clear()
-   {
-      contents.clear();
-      setHeaderText(messages.validationWarningsHeading(0));
-   }
-
    // TODO do we need below two handlers? we already do validation on focus and other scenarios
    @UiHandler("runValidationAnchor")
    public void onClick(ClickEvent event)
@@ -135,6 +128,12 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
          contents.add(new Label(error));
       }
       setHeaderText(messages.validationWarningsHeading(errors.size()));
+   }
+
+   private void clear()
+   {
+      contents.clear();
+      setHeaderText(messages.validationWarningsHeading(0));
    }
 
 }

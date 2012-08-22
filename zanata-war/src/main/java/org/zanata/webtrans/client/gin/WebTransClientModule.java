@@ -65,8 +65,6 @@ import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.OptionsPanelView;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
-import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
-import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DashboardView;
 import org.zanata.webtrans.client.view.DocumentListView;
@@ -135,7 +133,6 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);
       bind(SourceContentsDisplay.class).to(SourceContentsView.class);
-      bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
       bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
 
       bind(EventWrapper.class).to(EventWrapperImpl.class).in(Singleton.class);

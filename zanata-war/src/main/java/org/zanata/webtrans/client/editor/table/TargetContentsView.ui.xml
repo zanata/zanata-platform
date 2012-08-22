@@ -36,9 +36,10 @@
         <g:cell verticalAlignment="ALIGN_TOP">
         	<g:FlowPanel styleName="{style.editorGridWrapper}">
             	<g:Grid ui:field="editorGrid" />
+                <fui:ValidationMessagePanelView ui:field="validationPanel" />
             </g:FlowPanel>
         </g:cell>
-        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="20px">
+        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="40px">
             <g:VerticalPanel ui:field="buttons" styleName="gwt-Button">
                 <g:SimplePanel ui:field="undoContainer" styleName="{style.undoContainer}" />
                 <g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editSaveShortcut}">
