@@ -543,7 +543,8 @@ public class TargetContentsPresenter implements
    @Override
    public void onCancel()
    {
-      updateTargets(display.getId(), display.getCachedTargets());
+      display.updateCachedAndInEditorTargets(display.getCachedTargets());
+      display.setFindMessage(findMessage);
       setFocus();
    }
 
@@ -559,7 +560,7 @@ public class TargetContentsPresenter implements
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
-   public ArrayList<String> getNewTargets()
+   public List<String> getNewTargets()
    {
       return display == null ? null : display.getNewTargets();
    }

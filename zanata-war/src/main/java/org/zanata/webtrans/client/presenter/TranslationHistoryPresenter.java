@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -87,7 +88,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
             {
                //add indicator for latest version
                latest.setVersionNum(messages.latestVersion(latest.getVersionNum()));
-               ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
+               List<String> newTargets = targetContentsPresenter.getNewTargets();
                if (!Objects.equal(latest.getContents(), newTargets))
                {
                   listDataProvider.getList().add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "", ""));

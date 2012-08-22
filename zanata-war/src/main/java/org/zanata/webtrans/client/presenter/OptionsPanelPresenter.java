@@ -197,7 +197,6 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             userWorkspaceContext.setProjectActive(event.isProjectActive());
             setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
          }
       }));
 
@@ -215,6 +214,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    {
       boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
       configHolder.setDisplayButtons(displayButtons);
+      eventBus.fireEvent(UserConfigChangeEvent.EVENT);
       display.setEditorOptionsVisible(!readOnly);
       display.setValidationOptionsVisible(!readOnly);
    }

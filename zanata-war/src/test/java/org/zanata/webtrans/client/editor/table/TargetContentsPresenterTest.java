@@ -22,13 +22,14 @@ package org.zanata.webtrans.client.editor.table;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.model.TestFixture.makeTransUnit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,12 +49,14 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -65,15 +68,28 @@ import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Provider;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
 {
    private TargetContentsPresenter presenter;
+
+   // @formatter:off
+   List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
+         .add(makeTransUnit(2))
+         .add(makeTransUnit(3))
+         .add(makeTransUnit(6))
+         .build();
+   // @formatter:on
 
    @Mock private EventBus eventBus;
    @Mock private TableEditorMessages tableEditorMessages;
@@ -83,15 +99,13 @@ public class TargetContentsPresenterTest
    @Mock private UserWorkspaceContext userWorkspaceContext;
    @Mock private TargetContentsDisplay display;
    @Mock
-   private ToggleEditor editor, editor2, editor3;
+   private ToggleEditor editor, editor2;
    @Mock
    private Identity identity;
-   @Mock private TransUnit transUnit;
-   @Mock private UserConfigHolder configHolder;
+   private TransUnit selectedTU;
 
-   private final ArrayList<String> targetContents = Lists.newArrayList("", "");
-   @Captor private ArgumentCaptor<RunValidationEvent> runValidationEventCaptor;
-   @Captor private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
+   // all event extends GwtEvent therefore captor will capture them all
+   @Captor private ArgumentCaptor<? extends GwtEvent> eventCaptor;
 
    @Mock
    private UserSessionService sessionService;
@@ -105,7 +119,7 @@ public class TargetContentsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, keyShortcutPresenter, historyPresenter);
+      presenter = new TargetContentsPresenter(displayProvider, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, new UserConfigHolder(), userWorkspaceContext, keyShortcutPresenter, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -114,42 +128,17 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(EnableModalNavigationEvent.getType(), presenter);
+      verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
 
-      verify(display).setListener(presenter);
+      when(displayProvider.get()).thenReturn(display);
+      presenter.showData(currentPageRows);
+
    }
 
    private void verifyRevealDisplay()
    {
       verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Edit, true);
       verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Navigation, false);
-   }
-
-   @Test
-   public void canSetToViewMode()
-   {
-//      presenter.setToViewMode();
-
-//      verify(display).setToView();
-      verify(display).showButtons(false);
-   }
-
-   @Test
-   public void canSetValueToDisplay()
-   {
-      //given NOT read only mode, enter NOT as save
-      String buttonTitle = "Save (Ctrl + Enter)";
-      String findMessages = "abc";
-      when(transUnit.getTargets()).thenReturn(targetContents);
-      when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
-      when(configHolder.isEnterSavesApproved()).thenReturn(false);
-      when(navMessages.editSaveShortcut()).thenReturn(buttonTitle);
-
-      //when selecting row 1
-      presenter.showEditors(transUnit.getId());
-
-      verify(display).setValue(transUnit);
-      verify(display).setFindMessage(findMessages);
-      verifyNoMoreInteractions(display);
    }
 
    @Test
@@ -161,96 +150,75 @@ public class TargetContentsPresenterTest
 
       presenter.validate(editor);
 
-      verify(eventBus).fireEvent(runValidationEventCaptor.capture());
-      RunValidationEvent event = runValidationEventCaptor.getValue();
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      RunValidationEvent event = (RunValidationEvent) eventCaptor.getValue();
       assertThat(event.getSourceContent(), equalTo("source"));
       assertThat(event.getTarget(), equalTo("target"));
       assertThat(event.isFireNotification(), equalTo(false));
    }
 
    @Test
-   public void willNotValidateIfEditorIsNotCurrent()
-   {
-      when(editor.getIndex()).thenReturn(99); //current editor is not the focused one
-
-      presenter.validate(editor);
-
-      verify(editor).getIndex();
-      verifyNoMoreInteractions(editor);
-   }
-
-   @Test
    public void canSaveAsFuzzy()
    {
-      when(display.getNewTargets()).thenReturn(targetContents);
+      // Given: selected one trans unit with some new targets inputted
+      selectedTU = currentPageRows.get(0);
+      List<String> cachedTargets = Lists.newArrayList("a");
+      List<String> newTargets = Lists.newArrayList("b");
+
+      when(display.getNewTargets()).thenReturn(newTargets);
+      when(display.getCachedTargets()).thenReturn(cachedTargets);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      presenter.showEditors(selectedTU.getId());
+
+      // When:
       presenter.saveAsFuzzy();
 
+      // Then:
       ArgumentCaptor<TransUnitSaveEvent> captor = ArgumentCaptor.forClass(TransUnitSaveEvent.class);
-      verify(eventBus).fireEvent(captor.capture());
+      verify(eventBus, atLeastOnce()).fireEvent(captor.capture());
       TransUnitSaveEvent event = captor.getValue();
-      assertThat(event.getTargets(), Matchers.<List<String>>equalTo(targetContents));
+
+      assertThat(event.getTransUnitId(), equalTo(selectedTU.getId()));
+      assertThat(event.getTargets(), Matchers.equalTo(newTargets));
       assertThat(event.getStatus(), equalTo(ContentState.NeedReview));
+      assertThat(event.getOldContents(), equalTo(cachedTargets));
    }
 
    @Test
    public void canCopySource()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
-      when(configHolder.isDisplayButtons()).thenReturn(false);
 
       presenter.copySource(editor);
 
       verify(editor).setTextAndValidate("source");
-      verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
-      verify(display).showButtons(false);
       verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
       verifyRevealDisplay();
    }
 
-   @Test
-   public void isDisplayButtonsReturnFromUserConfig()
-   {
-      when(configHolder.isDisplayButtons()).thenReturn(true);
-      assertThat(presenter.isDisplayButtons(), Matchers.equalTo(true));
-
-      when(configHolder.isDisplayButtons()).thenReturn(false);
-      assertThat(presenter.isDisplayButtons(), Matchers.equalTo(false));
-   }
 
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(transUnit.getId());
-      when(display.getNewTargets()).thenReturn(targetContents);
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      List<String> targets = Lists.newArrayList("");
+      when(display.getNewTargets()).thenReturn(targets);
 
-      ArrayList<String> result = presenter.getNewTargets();
+      presenter.showEditors(selectedTU.getId());
 
-      MatcherAssert.assertThat(result, Matchers.sameInstance(targetContents));
-   }
-   
-   @Test
-   public void canSetValidationMessagePanel()
-   {
-//      presenter.setValidationMessagePanel(editor);
+      List<String> result = presenter.getNewTargets();
 
-//      verify(validationPanel).clear();
-//      verify(editor).addValidationMessagePanel(validationPanel);
-   }
-   @Test
-   public void canChangeViewOnUserConfigChange()
-   {
-      when(configHolder.isEnterSavesApproved()).thenReturn(true);
-
-      presenter.onValueChanged(UserConfigChangeEvent.EVENT);
-
-      verify(display).showButtons(configHolder.isDisplayButtons());
+      MatcherAssert.assertThat(result, Matchers.sameInstance(targets));
    }
 
    @Test
-   public void onRequestValidationWillNotFireRunValidationEventIfNotEditing()
+   public void onRequestValidationWillNotFireRunValidationEventIfSourceAndTargetDoNotMatch()
    {
       //given current display is null
+      when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(new TransUnitId(1));
 
       presenter.onRequestValidation(new RequestValidationEvent());
 
@@ -259,49 +227,77 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void onRequestValidationWillFireRunValidationEventIfItsEditing()
+   public void onRequestValidationWillFireRunValidationEvent()
    {
       //given current display has one editor and current editor has target content
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      when(editor.getIndex()).thenReturn(0);
+      when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedTU.getId());
       when(editor.getText()).thenReturn("target");
+      presenter.showEditors(selectedTU.getId());
 
       presenter.onRequestValidation(new RequestValidationEvent());
 
-      verify(eventBus).fireEvent(runValidationEventCaptor.capture());//one in showEditor() one in onRequestValidation()
-      MatcherAssert.assertThat(runValidationEventCaptor.getValue().getTarget(), Matchers.equalTo("target"));
+      verify(eventBus, times(2)).fireEvent(eventCaptor.capture());//one in showEditor() one in onRequestValidation()
+      RunValidationEvent event = findEvent(RunValidationEvent.class);
+      MatcherAssert.assertThat(event.getTarget(), Matchers.equalTo("target"));
       verifyRevealDisplay();
    }
 
    private void givenCurrentEditorsAs(ToggleEditor... currentEditors)
    {
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
-      when(display.isEditing()).thenReturn(true);
-      presenter.showEditors(transUnit.getId());
+      presenter.showEditors(selectedTU.getId());
    }
 
    @Test
    public void onCancelCanResetTextBack()
    {
+      // Given:
+      selectedTU = currentPageRows.get(0);
+      ArrayList<String> targets = Lists.newArrayList("a");
+      when(display.getCachedTargets()).thenReturn(targets);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      presenter.showEditors(selectedTU.getId());
+
+      // When:
       presenter.onCancel();
 
-      verify(display).getId();
+      // Then:
+      verify(display, atLeastOnce()).getId();
       verify(display).getCachedTargets();
+      verify(display).updateCachedAndInEditorTargets(targets);
+      verify(display).setFindMessage(anyString());
    }
 
    @Test
    public void testOnInsertString()
    {
-      when(tableEditorMessages.notifyCopied()).thenReturn("copied");
+      // Given:
+      selectedTU = currentPageRows.get(0);
       when(editor.getIndex()).thenReturn(0);
-      givenCurrentEditorsAs(editor);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      when(tableEditorMessages.notifyCopied()).thenReturn("copied");
+      when(sourceContentPresenter.getSelectedSource()).thenReturn("source content");
+      presenter.showEditors(selectedTU.getId());
 
+      // When:
       presenter.onInsertString(new InsertStringInEditorEvent("", "suggestion"));
 
+      // Then:
       verify(editor).insertTextInCursorPosition("suggestion");
-      verify(eventBus, times(2)).fireEvent(isA(RunValidationEvent.class));
-      verify(eventBus, atLeastOnce()).fireEvent(notificationEventCaptor.capture());
-      MatcherAssert.assertThat(notificationEventCaptor.getValue().getMessage(), Matchers.equalTo("copied"));
+
+      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+      NotificationEvent notificationEvent = findEvent(NotificationEvent.class);
+      MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
+
+      RunValidationEvent runValidationEvent = findEvent(RunValidationEvent.class);
+      assertThat(runValidationEvent.getSourceContent(), equalTo("source content"));
    }
 
    @Test
@@ -314,30 +310,88 @@ public class TargetContentsPresenterTest
       presenter.onDataCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
       verify(editor).setTextAndValidate("target");
-      verify(eventBus, atLeastOnce()).fireEvent(notificationEventCaptor.capture());
-      MatcherAssert.assertThat(notificationEventCaptor.getValue().getMessage(), Matchers.equalTo("copied"));
+      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+      NotificationEvent notificationEvent = findEvent(NotificationEvent.class);
+      MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
+   }
+
+   @Test
+   public void willMoveToNextEntryIfItIsPluralAndNotAtLastEntry()
+   {
+      // Given: selected display and focus on first entry
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor, editor2));
+      presenter.showEditors(selectedTU.getId());
+
+      // When:
+      presenter.saveAsApprovedAndMoveNext();
+
+      // Then:
+      verify(display).focusEditor(1);
+   }
+
+   @Test
+   public void willSaveAndMoveToNextRow()
+   {
+      // Given: selected display and there is only one entry(no plural or last entry of plural)
+      selectedTU = currentPageRows.get(0);
+      List<String> cachedTargets = Lists.newArrayList("a");
+      List<String> newTargets = Lists.newArrayList("b");
+
+      when(display.getNewTargets()).thenReturn(newTargets);
+      when(display.getCachedTargets()).thenReturn(cachedTargets);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      presenter.showEditors(selectedTU.getId());
+
+      // When:
+      presenter.saveAsApprovedAndMoveNext();
+
+      // Then:
+      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+
+      TransUnitSaveEvent saveEvent = findEvent(TransUnitSaveEvent.class);
+      assertThat(saveEvent.getTransUnitId(), equalTo(selectedTU.getId()));
+      assertThat(saveEvent.getTargets(), Matchers.equalTo(newTargets));
+      assertThat(saveEvent.getStatus(), equalTo(ContentState.Approved));
+      assertThat(saveEvent.getOldContents(), equalTo(cachedTargets));
+
+      NavTransUnitEvent navEvent = findEvent(NavTransUnitEvent.class);
+      assertThat(navEvent.getRowType(), equalTo(NavTransUnitEvent.NavigationType.NextEntry));
+   }
+
+   @SuppressWarnings("unchecked")
+   private <E extends GwtEvent> E findEvent(final Class<E> eventType)
+   {
+      return (E) Iterables.find(eventCaptor.getAllValues(), new Predicate<GwtEvent>()
+      {
+         @Override
+         public boolean apply(GwtEvent input)
+         {
+            return eventType.isInstance(input);
+         }
+      });
+   }
+
+   @Test
+   public void canShowHistory()
+   {
+      // Given:
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      presenter.showEditors(selectedTU.getId());
+
+      // When:
+      presenter.showHistory();
+
+      // Then:
+      verify(historyPresenter).showTranslationHistory(selectedTU.getId());
    }
 
    @Test
    public void testShowEditors()
-   {
-
-   }
-
-   @Test
-   public void testSaveAsApprovedAndMoveNext()
-   {
-
-   }
-
-   @Test
-   public void testSaveAsApprovedAndMovePrevious() 
-   {
-
-   }
-
-   @Test
-   public void testOnEditorKeyDown() 
    {
 
    }

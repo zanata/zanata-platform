@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.easymock.EasyMock.and;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
@@ -27,6 +28,7 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -479,13 +481,20 @@ public class AppPresenterTest extends PresenterTest
       expectLastCall().anyTimes();
       mockUserWorkspaceContext.setProjectActive(false);
       expectLastCall().anyTimes();
-      
+
       // receives not-readonly event, label hidden
       WorkspaceContextUpdateEvent editableEvent = createMock(WorkspaceContextUpdateEvent.class);
       expect(editableEvent.isProjectActive()).andReturn(true).anyTimes();
       mockDisplay.setReadOnlyVisible(false);
       expectLastCall().anyTimes();
       mockUserWorkspaceContext.setProjectActive(true);
+      expectLastCall().anyTimes();
+
+      mockEventBus.fireEvent(isA(NotificationEvent.class));
+      expectLastCall().anyTimes();
+      expect(mockMessages.notifyEditableWorkspace()).andReturn("");
+      expectLastCall().anyTimes();
+      expect(mockMessages.notifyReadOnlyWorkspace()).andReturn("read only");
       expectLastCall().anyTimes();
 
       replayAllMocks();

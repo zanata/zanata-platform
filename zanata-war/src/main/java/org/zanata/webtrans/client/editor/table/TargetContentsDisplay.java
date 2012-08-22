@@ -53,7 +53,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    List<String> getCachedTargets();
 
-   ArrayList<String> getNewTargets();
+   List<String> getNewTargets();
 
    boolean isEditing();
 
