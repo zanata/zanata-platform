@@ -58,6 +58,17 @@
 		<param-name>org.richfaces.LoadScriptStrategy</param-name>
 		<param-value>DEFAULT</param-value>
 	</context-param>
+	
+	<context-param>
+      <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
+      <param-value>${war_bundles_jsf_impl}</param-value>
+	</context-param>
+
+	<!-- https://community.jboss.org/message/620333#620333 -->
+	<context-param>
+      <param-name>org.jboss.jbossfaces.JSF_CONFIG_NAME</param-name>
+      <param-value>Mojarra-1.2</param-value>
+ 	</context-param>
 
 	<!-- 
 	Make sure Liquibase is the first listener, so that it can update the database schema before
@@ -242,11 +253,6 @@
 		</web-resource-collection>
 		<auth-constraint />
 	</security-constraint>
-
-	<persistence-unit-ref>
-		<persistence-unit-ref-name>zanata/pu</persistence-unit-ref-name>
-		<persistence-unit-name>${ds.jndi.name}</persistence-unit-name>
-	</persistence-unit-ref>
 
     <mime-mapping>
         <extension>xrd</extension>

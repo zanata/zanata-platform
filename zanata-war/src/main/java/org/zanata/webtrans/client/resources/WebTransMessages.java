@@ -398,9 +398,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("{0} Latest")
    String latestVersion(String versionNum);
 
-   @Description("current value in editor for translation history display")
-   @DefaultMessage("Current")
-   String current();
+   @Description("current unsaved value in editor for translation history display")
+   @DefaultMessage("Unsaved")
+   String unsaved();
 
    @DefaultMessage("Flip entries")
    String flipComparingEntries();

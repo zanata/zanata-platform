@@ -34,7 +34,7 @@ public class LocaleMemberDAOTest extends ZanataDBUnitSeamTest
    @BeforeClass
    public void initializeTest()
    {      
-      EntityManagerFactory emf=Persistence.createEntityManagerFactory("zanataTestDatasource");
+      EntityManagerFactory emf=Persistence.createEntityManagerFactory("zanataTestDatasourcePU");
       this.em = emf.createEntityManager();
    }
    

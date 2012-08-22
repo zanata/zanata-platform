@@ -118,6 +118,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
                item = new TransMemoryResultItem(textFlowContents, targetContents, score, percent);
                matchesMap.put(key, item);
             }
+            item.incMatchCount();
             item.addSourceId(textFlowTarget.getTextFlow().getId());
          }
          results.addAll(matchesMap.values());

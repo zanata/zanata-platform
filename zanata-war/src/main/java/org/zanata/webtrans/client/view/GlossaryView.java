@@ -8,6 +8,7 @@ import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.HighlightingLabelGlossaryColumn;
+import org.zanata.webtrans.client.view.TransMemoryView.Styles;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -16,6 +17,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -47,6 +49,14 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    interface GlossaryViewUiBinder extends UiBinder<Widget, GlossaryView>
    {
    }
+
+   interface Styles extends CssResource
+   {
+      String narrowColumn();
+   }
+
+   @UiField
+   Styles style;
 
    @UiField
    TextBox glossaryTextBox;
@@ -87,6 +97,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       dataProvider = new ListDataProvider<GlossaryResultItem>();
       initWidget(uiBinder.createAndBindUi(this));
 
+      copyColumn.setCellStyleNames(style.narrowColumn());
+      detailsColumn.setCellStyleNames(style.narrowColumn());
       headerLabel.setText(messages.glossaryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());

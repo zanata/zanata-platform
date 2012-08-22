@@ -106,26 +106,39 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public Long getTotalCountForDocument(HDocument document)
    {
       Session session = getSession();
-
-      return
-      (Long) session.createQuery(
+      Long totalCount = (Long) session.createQuery(
             "select count(tf) from HTextFlow tf " +
-                  "where tf.document = :doc and tf.obsolete = false")
-            .setParameter("doc", document)
-            .setCacheable(true).uniqueResult();
+            "where tf.document = :doc and tf.obsolete = false")
+      .setParameter("doc", document)
+      .setCacheable(true).uniqueResult();
+      
+      if (totalCount == null)
+      {
+         totalCount = 0L;
+      }
+
+      return totalCount;
+      
    }
 
    public Long getTotalWordCountForDocument(HDocument document)
    {
       Session session = getSession();
 
-      return
-      (Long) session.createQuery(
+      Long totalWordCount = (Long) session.createQuery(
             "select sum(tf.wordCount) from HTextFlow tf " +
-                  "where tf.document = :doc and tf.obsolete = false")
-            .setParameter("doc", document)
-            .setCacheable(true)
-            .uniqueResult();
+            "where tf.document = :doc and tf.obsolete = false")
+      .setParameter("doc", document)
+      .setCacheable(true)
+      .uniqueResult();
+      
+      if (totalWordCount == null)
+      {
+         totalWordCount = 0L;
+      }
+
+      return totalWordCount;
+      
    }
 
    /**
@@ -174,9 +187,6 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             .setCacheable(true)
             .list();
       Long totalWordCount = getTotalWordCountForDocument( getById(docId) );
-      if (totalWordCount == null)
-         totalWordCount = 0L;
-
       TransUnitWords wordCount = new TransUnitWords();
       for (StatusCount count : wordStats)
       {

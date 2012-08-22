@@ -18,6 +18,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.LoadingListDataProvider;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -60,7 +61,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       HasAllFocusHandlers getFocusTmTextBox();
 
       void startProcessing();
-
+      void setLoading(boolean loading);
       void stopProcessing();
 
       void setPageSize(int size);
@@ -84,7 +85,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private TransMemoryDetailsPresenter tmInfoPresenter;
    private TransMemoryMergePresenter transMemoryMergePresenter;
    private KeyShortcutPresenter keyShortcutPresenter;
-   private ListDataProvider<TransMemoryResultItem> dataProvider;
+   private LoadingListDataProvider<TransMemoryResultItem> dataProvider;
 
    private final WebTransMessages messages;
 
@@ -101,7 +102,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.messages = messages;
 
-      dataProvider = new ListDataProvider<TransMemoryResultItem>();
+      dataProvider = new LoadingListDataProvider<TransMemoryResultItem>();
       display.setDataProvider(dataProvider);
    }
 
@@ -236,9 +237,20 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       createTMRequest(new TransMemoryQuery(transUnit.getSources(), searchType));
    }
 
+   private void setLoading(boolean loading)
+   {
+      // This line should be enough...
+      dataProvider.setLoading(loading);
+
+      // but GWT still shows the empty table widget, so we temporarily change it:
+      display.setLoading(loading);
+   }
+
    private void createTMRequest(TransMemoryQuery query)
    {
+      setLoading(true);
       dataProvider.getList().clear();
+      dataProvider.refresh();
       display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query,
             userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(),
@@ -312,6 +324,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       {
          dataProvider.getList().add(memory);
       }
+      setLoading(false);
       display.setPageSize(dataProvider.getList().size());
       dataProvider.refresh();
    }

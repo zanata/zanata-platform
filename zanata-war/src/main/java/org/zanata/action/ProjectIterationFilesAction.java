@@ -38,6 +38,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -62,6 +64,7 @@ import org.zanata.service.TranslationService;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
+@CachedMethods
 public class ProjectIterationFilesAction
 {
 
@@ -131,11 +134,13 @@ public class ProjectIterationFilesAction
       }
    }
    
+   @CachedMethodResult(ScopeType.PAGE)
    public TranslationStatistics getTransUnitWordsForDocument(HDocument doc)
    {
       ContainerTranslationStatistics docStatistics =
          this.statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, doc.getDocId(), true, new String[]{this.localeId});
-      return docStatistics.getStats( this.localeId, WORD );
+      TranslationStatistics stats = docStatistics.getStats(this.localeId, WORD);
+      return stats;
    }
 
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")

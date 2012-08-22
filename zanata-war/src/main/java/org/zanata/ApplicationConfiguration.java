@@ -86,7 +86,6 @@ public class ApplicationConfiguration implements Serializable
    private Map<String, String> configValues = new HashMap<String, String>();
    
    private boolean debug;
-   private boolean hibernateStatistics = false;
    private int authenticatedSessionTimeoutMinutes = 0;
    private String version;
    private String buildTimestamp;
@@ -285,11 +284,6 @@ public class ApplicationConfiguration implements Serializable
    public boolean isDebug()
    {
       return debug;
-   }
-
-   public boolean isHibernateStatistics()
-   {
-      return hibernateStatistics;
    }
 
    public int getAuthenticatedSessionTimeoutMinutes()

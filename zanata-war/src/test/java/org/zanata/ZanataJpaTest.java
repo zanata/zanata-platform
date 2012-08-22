@@ -20,7 +20,7 @@ import org.zanata.testng.TestMethodListener;
 public abstract class ZanataJpaTest
 {
 
-   private static final String PERSIST_NAME = "zanataTestDatasource";
+   private static final String PERSIST_NAME = "zanataTestDatasourcePU";
 
    private static EntityManagerFactory emf;
 

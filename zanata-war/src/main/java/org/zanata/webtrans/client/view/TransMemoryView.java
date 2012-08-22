@@ -7,6 +7,8 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
+import org.zanata.webtrans.client.ui.TooltipTextColumn;
+import org.zanata.webtrans.client.ui.Tooltips;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.SimilarityColumn;
@@ -19,7 +21,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -48,6 +52,15 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
    }
 
+   interface Styles extends CssResource
+   {
+      String headerLabel();
+      String narrowColumn();
+   }
+
+   @UiField
+   Styles style;
+
    @UiField
    TextBox tmTextBox;
 
@@ -75,9 +88,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private ListDataProvider<TransMemoryResultItem> dataProvider;
 
    private TransMemorySourceColumn sourceColumn;
-   private TransMemoryTargetColumn targetColumn;
    private CopyButtonColumn<TransMemoryResultItem> copyColumn;
    private DetailsColumn<TransMemoryResultItem> detailsColumn;
+
+   private Label noResultWidget = new Label("Found no translation memory results");
+   private Label loadingWidget = new Label("Searching translation memory...");
 
    @Inject
    public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
@@ -85,7 +100,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       this.messages = messages;
 
       sourceColumn = new TransMemorySourceColumn();
-      targetColumn = new TransMemoryTargetColumn();
       copyColumn = new CopyButtonColumn<TransMemoryResultItem>();
       detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
@@ -187,20 +201,56 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       renderTable();
    }
 
+   @Override
+   public void setLoading(boolean loading)
+   {
+      if (loading)
+      {
+         tmTable.setEmptyTableWidget(loadingWidget);
+      }
+      else
+      {
+         tmTable.setEmptyTableWidget(noResultWidget);
+      }
+   }
+
    private void renderTable()
    {
       tmTable = new CellTable<TransMemoryResultItem>();
       tmTable.addStyleName("tmTable");
       tmTable.addStyleName("southTable");
       tmTable.addColumn(sourceColumn, messages.sourceLabel());
-      tmTable.addColumn(targetColumn, messages.targetLabel());
+      tmTable.addColumn(new TransMemoryTargetColumn(), messages.targetLabel());
+      TooltipTextColumn<TransMemoryResultItem> countColumn = new TooltipTextColumn<TransMemoryResultItem>()
+      {
+         @Override
+         public String getValue(TransMemoryResultItem item)
+         {
+            return String.valueOf(item.getMatchCount());
+         }
+
+         @Override
+         public String getTooltipValue(TransMemoryResultItem item)
+         {
+            return SafeHtmlUtils.htmlEscape(messages.matchCountTooltip(item.getMatchCount()));
+         }
+      };
+
+      countColumn.setCellStyleNames(style.narrowColumn());
+      tmTable.addColumn(countColumn, Tooltips.textWithTooltip(messages.matchCountLabel(), messages.matchCountHeaderTooltip()));
+
+      copyColumn.setCellStyleNames(style.narrowColumn());
       tmTable.addColumn(copyColumn);
-      tmTable.addColumn(new SimilarityColumn<TransMemoryResultItem>(), messages.similarityLabel());
+      SimilarityColumn<TransMemoryResultItem> similarityColumn = new SimilarityColumn<TransMemoryResultItem>();
+      similarityColumn.setCellStyleNames(style.narrowColumn());
+      tmTable.addColumn(similarityColumn, messages.similarityLabel());
+      detailsColumn.setCellStyleNames(style.narrowColumn());
       tmTable.addColumn(detailsColumn, messages.detailsLabel());
 
-      Label noResult = new Label("Found no translation memory results");
-      noResult.setStyleName("boldFont");
-      tmTable.setEmptyTableWidget(noResult);
+      noResultWidget.setStyleName("boldFont");
+      setLoading(false);
+      loadingWidget.setStyleName("boldFont");
+      tmTable.setLoadingIndicator(loadingWidget);
 
       final NoSelectionModel<TransMemoryResultItem> selectionModel = new NoSelectionModel<TransMemoryResultItem>();
       final DefaultSelectionEventManager<TransMemoryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
