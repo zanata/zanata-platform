@@ -30,6 +30,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -47,6 +48,7 @@ import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
 import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
+import org.zanata.model.security.HCredentials;
 import org.zanata.model.type.UserApiKey;
 import org.zanata.rest.dto.Account;
 
@@ -77,6 +79,7 @@ public class HAccount extends ModelEntityBase implements Serializable
    private Set<HAccountRole> roles;
    private HAccountActivationKey accountActivationKey;
    private HAccountResetPasswordKey accountResetPasswordKey;
+   private Set<HCredentials> credentials;
 
 
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -146,5 +149,16 @@ public class HAccount extends ModelEntityBase implements Serializable
          setRoles(roles);
       }
       return roles;
+   }
+
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+   @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   public Set<HCredentials> getCredentials()
+   {
+      if(credentials == null)
+      {
+         credentials = new HashSet<HCredentials>();
+      }
+      return credentials;
    }
 }

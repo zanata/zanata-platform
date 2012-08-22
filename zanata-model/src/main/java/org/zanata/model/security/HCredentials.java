@@ -18,22 +18,49 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.security.openid;
+package org.zanata.model.security;
 
-import java.text.MessageFormat;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.zanata.model.HAccount;
+import org.zanata.model.ModelEntityBase;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * Fedora Open Id provider.
+ * A set of credentials for a given user against an authentication mechanism.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class FedoraOpenIdProvider implements OpenIdProvider
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@NoArgsConstructor
+public abstract class HCredentials extends ModelEntityBase
 {
-   private static final String FEDORA_HOST = "http://{0}.id.fedoraproject.org/";
+   @Setter
+   private HAccount account;
 
-   @Override
-   public String getOpenId(String username)
+   @Setter
+   private String user;
+
+
+   @ManyToOne
+   @JoinColumn(name = "account_id")
+   public HAccount getAccount()
    {
-      return MessageFormat.format(FEDORA_HOST, username);
+      return account;
+   }
+
+   public String getUser()
+   {
+      return user;
    }
 }

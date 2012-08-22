@@ -34,6 +34,9 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
+import org.zanata.model.security.HCredentials;
+import org.zanata.model.security.HOpenIdCredentials;
+import org.zanata.security.AuthenticationType;
 import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
 
@@ -75,6 +78,34 @@ public class RegisterServiceImpl implements RegisterService
       HAccountActivationKey key = new HAccountActivationKey();
       key.setAccount(account);
       key.setKeyHash(HashUtil.generateHash(username + password + email + name + System.currentTimeMillis()));
+      accountActivationKeyDAO.makePersistent(key);
+      accountActivationKeyDAO.flush();
+      return key.getKeyHash();
+   }
+
+   @Override
+   public String register(final String username, AuthenticationType authType, String name, String email)
+   {
+      new RunAsOperation()
+      {
+         public void execute()
+         {
+            identityStore.createUser(username, "");
+            identityStore.disableUser(username);
+         }
+      }.addRole("admin").run();
+
+      HAccount account = accountDAO.getByUsername(username);
+      account.getCredentials().add( new HOpenIdCredentials(account, username) );
+      HPerson person = new HPerson();
+      person.setAccount(account);
+      person.setEmail(email);
+      person.setName(name);
+      personDAO.makePersistent(person);
+
+      HAccountActivationKey key = new HAccountActivationKey();
+      key.setAccount(account);
+      key.setKeyHash(HashUtil.generateHash(username + email + name + System.currentTimeMillis()));
       accountActivationKeyDAO.makePersistent(key);
       accountActivationKeyDAO.flush();
       return key.getKeyHash();

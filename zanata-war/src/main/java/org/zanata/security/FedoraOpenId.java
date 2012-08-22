@@ -49,8 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.openid.OpenIdProvider;
-import org.zanata.security.openid.OpenIdProviderFactory;
-import org.zanata.security.openid.OpenIdProviderType;
 
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -77,7 +75,6 @@ public class FedoraOpenId
    private ConsumerManager manager;
    private DiscoveryInformation discovered;
 
-   private OpenIdProviderType providerType = OpenIdProviderType.FEDORA;
    private OpenIdProvider provider;
 
    public String getId()
@@ -88,21 +85,6 @@ public class FedoraOpenId
    public void setId(String id)
    {
       this.id = id;
-   }
-
-   public OpenIdProviderType getProviderType()
-   {
-      return providerType;
-   }
-
-   public void setProviderType(OpenIdProviderType providerType)
-   {
-      this.providerType = providerType;
-   }
-
-   public void setProvider(String provider)
-   {
-      this.setProviderType( OpenIdProviderType.valueOf(provider) );
    }
 
    public void login()
@@ -265,10 +247,10 @@ public class FedoraOpenId
       try
       {
          String var = "http://" + username + FEDORA_HOST;
-         if( providerType == OpenIdProviderType.GOOGLE )
+         /*if( providerType == OpenIdProviderType.GOOGLE )
          {
             var = "https://www.google.com/accounts/o8/id";
-         }
+         }*/
          setId(var);
          LOGGER.info("openid: {}", getId());
          login();

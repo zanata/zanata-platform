@@ -34,7 +34,7 @@ public class OpenIdProviderFactory
          return new GoogleOpenIdProvider();
       }
       // Default, return fedora
-      // todo return ageneric open id provider
+      // todo return a generic open id provider
       return new FedoraOpenIdProvider();
    }
 }

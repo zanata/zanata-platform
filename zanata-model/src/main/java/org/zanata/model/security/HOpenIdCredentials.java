@@ -18,15 +18,26 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.security.openid;
+package org.zanata.model.security;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+
+import org.zanata.model.HAccount;
+
+import lombok.NoArgsConstructor;
 
 /**
- * Represents the Open ID provider types that are recognized in the system.
- *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public enum OpenIdProviderType
+@Entity
+@DiscriminatorValue("OPENID")
+@NoArgsConstructor
+public class HOpenIdCredentials extends HCredentials
 {
-   FEDORA,
-   GOOGLE;
+   public HOpenIdCredentials(HAccount account, String user)
+   {
+      setAccount(account);
+      setUser(user);
+   }
 }

@@ -42,6 +42,8 @@
 		<class>org.zanata.model.po.HPoHeader</class>
 		<class>org.zanata.model.po.HPoTargetHeader</class>
 		<class>org.zanata.model.po.HPotEntryData</class>
+        <class>org.zanata.model.security.HOpenIdCredentials</class>
+
 		<properties>
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />

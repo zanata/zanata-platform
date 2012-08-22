@@ -40,6 +40,9 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
+import org.zanata.model.security.HCredentials;
+import org.zanata.model.security.HOpenIdCredentials;
+import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.ZanataJpaIdentityStore;
 import org.zanata.service.RegisterService;
@@ -188,7 +191,7 @@ public class ProfileAction implements Serializable
       else
       {
          final String user = this.username;
-         String key = registerServiceImpl.register(user, "", this.name, this.email);
+         String key = registerServiceImpl.register(user, AuthenticationType.FEDORA_OPENID, this.name, this.email);
          setActivationKey(key);
          renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
          FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");

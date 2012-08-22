@@ -20,8 +20,15 @@
  */
 package org.zanata.service;
 
+import org.zanata.model.security.HCredentials;
+import org.zanata.security.AuthenticationType;
+
 public interface RegisterService
 {
    String register(final String username, final String password, String name, String email);
 
+   /**
+    * Use this for external authentication
+    */
+   String register(final String username, AuthenticationType authType, String name, String email);
 }
