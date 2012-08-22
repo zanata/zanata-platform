@@ -126,9 +126,6 @@ public class TargetContentsPresenter implements
    private final Identity identity;
    private final UserWorkspaceContext userWorkspaceContext;
 
-   private boolean enterSavesApprovedRegistered;
-   private boolean escClosesEditorRegistered;
-
    private KeyShortcut enterSavesApprovedShortcut;
    private KeyShortcut escClosesEditorShortcut;
 
@@ -138,6 +135,7 @@ public class TargetContentsPresenter implements
    private final KeyShortcut nextStateShortcut;
    private final KeyShortcut prevStateShortcut;
    private String findMessage;
+   private UserConfigHolder.ConfigurationState configuration;
 
    @Inject
    //TODO too many constructor dependencies
@@ -159,6 +157,7 @@ public class TargetContentsPresenter implements
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
+      configuration = configHolder.getState();
       this.validationMessagePanel = validationMessagePanel;
       this.sessionService = sessionService;
       this.identity = identity;
@@ -297,14 +296,9 @@ public class TargetContentsPresenter implements
 
       enterSavesApprovedShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Edit, messages.saveAsApproved(), KeyEvent.KEY_DOWN, true, true, saveAsApprovedKeyShortcutHandler);
 
-      if (configHolder.isEnterSavesApproved())
+      if (configuration.isEnterSavesApproved())
       {
-         enterSavesApprovedRegistered = true;
          enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
-      }
-      else
-      {
-         enterSavesApprovedRegistered = false;
       }
 
       escClosesEditorShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE), ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
@@ -312,21 +306,16 @@ public class TargetContentsPresenter implements
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (configHolder.isEscClosesEditor() && !keyShortcutPresenter.getDisplay().isShowing())
+            if (configuration.isEscClosesEditor() && !keyShortcutPresenter.getDisplay().isShowing())
             {
                onCancel();
             }
          }
       });
 
-      if (configHolder.isEscClosesEditor())
+      if (configuration.isEscClosesEditor())
       {
-         escClosesEditorRegistered = true;
          escClosesEditorHandlerRegistration = keyShortcutPresenter.register(escClosesEditorShortcut);
-      }
-      else
-      {
-         escClosesEditorRegistered = false;
       }
 
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'G'), ShortcutContext.Edit, messages.copyFromSource(), new KeyShortcutEventHandler()
@@ -532,7 +521,7 @@ public class TargetContentsPresenter implements
    @Override
    public boolean isDisplayButtons()
    {
-      return configHolder.isDisplayButtons() && !userWorkspaceContext.hasReadOnlyAccess();
+      return configuration.isDisplayButtons() && !userWorkspaceContext.hasReadOnlyAccess();
    }
 
    @Override
@@ -588,17 +577,49 @@ public class TargetContentsPresenter implements
    @Override
    public void onValueChanged(UserConfigChangeEvent event)
    {
-      // TODO optimise a bit. If some config hasn't changed or not relevant in
+      UserConfigHolder.ConfigurationState oldState = configuration;
+      configuration = configHolder.getState();
+
+      // If some config hasn't changed or not relevant in
       // this context, don't bother doing anything
-      display.showButtons(configHolder.isDisplayButtons());
-      for (ToggleEditor editor : display.getEditors())
+      changeDisplayButtons(oldState);
+      changeEnterSavesApproved(oldState);
+      changeEscCloseEditor(oldState);
+
+      if (configuration.isButtonFuzzy() && !configuration.isButtonUntranslated())
       {
-         editor.showCopySourceButton(configHolder.isDisplayButtons());
+         nextStateShortcut.setDescription(messages.nextFuzzy());
+         prevStateShortcut.setDescription(messages.prevFuzzy());
+      }
+      else if (configuration.isButtonUntranslated() && !configuration.isButtonFuzzy())
+      {
+         nextStateShortcut.setDescription(messages.nextUntranslated());
+         prevStateShortcut.setDescription(messages.prevUntranslated());
+      }
+      else if (configuration.isButtonUntranslated() && configuration.isButtonFuzzy())
+      {
+         nextStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
+         prevStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
       }
 
-      boolean enterSavesApproved = configHolder.isEnterSavesApproved();
-      if (enterSavesApproved != enterSavesApprovedRegistered)
+   }
+
+   private void changeDisplayButtons(UserConfigHolder.ConfigurationState oldState)
+   {
+      if (oldState.isDisplayButtons() != configuration.isDisplayButtons())
       {
+         for (TargetContentsDisplay contentsDisplay : displayList)
+         {
+            contentsDisplay.showButtons(configuration.isDisplayButtons());
+         }
+      }
+   }
+
+   private void changeEnterSavesApproved(UserConfigHolder.ConfigurationState oldState)
+   {
+      if (oldState.isEnterSavesApproved() != configuration.isEnterSavesApproved())
+      {
+         boolean enterSavesApproved = configuration.isEnterSavesApproved();
          if (enterSavesApproved)
          {
             enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
@@ -610,12 +631,14 @@ public class TargetContentsPresenter implements
                enterSavesApprovedHandlerRegistration.removeHandler();
             }
          }
-         enterSavesApprovedRegistered = enterSavesApproved;
       }
+   }
 
-      boolean escClosesEditor = configHolder.isEscClosesEditor();
-      if (escClosesEditor != escClosesEditorRegistered)
+   private void changeEscCloseEditor(UserConfigHolder.ConfigurationState oldState)
+   {
+      if (oldState.isEscClosesEditor() != configuration.isEscClosesEditor())
       {
+         boolean escClosesEditor = configuration.isEscClosesEditor();
          if (escClosesEditor)
          {
             escClosesEditorHandlerRegistration = keyShortcutPresenter.register(escClosesEditorShortcut);
@@ -627,26 +650,7 @@ public class TargetContentsPresenter implements
                escClosesEditorHandlerRegistration.removeHandler();
             }
          }
-         escClosesEditorRegistered = escClosesEditor;
       }
-
-
-      if (configHolder.isButtonFuzzy() && !configHolder.isButtonUntranslated())
-      {
-         nextStateShortcut.setDescription(messages.nextFuzzy());
-         prevStateShortcut.setDescription(messages.prevFuzzy());
-      }
-      else if (configHolder.isButtonUntranslated() && !configHolder.isButtonFuzzy())
-      {
-         nextStateShortcut.setDescription(messages.nextUntranslated());
-         prevStateShortcut.setDescription(messages.prevUntranslated());
-      }
-      else if (configHolder.isButtonUntranslated() && configHolder.isButtonFuzzy())
-      {
-         nextStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
-         prevStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
-      }
-
    }
 
    @Override
@@ -805,6 +809,7 @@ public class TargetContentsPresenter implements
       if (display != null)
       {
          display.updateCachedAndInEditorTargets(targets);
+         display.setFindMessage(findMessage);
       }
    }
 }

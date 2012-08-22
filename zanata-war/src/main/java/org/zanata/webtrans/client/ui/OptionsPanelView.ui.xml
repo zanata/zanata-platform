@@ -57,7 +57,7 @@
                         <g:VerticalPanel ui:field="contentPanel" width="100%">
                             <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
                             <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
-                            <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
+                            <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key cancel edit</ui:msg></g:CheckBox>
 
                             <g:Label ui:field="filterHeader" styleName="{style.subheader}"><ui:msg>Message Filters:</ui:msg></g:Label>
                             <g:cell><g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox></g:cell>					                

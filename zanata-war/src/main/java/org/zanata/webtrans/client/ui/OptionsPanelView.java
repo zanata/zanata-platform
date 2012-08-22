@@ -22,7 +22,6 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
@@ -64,7 +63,7 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
    private double validationPanelHeight = 200;
 
    @Inject
-   public OptionsPanelView(WebTransMessages messages, ValidationOptionsPresenter.Display validationOptionsView)
+   public OptionsPanelView(ValidationOptionsPresenter.Display validationOptionsView)
    {
       initWidget(uiBinder.createAndBindUi(this));
       validationOptionsContainer.add(validationOptionsView.asWidget());
