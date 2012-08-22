@@ -16,7 +16,6 @@
 
 package org.zanata.webtrans.client.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -33,7 +32,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -68,11 +67,9 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
    Label headerLabel;
 
    @UiField
-   FlowPanel contentPanel;
-
-   @UiField
    Anchor runValidationAnchor;
 
+   @UiField
    VerticalPanel contents;
 
    @UiField
@@ -84,8 +81,6 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
    @UiField
    TableResources images;
 
-   private boolean collapsible;
-   private List<String> errors = new ArrayList<String>();
    private final EventBus eventBus;
 
    @UiField
@@ -95,12 +90,9 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
    public ValidationMessagePanelView(final EventBus eventBus)
    {
       this.eventBus = eventBus;
-      contents = new VerticalPanel();
       initWidget(uiBinder.createAndBindUi(this));
       runValidationAnchor.setText(messages.runValidation());
-      setCollapsible(true);
       setHeaderText(messages.validationWarningsHeading(0));
-      collapse();
    }
 
    private void setHeaderText(String header)
@@ -111,28 +103,11 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
    @Override
    public void clear()
    {
-      contentPanel.clear();
       contents.clear();
-      collapse();
       setHeaderText(messages.validationWarningsHeading(0));
    }
 
-   @UiHandler("headerLabel")
-   public void onHeaderClick(ClickEvent event)
-   {
-      if (collapsible)
-      {
-         if (!contentPanel.isVisible())
-         {
-            expand();
-         }
-         else if (contentPanel.isVisible())
-         {
-            collapse();
-         }
-      }
-   }
-
+   // TODO do we need below two handlers? we already do validation on focus and other scenarios
    @UiHandler("runValidationAnchor")
    public void onClick(ClickEvent event)
    {
@@ -145,58 +120,21 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
       eventBus.fireEvent(new RequestValidationEvent());
    }
 
-   public void expand()
-   {
-      if (contents.getWidgetCount() > 0)
-      {
-         contentPanel.setHeight("95px");
-         contentPanel.setVisible(true);
-      }
-   }
-
-   public void collapse()
-   {
-      contentPanel.setHeight("0px");
-      contentPanel.setVisible(false);
-   }
-
-   public void setCollapsible(boolean collapsible)
-   {
-      this.collapsible = collapsible;
-      if (collapsible)
-      {
-         headerLabel.setStyleName(style.clickable());
-      }
-      else
-      {
-         headerLabel.setStyleName(style.label());
-      }
-   }
-
-   public List<String> getErrors()
-   {
-      return errors;
-   }
-
    @Override
    public void updateValidationWarning(List<String> errors)
    {
-      this.errors = errors;
       if (errors == null || errors.isEmpty())
       {
          clear();
          return;
       }
-      contentPanel.clear();
       contents.clear();
 
       for (String error : errors)
       {
          contents.add(new Label(error));
       }
-      contentPanel.add(contents);
       setHeaderText(messages.validationWarningsHeading(errors.size()));
-      expand();
    }
 
 }

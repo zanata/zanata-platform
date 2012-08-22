@@ -17,7 +17,7 @@
 				font-weight: bold;
 				font-style: normal;
 			}
-			
+
 			.clickable {
 				cursor: pointer;
 				font-size: 11px;
@@ -47,26 +47,30 @@
 
 	
 
-	<g:VerticalPanel styleName="{style.container}">
-		<g:HorizontalPanel styleName="{style.header}">
-			<g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
-				<g:Label ui:field="headerLabel" />
-			</g:cell>
-			<g:cell horizontalAlignment="ALIGN_RIGHT" width="95px" verticalAlignment="ALIGN_MIDDLE">
-				<g:Anchor ui:field="runValidationAnchor" styleName="{style.clickable}"/>
-			</g:cell>
-			<g:cell horizontalAlignment="ALIGN_RIGHT" width="16px" verticalAlignment="ALIGN_MIDDLE">
-				<g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">
-					<g:upFace image="{images.cellEditorValidate}" />
-				</g:PushButton>
-			</g:cell>
-		</g:HorizontalPanel>
+	<g:DisclosurePanel styleName="{style.container}" animationEnabled="true">
+        <g:customHeader>
+            <g:HorizontalPanel styleName="{style.header}">
+                <g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
+                    <g:Label ui:field="headerLabel" styleName="{style.label}" />
+                </g:cell>
+                <g:cell horizontalAlignment="ALIGN_RIGHT" width="95px" verticalAlignment="ALIGN_MIDDLE">
+                    <g:Anchor ui:field="runValidationAnchor" styleName="{style.clickable}"/>
+                </g:cell>
+                <g:cell horizontalAlignment="ALIGN_RIGHT" width="16px" verticalAlignment="ALIGN_MIDDLE">
+                    <g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">
+                        <g:upFace image="{images.cellEditorValidate}" />
+                    </g:PushButton>
+                </g:cell>
+            </g:HorizontalPanel>
+        </g:customHeader>
 
 		<g:ScrollPanel styleName="{style.scrollSection}">
-			<g:FlowPanel ui:field="contentPanel" styleName="{style.content}" />
+			<g:FlowPanel styleName="{style.content}" >
+                <g:VerticalPanel ui:field="contents" />
+			</g:FlowPanel>
 		</g:ScrollPanel>
 
-	</g:VerticalPanel>
+	</g:DisclosurePanel>
 
 
 
