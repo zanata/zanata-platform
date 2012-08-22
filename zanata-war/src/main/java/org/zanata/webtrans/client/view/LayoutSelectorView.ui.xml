@@ -52,22 +52,13 @@
 			opacity:1.0;
 		}
 		
-		.optionTD
-		{
-			-webkit-transform:rotate(90deg);
-			-moz-transform:rotate(90deg);
-			-o-transform: rotate(90deg);
-		}
-		
 	</ui:style>
 	
 	<g:VerticalPanel styleName="{style.container}" horizontalAlignment="ALIGN_CENTER">
 		<g:cell>
 			<g:HorizontalPanel ui:field="layoutList" styleName="{style.layoutList}" verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_CENTER">
-					<g:FocusPanel ui:field="maximizeLayoutContainer" styleName="{style.layoutContainer}"/>
 					<g:FocusPanel ui:field="defaultLayoutContainer" styleName="{style.layoutContainer}"/>
-					<g:FocusPanel ui:field="noOptionLayoutContainer" styleName="{style.layoutContainer}"/>
-					<g:FocusPanel ui:field="noSouthLayoutContainer" styleName="{style.layoutContainer}"/>
+					<g:FocusPanel ui:field="maximizeLayoutContainer" styleName="{style.layoutContainer}"/>
 			</g:HorizontalPanel>
 		</g:cell>
 	</g:VerticalPanel>

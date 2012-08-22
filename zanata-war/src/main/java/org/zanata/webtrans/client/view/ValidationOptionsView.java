@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -11,6 +12,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class ValidationOptionsView extends Composite implements ValidationOptionsPresenter.Display
 {
@@ -27,9 +29,11 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    @UiField
    VerticalPanel contentPanel;
 
-   public ValidationOptionsView()
+   @Inject
+   public ValidationOptionsView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
+      header.setText(messages.validationOptions());
    }
 
    @Override

@@ -80,8 +80,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getNotificationBtn();
 
-      void setLayoutMenuVisible(boolean visible);
-
       void setNotificationText(int count, Severity severity);
 
       void showNotificationAlert();
@@ -93,6 +91,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       HasClickHandlers getChatRoomButton();
 
       HasClickHandlers getOptionsButton();
+
+      void setOptionVisible(boolean visible);
+
+      HasClickHandlers getResizeButton();
+
+      boolean getAndToggleResizeButton();
+
+      void setResizeVisible(boolean visible);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -279,6 +285,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
+      display.getResizeButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            boolean expended = display.getAndToggleResizeButton();
+            translationPresenter.setSouthPanelExpanded(expended);
+         }
+      });
+
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), new PresenterRevealedHandler()
       {
 
@@ -419,7 +435,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = selectedDocumentStats;
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
-            display.setLayoutMenuVisible(true);
+            display.setOptionVisible(true);
+            display.setResizeVisible(true);
             break;
          case Search:
             // these two lines temporarily here until PresenterRevealedHandler
@@ -429,7 +446,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
-            display.setLayoutMenuVisible(false);
+            display.setOptionVisible(false);
+            display.setResizeVisible(false);
             break;
          case Documents:
          default:
@@ -439,7 +457,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
-            display.setLayoutMenuVisible(false);
+            display.setOptionVisible(false);
+            display.setResizeVisible(false);
             break;
          }
          display.showInMainView(viewToShow);

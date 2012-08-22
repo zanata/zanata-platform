@@ -26,28 +26,26 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class OptionsPanelView extends Composite implements OptionsPanelPresenter.Display
+public class OptionsPanelView extends DialogBox implements OptionsPanelPresenter.Display
 {
    private static OptionsPanelUiBinder uiBinder = GWT.create(OptionsPanelUiBinder.class);
 
-   interface OptionsPanelUiBinder extends UiBinder<SplitLayoutPanel, OptionsPanelView>
+   interface OptionsPanelUiBinder extends UiBinder<Widget, OptionsPanelView>
    {
    }
-
-   @UiField
-   SplitLayoutPanel mainPanel;
 
    @UiField
    LayoutPanel editorOptionsContainer, validationOptionsContainer;
@@ -56,17 +54,25 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
    CheckBox translatedChk, needReviewChk, untranslatedChk, enterChk, escChk, editorButtonsChk;
 
    @UiField
-   Label navOptionHeader;
+   Label navOptionHeader, editorOptionHeader, filterHeader;
 
    @UiField
    ListBox optionsList;
 
+   @UiField
+   PushButton closeButton;
+
    @Inject
    public OptionsPanelView(WebTransMessages messages, ValidationOptionsPresenter.Display validationOptionsView)
    {
-      initWidget(uiBinder.createAndBindUi(this));
+      super(false, false);
+      addStyleName("optionsPanel");
+      setWidget(uiBinder.createAndBindUi(this));
       validationOptionsContainer.add(validationOptionsView.asWidget());
-
+      editorOptionHeader.setText(messages.editorOptions());
+      filterHeader.setText(messages.messageFilters());
+      navOptionHeader.setText(messages.navOption());
+      closeButton.setText(messages.close());
       populateOptionsList();
    }
 
@@ -133,6 +139,12 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
    public HasChangeHandlers getModalNavigationOptionsSelect()
    {
       return optionsList;
+   }
+
+   @Override
+   public HasClickHandlers getCloseButton()
+   {
+      return closeButton;
    }
 
    @Override

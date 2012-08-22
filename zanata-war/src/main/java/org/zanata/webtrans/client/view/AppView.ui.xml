@@ -20,7 +20,7 @@
 		
 		.container
 		{
-			margin:5px 25px;
+			margin:5px 25px 3px 25px;
 		}
 		
 		.topPanel-Navigation {
@@ -78,6 +78,7 @@
 		
 		.notificationLabel
 		{
+			text-align:center;
 			font-size: 10px;
 		    font-weight: bold;
 		    color: white;
@@ -88,6 +89,7 @@
 		    border-radius: 2px;
 		    min-width:10px;
 		    z-index:900;
+		    right:15px;
 		}
 		
 		.hasWarning
@@ -113,11 +115,23 @@
             color:#0085CC;
 		}
 		
+		.sideMenuButton
+		{
+            cursor: pointer;
+            font-size:20px;
+            color:#4E4E4E;
+		}
+		
+		.sideMenuButton:hover
+		{
+            color:#0085CC;
+		}
+		
 	</ui:style>
 	<g:LayoutPanel stylePrimaryName="{style.rootContainer}">
 		<g:layer top="0px" height="30px">
 			<g:LayoutPanel styleName="subHeader">
-				<g:layer left="5px" right="5px">
+				<g:layer left="25px" right="25px">
 					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE">
 						<g:cell>
 							<g:HTMLPanel styleName="{style.topPanel-Workspace}">
@@ -134,26 +148,19 @@
 						<g:cell width="200px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
-	                    	<g:InlineLabel ui:field="searchAndReplace" styleName="icon-search {style.topMenuButton}"/> 
-	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
-	                        <g:InlineLabel ui:field="documentList" styleName="icon-list {style.topMenuButton}"/> 
-	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
-	                    	<g:InlineLabel ui:field="keyShortcuts" styleName="icon-keyboard {style.topMenuButton}"/> 
-	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
-	                    	<g:InlineLabel ui:field="options" styleName="icon-cog {style.topMenuButton}"/> 
-	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="24px">
-	                    	<g:InlineLabel ui:field="userChat" styleName="icon-chat-1 {style.topMenuButton}"/> 
-	                    </g:cell>
-	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="24px">
-	                    	<g:HTMLPanel>
-	                    			<g:Label ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
-	                    			 <g:InlineLabel ui:field="notification" styleName="icon-bell {style.topMenuButton}"/> 
-	                    	</g:HTMLPanel>
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="120px" horizontalAlignment="ALIGN_RIGHT">
+	                    	<g:FlowPanel width="100%">
+	                    			<g:InlineLabel ui:field="searchAndReplace" styleName="icon-search {style.topMenuButton}"/> 
+	                    		
+	                    			<g:InlineLabel ui:field="documentList" styleName="icon-list {style.topMenuButton}"/>
+	                    		
+	                    			<g:InlineLabel ui:field="keyShortcuts" styleName="icon-keyboard {style.topMenuButton}"/>
+	                    			
+	                    			<g:InlineLabel ui:field="userChat" styleName="icon-chat-1 {style.topMenuButton}"/>
+	                    			
+	                    			<g:InlineLabel ui:field="notification" styleName="icon-bell {style.topMenuButton}"/> 
+	                    			<g:InlineLabel ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
+	                    	</g:FlowPanel>
 	                    </g:cell>
 					</g:HorizontalPanel>
 				</g:layer>
@@ -161,6 +168,17 @@
 		</g:layer>
 		<g:layer top="30px" bottom="0px" left='0px' right='0px' >
 		   <g:LayoutPanel ui:field="container" styleName="{style.container}"/>
+		</g:layer>
+		
+		<g:layer right="-477px" width="500px" top="35px" bottom="10px">
+			<g:LayoutPanel>
+				<g:layer top="0" bottom="0">
+					<g:InlineLabel ui:field="options" styleName="icon-cog {style.sideMenuButton}"/> 
+				</g:layer>
+				<g:layer top = "25px" bottom="0">
+					<g:InlineLabel ui:field="resize" styleName="{style.sideMenuButton}"/> 
+				</g:layer>
+			</g:LayoutPanel>
 		</g:layer>
 	</g:LayoutPanel>
 </ui:UiBinder>

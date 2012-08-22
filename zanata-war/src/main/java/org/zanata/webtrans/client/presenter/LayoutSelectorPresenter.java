@@ -52,10 +52,6 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
       HasClickHandlers getDefaultLayoutContainer();
 
       HasClickHandlers getMaximiseLayoutContainer();
-
-      HasClickHandlers getNoOptionLayoutContainer();
-
-      HasClickHandlers getNoSouthLayoutContainer();
    }
 
    private HasLayoutSelection layoutSelection;
@@ -70,40 +66,16 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
          @Override
          public void onClick(ClickEvent event)
          {
-            layoutSelection.setSidePanelVisible(true);
             layoutSelection.setSouthPanelVisible(true);
             display.hide();
          }
       }));
-      
+
       registerHandler(display.getMaximiseLayoutContainer().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            layoutSelection.setSidePanelVisible(false);
-            layoutSelection.setSouthPanelVisible(false);
-            display.hide();
-         }
-      }));
-      
-      registerHandler(display.getNoOptionLayoutContainer().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            layoutSelection.setSidePanelVisible(false);
-            layoutSelection.setSouthPanelVisible(true);
-            display.hide();
-         }
-      }));
-      
-      registerHandler(display.getNoSouthLayoutContainer().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            layoutSelection.setSidePanelVisible(true);
             layoutSelection.setSouthPanelVisible(false);
             display.hide();
          }

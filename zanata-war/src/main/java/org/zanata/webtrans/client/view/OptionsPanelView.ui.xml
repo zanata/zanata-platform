@@ -5,29 +5,38 @@
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources" />
 
 	<ui:style>
-		.sidePanel {
-			background-color: #ffffff;
-			border: 2px solid #e0e8ee;
+		.mainPanel {
+			background-color: #303030;
+			color:#FFFFFF;
+			width:450px;
+			height:380px;
 			border-radius: 5px;
-			-moz-border-radius:5px;
+			box-shadow:0px 0px 8px #808080;
+			padding:15px;
+			opacity:0.9;
+			border-bottom-left-radius:5px;
+			border-bottom-right-radius:5px;
+		}
+		
+		.mainPanel table td {
+			font-size:14px;
+			padding:3px;
+			border-radius:5px;
+		}
+		
+		.mainPanel select
+		{
+			color:#000000;
 		}
 
          .header {
             font-weight:bold;
-            font-size:13px;
-            background:#4a75b5;
+            font-size:14px;
             text-align:center;
-            color:#FFFFFF;
-            width:100%;
-            border-radius:3px;
-            -moz-border-radius:3px;
-            height:17px;
-        }
-
-        .subheader{
-	       padding-top:10px;
-	       padding-left:5px;
-	       font-weight:bold;
+            border-radius:5px;
+            padding:5px 0;
+            border-radius:5px;
+            border:1px dotted gray;
         }
 
         .translated {
@@ -44,38 +53,62 @@
 	       border-left:3px solid #e5e5e5;
            margin-left:5px;
         }
+        
+        .closeButton
+        {
+			color:#FFFFFF;
+			font-weight:bold;
+			padding:5px;
+			border:2px solid gray;
+			border-radius:8px;
+			text-align:center;
+			cursor:pointer;
+			outline:none;
+		}
+		
+		.closeButton:hover
+        {
+			color:#323232;
+			background:#C8C8C8;
+		}	
+		
 	</ui:style>
 	
-	
-    <g:SplitLayoutPanel ui:field="mainPanel" styleName="{style.sidePanel}">
-        <g:center size="200" min-height="20px">
-            <g:LayoutPanel ui:field="editorOptionsContainer">
-                <g:layer>
-                <g:ScrollPanel>
-                    <g:VerticalPanel width="100%">
-                        <g:Label ui:field="header" styleName="{style.header}"><ui:msg>Editor Options</ui:msg></g:Label>
-                        <g:VerticalPanel ui:field="contentPanel" width="100%">
-                            <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
-                            <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
-                            <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
-
-                            <g:Label ui:field="filterHeader" styleName="{style.subheader}"><ui:msg>Message Filters:</ui:msg></g:Label>
-                            <g:cell><g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox></g:cell>					                
-                            <g:cell><g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox></g:cell>
-                            <g:cell><g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox></g:cell>
-
-                            <g:Label ui:field="navOptionHeader" styleName="{style.subheader}"><ui:msg>Navigation key/button:</ui:msg></g:Label>
-                            <g:cell><g:ListBox ui:field="optionsList"/></g:cell>
-                        </g:VerticalPanel>
-                    </g:VerticalPanel>
-                </g:ScrollPanel>
+    <g:LayoutPanel styleName="{style.mainPanel}">
+    	<g:layer>
+    		<g:LayoutPanel ui:field="editorOptionsContainer">
+                <g:layer top="5px" height="120px" left="0" width="220px">
+	        		<g:VerticalPanel width="100%">
+	                    <g:Label ui:field="editorOptionHeader" styleName="{style.header}"/>
+	                    <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
+	                    <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
+	                    <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
+	                </g:VerticalPanel>
+                </g:layer>
+                <g:layer left="230px" width="220px" top="5px" height="120px">
+                	<g:VerticalPanel width="100%">
+                		 <g:Label ui:field="filterHeader" styleName="{style.header}"/>
+                         <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
+                         <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
+                         <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
+                	</g:VerticalPanel>
+                </g:layer>
+                <g:layer top="130px" height="35px" left="0" right="0px">
+                	<g:HorizontalPanel width="100%" verticalAlignment="ALIGN_MIDDLE"> 
+                	 	<g:Label ui:field="navOptionHeader" styleName="{style.header}"/>
+                     	<g:ListBox ui:field="optionsList"/>
+                    </g:HorizontalPanel>
                 </g:layer>
             </g:LayoutPanel>
-        </g:center>
-        <g:south size="200" min-height="20px">
-	               <g:LayoutPanel ui:field="validationOptionsContainer"/>
-        </g:south>
-    </g:SplitLayoutPanel>
-
+    	</g:layer>
+    	
+    	<g:layer top="175px" bottom="0">
+    		<g:LayoutPanel ui:field="validationOptionsContainer"/>
+    	</g:layer>
+    	
+    	<g:layer top="362px" height="30px" left="386px" width="75px" >
+    		<g:PushButton ui:field="closeButton" styleName="{style.closeButton}"/>
+    	</g:layer>
+    </g:LayoutPanel>
 
 </ui:UiBinder> 

@@ -876,6 +876,34 @@ td.ApprovedStateDecoration div div div
 	max-height:350px;
 }
 
+.optionsPanel
+{
+}
+
+.optionsPanel
+{
+	opacity:0.9;
+}
+
+.optionsPanel .Caption
+{
+	border-top:none;
+	background:#303030;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	
+}
+
+.optionsPanel .dialogMiddleCenter
+{
+	padding:0px;
+}
+
+.optionsPanel .dialogTopRight, .optionsPanel .dialogTopLeft, .optionsPanel .dialogMiddleLeft, .optionsPanel .dialogMiddleRight, .optionsPanel .dialogBottomLeft, .optionsPanel .dialogBottomRight, .optionsPanel .dialogBottomCenter
+{
+	background:none;
+}
+
 .keyShortcutPanel
 {
 	border:none;

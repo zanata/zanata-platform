@@ -43,7 +43,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -66,10 +65,10 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel readOnlyLabel, documentsLink, notification, keyShortcuts, options, userChat;
+   InlineLabel readOnlyLabel, documentsLink, resize, notification, keyShortcuts, options, userChat;
    
    @UiField
-   Label notificationLabel;
+   InlineLabel notificationLabel;
 
    @UiField
    InlineLabel searchAndReplace, documentList;
@@ -93,6 +92,9 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private final WebTransMessages messages;
    
+   private final static String STYLE_MAXIMIZE = "icon-resize-full-3";
+   private final static String STYLE_MINIMIZE = "icon-resize-small-2";
+
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
    {
@@ -114,6 +116,8 @@ public class AppView extends Composite implements AppPresenter.Display
       notification.setTitle(messages.notification());
       options.setTitle(messages.options());
       userChat.setTitle(messages.chatRoom());
+      resize.setTitle(messages.maximize());
+      resize.addStyleName(STYLE_MAXIMIZE);
 
       this.documentListView = documentListView.asWidget();
       this.container.add(this.documentListView);
@@ -240,8 +244,32 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setLayoutMenuVisible(boolean visible)
+   public HasClickHandlers getResizeButton()
    {
+      return resize;
+   }
+
+   /**
+    * return false if to be maximise, true for minimise
+    * 
+    */
+   @Override
+   public boolean getAndToggleResizeButton()
+   {
+      if (resize.getStyleName().contains(STYLE_MAXIMIZE))
+      {
+         resize.removeStyleName(STYLE_MAXIMIZE);
+         resize.addStyleName(STYLE_MINIMIZE);
+         resize.setTitle(messages.minimize());
+         return false;
+      }
+      else
+      {
+         resize.removeStyleName(STYLE_MINIMIZE);
+         resize.addStyleName(STYLE_MAXIMIZE);
+         resize.setTitle(messages.maximize());
+         return true;
+      }
    }
 
    @Override
@@ -254,12 +282,23 @@ public class AppView extends Composite implements AppPresenter.Display
    public void showNotificationAlert()
    {
       notification.addStyleName(style.hasWarning());
-      
    }
 
    @Override
    public void cancelNotificationAlert()
    {
       notification.removeStyleName(style.hasWarning());
+   }
+
+   @Override
+   public void setOptionVisible(boolean visible)
+   {
+      options.setVisible(visible);
+   }
+
+   @Override
+   public void setResizeVisible(boolean visible)
+   {
+      resize.setVisible(visible);
    }
 }

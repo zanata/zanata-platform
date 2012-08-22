@@ -36,7 +36,10 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
@@ -70,7 +73,11 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
       String getSelectedFilter();
 
-      void setVisible(boolean visible);
+      void center();
+
+      void hide();
+
+      HasClickHandlers getCloseButton();
    }
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
@@ -187,6 +194,15 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
             eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
+      
+      registerHandler(display.getCloseButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.hide();
+         }
+      }));
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -227,7 +243,14 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
    public void setVisible(boolean visible)
    {
-      display.setVisible(visible);
+      if (visible)
+      {
+         display.center();
+      }
+      else
+      {
+         display.hide();
+      }
    }
 
 }

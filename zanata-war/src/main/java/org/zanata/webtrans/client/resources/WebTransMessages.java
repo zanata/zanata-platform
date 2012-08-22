@@ -65,23 +65,11 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Options")
    String options();
 
-   @DefaultMessage("Show Options")
-   String showOptions();
+   @DefaultMessage("Maximise workspace")
+   String maximize();
 
-   @DefaultMessage("Hide Options")
-   String hideOptions();
-
-   @DefaultMessage("▲ Options")
-   String showEditorOptionsLabel();
-
-   @DefaultMessage("▼ Options")
-   String hideEditorOptionsLabel();
-
-   @DefaultMessage("▼ Minimise")
-   String minimiseLabel();
-
-   @DefaultMessage("▲ Restore")
-   String restoreLabel();
+   @DefaultMessage("Restore default")
+   String minimize();
 
    @DefaultMessage("Translation Memory/Glossary")
    String tmGlossaryHeading();
@@ -416,4 +404,19 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Flip entries")
    String flipComparingEntries();
+
+   @DefaultMessage("Editor options")
+   String editorOptions();
+
+   @DefaultMessage("Message filters")
+   String messageFilters();
+
+   @DefaultMessage("Validation options")
+   String validationOptions();
+
+   @DefaultMessage("Navigation key/button")
+   String navOption();
+
+   @DefaultMessage("Close")
+   String close();
 }

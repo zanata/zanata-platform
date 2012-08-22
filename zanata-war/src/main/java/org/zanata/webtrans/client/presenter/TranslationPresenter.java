@@ -54,10 +54,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
 
@@ -74,23 +71,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
        * @param expanded
        */
       void setSouthPanelExpanded(boolean expanded);
-
-      /**
-       * Show or completely hide the south panel. The panel will be
-       * expanded(false) when made visible after being hidden, even if it was
-       * expanded(true) when it was hidden.
-       * 
-       * @param visible
-       */
-      void setSouthPanelVisible(boolean visible);
-
-      void setSidePanelVisible(boolean visible);
-
-      HasValue<Boolean> getOptionsToggle();
-
-      void setOptionsToggleTooltip(String tooltip);
-
-      HasValue<Boolean> getSouthPanelToggle();
 
       boolean isUserPanelOpen();
 
@@ -225,29 +205,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-      registerHandler(display.getOptionsToggle().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            boolean shouldShowOptions = event.getValue();
-            setOptionsExpended(shouldShowOptions);
-         }
-      }));
-
-      registerHandler(display.getSouthPanelToggle().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            boolean shouldShowSouthPanel = event.getValue();
-            setSouthPanelExpanded(shouldShowSouthPanel);
-         }
-      }));
-
       setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-      display.getOptionsToggle().setValue(false, true);
 
       KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
       {
@@ -322,10 +280,9 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          // includes unbinding
          setSouthPanelExpanded(false);
       }
-      display.setSouthPanelVisible(!readOnly);
-      if (!readOnly)
+      else
       {
-         setSouthPanelExpanded(display.getSouthPanelToggle().getValue());
+         setSouthPanelExpanded(true);
       }
    }
 
@@ -336,7 +293,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
     * 
     * @param expanded
     */
-   private void setSouthPanelExpanded(boolean expanded)
+   public void setSouthPanelExpanded(boolean expanded)
    {
       if (expanded == southPanelExpanded)
       {
@@ -360,19 +317,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          unbindSouthPanelPresenters();
       }
    }
-   
-   private void setOptionsExpended(boolean shouldShowOptions){
-      if (shouldShowOptions)
-      {
-         display.setSidePanelVisible(true);
-         display.setOptionsToggleTooltip(messages.hideOptions());
-      }
-      else
-      {
-         display.setSidePanelVisible(false);
-         display.setOptionsToggleTooltip(messages.showOptions());
-      }
-   }
 
    private void bindSouthPanelPresenters()
    {
@@ -391,13 +335,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    public void setSouthPanelVisible(boolean visible)
    {
-      display.getSouthPanelToggle().setValue(visible, true);
-   }
-
-   @Override
-   public void setSidePanelVisible(boolean visible)
-   {
-      display.getOptionsToggle().setValue(visible, true);
+      setSouthPanelExpanded(visible);
    }
 
    public void concealDisplay()
