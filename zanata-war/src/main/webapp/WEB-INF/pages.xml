@@ -28,6 +28,10 @@
      </navigation>
   </page>
 
+  <page view-id="/login/google.xhtml">
+    <action execute="#{fedoraOpenId.setProvider('GOOGLE')}"/>
+  </page>
+
   <page view-id="/edit_home_content.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.server.EditHomePage.label'])}"/>

@@ -48,6 +48,9 @@ import org.openid4java.message.ax.FetchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.security.openid.OpenIdProvider;
+import org.zanata.security.openid.OpenIdProviderFactory;
+import org.zanata.security.openid.OpenIdProviderType;
 
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -74,6 +77,9 @@ public class FedoraOpenId
    private ConsumerManager manager;
    private DiscoveryInformation discovered;
 
+   private OpenIdProviderType providerType = OpenIdProviderType.FEDORA;
+   private OpenIdProvider provider;
+
    public String getId()
    {
       return id;
@@ -84,6 +90,20 @@ public class FedoraOpenId
       this.id = id;
    }
 
+   public OpenIdProviderType getProviderType()
+   {
+      return providerType;
+   }
+
+   public void setProviderType(OpenIdProviderType providerType)
+   {
+      this.providerType = providerType;
+   }
+
+   public void setProvider(String provider)
+   {
+      this.setProviderType( OpenIdProviderType.valueOf(provider) );
+   }
 
    public void login()
    {
@@ -109,14 +129,14 @@ public class FedoraOpenId
          // perform discovery on the user-supplied identifier
          List discoveries = manager.discover(userSuppliedString);
 
-         // attempt to associate with the OpenID provider
+         // attempt to associate with the OpenID providerType
          // and retrieve one service endpoint for authentication
          discovered = manager.associate(discoveries);
 
          // // store the discovery information in the user's session
          // httpReq.getSession().setAttribute("openid-disc", discovered);
 
-         // obtain a AuthRequest message to be sent to the OpenID provider
+         // obtain a AuthRequest message to be sent to the OpenID providerType
          AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
 
          // Attribute Exchange example: fetching the 'email' attribute
@@ -173,7 +193,7 @@ public class FedoraOpenId
       try
       {
          // extract the parameters from the authentication response
-         // (which comes in as a HTTP request from the OpenID provider)
+         // (which comes in as a HTTP request from the OpenID providerType)
          ParameterList response = new ParameterList(httpReq.getParameterMap());
 
          StringBuilder receivingURL = new StringBuilder(returnToUrl());
@@ -245,7 +265,10 @@ public class FedoraOpenId
       try
       {
          String var = "http://" + username + FEDORA_HOST;
-         var = "https://www.google.com/accounts/o8/id";
+         if( providerType == OpenIdProviderType.GOOGLE )
+         {
+            var = "https://www.google.com/accounts/o8/id";
+         }
          setId(var);
          LOGGER.info("openid: {}", getId());
          login();

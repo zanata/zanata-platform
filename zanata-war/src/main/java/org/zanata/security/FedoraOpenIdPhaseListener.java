@@ -43,6 +43,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
    public void beforePhase(PhaseEvent event)
    {
       String viewId = Pages.getCurrentViewId();
+      event.getFacesContext().getExternalContext().getRequestParameterMap();
 
       if (viewId == null || !viewId.startsWith("/openid."))
       {
