@@ -1,9 +1,9 @@
 package org.zanata.action;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -51,8 +51,9 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
 
    private FullTextSession session;
 
-   private Set<Class<?>> indexables = new HashSet<Class<?>>();
-   private HashMap<Class<?>, ReindexClassOptions> indexingOptions = new HashMap<Class<?>, ReindexClassOptions>();
+   // we use a list to ensure predictable order
+   private List<Class<?>> indexables = new ArrayList<Class<?>>();
+   private LinkedHashMap<Class<?>, ReindexClassOptions> indexingOptions = new LinkedHashMap<Class<?>, ReindexClassOptions>();
    private Class<?> currentClass;
 
    private ReindexProcessHandle handle;
@@ -64,15 +65,16 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
       handle.setMaxProgress(0); //prevent progress indicator showing before first reindex
       handle.setHasError(false);
 
-      // TODO: find a version of this that works:
-      // indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
-      indexables.add(HIterationProject.class);
       indexables.add(HAccount.class);
-      indexables.add(HTextFlow.class);
-      indexables.add(HProjectIteration.class);
-      indexables.add(HTextFlowTarget.class);
-      indexables.add(HGlossaryTerm.class);
       indexables.add(HGlossaryEntry.class);
+      indexables.add(HGlossaryTerm.class);
+      indexables.add(HIterationProject.class);
+      indexables.add(HProjectIteration.class);
+
+      // NB we put the largest tables at the bottom, so that the small
+      // tables can be indexed early
+      indexables.add(HTextFlow.class);
+      indexables.add(HTextFlowTarget.class);
 
       for (Class<?> clazz : indexables)
       {
@@ -108,9 +110,14 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
       }
    }
 
-   public Collection<ReindexClassOptions> getReindexOptions()
+   public List<ReindexClassOptions> getReindexOptions()
    {
-      return indexingOptions.values();
+      List<ReindexClassOptions> result = new ArrayList<ReindexClassOptions>();
+      for (Class<?> clazz : indexingOptions.keySet())
+      {
+         result.add(indexingOptions.get(clazz));
+      }
+      return result;
    }
 
    public ReindexProcessHandle getProcessHandle()

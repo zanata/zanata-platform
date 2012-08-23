@@ -52,6 +52,21 @@ public class ReindexClassOptions
       this.optimize = optimize;
    }
 
+   public void setSelectAll(boolean selectAll)
+   {
+      setPurge(selectAll);
+      setReindex(selectAll);
+      setOptimize(selectAll);
+   }
+
+   /**
+    * Returns true only if all other boolean properties (purge, reindex, optimize) are true
+    * @return
+    */
+   public boolean getSelectAll()
+   {
+      return isPurge() && isReindex() && isOptimize();
+   }
 
 
 }

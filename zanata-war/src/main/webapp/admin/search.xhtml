@@ -20,21 +20,40 @@
                 <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
                                 value="#{reindexAction.classes.toArray()}" var="clazz"
                                 reRender="actions">
-                  <rich:column width="270px" sortBy="#{clazz.className}" sortOrder="ASCENDING" selfSorted="false">
+                  <rich:column width="auto" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.manageSearch.AllActions']}</f:facet>
+                    <h:selectBooleanCheckbox value="#{clazz.selectAll}">
+                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                    </h:selectBooleanCheckbox>
+                  </rich:column>
+                  <rich:column width="270px">
                     <f:facet name="header">#{messages['jsf.manageSearch.Table']}</f:facet>
+                    <f:facet name="footer">#{messages['jsf.manageSearch.AllTables']}</f:facet>
                     <h:outputText value="#{clazz.className}" />
                   </rich:column>
-                  <rich:column width="auto" styleClass="centered">
+                  <rich:column width="auto" styleClass="centered" footerClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.purge']}</f:facet>
+                    <f:facet name="footer">
+                      <h:selectBooleanCheckbox value="#{reindexAction.purgeAll}">
+                         <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                      </h:selectBooleanCheckbox>
+                    </f:facet>
                     <rich:toolTip showDelay="800" styleClass="leftalign">
                       <p>#{messages['jsf.manageSearch.purge.Description']}</p>
                       <p>#{messages['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
                       <p>#{messages['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
                     </rich:toolTip>
-                    <h:selectBooleanCheckbox value="#{clazz.purge}" />
+                    <h:selectBooleanCheckbox value="#{clazz.purge}">
+                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                    </h:selectBooleanCheckbox>
                   </rich:column>
-                  <rich:column width="auto" styleClass="centered">
+                  <rich:column width="auto" styleClass="centered" footerClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.reindex']}</f:facet>
+                    <f:facet name="footer">
+                      <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}">
+                         <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                      </h:selectBooleanCheckbox>
+                    </f:facet>
                     <rich:toolTip showDelay="800" styleClass="leftalign">
                       <p>#{messages['jsf.manageSearch.reindex.Description']}</p>
                       <p>#{messages['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
@@ -43,17 +62,26 @@
                       <p><em>#{messages['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em></p>
                       <p><em>#{messages['jsf.manageSearch.reindex.RunDuringOffPeak']}</em></p>
                     </rich:toolTip>
-                    <h:selectBooleanCheckbox value="#{clazz.reindex}" />
+                    <h:selectBooleanCheckbox value="#{clazz.reindex}">
+                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                    </h:selectBooleanCheckbox>
                   </rich:column>
-                  <rich:column width="auto" styleClass="centered">
+                  <rich:column width="auto" styleClass="centered" footerClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.optimize']}</f:facet>
+                    <f:facet name="footer">
+                      <h:selectBooleanCheckbox value="#{reindexAction.optimizeAll}">
+                         <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                      </h:selectBooleanCheckbox>
+                    </f:facet>
                     <rich:toolTip showDelay="800" styleClass="leftalign">
                       <p>#{messages['jsf.manageSearch.optimize.Description']}</p>
                       <p>#{messages['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
                       <p>#{messages['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
                       <p><em>#{messages['jsf.manageSearch.optimize.TempFileWarning']}</em></p>
                     </rich:toolTip>
-                    <h:selectBooleanCheckbox value="#{clazz.optimize}" />
+                    <h:selectBooleanCheckbox value="#{clazz.optimize}">
+                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                    </h:selectBooleanCheckbox>
                   </rich:column>
                 </rich:dataTable>
 
