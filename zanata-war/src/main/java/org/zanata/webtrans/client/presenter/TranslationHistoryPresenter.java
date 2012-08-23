@@ -71,6 +71,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          @Override
          public void onFailure(Throwable caught)
          {
+            Log.error("failure getting translation history", caught);
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, caught.getMessage()));
             display.hide();
          }
