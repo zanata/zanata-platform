@@ -20,21 +20,37 @@
  */
 package org.zanata.security.openid;
 
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+
 /**
- * Provides instances of Open Id providers.
+ * Manages the Open Id provider to use by the system.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class OpenIdProviderFactory
+@Name("openIdProviderManager")
+@Scope(ScopeType.SESSION)
+@AutoCreate
+public class OpenIdProviderManager
 {
-   public static OpenIdProvider getOpenIdProviderInstace( OpenIdProviderType type )
+   private OpenIdProvider openIdProvider = new FedoraOpenIdProvider();
+
+   @Factory(autoCreate = true)
+   public OpenIdProvider getOpenIdProvider()
    {
-      if( type == OpenIdProviderType.GOOGLE )
-      {
-         return new GoogleOpenIdProvider();
-      }
-      // Default, return fedora
-      // todo return a generic open id provider
-      return new FedoraOpenIdProvider();
+      return openIdProvider;
+   }
+
+   public void useGoogleProvider()
+   {
+      openIdProvider = new GoogleOpenIdProvider();
+   }
+
+   public void useFedoraProvider()
+   {
+      openIdProvider = new FedoraOpenIdProvider();
    }
 }

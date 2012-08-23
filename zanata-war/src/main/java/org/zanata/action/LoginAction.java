@@ -18,44 +18,40 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.security.openid;
+package org.zanata.action;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openid4java.message.MessageException;
-import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.FetchRequest;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
+import org.zanata.security.openid.OpenIdProviderManager;
 
 /**
- * Google Open Id provider.
- *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class GoogleOpenIdProvider implements OpenIdProvider
+@Name("loginAction")
+public class LoginAction
 {
-   @Override
-   public String getOpenId(String username)
-   {
-      return "https://www.google.com/accounts/o8/id";
-   }
+   @In
+   private Identity identity;
 
-   @Override
-   public String extractEmailAddress(ParameterList paramList)
-   {
-      return paramList.getParameterValue("openid.ext1.value.email");
-   }
+   @In
+   private OpenIdProviderManager openIdProviderManager;
 
-   @Override
-   public void prepareFetchRequest(FetchRequest request)
+   @In
+   private Credentials credentials;
+
+   public String logInWithGoogle()
    {
-      try
-      {
-         request.addAttribute("email", "http://schema.openid.net/contact/email", true);
-      }
-      catch (MessageException e)
-      {
-         throw new RuntimeException(e);
-      }
+      // NB: Credentials' user name must be set to something or else login will fail. The real user name will be asked
+      // by the provider
+      credentials.setUsername("google");
+      openIdProviderManager.useGoogleProvider();
+      String loginResult = identity.login();
+
+      // Clear out the credentials again
+      credentials.setUsername("");
+
+      return loginResult;
    }
 }

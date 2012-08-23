@@ -21,12 +21,15 @@
 package org.zanata.security;
 
 import java.util.List;
+import java.util.Map;
 import javax.faces.context.ExternalContext;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -34,6 +37,7 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.openid.OpenIdPrincipal;
 import org.openid4java.OpenIDException;
@@ -57,7 +61,7 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @Name("org.jboss.seam.security.fedoraOpenId")
 @Scope(SESSION)
 @Install(precedence = APPLICATION)
-@BypassInterceptors
+//@BypassInterceptors
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
@@ -69,13 +73,18 @@ public class FedoraOpenId
    private ZanataIdentity identity;
    private ApplicationConfiguration applicationConfiguration;
 
+   @In
+   private EntityManager entityManager;
+
+   @In
+   private Credentials credentials;
+
    private String id;
    private String validatedId;
+   private String validatedEmail;
 
    private ConsumerManager manager;
    private DiscoveryInformation discovered;
-
-   private OpenIdProvider provider;
 
    public String getId()
    {
@@ -85,6 +94,11 @@ public class FedoraOpenId
    public void setId(String id)
    {
       this.id = id;
+   }
+
+   public String getValidatedEmail()
+   {
+      return validatedEmail;
    }
 
    public void login()
@@ -123,9 +137,13 @@ public class FedoraOpenId
 
          // Attribute Exchange example: fetching the 'email' attribute
          FetchRequest fetch = FetchRequest.createFetchRequest();
-         fetch.addAttribute("email", "http://schema.openid.net/contact/email", // type
+         /*fetch.addAttribute("email", "http://schema.openid.net/contact/email", // type
                                                                                // URI
-               true); // required
+               true); // required*/
+
+         // Add the attributes requested by the provider
+         OpenIdProvider provider = (OpenIdProvider)Component.getInstance("openIdProvider", ScopeType.SESSION);
+         provider.prepareFetchRequest(fetch);
 
          // attach the extension to the authentication request
          authReq.addExtension(fetch);
@@ -189,10 +207,15 @@ public class FedoraOpenId
          // (static) instance used to place the authentication request
          VerificationResult verification = manager.verify(receivingURL.toString(), response, discovered);
 
+         OpenIdProvider provider = (OpenIdProvider)Component.getInstance("openIdProvider", ScopeType.SESSION);
+
          // examine the verification result and extract the verified identifier
          Identifier verified = verification.getVerifiedId();
          if (verified != null)
          {
+            // Set the credentials' user name to authenticated Zanata user
+            credentials.setUsername(this.getZanataUsername(verified.getIdentifier()));
+            validatedEmail = provider.extractEmailAddress( response );
             return verified.getIdentifier();
          }
       }
@@ -246,11 +269,9 @@ public class FedoraOpenId
    {
       try
       {
-         String var = "http://" + username + FEDORA_HOST;
-         /*if( providerType == OpenIdProviderType.GOOGLE )
-         {
-            var = "https://www.google.com/accounts/o8/id";
-         }*/
+         OpenIdProvider openIdProvider = (OpenIdProvider)Component.getInstance("openIdProvider", ScopeType.SESSION);
+
+         String var = openIdProvider.getOpenId(username);
          setId(var);
          LOGGER.info("openid: {}", getId());
          login();
@@ -264,6 +285,20 @@ public class FedoraOpenId
    public String returnToUrl()
    {
       return applicationConfiguration.getServerPath() + "/openid.seam";
+   }
+
+   /**
+    * Looks up a zanata user name based on the open id provided.
+    * If none is found, returns null.
+    */
+   private String getZanataUsername( String openId )
+   {
+      List results =
+            entityManager.createQuery("select c.account.username from HCredentials c where c.user = :openId")
+                              .setParameter("openId", openId)
+                              .getResultList();
+
+      return results.size() > 0 ? (String)results.get(0) : null;
    }
 
 }

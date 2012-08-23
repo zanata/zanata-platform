@@ -84,7 +84,7 @@ public class RegisterServiceImpl implements RegisterService
    }
 
    @Override
-   public String register(final String username, AuthenticationType authType, String name, String email)
+   public String register(final String username, final String externalId, AuthenticationType authType, String name, String email)
    {
       new RunAsOperation()
       {
@@ -96,7 +96,7 @@ public class RegisterServiceImpl implements RegisterService
       }.addRole("admin").run();
 
       HAccount account = accountDAO.getByUsername(username);
-      account.getCredentials().add( new HOpenIdCredentials(account, username) );
+      account.getCredentials().add( new HOpenIdCredentials(account, externalId) );
       HPerson person = new HPerson();
       person.setAccount(account);
       person.setEmail(email);

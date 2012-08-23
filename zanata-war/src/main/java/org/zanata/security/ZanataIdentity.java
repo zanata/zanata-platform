@@ -84,7 +84,7 @@ public class ZanataIdentity extends Identity
    {
       return apiKey != null;
    }
-   
+
    public static ZanataIdentity instance()
    {
       if (!Contexts.isSessionContextActive())
@@ -249,7 +249,7 @@ public class ZanataIdentity extends Identity
    public String getTrimUsername()
    {
       String username = getCredentials().getUsername();
-      if (username.length() > 30)
+      if (username != null && username.length() > 30)
       {
          return username.substring(0, 27) + "...";
       }

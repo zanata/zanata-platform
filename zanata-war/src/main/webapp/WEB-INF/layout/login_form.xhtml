@@ -18,12 +18,12 @@
   
         <s:decorate id="fedoraUsernameField" template="edit.xhtml" rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.FedoraUsername']}</span></ui:define>
-            <h:inputText id="username"
-                      value="#{credentials.username}"/>
+            <h:inputText id="username" value="#{credentials.username}"/>
             <ui:remove><h:inputHidden id="password" value="#{credentials.password}" class="loginForm_input"/></ui:remove>
             <br/>
             Other Login Options:<br/>
-            <s:link view="/login/google.xhtml">Google</s:link>
+            <h:commandButton id="google_signin" image="../images/openid/google.png" action="#{loginAction.logInWithGoogle}"
+                    style="width: 20px;"/>
         </s:decorate>
 
         <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">

@@ -21,6 +21,10 @@
 package org.zanata.security.openid;
 
 import java.text.MessageFormat;
+import java.util.Map;
+
+import org.openid4java.message.ParameterList;
+import org.openid4java.message.ax.FetchRequest;
 
 /**
  * Fedora Open Id provider.
@@ -35,5 +39,17 @@ public class FedoraOpenIdProvider implements OpenIdProvider
    public String getOpenId(String username)
    {
       return MessageFormat.format(FEDORA_HOST, username);
+   }
+
+   @Override
+   public void prepareFetchRequest(FetchRequest request)
+   {
+      //To change body of implemented methods use File | Settings | File Templates.
+   }
+
+   @Override
+   public String extractEmailAddress(ParameterList paramList)
+   {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 }

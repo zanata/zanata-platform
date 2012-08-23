@@ -32,6 +32,20 @@
                 </rich:toolTip>
               </h:graphicImage>
             </s:decorate>
+            <ui:remove>
+                <!-- User name field is only shown when there is no user name selected (mainly for external auth) -->
+            </ui:remove>
+            <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.Username']}</ui:define>
+              <h:inputText id="username" value="#{profileAction.username}" required="true" >
+                  <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>
+              </h:inputText>
+              <h:graphicImage id="usernameHelp" value="../images/msginfo.png" styleClass="input_help">
+                  <rich:toolTip>
+                      #{messages['jsf.UsernameToolTip']}
+                  </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
             <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.Email']}</ui:define>
               <h:inputText id="email" value="#{profileAction.email}" required="true" >

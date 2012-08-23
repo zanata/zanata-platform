@@ -37,12 +37,14 @@ import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.FedoraOpenId;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.ZanataJpaIdentityStore;
 import org.zanata.service.RegisterService;
@@ -74,6 +76,9 @@ public class ProfileAction implements Serializable
    @In
    ZanataJpaIdentityStore identityStore;
 
+   @In
+   private FedoraOpenId fedoraOpenId;
+
    @In(create = true)
    private Renderer renderer;
 
@@ -82,6 +87,9 @@ public class ProfileAction implements Serializable
 
    @In
    PersonDAO personDAO;
+
+   @In
+   AccountDAO accountDAO;
 
    @In
    RegisterService registerServiceImpl;
@@ -94,6 +102,17 @@ public class ProfileAction implements Serializable
       {
          valid = false;
          FacesMessages.instance().addToControl("email", "This email address is already taken");
+      }
+   }
+
+   private void validateUsername()
+   {
+      HAccount account = accountDAO.getByUsername(this.username);
+
+      if( account != null && !account.equals( authenticatedAccount ) )
+      {
+         valid = false;
+         FacesMessages.instance().addToControl("username", "This username is already taken");
       }
    }
 
@@ -111,7 +130,14 @@ public class ProfileAction implements Serializable
          }
          else 
          {
-            email = identity.getCredentials().getUsername() + "@" + domain;
+            if( applicationConfiguration.isFedoraOpenIdAuth() )
+            {
+               email = fedoraOpenId.getValidatedEmail();
+            }
+            else
+            {
+               email = identity.getCredentials().getUsername() + "@" + domain;
+            }
          }
          
          identity.unAuthenticate();
@@ -149,7 +175,18 @@ public class ProfileAction implements Serializable
       this.validateEmail(email);
       this.email = email;
    }
-   
+
+   public String getUsername()
+   {
+      return username;
+   }
+
+   public void setUsername(String username)
+   {
+      this.username = username;
+      validateUsername();
+   }
+
    public String getActivationKey()
    {
       return activationKey;
@@ -165,7 +202,8 @@ public class ProfileAction implements Serializable
    {
       this.valid = true;
       validateEmail(this.email);
-      
+      validateUsername();
+
       if( !this.isValid() )
       {
          return null;
@@ -191,7 +229,8 @@ public class ProfileAction implements Serializable
       else
       {
          final String user = this.username;
-         String key = registerServiceImpl.register(user, AuthenticationType.FEDORA_OPENID, this.name, this.email);
+         String key = registerServiceImpl.register(user, fedoraOpenId.getValidatedId(),
+               AuthenticationType.FEDORA_OPENID, this.name, this.email);
          setActivationKey(key);
          renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
          FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
