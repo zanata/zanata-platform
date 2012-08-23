@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.ProvidesKey;
 
 public class LoadingListDataProvider<T> extends ListDataProvider<T>
 {
@@ -14,5 +15,15 @@ public class LoadingListDataProvider<T> extends ListDataProvider<T>
       {
          updateRowCount(getList().size(), true);
       }
+   }
+
+   public LoadingListDataProvider()
+   {
+      super();
+   }
+
+   public LoadingListDataProvider(ProvidesKey<T> keyProvider)
+   {
+      super(keyProvider);
    }
 }
