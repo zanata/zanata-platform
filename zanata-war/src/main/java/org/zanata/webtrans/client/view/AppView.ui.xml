@@ -18,24 +18,10 @@
 			height:100%;
 		}
 		
-		.container
+		.editorContainer
 		{
 			margin:5px 25px 3px 25px;
 		}
-		
-		.topPanel-Navigation {
-
-		}
-		
-		.topPanel-Navigation a {
-			text-decoration: none;
-		}
-		
-		.topPanel-Navigation td {
-            border-right:1px solid #e0e0e0; 
-            padding-right:10px;
-            padding-left:10px;
-        }
 
 		.topPanel-Workspace {
 			font-size: 1.1em;
@@ -97,11 +83,6 @@
 			background:#FFC000;
 		}
 		
-		.image
-		{
-			margin-top:2px;
-		}
-
 		.topMenuButton
 		{
             cursor: pointer;
@@ -115,20 +96,12 @@
             color:#0085CC;
 		}
 		
-		.sideMenuButton
+		.resize
 		{
-            cursor: pointer;
-            font-size:20px;
-            color:#4E4E4E;
+			margin-left:5px;
 		}
-		
-		.sideMenuButton:hover
-		{
-            color:#0085CC;
-		}
-		
 	</ui:style>
-	<g:LayoutPanel stylePrimaryName="{style.rootContainer}">
+	<g:LayoutPanel stylePrimaryName="{style.rootContainer}" ui:field="rootContainer">
 		<g:layer top="0px" height="30px">
 			<g:LayoutPanel styleName="subHeader">
 				<g:layer left="25px" right="25px">
@@ -160,25 +133,24 @@
 	                    			
 	                    			<g:InlineLabel ui:field="notification" styleName="icon-bell {style.topMenuButton}"/> 
 	                    			<g:InlineLabel ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
+	                    			 
 	                    	</g:FlowPanel>
 	                    </g:cell>
 					</g:HorizontalPanel>
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="30px" bottom="0px" left='0px' right='0px' >
-		   <g:LayoutPanel ui:field="container" styleName="{style.container}"/>
+		
+		<g:layer right="5px" width="24px" top="5px" height="24px">
+			<g:InlineLabel ui:field="resize" styleName="{style.topMenuButton} {style.resize}"/>
 		</g:layer>
 		
-		<g:layer right="-477px" width="500px" top="35px" bottom="10px">
-			<g:LayoutPanel>
-				<g:layer top="0" bottom="0">
-					<g:InlineLabel ui:field="options" styleName="icon-cog {style.sideMenuButton}"/> 
-				</g:layer>
-				<g:layer top = "25px" bottom="0">
-					<g:InlineLabel ui:field="resize" styleName="{style.sideMenuButton}"/> 
-				</g:layer>
-			</g:LayoutPanel>
+		<g:layer top="30px" bottom="0px" left='0px' right='0px' >
+		   <g:LayoutPanel ui:field="editorContainer" styleName="{style.editorContainer}"/>
+		</g:layer>
+		
+		<g:layer right="0" width="24px" top="35px" bottom="0">
+			<g:LayoutPanel ui:field="optionsContainer"/>
 		</g:layer>
 	</g:LayoutPanel>
 </ui:UiBinder>

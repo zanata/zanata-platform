@@ -6,21 +6,18 @@
 
 	<ui:style>
 		.mainPanel {
-			background-color: #303030;
 			color:#FFFFFF;
-			width:450px;
-			height:380px;
-			border-radius: 5px;
-			box-shadow:0px 0px 8px #808080;
+			width:250px;
 			padding:15px;
+			background-color: #303030;
 			opacity:0.9;
-			border-bottom-left-radius:5px;
-			border-bottom-right-radius:5px;
+			box-shadow:0px 0px 8px #808080;
+			border-radius: 0 5px 5px 5px;
 		}
 		
 		.mainPanel table td {
-			font-size:14px;
-			padding:3px;
+			font-size:12px;
+			padding:2px;
 			border-radius:5px;
 		}
 		
@@ -29,12 +26,12 @@
 			color:#000000;
 		}
 
-         .header {
+         .optionHeader {
             font-weight:bold;
-            font-size:14px;
+            font-size:13px;
             text-align:center;
             border-radius:5px;
-            padding:5px 0;
+            padding:3px 0;
             border-radius:5px;
             border:1px dotted gray;
         }
@@ -53,61 +50,59 @@
 	       border-left:3px solid #e5e5e5;
            margin-left:5px;
         }
-        
-        .closeButton
-        {
-			color:#FFFFFF;
-			font-weight:bold;
-			padding:5px;
-			border:2px solid gray;
-			border-radius:8px;
-			text-align:center;
-			cursor:pointer;
-			outline:none;
+		
+		.sideMenuButton
+		{
+            cursor: pointer;
+            font-size:20px;
+            color:#FFFFFF;
+            background-color: #303030;
+			opacity:0.9;
+			border-top-left-radius:5px;
+			border-bottom-left-radius:5px;
+			padding-left:2px;
 		}
 		
-		.closeButton:hover
-        {
-			color:#323232;
-			background:#C8C8C8;
-		}	
+		.sideMenuButton:hover
+		{
+            text-shadow:0 0 0.1em #FFFFFF;
+		}
+		
 		
 	</ui:style>
 	
-    <g:LayoutPanel styleName="{style.mainPanel}">
-    	<g:layer>
-    		<g:LayoutPanel ui:field="editorOptionsContainer">
-                <g:layer top="5px" height="120px" left="0" width="220px">
+    <g:LayoutPanel>
+    	<g:layer top="0" height="24px" left="0" width="24px">
+    		<g:InlineLabel ui:field="optionsHeader" styleName="icon-cog {style.sideMenuButton}"/>
+    	</g:layer>
+    	<g:layer top="0px" bottom="0" left="24px" right="0">
+    		<g:LayoutPanel ui:field="optionsContainer" styleName="{style.mainPanel}">
+                <g:layer top="5px" height="100px" left="5px" right="5px">
 	        		<g:VerticalPanel width="100%">
-	                    <g:Label ui:field="editorOptionHeader" styleName="{style.header}"/>
+	                    <g:Label ui:field="editorOptionHeader" styleName="{style.optionHeader}"/>
 	                    <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
 	                    <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
 	                    <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
 	                </g:VerticalPanel>
                 </g:layer>
-                <g:layer left="230px" width="220px" top="5px" height="120px">
+                <g:layer left="5px" right="5px" top="108px" height="120px">
                 	<g:VerticalPanel width="100%">
-                		 <g:Label ui:field="filterHeader" styleName="{style.header}"/>
+                		 <g:Label ui:field="filterHeader" styleName="{style.optionHeader}"/>
                          <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
                          <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
                          <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
                 	</g:VerticalPanel>
                 </g:layer>
-                <g:layer top="130px" height="35px" left="0" right="0px">
-                	<g:HorizontalPanel width="100%" verticalAlignment="ALIGN_MIDDLE"> 
-                	 	<g:Label ui:field="navOptionHeader" styleName="{style.header}"/>
+                <g:layer top="210px" height="55px" left="5px" right="5px">
+                	<g:VerticalPanel width="100%">
+                	 	<g:Label ui:field="navOptionHeader" styleName="{style.optionHeader}"/>
                      	<g:ListBox ui:field="optionsList"/>
-                    </g:HorizontalPanel>
+                    </g:VerticalPanel>
                 </g:layer>
+                <g:layer left="5px" right="5px" top="275px" bottom="30px">
+		    		<g:LayoutPanel ui:field="validationOptionsContainer"/>
+		    	</g:layer>
             </g:LayoutPanel>
-    	</g:layer>
-    	
-    	<g:layer top="175px" bottom="0">
-    		<g:LayoutPanel ui:field="validationOptionsContainer"/>
-    	</g:layer>
-    	
-    	<g:layer top="362px" height="30px" left="386px" width="75px" >
-    		<g:PushButton ui:field="closeButton" styleName="{style.closeButton}"/>
     	</g:layer>
     </g:LayoutPanel>
 

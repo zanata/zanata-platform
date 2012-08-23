@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
+import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
@@ -65,7 +66,7 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel readOnlyLabel, documentsLink, resize, notification, keyShortcuts, options, userChat;
+   InlineLabel readOnlyLabel, documentsLink, resize, notification, keyShortcuts, userChat;
    
    @UiField
    InlineLabel notificationLabel;
@@ -77,8 +78,8 @@ public class AppView extends Composite implements AppPresenter.Display
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel container;
-
+   LayoutPanel editorContainer, optionsContainer, rootContainer;
+   
    @UiField(provided = true)
    final Resources resources;
 
@@ -96,7 +97,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private final static String STYLE_MINIMIZE = "icon-resize-small-2";
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, OptionsPanelPresenter.Display optionsPanelView, final Identity identity)
    {
       this.resources = resources;
       this.messages = messages;
@@ -114,19 +115,21 @@ public class AppView extends Composite implements AppPresenter.Display
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
       documentList.setTitle(messages.documentListTitle());
       notification.setTitle(messages.notification());
-      options.setTitle(messages.options());
+
       userChat.setTitle(messages.chatRoom());
       resize.setTitle(messages.maximize());
       resize.addStyleName(STYLE_MAXIMIZE);
 
       this.documentListView = documentListView.asWidget();
-      this.container.add(this.documentListView);
+      this.editorContainer.add(this.documentListView);
 
       this.translationView = translationView.asWidget();
-      this.container.add(this.translationView);
+      this.editorContainer.add(this.translationView);
 
       this.searchResultsView = searchResultsView.asWidget();
-      this.container.add(this.searchResultsView);
+      this.editorContainer.add(this.searchResultsView);
+      
+      optionsContainer.add(optionsPanelView.asWidget());
       
       Window.enableScrolling(false);
    }
@@ -164,11 +167,11 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       if (visible)
       {
-         container.setWidgetTopBottom(widget, 0, Unit.PX, 0, Unit.PX);
+         editorContainer.setWidgetTopBottom(widget, 0, Unit.PX, 0, Unit.PX);
       }
       else
       {
-         container.setWidgetTopHeight(widget, 0, Unit.PX, 0, Unit.PX);
+         editorContainer.setWidgetTopHeight(widget, 0, Unit.PX, 0, Unit.PX);
       }
    }
 
@@ -232,12 +235,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getOptionsButton()
-   {
-      return options;
-   }
-
-   @Override
    public HasClickHandlers getChatRoomButton()
    {
       return userChat;
@@ -293,12 +290,35 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void setOptionVisible(boolean visible)
    {
-      options.setVisible(visible);
+      optionsContainer.setVisible(visible);
    }
 
    @Override
    public void setResizeVisible(boolean visible)
    {
       resize.setVisible(visible);
+   }
+
+   private final static double MIN_OPTION_PANEL_WIDTH = 24.0;
+   private final static double EXPENDED_OPTION_RIGHT = 305.0;
+   private final static double MINIMISED_EDITOR_RIGHT = 281.0;
+   private final static int ANIMATE_DURATION = 400;
+
+   @Override
+   public void onOptionsExpend(boolean expend)
+   {
+      rootContainer.forceLayout();
+      if (expend)
+      {
+         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
+         rootContainer.setWidgetRightWidth(optionsContainer, 0.0, Unit.PX, EXPENDED_OPTION_RIGHT, Unit.PX);
+      }
+      else
+      {
+         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, 0.0, Unit.PX);
+         rootContainer.setWidgetRightWidth(optionsContainer, 0.0, Unit.PX, MIN_OPTION_PANEL_WIDTH, Unit.PX);
+      }
+
+      rootContainer.animate(ANIMATE_DURATION);
    }
 }

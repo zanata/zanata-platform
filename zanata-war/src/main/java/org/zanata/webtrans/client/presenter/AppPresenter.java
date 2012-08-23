@@ -90,8 +90,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getChatRoomButton();
 
-      HasClickHandlers getOptionsButton();
-
       void setOptionVisible(boolean visible);
 
       HasClickHandlers getResizeButton();
@@ -99,6 +97,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       boolean getAndToggleResizeButton();
 
       void setResizeVisible(boolean visible);
+
+      void onOptionsExpend(boolean expend);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -121,6 +121,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final TranslationStats projectStats = new TranslationStats();
    private TranslationStats currentDisplayStats = new TranslationStats();
    private MainView currentView = null;
+
+   private boolean optionsPanelExpended = false;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
@@ -147,7 +149,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    {
       display.setNotificationText(count, severity);
    }
-   
+
    @Override
    protected void onBind()
    {
@@ -159,7 +161,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       layoutSelectorPresenter.bind();
       optionsPanelPresenter.bind();
 
-      optionsPanelPresenter.setVisible(false);
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
 
@@ -244,7 +245,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             }
          }
       });
-      
+
       display.getDocumentListButton().addClickHandler(new ClickHandler()
       {
          @Override
@@ -260,18 +261,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          public void onClick(ClickEvent event)
          {
             keyShortcutPresenter.showShortcuts();
-         }
-      });
-
-      display.getOptionsButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (!userWorkspaceContext.hasReadOnlyAccess())
-            {
-               optionsPanelPresenter.setVisible(true);
-            }
          }
       });
 
@@ -292,6 +281,29 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          {
             boolean expended = display.getAndToggleResizeButton();
             translationPresenter.setSouthPanelExpanded(expended);
+         }
+      });
+
+      optionsPanelPresenter.getHeaderButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (!userWorkspaceContext.hasReadOnlyAccess())
+            {
+               if (!optionsPanelExpended)
+               {
+
+                  display.onOptionsExpend(true);
+                  optionsPanelExpended = true;
+               }
+               else
+               {
+                  display.onOptionsExpend(false);
+                  optionsPanelExpended = false;
+               }
+            }
+
          }
       });
 
@@ -362,7 +374,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       history.fireCurrentHistoryState();
    }
-   
+
    private void gotoDocumentListView()
    {
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());

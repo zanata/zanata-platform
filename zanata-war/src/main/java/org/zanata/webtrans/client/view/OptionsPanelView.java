@@ -30,16 +30,16 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class OptionsPanelView extends DialogBox implements OptionsPanelPresenter.Display
+public class OptionsPanelView extends Composite implements OptionsPanelPresenter.Display
 {
    private static OptionsPanelUiBinder uiBinder = GWT.create(OptionsPanelUiBinder.class);
 
@@ -48,7 +48,7 @@ public class OptionsPanelView extends DialogBox implements OptionsPanelPresenter
    }
 
    @UiField
-   LayoutPanel editorOptionsContainer, validationOptionsContainer;
+   LayoutPanel optionsContainer, validationOptionsContainer;
 
    @UiField
    CheckBox translatedChk, needReviewChk, untranslatedChk, enterChk, escChk, editorButtonsChk;
@@ -57,22 +57,20 @@ public class OptionsPanelView extends DialogBox implements OptionsPanelPresenter
    Label navOptionHeader, editorOptionHeader, filterHeader;
 
    @UiField
-   ListBox optionsList;
+   InlineLabel optionsHeader;
 
    @UiField
-   PushButton closeButton;
+   ListBox optionsList;
 
    @Inject
    public OptionsPanelView(WebTransMessages messages, ValidationOptionsPresenter.Display validationOptionsView)
    {
-      super(false, false);
-      addStyleName("optionsPanel");
-      setWidget(uiBinder.createAndBindUi(this));
+      initWidget(uiBinder.createAndBindUi(this));
       validationOptionsContainer.add(validationOptionsView.asWidget());
       editorOptionHeader.setText(messages.editorOptions());
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
-      closeButton.setText(messages.close());
+      optionsHeader.setTitle(messages.options());
       populateOptionsList();
    }
 
@@ -142,16 +140,15 @@ public class OptionsPanelView extends DialogBox implements OptionsPanelPresenter
    }
 
    @Override
-   public HasClickHandlers getCloseButton()
-   {
-      return closeButton;
-   }
-
-   @Override
    public String getSelectedFilter()
    {
       return optionsList.getValue(optionsList.getSelectedIndex());
    }
 
+   @Override
+   public HasClickHandlers getOptionsButton()
+   {
+      return optionsHeader;
+   }
 
 }

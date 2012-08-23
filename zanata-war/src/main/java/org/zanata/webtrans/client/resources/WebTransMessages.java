@@ -416,7 +416,4 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Navigation key/button")
    String navOption();
-
-   @DefaultMessage("Close")
-   String close();
 }
