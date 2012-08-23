@@ -55,8 +55,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    List<String> getNewTargets();
 
-   boolean isEditing();
-
    ArrayList<ToggleEditor> getEditors();
 
    void setListener(Listener listener);

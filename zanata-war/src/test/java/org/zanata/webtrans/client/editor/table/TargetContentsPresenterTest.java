@@ -195,7 +195,6 @@ public class TargetContentsPresenterTest
       verify(editor).setTextAndValidate("source");
       verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
-      verifyRevealDisplay();
    }
 
 

@@ -161,6 +161,15 @@ public class TargetContentsPresenter implements
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
 
+      if (userWorkspaceContext.hasReadOnlyAccess())
+      {
+         concealDisplay();
+      }
+      else
+      {
+         revealDisplay();
+      }
+
       bindEventHandlers();
 
       keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1)), ShortcutContext.Edit, messages.copyFromTM(1), new KeyShortcutEventHandler()
@@ -361,11 +370,6 @@ public class TargetContentsPresenter implements
       return currentEditors.get(currentEditorIndex);
    }
 
-   public boolean displayIsEditable()
-   {
-      return display != null && display.isEditing();
-   }
-
    public void showEditors(final TransUnitId currentTransUnitId)
    {
       Log.info("enter show editor with id:" + currentTransUnitId);
@@ -382,7 +386,6 @@ public class TargetContentsPresenter implements
          editor.clearTranslatorList();
          validate(editor);
       }
-      revealDisplay();
       display.showButtons(isDisplayButtons());
 
       if (!userWorkspaceContext.hasReadOnlyAccess())
@@ -554,8 +557,6 @@ public class TargetContentsPresenter implements
       currentEditorIndex = editor.getIndex();
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
       editor.setFocus();
-
-      revealDisplay();
 
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
@@ -768,7 +769,7 @@ public class TargetContentsPresenter implements
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
-      if (displayIsEditable() && userWorkspaceContext.hasReadOnlyAccess())
+      if (userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.info("from editable to readonly");
          for (TargetContentsDisplay targetContentsDisplay : displayList)
@@ -776,8 +777,9 @@ public class TargetContentsPresenter implements
             targetContentsDisplay.setToMode(ViewMode.VIEW);
             targetContentsDisplay.showButtons(false);
          }
+         concealDisplay();
       }
-      else if (!displayIsEditable() && !userWorkspaceContext.hasReadOnlyAccess())
+      else if (!userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.info("from readonly mode to writable");
          for (TargetContentsDisplay targetContentsDisplay : displayList)
@@ -785,6 +787,7 @@ public class TargetContentsPresenter implements
             targetContentsDisplay.setToMode(ViewMode.EDIT);
             targetContentsDisplay.showButtons(isDisplayButtons());
          }
+         revealDisplay();
       }
 
    }

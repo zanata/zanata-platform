@@ -241,19 +241,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public boolean isEditing()
-   {
-      for (ToggleEditor editor : editors)
-      {
-         if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT)
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
    public ArrayList<ToggleEditor> getEditors()
    {
       return editors;
