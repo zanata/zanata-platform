@@ -4,11 +4,13 @@ import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,16 +26,21 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @UiField
-   Label header;
+   InlineLabel validationOptionsTab;
+
+   @UiField
+   Label validationOptionsHeader;
 
    @UiField
    VerticalPanel contentPanel;
+
 
    @Inject
    public ValidationOptionsView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
-      header.setText(messages.validationOptions());
+      validationOptionsTab.setTitle(messages.validationOptions());
+      validationOptionsHeader.setText(messages.validationOptions());
    }
 
    @Override
@@ -63,6 +70,12 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public Widget asWidget()
    {
       return this;
+   }
+
+   @Override
+   public HasClickHandlers getValidationOptionsTab()
+   {
+      return validationOptionsTab;
    }
 
 }

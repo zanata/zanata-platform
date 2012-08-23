@@ -149,8 +149,17 @@
 		   <g:LayoutPanel ui:field="editorContainer" styleName="{style.editorContainer}"/>
 		</g:layer>
 		
-		<g:layer right="0" width="24px" top="35px" bottom="0">
-			<g:LayoutPanel ui:field="optionsContainer"/>
+		<g:layer right="0" width="24px" top="35px" height="76px">
+			<g:LayoutPanel ui:field="chatContainer"/>
 		</g:layer>
+		
+		<g:layer right="0" width="24px" top="35px" height="50px">
+			<g:LayoutPanel ui:field="validationOptionsContainer"/>
+		</g:layer>
+		
+		<g:layer right="0" width="24px" top="35px" height="24px">
+			<g:LayoutPanel ui:field="editorOptionsContainer"/>
+		</g:layer>
+		
 	</g:LayoutPanel>
 </ui:UiBinder>

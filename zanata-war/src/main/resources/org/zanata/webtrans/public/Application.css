@@ -905,3 +905,30 @@ td.ApprovedStateDecoration div div div
 	text-decoration:underline;
 }
 
+.sideMenuButton
+{
+    cursor: pointer;
+    font-size:20px;
+    color:#FFFFFF;
+    background-color: #444444;
+	border-top-left-radius:5px;
+	border-bottom-left-radius:5px;
+	padding-left:2px;
+}
+
+.sideMenuButton:hover
+{
+    color: #96FFFF;
+    background:#626262;
+}
+
+.sideMenuHeader {
+    font-weight:bold;
+    font-size:13px;
+    text-align:center;
+    border-radius:5px;
+    padding:3px 0;
+    border-radius:5px;
+    border:1px dotted gray;
+}
+

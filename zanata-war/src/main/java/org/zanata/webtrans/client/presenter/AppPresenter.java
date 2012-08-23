@@ -90,7 +90,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getChatRoomButton();
 
-      void setOptionVisible(boolean visible);
+      void setEditorOptionsVisible(boolean visible);
 
       HasClickHandlers getResizeButton();
 
@@ -98,7 +98,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       void setResizeVisible(boolean visible);
 
-      void onOptionsExpend(boolean expend);
+      void onEditorOptionsExpend(boolean expend);
+
+      void onValidationOptionsExpend(boolean expend);
+
+      void setValidationOptionsVisible(boolean visible);
+
+      void onChatContainerExpend(boolean expend);
+
+      void setChatVisible(boolean b);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -107,7 +115,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
    private final LayoutSelectorPresenter layoutSelectorPresenter;
-   private final OptionsPanelPresenter optionsPanelPresenter;
+   private final EditorOptionsPresenter editorOptionsPresenter;
+   private final ValidationOptionsPresenter validationOptionsPresenter;
+   private final WorkspaceUsersPresenter workspaceUsersPresenter;
 
    private final History history;
    private final Window window;
@@ -123,11 +133,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private MainView currentView = null;
 
    private boolean optionsPanelExpended = false;
+   private boolean validationOptionsExpended = false;
+   private boolean chatExpended = false;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final EditorOptionsPresenter optionsPanelPresenter, final ValidationOptionsPresenter validationOptionsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
@@ -139,7 +151,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter = notificationPresenter;
       this.layoutSelectorPresenter = layoutSelectorPresenter;
-      this.optionsPanelPresenter = optionsPanelPresenter;
+      this.editorOptionsPresenter = optionsPanelPresenter;
+      this.validationOptionsPresenter = validationOptionsPresenter;
+      this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
    }
@@ -159,7 +173,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
-      optionsPanelPresenter.bind();
+      editorOptionsPresenter.bind();
+      validationOptionsPresenter.bind();
+      workspaceUsersPresenter.bind();
 
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
@@ -284,7 +300,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
-      optionsPanelPresenter.getHeaderButton().addClickHandler(new ClickHandler()
+      editorOptionsPresenter.getTabButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
@@ -293,17 +309,69 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             {
                if (!optionsPanelExpended)
                {
-
-                  display.onOptionsExpend(true);
+                  display.onEditorOptionsExpend(true);
                   optionsPanelExpended = true;
+                  display.setValidationOptionsVisible(false);
+                  display.setChatVisible(false);
                }
                else
                {
-                  display.onOptionsExpend(false);
+                  display.onEditorOptionsExpend(false);
                   optionsPanelExpended = false;
+                  display.setValidationOptionsVisible(true);
+                  display.setChatVisible(true);
                }
             }
+         }
+      });
+      
+      validationOptionsPresenter.getTabButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (!userWorkspaceContext.hasReadOnlyAccess())
+            {
+               if (!validationOptionsExpended)
+               {
+                  display.onValidationOptionsExpend(true);
+                  validationOptionsExpended = true;
+                  display.setEditorOptionsVisible(false);
+                  display.setChatVisible(false);
+               }
+               else
+               {
+                  display.onValidationOptionsExpend(false);
+                  validationOptionsExpended = false;
+                  display.setEditorOptionsVisible(true);
+                  display.setChatVisible(true);
+               }
+            }
+         }
+      });
 
+      workspaceUsersPresenter.getTabButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (!userWorkspaceContext.hasReadOnlyAccess())
+            {
+               if (!chatExpended)
+               {
+                  display.onChatContainerExpend(true);
+                  chatExpended = true;
+                  display.setEditorOptionsVisible(false);
+                  display.setValidationOptionsVisible(false);
+               }
+               else
+               {
+                  display.onChatContainerExpend(false);
+                  chatExpended = false;
+                  display.setEditorOptionsVisible(true);
+                  display.setValidationOptionsVisible(true);
+               }
+            }
          }
       });
 
@@ -447,7 +515,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = selectedDocumentStats;
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
-            display.setOptionVisible(true);
+            display.setEditorOptionsVisible(true);
+            display.setValidationOptionsVisible(true);
             display.setResizeVisible(true);
             break;
          case Search:
@@ -458,7 +527,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
-            display.setOptionVisible(false);
+            display.setEditorOptionsVisible(false);
+            display.setValidationOptionsVisible(false);
             display.setResizeVisible(false);
             break;
          case Documents:
@@ -469,7 +539,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
-            display.setOptionVisible(false);
+            display.setEditorOptionsVisible(false);
+            display.setValidationOptionsVisible(false);
             display.setResizeVisible(false);
             break;
          }

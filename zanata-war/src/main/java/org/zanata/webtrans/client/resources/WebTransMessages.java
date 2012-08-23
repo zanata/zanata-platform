@@ -62,9 +62,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Chat room")
    String chatRoom();
 
-   @DefaultMessage("Options")
-   String options();
-
    @DefaultMessage("Maximise workspace")
    String maximize();
 

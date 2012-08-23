@@ -9,10 +9,8 @@
 			color:#FFFFFF;
 			width:250px;
 			padding:15px;
-			background-color: #303030;
-			opacity:0.9;
-			box-shadow:0px 0px 8px #808080;
-			border-radius: 0 5px 5px 5px;
+			background-color: #444444;
+			border-radius: 0 0 0 5px;
 		}
 		
 		.mainPanel table td {
@@ -25,16 +23,6 @@
 		{
 			color:#000000;
 		}
-
-         .optionHeader {
-            font-weight:bold;
-            font-size:13px;
-            text-align:center;
-            border-radius:5px;
-            padding:3px 0;
-            border-radius:5px;
-            border:1px dotted gray;
-        }
 
         .translated {
 	       border-left:3px solid #099B09;
@@ -51,35 +39,17 @@
            margin-left:5px;
         }
 		
-		.sideMenuButton
-		{
-            cursor: pointer;
-            font-size:20px;
-            color:#FFFFFF;
-            background-color: #303030;
-			opacity:0.9;
-			border-top-left-radius:5px;
-			border-bottom-left-radius:5px;
-			padding-left:2px;
-		}
-		
-		.sideMenuButton:hover
-		{
-            text-shadow:0 0 0.1em #FFFFFF;
-		}
-		
-		
 	</ui:style>
 	
     <g:LayoutPanel>
     	<g:layer top="0" height="24px" left="0" width="24px">
-    		<g:InlineLabel ui:field="optionsHeader" styleName="icon-cog {style.sideMenuButton}"/>
+    		<g:InlineLabel ui:field="editorOptionsTab" styleName="icon-cog sideMenuButton"/>
     	</g:layer>
     	<g:layer top="0px" bottom="0" left="24px" right="0">
-    		<g:LayoutPanel ui:field="optionsContainer" styleName="{style.mainPanel}">
+    		<g:LayoutPanel ui:field="container" styleName="{style.mainPanel}">
                 <g:layer top="5px" height="100px" left="5px" right="5px">
 	        		<g:VerticalPanel width="100%">
-	                    <g:Label ui:field="editorOptionHeader" styleName="{style.optionHeader}"/>
+	                    <g:Label ui:field="editorOptionHeader" styleName="sideMenuHeader"/>
 	                    <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
 	                    <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
 	                    <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
@@ -87,7 +57,7 @@
                 </g:layer>
                 <g:layer left="5px" right="5px" top="108px" height="120px">
                 	<g:VerticalPanel width="100%">
-                		 <g:Label ui:field="filterHeader" styleName="{style.optionHeader}"/>
+                		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
                          <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
                          <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
                          <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
@@ -95,13 +65,10 @@
                 </g:layer>
                 <g:layer top="210px" height="55px" left="5px" right="5px">
                 	<g:VerticalPanel width="100%">
-                	 	<g:Label ui:field="navOptionHeader" styleName="{style.optionHeader}"/>
+                	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
                      	<g:ListBox ui:field="optionsList"/>
                     </g:VerticalPanel>
                 </g:layer>
-                <g:layer left="5px" right="5px" top="275px" bottom="30px">
-		    		<g:LayoutPanel ui:field="validationOptionsContainer"/>
-		    	</g:layer>
             </g:LayoutPanel>
     	</g:layer>
     </g:LayoutPanel>

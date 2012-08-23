@@ -43,11 +43,10 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter.Display>
+public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
-
       HasValue<Boolean> getTranslatedChk();
 
       HasValue<Boolean> getNeedReviewChk();
@@ -71,7 +70,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
       String getSelectedFilter();
 
-      HasClickHandlers getOptionsButton();
+      HasClickHandlers getEditorOptionsTab();
    }
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
@@ -80,7 +79,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    private final UserWorkspaceContext userWorkspaceContext;
 
    @Inject
-   public OptionsPanelPresenter(final Display display, final EventBus eventBus, UserWorkspaceContext userWorkspaceContext, final ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder)
+   public EditorOptionsPresenter(final Display display, final EventBus eventBus, UserWorkspaceContext userWorkspaceContext, final ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
@@ -209,9 +208,9 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
       }));
    }
 
-   public HasClickHandlers getHeaderButton()
+   public HasClickHandlers getTabButton()
    {
-      return display.getOptionsButton();
+      return display.getEditorOptionsTab();
    }
 
    private void setReadOnly(boolean readOnly)

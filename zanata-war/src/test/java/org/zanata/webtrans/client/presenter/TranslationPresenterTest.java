@@ -73,7 +73,7 @@ public class TranslationPresenterTest extends PresenterTest
    private NativeEvent mockNativeEvent;
 
    // TODO use real presenters
-   private OptionsPanelPresenter mockSidePanelPresenter;
+   private EditorOptionsPresenter mockSidePanelPresenter;
    private TranslationEditorPresenter mockTranslationEditorPresenter;
    private TransMemoryPresenter mockTransMemoryPresenter;
    private UserWorkspaceContext mockUserWorkspaceContext;
@@ -107,7 +107,7 @@ public class TranslationPresenterTest extends PresenterTest
       mockGlossaryPresenter = createAndAddMock(GlossaryPresenter.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
       mockNativeEvent = createAndAddMock(NativeEvent.class);
-      mockSidePanelPresenter = createAndAddMock(OptionsPanelPresenter.class);
+      mockSidePanelPresenter = createAndAddMock(EditorOptionsPresenter.class);
       mockTranslationEditorPresenter = createAndAddMock(TranslationEditorPresenter.class);
       mockTransMemoryPresenter = createAndAddMock(TransMemoryPresenter.class);
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);

@@ -23,7 +23,7 @@ import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.client.presenter.OptionsPanelPresenter.Display;
+import org.zanata.webtrans.client.presenter.EditorOptionsPresenter.Display;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
@@ -40,7 +40,7 @@ public class OptionsPanelPresenterTest extends PresenterTest
 {
 
    // object under test
-   OptionsPanelPresenter optionsPanelPresenter;
+   EditorOptionsPresenter optionsPanelPresenter;
 
    //injected mocks
    Display mockDisplay;
@@ -126,7 +126,7 @@ public class OptionsPanelPresenterTest extends PresenterTest
    protected void resetTestObjects()
    {
       configHolder = new UserConfigHolder();
-      optionsPanelPresenter = new OptionsPanelPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockValidationDetailsPresenter, configHolder);
+      optionsPanelPresenter = new EditorOptionsPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockValidationDetailsPresenter, configHolder);
    }
 
    @BeforeMethod

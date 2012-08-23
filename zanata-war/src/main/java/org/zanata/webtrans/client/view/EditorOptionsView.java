@@ -20,8 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
-import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
+import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
@@ -39,16 +38,16 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class OptionsPanelView extends Composite implements OptionsPanelPresenter.Display
+public class EditorOptionsView extends Composite implements EditorOptionsPresenter.Display
 {
-   private static OptionsPanelUiBinder uiBinder = GWT.create(OptionsPanelUiBinder.class);
+   private static EditorOptionsUiBinder uiBinder = GWT.create(EditorOptionsUiBinder.class);
 
-   interface OptionsPanelUiBinder extends UiBinder<Widget, OptionsPanelView>
+   interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView>
    {
    }
 
    @UiField
-   LayoutPanel optionsContainer, validationOptionsContainer;
+   LayoutPanel container;
 
    @UiField
    CheckBox translatedChk, needReviewChk, untranslatedChk, enterChk, escChk, editorButtonsChk;
@@ -57,20 +56,19 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
    Label navOptionHeader, editorOptionHeader, filterHeader;
 
    @UiField
-   InlineLabel optionsHeader;
+   InlineLabel editorOptionsTab;
 
    @UiField
    ListBox optionsList;
 
    @Inject
-   public OptionsPanelView(WebTransMessages messages, ValidationOptionsPresenter.Display validationOptionsView)
+   public EditorOptionsView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
-      validationOptionsContainer.add(validationOptionsView.asWidget());
       editorOptionHeader.setText(messages.editorOptions());
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
-      optionsHeader.setTitle(messages.options());
+      editorOptionsTab.setTitle(messages.editorOptions());
       populateOptionsList();
    }
 
@@ -146,9 +144,9 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
    }
 
    @Override
-   public HasClickHandlers getOptionsButton()
+   public HasClickHandlers getEditorOptionsTab()
    {
-      return optionsHeader;
+      return editorOptionsTab;
    }
 
 }

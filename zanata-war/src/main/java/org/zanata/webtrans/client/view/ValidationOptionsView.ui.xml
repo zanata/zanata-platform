@@ -6,23 +6,35 @@
     ui:generateLocales="en">
     
 	<ui:style>
-	
-        .optionHeader {
-            font-weight:bold;
-            font-size:13px;
-            text-align:center;
-            border-radius:5px;
-            padding:3px 0;
-            border-radius:5px;
-            border:1px dotted gray;
-        }
+        .mainPanel {
+			color:#FFFFFF;
+			width:270px;
+			padding:6px;
+			background-color: #444444;
+			border-radius: 5px 0 0 5px;
+		}
+		
+		.mainPanel table td {
+			font-size:12px;
+			padding:2px;
+			border-radius:5px;
+		}
         
 	</ui:style>
-    <g:ScrollPanel>
-        <g:VerticalPanel width="100%">
-            <g:Label ui:field="header" styleName="{style.optionHeader}"/>
-            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
-        </g:VerticalPanel>
-    </g:ScrollPanel>
+    
+    
+    <g:LayoutPanel>
+    	<g:layer top="26px" height="24px" left="0" width="24px">
+    		<g:InlineLabel ui:field="validationOptionsTab" styleName="icon-ok-circle-2 sideMenuButton"/>
+    	</g:layer>
+    	<g:layer top="0" bottom="0" left="24px" right="0">
+    		 <g:ScrollPanel styleName="{style.mainPanel}">
+		        <g:VerticalPanel width="100%">
+		            <g:Label ui:field="validationOptionsHeader" styleName="sideMenuHeader"/>
+		            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
+		        </g:VerticalPanel>
+		    </g:ScrollPanel>
+    	</g:layer>
+    </g:LayoutPanel>
 		
 </ui:UiBinder> 
