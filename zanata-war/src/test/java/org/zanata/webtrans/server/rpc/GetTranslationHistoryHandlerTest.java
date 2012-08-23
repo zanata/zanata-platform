@@ -139,7 +139,7 @@ public class GetTranslationHistoryHandlerTest
       when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
       when(hLocale.getId()).thenReturn(2L);
       HTextFlow hTextFlow = createHTextFlow();
-      HTextFlowTarget currentTranslation = createTarget(null, null, 0, null);
+      HTextFlowTarget currentTranslation = createTarget(new Date(), null, 0, null);
       currentTranslation.setLastModifiedBy(null);
       hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
@@ -152,7 +152,7 @@ public class GetTranslationHistoryHandlerTest
       assertThat(result.getHistoryItems(), Matchers.<TransHistoryItem>emptyIterable());
       assertThat(result.getLatest().getVersionNum(), Matchers.equalTo(currentTranslation.getVersionNum().toString()));
       assertThat(result.getLatest().getContents(), Matchers.equalTo(currentTranslation.getContents()));
-      assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo("unknown"));
+      assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
    }
 
    private static HTextFlow createHTextFlow()
