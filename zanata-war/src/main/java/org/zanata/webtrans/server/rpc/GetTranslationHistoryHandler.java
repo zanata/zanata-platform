@@ -72,9 +72,15 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       SimpleDateFormat dateFormat = new SimpleDateFormat();
       if (hTextFlowTarget != null)
       {
+         String lastModifiedBy = "unknown";
+         String lastModifiedDate = "unknown";
+         if (hTextFlowTarget.getLastModifiedBy() != null)
+         {
+            lastModifiedBy = hTextFlowTarget.getLastModifiedBy().getName();
+            lastModifiedDate = dateFormat.format(hTextFlowTarget.getLastChanged());
+         }
          latest = new TransHistoryItem(hTextFlowTarget.getVersionNum().toString(), hTextFlowTarget.getContents(),
-               hTextFlowTarget.getState(), hTextFlowTarget.getLastModifiedBy().getName(),
-               dateFormat.format(hTextFlowTarget.getLastChanged()));
+               hTextFlowTarget.getState(), lastModifiedBy, lastModifiedDate);
          // history translation
          history = hTextFlowTarget.getHistory();
       }
