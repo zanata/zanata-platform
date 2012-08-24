@@ -6,15 +6,11 @@
 
 	<ui:style>
 		.mainPanel {
-			color:#FFFFFF;
-			width:250px;
-			padding:15px;
-			background-color: #444444;
-			border-radius: 0 0 0 5px;
+			
 		}
 		
 		.mainPanel table td {
-			font-size:12px;
+			font-size:13px;
 			padding:2px;
 			border-radius:5px;
 		}
@@ -42,10 +38,7 @@
 	</ui:style>
 	
     <g:LayoutPanel>
-    	<g:layer top="0" height="24px" left="0" width="24px">
-    		<g:InlineLabel ui:field="editorOptionsTab" styleName="icon-cog sideMenuButton"/>
-    	</g:layer>
-    	<g:layer top="0px" bottom="0" left="24px" right="0">
+    	<g:layer top="0px" bottom="0" left="0" right="0">
     		<g:LayoutPanel ui:field="container" styleName="{style.mainPanel}">
                 <g:layer top="5px" height="100px" left="5px" right="5px">
 	        		<g:VerticalPanel width="100%">

@@ -26,9 +26,6 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @UiField
-   InlineLabel validationOptionsTab;
-
-   @UiField
    Label validationOptionsHeader;
 
    @UiField
@@ -39,7 +36,6 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public ValidationOptionsView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
-      validationOptionsTab.setTitle(messages.validationOptions());
       validationOptionsHeader.setText(messages.validationOptions());
    }
 
@@ -71,11 +67,4 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       return this;
    }
-
-   @Override
-   public HasClickHandlers getValidationOptionsTab()
-   {
-      return validationOptionsTab;
-   }
-
 }

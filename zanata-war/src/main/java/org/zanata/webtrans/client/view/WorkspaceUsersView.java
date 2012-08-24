@@ -42,6 +42,8 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       String userName();
 
       String systemWarn();
+      
+      String msg();
    }
 
    @UiField
@@ -68,7 +70,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @Inject
    public WorkspaceUsersView(final UiMessages uiMessages)
    {
-      mainPanel = new SplitLayoutPanel(3);
+      mainPanel = new SplitLayoutPanel(5);
       initWidget(uiBinder.createAndBindUi(this));
 
       sendButton.setText(uiMessages.sendLabel());
@@ -126,6 +128,11 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       {
          timestampLabel.setStyleName(style.systemWarn());
          msgLabel.setStyleName(style.systemWarn());
+      } 
+      else
+      {
+         timestampLabel.setStyleName(style.msg());
+         msgLabel.setStyleName(style.msg());
       }
 
       HorizontalPanel hp = new HorizontalPanel();

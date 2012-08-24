@@ -56,9 +56,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsPresent
    Label navOptionHeader, editorOptionHeader, filterHeader;
 
    @UiField
-   InlineLabel editorOptionsTab;
-
-   @UiField
    ListBox optionsList;
 
    @Inject
@@ -68,7 +65,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsPresent
       editorOptionHeader.setText(messages.editorOptions());
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
-      editorOptionsTab.setTitle(messages.editorOptions());
       populateOptionsList();
    }
 
@@ -142,11 +138,4 @@ public class EditorOptionsView extends Composite implements EditorOptionsPresent
    {
       return optionsList.getValue(optionsList.getSelectedIndex());
    }
-
-   @Override
-   public HasClickHandlers getEditorOptionsTab()
-   {
-      return editorOptionsTab;
-   }
-
 }

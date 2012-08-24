@@ -8,12 +8,6 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface WebTransMessages extends Messages
 {
-
-   @DefaultMessage("{0} participants")
-   @AlternateMessage({ "one", "One participant" })
-   @Description("Title of the minimized users panel")
-   String nUsersOnline(@PluralCount int numUsers);
-
    @DefaultMessage("(No Content)")
    String noContent();
 
@@ -413,4 +407,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Navigation key/button")
    String navOption();
+
+   @DefaultMessage("Menu")
+   String menu();
 }

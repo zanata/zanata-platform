@@ -5,6 +5,16 @@
     <ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 
     <ui:style type="org.zanata.webtrans.client.view.WorkspaceUsersView.Styles">
+        .mainPanel
+        {
+			margin:3px 5px;
+		}
+        
+        .userListTable td 
+		{
+			padding: 2px;
+		}
+		
         .chatRoomScrollPanel 
         {
 			height:100%;
@@ -12,28 +22,16 @@
 		
 		.chatRoom
         {
-			width:99%;
-			border-radius:3px;
-			padding-left:2px;
-		}
-		
-		.userListScrollPanel
-		{
-			border-right:2px solid #E0E8EE;	
-		}
-		
-		.chatSection
-		{
-			border-left:2px solid #E0E8EE;	
-			height:100%;
 			width:100%;
 		}
 		
 		.chatInput
 		{
-			border:1px solid #0000A0;
+			border:1px solid #FFFFFF;
 			width:100%;
 			border-radius:3px;
+			height:18px;
+			font-size:12px;
 		}
 		
 		.sendButton
@@ -43,48 +41,53 @@
 	       outline:none;
 	       width:40px;
 	       text-align:center;
-	       margin-right:5px;
-	       border-radius:3px;
+	       margin-left:3px;
+	       color:#595959;
 		}
 		
 		.systemMsg
 		{
-			color:grey;
+			color:#FFA500;
 			font-style:italic;
+			font-size:12px;
+		}
+		
+		.msg
+		{
+			font-size:12px;
 		}
 			
 		.userName
 		{
 			font-weight:bold;
-			padding:0 5px;
+			padding:0 3px;
+			font-size:12px;
 		}
 		
 		.systemWarn
 		{
-			color:blue;
+			color:#FFA500;
 			font-style:italic;
-			font-size:14px;
+			font-weight:bold;
+			font-size:12px;
 		}
-		
-	
-        
     </ui:style>
 
-    <g:SplitLayoutPanel ui:field="mainPanel">
-        <g:west size="350" min-size="30">
-            <g:ScrollPanel styleName="{style.userListScrollPanel}">
-                <g:VerticalPanel ui:field='userListPanel' styleName="userListTable" width="100%" />
+    <g:SplitLayoutPanel ui:field="mainPanel" styleName="{style.mainPanel} workspaceUserPanel">
+        <g:north size="200">
+            <g:ScrollPanel>
+                <g:VerticalPanel ui:field='userListPanel' styleName="{style.userListTable}"/>
             </g:ScrollPanel>
-        </g:west>
-         <g:center>
+        </g:north>
+        <g:center>
         	<g:LayoutPanel height="100%" width="100%">
-        	<g:layer top="0px" bottom="24px">
-				<g:ScrollPanel styleName="{style.chatRoomScrollPanel}" ui:field="chatRoomScrollPanel">
-			    	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
-			    </g:ScrollPanel>
-			</g:layer>
-			<g:layer bottom="2px" height="24px">
-				<g:HorizontalPanel width="100%" spacing="3">
+	        	<g:layer top="0px" bottom="24px">
+					<g:ScrollPanel styleName="{style.chatRoomScrollPanel}" ui:field="chatRoomScrollPanel">
+				    	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
+				    </g:ScrollPanel>
+				</g:layer>
+				<g:layer bottom="2px" height="24px">
+					<g:HorizontalPanel width="100%" spacing="3">
 		        		<g:cell>
 			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/>
 			        	</g:cell>
@@ -92,7 +95,7 @@
 							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	
 						</g:cell>	        	
 		        	</g:HorizontalPanel>
-			</g:layer>
+				</g:layer>
         	</g:LayoutPanel>
         </g:center>
     </g:SplitLayoutPanel>

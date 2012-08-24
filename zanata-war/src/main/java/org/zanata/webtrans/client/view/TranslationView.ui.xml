@@ -3,14 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client"
 	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:style type="org.zanata.webtrans.client.view.TranslationView.Styles">
-        .messageAlert
-        {
-			color:#FFA500;
-		}
-		
-	</ui:style>
-
 	<g:LayoutPanel styleName="translationContainer">
 	
 		<g:layer top="0px" bottom="0px">

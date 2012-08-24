@@ -864,12 +864,6 @@ td.ApprovedStateDecoration div div div
 	height:100%;	
 }
 
-.userListTable td 
-{
-	padding-top: 3px;
-	padding-left: 1px;
-}
-
 .notificationPanel 
 {
 	border:none;
@@ -905,23 +899,6 @@ td.ApprovedStateDecoration div div div
 	text-decoration:underline;
 }
 
-.sideMenuButton
-{
-    cursor: pointer;
-    font-size:20px;
-    color:#FFFFFF;
-    background-color: #444444;
-	border-top-left-radius:5px;
-	border-bottom-left-radius:5px;
-	padding-left:2px;
-}
-
-.sideMenuButton:hover
-{
-    color: #96FFFF;
-    background:#626262;
-}
-
 .sideMenuHeader {
     font-weight:bold;
     font-size:13px;
@@ -930,5 +907,11 @@ td.ApprovedStateDecoration div div div
     padding:3px 0;
     border-radius:5px;
     border:1px dotted gray;
+}
+
+.workspaceUserPanel .gwt-SplitLayoutPanel-VDragger
+{
+	border-radius:2px;
+	background:#B0C4DE;
 }
 

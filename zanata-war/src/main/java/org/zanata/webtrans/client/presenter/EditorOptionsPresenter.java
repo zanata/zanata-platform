@@ -69,8 +69,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
       static final String KEY_UNTRANSLATED = "U";
 
       String getSelectedFilter();
-
-      HasClickHandlers getEditorOptionsTab();
    }
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
@@ -206,11 +204,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
             display.setNavOptionVisible(event.isEnable());
          }
       }));
-   }
-
-   public HasClickHandlers getTabButton()
-   {
-      return display.getEditorOptionsTab();
    }
 
    private void setReadOnly(boolean readOnly)

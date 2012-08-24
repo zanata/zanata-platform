@@ -5,7 +5,6 @@ import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +35,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
 
 @Test(groups = { "unit-tests" })
-public class OptionsPanelPresenterTest extends PresenterTest
+public class EditorOptionsPresenterTest extends PresenterTest
 {
 
    // object under test
@@ -191,8 +190,6 @@ public class OptionsPanelPresenterTest extends PresenterTest
 
       //expected response
       mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
-      mockDisplay.setEditorOptionsVisible(changeToEditable);
-      mockDisplay.setValidationOptionsVisible(changeToEditable);
       expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(changeToReadonly).once();
       mockUserWorkspaceContext.setProjectActive(changeToReadonly);
       if (changeToEditable)
@@ -574,10 +571,6 @@ public class OptionsPanelPresenterTest extends PresenterTest
       if (readOnlyWorkspace)
       {
          mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
-         mockDisplay.setEditorOptionsVisible(false);
-         expectLastCall().anyTimes();
-         mockDisplay.setValidationOptionsVisible(false);
-         expectLastCall().anyTimes();
       }
 
       expectRegisterFilterChangeHandlers();

@@ -35,6 +35,8 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.events.ShowSideMenuEvent;
+import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
@@ -88,25 +90,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getDocumentListButton();
 
-      HasClickHandlers getChatRoomButton();
-
-      void setEditorOptionsVisible(boolean visible);
-
       HasClickHandlers getResizeButton();
 
       boolean getAndToggleResizeButton();
 
       void setResizeVisible(boolean visible);
 
-      void onEditorOptionsExpend(boolean expend);
-
-      void onValidationOptionsExpend(boolean expend);
-
-      void setValidationOptionsVisible(boolean visible);
-
-      void onChatContainerExpend(boolean expend);
-
-      void setChatVisible(boolean b);
+      void showSideMenu(boolean isShowing);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -115,9 +105,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
    private final LayoutSelectorPresenter layoutSelectorPresenter;
-   private final EditorOptionsPresenter editorOptionsPresenter;
-   private final ValidationOptionsPresenter validationOptionsPresenter;
-   private final WorkspaceUsersPresenter workspaceUsersPresenter;
+   private final SideMenuPresenter sideMenuPresenter;
 
    private final History history;
    private final Window window;
@@ -132,14 +120,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private TranslationStats currentDisplayStats = new TranslationStats();
    private MainView currentView = null;
 
-   private boolean optionsPanelExpended = false;
-   private boolean validationOptionsExpended = false;
-   private boolean chatExpended = false;
-
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final EditorOptionsPresenter optionsPanelPresenter, final ValidationOptionsPresenter validationOptionsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
@@ -151,9 +135,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter = notificationPresenter;
       this.layoutSelectorPresenter = layoutSelectorPresenter;
-      this.editorOptionsPresenter = optionsPanelPresenter;
-      this.validationOptionsPresenter = validationOptionsPresenter;
-      this.workspaceUsersPresenter = workspaceUsersPresenter;
+      this.sideMenuPresenter = sideMenuPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
    }
@@ -173,16 +155,22 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
-      editorOptionsPresenter.bind();
-      validationOptionsPresenter.bind();
-      workspaceUsersPresenter.bind();
+      sideMenuPresenter.bind();
 
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
 
+      registerHandler(eventBus.addHandler(ShowSideMenuEvent.getType(), new ShowSideMenuEventHandler()
+      {
+         @Override
+         public void onShowSideMenu(ShowSideMenuEvent event)
+         {
+            display.showSideMenu(event.isShowing());
+         }
+      }));
+      
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
-
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
@@ -280,16 +268,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
-      display.getChatRoomButton().addClickHandler(new ClickHandler()
-      {
-
-         @Override
-         public void onClick(ClickEvent event)
-         {
-
-         }
-      });
-
       display.getResizeButton().addClickHandler(new ClickHandler()
       {
          @Override
@@ -297,81 +275,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          {
             boolean expended = display.getAndToggleResizeButton();
             translationPresenter.setSouthPanelExpanded(expended);
-         }
-      });
-
-      editorOptionsPresenter.getTabButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (!userWorkspaceContext.hasReadOnlyAccess())
-            {
-               if (!optionsPanelExpended)
-               {
-                  display.onEditorOptionsExpend(true);
-                  optionsPanelExpended = true;
-                  display.setValidationOptionsVisible(false);
-                  display.setChatVisible(false);
-               }
-               else
-               {
-                  display.onEditorOptionsExpend(false);
-                  optionsPanelExpended = false;
-                  display.setValidationOptionsVisible(true);
-                  display.setChatVisible(true);
-               }
-            }
-         }
-      });
-      
-      validationOptionsPresenter.getTabButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (!userWorkspaceContext.hasReadOnlyAccess())
-            {
-               if (!validationOptionsExpended)
-               {
-                  display.onValidationOptionsExpend(true);
-                  validationOptionsExpended = true;
-                  display.setEditorOptionsVisible(false);
-                  display.setChatVisible(false);
-               }
-               else
-               {
-                  display.onValidationOptionsExpend(false);
-                  validationOptionsExpended = false;
-                  display.setEditorOptionsVisible(true);
-                  display.setChatVisible(true);
-               }
-            }
-         }
-      });
-
-      workspaceUsersPresenter.getTabButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (!userWorkspaceContext.hasReadOnlyAccess())
-            {
-               if (!chatExpended)
-               {
-                  display.onChatContainerExpend(true);
-                  chatExpended = true;
-                  display.setEditorOptionsVisible(false);
-                  display.setValidationOptionsVisible(false);
-               }
-               else
-               {
-                  display.onChatContainerExpend(false);
-                  chatExpended = false;
-                  display.setEditorOptionsVisible(true);
-                  display.setValidationOptionsVisible(true);
-               }
-            }
          }
       });
 
@@ -515,8 +418,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = selectedDocumentStats;
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
-            display.setEditorOptionsVisible(true);
-            display.setValidationOptionsVisible(true);
+            sideMenuPresenter.showEditorMenu(true);
             display.setResizeVisible(true);
             break;
          case Search:
@@ -527,8 +429,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
-            display.setEditorOptionsVisible(false);
-            display.setValidationOptionsVisible(false);
+            sideMenuPresenter.showEditorMenu(false);
             display.setResizeVisible(false);
             break;
          case Documents:
@@ -539,8 +440,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
-            display.setEditorOptionsVisible(false);
-            display.setValidationOptionsVisible(false);
+            sideMenuPresenter.showEditorMenu(false);
             display.setResizeVisible(false);
             break;
          }

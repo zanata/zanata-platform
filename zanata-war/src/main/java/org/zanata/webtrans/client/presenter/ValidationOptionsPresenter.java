@@ -46,8 +46,6 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled);
 
       void changeValidationSelectorValue(String label, boolean enabled);
-
-      HasClickHandlers getValidationOptionsTab();
    }
 
    private final ValidationService validationService;
@@ -93,11 +91,6 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    protected void onRevealDisplay()
    {
-   }
-
-   public HasClickHandlers getTabButton()
-   {
-      return display.getValidationOptionsTab();
    }
 }
 

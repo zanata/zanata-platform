@@ -24,12 +24,10 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
-import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.SideMenuPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
-import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
-import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
@@ -68,7 +66,7 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel readOnlyLabel, documentsLink, resize, notification, keyShortcuts, userChat;
+   InlineLabel readOnlyLabel, documentsLink, resize, notification, keyShortcuts;
    
    @UiField
    InlineLabel notificationLabel;
@@ -80,7 +78,7 @@ public class AppView extends Composite implements AppPresenter.Display
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel editorContainer, editorOptionsContainer, validationOptionsContainer, chatContainer, rootContainer;
+   LayoutPanel editorContainer, sideMenuContainer, rootContainer;
    
    @UiField(provided = true)
    final Resources resources;
@@ -99,7 +97,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private final static String STYLE_MINIMIZE = "icon-resize-small-2";
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, EditorOptionsPresenter.Display editorOptionsView, ValidationOptionsPresenter.Display validationOptionsView, WorkspaceUsersPresenter.Display workspaceUsersView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuPresenter.Display sideMenuView, final Identity identity)
    {
       this.resources = resources;
       this.messages = messages;
@@ -118,7 +116,6 @@ public class AppView extends Composite implements AppPresenter.Display
       documentList.setTitle(messages.documentListTitle());
       notification.setTitle(messages.notification());
 
-      userChat.setTitle(messages.chatRoom());
       resize.setTitle(messages.maximize());
       resize.addStyleName(STYLE_MAXIMIZE);
 
@@ -131,9 +128,7 @@ public class AppView extends Composite implements AppPresenter.Display
       this.searchResultsView = searchResultsView.asWidget();
       this.editorContainer.add(this.searchResultsView);
       
-      editorOptionsContainer.add(editorOptionsView.asWidget());
-      validationOptionsContainer.add(validationOptionsView.asWidget());
-      chatContainer.add(workspaceUsersView.asWidget());
+      sideMenuContainer.add(sideMenuView.asWidget());
       
       Window.enableScrolling(false);
    }
@@ -237,13 +232,7 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       return notification;
    }
-
-   @Override
-   public HasClickHandlers getChatRoomButton()
-   {
-      return userChat;
-   }
-
+  
    @Override
    public HasClickHandlers getResizeButton()
    {
@@ -292,97 +281,31 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setEditorOptionsVisible(boolean visible)
-   {
-      editorOptionsContainer.setVisible(visible);
-   }
-
-   @Override
-   public void setValidationOptionsVisible(boolean visible)
-   {
-      validationOptionsContainer.setVisible(visible);
-   }
-
-
-   @Override
    public void setResizeVisible(boolean visible)
    {
       resize.setVisible(visible);
    }
 
-   private final static double MENU_TOP = 35.0;
-   private final static double MIN_VALIDATION_OPTION_HEIGHT = 50.0;
-   private final static double MIN_CHAT_HEIGHT = 76.0;
-   private final static double MIN_EDITOR_OPTION_HEIGHT = 24.0;
-
    private final static double MIN_MENU_WIDTH = 24.0;
-   private final static double MAX_MENU_BOTTOM = 10.0;
    private final static double EXPENDED_MENU_RIGHT = 304.0;
 
    private final static double MINIMISED_EDITOR_RIGHT = 280.0;
    private final static int ANIMATE_DURATION = 300;
 
    @Override
-   public void onEditorOptionsExpend(boolean expend)
+   public void showSideMenu(boolean isShowing)
    {
       rootContainer.forceLayout();
-      if (expend)
+      if (isShowing)
       {
          rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
-         rootContainer.setWidgetRightWidth(editorOptionsContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
-         rootContainer.setWidgetTopBottom(editorOptionsContainer, MENU_TOP, Unit.PX, MAX_MENU_BOTTOM, Unit.PX);
+         rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
       }
       else
       {
          rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, 0.0, Unit.PX);
-         rootContainer.setWidgetRightWidth(editorOptionsContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
-         rootContainer.setWidgetTopHeight(editorOptionsContainer, MENU_TOP, Unit.PX, MIN_EDITOR_OPTION_HEIGHT, Unit.PX);
+         rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
       }
       rootContainer.animate(ANIMATE_DURATION);
-   }
-
-
-   @Override
-   public void onValidationOptionsExpend(boolean expend)
-   {
-      rootContainer.forceLayout();
-      if (expend)
-      {
-         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
-         rootContainer.setWidgetRightWidth(validationOptionsContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
-         rootContainer.setWidgetTopBottom(validationOptionsContainer, MENU_TOP, Unit.PX, MAX_MENU_BOTTOM, Unit.PX);
-      }
-      else
-      {
-         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, 0.0, Unit.PX);
-         rootContainer.setWidgetRightWidth(validationOptionsContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
-         rootContainer.setWidgetTopHeight(validationOptionsContainer, MENU_TOP, Unit.PX, MIN_VALIDATION_OPTION_HEIGHT, Unit.PX);
-      }
-      rootContainer.animate(ANIMATE_DURATION);
-   }
-   
-   @Override
-   public void onChatContainerExpend(boolean expend)
-   {
-      rootContainer.forceLayout();
-      if (expend)
-      {
-         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
-         rootContainer.setWidgetRightWidth(chatContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
-         rootContainer.setWidgetTopBottom(chatContainer, MENU_TOP, Unit.PX, MAX_MENU_BOTTOM, Unit.PX);
-      }
-      else
-      {
-         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, 0.0, Unit.PX);
-         rootContainer.setWidgetRightWidth(chatContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
-         rootContainer.setWidgetTopHeight(chatContainer, MENU_TOP, Unit.PX, MIN_CHAT_HEIGHT, Unit.PX);
-      }
-      rootContainer.animate(ANIMATE_DURATION);
-   }
-
-   @Override
-   public void setChatVisible(boolean visible)
-   {
-      chatContainer.setVisible(visible);
    }
 }

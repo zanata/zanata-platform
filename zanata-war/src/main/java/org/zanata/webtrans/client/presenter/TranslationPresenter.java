@@ -20,21 +20,16 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
-import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
-import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
-import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
-import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -42,19 +37,10 @@ import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.rpc.GetTranslatorList;
-import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
-import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 
@@ -62,8 +48,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 {
    public interface Display extends WidgetDisplay
    {
-      void setParticipantsTitle(String title);
-
       /**
        * expand to previous size or collapse to show just tabs on the south
        * panel
@@ -71,22 +55,11 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
        * @param expanded
        */
       void setSouthPanelExpanded(boolean expanded);
-
-      boolean isUserPanelOpen();
-
-      HasSelectionHandlers<Integer> getSouthTabPanel();
-
-      void startAlert(int periodMillis);
-
-      void cancelAlert();
    }
-
-   private final DispatchAsync dispatcher;
 
    private final TranslationEditorPresenter translationEditorPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
    private final GlossaryPresenter glossaryPresenter;
-   private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
 
@@ -97,17 +70,15 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, final TargetContentsPresenter targetContentsPresenter, final TranslationEditorPresenter translationEditorPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.messages = messages;
       this.translationEditorPresenter = translationEditorPresenter;
-      this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.transMemoryPresenter = transMemoryPresenter;
       this.glossaryPresenter = glossaryPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
-      this.dispatcher = dispatcher;
       this.userWorkspaceContext = userWorkspaceContext;
    }
 
@@ -116,25 +87,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       targetContentsPresenter.concealDisplay();
       keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
-   }
-
-   private void loadTranslatorList()
-   {
-      dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("error fetching translators list: " + caught.getMessage());
-         }
-
-         @Override
-         public void onSuccess(GetTranslatorListResult result)
-         {
-            workspaceUsersPresenter.initUserList(result.getTranslatorList());
-            display.setParticipantsTitle(messages.nUsersOnline(result.getSize()));
-         }
-      });
    }
 
    @Override
@@ -148,53 +100,10 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            workspaceUsersPresenter.removeTranslator(event.getEditorClientId(), event.getPerson());
             targetContentsPresenter.updateTranslators();
-            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));
-
-      registerHandler(eventBus.addHandler(EnterWorkspaceEvent.getType(), new EnterWorkspaceEventHandler()
-      {
-         @Override
-         public void onEnterWorkspace(EnterWorkspaceEvent event)
-         {
-            workspaceUsersPresenter.addTranslator(event.getEditorClientId(), event.getPerson(), null);
-            workspaceUsersPresenter.dispatchChatAction(null, messages.hasJoinedWorkspace(event.getPerson().getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
-            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
-         }
-      }));
-
-      // We won't receive the EnterWorkspaceEvent generated by our own login,
-      // because this presenter is not bound until we get the callback from
-      // EventProcessor.
-      // Thus we load the translator list here.
-      loadTranslatorList();
-
-      registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), new PublishWorkspaceChatEventHandler()
-      {
-         @Override
-         public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event)
-         {
-            if (!display.isUserPanelOpen())
-            {
-               display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()) + " *");
-               display.startAlert(800);
-            }
-         }
-      }));
-
-      registerHandler(display.getSouthTabPanel().addSelectionHandler(new SelectionHandler<Integer>()
-      {
-
-         @Override
-         public void onSelection(SelectionEvent<Integer> event)
-         {
-            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
-            display.cancelAlert();
-         }
-      }));
-
+     
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
          @Override
@@ -322,14 +231,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       transMemoryPresenter.bind();
       glossaryPresenter.bind();
-      workspaceUsersPresenter.bind();
    }
 
    private void unbindSouthPanelPresenters()
    {
       transMemoryPresenter.unbind();
       glossaryPresenter.unbind();
-      workspaceUsersPresenter.unbind();
    }
 
    @Override
