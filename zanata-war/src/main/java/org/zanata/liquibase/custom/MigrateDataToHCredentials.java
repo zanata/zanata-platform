@@ -55,19 +55,29 @@ public class MigrateDataToHCredentials implements CustomTaskChange
          {
             Statement stmt = conn.createStatement();
             PreparedStatement insertStmt = conn.prepareStatement("insert into HCredentials " +
-                  "(account_id, type, user, creationDate, lastChanged, versionNum) values" +
-                  "(?, ?, ?, ?, ?, ?)");
-            ResultSet rset = stmt.executeQuery("select id, username, creationDate, lastChanged from HAccount");
+                  "(account_id, type, user, email, creationDate, lastChanged, versionNum) values" +
+                  "(?, ?, ?, ?, ?, ?, ?)");
+            ResultSet rset = stmt.executeQuery("select acc.id, acc.username, p.email, acc.creationDate, acc.lastChanged " +
+                  " from HAccount acc, HPerson p" +
+                  " where p.accountId = acc.id");
 
             while( rset.next() )
             {
 
                insertStmt.setLong(1, rset.getLong("id"));
                insertStmt.setString(2, dbAuthType);
-               insertStmt.setString(3, rset.getString("username"));
-               insertStmt.setDate(4, rset.getDate("creationDate"));
-               insertStmt.setDate(5, rset.getDate("lastChanged"));
-               insertStmt.setLong(6, 0);
+               if( dbAuthType.equals("OPENID") )
+               {
+                  insertStmt.setString(3, "http://" + rset.getString("username") + ".id.fedoraproject.org/");
+               }
+               else
+               {
+                  insertStmt.setString(3, rset.getString("username"));
+               }
+               insertStmt.setString(4, rset.getString("email"));
+               insertStmt.setDate(5, rset.getDate("creationDate"));
+               insertStmt.setDate(6, rset.getDate("lastChanged"));
+               insertStmt.setLong(7, 0);
 
                insertStmt.executeUpdate();
             }

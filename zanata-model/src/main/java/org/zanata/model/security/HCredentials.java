@@ -20,6 +20,7 @@
  */
 package org.zanata.model.security;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -51,16 +52,25 @@ public abstract class HCredentials extends ModelEntityBase
    @Setter
    private String user;
 
+   @Setter
+   private String email;
 
-   @ManyToOne
+
+   @ManyToOne(optional = false)
    @JoinColumn(name = "account_id")
    public HAccount getAccount()
    {
       return account;
    }
 
+   @Column(unique = true, nullable = false)
    public String getUser()
    {
       return user;
+   }
+
+   public String getEmail()
+   {
+      return email;
    }
 }

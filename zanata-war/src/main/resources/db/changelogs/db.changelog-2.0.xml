@@ -45,9 +45,14 @@
     <changeSet id="2" author="camunoz@redhat.com">
         <comment>Create HCredentials table.</comment>
         <createTable tableName="HCredentials">
-            <column name="account_id" type="bigint"/>
-            <column name="type" type="varchar(10)"/>
+            <column name="account_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
             <column name="user" type="longtext"/>
+            <column name="email" type="varchar(100)"/>
             <!-- Base entity columns -->
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

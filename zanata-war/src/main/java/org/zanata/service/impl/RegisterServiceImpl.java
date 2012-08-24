@@ -96,7 +96,7 @@ public class RegisterServiceImpl implements RegisterService
       }.addRole("admin").run();
 
       HAccount account = accountDAO.getByUsername(username);
-      account.getCredentials().add( new HOpenIdCredentials(account, externalId) );
+      account.getCredentials().add( new HOpenIdCredentials(account, externalId, email) );
       HPerson person = new HPerson();
       person.setAccount(account);
       person.setEmail(email);
