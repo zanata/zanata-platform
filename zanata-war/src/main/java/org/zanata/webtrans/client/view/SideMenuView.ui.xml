@@ -74,7 +74,7 @@
     	</g:layer>
     	
     	
-    	<g:layer top="0px" bottom="0" left="24px" right="0">
+    	<g:layer top="0px" bottom="10px" left="24px" right="0">
     		<g:LayoutPanel ui:field="container" styleName="{style.mainPanel}"/>
     	</g:layer>
 	</g:LayoutPanel>
