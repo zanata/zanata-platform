@@ -11,11 +11,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
-import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
-import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -24,14 +22,11 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 
 @Test(groups = { "unit-tests" })
 public class TranslationPresenterTest extends PresenterTest
 {
-
-   private static final String COPY_FROM_TM = "Copy from TM";
 
    // object under test
    private TranslationPresenter translationPresenter;
@@ -51,13 +46,9 @@ public class TranslationPresenterTest extends PresenterTest
    private KeyShortcutPresenter mockKeyShortcutPresenter;
 
    // mock view components
-   private HasSelectionHandlers<Integer> mockSouthPanel;
-
-   private Capture<EnterWorkspaceEventHandler> capturedEnterWorkspaceEventHandler;
    private Capture<ExitWorkspaceEventHandler> capturedExitWorkspaceEventHandler;
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler;
    private Capture<KeyShortcut> capturedKeyShortcuts;
-   private Capture<PublishWorkspaceChatEventHandler> capturedPublishWorkspaceChatEventHandler;
 
    @SuppressWarnings("unchecked")
    @BeforeClass
@@ -74,13 +65,9 @@ public class TranslationPresenterTest extends PresenterTest
       mockTargetContentsPresenter = createAndAddMock(TargetContentsPresenter.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
 
-      mockSouthPanel = createAndAddMock(HasSelectionHandlers.class);
-
-      capturedEnterWorkspaceEventHandler = addCapture(new Capture<EnterWorkspaceEventHandler>());
       capturedExitWorkspaceEventHandler = addCapture(new Capture<ExitWorkspaceEventHandler>());
       capturedWorkspaceContextUpdateEventHandler = addCapture(new Capture<WorkspaceContextUpdateEventHandler>());
       capturedKeyShortcuts = addCapture(new Capture<KeyShortcut>());
-      capturedPublishWorkspaceChatEventHandler = addCapture(new Capture<PublishWorkspaceChatEventHandler>());
    }
    
    @BeforeMethod
@@ -120,7 +107,7 @@ public class TranslationPresenterTest extends PresenterTest
       expectHideSouthPanel();
       replayAllMocks();
       translationPresenter.bind();
-      simulateShowSouthPanel(false);
+      translationPresenter.setSouthPanelExpanded(false);
       verifyAllMocks();
    }
 
@@ -131,8 +118,8 @@ public class TranslationPresenterTest extends PresenterTest
       expectShowSouthPanel(null);
       replayAllMocks();
       translationPresenter.bind();
-      simulateShowSouthPanel(false);
-      simulateShowSouthPanel(true);
+      translationPresenter.setSouthPanelExpanded(false);
+      translationPresenter.setSouthPanelExpanded(true);
       verifyAllMocks();
    }
 
@@ -151,8 +138,8 @@ public class TranslationPresenterTest extends PresenterTest
       mockGlossaryPresenter.createGlossaryRequestForTransUnit(mockTU);
       replayAllMocks();
       translationPresenter.bind();
-      simulateShowSouthPanel(false);
-      simulateShowSouthPanel(true);
+      translationPresenter.setSouthPanelExpanded(false);
+      translationPresenter.setSouthPanelExpanded(true);
       verifyAllMocks();
    }
 
@@ -220,6 +207,8 @@ public class TranslationPresenterTest extends PresenterTest
       mockUserWorkspaceContext.setProjectActive(true);
       expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false);
 
+      expectShowSouthPanel(null);
+      
       replayAllMocks();
       translationPresenter.bind();
       simulateReadOnlyEvent(true);
@@ -260,15 +249,6 @@ public class TranslationPresenterTest extends PresenterTest
       mockDisplay.setSouthPanelExpanded(false);
       mockTransMemoryPresenter.unbind();
       mockGlossaryPresenter.unbind();
-   }
-
-   private void simulateShowSouthPanel(boolean show)
-   {
-      // simulate south panel toggle released
-      @SuppressWarnings("unchecked")
-      ValueChangeEvent<Boolean> southPanelToggleEvent = createMock(ValueChangeEvent.class);
-      expect(southPanelToggleEvent.getValue()).andReturn(show).anyTimes();
-      replay(southPanelToggleEvent);
    }
 
    // TODO test for starting in read-only mode
