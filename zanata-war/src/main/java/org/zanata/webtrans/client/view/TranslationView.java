@@ -51,7 +51,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    LayoutPanel southPanelContainer;
 
    @UiField
-   TabLayoutPanel southPanelTab;
+   LayoutPanel southPanel;
 
    @UiField
    LayoutPanel editorContainer;
@@ -62,7 +62,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    SplitLayoutPanel tmGlossaryPanel;
 
    private static double SOUTH_PANEL_HEIGHT = 150;
-   private static double MIN_SOUTH_PANEL_HEIGHT = 26;
+   private static double MIN_SOUTH_PANEL_HEIGHT = 0;
    private final static double GLOSSARY_PANEL_WIDTH = 500;
 
    private final static int ANIMATE_DURATION = 200;
@@ -79,10 +79,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       mainSplitPanel = new SplitLayoutPanel(3);
 
       initWidget(uiBinder.createAndBindUi(this));
-//      setSplitterHeight("3px");
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) MIN_SOUTH_PANEL_HEIGHT);
 
-      southPanelTab.add(tmGlossaryPanel, messages.tmGlossaryHeading());
+      southPanel.add(tmGlossaryPanel);
 
       setEditorView(translationEditorView.asWidget());
 

@@ -62,9 +62,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Restore default")
    String minimize();
 
-   @DefaultMessage("Translation Memory/Glossary")
-   String tmGlossaryHeading();
-
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
 

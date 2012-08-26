@@ -3,14 +3,21 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client"
 	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
+	<ui:style>
+		.southPanel
+		{
+			border:2px solid #E0E8EE;
+			border-radius:5px;
+		}
+	</ui:style>
+
 	<g:LayoutPanel styleName="translationContainer">
-	
 		<g:layer top="0px" bottom="0px">
 			<g:SplitLayoutPanel ui:field="mainSplitPanel">
-				<g:south size="150" min-size="30">
+				<g:south size="150">
 				    <g:LayoutPanel ui:field="southPanelContainer">
 				        <g:layer top="0" bottom="5px">
-					        <g:TabLayoutPanel ui:field="southPanelTab" barUnit='PX' barHeight='20'/>
+					        <g:LayoutPanel ui:field="southPanel" styleName="{style.southPanel}"/>
                         </g:layer>
 				    </g:LayoutPanel>
                 </g:south>
