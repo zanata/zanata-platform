@@ -20,33 +20,69 @@
  */
 package org.zanata.action;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
-import org.zanata.security.openid.OpenIdProviderManager;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.security.FedoraOpenId;
+import org.zanata.security.openid.OpenIdProvider;
 
 /**
+ * This action takes care of logging a user into the system. It contains logic to
+ * handle the different authentication mechanisms offered by the system.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("loginAction")
+@Scope(ScopeType.PAGE)
 public class LoginAction
 {
+   // Open Id Provider types
+   private static final int OTHER_OPENID = -1;
+   private static final int FEDORA = 1;
+   private static final int MYOPENID = 2;
+   private static final int YAHOO = 3;
+
    @In
    private Identity identity;
 
    @In
-   private OpenIdProviderManager openIdProviderManager;
+   private FedoraOpenId fedoraOpenId;
 
    @In
    private Credentials credentials;
 
-   public String logInWithGoogle()
+   @In
+   private ApplicationConfiguration applicationConfiguration;
+
+   private String username;
+
+   private int selectedOpenIdProvider;
+
+
+   public String getUsername()
+   {
+      return username;
+   }
+
+   public void setUsername(String username)
+   {
+      this.username = username;
+   }
+
+   /**
+    * NB: Since Google only offers a federated open id login, there is no need to
+    * ask for a user name. Simply perform the authentication right away.
+    */
+   public String useGoogleLogin()
    {
       // NB: Credentials' user name must be set to something or else login will fail. The real user name will be asked
       // by the provider
       credentials.setUsername("google");
-      openIdProviderManager.useGoogleProvider();
+      fedoraOpenId.useGoogleProvider();
       String loginResult = identity.login();
 
       // Clear out the credentials again
@@ -54,4 +90,53 @@ public class LoginAction
 
       return loginResult;
    }
+
+   public void useFedoraLogin()
+   {
+      this.selectedOpenIdProvider = FEDORA;
+   }
+
+   public void useMyOpenIdLogin()
+   {
+      this.selectedOpenIdProvider = MYOPENID;
+   }
+
+   public void useGenericOpenIdLogin()
+   {
+      this.selectedOpenIdProvider = OTHER_OPENID;
+   }
+
+   public void useYahooOpenIdLogin()
+   {
+      this.selectedOpenIdProvider = YAHOO;
+   }
+
+   public String login()
+   {
+      if( applicationConfiguration.isFedoraOpenIdAuth() )
+      {
+         credentials.setUsername( username );
+
+         switch (this.selectedOpenIdProvider)
+         {
+            case FEDORA:
+               fedoraOpenId.useFedoraProvider();
+               break;
+
+            case MYOPENID:
+               fedoraOpenId.useMyOpenIdProvider();
+               break;
+
+            case YAHOO:
+               fedoraOpenId.useYahooOpenIdProvider();
+               break;
+
+            default:
+               fedoraOpenId.useGenericOpenIdProvider();
+         }
+      }
+
+      return identity.login();
+   }
+
 }

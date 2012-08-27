@@ -71,7 +71,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
       Pages.handleOutcome(event.getFacesContext(), null, "/openid.xhtml");
    }
 
-   public void sendXRDS() throws IOException
+   private void sendXRDS() throws IOException
    {
       FacesContext context = FacesContext.getCurrentInstance();
       ExternalContext extContext = context.getExternalContext();

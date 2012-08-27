@@ -35,9 +35,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HOpenIdCredentials extends HCredentials
 {
-   public HOpenIdCredentials(HAccount account, String user)
+   public HOpenIdCredentials(HAccount account, String user, String email)
    {
       setAccount(account);
       setUser(user);
+      setEmail(email);
    }
 }

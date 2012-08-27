@@ -132,7 +132,7 @@ public class ProfileAction implements Serializable
          {
             if( applicationConfiguration.isFedoraOpenIdAuth() )
             {
-               email = fedoraOpenId.getValidatedEmail();
+               email = fedoraOpenId.getAuthResult().getEmail();
             }
             else
             {
@@ -228,8 +228,7 @@ public class ProfileAction implements Serializable
       }
       else
       {
-         final String user = this.username;
-         String key = registerServiceImpl.register(user, fedoraOpenId.getValidatedId(),
+         String key = registerServiceImpl.register(this.username, fedoraOpenId.getAuthResult().getAuthenticatedId(),
                AuthenticationType.FEDORA_OPENID, this.name, this.email);
          setActivationKey(key);
          renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");

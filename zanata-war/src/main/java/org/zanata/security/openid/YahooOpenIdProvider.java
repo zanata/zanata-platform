@@ -24,24 +24,25 @@ import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
- * Fedora Open Id provider.
+ * Yahoo Open Id provider.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class FedoraOpenIdProvider implements OpenIdProvider
+public class YahooOpenIdProvider implements OpenIdProvider
 {
-   private static final String FEDORA_OPENID_FORMAT = "http://{0}.id.fedoraproject.org/";
-   private static final Pattern FEDORA_OPENID_PATTERN = Pattern.compile("http://(.*).id.fedoraproject.org/");
+   private static final String YAHOO_OPENID_FORMAT = "https://me.yahoo.com/{0}";
+   private static final Pattern YAHOO_OPENID_PATTERN = Pattern.compile("https://me.yahoo.com/(.*)");
+
 
    @Override
    public String getOpenId(String username)
    {
-      return MessageFormat.format(FEDORA_OPENID_FORMAT, username);
+      return MessageFormat.format( YAHOO_OPENID_FORMAT, username );
    }
 
    @Override
    public boolean accepts(String openId)
    {
-      return FEDORA_OPENID_PATTERN.matcher( openId ).matches();
+      return YAHOO_OPENID_PATTERN.matcher( openId ).matches();
    }
 }

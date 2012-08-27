@@ -38,6 +38,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -152,7 +153,8 @@ public class HAccount extends ModelEntityBase implements Serializable
    }
 
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+   @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    public Set<HCredentials> getCredentials()
    {
       if(credentials == null)

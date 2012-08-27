@@ -153,6 +153,12 @@ a.breadcrumbs_link:hover
 	font-size:12px;
 }
 
+input.login_option {
+    width: 40px;
+    height: 40px;
+    border: none;
+}
+
 .prop {
 	vertical-align: middle;
 }

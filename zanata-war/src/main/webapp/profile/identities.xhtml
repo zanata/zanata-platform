@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="page_title">Credentials</ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function confirmIdentityRemoval()
+            {
+                return confirm('#{messages['jsf.identities.ConfirmIdentityRemoval']}');
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="center_content">
+
+        <h:form>
+            <rich:dataTable id="credentials_table" width="100%"
+                            value="#{credentialsAction.userCredentials}" var="cred">
+                <rich:column>
+                    <f:facet name="header">#{messages['jsf.identities.Type']}</f:facet>
+                    <h:graphicImage rendered="#{credentialsAction.isGoogleOpenId( cred.user )}"
+                                    title="Google"
+                                    height="25"
+                                    url="../images/openid/google.png"/>
+                    <h:graphicImage rendered="#{credentialsAction.isFedoraOpenId( cred.user )}"
+                                    title="Fedora"
+                                    height="25"
+                                    url="../images/openid/fedora.png"/>
+                    <h:graphicImage rendered="#{credentialsAction.isMyOpenId( cred.user )}"
+                                    title="MyOpenID"
+                                    height="25"
+                                    url="../images/openid/myopenid.png"/>
+                    <h:graphicImage rendered="#{credentialsAction.isYahooOpenId( cred.user )}"
+                                    title="Yahoo"
+                                    height="25"
+                                    url="../images/openid/yahoo.png"/>
+                    <h:graphicImage rendered="#{credentialsAction.isGenericOpenId( cred.user )}"
+                                    title="Open ID"
+                                    height="25"
+                                    url="../images/openid/openid.png"/>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">#{messages['jsf.identities.User']}</f:facet>
+                    <h:outputText value="#{cred.user}"/>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+                    <h:outputText value="#{cred.email}"/>
+                </rich:column>
+                <rich:column>
+                    <h:commandButton value="#{messages['jsf.Delete']}"
+                                     action="#{credentialsAction.remove( cred )}"
+                                     rendered="#{credentialsAction.userCredentials.size() gt 1}"
+                                     onclick="return confirmIdentityRemoval();"/>
+                </rich:column>
+            </rich:dataTable>
+        </h:form>
+
+    </ui:define>
+
+    <ui:define name="left_content">
+        <rich:panel>
+            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+            <s:link styleClass="action_link" view="/profile/add_identity.xhtml" propagation="none">
+                #{messages['jsf.identities.AddIdentity']}
+            </s:link>
+        </rich:panel>
+    </ui:define>
+
+</ui:composition>

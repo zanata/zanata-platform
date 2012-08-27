@@ -20,28 +20,33 @@
  */
 package org.zanata.security.openid;
 
-import java.text.MessageFormat;
-import java.util.regex.Pattern;
+import java.io.Serializable;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * Fedora Open Id provider.
+ * Contains results of an open Id authentication.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class FedoraOpenIdProvider implements OpenIdProvider
+public class OpenIdAuthenticationResult implements Serializable
 {
-   private static final String FEDORA_OPENID_FORMAT = "http://{0}.id.fedoraproject.org/";
-   private static final Pattern FEDORA_OPENID_PATTERN = Pattern.compile("http://(.*).id.fedoraproject.org/");
+   @Getter
+   @Setter
+   private String authenticatedId;
 
-   @Override
-   public String getOpenId(String username)
-   {
-      return MessageFormat.format(FEDORA_OPENID_FORMAT, username);
-   }
+   @Getter
+   @Setter
+   private String email;
 
-   @Override
-   public boolean accepts(String openId)
+   @Getter
+   @Setter
+   private String returnToUrl;
+
+   public boolean isAuthenticated()
    {
-      return FEDORA_OPENID_PATTERN.matcher( openId ).matches();
+      return authenticatedId != null;
    }
 }

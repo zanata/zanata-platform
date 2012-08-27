@@ -20,37 +20,17 @@
  */
 package org.zanata.security.openid;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-
 /**
- * Manages the Open Id provider to use by the system.
+ * This interface defines different handlers to invoke after an openId authentication happens.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("openIdProviderManager")
-@Scope(ScopeType.SESSION)
-@AutoCreate
-public class OpenIdProviderManager
+public interface OpenIdAuthCallback
 {
-   private OpenIdProvider openIdProvider = new FedoraOpenIdProvider();
-
-   @Factory(autoCreate = true)
-   public OpenIdProvider getOpenIdProvider()
-   {
-      return openIdProvider;
-   }
-
-   public void useGoogleProvider()
-   {
-      openIdProvider = new GoogleOpenIdProvider();
-   }
-
-   public void useFedoraProvider()
-   {
-      openIdProvider = new FedoraOpenIdProvider();
-   }
+   /**
+    * Invoked after an openId authentication is done, regardless of sucess or failure.
+    *
+    * @param result The result from the authentication.
+    */
+   void afterOpenIdAuth( OpenIdAuthenticationResult result );
 }

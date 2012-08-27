@@ -24,14 +24,14 @@ import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
- * Fedora Open Id provider.
+ * Provider implementation for MyOpenID
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class FedoraOpenIdProvider implements OpenIdProvider
+public class MyOpenIdProvider implements OpenIdProvider
 {
-   private static final String FEDORA_OPENID_FORMAT = "http://{0}.id.fedoraproject.org/";
-   private static final Pattern FEDORA_OPENID_PATTERN = Pattern.compile("http://(.*).id.fedoraproject.org/");
+   private static final String FEDORA_OPENID_FORMAT = "http://{0}.myopenid.com/";
+   private static final Pattern FEDORA_OPENID_PATTERN = Pattern.compile("http://(.*).myopenid.com/");
 
    @Override
    public String getOpenId(String username)

@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.com/products/seam/taglib" xmlns:H="http://java.sun.com/jsf/html"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="page_title">Add Identity</ui:define>
+
+    <ui:define name="head">
+        <!-- Load jQuery -->
+        <rich:jQuery query="jquery"/>
+
+        <script type="text/javascript">
+            function adjustLoginInput(visible, label)
+            {
+                var fieldSelector = "[id='#{rich:clientId('input')}']";
+                if( visible )
+                {
+                    jQuery("[id='#{rich:clientId('usernameLabel')}']").html( label );
+                    jQuery(fieldSelector).show();
+                }
+                else
+                {
+                    jQuery(fieldSelector).hide();
+                }
+                jQuery("[id='#{rich:clientId('verifyButton')}']").show();
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="center_content">
+
+        <h:form>
+            <h:outputText styleClass="name">#{messages['jsf.identities.SelectIdentityType']}</h:outputText><br/>
+            <rich:spacer height="10"/>
+            <a4j:commandButton id="fedora_signin" image="../images/openid/fedora.png" action="#{credentialsAction.addFedoraCredentials}"
+                               styleClass="login_option" title="Fedora"
+                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid.fedora']}')"/>
+            <rich:spacer width="10"/>
+            <h:commandButton id="google_signin" image="../images/openid/google.png" action="#{credentialsAction.addGoogleCredentials}"
+                             styleClass="login_option" title="Google"/>
+            <rich:spacer width="10"/>
+            <a4j:commandButton id="myopenid_signin" image="../images/openid/myopenid.png" action="#{credentialsAction.addMyOpenIdCredentials}"
+                               styleClass="login_option" title="MyOpenID"
+                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid.myopenid']}')"/>
+            <rich:spacer width="10"/>
+            <a4j:commandButton id="yahoo_signin" image="../images/openid/yahoo.png" action="#{credentialsAction.addYahooCredentials}"
+                               styleClass="login_option" title="Yahoo"
+                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid.yahoo']}')"/>
+            <rich:spacer width="10"/>
+            <a4j:commandButton id="openid_signin" image="../images/openid/openid.png" action="#{credentialsAction.addGenericOpenIdCredentials}"
+                               styleClass="login_option" title="Open Id"
+                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid']}')"/>
+            <rich:spacer width="10"/>
+
+            <br/>
+            <a4j:outputPanel id="input" style="display: none;">
+                <h:outputLabel id="usernameLabel" styleClass="loginForm_label">#{messages['jsf.FedoraUsername']}</h:outputLabel>
+                <h:inputText id="username" value="#{credentialsAction.credentialsUsername}"/>
+                <br/>
+                <h:commandButton id="verifyButton"
+                                 value="#{messages['jsf.identities.Verify']}"
+                                 action="#{credentialsAction.verifyCredentials}"
+                                 style="#{applicationConfiguration.fedoraOpenIdAuth ? 'display:none' : ''}"/>
+            </a4j:outputPanel>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

@@ -10,7 +10,8 @@
       </rule>
     </navigation>
   </page>
- 
+
+  <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
 	 <navigation evaluate="#{fedoraOpenId.loginImmediate()}">
 	      <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
@@ -26,10 +27,6 @@
 	        <redirect view-id="/account/login_input.xhtml" />
 	      </rule>
      </navigation>
-  </page>
-
-  <page view-id="/login/google.xhtml">
-    <action execute="#{fedoraOpenId.setProvider('GOOGLE')}"/>
   </page>
 
   <page view-id="/edit_home_content.xhtml">

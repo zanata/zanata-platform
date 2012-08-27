@@ -22,6 +22,7 @@ package org.zanata.security.openid;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
@@ -34,6 +35,8 @@ import org.openid4java.message.ax.FetchRequest;
  */
 public class GoogleOpenIdProvider implements OpenIdProvider
 {
+   private static final Pattern GOOGLE_OPENID_PATTERN = Pattern.compile("https://www.google.com/accounts/o8/id\\?id=(.*)");
+
    @Override
    public String getOpenId(String username)
    {
@@ -41,21 +44,8 @@ public class GoogleOpenIdProvider implements OpenIdProvider
    }
 
    @Override
-   public String extractEmailAddress(ParameterList paramList)
+   public boolean accepts(String openId)
    {
-      return paramList.getParameterValue("openid.ext1.value.email");
-   }
-
-   @Override
-   public void prepareFetchRequest(FetchRequest request)
-   {
-      try
-      {
-         request.addAttribute("email", "http://schema.openid.net/contact/email", true);
-      }
-      catch (MessageException e)
-      {
-         throw new RuntimeException(e);
-      }
+      return GOOGLE_OPENID_PATTERN.matcher( openId ).matches();
    }
 }
