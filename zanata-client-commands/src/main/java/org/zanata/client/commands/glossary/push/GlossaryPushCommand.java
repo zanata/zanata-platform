@@ -34,17 +34,22 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.adapter.glossary.AbstractGlossaryPushReader;
+import org.zanata.adapter.glossary.GlossaryCSVReader;
+import org.zanata.adapter.glossary.GlossaryPoReader;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.OptionsUtil;
+import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.Glossary;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions>
 {
@@ -54,11 +59,6 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
 
    private final IGlossaryResource glossaryResource;
    private final URI uri;
-
-   {
-      glossaryReaders.put("po", new GlossaryPoReader());
-      glossaryReaders.put("csv", new GlossaryCSVReader());
-   }
 
    public GlossaryPushCommand(GlossaryPushOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
    {
@@ -75,6 +75,24 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
    public GlossaryPushCommand(GlossaryPushOptions opts)
    {
       this(opts, OptionsUtil.createRequestFactory(opts));
+
+      glossaryReaders.put("po", new GlossaryPoReader(getLocaleFromMap(getOpts().getSourceLang()), getLocaleFromMap(getOpts().getTransLang()), getOpts().getBatchSize(), getOpts().getTreatSourceCommentsAsTarget()));
+      glossaryReaders.put("csv", new GlossaryCSVReader(getOpts().getBatchSize(), getOpts().getCommentCols()));
+   }
+
+   private LocaleId getLocaleFromMap(String localLocale)
+   {
+      if (getOpts() != null && getOpts().getLocaleMapList() != null && !getOpts().getLocaleMapList().isEmpty())
+      {
+         for (LocaleMapping loc : getOpts().getLocaleMapList())
+         {
+            if (loc.getLocalLocale().equals(localLocale))
+            {
+               return new LocaleId(loc.getLocale());
+            }
+         }
+      }
+      return new LocaleId(localLocale);
    }
 
    private AbstractGlossaryPushReader getReader(String fileExtension)
@@ -84,7 +102,6 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
       {
          throw new RuntimeException("unknown file type: " + fileExtension);
       }
-      reader.setOpts(getOpts());
       return reader;
    }
 
@@ -143,7 +160,7 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
       }
 
       log.info("pushing glossary document [{}] to server", glossaryFile.getName());
-      
+
       List<Glossary> glossaries = reader.extractGlossary(glossaryFile);
 
       int totalEntries = 0;
@@ -152,7 +169,7 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
          totalEntries = totalEntries + glossary.getGlossaryEntries().size();
          log.debug("total entries:" + totalEntries);
       }
-      
+
       int totalDone = 0;
       for (Glossary glossary : glossaries)
       {
@@ -164,6 +181,3 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
       }
    }
 }
-
-
- 
