@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>common</artifactId>
-  <version>1.6.2-SNAPSHOT</version>
+  <version>1.8.0-SNAPSHOT</version>
   <name>Zanata common modules</name>
   <packaging>pom</packaging>
   <parent>
@@ -27,7 +27,7 @@
        <dependency>
           <groupId>org.zanata</groupId>
           <artifactId>zanata-common-util</artifactId>
-          <version>${project.version}</version>
+          <version>1.6.1</version>
        </dependency>
       </dependencies>
    </dependencyManagement>
@@ -37,5 +37,6 @@
     <module>zanata-adapter-po</module>
     <module>zanata-adapter-properties</module>
     <module>zanata-adapter-xliff</module>
+    <module>zanata-adapter-glossary</module>
   </modules>
 </project>
