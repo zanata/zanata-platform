@@ -912,6 +912,6 @@ td.ApprovedStateDecoration div div div
 .workspaceUserPanel .gwt-SplitLayoutPanel-VDragger
 {
 	border-radius:2px;
-	background:#B0C4DE;
+	box-shadow:0 0 6px gray inset;
 }
 

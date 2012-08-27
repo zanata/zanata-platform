@@ -255,21 +255,9 @@ public interface WebTransMessages extends Messages
    @AlternateMessage({ "one", "1 text flow selected" })
    String numTextFlowsSelected(@PluralCount int selectedFlows);
 
-   @DefaultMessage("Help")
-   String help();
-
-   @DefaultMessage("Leave Workspace")
-   String leaveWorkspace();
-
-   @DefaultMessage("Sign Out")
-   String signOut();
-
    @DefaultMessage("Search & replace")
    String searchAndReplace();
 
-   @DefaultMessage("▼")
-   String downArrow();
-   
    @DefaultMessage("Layout Selection")
    String layoutSelection();
 
@@ -357,9 +345,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Chat")
    String chatScope();
 
-   @DefaultMessage("Report a problem")
-   String reportAProblem();
-
    @DefaultMessage("Version")
    String versionNumber();
 
@@ -404,7 +389,4 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Navigation key/button")
    String navOption();
-
-   @DefaultMessage("Menu")
-   String menu();
 }

@@ -38,7 +38,7 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    Styles style;
 
    @UiField
-   InlineLabel sideMenuTab, editorOptionsTab, validationOptionsTab, chatTab, participantsLabel;
+   InlineLabel editorOptionsTab, validationOptionsTab, chatTab, participantsLabel;
    
    @UiField
    LayoutPanel container;
@@ -49,7 +49,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    public SideMenuView(final WebTransMessages messages, final EditorOptionsPresenter.Display editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView)
    {
       initWidget(uiBinder.createAndBindUi(this));
-      sideMenuTab.setTitle(messages.menu());
       editorOptionsTab.setTitle(messages.editorOptions());
       validationOptionsTab.setTitle(messages.validationOptions());
       chatTab.setTitle(messages.chatRoom());
@@ -63,12 +62,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    public Widget asWidget()
    {
       return this;
-   }
-
-   @Override
-   public HasClickHandlers getSideMenuButton()
-   {
-      return sideMenuTab;
    }
 
    @Override
@@ -135,12 +128,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    {
       return chatTab;
    }
-
-   @Override
-   public HasVisibility getSideMenuTab()
-   {
-      return sideMenuTab;
-   }
    
    @Override
    public HasVisibility getContainer()
@@ -155,12 +142,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    }
    
    @Override
-   public boolean isChatTabOpen()
-   {
-      return chatTab.getStyleName().contains(style.selectedButton());
-   }
-
-   @Override
    public void setChatTabAlert(boolean alert)
    {
       if(alert)
@@ -171,5 +152,23 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       {
          chatTab.removeStyleName(style.alertTab());
       }
+   }
+
+   @Override
+   public Tab getCurrentTab()
+   {
+      if (chatTab.getStyleName().contains(style.selectedButton()))
+      {
+         return Tab.CHAT;
+      }
+      else if (editorOptionsTab.getStyleName().contains(style.selectedButton()))
+      {
+         return Tab.EDITOR_OPTION;
+      }
+      else if (validationOptionsTab.getStyleName().contains(style.selectedButton()))
+      {
+         return Tab.VALIDATION_OPTION;
+      }
+      return null;
    }
 }

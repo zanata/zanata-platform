@@ -43,7 +43,14 @@
 	       width:40px;
 	       text-align:center;
 	       margin-left:3px;
-	       color:#595959;
+	       color:#323232;
+		}
+		
+		.timeStamp
+		{
+			font-style:normal;
+			font-size:11px;
+			color:#D3D3D3;
 		}
 		
 		.systemMsg

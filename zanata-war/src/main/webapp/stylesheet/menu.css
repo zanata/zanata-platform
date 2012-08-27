@@ -9,7 +9,7 @@
 	background: -o-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	background: -ms-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	top:0px;
-	box-shadow:1px 1px 8px #778899;
+	box-shadow:1px 1px 5px #778899;
 }
 
 .logo {

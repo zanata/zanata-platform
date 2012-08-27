@@ -201,31 +201,6 @@ public class Application implements EntryPoint
    {
       redirectToUrl(getModuleParentBaseUrl() + "project/view/" + workspaceId.getProjectIterationId().getProjectSlug());
    }
-   
-   public static void redirectToZanataProject()
-   {
-      redirectToUrl(getModuleParentBaseUrl() + "project");
-   }
-
-   public static void redirectToZanataGroup()
-   {
-      redirectToUrl(getModuleParentBaseUrl() + "version-group");
-   }
-   
-   public static void redirectToZanataLanguage()
-   {
-      redirectToUrl(getModuleParentBaseUrl() + "language");
-   }
-
-   public static void redirectToZanataHelp()
-   {
-      redirectToUrl(getModuleParentBaseUrl() + "help");
-   }
-
-   public static void redirectToZanataHome()
-   {
-      redirectToUrl(getModuleParentBaseUrl());
-   }
 
    public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;

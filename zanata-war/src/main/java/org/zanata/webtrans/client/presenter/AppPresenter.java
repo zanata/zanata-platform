@@ -219,7 +219,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
-
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {

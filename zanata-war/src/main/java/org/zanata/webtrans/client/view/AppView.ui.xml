@@ -147,7 +147,7 @@
 		   <g:LayoutPanel ui:field="editorContainer" styleName="{style.editorContainer}"/>
 		</g:layer>
 		
-		<g:layer right="0" width="24px" top="35px" bottom="0">
+		<g:layer right="0" width="24px" top="35px" bottom="10px">
 			<g:LayoutPanel ui:field="sideMenuContainer"/>
 		</g:layer>
 		

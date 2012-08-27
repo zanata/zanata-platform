@@ -467,6 +467,7 @@ a.action_link {
 	color: #7092C3;
 	margin-top: 4px;
 	text-align: center;
+	outline:none;
 }
 
 a.action_link:hover, a.button:hover {
@@ -906,6 +907,7 @@ a.version_link {
 	font-weight: bold;
 	color: #7092C3;
 	text-decoration: none;
+	outline:none;
 }
 
 a.version_link:hover {
