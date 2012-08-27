@@ -26,7 +26,6 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
@@ -36,6 +35,8 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.events.ShowSideMenuEvent;
+import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
@@ -45,7 +46,6 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -56,7 +56,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasNotificationLabel
@@ -83,28 +82,32 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getNotificationBtn();
 
-      void setLayoutMenuVisible(boolean visible);
-
       void setNotificationText(int count, Severity severity);
 
       void showNotificationAlert();
 
       void cancelNotificationAlert();
-      
-      void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
 
+      HasClickHandlers getDocumentListButton();
+
+      HasClickHandlers getResizeButton();
+
+      boolean getAndToggleResizeButton();
+
+      void setResizeVisible(boolean visible);
+
+      void showSideMenu(boolean isShowing);
    }
 
-   private final DashboardPresenter dashboardPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
    private final LayoutSelectorPresenter layoutSelectorPresenter;
+   private final SideMenuPresenter sideMenuPresenter;
 
    private final History history;
-   private final Identity identity;
    private final Window window;
    private final Window.Location windowLocation;
    private final UserWorkspaceContext userWorkspaceContext;
@@ -118,25 +121,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private MainView currentView = null;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
-   private static final String REPORT_PROBLEM_LINK = "https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata";
-
-   private boolean enableDashBoard = false;
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final DashboardPresenter dashboardPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
-      this.dashboardPresenter = dashboardPresenter;
       this.history = history;
-      this.identity = identity;
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter = notificationPresenter;
       this.layoutSelectorPresenter = layoutSelectorPresenter;
+      this.sideMenuPresenter = sideMenuPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
    }
@@ -148,34 +147,30 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    }
 
    @Override
-   public void showNotificationAlert()
-   {
-      display.showNotificationAlert();
-   }
-
-   @Override
-   public void cancelNotificationAlert()
-   {
-      display.cancelNotificationAlert();
-   }
-   
-   @Override
    protected void onBind()
    {
-      dashboardPresenter.bind();
       keyShortcutPresenter.bind();
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
+      sideMenuPresenter.bind();
 
       layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setNotificationListener(this);
 
+      registerHandler(eventBus.addHandler(ShowSideMenuEvent.getType(), new ShowSideMenuEventHandler()
+      {
+         @Override
+         public void onShowSideMenu(ShowSideMenuEvent event)
+         {
+            display.showSideMenu(event.isShowing());
+         }
+      }));
+      
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
-
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
@@ -226,27 +221,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onClick(ClickEvent event)
          {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-
-            if (token.getView().equals(MainView.Documents))
-            {
-               if (selectedDocument == null)
-               {
-                  return; // abort if no doc to edit
-               }
-               token.setView(MainView.Editor);
-            }
-            else
-            {
-               token.setView(MainView.Documents);
-            }
-            history.newItem(token.toTokenString());
+            gotoDocumentListView();
          }
       }));
 
       registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
-
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
@@ -259,7 +239,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onClick(ClickEvent event)
          {
-            notificationPresenter.showNotificationWithNoTimer();
+            notificationPresenter.showNotification();
          }
       }));
 
@@ -277,12 +257,31 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
+      display.getDocumentListButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            gotoDocumentListView();
+         }
+      });
+
       display.getKeyShortcutButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
             keyShortcutPresenter.showShortcuts();
+         }
+      });
+
+      display.getResizeButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            boolean expended = display.getAndToggleResizeButton();
+            translationPresenter.setSouthPanelExpanded(expended);
          }
       });
 
@@ -301,68 +300,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             // }
          }
       }));
-
-      Command helpMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
-         }
-      };
-
-      Command reportProblemCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            com.google.gwt.user.client.Window.open(REPORT_PROBLEM_LINK, REPORT_PROBLEM_LINK, null);
-         }
-      };
-
-      Command signOutMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            Application.redirectToLogout();
-         }
-      };
-
-      Command leaveWorkspaceMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
-         }
-      };
-
-      Command layoutMenuMenuCommand = new Command()
-      {
-         @Override
-         public void execute()
-         {
-            layoutSelectorPresenter.show();
-         }
-      };
-
-      display.initMenuList(identity.getPerson().getName(), helpMenuCommand, reportProblemCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
-
-      if (enableDashBoard)
-      {
-         keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'B'), ShortcutContext.Application, messages.showDashboardKeyShortcut(), new KeyShortcutEventHandler()
-         {
-            @Override
-            public void onKeyShortcut(KeyShortcutEvent event)
-            {
-               HistoryToken token = history.getHistoryToken();
-               token.setView(MainView.Dashboard);
-               history.newItem(token.toTokenString());
-            }
-         }));
-      }
 
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
       {
@@ -414,6 +351,25 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       showView(MainView.Documents);
 
       history.fireCurrentHistoryState();
+   }
+
+   private void gotoDocumentListView()
+   {
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+
+      if (token.getView().equals(MainView.Documents))
+      {
+         if (selectedDocument == null)
+         {
+            return; // abort if no doc to edit
+         }
+         token.setView(MainView.Editor);
+      }
+      else
+      {
+         token.setView(MainView.Documents);
+      }
+      history.newItem(token.toTokenString());
    }
 
    @Override
@@ -469,16 +425,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = selectedDocumentStats;
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
-            dashboardPresenter.concealDisplay();
-            display.setLayoutMenuVisible(true);
-            break;
-         case Dashboard:
-            display.setDocumentLabel("", messages.dashboard());
-            currentDisplayStats = projectStats;
-            translationPresenter.concealDisplay();
-            searchResultsPresenter.concealDisplay();
-            dashboardPresenter.revealDisplay();
-            display.setLayoutMenuVisible(false);
+            sideMenuPresenter.showEditorMenu(true);
+            display.setResizeVisible(true);
             break;
          case Search:
             // these two lines temporarily here until PresenterRevealedHandler
@@ -487,9 +435,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
-            dashboardPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
-            display.setLayoutMenuVisible(false);
+            sideMenuPresenter.showEditorMenu(false);
+            display.setResizeVisible(false);
             break;
          case Documents:
          default:
@@ -499,8 +447,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
-            dashboardPresenter.concealDisplay();
-            display.setLayoutMenuVisible(false);
+            sideMenuPresenter.showEditorMenu(false);
+            display.setResizeVisible(false);
             break;
          }
          display.showInMainView(viewToShow);

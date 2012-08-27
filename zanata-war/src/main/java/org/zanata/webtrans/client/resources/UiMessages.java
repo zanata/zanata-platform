@@ -28,9 +28,6 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface UiMessages extends Messages
 {
-   @DefaultMessage("")
-   String typeToEnter();
-
    @DefaultMessage("Clear")
    String clearButtonLabel();
 

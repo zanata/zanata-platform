@@ -27,6 +27,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -47,7 +48,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       void changeValidationSelectorValue(String label, boolean enabled);
    }
 
-   private ValidationService validationService;
+   private final ValidationService validationService;
 
    @Inject
    public ValidationOptionsPresenter(Display display, EventBus eventBus, final ValidationService validationService)

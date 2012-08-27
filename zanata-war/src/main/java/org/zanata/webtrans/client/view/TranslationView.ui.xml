@@ -3,79 +3,27 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client"
 	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:style type="org.zanata.webtrans.client.view.TranslationView.Styles">
-        .small-button
-         {
-	       height:10px;
-	       font-size:10px;
-	       border-radius:5px;
-	       outline:none;
-        }
-        
-        .option-button
-         {
-	       height:10px;
-	       font-size:10px;
-	       border-radius:5px;
-	       outline:none;
-	       width:52px;
-	       margin-top:23px;
-	       margin-left:-23px;
-	       -webkit-transform:rotate(90deg);
-	       -moz-transform:rotate(90deg);
-	       -o-transform:rotate(90deg);
-        }
-        
-        .messageAlert
-        {
-			color:#FFA500;
+	<ui:style>
+		.southPanel
+		{
+			border:2px solid #E0E8EE;
+			border-radius:5px;
 		}
-		
 	</ui:style>
 
 	<g:LayoutPanel styleName="translationContainer">
-	
 		<g:layer top="0px" bottom="0px">
 			<g:SplitLayoutPanel ui:field="mainSplitPanel">
-				<g:south size="150" min-size="30">
+				<g:south size="150">
 				    <g:LayoutPanel ui:field="southPanelContainer">
 				        <g:layer top="0" bottom="5px">
-					        <g:TabLayoutPanel ui:field="southPanelTab" barUnit='PX' barHeight='20'/>
-                        </g:layer>
-				        <g:layer right="3px" top="0" width="70px" height="18px"> 
-                            <g:FlowPanel>
-                                <g:ToggleButton ui:field="southPanelToggleButton" addStyleNames="{style.small-button}"/>
-                            </g:FlowPanel>
+					        <g:LayoutPanel ui:field="southPanel" styleName="{style.southPanel}"/>
                         </g:layer>
 				    </g:LayoutPanel>
                 </g:south>
 				<g:center>
-					<g:LayoutPanel>
-						<g:layer>
-							<g:LayoutPanel ui:field="editorContainer" />
-						</g:layer>
-
-<!-- 						<g:layer height="18px" width="70px" right="5px" top="5px"> -->
-<!-- 							<g:FlowPanel> -->
-<!-- 							    <g:ToggleButton ui:field="optionsToggleButton" addStyleNames="{style.small-button}"/> -->
-<!-- 							</g:FlowPanel> -->
-<!-- 						</g:layer> -->
-					</g:LayoutPanel>
+					<g:LayoutPanel ui:field="editorContainer" />
 				</g:center>
-				<g:east size="208">
-					<g:LayoutPanel ui:field="sidePanelOuterContainer">
-						<g:layer height="66px" width="22px" top="5px">
-							<g:FlowPanel>
-							    <g:ToggleButton ui:field="optionsToggleButton" addStyleNames="{style.option-button}"/>
-							</g:FlowPanel>
-						</g:layer>
-						
-						<g:layer top="0px" bottom="0px" left="18px" right="0">
-							<g:LayoutPanel ui:field="sidePanelContainer" />
-						</g:layer>
-					</g:LayoutPanel>
-				</g:east>
-				
 			</g:SplitLayoutPanel>
 		</g:layer>
 	</g:LayoutPanel>

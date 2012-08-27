@@ -6,25 +6,28 @@
     ui:generateLocales="en">
     
 	<ui:style>
-	
-        .header {
-            font-weight:bold;
-            font-size:13px;
-            background:#4a75b5;
-            text-align:center;
-            color:#FFFFFF;
-            width:100%;
-            border-radius:3px;
-            -moz-border-radius:3px;
-            height:17px;
-        }
+        .mainPanel {
+		}
+		
+		.mainPanel table td {
+			font-size:13px;
+			padding:2px;
+			border-radius:5px;
+			color:#FFFFFF;
+		}
         
 	</ui:style>
-    <g:ScrollPanel>
-        <g:VerticalPanel width="100%">
-            <g:Label ui:field="header" styleName="{style.header}"><ui:msg>Validation Options</ui:msg></g:Label>
-            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
-        </g:VerticalPanel>
-    </g:ScrollPanel>
+    
+    
+    <g:LayoutPanel>
+    	<g:layer top="5px" bottom="0" left="5px" right="5px">
+    		 <g:ScrollPanel styleName="{style.mainPanel}">
+		        <g:VerticalPanel width="100%">
+		            <g:Label ui:field="validationOptionsHeader" styleName="sideMenuHeader"/>
+		            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
+		        </g:VerticalPanel>
+		    </g:ScrollPanel>
+    	</g:layer>
+    </g:LayoutPanel>
 		
 </ui:UiBinder> 

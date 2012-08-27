@@ -31,6 +31,8 @@ import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.events.ShowSideMenuEvent;
+import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
@@ -40,7 +42,6 @@ import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.Person;
@@ -52,7 +53,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
 
 @Test(groups = { "unit-tests" })
 public class AppPresenterTest extends PresenterTest
@@ -78,13 +78,14 @@ public class AppPresenterTest extends PresenterTest
    HasClickHandlers mockDocumentsLink;
    HasClickHandlers mockErrorNotificationBtn;
    HasClickHandlers mockSearchButton;
+   HasClickHandlers mockDocumentListButton;
+   HasClickHandlers mockResizeButton;
    HasClickHandlers mockKeyShortcutButton;
 
    Display mockDisplay;
    EventBus mockEventBus;
    Boolean mockIsReadOnly;
    History mockHistory;
-   Identity mockIdentity;
    WebTransMessages mockMessages;
    Person mockPerson;
 
@@ -94,7 +95,7 @@ public class AppPresenterTest extends PresenterTest
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
    LayoutSelectorPresenter mockLayoutPresenter;
-   DashboardPresenter mockDashboardPresenter;
+   SideMenuPresenter mockSideMenuPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -103,6 +104,8 @@ public class AppPresenterTest extends PresenterTest
 
    private Capture<ClickHandler> capturedDocumentLinkClickHandler;
    private Capture<ClickHandler> capturedSearchLinkClickHandler;
+   private Capture<ClickHandler> capturedDocumentListClickHandler;
+   private Capture<ClickHandler> capturedResizeClickHandler;
    private Capture<ClickHandler> capturedKeyShortcutButtonClickHandler;
    private Capture<ClickHandler> capturedErrorNotificationBtnHandler;
 
@@ -114,6 +117,8 @@ public class AppPresenterTest extends PresenterTest
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
    private Capture<PresenterRevealedHandler> capturedPresenterRevealedHandler;
+   private Capture<ShowSideMenuEventHandler> capturedShowSideMenuHandler;
+   
 
    private DocumentInfo testDocInfo;
    private DocumentId testDocId;
@@ -134,10 +139,11 @@ public class AppPresenterTest extends PresenterTest
       mockDocumentsLink = createAndAddMock(HasClickHandlers.class);
       mockErrorNotificationBtn = createAndAddMock(HasClickHandlers.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
+      mockDocumentListButton = createAndAddMock(HasClickHandlers.class);
+      mockResizeButton = createAndAddMock(HasClickHandlers.class);
       mockKeyShortcutButton = createAndAddMock(HasClickHandlers.class);
       mockEventBus = createAndAddMock(EventBus.class);
       mockHistory = createAndAddMock(History.class);
-      mockIdentity = createAndAddMock(Identity.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
       mockPerson = createAndAddMock(Person.class);
@@ -149,12 +155,15 @@ public class AppPresenterTest extends PresenterTest
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
       mockNotificationPresenter = createAndAddMock(NotificationPresenter.class);
       mockLayoutPresenter = createAndAddMock(LayoutSelectorPresenter.class);
-      mockDashboardPresenter = createAndAddMock(DashboardPresenter.class);
+      mockSideMenuPresenter = createAndAddMock(SideMenuPresenter.class);
+      
    }
 
    private void createAllCaptures()
    {
       capturedSearchLinkClickHandler = new Capture<ClickHandler>();
+      capturedDocumentListClickHandler = new Capture<ClickHandler>();
+      capturedResizeClickHandler = new Capture<ClickHandler>();
       capturedKeyShortcutButtonClickHandler = new Capture<ClickHandler>();
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
       capturedErrorNotificationBtnHandler = new Capture<ClickHandler>();
@@ -166,13 +175,14 @@ public class AppPresenterTest extends PresenterTest
       capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
       capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
       capturedPresenterRevealedHandler = new Capture<PresenterRevealedHandler>();
+      capturedShowSideMenuHandler = new Capture<ShowSideMenuEventHandler>();
    }
 
    @BeforeMethod
    void beforeMethod()
    {
       resetAll();
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockDashboardPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockIdentity, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockSideMenuPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
       mockNotificationPresenter.setNotificationListener(appPresenter);
       expectLastCall().once();
    }
@@ -260,7 +270,10 @@ public class AppPresenterTest extends PresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setStats(notNull(TranslationStats.class));
       expectLastCall().anyTimes();
-      
+      mockSideMenuPresenter.showEditorMenu(true);
+      expectLastCall().once();
+      mockDisplay.setResizeVisible(true);
+      expectLastCall().once();
       mockTranslationPresenter.revealDisplay();
       expectLastCall().once();
 
@@ -301,7 +314,10 @@ public class AppPresenterTest extends PresenterTest
       expectLastCall().once();
       mockDisplay.setStats(eq(testDocStats));
       expectLastCall().once();
-      
+      mockSideMenuPresenter.showEditorMenu(true);
+      expectLastCall().once();
+      mockDisplay.setResizeVisible(true);
+      expectLastCall().once();
       mockTranslationPresenter.revealDisplay();
       expectLastCall().once();
       
@@ -529,6 +545,12 @@ public class AppPresenterTest extends PresenterTest
       
       mockTranslationPresenter.revealDisplay();
       expectLastCall().anyTimes();
+      
+      mockSideMenuPresenter.showEditorMenu(true);
+      expectLastCall().once();
+      
+      mockDisplay.setResizeVisible(true);
+      expectLastCall().once();
    }
 
    /**
@@ -591,6 +613,12 @@ public class AppPresenterTest extends PresenterTest
 
          mockTranslationPresenter.concealDisplay();
          expectLastCall().once();
+         
+         mockSideMenuPresenter.showEditorMenu(false);
+         expectLastCall().once();
+         
+         mockDisplay.setResizeVisible(false);
+         expectLastCall().once();
       }
       else
       {
@@ -601,13 +629,24 @@ public class AppPresenterTest extends PresenterTest
          {
             mockTranslationPresenter.revealDisplay();
             expectLastCall().once();
+            
+            mockSideMenuPresenter.showEditorMenu(true);
+            expectLastCall().once();
+            
+            mockDisplay.setResizeVisible(true);
+            expectLastCall().once();
          }
          else if (toView == MainView.Documents)
          {
             mockTranslationPresenter.concealDisplay();
             expectLastCall().once();
+            
+            mockSideMenuPresenter.showEditorMenu(false);
+            expectLastCall().once();
+            
+            mockDisplay.setResizeVisible(false);
+            expectLastCall().once();
          }
-
       }
       mockDisplay.setDocumentLabel("", expectedDocLabel);
       expectLastCall().once();
@@ -658,6 +697,10 @@ public class AppPresenterTest extends PresenterTest
       mockDisplay.showInMainView(MainView.Editor);
       expectLastCall().once();
       mockSearchResultsPresenter.concealDisplay();
+      expectLastCall().once();
+      mockSideMenuPresenter.showEditorMenu(true);
+      expectLastCall().once();
+      mockDisplay.setResizeVisible(true);
       expectLastCall().once();
       mockDisplay.setDocumentLabel(TEST_DOCUMENT_PATH, TEST_DOCUMENT_NAME);
       expectLastCall().once();
@@ -718,9 +761,8 @@ public class AppPresenterTest extends PresenterTest
       expectLastCall().once();
       mockLayoutPresenter.setLayoutListener(mockTranslationPresenter);
       expectLastCall().once();
-      mockDashboardPresenter.bind();
+      mockSideMenuPresenter.bind();
       expectLastCall().once();
-
    }
 
    @SuppressWarnings("unchecked")
@@ -732,11 +774,14 @@ public class AppPresenterTest extends PresenterTest
       expectClickHandlerRegistration(mockErrorNotificationBtn, capturedErrorNotificationBtnHandler);
       expectClickHandlerRegistration(mockSearchButton, capturedSearchLinkClickHandler);
       expectClickHandlerRegistration(mockKeyShortcutButton, capturedKeyShortcutButtonClickHandler);
-
+      expectClickHandlerRegistration(mockDocumentListButton, capturedDocumentListClickHandler);
+      expectClickHandlerRegistration(mockResizeButton, capturedResizeClickHandler);
+      
       expectEventHandlerRegistration(mockEventBus, DocumentStatsUpdatedEvent.getType(), DocumentStatsUpdatedEventHandler.class, capturedDocumentStatsUpdatedEventHandler);
       expectEventHandlerRegistration(mockEventBus, ProjectStatsUpdatedEvent.getType(), ProjectStatsUpdatedEventHandler.class, capturedProjectStatsUpdatedEventHandler);
       expectEventHandlerRegistration(mockEventBus, WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdatedEventHandler);
       expectEventHandlerRegistration(mockEventBus, PresenterRevealedEvent.getType(), PresenterRevealedHandler.class, capturedPresenterRevealedHandler);
+      expectEventHandlerRegistration(mockEventBus, ShowSideMenuEvent.getType(), ShowSideMenuEventHandler.class, capturedShowSideMenuHandler);
    }
 
    private void expectPresenterSetupActions()
@@ -759,23 +804,17 @@ public class AppPresenterTest extends PresenterTest
 
       mockTranslationPresenter.concealDisplay();
       expectLastCall().once();
-
-      mockDashboardPresenter.concealDisplay();
-      expectLastCall().anyTimes();
+      
+      mockSideMenuPresenter.showEditorMenu(false);
+      expectLastCall().once();
+      
+      mockDisplay.setResizeVisible(false);
+      expectLastCall().once();
 
       // due to this display beginning as concealed
       mockSearchResultsPresenter.concealDisplay();
       expectLastCall().once();
       
-      mockDisplay.initMenuList(isA(String.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
-      expectLastCall().once();
-      
-      mockDisplay.setLayoutMenuVisible(false);
-      expectLastCall().anyTimes();
-      
-      mockDisplay.setLayoutMenuVisible(true);
-      expectLastCall().anyTimes();
-
       expect(mockKeyShortcutPresenter.register(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
    }
 
@@ -785,9 +824,10 @@ public class AppPresenterTest extends PresenterTest
       expect(mockDisplay.getNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
 
       expect(mockDisplay.getSearchAndReplaceButton()).andReturn(mockSearchButton).anyTimes();
+      expect(mockDisplay.getDocumentListButton()).andReturn(mockDocumentListButton).anyTimes();
+      expect(mockDisplay.getResizeButton()).andReturn(mockResizeButton).anyTimes();
       expect(mockDisplay.getKeyShortcutButton()).andReturn(mockKeyShortcutButton).anyTimes();
-
-      expect(mockIdentity.getPerson()).andReturn(mockPerson).anyTimes();
+      
       expect(mockPerson.getName()).andReturn(TEST_PERSON_NAME).anyTimes();
 
       expect(mockWindowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY)).andReturn(TEST_WORKSPACE_TITLE).anyTimes();

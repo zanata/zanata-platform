@@ -106,6 +106,7 @@ public class ProjectIterationFilesAction
 
    private DocumentFileUploadHelper documentFileUpload;
    
+   private HProjectIteration projectIteration;
    
    public void initialize()
    {
@@ -291,6 +292,30 @@ public class ProjectIterationFilesAction
    public DocumentFileUploadHelper getDocumentFileUpload()
    {
       return documentFileUpload;
+   }
+
+   public HProjectIteration getProjectIteration()
+   {
+      if (this.projectIteration == null)
+      {
+         this.projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      }
+      return this.projectIteration;
+   }
+
+   public boolean isUserAllowedToTranslate()
+   {
+      return !isIterationReadOnly() && !isIterationObsolete() && identity.hasPermission("add-translation", getProjectIteration().getProject(), getLocale());
+   }
+
+   public boolean isIterationReadOnly()
+   {
+      return getProjectIteration().getProject().getStatus() == EntityStatus.READONLY || getProjectIteration().getStatus() == EntityStatus.READONLY;
+   }
+
+   public boolean isIterationObsolete()
+   {
+      return getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
    }
 
    /**
