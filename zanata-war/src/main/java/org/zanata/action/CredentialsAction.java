@@ -112,6 +112,11 @@ public class CredentialsAction implements Serializable
       accountDAO.makePersistent( account );
    }
 
+   public void cancel()
+   {
+      // See pages.xml
+   }
+
    public void addGoogleCredentials()
    {
       // NB: Google does authentication directly

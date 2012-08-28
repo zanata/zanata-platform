@@ -377,8 +377,14 @@
   <page view-id="/profile/add_identity.xhtml" login-required="true">
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/profide/identities', messages['jsf.identities.Title'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/identities', messages['jsf.identities.Title'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.AddIdentity'])}"/>
+
+    <navigation from-action="#{credentialsAction.cancel}">
+        <rule>
+            <redirect view-id="/profile/identities.xhtml"/>
+        </rule>
+    </navigation>
   </page>
 
   <!-- Help -->

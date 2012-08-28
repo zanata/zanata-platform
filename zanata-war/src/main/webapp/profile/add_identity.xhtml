@@ -67,7 +67,7 @@
                                      action="#{credentialsAction.verifyCredentials}"
                                      style="#{applicationConfiguration.fedoraOpenIdAuth ? 'display:none' : ''}"/>
                 </a4j:outputPanel>
-                <h:commandButton value="#{messages['jsf.Cancel']}"/>
+                <h:commandButton value="#{messages['jsf.Cancel']}" action="#{credentialsAction.cancel}"/>
             </rich:panel>
         </h:form>
 
