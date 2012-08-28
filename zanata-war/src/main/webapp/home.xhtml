@@ -14,7 +14,7 @@
 
  </ui:define>
 
-<ui:define name="left_content">
+<ui:define name="right_content">
   <rich:panel id="loggedIn" rendered="#{s:hasRole('admin')}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
     <s:link styleClass="action_link" value="#{messages['jsf.server.EditHomePage.label']}" view="/edit_home_content.xhtml" propagation="none">

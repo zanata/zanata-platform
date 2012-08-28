@@ -251,6 +251,12 @@
     <to last="true">/version-group/request_to_join.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1</to>
   </rule>
   
+  <!-- Glossary -->
+  <rule>
+    <from casesensitive="true">^/glossary/view(.+)?$</from>
+    <to last="true">/glossary/view.seam$1</to>
+  </rule>
+  
   <!--  Editor workspace redirection from Application.html to Application.seam -->
   <rule>
     <from casesensitive="true">^/webtrans/Application.html(.*)$</from>
@@ -387,6 +393,11 @@
   <outbound-rule>
     <from>^(/.+)?/version-group/assign_maintainer.seam(.+)?$</from>
     <to>$1/version-group/maintainer/$2</to>
+  </outbound-rule>
+  
+  <outbound-rule>
+    <from>^(/.+)?/glossary/view.seam(.+)?$</from>
+    <to>$1/glossary/view$2</to>
   </outbound-rule>
   
   <outbound-rule>

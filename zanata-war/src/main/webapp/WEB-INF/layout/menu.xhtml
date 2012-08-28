@@ -29,8 +29,8 @@
 			</s:link>
 		</li>
 		<li id="systemCol">
-			<a href="#"> #{messages['jsf.System']}
-				<span class="icon-down-open downArrow"/>
+			<a href="#"> #{messages['jsf.Menu']}
+				<span class="icon-layers-alt downArrow"/>
 			</a>
 			<div class="submenu">
 				<ul>
@@ -57,6 +57,13 @@
 							<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
 								<a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
 							</s:fragment>
+						</li>
+					</s:fragment>
+					<s:fragment rendered="#{identity.loggedIn}">
+						<li>
+							<s:link id="Glossary" view="/glossary/view.xhtml" propagation="none">
+								<img src="#{request.contextPath}/images/crystal_project/_16x16/apps/package_editors.png" />#{messages['jsf.Glossary']}
+							</s:link>
 						</li>
 					</s:fragment>
 					<s:fragment rendered="#{s:hasRole('admin')}">

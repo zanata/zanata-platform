@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"    
+    xmlns:a4j="http://richfaces.org/a4j"   
+    xmlns:s="http://jboss.com/products/seam/taglib">
+
+  <ui:composition template="../WEB-INF/layout/template.xhtml">
+  	
+  	<ui:define name="head">
+        <script type="text/javascript">
+        
+            function openUploadPanel() {
+                #{rich:element('uploadPanelHeader')}.innerHTML = '#{messages['jsf.Upload']}';
+                #{rich:component('uploadPanel')}.show();
+            }
+
+            function hideUploadPanel() {
+                #{rich:component('uploadPanel')}.hide();
+                return false;
+            }
+        </script>
+    </ui:define>
+    
+    
+    <ui:define name="page_title">#{messages['jsf.Glossary']}</ui:define>
+    <ui:define name="center_content">
+        <h:form>
+            <s:token allowMultiplePosts="true" />
+            <rich:dataTable id="data_table" width="100%" value="#{glossaryStatsAction.getAllStatus().toArray()}" 
+                  var="language" styleClass="iteration_inline_tribes">
+                    <rich:column sortBy="#{language.locale}">
+                        <f:facet name="header">#{messages['jsf.Language']}</f:facet>
+                        #{language.locale}
+                    </rich:column>
+                    <rich:column sortBy="#{language.entryCount}">
+                        <f:facet name="header">#{messages['jsf.GlossaryEntries']}</f:facet>
+                        #{language.entryCount}
+                    </rich:column>
+          </rich:dataTable>
+        </h:form> 
+        
+        <rich:modalPanel id="uploadPanel"
+                         moveable="#{false}"
+                         resizeable="#{false}"
+                         autosized="#{true}">
+            <f:facet name="header">
+                <h:outputText id="uploadPanelHeader"/>
+            </f:facet>
+            <h:form id="uploadForm" enctype="multipart/form-data">
+               <s:fileUpload accept="*"
+                              data="#{glossaryFilesAction.glossaryFileUpload.fileContents}"
+                              fileName="#{glossaryFilesAction.glossaryFileUpload.fileName}">
+               </s:fileUpload>
+                             
+                <br/> <br/>
+                <div style="float:left">
+	                <h:outputLabel value="Source Language"/>
+	                <br/>
+	                <h:selectOneMenu value="#{glossaryFilesAction.glossaryFileUpload.sourceLang}">
+	                    <s:selectItems value="#{glossaryFilesAction.availableLocales}"
+	                                   var="locale"
+	                                   label="#{locale.retrieveNativeName()}"
+	                                   itemValue="#{locale.localeId.toString()}"
+	                                   escape="true"/>
+	                    
+	                </h:selectOneMenu>       
+                </div>
+                <div style="float:right" title="#{messages['jsf.Glossary.TargetLanguage.Title']}">
+	                <h:outputLabel value="Target Language"/>
+	                <br/>
+	                <h:selectOneMenu value="#{glossaryFilesAction.glossaryFileUpload.transLang}">
+	                    <s:selectItems value="#{glossaryFilesAction.availableLocales}"
+	                                   var="locale"
+	                                   label="#{locale.retrieveNativeName()}"
+	                                   itemValue="#{locale.localeId.toString()}"
+	                                   escape="true"/>
+	                    
+	                </h:selectOneMenu>       
+                </div>
+                <br/>             
+                <h:outputText value="#{messages['jsf.TreatSourceCommentsAsTarget']}?"/>
+                <h:selectBooleanCheckbox value="#{glossaryFilesAction.glossaryFileUpload.treatSourceCommentsAsTarget}"
+                                         title="#{messages['jsf.TreatSourceCommentsAsTarget.Title']}"/>  
+                                         
+                                         
+                <br/> <br/> <br/>                                      
+                <div align="right">
+                    <h:commandButton value="#{messages['jsf.Upload']}"
+                                     action="#{glossaryFilesAction.uploadFile}"/>
+                    <h:commandButton value="#{messages['jsf.Cancel']}"
+                                     onclick="return hideUploadPanel();"/>
+                </div>              
+            </h:form>
+        </rich:modalPanel>
+                     
+    </ui:define>
+    
+    <ui:define name="right_content">
+    	<rich:panel id="loggedIn" rendered="#{s:hasPermission('', 'glossary-delete') or s:hasPermission('', 'glossary-insert')}">
+    		<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+    		<s:fragment rendered="#{s:hasPermission('', 'glossary-insert')}">
+    			<a href="#" onclick="openUploadPanel(); return false;" class="action_link">
+                        #{messages['jsf.Upload']}
+                </a>
+    		</s:fragment>
+    		<s:fragment rendered="#{s:hasPermission('', 'glossary-delete')}">
+    		
+    		</s:fragment>
+    	</rich:panel>
+    </ui:define>
+    
+  </ui:composition>
+</html>
