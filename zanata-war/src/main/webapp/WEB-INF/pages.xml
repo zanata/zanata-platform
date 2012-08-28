@@ -368,6 +368,19 @@
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.MyProfile'])}"/>
   </page>
 
+  <page view-id="/profile/identities.xhtml" login-required="true">
+    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.Title'])}"/>
+    <action execute="#{credentialsAction.loadUserCredentials}"/>
+  </page>
+
+  <page view-id="/profile/add_identity.xhtml" login-required="true">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profide/identities', messages['jsf.identities.Title'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.AddIdentity'])}"/>
+  </page>
+
   <!-- Help -->
   <page view-id="/help/view.xhtml">
     <action execute="#{breadcrumbs.clear}"/>

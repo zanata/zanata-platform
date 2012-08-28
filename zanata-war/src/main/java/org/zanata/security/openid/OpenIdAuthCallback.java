@@ -33,4 +33,12 @@ public interface OpenIdAuthCallback
     * @param result The result from the authentication.
     */
    void afterOpenIdAuth( OpenIdAuthenticationResult result );
+
+   /**
+    * Indicates the url to redirect to after invoking the callback.
+    *
+    * @return A url to redirect to after the callback has been invoked, or null if there is no
+    * need to redirect anywhere.
+    */
+   String getRedirectToUrl();
 }

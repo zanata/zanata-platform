@@ -85,6 +85,9 @@ public class FedoraOpenId implements OpenIdAuthCallback
    @In
    private Credentials credentials;
 
+   @In
+   private UserRedirectBean userRedirect;
+
    private String id;
    private OpenIdAuthenticationResult authResult;
    private OpenIdAuthCallback callback;
@@ -184,17 +187,6 @@ public class FedoraOpenId implements OpenIdAuthCallback
 
       return false;
    }
-/*
-   public boolean isValid()
-   {
-      return validatedId != null;
-   }*/
-
-
-   /*public String getValidatedId()
-   {
-      return validatedId;
-   }*/
 
    public String verifyResponse(HttpServletRequest httpReq)
    {
@@ -228,8 +220,16 @@ public class FedoraOpenId implements OpenIdAuthCallback
          if( callback != null )
          {
             callback.afterOpenIdAuth(authResult);
+            if( callback.getRedirectToUrl() != null )
+            {
+               userRedirect.setLocalUrl( callback.getRedirectToUrl() );
+            }
          }
-         return verified.getIdentifier();
+
+         if( verified != null )
+         {
+            return verified.getIdentifier();
+         }
       }
       catch (OpenIDException e)
       {
@@ -329,6 +329,15 @@ public class FedoraOpenId implements OpenIdAuthCallback
          credentials.setUsername(this.getZanataUsername( result.getAuthenticatedId() ));
          Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(authResult.getAuthenticatedId())));
       }
+   }
+
+   /**
+    * Default implementation for an authentication callback. This implementation does not provide a redirect url.
+    */
+   @Override
+   public String getRedirectToUrl()
+   {
+      return null;
    }
 
    public void useGoogleProvider()

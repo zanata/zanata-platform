@@ -20,14 +20,20 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -45,7 +51,8 @@ import org.zanata.security.openid.YahooOpenIdProvider;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("credentialsAction")
-public class CredentialsAction
+@Scope(ScopeType.PAGE)
+public class CredentialsAction implements Serializable
 {
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
@@ -56,8 +63,26 @@ public class CredentialsAction
    @In
    private FedoraOpenId fedoraOpenId;
 
+   @DataModel
+   private List<HCredentials> userCredentials;
+
+   @DataModelSelection
+   private HCredentials selectedCredentials;
+
    private String credentialsUsername;
 
+
+   public void loadUserCredentials()
+   {
+      // Get the list of credentials from the database
+      HAccount account = accountDAO.findById( authenticatedAccount.getId(), false );
+      userCredentials = new ArrayList<HCredentials>( account.getCredentials() );
+   }
+
+   public List<HCredentials> getUserCredentials()
+   {
+      return userCredentials;
+   }
 
    public void setCredentialsUsername(String credentialsUsername)
    {
@@ -69,17 +94,21 @@ public class CredentialsAction
       return credentialsUsername;
    }
 
-   public List<HCredentials> getUserCredentials()
+   public HCredentials getSelectedCredentials()
    {
-      // Get the list of credentials from the database
-      HAccount account = accountDAO.findById( authenticatedAccount.getId(), false );
-      return new ArrayList<HCredentials>( account.getCredentials() );
+      return selectedCredentials;
    }
 
-   public void remove( HCredentials credentials )
+   public void setSelectedCredentials(HCredentials selectedCredentials)
+   {
+      this.selectedCredentials = selectedCredentials;
+   }
+
+   public void remove()
    {
       HAccount account = accountDAO.findById( authenticatedAccount.getId(), false );
-      account.getCredentials().remove( credentials );
+      account.getCredentials().remove( selectedCredentials );
+      userCredentials = new ArrayList<HCredentials>( account.getCredentials() ); // Reload the credentials
       accountDAO.makePersistent( account );
    }
 
@@ -167,8 +196,14 @@ public class CredentialsAction
             this.newCredentials.setEmail( result.getEmail() );
             // NB: Need to get the entity manager this way as injection won't work here
             EntityManager em = (EntityManager)Component.getInstance("entityManager");
-            em.persist( this.newCredentials );
+            em.persist(this.newCredentials);
          }
+      }
+
+      @Override
+      public String getRedirectToUrl()
+      {
+         return "/profile/identities.seam";
       }
    }
 }

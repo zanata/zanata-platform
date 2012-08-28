@@ -22,7 +22,7 @@
 
         <h:form>
             <rich:dataTable id="credentials_table" width="100%"
-                            value="#{credentialsAction.userCredentials}" var="cred">
+                            value="#{userCredentials}" var="cred">
                 <rich:column>
                     <f:facet name="header">#{messages['jsf.identities.Type']}</f:facet>
                     <h:graphicImage rendered="#{credentialsAction.isGoogleOpenId( cred.user )}"
@@ -56,7 +56,7 @@
                 </rich:column>
                 <rich:column>
                     <h:commandButton value="#{messages['jsf.Delete']}"
-                                     action="#{credentialsAction.remove( cred )}"
+                                     action="#{credentialsAction.remove}"
                                      rendered="#{credentialsAction.userCredentials.size() gt 1}"
                                      onclick="return confirmIdentityRemoval();"/>
                 </rich:column>

@@ -152,7 +152,6 @@ public class HAccount extends ModelEntityBase implements Serializable
       return roles;
    }
 
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    public Set<HCredentials> getCredentials()
