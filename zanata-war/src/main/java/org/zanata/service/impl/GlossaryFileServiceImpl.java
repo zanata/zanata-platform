@@ -24,13 +24,24 @@ import static org.jboss.seam.ScopeType.STATELESS;
 
 import java.io.InputStream;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HLocale;
+import org.zanata.model.HTermComment;
 import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.service.GlossaryFileService;
+import org.zanata.service.LocaleService;
 
 /**
  * 
@@ -42,19 +53,129 @@ import org.zanata.service.GlossaryFileService;
 @AutoCreate
 public class GlossaryFileServiceImpl implements GlossaryFileService
 {
+   @In
    private GlossaryDAO glossaryDAO;
+
+   @In
+   private LocaleService localeServiceImpl;
+
+   private final static int BATCH_SIZE = 50;
 
    @Override
    public Glossary parseGlossaryFile(InputStream fileContents, String fileName)
    {
-      // TODO Auto-generated method stub
-      return null;
+      if (StringUtils.endsWithIgnoreCase(fileName, ".csv"))
+      {
+         return parseCsvFile(fileContents);
+      }
+      else if (StringUtils.endsWithIgnoreCase(fileName, ".po"))
+      {
+         return parsePoFile(fileContents);
+      }
+      else
+      {
+         throw new ZanataServiceException("Unsupported Glossary file: " + fileName);
+      }
    }
 
    @Override
    public HGlossaryEntry saveGlossary(Glossary glossary)
    {
-      // TODO Auto-generated method stub
+      int counter = 0;
+      for (int i = 0; i < glossary.getGlossaryEntries().size(); i++)
+      {
+         transferGlossaryEntry(glossary.getGlossaryEntries().get(i));
+         counter++;
+
+         if (counter == BATCH_SIZE || i == glossary.getGlossaryEntries().size() - 1)
+         {
+            executeCommit();
+            counter = 0;
+         }
+      }
+
+      return null;
+   }
+
+   private Glossary parseCsvFile(InputStream fileContents)
+   {
+      return null;
+   }
+
+   private Glossary parsePoFile(InputStream fileContents)
+   {
+      return null;
+   }
+
+   /**
+    * This force glossaryDAO to flush and commit every 50(BATCH_SIZE) records.
+    */
+   @Transactional
+   private void executeCommit()
+   {
+      glossaryDAO.flush();
+      glossaryDAO.clear();
+   }
+
+   private void transferGlossaryEntry(GlossaryEntry from)
+   {
+      HGlossaryEntry to = getOrCreateGlossaryEntry(from.getSrcLang(), getSrcGlossaryTerm(from));
+
+      to.setSourceRef(from.getSourcereference());
+
+      for (GlossaryTerm glossaryTerm : from.getGlossaryTerms())
+      {
+         HLocale termHLocale = localeServiceImpl.validateSourceLocale(glossaryTerm.getLocale());
+
+         // check if there's existing term with same content, overrides comments
+         HGlossaryTerm hGlossaryTerm = getOrCreateGlossaryTerm(to, termHLocale, glossaryTerm.getContent());
+
+         hGlossaryTerm.getComments().clear();
+
+         for (String comment : glossaryTerm.getComments())
+         {
+            hGlossaryTerm.getComments().add(new HTermComment(comment));
+         }
+      }
+      glossaryDAO.makePersistent(to);
+   }
+
+   private HGlossaryEntry getOrCreateGlossaryEntry(LocaleId srcLocale, String srcContent)
+   {
+      HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcLocaleAndContent(srcLocale, srcContent);
+
+      if (hGlossaryEntry == null)
+      {
+         hGlossaryEntry = new HGlossaryEntry();
+         HLocale srcHLocale = localeServiceImpl.getByLocaleId(srcLocale);
+         hGlossaryEntry.setSrcLocale(srcHLocale);
+      }
+      return hGlossaryEntry;
+   }
+
+   private HGlossaryTerm getOrCreateGlossaryTerm(HGlossaryEntry hGlossaryEntry, HLocale termHLocale, String content)
+   {
+      HGlossaryTerm hGlossaryTerm = hGlossaryEntry.getGlossaryTerms().get(termHLocale);
+
+      if (hGlossaryTerm == null)
+      {
+         hGlossaryTerm = new HGlossaryTerm(content);
+         hGlossaryTerm.setLocale(termHLocale);
+         hGlossaryTerm.setGlossaryEntry(hGlossaryEntry);
+         hGlossaryEntry.getGlossaryTerms().put(termHLocale, hGlossaryTerm);
+      }
+      return hGlossaryTerm;
+   }
+
+   private String getSrcGlossaryTerm(GlossaryEntry entry)
+   {
+      for (GlossaryTerm term : entry.getGlossaryTerms())
+      {
+         if (term.getLocale().equals(entry.getSrcLang()))
+         {
+            return term.getContent();
+         }
+      }
       return null;
    }
 

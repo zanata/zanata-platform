@@ -30,13 +30,12 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HLocale;
 import org.zanata.model.HTermComment;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.service.LocaleService;
+import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
 @Path(GlossaryService.SERVICE_PATH)
@@ -60,9 +59,7 @@ public class GlossaryService implements GlossaryResource
    private GlossaryDAO glossaryDAO;
 
    @In
-   private LocaleService localeServiceImpl;
-
-   private final static int BATCH_SIZE = 50;
+   private GlossaryFileService glossaryFileServiceImpl;
 
    Log log = Logging.getLog(GlossaryService.class);
 
@@ -156,30 +153,9 @@ public class GlossaryService implements GlossaryResource
       }
       response = Response.created(uri.getAbsolutePath());
 
-      int counter = 0;
-      for (int i = 0; i < glossary.getGlossaryEntries().size(); i++)
-      {
-         transferGlossaryEntry(glossary.getGlossaryEntries().get(i));
-         counter++;
-
-         if (counter == BATCH_SIZE || i == glossary.getGlossaryEntries().size() - 1)
-         {
-            executeCommit();
-            counter = 0;
-         }
-      }
+      glossaryFileServiceImpl.saveGlossary(glossary);
 
       return response.build();
-   }
-
-   /**
-    * This force glossaryDAO to flush and commit every 50(BATCH_SIZE) records.
-    */
-   @Transactional
-   private void executeCommit()
-   {
-      glossaryDAO.flush();
-      glossaryDAO.clear();
    }
 
    /**
@@ -237,68 +213,6 @@ public class GlossaryService implements GlossaryResource
       log.info("Glossary delete all: " + rowCount);
 
       return Response.ok().build();
-   }
-
-   private HGlossaryTerm getOrCreateGlossaryTerm(HGlossaryEntry hGlossaryEntry, HLocale termHLocale, String content)
-   {
-      HGlossaryTerm hGlossaryTerm = hGlossaryEntry.getGlossaryTerms().get(termHLocale);
-
-      if (hGlossaryTerm == null)
-      {
-         hGlossaryTerm = new HGlossaryTerm(content);
-         hGlossaryTerm.setLocale(termHLocale);
-         hGlossaryTerm.setGlossaryEntry(hGlossaryEntry);
-         hGlossaryEntry.getGlossaryTerms().put(termHLocale, hGlossaryTerm);
-      }
-      return hGlossaryTerm;
-   }
-
-   private HGlossaryEntry getOrCreateGlossaryEntry(LocaleId srcLocale, String srcContent)
-   {
-      HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcLocaleAndContent(srcLocale, srcContent);
-
-      if (hGlossaryEntry == null)
-      {
-         hGlossaryEntry = new HGlossaryEntry();
-         HLocale srcHLocale = localeServiceImpl.getByLocaleId(srcLocale);
-         hGlossaryEntry.setSrcLocale(srcHLocale);
-      }
-      return hGlossaryEntry;
-   }
-
-   public String getSrcGlossaryTerm(GlossaryEntry entry)
-   {
-      for (GlossaryTerm term : entry.getGlossaryTerms())
-      {
-         if (term.getLocale().equals(entry.getSrcLang()))
-         {
-            return term.getContent();
-         }
-      }
-      return null;
-   }
-
-   public void transferGlossaryEntry(GlossaryEntry from)
-   {
-      HGlossaryEntry to = getOrCreateGlossaryEntry(from.getSrcLang(), getSrcGlossaryTerm(from));
-
-      to.setSourceRef(from.getSourcereference());
-
-      for (GlossaryTerm glossaryTerm : from.getGlossaryTerms())
-      {
-         HLocale termHLocale = localeServiceImpl.validateSourceLocale(glossaryTerm.getLocale());
-
-         // check if there's existing term with same content, overrides comments
-         HGlossaryTerm hGlossaryTerm = getOrCreateGlossaryTerm(to, termHLocale, glossaryTerm.getContent());
-
-         hGlossaryTerm.getComments().clear();
-
-         for (String comment : glossaryTerm.getComments())
-         {
-            hGlossaryTerm.getComments().add(new HTermComment(comment));
-         }
-      }
-      glossaryDAO.makePersistent(to);
    }
 
    public void transferEntriesResource(List<HGlossaryEntry> hGlosssaryEntries, Glossary glossary)
