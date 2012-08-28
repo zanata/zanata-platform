@@ -20,28 +20,46 @@
  */
 package org.zanata.security.openid;
 
-import java.text.MessageFormat;
-import java.util.regex.Pattern;
+import org.openid4java.message.MessageException;
+import org.openid4java.message.ParameterList;
+import org.openid4java.message.ax.FetchRequest;
 
 /**
- * Fedora Open Id provider.
+ * Open Id Provider for most Open Id services.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class FedoraOpenIdProvider extends GenericOpenIdProvider
+public class GenericOpenIdProvider implements OpenIdProvider
 {
-   private static final String FEDORA_OPENID_FORMAT = "http://{0}.id.fedoraproject.org/";
-   private static final Pattern FEDORA_OPENID_PATTERN = Pattern.compile("http://(.*).id.fedoraproject.org/");
-
    @Override
    public String getOpenId(String username)
    {
-      return MessageFormat.format(FEDORA_OPENID_FORMAT, username);
+      return username; // The user name should be the open Id
    }
 
    @Override
    public boolean accepts(String openId)
    {
-      return FEDORA_OPENID_PATTERN.matcher( openId ).matches();
+      return true; // Any url is a valid open Id
+   }
+
+   @Override
+   public void prepareRequest(FetchRequest req)
+   {
+      try
+      {
+         // Request email
+         req.addAttribute("email", "http://schema.openid.net/contact/email", true);
+      }
+      catch (MessageException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   @Override
+   public String getEmail(ParameterList params)
+   {
+      return params.getParameterValue("openid.ext1.value.email");
    }
 }

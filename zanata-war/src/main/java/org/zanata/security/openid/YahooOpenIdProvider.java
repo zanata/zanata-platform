@@ -23,12 +23,16 @@ package org.zanata.security.openid;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
+import org.openid4java.message.MessageException;
+import org.openid4java.message.ParameterList;
+import org.openid4java.message.ax.FetchRequest;
+
 /**
  * Yahoo Open Id provider.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class YahooOpenIdProvider implements OpenIdProvider
+public class YahooOpenIdProvider extends GenericOpenIdProvider
 {
    private static final String YAHOO_OPENID_FORMAT = "https://me.yahoo.com/{0}";
    private static final Pattern YAHOO_OPENID_PATTERN = Pattern.compile("https://me.yahoo.com/(.*)");
@@ -44,5 +48,26 @@ public class YahooOpenIdProvider implements OpenIdProvider
    public boolean accepts(String openId)
    {
       return YAHOO_OPENID_PATTERN.matcher( openId ).matches();
+   }
+
+   @Override
+   public void prepareRequest(FetchRequest req)
+   {
+      super.prepareRequest(req);
+      try
+      {
+         // Request email
+         req.addAttribute("email", "http://axschema.org/contact/email", true);
+      }
+      catch (MessageException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   @Override
+   public String getEmail(ParameterList params)
+   {
+      return params.getParameterValue("openid.ax.value.email");
    }
 }

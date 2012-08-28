@@ -23,12 +23,16 @@ package org.zanata.security.openid;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
+import org.openid4java.message.MessageException;
+import org.openid4java.message.ParameterList;
+import org.openid4java.message.ax.FetchRequest;
+
 /**
  * Provider implementation for MyOpenID
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class MyOpenIdProvider implements OpenIdProvider
+public class MyOpenIdProvider extends GenericOpenIdProvider
 {
    private static final String FEDORA_OPENID_FORMAT = "http://{0}.myopenid.com/";
    private static final Pattern FEDORA_OPENID_PATTERN = Pattern.compile("http://(.*).myopenid.com/");
@@ -43,5 +47,11 @@ public class MyOpenIdProvider implements OpenIdProvider
    public boolean accepts(String openId)
    {
       return FEDORA_OPENID_PATTERN.matcher( openId ).matches();
+   }
+
+   @Override
+   public String getEmail(ParameterList params)
+   {
+      return params.getParameterValue("openid.ax.value.email.1"); // Return the first email address
    }
 }

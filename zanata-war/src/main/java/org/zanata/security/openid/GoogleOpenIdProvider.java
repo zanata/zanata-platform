@@ -20,20 +20,14 @@
  */
 package org.zanata.security.openid;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.openid4java.message.MessageException;
-import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.FetchRequest;
 
 /**
  * Google Open Id provider.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class GoogleOpenIdProvider implements OpenIdProvider
+public class GoogleOpenIdProvider extends GenericOpenIdProvider
 {
    private static final Pattern GOOGLE_OPENID_PATTERN = Pattern.compile("https://www.google.com/accounts/o8/id\\?id=(.*)");
 

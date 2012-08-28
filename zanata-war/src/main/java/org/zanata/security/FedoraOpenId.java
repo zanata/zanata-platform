@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.openid.FedoraOpenIdProvider;
+import org.zanata.security.openid.GenericOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.MyOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
@@ -152,9 +153,7 @@ public class FedoraOpenId implements OpenIdAuthCallback
 
          // Attribute Exchange example: fetching the 'email' attribute
          FetchRequest fetch = FetchRequest.createFetchRequest();
-         fetch.addAttribute("email", "http://schema.openid.net/contact/email", // type
-                                                                               // URI
-               true); // required
+         openIdProvider.prepareRequest(fetch);
 
          // attach the extension to the authentication request
          authReq.addExtension(fetch);
@@ -213,7 +212,7 @@ public class FedoraOpenId implements OpenIdAuthCallback
          {
             authResult = new OpenIdAuthenticationResult();
             authResult.setAuthenticatedId( verified.getIdentifier() );
-            authResult.setEmail(response.getParameterValue("openid.ext1.value.email")); // Get the email address
+            authResult.setEmail( openIdProvider.getEmail(response) ); // Get the email address
          }
 
          // invoke the callbacks
@@ -222,7 +221,7 @@ public class FedoraOpenId implements OpenIdAuthCallback
             callback.afterOpenIdAuth(authResult);
             if( callback.getRedirectToUrl() != null )
             {
-               userRedirect.setLocalUrl( callback.getRedirectToUrl() );
+               userRedirect.setLocalUrl(callback.getRedirectToUrl());
             }
          }
 
@@ -362,19 +361,6 @@ public class FedoraOpenId implements OpenIdAuthCallback
 
    public void useGenericOpenIdProvider()
    {
-      this.openIdProvider = new OpenIdProvider()
-      {
-         @Override
-         public String getOpenId(String username)
-         {
-            return username;
-         }
-
-         @Override
-         public boolean accepts(String openId)
-         {
-            return true;
-         }
-      };
+      this.openIdProvider = new GenericOpenIdProvider();
    }
 }
