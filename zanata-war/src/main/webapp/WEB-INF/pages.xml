@@ -449,7 +449,7 @@
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view'.concat(projectHome.slug), projectHome.instance.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
         
     <navigation from-action="#{projectHome.update}">
