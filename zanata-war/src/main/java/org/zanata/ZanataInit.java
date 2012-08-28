@@ -139,7 +139,10 @@ public class ZanataInit
       log.info("JavaMelody stats directory: " + javamelodyDir );
       String indexBase = System.getProperty("hibernate.search.default.indexBase");
       log.info("Lucene index directory: " + indexBase);
-      checkLuceneLocks(new File(indexBase));
+      if (indexBase != null)
+      {
+         checkLuceneLocks(new File(indexBase));
+      }
       Events.instance().raiseEvent(EVENT_Zanata_Startup);
 
       log.info("Started Zanata...");
