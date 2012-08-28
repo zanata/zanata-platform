@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Proxy;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -38,6 +39,9 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.hibernate.jmx.StatisticsService;
 import org.jboss.mx.util.MBeanProxy;
@@ -51,8 +55,9 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
 import org.jboss.security.auth.login.XMLLoginConfigMBean;
+import org.zanata.exception.ZanataInitializationException;
 
-import lombok.extern.slf4j.Slf4j;
+import com.beust.jcommander.internal.Lists;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the
@@ -166,9 +171,29 @@ public class ZanataInit
       
       this.initSecurityConfig();
 
+      String javamelodyDir = System.getProperty("javamelody.storage-directory");
+      log.info("JavaMelody stats directory: " + javamelodyDir );
+      String indexBase = System.getProperty("hibernate.search.default.indexBase");
+      log.info("Lucene index directory: " + indexBase);
+      checkLuceneLocks(new File(indexBase));
       Events.instance().raiseEvent(EVENT_Zanata_Startup);
 
       log.info("Started Zanata...");
+   }
+
+   private void checkLuceneLocks(File indexDir) throws ZanataInitializationException
+   {
+      Collection<File> lockFiles = FileUtils.listFiles(indexDir, new String[]{"lock"}, true);
+      Collection<String> lockedDirs = Lists.newArrayList();
+      for (File f : lockFiles)
+      {
+         lockedDirs.add(f.getParent());
+      }
+      if (!lockFiles.isEmpty())
+      {
+         log.error("Lucene lock files found. Check if Zanata is already running. Otherwise, Zanata was not shut down cleanly: delete the locked directories: " + lockedDirs);
+         throw new ZanataInitializationException("Found lock files: " + lockFiles);
+      }
    }
 
    @Destroy
