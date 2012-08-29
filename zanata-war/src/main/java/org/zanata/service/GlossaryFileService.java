@@ -21,8 +21,9 @@
 package org.zanata.service;
 
 import java.io.InputStream;
+import java.util.List;
 
-import org.zanata.model.HGlossaryEntry;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
 
 /**
@@ -32,7 +33,7 @@ import org.zanata.rest.dto.Glossary;
  */
 public interface GlossaryFileService
 {
-   Glossary parseGlossaryFile(InputStream fileContents, String fileName);
+   void saveGlossary(Glossary glossary);
 
-   HGlossaryEntry saveGlossary(Glossary glossary);
+   List<Glossary> parseGlossaryFile(InputStream fileContents, String fileName, LocaleId sourceLang, LocaleId transLang, boolean treatSourceCommentsAsTarget, List<String> commentsColumn);
 }

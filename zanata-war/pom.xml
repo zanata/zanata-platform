@@ -725,6 +725,11 @@
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-po</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-glossary</artifactId>
+        </dependency>
 		
       <dependency>
          <groupId>org.zanata</groupId>

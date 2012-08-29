@@ -22,7 +22,10 @@ package org.zanata.service.impl;
 
 import static org.jboss.seam.ScopeType.STATELESS;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.annotations.AutoCreate;
@@ -30,6 +33,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.zanata.adapter.glossary.GlossaryCSVReader;
+import org.zanata.adapter.glossary.GlossaryPoReader;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -62,24 +67,31 @@ public class GlossaryFileServiceImpl implements GlossaryFileService
    private final static int BATCH_SIZE = 50;
 
    @Override
-   public Glossary parseGlossaryFile(InputStream fileContents, String fileName)
+   public List<Glossary> parseGlossaryFile(InputStream fileContents, String fileName, LocaleId sourceLang, LocaleId transLang, boolean treatSourceCommentsAsTarget, List<String> commentsColumn)
    {
-      if (StringUtils.endsWithIgnoreCase(fileName, ".csv"))
+      try
       {
-         return parseCsvFile(fileContents);
+         if (StringUtils.endsWithIgnoreCase(fileName, ".csv"))
+         {
+            return parseCsvFile(fileContents, commentsColumn);
+         }
+         else if (StringUtils.endsWithIgnoreCase(fileName, ".po"))
+         {
+            return parsePoFile(fileContents, sourceLang, transLang, treatSourceCommentsAsTarget);
+         }
+         else
+         {
+            throw new ZanataServiceException("Unsupported Glossary file: " + fileName);
+         }
       }
-      else if (StringUtils.endsWithIgnoreCase(fileName, ".po"))
-      {
-         return parsePoFile(fileContents);
-      }
-      else
+      catch (Exception e)
       {
          throw new ZanataServiceException("Unsupported Glossary file: " + fileName);
       }
    }
 
    @Override
-   public HGlossaryEntry saveGlossary(Glossary glossary)
+   public void saveGlossary(Glossary glossary)
    {
       int counter = 0;
       for (int i = 0; i < glossary.getGlossaryEntries().size(); i++)
@@ -93,18 +105,18 @@ public class GlossaryFileServiceImpl implements GlossaryFileService
             counter = 0;
          }
       }
-
-      return null;
    }
 
-   private Glossary parseCsvFile(InputStream fileContents)
+   private List<Glossary> parseCsvFile(InputStream fileContents, List<String> commentsColumn) throws IOException
    {
-      return null;
+      GlossaryCSVReader csvReader = new GlossaryCSVReader(commentsColumn, BATCH_SIZE);
+      return csvReader.extractGlossary(new InputStreamReader(fileContents));
    }
 
-   private Glossary parsePoFile(InputStream fileContents)
+   private List<Glossary> parsePoFile(InputStream fileContents, LocaleId sourceLang, LocaleId transLang, boolean treatSourceCommentsAsTarget) throws IOException
    {
-      return null;
+      GlossaryPoReader poReader = new GlossaryPoReader(sourceLang, transLang, treatSourceCommentsAsTarget, BATCH_SIZE);
+      return poReader.extractGlossary(new InputStreamReader(fileContents));
    }
 
    /**

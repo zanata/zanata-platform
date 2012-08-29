@@ -21,6 +21,40 @@
                 #{rich:component('uploadPanel')}.hide();
                 return false;
             }
+            
+            function getFileExtension(fileName) {
+            	var extensionIndex = fileName.lastIndexOf('.') + 1;
+            	var fileExtension = "";
+             	if(extensionIndex &lt; fileName.length)
+             	{
+             		fileExtension = fileName.substring(extensionIndex, fileName.length);
+             	}
+             	return fileExtension;
+            }
+            
+            function updateForm(fileName) {
+            	var fileExtension = getFileExtension(fileName).toUpperCase();
+             	if(fileExtension == "CSV")
+             	{
+             		document.getElementById('#{rich:clientId('targetLang')}').setAttribute("disabled", true);           	
+             		document.getElementById('#{rich:clientId('commentCols')}').removeAttribute("disabled");   
+             		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled")
+             	} 
+             	else if(fileExtension == "PO")
+             	{
+             		document.getElementById('#{rich:clientId('targetLang')}').removeAttribute("disabled");           	
+             		document.getElementById('#{rich:clientId('commentCols')}').setAttribute("disabled", true);
+             		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled");
+             	}
+             	else
+             	{
+             		document.getElementById('#{rich:clientId('targetLang')}').setAttribute("disabled", true);           	
+             		document.getElementById('#{rich:clientId('commentCols')}').setAttribute("disabled", true);
+             		document.getElementById('#{rich:clientId('uploadButton')}').setAttribute("disabled", true);
+             	}
+            }
+            
+            
         </script>
     </ui:define>
     
@@ -50,9 +84,9 @@
                 <h:outputText id="uploadPanelHeader"/>
             </f:facet>
             <h:form id="uploadForm" enctype="multipart/form-data">
-               <s:fileUpload accept="*"
+               <s:fileUpload id="fileUpload" accept="*"
                               data="#{glossaryFilesAction.glossaryFileUpload.fileContents}"
-                              fileName="#{glossaryFilesAction.glossaryFileUpload.fileName}">
+                              fileName="#{glossaryFilesAction.glossaryFileUpload.fileName}" onchange="updateForm(this.value)">
                </s:fileUpload>
                              
                 <br/> <br/>
@@ -63,7 +97,7 @@
 	                    <s:selectItems value="#{glossaryFilesAction.availableLocales}"
 	                                   var="locale"
 	                                   label="#{locale.retrieveNativeName()}"
-	                                   itemValue="#{locale.localeId.toString()}"
+	                                   itemValue="#{locale.localeId.id}"
 	                                   escape="true"/>
 	                    
 	                </h:selectOneMenu>       
@@ -71,25 +105,28 @@
                 <div style="float:right" title="#{messages['jsf.Glossary.TargetLanguage.Title']}">
 	                <h:outputLabel value="Target Language"/>
 	                <br/>
-	                <h:selectOneMenu value="#{glossaryFilesAction.glossaryFileUpload.transLang}">
+	                <h:selectOneMenu value="#{glossaryFilesAction.glossaryFileUpload.transLang}" id="targetLang">
 	                    <s:selectItems value="#{glossaryFilesAction.availableLocales}"
 	                                   var="locale"
 	                                   label="#{locale.retrieveNativeName()}"
-	                                   itemValue="#{locale.localeId.toString()}"
+	                                   itemValue="#{locale.localeId.id}"
 	                                   escape="true"/>
 	                    
 	                </h:selectOneMenu>       
                 </div>
                 <br/>             
-                <h:outputText value="#{messages['jsf.TreatSourceCommentsAsTarget']}?"/>
+                <h:outputText value="#{messages['jsf.TreatSourceCommentsAsTarget']}?" title="#{messages['jsf.TreatSourceCommentsAsTarget.Title']}"/>
                 <h:selectBooleanCheckbox value="#{glossaryFilesAction.glossaryFileUpload.treatSourceCommentsAsTarget}"
                                          title="#{messages['jsf.TreatSourceCommentsAsTarget.Title']}"/>  
                                          
-                                         
+                                    
+                <br/> <br/>
+                <h:outputText value="#{messages['jsf.CommentColumnNames']}" title="#{messages['jsf.CommentColumnNames.Title']}"/>
+                <h:inputText id="commentCols" value="#{glossaryFilesAction.glossaryFileUpload.commentCols}" title="#{messages['jsf.CommentColumnNames.Title']}"/>     
                 <br/> <br/> <br/>                                      
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.Upload']}"
-                                     action="#{glossaryFilesAction.uploadFile}"/>
+                                     action="#{glossaryFilesAction.uploadFile}" id="uploadButton"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideUploadPanel();"/>
                 </div>              

@@ -1,10 +1,12 @@
 package org.zanata.action;
 
 import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
-
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -13,6 +15,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
 import org.zanata.annotation.CachedMethods;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -22,13 +25,18 @@ import org.zanata.service.GlossaryFileService;
 @Name("glossaryFilesAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
-public class GlossaryFilesAction
+public class GlossaryFilesAction implements Serializable
 {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
+
    @In
    private LocaleDAO localeDAO;
    
    @In
-   private GlossaryFileService glosaryFileServiceImpl;
+   private GlossaryFileService glossaryFileServiceImpl;
 
    private GlossaryFileUploadHelper glossaryFileUpload;
 
@@ -47,12 +55,16 @@ public class GlossaryFilesAction
       return glossaryFileUpload;
    }
 
-   public String uploadFile()
+   public void uploadFile()
    {
       try
       {
-         Glossary glossary = glosaryFileServiceImpl.parseGlossaryFile(glossaryFileUpload.getFileContents(), glossaryFileUpload.getFileName());
-         glosaryFileServiceImpl.saveGlossary(glossary);
+         List<Glossary> glossaries = glossaryFileServiceImpl.parseGlossaryFile(glossaryFileUpload.getFileContents(), glossaryFileUpload.getFileName(), glossaryFileUpload.getSourceLocaleId(), glossaryFileUpload.getTransLocaleId(), glossaryFileUpload.treatSourceCommentsAsTarget, glossaryFileUpload.getCommentColsList());
+
+         for (Glossary glossary : glossaries)
+         {
+            glossaryFileServiceImpl.saveGlossary(glossary);
+         }
 
          FacesMessages.instance().add(Severity.INFO, "Glossary file {0} uploaded.", this.glossaryFileUpload.getFileName());
       }
@@ -68,7 +80,7 @@ public class GlossaryFilesAction
       // NB This needs to be done as for some reason seam is losing the
       // parameters when redirecting
       // This is efectively the same as returning void
-      return FacesContext.getCurrentInstance().getViewRoot().getViewId();
+      // return FacesContext.getCurrentInstance().getViewRoot().getViewId();
    }
 
    /**
@@ -81,10 +93,21 @@ public class GlossaryFilesAction
       private String sourceLang = "en-US";
       private String transLang;
       private boolean treatSourceCommentsAsTarget = false;
+      private String commentCols = "pos,description";
 
       public InputStream getFileContents()
       {
          return fileContents;
+      }
+
+      public LocaleId getTransLocaleId()
+      {
+         return new LocaleId(getTransLang());
+      }
+
+      public LocaleId getSourceLocaleId()
+      {
+         return new LocaleId(getSourceLang());
       }
 
       public void setFileContents(InputStream fileContents)
@@ -132,9 +155,25 @@ public class GlossaryFilesAction
          this.treatSourceCommentsAsTarget = treatSourceCommentsAsTarget;
       }
 
-      public String toString()
+      public String getCommentCols()
       {
-         return "fileName=" + fileName + " SourceLang=" + sourceLang + " transLang=" + transLang + " isTreatSourceCommentsAsTarget=" + treatSourceCommentsAsTarget;
+         return commentCols;
+      }
+
+      public void setCommentCols(String commentCols)
+      {
+         this.commentCols = commentCols;
+      }
+
+      public List<String> getCommentColsList()
+      {
+         String[] commentHeadersList = StringUtils.split(getCommentCols(), ",");
+         List<String> list = new ArrayList<String>();
+         if (commentHeadersList != null && commentHeadersList.length > 0)
+         {
+            Collections.addAll(list, commentHeadersList);
+         }
+         return list;
       }
    }
 }
