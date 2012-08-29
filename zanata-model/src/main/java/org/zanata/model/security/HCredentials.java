@@ -31,6 +31,7 @@ import javax.persistence.ManyToOne;
 
 import org.zanata.model.HAccount;
 import org.zanata.model.ModelEntityBase;
+import org.zanata.model.validator.Unique;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,7 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @NoArgsConstructor
+@Unique(properties = {"user"})
 public abstract class HCredentials extends ModelEntityBase
 {
    @Setter

@@ -50,8 +50,8 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
          return;
       }
 
-      FedoraOpenId open = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
-      if (open.getId() == null)
+      FedoraOpenId openid = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
+      if (openid.getId() == null)
       {
          try
          {
@@ -63,8 +63,6 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
          }
          return;
       }
-
-      FedoraOpenId openid = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
 
       openid.verify();
 

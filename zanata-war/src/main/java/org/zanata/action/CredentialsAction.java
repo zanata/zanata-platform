@@ -25,15 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 
+import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -201,7 +200,15 @@ public class CredentialsAction implements Serializable
             this.newCredentials.setEmail( result.getEmail() );
             // NB: Need to get the entity manager this way as injection won't work here
             EntityManager em = (EntityManager)Component.getInstance("entityManager");
-            em.persist(this.newCredentials);
+
+            try
+            {
+               em.persist(this.newCredentials);
+            }
+            catch( InvalidStateException isex )
+            {
+               em.clear(); // remove dirty entities
+            }
          }
       }
 
