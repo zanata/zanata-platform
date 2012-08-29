@@ -20,8 +20,12 @@
  */
 package org.zanata.adapter.glossary;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 import org.easymock.EasyMock;
@@ -69,9 +73,12 @@ public class GlossaryPoReaderTest
    @Test
    public void extractGlossaryTest() throws IOException
    {
-      GlossaryPoReader reader = new GlossaryPoReader(LocaleId.EN_US, new LocaleId("hi"), BATCH_SIZE, false);
+      GlossaryPoReader reader = new GlossaryPoReader(LocaleId.EN_US, new LocaleId("hi"), false, BATCH_SIZE);
 
-      List<Glossary> glossaries = reader.extractGlossary(sourceFile);
+      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
+      BufferedReader br = new BufferedReader(inputStreamReader);
+
+      List<Glossary> glossaries = reader.extractGlossary(br);
       Assert.assertEquals(Math.ceil(sourceSize1 / BATCH_SIZE), glossaries.size(), BATCH_SIZE);
       Assert.assertEquals(BATCH_SIZE, glossaries.get(0).getGlossaryEntries().size());
       Assert.assertEquals(BATCH_SIZE, glossaries.get(1).getGlossaryEntries().size());
@@ -83,8 +90,11 @@ public class GlossaryPoReaderTest
    @Test
    public void glossaryBatchTest() throws IOException
    {
-      GlossaryPoReader reader = new GlossaryPoReader(LocaleId.EN_US, new LocaleId("zh-Hants"), BATCH_SIZE, false);
-      List<Glossary> glossaries = reader.extractGlossary(sourceFile2);
+      GlossaryPoReader reader = new GlossaryPoReader(LocaleId.EN_US, new LocaleId("zh-Hants"), false, BATCH_SIZE);
+      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile2), "UTF-8");
+      BufferedReader br = new BufferedReader(inputStreamReader);
+
+      List<Glossary> glossaries = reader.extractGlossary(br);
       Assert.assertEquals(Math.ceil(sourceSize2 / BATCH_SIZE), glossaries.size(), BATCH_SIZE);
       Assert.assertEquals(BATCH_SIZE, glossaries.get(0).getGlossaryEntries().size());
       Assert.assertEquals(BATCH_SIZE, glossaries.get(1).getGlossaryEntries().size());

@@ -20,15 +20,14 @@
  */
 package org.zanata.adapter.glossary;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;
@@ -54,27 +53,35 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader
    private final int batchSize;
    private final boolean treatSourceCommentsAsTarget;
 
-   public GlossaryPoReader(LocaleId srcLang, LocaleId transLang, int batchSize, boolean treatSourceCommentsAsTarget)
+   /**
+    * This class will close the reader
+    * 
+    * @param srcLang
+    * @param transLang
+    * @param treatSourceCommentsAsTarget
+    * @param batchSize
+    */
+   public GlossaryPoReader(LocaleId srcLang, LocaleId transLang, boolean treatSourceCommentsAsTarget, int batchSize)
    {
       this.srcLang = srcLang;
       this.transLang = transLang;
       this.batchSize = batchSize;
       this.treatSourceCommentsAsTarget = treatSourceCommentsAsTarget;
    }
-   
+
    @Override
-   public List<Glossary> extractGlossary(File glossaryFile) throws IOException
+   public List<Glossary> extractGlossary(Reader reader) throws IOException
    {
-      BufferedInputStream bis = new BufferedInputStream(new FileInputStream(glossaryFile));
+      ReaderInputStream ris = new ReaderInputStream(reader);
       try
       {
-         InputSource potInputSource = new InputSource(bis);
+         InputSource potInputSource = new InputSource(ris);
          potInputSource.setEncoding("utf8");
          return extractTemplate(potInputSource);
       }
       finally
       {
-         bis.close();
+         ris.close();
       }
    }
 

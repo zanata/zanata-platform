@@ -20,9 +20,8 @@
  */
 package org.zanata.adapter.glossary;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -45,67 +44,75 @@ import au.com.bytecode.opencsv.CSVReader;
 public class GlossaryCSVReader extends AbstractGlossaryPushReader
 {
    private final int batchSize;
-   private final List<String> commentsColumn;
-   
-   public GlossaryCSVReader(int batchSize, List<String> commentsColumn)
+   private final List<String> customColNames;
+
+   /**
+    * This class will close the reader
+    * 
+    * @param customColNames
+    * @param batchSize
+    */
+   public GlossaryCSVReader(List<String> customColNames, int batchSize)
    {
+      this.customColNames = customColNames;
       this.batchSize = batchSize;
-      this.commentsColumn = commentsColumn;
    }
 
-   @Override
-   public List<Glossary> extractGlossary(File glossaryFile) throws IOException, RuntimeException
+   public List<Glossary> extractGlossary(Reader reader) throws IOException
    {
       int entryCount = 0;
-      List<Glossary> glossaries = new ArrayList<Glossary>();
-
-      CSVReader reader = new CSVReader(new FileReader(glossaryFile));
-
-      List<String[]> entries = reader.readAll();
-
-      validateCVSEntries(entries);
-
-      Map<Integer, String> descriptionMap = setupDescMap(entries);
-      Map<Integer, LocaleId> localeColMap = setupLocalesMap(entries, descriptionMap);
-
-      LocaleId srcLocale = localeColMap.get(0);
-
-      Glossary glossary = new Glossary();
-
-      for (int i = 1; i < entries.size(); i++)
+      CSVReader csvReader = new CSVReader(reader);
+      try
       {
-         String[] row = entries.get(i);
-         GlossaryEntry entry = new GlossaryEntry();
-         entry.setSrcLang(srcLocale);
+         List<Glossary> glossaries = new ArrayList<Glossary>();
+         List<String[]> entries = csvReader.readAll();
 
-         for (int x = 0; x < row.length && localeColMap.containsKey(x); x++)
+         validateCVSEntries(entries);
+
+         Map<Integer, String> descriptionMap = setupDescMap(entries);
+         Map<Integer, LocaleId> localeColMap = setupLocalesMap(entries, descriptionMap);
+
+         LocaleId srcLocale = localeColMap.get(0);
+
+         Glossary glossary = new Glossary();
+
+         for (int i = 1; i < entries.size(); i++)
          {
-            GlossaryTerm term = new GlossaryTerm();
-            term.setLocale(localeColMap.get(x));
-            term.setContent(row[x]);
-            if (x == 0)
+            String[] row = entries.get(i);
+            GlossaryEntry entry = new GlossaryEntry();
+            entry.setSrcLang(srcLocale);
+
+            for (int x = 0; x < row.length && localeColMap.containsKey(x); x++)
             {
-               // this is source term
-               for (int descRow : descriptionMap.keySet())
+               GlossaryTerm term = new GlossaryTerm();
+               term.setLocale(localeColMap.get(x));
+               term.setContent(row[x]);
+               if (x == 0)
                {
-                  term.getComments().add(row[descRow]);
+                  // this is source term
+                  for (int descRow : descriptionMap.keySet())
+                  {
+                     term.getComments().add(row[descRow]);
+                  }
                }
+               entry.getGlossaryTerms().add(term);
             }
-            entry.getGlossaryTerms().add(term);
-         }
-         glossary.getGlossaryEntries().add(entry);
-         entryCount++;
+            glossary.getGlossaryEntries().add(entry);
+            entryCount++;
 
-         if (entryCount == batchSize || i == entries.size() - 1)
-         {
-            glossaries.add(glossary);
-            entryCount = 0;
-            glossary = new Glossary();
+            if (entryCount == batchSize || i == entries.size() - 1)
+            {
+               glossaries.add(glossary);
+               entryCount = 0;
+               glossary = new Glossary();
+            }
          }
+         return glossaries;
       }
-      reader.close();
-      return glossaries;
-
+      finally
+      {
+         csvReader.close();
+      }
    }
 
    /* @formatter:off
@@ -157,7 +164,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader
 
       for (int row = 0; row < headerRow.length; row++)
       {
-         for(String optsHeader:commentsColumn)
+         for(String optsHeader:customColNames)
          {
             if(optsHeader.equals(headerRow[row])){
                descMap.put(row,headerRow[row]);

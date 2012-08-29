@@ -20,8 +20,8 @@
  */
 package org.zanata.adapter.glossary;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 
 import org.zanata.rest.dto.Glossary;
@@ -35,7 +35,7 @@ public abstract class AbstractGlossaryPushReader
 {
    private String fileExtension;
 
-   public abstract List<Glossary> extractGlossary(File glossaryFile) throws IOException;
+   public abstract List<Glossary> extractGlossary(Reader reader) throws IOException;
 
 //   protected LocaleId getLocaleFromMap(String localLocale)
 //   {

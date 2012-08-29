@@ -20,8 +20,12 @@
  */
 package org.zanata.adapter.glossary;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,11 +68,14 @@ public class GlossaryCSVReaderTest
       commentHeaders.add("pos");
       commentHeaders.add("description");
       
-      GlossaryCSVReader reader = new GlossaryCSVReader(300, commentHeaders);
+      GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
       
       File sourceFile = new File("src/test/resources/glossary/translate1.csv");
       
-      List<Glossary> glossaries = reader.extractGlossary(sourceFile);
+      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
+      BufferedReader br = new BufferedReader(inputStreamReader);
+
+      List<Glossary> glossaries = reader.extractGlossary(br);
       // System.out.println(glossary);
       Assert.assertEquals(1, glossaries.size());
 
@@ -89,12 +96,14 @@ public class GlossaryCSVReaderTest
       commentHeaders.add("description2");
       commentHeaders.add("description3"); // this will be ignored
       
-      GlossaryCSVReader reader = new GlossaryCSVReader(300, commentHeaders);
-      
+      GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
       
       File sourceFile = new File("src/test/resources/glossary/translate2.csv");
       
-      List<Glossary> glossaries = reader.extractGlossary(sourceFile);
+      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
+      BufferedReader br = new BufferedReader(inputStreamReader);
+
+      List<Glossary> glossaries = reader.extractGlossary(br);
       // System.out.println(glossary);
       Assert.assertEquals(1, glossaries.size());
 
