@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -175,8 +176,8 @@ public class FileService implements FileResource
             }
          }
 
-         InputStream fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, document.getPath(), document.getName());
-         StreamingOutput output = new FormatAdapterStreamingOutput(fileContents, translations, locale, translationFileServiceImpl.getAdapterFor(docId));
+         URI uri = translationFileServiceImpl.getDocumentURI(projectSlug, iterationSlug, document.getPath(), document.getName());
+         StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, translationFileServiceImpl.getAdapterFor(docId));
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
@@ -290,21 +291,21 @@ public class FileService implements FileResource
    {
       private Map<String, TextFlowTarget> translations;
       private String locale;
-      private InputStream fileContents;
+      private URI original;
       private FileFormatAdapter adapter;
 
-      public FormatAdapterStreamingOutput(InputStream fileContents, Map<String, TextFlowTarget> translations, String locale, FileFormatAdapter adapter)
+      public FormatAdapterStreamingOutput(URI originalDoc, Map<String, TextFlowTarget> translations, String locale, FileFormatAdapter adapter)
       {
          this.translations = translations;
          this.locale = locale;
-         this.fileContents = fileContents;
+         this.original = originalDoc;
          this.adapter = adapter;
       }
 
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
-         adapter.writeTranslatedFile(output, fileContents, translations, locale);
+         adapter.writeTranslatedFile(output, original, translations, locale);
       }
    }
 

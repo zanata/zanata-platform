@@ -20,12 +20,13 @@
  */
 package org.zanata.adapter;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.Map;
 
 import org.zanata.common.LocaleId;
+import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -39,23 +40,28 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public interface FileFormatAdapter
 {
 
+
    /**
     * Extract source strings from the given document content.
     * 
-    * @param documentContent
+    * @param documentUri
     * @param sourceLocale
     * @return representation of the strings in the document
+    * @throws IllegalArgumentException if documentUri or sourceLocale is null
+    * @throws FileFormatAdapterException if the document cannot be parsed
     */
    // TODO may want to use a string locale id so it can be used both for Zanata and Okapi locale classes
-   Resource parseDocumentFile(InputStream documentContent, LocaleId sourceLocale);
+   Resource parseDocumentFile(URI documentUri, LocaleId sourceLocale) throws FileFormatAdapterException, IllegalArgumentException;
 
    /**
     * Extract translation strings from the given translation document.
     * 
     * @param translatedDocumentContent translated document to parse
     * @return representation of the translations in the document
+    * @throws FileFormatAdapterException if the document cannot be parsed
+    * @throws IllegalArgumentException if translatedDocumentContent or localeId is null
     */
-   TranslationsResource parseTranslationFile(InputStream translatedDocumentContent);
+   TranslationsResource parseTranslationFile(InputStream translatedDocumentContent, String localeId) throws FileFormatAdapterException, IllegalArgumentException;
 
    /**
     * Write translated file to the given output, using the given list of translations.
@@ -64,8 +70,9 @@ public interface FileFormatAdapter
     * @param original source document
     * @param translations to use in generating translated file
     * @param locale to use for translated document
-    * @throws IOException
+    * @throws FileFormatAdapterException if there is any problem parsing the original file or writing the translated file
+    * @throws IllegalArgumentException if any parameters are null
     */
-   void writeTranslatedFile(OutputStream output, InputStream original, Map<String, TextFlowTarget> translations, String locale) throws IOException;
+   void writeTranslatedFile(OutputStream output, URI originalFile, Map<String, TextFlowTarget> translations, String locale) throws FileFormatAdapterException, IllegalArgumentException;
 
 }

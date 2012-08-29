@@ -932,6 +932,12 @@
             <version>0.17</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-openoffice</artifactId>
+            <version>0.17</version>
+        </dependency>
+
 
 		<!-- Other -->
 

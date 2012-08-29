@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -142,17 +143,16 @@ public class ProjectIterationFilesAction
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
    public String uploadTranslationFile()
    {
-      TranslationsResource transRes = null;
       try
       {
          // process the file
-         transRes = this.translationFileServiceImpl.parseTranslationFile(this.translationFileUpload.getFileContents(),
-               this.translationFileUpload.getFileName());
+         TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(),
+               translationFileUpload.getFileName(), localeId);
 
          // translate it
          List<String> warnings =
-            this.translationServiceImpl.translateAllInDoc(this.projectSlug, this.iterationSlug, this.translationFileUpload.getDocId(),
-               new LocaleId(this.localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
+            this.translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, translationFileUpload.getDocId(),
+               new LocaleId(localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
                this.translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
 
          StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
@@ -180,53 +180,94 @@ public class ProjectIterationFilesAction
    @Restrict("#{projectIterationFilesAction.documentUploadAllowed}")
    public String uploadDocumentFile()
    {
-      InputStream fileContents = this.documentFileUpload.getFileContents();
-
-      if (translationFileServiceImpl.hasAdapterFor(documentFileUpload.getFileName()))
+      if (this.documentFileUpload.getFileName().endsWith(".pot"))
       {
-         translationFileServiceImpl.persistDocument(fileContents, projectSlug, iterationSlug, documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
-         fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
+         uploadPotFile();
+      }
+      else if (translationFileServiceImpl.hasAdapterFor(documentFileUpload.getFileName()))
+      {
+         uploadAdapterFile();
+      }
+      else
+      {
+         FacesMessages.instance().add(Severity.ERROR, "Unrecognized file extension for {0}.", documentFileUpload.getFileName());
       }
 
+      // NB This needs to be done as for some reason seam is losing the parameters when redirecting
+      // This is effectively the same as returning void
+      return FacesContext.getCurrentInstance().getViewRoot().getViewId();
+   }
+
+   private void showUploadSuccessMessage()
+   {
+      // TODO localized string by UI language
+      FacesMessages.instance().add(Severity.INFO, "Document file {0} uploaded.", documentFileUpload.getFileName());
+   }
+
+   private void uploadPotFile()
+   {
       try
       {
-         Resource doc = this.translationFileServiceImpl.parseDocumentFile(fileContents,
-              this.documentFileUpload.getDocumentPath(), this.documentFileUpload.getFileName());
+         Resource doc = translationFileServiceImpl.parseDocumentFile(documentFileUpload.getFileContents(),
+               documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
 
-         doc.setLang( new LocaleId(this.documentFileUpload.getSourceLang()) );
-
-         // Temporary solution to hard-coded GetText extensions.
-         Set<String> extensions;
-         if (this.documentFileUpload.getFileName().endsWith(".pot"))
-         {
-            extensions = new StringSet(ExtensionType.GetText.toString());
-         }
-         else
-         {
-            extensions = Collections.<String>emptySet();
-         }
+         doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
 
          // TODO Copy Trans values
-         this.documentServiceImpl.saveDocument(this.projectSlug, this.iterationSlug,
-               doc, extensions,
-               false);
+         documentServiceImpl.saveDocument(projectSlug, iterationSlug,
+               doc, new StringSet(ExtensionType.GetText.toString()), false);
 
-         FacesMessages.instance().add(Severity.INFO, "Document file {0} uploaded.", this.documentFileUpload.getFileName());
+         showUploadSuccessMessage();
       }
       catch (ZanataServiceException zex)
       {
-         FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), this.documentFileUpload.getFileName());
+         FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), documentFileUpload.getFileName());
       }
       catch (InvalidStateException isex)
       {
          FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
       }
+   }
 
-      // TODO if Resource (document) can't be saved properly, remove the persisted file.
+   // TODO add logging for disk writing errors
+   private void uploadAdapterFile()
+   {
+      String documentPath = documentFileUpload.getDocumentPath();
+      String fileName = documentFileUpload.getFileName();
 
-      // NB This needs to be done as for some reason seam is losing the parameters when redirecting
-      // This is efectively the same as returning void
-      return FacesContext.getCurrentInstance().getViewRoot().getViewId();
+      try
+      {
+         // FIXME uploading a corrupt version of a file will overwrite a non-corrupt file, leaving
+         // it in a bad state. Change this so that old file is still present after failed upload.
+         translationFileServiceImpl.persistDocument(documentFileUpload.getFileContents(), projectSlug, iterationSlug, documentPath, fileName);
+      }
+      catch (ZanataServiceException e) {
+         FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} to server.", documentFileUpload.getFileName());
+         return;
+      }
+
+      try
+      {
+         URI uri = translationFileServiceImpl.getDocumentURI(projectSlug, iterationSlug, documentPath, fileName);
+         Resource doc = translationFileServiceImpl.parseDocumentFile(uri, documentPath, fileName);
+
+         doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
+         Set<String> extensions = Collections.<String>emptySet();
+
+         // TODO Copy Trans values
+         documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, extensions, false);
+
+         showUploadSuccessMessage();
+      }
+      catch (SecurityException e)
+      {
+         FacesMessages.instance().add(Severity.ERROR, "Error reading uploaded document {0} on server.", documentFileUpload.getFileName());
+         // TODO try to remove persisted document?
+      }
+      catch (ZanataServiceException e) {
+         FacesMessages.instance().add(Severity.ERROR, "Invalid document format for {0}.", documentFileUpload.getFileName());
+         // TODO remove persisted document
+      }
    }
 
    public List<HLocale> getAvailableSourceLocales()

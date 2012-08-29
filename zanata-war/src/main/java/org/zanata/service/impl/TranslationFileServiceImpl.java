@@ -27,9 +27,11 @@ import org.jboss.seam.annotations.Scope;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
+import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -42,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import static org.jboss.seam.ScopeType.STATELESS;
 
@@ -56,13 +59,14 @@ import static org.jboss.seam.ScopeType.STATELESS;
 public class TranslationFileServiceImpl implements TranslationFileService
 {
 
-   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName)
+   @Override
+   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException
    {
       if( fileName.endsWith(".po") )
       {
          try
          {
-            return this.parsePoFile(fileContents);
+            return parsePoFile(fileContents);
          }
          catch (Exception e)
          {
@@ -71,8 +75,14 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
       else if (hasAdapterFor(fileName))
       {
-         // TODO handle exceptions
-         return getAdapterFor(fileName).parseTranslationFile(fileContents);
+         try
+         {
+            return getAdapterFor(fileName).parseTranslationFile(fileContents, localeId);
+         }
+         catch (FileFormatAdapterException e)
+         {
+            throw new ZanataServiceException("Error parsing translation file: " + fileName, e);
+         }
       }
       else
       {
@@ -80,26 +90,43 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
    }
 
+   @Override
    public Resource parseDocumentFile(InputStream fileContents, String path, String fileName)
    {
       if( fileName.endsWith(".pot") )
       {
          // remove the .pot extension
          fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-
          try
          {
-            return this.parsePotFile(fileContents, path, fileName);
+            return parsePotFile(fileContents, path, fileName);
          }
          catch (Exception e)
          {
             throw new ZanataServiceException("Invalid POT file contents on file: " + fileName);
          }
       }
-      else if (hasAdapterFor(fileName))
+      else
+      {
+         throw new ZanataServiceException("Unsupported Document file: " + fileName);
+      }
+   }
+
+   @Override
+   public Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
+   {
+      if (hasAdapterFor(fileName))
       {
          FileFormatAdapter adapter = getAdapterFor(fileName);
-         Resource doc = adapter.parseDocumentFile(fileContents, new LocaleId("en"));
+         Resource doc;
+         try
+         {
+            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"));
+         }
+         catch (FileFormatAdapterException e)
+         {
+            throw new ZanataServiceException("Error parsing document file: " + fileName, e);
+         }
 
          path = convertToValidPath(path);
          doc.setName(path + fileName);
@@ -160,7 +187,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       else
       {
          // TODO add real mapping
-         return extension.equals("txt") || extension.equals("dtd");
+         return extension.equals("txt") || extension.equals("dtd") || extension.equals("odt");
       }
    }
 
@@ -182,6 +209,11 @@ public class TranslationFileServiceImpl implements TranslationFileService
          else if (extension.equals("dtd"))
          {
             return new DTDAdapter();
+         }
+         // TODO other OpenOffice extensions
+         else if (extension.equals("odt"))
+         {
+            return new OpenOfficeAdapter();
          }
          else
          {
@@ -232,8 +264,11 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
       catch (IOException e)
       {
-         // FIXME throw more general exception (independent of implementation) on failure
-         e.printStackTrace();
+         throw new ZanataServiceException("Error persisting document " + docPath + docName, e);
+      }
+      catch (SecurityException e)
+      {
+         throw new ZanataServiceException("Error persisting document " + docPath + docName, e);
       }
    }
 
@@ -242,6 +277,13 @@ public class TranslationFileServiceImpl implements TranslationFileService
    {
       File file = createFileObject(projectSlug, iterationSlug, docPath, docName);
       return file.exists();
+   }
+
+   @Override
+   public URI getDocumentURI(String projectSlug, String iterationSlug, String docPath, String docName)
+   {
+      File file = createFileObject(projectSlug, iterationSlug, docPath, docName);
+      return file.toURI();
    }
 
    @Override

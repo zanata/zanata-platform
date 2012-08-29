@@ -21,10 +21,12 @@
 package org.zanata.service;
 
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import java.io.InputStream;
+import java.net.URI;
 
 /**
  * Provides basic services to transform and process translation files.
@@ -33,9 +35,30 @@ import java.io.InputStream;
  */
 public interface TranslationFileService
 {
-   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName);
+   /**
+    * Extract the translated strings from a document file to a usable form.
+    * 
+    * @param fileContents the document to parse
+    * @param fileName the name including extension for the file (used to determine how to parse file)
+    * @return a representation of the translations
+    * @throws ZanataServiceException if there is no adapter available for the
+    *            document format, or there is an error during parsing
+    */
+   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException;
 
    Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
+
+   /**
+    * Extracts the translatable strings from a document file to a usable form.
+    * 
+    * @param documentFile location of the document to parse
+    * @param path to use within the Zanata project-iteration
+    * @param fileName to use within the Zanata project-iteration
+    * @return a representation of the document
+    * @throws ZanataServiceException if there is no adapter available for the
+    *            document format, or there is an error during parsing
+    */
+   Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
 
    /**
     * Check whether a handler for the given file type is available.
@@ -44,6 +67,8 @@ public interface TranslationFileService
     * @return
     */
    boolean hasAdapterFor(String fileNameOrExtension);
+
+   public URI getDocumentURI(String projectSlug, String iterationSlug, String docPath, String docName);
 
    FileFormatAdapter getAdapterFor(String fileNameOrExtension);
 
