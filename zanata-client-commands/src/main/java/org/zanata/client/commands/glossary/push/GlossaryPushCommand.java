@@ -20,7 +20,11 @@
  */
 package org.zanata.client.commands.glossary.push;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +60,6 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
    private static final Logger log = LoggerFactory.getLogger(GlossaryPushCommand.class);
 
    private static final Map<String, AbstractGlossaryPushReader> glossaryReaders = new HashMap<String, AbstractGlossaryPushReader>();
-
    private final IGlossaryResource glossaryResource;
    private final URI uri;
 
@@ -76,8 +79,8 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
    {
       this(opts, OptionsUtil.createRequestFactory(opts));
 
-      glossaryReaders.put("po", new GlossaryPoReader(getLocaleFromMap(getOpts().getSourceLang()), getLocaleFromMap(getOpts().getTransLang()), getOpts().getBatchSize(), getOpts().getTreatSourceCommentsAsTarget()));
-      glossaryReaders.put("csv", new GlossaryCSVReader(getOpts().getBatchSize(), getOpts().getCommentCols()));
+      glossaryReaders.put("po", new GlossaryPoReader(getLocaleFromMap(getOpts().getSourceLang()), getLocaleFromMap(getOpts().getTransLang()), getOpts().getTreatSourceCommentsAsTarget(), getOpts().getBatchSize()));
+      glossaryReaders.put("csv", new GlossaryCSVReader(getOpts().getCommentCols(), getOpts().getBatchSize()));
    }
 
    private LocaleId getLocaleFromMap(String localLocale)
@@ -160,8 +163,11 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
       }
 
       log.info("pushing glossary document [{}] to server", glossaryFile.getName());
+      
+      Reader inputStreamReader = new InputStreamReader(new FileInputStream(glossaryFile), "UTF-8");
+      BufferedReader br = new BufferedReader(inputStreamReader);
 
-      List<Glossary> glossaries = reader.extractGlossary(glossaryFile);
+      List<Glossary> glossaries = reader.extractGlossary(br);
 
       int totalEntries = 0;
       for (Glossary glossary : glossaries)

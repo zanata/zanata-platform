@@ -9,7 +9,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.8.0-SNAPSHOT</version>
         <configuration>
          <lang>zh</lang>
          <allGlossary>true</allGlossary>
