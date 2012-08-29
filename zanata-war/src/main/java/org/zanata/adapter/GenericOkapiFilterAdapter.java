@@ -36,9 +36,12 @@ import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.common.resource.RawDocument;
+import net.sf.okapi.common.resource.StartSubDocument;
 import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -58,6 +61,8 @@ import org.zanata.util.HashUtil;
 public class GenericOkapiFilterAdapter implements FileFormatAdapter
 {
 
+   private Logger log;
+
    /**
     * Determines how TextFlow ids are assigned for Okapi TextUnits
     */
@@ -65,6 +70,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       textUnitId,
       textUnitName,
       contentHash,
+      subDocNameAndTextUnitId
    };
 
    private final IFilter filter;
@@ -105,6 +111,8 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       this.idSource = idSource;
       this.requireUriRawDoc = requireUriRawDoc;
       this.requireFileOutput = requireFileOutput;
+
+      log = LoggerFactory.getLogger(GenericOkapiFilterAdapter.class);
    }
 
    @Override
@@ -127,14 +135,20 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       try
       {
          filter.open(rawDoc);
+         String subDocName = "";
          while (filter.hasNext()) {
             Event event = filter.next();
-            if (event.getEventType() == EventType.TEXT_UNIT)
+            if (event.getEventType() == EventType.START_SUBDOCUMENT)
+            {
+               StartSubDocument startSubDoc = (StartSubDocument) event.getResource();
+               subDocName = stripPath(startSubDoc.getName());
+            }
+            else if (event.getEventType() == EventType.TEXT_UNIT)
             {
                TextUnit tu = (TextUnit) event.getResource();
                if (tu.isTranslatable())
                {
-                  TextFlow tf = new TextFlow(getIdFor(tu), sourceLocale);
+                  TextFlow tf = new TextFlow(getIdFor(tu, subDocName), sourceLocale);
                   tf.setPlural(false);
                   tf.setContents(tu.getSource().toString());
                   resources.add(tf);
@@ -151,6 +165,18 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          filter.close();
       }
       return document;
+   }
+
+   private String stripPath(String name)
+   {
+      if (name.contains("/") && !name.endsWith("/"))
+      {
+         return name.substring(name.lastIndexOf('/') + 1);
+      }
+      else
+      {
+         return name;
+      }
    }
 
    @Override
@@ -184,14 +210,20 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       try
       {
          filter.open(rawDoc);
+         String subDocName = "";
          while (filter.hasNext()) {
             Event event = filter.next();
-            if (event.getEventType() == EventType.TEXT_UNIT)
+            if (event.getEventType() == EventType.START_SUBDOCUMENT)
+            {
+               StartSubDocument startSubDoc = (StartSubDocument) event.getResource();
+               subDocName = stripPath(startSubDoc.getName());
+            }
+            else if (event.getEventType() == EventType.TEXT_UNIT)
             {
                TextUnit tu = (TextUnit) event.getResource();
                if (tu.isTranslatable())
                {
-                  TextFlowTarget tft = new TextFlowTarget(getIdFor(tu));
+                  TextFlowTarget tft = new TextFlowTarget(getIdFor(tu, subDocName));
                   tft.setContents(tu.getSource().toString());
                   tft.setState(ContentState.Approved);
                   translations.add(tft);
@@ -240,7 +272,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       {
          if (!tempFile.delete())
          {
-            // TODO log warning "unable to remove temporary file {}, marked for delete on exit"
+            log.warn("unable to remove temporary file {}, marked for delete on exit", tempFile.getAbsolutePath());
             tempFile.deleteOnExit();
          }
       }
@@ -300,7 +332,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          {
             if (!tempFile.delete())
             {
-               // TODO log warning "unable to remove temporary file {}, marked for delete on exit"
+               log.warn("unable to remove temporary file {}, marked for delete on exit", tempFile.getAbsolutePath());
                tempFile.deleteOnExit();
             }
          }
@@ -315,12 +347,18 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       try
       {
          filter.open(rawDoc);
+         String subDocName = "";
          while (filter.hasNext()) {
             Event event = filter.next();
-            if (event.getEventType() == EventType.TEXT_UNIT)
+            if (event.getEventType() == EventType.START_SUBDOCUMENT)
+            {
+               StartSubDocument startSubDoc = (StartSubDocument) event.getResource();
+               subDocName = stripPath(startSubDoc.getName());
+            }
+            else if (event.getEventType() == EventType.TEXT_UNIT)
             {
                TextUnit tu = (TextUnit) event.getResource();
-               TextFlowTarget tft = translations.get(getIdFor(tu));
+               TextFlowTarget tft = translations.get(getIdFor(tu, subDocName));
                if (tft != null)
                {
                   tu.setTargetContent(localeId, new TextFragment(tft.getContents().get(0)));
@@ -347,7 +385,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     * @param tu for which to get id
     * @return the id for the given tu
     */
-   protected String getIdFor(TextUnit tu)
+   protected String getIdFor(TextUnit tu, String subDocName)
    {
       switch (idSource)
       {
@@ -355,6 +393,8 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          return HashUtil.generateHash(tu.getSource().toString());
       case textUnitName:
          return tu.getName();
+      case subDocNameAndTextUnitId:
+         return subDocName + ":" + tu.getId();
       case textUnitId:
       default:
          return tu.getId();

@@ -32,7 +32,7 @@ public class OpenOfficeAdapter extends GenericOkapiFilterAdapter
 {
    public OpenOfficeAdapter()
    {
-      super(prepareFilter(), IdSource.textUnitId, true, true);
+      super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true, true);
    }
 
    private static OpenOfficeFilter prepareFilter()
@@ -43,6 +43,9 @@ public class OpenOfficeAdapter extends GenericOkapiFilterAdapter
       // Unfortunately there is no "escapeLT" param, which means it will always escape the opening
       // of XML tags and can therefore never work properly with a normal string unless I can override
       // the escaping mechanism.
+
+      // It may be necessary to detect pure-xml text flows and remove them before saving the document
+
       OpenOfficeFilter filter = new OpenOfficeFilter();
 //      IParameters params = filter.getParameters();
 //      params.setBoolean("escapeGT", false);

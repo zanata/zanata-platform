@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Arrays;
 
 import static org.jboss.seam.ScopeType.STATELESS;
 
@@ -58,6 +59,7 @@ import static org.jboss.seam.ScopeType.STATELESS;
 @AutoCreate
 public class TranslationFileServiceImpl implements TranslationFileService
 {
+   private static String[] ODF_EXTENSIONS = {"odt", "fodt", "odp", "fodp", "ods", "fods", "odg", "fodg", "odb", "odf"};
 
    @Override
    public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException
@@ -176,6 +178,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
 
+
    @Override
    public boolean hasAdapterFor(String fileNameOrExtension)
    {
@@ -186,8 +189,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
       else
       {
-         // TODO add real mapping
-         return extension.equals("txt") || extension.equals("dtd") || extension.equals("odt");
+         return extension.equals("txt") || extension.equals("dtd") || Arrays.asList(ODF_EXTENSIONS).contains(extension);
       }
    }
 
@@ -201,7 +203,6 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
       else
       {
-         // TODO add real mapping
          if (extension.equals("txt"))
          {
             return new PlainTextAdapter();
@@ -210,8 +211,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
          {
             return new DTDAdapter();
          }
-         // TODO other OpenOffice extensions
-         else if (extension.equals("odt"))
+         else if (Arrays.asList(ODF_EXTENSIONS).contains(extension))
          {
             return new OpenOfficeAdapter();
          }
