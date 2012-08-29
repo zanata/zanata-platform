@@ -1,22 +1,22 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
- * as indicated by the @author tags. See the copyright.txt file in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
  *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
  *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
  */
 package org.zanata.webtrans.client.presenter;
 
@@ -413,7 +413,15 @@ public class SearchResultsPresenterTest extends PresenterTest
 
       final Map<Long, List<TransUnit>> documents = new HashMap<Long, List<TransUnit>>();
       List<TransUnit> docs = new ArrayList<TransUnit>();
-      docs.add(TransUnit.Builder.newTransUnitBuilder().setId(TEST_TU_ID_1).setResId(TEST_RES_ID_1).setLocaleId(TEST_LOCALE_ID).setVerNum(TEST_VERNUM_1).addSource(TEST_SOURCE_STRING_1).addTargets(TEST_TARGET_STRING_1).build());
+      docs.add(TransUnit.Builder.newTransUnitBuilder()
+            .setId(TEST_TU_ID_1)
+            .setResId(TEST_RES_ID_1)
+            .setLocaleId(TEST_LOCALE_ID)
+            .setRowIndex(0)
+            .setVerNum(TEST_VERNUM_1)
+            .addSource(TEST_SOURCE_STRING_1)
+            .addTargets(TEST_TARGET_STRING_1)
+            .build());
       documents.put(TEST_DOC_ID_1, docs);
 
       return buildSuccessSearchResponse(docPaths, documents);

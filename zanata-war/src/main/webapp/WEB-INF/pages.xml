@@ -449,7 +449,7 @@
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view'.concat(projectHome.slug), projectHome.instance.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
         
     <navigation from-action="#{projectHome.update}">
@@ -561,7 +561,7 @@
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('/language/view/'.concat(projectIterationFilesAction.localeId), projectIterationFilesAction.localeId)}"/>
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Files'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Documents'])}"/>
     
   </page>
   

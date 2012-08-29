@@ -34,7 +34,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
+                            <addClasspath>false</addClasspath>
                             <classpathMavenRepositoryLayout>true</classpathMavenRepositoryLayout>
                         </manifest>
                     </archive>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>net.sf.okapi.steps</groupId>
             <artifactId>okapi-step-wordcount</artifactId>
-            <version>0.17</version>
+            <version>0.9</version>
             <!-- see latest version at http://repository-okapi.forge.cloudbees.com/snapshot/net/sf/okapi/steps/okapi-step-wordcount/ -->
         </dependency>
 
@@ -130,17 +130,7 @@
 
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jmx</artifactId>
         </dependency>
 
         <dependency>

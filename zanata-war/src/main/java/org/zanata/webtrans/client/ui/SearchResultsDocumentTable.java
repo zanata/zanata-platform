@@ -27,6 +27,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.PreviewState;
 import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.util.StringNotEmptyPredicate;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -602,14 +603,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 
    private static Collection<String> notEmptyContents(List<String> contents)
    {
-      return Collections2.filter(contents, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(String input)
-         {
-            return !Strings.isNullOrEmpty(input);
-         }
-      });
+      return Collections2.filter(contents, StringNotEmptyPredicate.INSTANCE);
    }
 
    public HasValue<Boolean> getCheckbox()

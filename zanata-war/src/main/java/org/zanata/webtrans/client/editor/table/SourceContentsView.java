@@ -25,13 +25,22 @@ import java.util.List;
 
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.ui.SourcePanel;
+import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class SourceContentsView extends Composite implements SourceContentsDisplay
 {
@@ -39,21 +48,30 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    public static final int COLUMNS = 1;
    public static final int DEFAULT_ROWS = 1;
    private final Grid sourcePanelContainer;
-   private TransUnit value;
    private List<HasSelectableSource> sourcePanelList;
+   private final TransUnitDetailsPanel transUnitDetailsPanel;
 
-   public SourceContentsView()
+   private TransUnitId transUnitId;
+
+   @Inject
+   public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider)
    {
       sourcePanelList = new ArrayList<HasSelectableSource>();
+      VerticalPanel root = new VerticalPanel();
+      root.setWidth("100%");
       FlowPanel container = new FlowPanel();
       container.setSize("100%", "100%");
-
-      initWidget(container);
 
       sourcePanelContainer = new Grid(DEFAULT_ROWS, COLUMNS);
       sourcePanelContainer.addStyleName("sourceTable");
 
       container.add(sourcePanelContainer);
+      root.add(container);
+      root.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+      transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
+      root.add(transUnitDetailsPanel);
+
+      initWidget(root);
    }
 
    @Override
@@ -71,22 +89,19 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void setValue(TransUnit value, boolean fireEvents)
    {
-      if (this.value != value)
+      transUnitId = value.getId();
+      transUnitDetailsPanel.setDetails(value);
+      sourcePanelContainer.resizeRows(value.getSources().size());
+      sourcePanelList.clear();
+
+      int rowIndex = 0;
+      for (String source : value.getSources())
       {
-         this.value = value;
-
-         sourcePanelContainer.resizeRows(value.getSources().size());
-         sourcePanelList.clear();
-
-         int rowIndex = 0;
-         for (String source : value.getSources())
-         {
-            SourcePanel sourcePanel = new SourcePanel();
-            sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
-            sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
-            sourcePanelList.add(sourcePanel);
-            rowIndex++;
-         }
+         SourcePanel sourcePanel = new SourcePanel();
+         sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
+         sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
+         sourcePanelList.add(sourcePanel);
+         rowIndex++;
       }
    }
 
@@ -97,5 +112,21 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       {
          ((SourcePanel) sourceLabel).highlightSearch(search);
       }
+   }
+
+   @Override
+   public void setSourceSelectionHandler(ClickHandler clickHandler)
+   {
+      Preconditions.checkState(!sourcePanelList.isEmpty(), "empty source panel list. Did you forget to call setValue() before this?");
+      for (HasSelectableSource hasSelectableSource : sourcePanelList)
+      {
+         hasSelectableSource.addClickHandler(clickHandler);
+      }
+   }
+
+   @Override
+   public TransUnitId getId()
+   {
+      return transUnitId;
    }
 }

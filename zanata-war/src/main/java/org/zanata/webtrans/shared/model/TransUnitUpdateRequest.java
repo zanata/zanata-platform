@@ -97,6 +97,7 @@ public class TransUnitUpdateRequest implements IsSerializable
    @Override
    public String toString()
    {
+      // @formatter:off
       return Objects.toStringHelper(this).
             add("transUnitId", transUnitId).
             add("newContents", newContents).
@@ -104,5 +105,6 @@ public class TransUnitUpdateRequest implements IsSerializable
             add("baseTranslationVersion", baseTranslationVersion).
             add("targetComment", targetComment).
             toString();
+      // @formatter:on
    }
 }

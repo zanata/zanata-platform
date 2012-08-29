@@ -23,11 +23,16 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -43,10 +48,12 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class TargetContentsView extends Composite implements TargetContentsDisplay
 {
-   interface Binder extends UiBinder<VerticalPanel, TargetContentsView>
+   interface Binder extends UiBinder<HorizontalPanel, TargetContentsView>
    {
    }
 
@@ -57,7 +64,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiField
    Grid editorGrid;
    @UiField
-   HorizontalPanel buttons;
+   VerticalPanel buttons;
    @UiField
    PushButton saveButton;
    @UiField
@@ -68,14 +75,22 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    SimplePanel undoContainer;
    @UiField
    PushButton historyButton;
+   @UiField(provided = true)
+   ValidationMessagePanelView validationPanel;
 
-   private VerticalPanel rootPanel;
+   private HorizontalPanel rootPanel;
    private String findMessage;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
 
-   public TargetContentsView()
+   private TransUnitId transUnitId;
+   private Integer verNum;
+   private List<String> cachedTargets;
+
+   @Inject
+   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
    {
+      validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);
       editorGrid.addStyleName("TableEditorCell-Target-Table");
       editorGrid.ensureDebugId("target-contents-grid");
@@ -86,7 +101,11 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void showButtons(boolean displayButtons)
    {
-      buttons.setVisible(isEditing() && displayButtons);
+      buttons.setVisible(displayButtons);
+      for (ToggleEditor editor : editors)
+      {
+         editor.showCopySourceButton(displayButtons);
+      }
    }
 
    @Override
@@ -110,7 +129,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          @Override
          public void preUndo()
          {
-            setToView();
          }
 
          @Override
@@ -123,23 +141,47 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void setTargets(List<String> targets)
+   public void setValue(TransUnit transUnit)
    {
+      verNum = transUnit.getVerNum();
+      cachedTargets = transUnit.getTargets();
+      transUnitId = transUnit.getId();
+
       editors.clear();
-      if (targets == null || targets.size() <= 0)
+      if (cachedTargets == null)
       {
-         targets = Lists.newArrayList("");
+         cachedTargets = Lists.newArrayList("");
       }
-      editorGrid.resize(targets.size(), COLUMNS);
+      editorGrid.resize(cachedTargets.size(), COLUMNS);
       int rowIndex = 0;
-      for (String target : targets)
+      for (String target : cachedTargets)
       {
-         Editor editor = new Editor(target, findMessage, rowIndex, listener);
-         editor.setText(target);
+         Editor editor = new Editor(target, findMessage, rowIndex, listener, transUnit.getId());
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);
          rowIndex++;
       }
+      editorGrid.setStyleName(resolveStyleName(transUnit.getStatus()));
+   }
+
+   private static String resolveStyleName(ContentState status)
+   {
+      String styles = "TableEditorRow ";
+      String state = "";
+      switch (status)
+      {
+         case Approved:
+            state = " Approved";
+            break;
+         case NeedReview:
+            state = " Fuzzy";
+            break;
+         case New:
+            state = " New";
+            break;
+      }
+      styles += state + "StateDecoration";
+      return styles;
    }
 
    @UiHandler("saveButton")
@@ -187,26 +229,15 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void setToView()
+   public List<String> getCachedTargets()
    {
-      for (ToggleEditor editor : editors)
-      {
-         editor.removeValidationMessagePanel();
-         editor.setViewMode(ToggleEditor.ViewMode.VIEW);
-      }
+      return cachedTargets;
    }
 
    @Override
-   public boolean isEditing()
+   public TransUnitId getId()
    {
-      for (ToggleEditor editor : editors)
-      {
-         if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT)
-         {
-            return true;
-         }
-      }
-      return false;
+      return transUnitId;
    }
 
    @Override
@@ -219,6 +250,45 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setListener(Listener listener)
    {
       this.listener = listener;
+   }
+
+   @Override
+   public void updateCachedAndInEditorTargets(List<String> targets)
+   {
+      cachedTargets = ImmutableList.copyOf(targets);
+      if (!getNewTargets().equals(cachedTargets))
+      {
+         for (int i = 0; i < targets.size(); i++)
+         {
+            String target = targets.get(i);
+            editors.get(i).setTextAndValidate(target);
+         }
+      }
+   }
+
+   @Override
+   public Integer getVerNum()
+   {
+      return verNum;
+   }
+
+   @Override
+   public void setToMode(ToggleEditor.ViewMode viewMode)
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.setViewMode(viewMode);
+      }
+      if (viewMode == ToggleEditor.ViewMode.VIEW)
+      {
+         validationPanel.setVisible(false);
+      }
+   }
+
+   @Override
+   public void updateValidationWarning(List<String> errors)
+   {
+      validationPanel.updateValidationWarning(errors);
    }
 
    @Override

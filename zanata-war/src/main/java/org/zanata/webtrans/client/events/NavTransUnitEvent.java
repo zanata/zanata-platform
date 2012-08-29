@@ -10,9 +10,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
       PrevEntry, NextEntry, PrevState, NextState, FirstEntry, LastEntry
    }
 
-   private static int DEFAULT_STEP = 1;
    private NavigationType rowType;
-   private int step;
 
    /**
     * Handler type.
@@ -30,24 +28,9 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
    }
 
 
-
-   /**
-    * NavigationType may be PrevEntry, NextEntry, PrevFuzzyOrUntranslated or
-    * NextFuzzyOrUntranslated.
-    * 
-    * @param typeValue
-    * @param stepValue
-    */
-   public NavTransUnitEvent(NavigationType typeValue, int stepValue)
-   {
-      this.rowType = typeValue;
-      this.step = stepValue;
-   }
-
    public NavTransUnitEvent(NavigationType typeValue)
    {
       this.rowType = typeValue;
-      this.step = DEFAULT_STEP;
    }
 
 
@@ -66,10 +49,5 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
    public NavigationType getRowType()
    {
       return rowType;
-   }
-
-   public int getStep()
-   {
-      return step;
    }
 }

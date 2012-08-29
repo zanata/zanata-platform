@@ -20,37 +20,211 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class EditorTextArea extends TextArea
 {
+   // TODO this should go into UserConfigHolder and be part of user config
+   private boolean useCodeMirrorFlag = true;
+
+   private JavaScriptObject codeMirrorEditor;
+
    public EditorTextArea()
    {
       super();
-      sinkEvents(Event.ONPASTE);
    }
 
+   // see http://codemirror.net/doc/manual.html#usage
+   public native JavaScriptObject initCodeMirror(Element element) /*-{
+      var self = this;
+      var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
+         lineNumbers: true,
+         lineWrapping: true,
+         mode: "htmlmixed",
+         value: element.value,
+         onFocus: function() {
+            self.@org.zanata.webtrans.client.editor.table.EditorTextArea::onFocus()();
+         },
+         onBlur: function() {
+            self.@org.zanata.webtrans.client.editor.table.EditorTextArea::onBlur()();
+         },
+         onChange: function() {
+            self.@org.zanata.webtrans.client.editor.table.EditorTextArea::onChange()();
+         }
+
+      });
+
+      return codeMirrorEditor;
+
+   }-*/;
+
+
    @Override
-   public void onBrowserEvent(Event event)
+   public void setText(String text)
    {
-      super.onBrowserEvent(event);
-      switch (DOM.eventGetType(event)) {
-      case Event.ONPASTE:
-         Scheduler.get().scheduleDeferred(new ScheduledCommand()
-         {
-                @Override
-                  public void execute() {
-                      ValueChangeEvent.fire(EditorTextArea.this, getText());
-                  }
-         });
-         break;
+      super.setText(text);
+      if (useCodeMirrorFlag)
+      {
+         setCodeMirrorContent(text);
       }
    }
 
-}
+   @Override
+   public String getText()
+   {
+      return useCodeMirrorFlag ? getCodeMirrorContent() : super.getText();
+   }
 
+   @Override
+   protected void onLoad()
+   {
+      super.onLoad();
+      if (useCodeMirrorFlag)
+      {
+         codeMirrorEditor = initCodeMirror(getElement());
+      }
+   }
+
+   // callback function for the code mirror instance. Gets called when code mirror editor is on focus.
+   private void onFocus()
+   {
+      NativeEvent focusEvent = Document.get().createFocusEvent();
+      FocusEvent.fireNativeEvent(focusEvent, this, this.getElement());
+   }
+
+   // callback function for the code mirror instance. Gets called when code mirror editor is on blur.
+   private void onBlur()
+   {
+      NativeEvent blurEvent = Document.get().createBlurEvent();
+      BlurEvent.fireNativeEvent(blurEvent, this, this.getElement());
+   }
+
+   // callback function for the code mirror instance. Gets called when code mirror editor content has changed.
+   private void onChange()
+   {
+      ValueChangeEvent.fire(this, getCodeMirrorContent());
+   }
+
+   @Override
+   public String getValue()
+   {
+      return useCodeMirrorFlag ? getCodeMirrorContent() : super.getValue();
+   }
+
+   @Override
+   public void setValue(String value, boolean fireEvents)
+   {
+      if (useCodeMirrorFlag)
+      {
+         setCodeMirrorContent(value);
+      }
+      super.setValue(value, fireEvents);
+   }
+
+   private native String getCodeMirrorContent() /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      return editor.getValue();
+   }-*/;
+
+   private native void setCodeMirrorContent(String text) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      if (editor)
+      {
+         editor.setValue(text);
+      }
+   }-*/;
+
+   @Override
+   public void setFocus(boolean focused)
+   {
+      if (focused && useCodeMirrorFlag)
+      {
+         focusEditor();
+      }
+      else
+      {
+         super.setFocus(focused);
+      }
+   }
+
+   private native void focusEditor() /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      editor.focus();
+   }-*/;
+
+   @Override
+   public void setReadOnly(boolean readOnly)
+   {
+      if (useCodeMirrorFlag)
+      {
+         if (readOnly)
+         {
+            setEditorOption("readOnly", "nocursor");
+         }
+         else
+         {
+            setEditorOption("readOnly", "false");
+         }
+      }
+      super.setReadOnly(readOnly);
+   }
+
+   private native void setEditorOption(String option, String value) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      if (editor)
+      {
+         editor.setOption(option, value);
+      }
+   }-*/;
+
+   private native String getEditorOption(String option, String defaultValue) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      if (editor)
+      {
+         return '' + editor.getOption(option);
+      }
+      return defaultValue;
+   }-*/;
+
+   @Override
+   public boolean isReadOnly()
+   {
+      return useCodeMirrorFlag ? Boolean.parseBoolean(getEditorOption("readOnly", "false")) : super.isReadOnly();
+   }
+
+   @Override
+   public int getCursorPos()
+   {
+      return useCodeMirrorFlag ? getCodeMirrorCursorPos() : super.getCursorPos();
+   }
+
+   private native int getCodeMirrorCursorPos() /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var pos = editor.getCursor();
+      return editor.indexFromPos(pos);
+   }-*/;
+
+   @Override
+   public void setCursorPos(int pos)
+   {
+      if (useCodeMirrorFlag)
+      {
+         setCodeMirrorCursorPos(pos);
+      }
+      super.setCursorPos(pos);
+   }
+
+   private native void setCodeMirrorCursorPos(int cursorIndex) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var pos = editor.posFromIndex(cursorIndex);
+      editor.setCursor(pos);
+   }-*/;
+
+}

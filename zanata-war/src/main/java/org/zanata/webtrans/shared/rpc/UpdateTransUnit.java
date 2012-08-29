@@ -6,6 +6,8 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Objects;
+
 
 public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResult>
 {
@@ -47,4 +49,9 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
       return updateType;
    }
 
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).add("updateRequests", updateRequests).add("updateType", updateType).toString();
+   }
 }

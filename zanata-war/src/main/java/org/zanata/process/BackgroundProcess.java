@@ -57,14 +57,31 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
       }
       catch( Throwable t )
       {
-         // TODO add the throwable to the handle
          log.error("Exception with long running process.", t);
+         this.handleThrowable(handle, t);
       }
       finally
       {
          handle.finish();
       }
    }
-   
+
+   /**
+    * This is the background process' main logic.
+    *
+    * @param handle Process handle for the running process.
+    * @throws Exception If there is a problem that makes the process stop.
+    */
    protected abstract void runProcess(H handle) throws Exception;
+
+   /**
+    * Handles anything thrown while running the process.
+    * This callback will be executed and the process will stop afterwards.
+    *
+    * @param handle The failing process' handle.
+    * @param t The throwable that was detected
+    */
+   protected void handleThrowable( H handle, Throwable t )
+   {
+   }
 }

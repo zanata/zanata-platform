@@ -58,7 +58,7 @@
                             action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}">
-                        <div class="checkmark"/>
+                        <span class="icon-cancel cross"/>
                     </h:outputText>
                   </rich:column>
                   <rich:column width="auto" styleClass="centered"

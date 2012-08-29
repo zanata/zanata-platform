@@ -20,12 +20,13 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -34,7 +35,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class FilterViewConfirmationPanel extends DecoratedPopupPanel
+public class FilterViewConfirmationPanel extends DecoratedPopupPanel implements FilterViewConfirmationDisplay
 {
    private Button saveChanges = new Button("Save Changes");
    private Button saveFuzzy = new Button("Save as Fuzzy");
@@ -42,6 +43,7 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel
    private Button cancelFilter = new Button("Cancel filter");
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
+   private Listener listener;
 
    public FilterViewConfirmationPanel()
    {
@@ -67,6 +69,7 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel
       hide();
    }
 
+   //TODO to be removed below methods
    public HasClickHandlers getSaveChangesAndFilterButton()
    {
       return saveChanges;
@@ -109,6 +112,48 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel
       return filterUntranslated;
    }
 
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+      addListenerToButtons();
+   }
+
+   private void addListenerToButtons()
+   {
+      saveChanges.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            listener.saveChangesAndFilter();
+         }
+      });
+      saveFuzzy.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            listener.saveAsFuzzyAndFilter();
+         }
+      });
+      discardChanges.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            listener.discardChangesAndFilter();
+         }
+      });
+      cancelFilter.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            listener.cancelFilter();
+         }
+      });
+   }
 }
 
 

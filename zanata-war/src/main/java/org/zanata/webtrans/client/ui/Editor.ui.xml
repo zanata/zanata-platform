@@ -7,35 +7,29 @@
 	
 	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 	
-	<ui:style type="org.zanata.webtrans.client.ui.Editor.Styles">
-		.rootContainer {
-			outline:none;
-		}
-		.bottomContainer {
-			width:100%;
-			padding-left:28px;
-		}
+	<ui:style field="style" type="org.zanata.webtrans.client.ui.Editor.Styles">
+        .rootContainer {
+            outline: none;
+        }
 
-		.textArea {
-			width:98%;
-			margin-left:3px;
-			margin-top:0px;
-		}
-		
-		.userLabel{
-			font-size:10px;
-			text-align:center;
-			padding-left:1px;
-			padding-right:1px;
-			color:#FFFFFF;
-		}
-		
-		.translatorList {
-			float:right;
-			margin-right:7px;
-		}
-	
-	</ui:style>
+        .userLabel {
+            font-size: 10px;
+            text-align: center;
+            padding-left: 1px;
+            padding-right: 1px;
+            color: #FFFFFF;
+        }
+
+        .translatorList {
+            float: right;
+            margin-right: 7px;
+        }
+
+        .hasValidationError {
+            border: 1px solid #ff0000;
+        }
+
+    </ui:style>
 	
 	<g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
 	<g:VerticalPanel width="100%" spacing="3">
@@ -48,18 +42,10 @@
                 </g:cell>
                 <g:cell>
                 	<g:FlowPanel styleName="TableEditorCell-Target">
-		                <fui:HighlightingLabel ui:field="label" />
 		                <g:HorizontalPanel ui:field="translatorList" styleName="{style.translatorList}" spacing="1"/>
-		                <tui:EditorTextArea ui:field="textArea" styleName="{style.textArea}"/>
+		                <tui:EditorTextArea ui:field="textArea" />
 	                </g:FlowPanel>
                 </g:cell>
-			</g:HorizontalPanel>
-		</g:cell>
-		<g:cell>
-			<g:HorizontalPanel ui:field="bottomContainer" styleName="{style.bottomContainer}">
-				<g:cell>
-					<g:FlowPanel ui:field="validationMessagePanelContainer"/>
-				</g:cell>
 			</g:HorizontalPanel>
 		</g:cell>
 	</g:VerticalPanel>

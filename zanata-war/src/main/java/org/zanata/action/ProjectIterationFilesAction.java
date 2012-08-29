@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Collections;
@@ -27,6 +29,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.faces.context.FacesContext;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
@@ -36,6 +41,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -58,13 +65,9 @@ import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
-
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
+@CachedMethods
 public class ProjectIterationFilesAction
 {
 
@@ -106,6 +109,7 @@ public class ProjectIterationFilesAction
 
    private DocumentFileUploadHelper documentFileUpload;
    
+   private HProjectIteration projectIteration;
    
    public void initialize()
    {
@@ -133,11 +137,13 @@ public class ProjectIterationFilesAction
       }
    }
    
+   @CachedMethodResult(ScopeType.PAGE)
    public TranslationStatistics getTransUnitWordsForDocument(HDocument doc)
    {
       ContainerTranslationStatistics docStatistics =
          this.statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, doc.getDocId(), true, new String[]{this.localeId});
-      return docStatistics.getStats( this.localeId, WORD );
+      TranslationStatistics stats = docStatistics.getStats(this.localeId, WORD);
+      return stats;
    }
 
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
@@ -359,6 +365,30 @@ public class ProjectIterationFilesAction
    public DocumentFileUploadHelper getDocumentFileUpload()
    {
       return documentFileUpload;
+   }
+
+   public HProjectIteration getProjectIteration()
+   {
+      if (this.projectIteration == null)
+      {
+         this.projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      }
+      return this.projectIteration;
+   }
+
+   public boolean isUserAllowedToTranslate()
+   {
+      return !isIterationReadOnly() && !isIterationObsolete() && identity.hasPermission("add-translation", getProjectIteration().getProject(), getLocale());
+   }
+
+   public boolean isIterationReadOnly()
+   {
+      return getProjectIteration().getProject().getStatus() == EntityStatus.READONLY || getProjectIteration().getStatus() == EntityStatus.READONLY;
+   }
+
+   public boolean isIterationObsolete()
+   {
+      return getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
    }
 
    /**

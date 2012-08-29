@@ -131,6 +131,23 @@ public class ProcessHandle
    }
 
    /**
+    * @return The estimated elapsed time (in milliseconds) from the start of the process.
+    */
+   public long getElapsedTime()
+   {
+      if( this.startTime != -1 )
+      {
+         long currentTime = System.currentTimeMillis();
+         long timeElapsed = currentTime - this.startTime;
+         return timeElapsed;
+      }
+      else
+      {
+         return 0;
+      }
+   }
+
+   /**
     * @return Process start time, or -1 if the process hasn't been started yet.
     */
    public long getStartTime()

@@ -55,8 +55,6 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
       String mainPanel();
       
       String layoutTable();
-
-      String optionTD();
    }
 
    @UiField
@@ -71,16 +69,9 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
 
    @UiField
    FocusPanel defaultLayoutContainer;
-   
+
    @UiField
    FocusPanel maximizeLayoutContainer;
-   
-   @UiField
-   FocusPanel noOptionLayoutContainer;
-   
-   @UiField
-   FocusPanel noSouthLayoutContainer;
-   
    
    private static final String NORTH_WIDTH = "60px";
    private static final String EAST_WIDTH = "25px";
@@ -96,32 +87,24 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
       
       defaultLayoutContainer.add(initDefaultLayout());
       maximizeLayoutContainer.add(initMaximiseWorkspaceLayout());
-      noOptionLayoutContainer.add(initNoOptionsWorkspaceLayout());
-      noSouthLayoutContainer.add(initNoSouthWorkspaceLayout());
    }
 
    private DockPanel initDefaultLayout()
    {
       DockPanel defaultLayout = new DockPanel();
       defaultLayout.setStyleName(style.layoutTable());
-      
-      Label optionLabel = new Label("Options");
+
       Label southLabel = new Label("TM/Glossay/Users");
       Label workspaceLabel = new Label("Workspace");
-      
-      optionLabel.addStyleName(style.optionTD());
 
       defaultLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
       defaultLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-      
+
       defaultLayout.add(southLabel, DockPanel.SOUTH);
-      defaultLayout.add(optionLabel, DockPanel.EAST);
       defaultLayout.add(workspaceLabel, DockPanel.CENTER);
 
       defaultLayout.setCellHeight(workspaceLabel, NORTH_WIDTH);
-      defaultLayout.setCellHeight(optionLabel, NORTH_WIDTH);
-      defaultLayout.setCellWidth(optionLabel, EAST_WIDTH);
-      
+
       return defaultLayout;
    }
 
@@ -139,46 +122,7 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
       
       return maximizeWorkspaceLayout;
    }
-   
-   private DockPanel initNoOptionsWorkspaceLayout()
-   {
-      DockPanel noOptionsWorkspaceLayout = new DockPanel();
-      noOptionsWorkspaceLayout.setStyleName(style.layoutTable());
-      
-      Label workspaceLabel = new Label("Workspace");
-      Label southLabel = new Label("TM/Glossay/Users");
 
-      noOptionsWorkspaceLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-      noOptionsWorkspaceLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-      
-      noOptionsWorkspaceLayout.add(workspaceLabel, DockPanel.CENTER);
-      noOptionsWorkspaceLayout.add(southLabel, DockPanel.SOUTH);
-      
-      noOptionsWorkspaceLayout.setCellHeight(workspaceLabel, NORTH_WIDTH);
-      
-      return noOptionsWorkspaceLayout;
-   }
-   
-   private DockPanel initNoSouthWorkspaceLayout()
-   {
-      DockPanel noSouthWorkspaceLayout = new DockPanel();
-      noSouthWorkspaceLayout.setStyleName(style.layoutTable());
-      
-      Label workspaceLabel = new Label("Workspace");
-      Label optionLabel = new Label("Options");
-      optionLabel.addStyleName(style.optionTD());
-      
-      noSouthWorkspaceLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-      noSouthWorkspaceLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-      
-      noSouthWorkspaceLayout.add(optionLabel, DockPanel.EAST);
-      noSouthWorkspaceLayout.add(workspaceLabel, DockPanel.CENTER);
-      
-      noSouthWorkspaceLayout.setCellWidth(optionLabel, EAST_WIDTH);
-      
-      return noSouthWorkspaceLayout;
-   }
- 
    @Override
    public HasClickHandlers getDefaultLayoutContainer()
    {
@@ -189,18 +133,6 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
    public HasClickHandlers getMaximiseLayoutContainer()
    {
       return maximizeLayoutContainer;
-   }
-   
-   @Override
-   public HasClickHandlers getNoOptionLayoutContainer()
-   {
-      return noOptionLayoutContainer;
-   }
-   
-   @Override
-   public HasClickHandlers getNoSouthLayoutContainer()
-   {
-      return noSouthLayoutContainer;
    }
    
    @Override

@@ -1,108 +1,75 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class TransUnitDetailsPanel extends Composite
 {
+   private static TransUnitDetailsPanelUiBinder uiBinder = GWT.create(TransUnitDetailsPanelUiBinder.class);
+   @UiField
+   TableEditorMessages messages;
+
    @UiField
    Label headerLabel;
-
    @UiField
-   LayoutPanel contentPanel;
+   Label resId, msgContext, sourceComment, lastModifiedBy, lastModifiedTime;
 
-   @UiField
-   HorizontalPanel msgContextPanel;
-
-   private static TransUnitDetailsPanelUiBinder uiBinder = GWT.create(TransUnitDetailsPanelUiBinder.class);
-
-   interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
-   {
-   }
-
-   @UiField
-   Label resIdLabel, resId, sourceCommentLabel, msgContextLabel, msgContext, sourceComment, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
-
-   public TransUnitDetailsPanel(String header)
+   public TransUnitDetailsPanel()
    {
       initWidget(uiBinder.createAndBindUi(this));
-      headerLabel.setText(header);
    }
 
    public void setDetails(TransUnit transUnit)
    {
-      resIdLabel.setText("Resource ID: ");
       resId.setText(transUnit.getResId());
-      
-      String context = transUnit.getMsgContext();
 
-      if (context == null)
-      {
-         msgContextPanel.setVisible(false);
-      }
-      else
-      {
-         msgContextLabel.setText("Message Context: ");
-         msgContext.setText(context);
-         
-         msgContextPanel.setVisible(true);
-      }
+      String context = Strings.nullToEmpty(transUnit.getMsgContext());
+      msgContext.setText(context);
 
+      String comment = Strings.nullToEmpty(transUnit.getSourceComment());
+      sourceComment.setText(comment);
 
-      sourceCommentLabel.setText("Source Comment: ");
-      sourceComment.setText(transUnit.getSourceComment());
       String person = transUnit.getLastModifiedBy();
-      if (person != null && !person.isEmpty())
+      if (Strings.isNullOrEmpty(person))
       {
-         lastModifiedByLabel.setText("Last Modified By:");
-         lastModifiedBy.setText(person);
-         lastModifiedTimeLabel.setText("Last Modified Time:");
-         lastModifiedTime.setText(transUnit.getLastModifiedTime());
-      }
-      else
-      {
-         lastModifiedByLabel.setText("");
          lastModifiedBy.setText("");
-         lastModifiedTimeLabel.setText("");
          lastModifiedTime.setText("");
       }
-
-      expand();
-   }
-
-   @UiHandler("headerLabel")
-   public void onHeaderLabelClick(ClickEvent event)
-   {
-
-      if (!contentPanel.isVisible())
+      else
       {
-         expand();
+         lastModifiedBy.setText(person);
+         lastModifiedTime.setText(transUnit.getLastModifiedTime());
       }
-      else if (contentPanel.isVisible())
+
+      StringBuilder headerSummary = new StringBuilder();
+      if (!context.isEmpty())
       {
-         collapse();
+         headerSummary.append(" MsgCtx: ").append(context);
       }
+      if (!comment.isEmpty())
+      {
+         headerSummary.append(" Comment: ").append(comment);
+      }
+      headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), headerSummary.toString()));
    }
 
-   public void expand()
+   interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
    {
-      contentPanel.setHeight("95px");
-      contentPanel.setVisible(true);
-   }
-
-   public void collapse()
-   {
-      contentPanel.setHeight("0px");
-      contentPanel.setVisible(false);
    }
 }

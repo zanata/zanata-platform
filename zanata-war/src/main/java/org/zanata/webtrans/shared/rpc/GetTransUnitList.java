@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
+import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
@@ -19,7 +20,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    {
    }
 
-   public GetTransUnitList(DocumentId id, int offset, int count, String phrase, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, TransUnitId targetTransUnitId)
+   private GetTransUnitList(DocumentId id, int offset, int count, String phrase, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, TransUnitId targetTransUnitId)
    {
       this.documentId = id;
       this.offset = offset;
@@ -30,6 +31,11 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       this.filterUntranslated = filterUntranslated;
       this.targetTransUnitId = targetTransUnitId;
 
+   }
+
+   public static GetTransUnitList newAction(GetTransUnitActionContext context)
+   {
+      return new GetTransUnitList(context.getDocumentId(), context.getOffset(), context.getCount(), context.getFindMessage(), context.isFilterTranslated(), context.isFilterNeedReview(), context.isFilterUntranslated(), context.getTargetTransUnitId());
    }
 
    public int getOffset()

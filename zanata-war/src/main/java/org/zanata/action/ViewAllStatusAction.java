@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,8 +42,6 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
-import org.zanata.common.EntityStatus;
-import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
@@ -57,8 +57,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
-
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
@@ -254,21 +252,6 @@ public class ViewAllStatusAction implements Serializable
    public HProject getProject()
    {
       return this.getProjectIteration().getProject();
-   }
-
-   public boolean isIterationReadOnly()
-   {
-      return this.getProjectIteration().getProject().getStatus() == EntityStatus.READONLY || this.getProjectIteration().getStatus() == EntityStatus.READONLY;
-   }
-
-   public boolean isIterationObsolete()
-   {
-      return this.getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || this.getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
-   }
-
-   public boolean isUserAllowedToTranslate(String localeId)
-   {
-      return !isIterationReadOnly() && !isIterationObsolete() && identity.hasPermission("add-translation", getProject(), localeServiceImpl.getByLocaleId(localeId));
    }
 
    public boolean isCopyTransRunning()

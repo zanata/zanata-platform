@@ -7,14 +7,21 @@ NB: Any changes to this file must be reported in the release notes,
 in case changes are required for production deployment (eg cfengine).
 -->
 
-<jboss-web>  
+<jboss-web>
+  
+	<!-- Remove this for AS7: -->
     <class-loading java2ClassLoadingCompliance="false">
         <loader-repository>
             seam.jboss.org:loader=${war.name}
             <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
         </loader-repository>
     </class-loading>
+
     <security-domain>java:/jaas/zanata</security-domain>
+
+	<!-- This is where the webapp context root (eg /zanata or /) can be overridden: -->
     <!-- _context_root_ -->
+
+	<!-- Remove this for AS7: -->
     <depends>jboss.jca:service=DataSourceBinding,name=${ds.jndi.name}</depends>
 </jboss-web>

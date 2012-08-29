@@ -36,11 +36,11 @@ public class OkapiUtilTest
       // @formatter:on
    long[] count = 
    {
-         2,
+         8,
          2,
          9,
 //         4+8+7+4+3+5+11+12 = 54 ?
-         49, 3, 2, 3,
+         49, 7, 2, 3,
    };
   @Test
   public void testCountWords() 

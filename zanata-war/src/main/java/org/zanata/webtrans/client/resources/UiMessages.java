@@ -28,9 +28,6 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface UiMessages extends Messages
 {
-   @DefaultMessage("")
-   String typeToEnter();
-
    @DefaultMessage("Clear")
    String clearButtonLabel();
 
@@ -42,6 +39,16 @@ public interface UiMessages extends Messages
    
    @DefaultMessage("Details")
    String detailsLabel();
+
+   @DefaultMessage("#")
+   String matchCountLabel();
+
+   @DefaultMessage("Number of times translation has been used")
+   String matchCountHeaderTooltip();
+
+   @DefaultMessage("This translation has been used {0} times")
+   @AlternateMessage({"one", "This translation has been used once"})
+   String matchCountTooltip(@PluralCount int matchCount);
 
    @DefaultMessage("Source")
    String sourceLabel();

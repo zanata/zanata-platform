@@ -10,7 +10,7 @@
 	<ul>
 		<li id="logoCol">
 			<s:link view="/home.xhtml" propagation="none">
-				<img src="#{requestContextPath}/images/logo.png" alt="#{messages['jsf.ZanataMainDescription']}" class="logo" />
+				<img src="#{requestContextPath}/images/logo-small.png" alt="#{messages['jsf.ZanataMainDescription']}" class="logo" />
 			</s:link>
 		</li>
 		<li id="projectCol">
@@ -30,7 +30,7 @@
 		</li>
 		<li id="systemCol">
 			<a href="#"> #{messages['jsf.System']}
-				<img src="#{request.contextPath}/images/zanata-icon/16x16/chevron-down.png" class="downArrow" />
+				<span class="icon-down-open downArrow"/>
 			</a>
 			<div class="submenu">
 				<ul>
@@ -74,18 +74,18 @@
 				<a href="#"> 
 					<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar" /> 
 					<span><h:outputText value="#{identity.trimUsername} " /></span>
-					<img src="#{request.contextPath}/images/zanata-icon/16x16/chevron-down.png" class="downArrow" />
+					<span class="icon-down-open downArrow"/>
 				</a>
 				<div class="submenu">
 					<ul>
 						<li>
 							<s:link id="MyProfile" view="/profile/view.xhtml" propagation="none">
-								<img src="#{request.contextPath}/images/zanata-icon/16x16/user.png" />#{messages['jsf.MyProfile']}
+								<span class="icon-user"/>#{messages['jsf.MyProfile']}
 							</s:link>
 						</li>
 						<li>
 							<s:link id="Sign_out" view="/account/sign_out" propagation="none">
-								<img src="#{requestContextPath}/images/zanata-icon/16x16/signout.png" alt="#{messages['jsf.ZanataMainDescription']}" />#{messages['jsf.SignOut']}
+								<span class="icon-logout"/>#{messages['jsf.SignOut']}
 							</s:link>
 						</li>
 					</ul>
@@ -93,7 +93,7 @@
 			</s:fragment> 
 			<s:fragment rendered="#{not identity.loggedIn}">
 				<s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
-					<img src="#{requestContextPath}/images/zanata-icon/16x16/signin.png" alt="#{messages['jsf.ZanataMainDescription']}" />#{messages['jsf.SignIn']}
+					<span class="icon-login"/>#{messages['jsf.SignIn']}
 				</s:link>
 			</s:fragment>
 		</li>

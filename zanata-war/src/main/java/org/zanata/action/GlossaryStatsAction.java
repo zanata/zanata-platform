@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,8 +34,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.model.HGlossaryEntry;
-import org.zanata.model.HLocale;
 
 /**
  *
@@ -61,22 +58,9 @@ public class GlossaryStatsAction implements Serializable
    public List<Status> getAllStatus()
    {
       List<Status> result = new ArrayList<Status>();
-      Map<String, Integer> statsMap = new HashMap<String, Integer>();
 
-      List<HGlossaryEntry> entries = glossaryDAO.getEntries();
-      for (HGlossaryEntry entry : entries)
-      {
-         for (HLocale localeKey : entry.getGlossaryTerms().keySet())
-         {
-            int count = 0;
-            if (statsMap.containsKey(localeKey.getLocaleId().getId()))
-            {
-               count = statsMap.get(localeKey.getLocaleId().getId());
-            }
-            statsMap.put(localeKey.getLocaleId().getId(), count + 1);
-         }
-      }
-      
+      Map<String, Integer> statsMap = glossaryDAO.getGlossaryTermCountByLocale();
+
       for (Entry<String, Integer> entry : statsMap.entrySet())
       {
          result.add(new Status(entry.getKey(), entry.getValue()));

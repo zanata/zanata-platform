@@ -14,7 +14,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 
-@Name("webtrans.gwt.ActivateEventServiceHandler")
+@Name("webtrans.gwt.EventServiceConnectedHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(EventServiceConnectedAction.class)
 public class EventServiceConnectedHandler extends AbstractActionHandler<EventServiceConnectedAction, NoOpResult>

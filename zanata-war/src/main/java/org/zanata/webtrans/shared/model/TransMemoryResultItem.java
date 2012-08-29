@@ -34,6 +34,7 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
 {
    private ArrayList<String> sourceContents;
    private ArrayList<String> targetContents;
+   private int matchCount = 0;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -84,6 +85,16 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
    public List<String> getTargetContents()
    {
       return targetContents;
+   }
+
+   public int getMatchCount()
+   {
+      return matchCount;
+   }
+
+   public void incMatchCount()
+   {
+      ++this.matchCount ;
    }
 
 }

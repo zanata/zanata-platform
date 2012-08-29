@@ -1,8 +1,10 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -23,8 +25,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -72,6 +72,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          @Override
          public void onFailure(Throwable caught)
          {
+            Log.error("failure getting translation history", caught);
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, caught.getMessage()));
             display.hide();
          }
@@ -87,9 +88,10 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
             {
                //add indicator for latest version
                latest.setVersionNum(messages.latestVersion(latest.getVersionNum()));
-               if (!Objects.equal(latest.getContents(), targetContentsPresenter.getNewTargets()))
+               List<String> newTargets = targetContentsPresenter.getNewTargets();
+               if (!Objects.equal(latest.getContents(), newTargets))
                {
-                  listDataProvider.getList().add(new TransHistoryItem(messages.current(), targetContentsPresenter.getNewTargets(), ContentState.New, "", ""));
+                  listDataProvider.getList().add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "", ""));
                }
                listDataProvider.getList().add(latest);
             }

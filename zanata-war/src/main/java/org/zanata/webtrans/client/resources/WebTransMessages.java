@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.resources;
 
-import java.util.List;
-
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -10,12 +8,6 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface WebTransMessages extends Messages
 {
-
-   @DefaultMessage("{0} participants")
-   @AlternateMessage({ "one", "One participant" })
-   @Description("Title of the minimized users panel")
-   String nUsersOnline(@PluralCount int numUsers);
-
    @DefaultMessage("(No Content)")
    String noContent();
 
@@ -61,26 +53,14 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
 
-   @DefaultMessage("Show Options")
-   String showOptions();
+   @DefaultMessage("Chat room")
+   String chatRoom();
 
-   @DefaultMessage("Hide Options")
-   String hideOptions();
+   @DefaultMessage("Maximise workspace")
+   String maximize();
 
-   @DefaultMessage("▲ Options")
-   String showEditorOptionsLabel();
-
-   @DefaultMessage("▼ Options")
-   String hideEditorOptionsLabel();
-
-   @DefaultMessage("▼ Minimise")
-   String minimiseLabel();
-
-   @DefaultMessage("▲ Restore")
-   String restoreLabel();
-
-   @DefaultMessage("Translation Memory/Glossary")
-   String tmGlossaryHeading();
+   @DefaultMessage("Restore default")
+   String minimize();
 
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
@@ -114,6 +94,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Project-wide Search and Replace")
    String projectWideSearchAndReplace();
+   
+   @DefaultMessage("Document list")
+   String documentListTitle();
 
    @DefaultMessage("{0} has quit workspace")
    String hasQuitWorkspace(String user);
@@ -272,21 +255,9 @@ public interface WebTransMessages extends Messages
    @AlternateMessage({ "one", "1 text flow selected" })
    String numTextFlowsSelected(@PluralCount int selectedFlows);
 
-   @DefaultMessage("Help")
-   String help();
-
-   @DefaultMessage("Leave Workspace")
-   String leaveWorkspace();
-
-   @DefaultMessage("Sign Out")
-   String signOut();
-
    @DefaultMessage("Search & replace")
    String searchAndReplace();
 
-   @DefaultMessage("▼")
-   String downArrow();
-   
    @DefaultMessage("Layout Selection")
    String layoutSelection();
 
@@ -364,12 +335,6 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Close keyboard shortcuts list")
    String closeShortcutView();
-
-   @DefaultMessage("Dashboard")
-   String dashboard();
-
-   @DefaultMessage("Show dashboard")
-   String showDashboardKeyShortcut();
    
    @DefaultMessage("Search translation memory")
    String searchTM();
@@ -379,10 +344,6 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Chat")
    String chatScope();
-
-
-   @DefaultMessage("Report a problem")
-   String reportAProblem();
 
    @DefaultMessage("Version")
    String versionNumber();
@@ -410,10 +371,29 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("{0} Latest")
    String latestVersion(String versionNum);
 
-   @Description("current value in editor for translation history display")
-   @DefaultMessage("Current")
-   String current();
+   @Description("current unsaved value in editor for translation history display")
+   @DefaultMessage("Unsaved")
+   String unsaved();
 
    @DefaultMessage("Flip entries")
    String flipComparingEntries();
+
+
+   @DefaultMessage("Workspace is set to read only")
+   String notifyReadOnlyWorkspace();
+
+   @DefaultMessage("Workspace is set to edit mode")
+   String notifyEditableWorkspace();
+
+   @DefaultMessage("Editor options")
+   String editorOptions();
+
+   @DefaultMessage("Message filters")
+   String messageFilters();
+
+   @DefaultMessage("Validation options")
+   String validationOptions();
+
+   @DefaultMessage("Navigation key/button")
+   String navOption();
 }

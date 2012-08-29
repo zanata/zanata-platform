@@ -1,9 +1,9 @@
 package org.zanata.action;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -22,7 +23,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.log.Log;
 import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
@@ -31,11 +31,13 @@ import org.zanata.model.HIterationProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.process.BackgroundProcess;
+import org.zanata.process.ProcessHandle;
 
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
 @Startup
-public class ReindexAsyncBean
+public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.ReindexProcessHandle>
 {
 
    //TODO make this configurable
@@ -49,30 +51,30 @@ public class ReindexAsyncBean
 
    private FullTextSession session;
 
-   private Set<Class<?>> indexables = new HashSet<Class<?>>();
-   private HashMap<Class<?>, ReindexClassOptions> indexingOptions = new HashMap<Class<?>, ReindexClassOptions>();
+   // we use a list to ensure predictable order
+   private List<Class<?>> indexables = new ArrayList<Class<?>>();
+   private LinkedHashMap<Class<?>, ReindexClassOptions> indexingOptions = new LinkedHashMap<Class<?>, ReindexClassOptions>();
    private Class<?> currentClass;
 
-   private boolean hasError;
-
-   private ProcessHandle handle;
+   private ReindexProcessHandle handle;
 
    @Create
    public void create()
    {
-      handle = new ProcessHandle();
+      handle = new ReindexProcessHandle();
       handle.setMaxProgress(0); //prevent progress indicator showing before first reindex
-      hasError = false;
+      handle.setHasError(false);
 
-      // TODO: find a version of this that works:
-      // indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
-      indexables.add(HIterationProject.class);
       indexables.add(HAccount.class);
-      indexables.add(HTextFlow.class);
-      indexables.add(HProjectIteration.class);
-      indexables.add(HTextFlowTarget.class);
-      indexables.add(HGlossaryTerm.class);
       indexables.add(HGlossaryEntry.class);
+      indexables.add(HGlossaryTerm.class);
+      indexables.add(HIterationProject.class);
+      indexables.add(HProjectIteration.class);
+
+      // NB we put the largest tables at the bottom, so that the small
+      // tables can be indexed early
+      indexables.add(HTextFlow.class);
+      indexables.add(HTextFlowTarget.class);
 
       for (Class<?> clazz : indexables)
       {
@@ -80,12 +82,45 @@ public class ReindexAsyncBean
       }
    }
 
-   public Collection<ReindexClassOptions> getReindexOptions()
+   /**
+    * Sets reindex options for all indexable classes.
+    *
+    * @param purge Indicates whether to purge the indexes.
+    * @param reindex Indicates whether to reindex.
+    * @param optimize Indicates whether to optimize the indexes.
+    */
+   public void setOptions( boolean purge, boolean reindex, boolean optimize )
    {
-      return indexingOptions.values();
+      for( Class<?> c : indexables )
+      {
+         ReindexClassOptions classOptions;
+         if( indexingOptions.containsKey( c ) )
+         {
+            classOptions = indexingOptions.get( c );
+         }
+         else
+         {
+            classOptions = new ReindexClassOptions(c);
+            indexingOptions.put(c, classOptions);
+         }
+
+         classOptions.setPurge(purge);
+         classOptions.setReindex(reindex);
+         classOptions.setOptimize(optimize);
+      }
    }
 
-   public ProcessHandle getProcessHandle()
+   public List<ReindexClassOptions> getReindexOptions()
+   {
+      List<ReindexClassOptions> result = new ArrayList<ReindexClassOptions>();
+      for (Class<?> clazz : indexingOptions.keySet())
+      {
+         result.add(indexingOptions.get(clazz));
+      }
+      return result;
+   }
+
+   public ReindexProcessHandle getProcessHandle()
    {
       return handle;
    }
@@ -110,10 +145,7 @@ public class ReindexAsyncBean
       if (handle.isInProgress())
          return;
 
-      handle = new ProcessHandle();
-      handle.start();
-
-      hasError = false;
+      handle = new ReindexProcessHandle();
 
       log.info("Re-indexing started");
 
@@ -140,20 +172,30 @@ public class ReindexAsyncBean
          }
       }
       handle.setMaxProgress(totalOperations);
-      handle.setCurrentProgress(0);
+      handle.setPrepared(true);
    }
+
+   /**
+    * Facility method to start the background process with this instance's own internal process handle.
+    */
+   public void startProcess()
+   {
+      // Invoke a self proxy
+      ReindexAsyncBean self = (ReindexAsyncBean)Component.getInstance(this.getClass(), ScopeType.APPLICATION);
+      self.startProcess( this.handle );
+   }
+
 
    /**
     * Begin reindexing lucene search index. This method should only be called
     * after a single call to prepareReindex()
     */
-   @Asynchronous
-   public void startReindex()
+   @Override
+   protected void runProcess(ReindexProcessHandle handle) throws Exception
    {
       // TODO this is necessary because isInProgress checks number of operations, which may be 0
       // look at updating isInProgress not to care about count
-      if (handle.maxProgress == 0) {
-         handle.finish();
+      if (handle.getMaxProgress() == 0) {
          log.info("Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
          return;
       }
@@ -200,10 +242,10 @@ public class ReindexAsyncBean
             // @formatter: on
          }
 
-         log.info("Re-indexing finished" + (hasError ? " with errors" : ""));
+         log.info("Re-indexing finished" + (handle.hasError() ? " with errors" : ""));
       }
 
-      handle.finish();
+      handle.setPrepared(false); // back to not being prepared
    }
 
    private void reindex(Class<?> clazz)
@@ -238,7 +280,7 @@ public class ReindexAsyncBean
       catch (Exception e)
       {
          log.warn("Unable to index objects of type {0}", e, clazz.getName());
-         hasError = true;
+         handle.setHasError(true);
       }
       finally
       {
@@ -247,141 +289,30 @@ public class ReindexAsyncBean
       }
    }
 
-   // TODO merge everything below into ProcessHandle in 1.7 branch
 
-   public class ProcessHandle
+   public class ReindexProcessHandle extends ProcessHandle
    {
-      private boolean shouldStop = false;
-      private int minProgress = 0;
-      private int maxProgress = 100;
-      private int currentProgress = 0;
-      private long startTime = -1;
-      private long finishTime = -1;
+      public boolean isPrepared;
+      public boolean hasError;
 
-      public boolean isInProgress()
+      public boolean isPrepared()
       {
-         return this.isStarted() && !this.isFinished() && currentProgress < maxProgress;
+         return isPrepared;
       }
 
-      public void stop()
+      public void setPrepared(boolean prepared)
       {
-         shouldStop = true;
+         isPrepared = prepared;
       }
 
-      public boolean shouldStop()
-      {
-         return shouldStop;
-      }
-
-      public int getMaxProgress()
-      {
-         return maxProgress;
-      }
-
-      public void setMaxProgress(int maxProgress)
-      {
-         this.maxProgress = maxProgress;
-      }
-
-      public int getMinProgress()
-      {
-         return minProgress;
-      }
-
-      public void setMinProgress(int minProgress)
-      {
-         this.minProgress = minProgress;
-      }
-
-      public int getCurrentProgress()
-      {
-         return currentProgress;
-      }
-
-      void start()
-      {
-         if( !this.isInProgress() && this.startTime == -1 )
-         {
-            this.startTime = System.currentTimeMillis();
-         }
-      }
-
-      void finish()
-      {
-         this.finishTime = System.currentTimeMillis();
-      }
-
-      public void setCurrentProgress(int currentProgress)
-      {
-         this.start(); // start if it hasn't been done yet
-         this.currentProgress = currentProgress;
-      }
-
-      public void incrementProgress(int increment)
-      {
-         this.start(); // start if it hasn't been done yet
-         this.currentProgress += increment;
-      }
-
-      public boolean isStarted()
-      {
-         return this.startTime != -1;
-      }
-
-      public boolean isFinished()
-      {
-         return this.finishTime != -1;
-      }
-
-      public long getEstimatedTimeRemaining()
-      {
-         if( this.startTime == -1 )
-         {
-            return 0;
-         }
-
-         long currentTime = System.currentTimeMillis();
-         long timeElapsed = currentTime - this.startTime;
-         //avoid divide by zero. Slight inaccuracy is acceptable for this approximation.
-         long averageTimePerProgressUnit = timeElapsed / (this.currentProgress == 0 ? 1 : this.currentProgress);
-
-         return averageTimePerProgressUnit * (this.maxProgress - this.currentProgress);
-      }
-
-      public long getElapsedTime()
-      {
-         if (!isStarted())
-         {
-            return 0;
-         }
-
-         if (isFinished())
-         {
-            return getFinishTime() - getStartTime();
-         }
-         else
-         {
-            return System.currentTimeMillis() - getStartTime();
-         }
-      }
-
-      public long getStartTime()
-      {
-         return this.startTime;
-      }
-
-      /**
-       * @return Process finish time (cancelled or otherwise), or -1 if the process hasn't finished yet.
-       */
-      public long getFinishTime()
-      {
-         return this.finishTime;
-      }
-
-      // methods to add in process handle subclass
       public boolean hasError()
       {
          return hasError;
+      }
+
+      void setHasError(boolean hasError)
+      {
+         this.hasError = hasError;
       }
    }
 }

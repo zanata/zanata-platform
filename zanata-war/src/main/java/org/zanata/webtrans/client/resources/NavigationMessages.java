@@ -109,14 +109,8 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Source comment: {0}")
    String sourceCommentLabel(String comment);
 
-   @DefaultMessage("Click here to start translating")
-   String clickHere();
-
    @DefaultMessage("Click here for more info")
    String clickHereForMoreInfo();
-
-   @DefaultMessage("Translation Unit Details")
-   String transUnitDetailsHeading();
 
    @DefaultMessage("No content")
    String noContent();

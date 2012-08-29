@@ -3,13 +3,15 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:f="urn:import:org.zanata.webtrans.client.ui"
 	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
-    <ui:style>
+    <ui:style type = "org.zanata.webtrans.client.view.TransMemoryView.Styles">
         .headerLabel {
             padding-right:5px;
             padding-top:5px;	
             font-weight:bold;
         }
-        
+        .narrowColumn {
+            width: 1em;
+        }
     </ui:style>
         
 	<g:LayoutPanel>

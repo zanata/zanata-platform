@@ -20,20 +20,12 @@
  */
 package org.zanata.webtrans.client.gin;
 
-import net.customware.gwt.presenter.client.DefaultEventBus;
-import net.customware.gwt.presenter.client.Display;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
-
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.EventProcessor;
-import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.SourceContentsView;
-import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
-import org.zanata.webtrans.client.editor.table.TableEditorView;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsView;
 import org.zanata.webtrans.client.events.NativeEvent;
@@ -46,19 +38,20 @@ import org.zanata.webtrans.client.history.WindowLocationImpl;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.EventWrapperImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
-import org.zanata.webtrans.client.presenter.DashboardPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.LayoutSelectorPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
-import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
+import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.SideMenuPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryMergePresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
+import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
@@ -69,22 +62,22 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.zanata.webtrans.client.service.ValidationService;
-import org.zanata.webtrans.client.ui.OptionsPanelView;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
-import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
-import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.view.AppView;
-import org.zanata.webtrans.client.view.DashboardView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryView;
 import org.zanata.webtrans.client.view.KeyShortcutView;
 import org.zanata.webtrans.client.view.LayoutSelectorView;
 import org.zanata.webtrans.client.view.NotificationView;
+import org.zanata.webtrans.client.view.EditorOptionsView;
 import org.zanata.webtrans.client.view.SearchResultsView;
+import org.zanata.webtrans.client.view.SideMenuView;
 import org.zanata.webtrans.client.view.TransMemoryDetailsView;
 import org.zanata.webtrans.client.view.TransMemoryView;
+import org.zanata.webtrans.client.view.TransUnitEditDisplay;
+import org.zanata.webtrans.client.view.TransUnitEditView;
 import org.zanata.webtrans.client.view.TransUnitNavigationView;
 import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationView;
@@ -92,11 +85,15 @@ import org.zanata.webtrans.client.view.ValidationOptionsView;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.DefaultEventBus;
+import net.customware.gwt.presenter.client.Display;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 
 public class WebTransClientModule extends AbstractPresenterModule
 {
@@ -114,33 +111,31 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(ValidationService.class).in(Singleton.class);
 
       bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
-      bindPresenter(DashboardPresenter.class, DashboardPresenter.Display.class, DashboardView.class);
       bindPresenter(KeyShortcutPresenter.class, KeyShortcutPresenter.Display.class, KeyShortcutView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
       bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
-      bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
       bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
       bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
       bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
       bindPresenter(GlossaryDetailsPresenter.class, GlossaryDetailsPresenter.Display.class, GlossaryDetailsView.class);
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
-      bindPresenter(OptionsPanelPresenter.class, OptionsPanelPresenter.Display.class, OptionsPanelView.class);
+      bindPresenter(EditorOptionsPresenter.class, EditorOptionsPresenter.Display.class, EditorOptionsView.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationPresenter.Display.class, NotificationView.class);
+      bindPresenter(TransUnitEditPresenter.class, TransUnitEditDisplay.class, TransUnitEditView.class);
       bindPresenter(LayoutSelectorPresenter.class, LayoutSelectorPresenter.Display.class, LayoutSelectorView.class);
-
+      bindPresenter(SideMenuPresenter.class, SideMenuPresenter.Display.class, SideMenuView.class);
+      
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);
       bind(SourceContentsDisplay.class).to(SourceContentsView.class);
-      bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
       bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
 
       bind(EventWrapper.class).to(EventWrapperImpl.class).in(Singleton.class);
-      bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);
       bind(History.class).to(HistoryImpl.class).in(Singleton.class);
       bind(Window.class).to(WindowImpl.class).in(Singleton.class);
