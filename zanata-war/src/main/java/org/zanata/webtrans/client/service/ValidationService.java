@@ -47,6 +47,7 @@ import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 
 /**
@@ -88,7 +89,7 @@ public class ValidationService
          @Override
          public void onValidate(RunValidationEvent event)
          {
-            execute(event.getSource(), event.getTarget(), event.isFireNotification(), event.getWidgetList());
+            execute(event.getSourceContent(), event.getTarget(), event.isFireNotification(), event.getWidgetList());
          }
       });
 

@@ -19,7 +19,6 @@ public class HistoryToken
 
    public static final String KEY_VIEW = "view";
    public static final String VALUE_SEARCH_RESULTS_VIEW = "search";
-   public static final String VALUE_DASHBOARD_VIEW = "dashboard";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
    public static final String KEY_SEARCH_DOC_TEXT = "search";
@@ -129,10 +128,6 @@ public class HistoryToken
             else if (value.equals(VALUE_SEARCH_RESULTS_VIEW))
             {
                historyToken.setView(MainView.Search);
-            }
-            else if (value.equals(VALUE_DASHBOARD_VIEW))
-            {
-               historyToken.setView(MainView.Dashboard);
             }
             // else default (document list) will be used
          }
@@ -343,10 +338,6 @@ public class HistoryToken
          {
             token = addTokenToTokenString(token, KEY_VIEW, VALUE_SEARCH_RESULTS_VIEW);
          }
-         else if(view == MainView.Dashboard)
-         {
-            token = addTokenToTokenString(token, KEY_VIEW, VALUE_DASHBOARD_VIEW);
-         }
          else
          {
             // must be editor
@@ -448,7 +439,7 @@ public class HistoryToken
             sb.append(nextChar);
          }
       }
-      Log.info("Encoded: \"" + toEncode + "\" to \"" + sb + "\"");
+      Log.debug("Encoded: \"" + toEncode + "\" to \"" + sb + "\"");
       return sb.toString();
    }
 

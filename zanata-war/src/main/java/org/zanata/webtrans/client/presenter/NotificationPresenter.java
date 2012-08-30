@@ -83,7 +83,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
    /**
     * Message count to keep in notification area
     */
-   private static final int MESSAGE_TO_KEEP = 50;
+   private static final int MESSAGE_TO_KEEP = 500;
 
    /**
     * 
@@ -143,10 +143,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       listener.setNotificationLabel(0, Severity.Info);
    }
 
-   public void showNotificationWithNoTimer()
+   public void showNotification()
    {
       display.show();
-      listener.cancelNotificationAlert();
    }
 
    private void appendNotification(Severity severity, String msg, InlineLink inlineLink)
@@ -154,14 +153,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.appendMessage(severity, msg, inlineLink);
       if (severity == Severity.Error)
       {
-         showNotificationWithNoTimer();
-      }
-      else
-      {
-         if (!display.isShowing())
-         {
-            listener.showNotificationAlert();
-         }
+         showNotification();
       }
    }
 

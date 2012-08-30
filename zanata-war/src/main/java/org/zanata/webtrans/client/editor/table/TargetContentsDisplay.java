@@ -25,12 +25,17 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.model.HasTransUnitId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface TargetContentsDisplay extends WidgetDisplay
+public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTransUnitId, HasUpdateValidationWarning
 {
    void showButtons(boolean displayButtons);
 
@@ -38,42 +43,42 @@ public interface TargetContentsDisplay extends WidgetDisplay
 
    void addUndo(UndoLink undoLink);
 
+   void setValue(TransUnit transUnit);
+
+   Integer getVerNum();
+
+   void setToMode(ToggleEditor.ViewMode viewMode);
+
+   void setFindMessage(String findMessage);
+
+   List<String> getCachedTargets();
+
+   List<String> getNewTargets();
+
+   ArrayList<ToggleEditor> getEditors();
+
+   void setListener(Listener listener);
+
+   void updateCachedAndInEditorTargets(List<String> targets);
+
    interface Listener
    {
       void validate(ToggleEditor editor);
 
-      void saveAsApprovedAndMoveNext();
-      
-      void saveAsApprovedAndMovePrevious();
+      void saveAsApprovedAndMoveNext(TransUnitId transUnitId);
 
       void copySource(ToggleEditor editor);
 
-      void toggleView(ToggleEditor editor);
+      void onCancel(TransUnitId transUnitId);
 
-      void setValidationMessagePanel(ToggleEditor editor);
-      
-      void onCancel();
-
-      void saveAsFuzzy();
+      void saveAsFuzzy(TransUnitId transUnitId);
 
       boolean isDisplayButtons();
 
       boolean isReadOnly();
 
-      void showHistory();
+      void showHistory(TransUnitId transUnitId);
+
+      void onFocus(TransUnitId id, int editorIndex);
    }
-
-   void setTargets(List<String> targets);
-
-   void setFindMessage(String findMessage);
-
-   ArrayList<String> getNewTargets();
-
-   void setToView();
-
-   boolean isEditing();
-    
-   ArrayList<ToggleEditor> getEditors();
-
-   void setListener(Listener listener);
 }

@@ -1,7 +1,5 @@
 package org.zanata.webtrans.shared.model;
 
-import java.io.Serializable;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnitId implements IsSerializable, Identifier<Long>

@@ -21,7 +21,9 @@
 package org.zanata.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
@@ -40,6 +42,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HLocale;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 /**
@@ -159,5 +162,55 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
       return matches;
+   }
+
+   public Map<HLocale, Integer> getGlossaryTermCountByLocale()
+   {
+      Map<HLocale, Integer> result = new HashMap<HLocale, Integer>();
+      
+      Query query = getSession().createQuery("select term.locale, count(*) from HGlossaryTerm term GROUP BY term.locale.localeId");
+
+      @SuppressWarnings("unchecked")
+      List<Object[]> list = query.list();
+
+      for (Object[] obj : list)
+      {
+         HLocale locale = (HLocale) obj[0];
+         Long count = (Long) obj[1];
+         int countInt = count == null ? 0 : count.intValue();
+         result.put(locale, countInt);
+      }
+
+      return result;
+   }
+
+   public int deleteAllEntries()
+   {
+      Query query = getSession().createQuery("Delete HTermComment");
+      query.executeUpdate();
+
+      Query query2 = getSession().createQuery("Delete HGlossaryTerm");
+      int rowCount = query2.executeUpdate();
+
+      Query query3 = getSession().createQuery("Delete HGlossaryEntry");
+      query3.executeUpdate();
+
+      return rowCount;
+   }
+
+   public int deleteAllEntries(LocaleId targetLocale)
+   {
+      Query query = getSession().createQuery("Delete HTermComment c WHERE c.glossaryTerm.id IN (SELECT t.id FROM HGlossaryTerm t WHERE t.locale.localeId= :locale)");
+      query.setParameter("locale", targetLocale);
+      query.executeUpdate();
+
+      Query query2 = getSession().createQuery("Delete HGlossaryTerm t WHERE t.locale IN (SELECT l FROM HLocale l WHERE localeId= :locale)");
+      query2.setParameter("locale", targetLocale);
+      int rowCount = query2.executeUpdate();
+
+      Query query3 = getSession().createQuery("Delete HGlossaryEntry e WHERE size(e.glossaryTerms) = 0");
+      query3.executeUpdate();
+
+      return rowCount;
    }
 }

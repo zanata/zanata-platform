@@ -1,7 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.jboss.seam.ScopeType;
@@ -11,6 +10,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
@@ -23,7 +23,6 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
@@ -72,9 +71,9 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       SimpleDateFormat dateFormat = new SimpleDateFormat();
       if (hTextFlowTarget != null)
       {
+         String lastModifiedBy = nameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
          latest = new TransHistoryItem(hTextFlowTarget.getVersionNum().toString(), hTextFlowTarget.getContents(),
-               hTextFlowTarget.getState(), hTextFlowTarget.getLastModifiedBy().getName(),
-               dateFormat.format(hTextFlowTarget.getLastChanged()));
+               hTextFlowTarget.getState(), lastModifiedBy, dateFormat.format(hTextFlowTarget.getLastChanged()));
          // history translation
          history = hTextFlowTarget.getHistory();
       }
@@ -82,6 +81,11 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       Iterable<TransHistoryItem> historyItems = Iterables.transform(history.values(), new TargetHistoryToTransHistoryItemFunction(dateFormat));
       log.debug("found {} history for text flow id {}", Iterables.size(historyItems), action.getTransUnitId());
       return new GetTranslationHistoryResult(historyItems, latest);
+   }
+
+   private static String nameOrEmptyString(HPerson lastModifiedBy)
+   {
+      return lastModifiedBy != null ? lastModifiedBy.getName() : "";
    }
 
    @Override
@@ -101,7 +105,9 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       @Override
       public TransHistoryItem apply(HTextFlowTargetHistory targetHistory)
       {
-         return new TransHistoryItem(targetHistory.getVersionNum().toString(), targetHistory.getContents(), targetHistory.getState(), targetHistory.getLastModifiedBy().getName(), dateFormat.format(targetHistory.getLastChanged()));
+         return new TransHistoryItem(targetHistory.getVersionNum().toString(), targetHistory.getContents(),
+               targetHistory.getState(), nameOrEmptyString(targetHistory.getLastModifiedBy()),
+               dateFormat.format(targetHistory.getLastChanged()));
       }
    }
 }

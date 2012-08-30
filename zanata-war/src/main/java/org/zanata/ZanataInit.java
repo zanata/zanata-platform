@@ -23,6 +23,7 @@ package org.zanata;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -34,6 +35,9 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.io.FileUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -41,8 +45,9 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
+import org.zanata.exception.ZanataInitializationException;
 
-import lombok.extern.slf4j.Slf4j;
+import com.beust.jcommander.internal.Lists;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the
@@ -130,9 +135,32 @@ public class ZanataInit
          log.info("Using JAAS authentication");
       }
       log.info("Enable copyTrans: {}", this.applicationConfiguration.getEnableCopyTrans());
+      String javamelodyDir = System.getProperty("javamelody.storage-directory");
+      log.info("JavaMelody stats directory: " + javamelodyDir );
+      String indexBase = System.getProperty("hibernate.search.default.indexBase");
+      log.info("Lucene index directory: " + indexBase);
+      if (indexBase != null)
+      {
+         checkLuceneLocks(new File(indexBase));
+      }
       Events.instance().raiseEvent(EVENT_Zanata_Startup);
 
       log.info("Started Zanata...");
+   }
+
+   private void checkLuceneLocks(File indexDir) throws ZanataInitializationException
+   {
+      Collection<File> lockFiles = FileUtils.listFiles(indexDir, new String[]{"lock"}, true);
+      Collection<String> lockedDirs = Lists.newArrayList();
+      for (File f : lockFiles)
+      {
+         lockedDirs.add(f.getParent());
+      }
+      if (!lockFiles.isEmpty())
+      {
+         log.error("Lucene lock files found. Check if Zanata is already running. Otherwise, Zanata was not shut down cleanly: delete the locked directories: " + lockedDirs);
+         throw new ZanataInitializationException("Found lock files: " + lockFiles);
+      }
    }
 
    /** Utility to debug JBoss JNDI problems */

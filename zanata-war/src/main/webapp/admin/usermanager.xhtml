@@ -9,7 +9,7 @@
 
   <ui:composition template="../WEB-INF/layout/template.xhtml">
 <!-- disabled since it doesn't create the HPerson to go with the HAccount
-    <ui:define name="left_content">
+    <ui:define name="right_content">
         <s:link action="#{userAction.createUser}"
           rendered="#{s:hasPermission('seam.account', 'create')}"
           value="#{messages['jsf.CreateNewUser']}"/>
@@ -43,7 +43,7 @@
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
-	            <div class="#{identityManager.isUserEnabled(user) ? 'checkmark' : 'cross'}"/>
+	            <span class="#{identityManager.isUserEnabled(user) ? 'icon-ok checkmark' : 'icon-remove cross'}"/>
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>

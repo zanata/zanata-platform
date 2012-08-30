@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.resources;
 
+import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -24,26 +25,21 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Save FAILED: {0}")
    String notifyUpdateFailed(String errorMessage);
 
-   @DefaultMessage("Saved")
-   String notifyUpdateSaved();
+   @DefaultMessage("Row {0} (Id {1}) Saved")
+   String notifyUpdateSaved(int rowIndex, String id);
 
    @DefaultMessage("Validation error - See validation message")
    String notifyValidationError();
 
-   @DefaultMessage("Workspace is set to read only")
-   String notifyReadOnlyWorkspace();
-
-   @DefaultMessage("Workspace is set to edit mode")
-   String notifyEditableWorkspace();
-
+   // @formatter:off
    @DefaultMessage("Validation Warnings: {0}")
    @AlternateMessage({
       "one", "Validation Warnings: 1",
       "=0", "Validation Warnings: none" })
-   String validationWarningsHeading(@PluralCount
-   int warningCount);
+   String validationWarningsHeading(@PluralCount int warningCount);
+   // @formatter:on
 
-   @DefaultMessage("Run Validation")
+   @DefaultMessage(" Run Validation")
    String runValidation();
    
    @DefaultMessage("Copy from translation memory match result no.{0}")
@@ -81,4 +77,10 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Close editor")
    String closeEditor();
+
+   @DefaultMessage("Translation Unit Details: Row {0}; Id {1}; {2}")
+   String transUnitDetailsHeadingWithInfo(int rowIndex, String transUnitId, String info);
+
+   @DefaultMessage("Copy from source")
+   String copyFromSource();
 }

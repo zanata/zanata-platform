@@ -131,6 +131,30 @@ public class GetTranslationHistoryHandlerTest
       assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo("admin"));
    }
 
+   @Test
+   public void canGetCurrentTranslationWithoutLastModifiedBy() throws ActionException
+   {
+      // Given: text flow has no history translation and only current translation which has no last modified by person
+      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0"), localeId));
+      when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
+      when(hLocale.getId()).thenReturn(2L);
+      HTextFlow hTextFlow = createHTextFlow();
+      HTextFlowTarget currentTranslation = createTarget(new Date(), null, 0, null);
+      currentTranslation.setLastModifiedBy(null);
+      hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
+
+      when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
+
+      // When:
+      GetTranslationHistoryResult result = handler.execute(action, executionContext);
+
+      // Then:
+      assertThat(result.getHistoryItems(), Matchers.<TransHistoryItem>emptyIterable());
+      assertThat(result.getLatest().getVersionNum(), Matchers.equalTo(currentTranslation.getVersionNum().toString()));
+      assertThat(result.getLatest().getContents(), Matchers.equalTo(currentTranslation.getContents()));
+      assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
+   }
+
    private static HTextFlow createHTextFlow()
    {
       HTextFlow hTextFlow = new HTextFlow();

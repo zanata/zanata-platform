@@ -23,14 +23,13 @@ package org.zanata.webtrans.client.view;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
-import org.zanata.webtrans.client.presenter.DashboardPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.SideMenuPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.ImageLabel;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
 
@@ -42,15 +41,10 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.MenuItemSeparator;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -63,15 +57,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
    interface Styles extends CssResource
    {
-      String userName();
-
       String hasWarning();
-
-      String image();
-
-      String menuBar();
-
-      String menuItem();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -80,52 +66,38 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel readOnlyLabel, documentsLink;
+   InlineLabel readOnlyLabel, documentsLink, resize, notification, keyShortcuts;
+   
+   @UiField
+   InlineLabel notificationLabel;
+
+   @UiField
+   InlineLabel searchAndReplace, documentList;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel container, topPanel;
-
+   LayoutPanel editorContainer, sideMenuContainer, rootContainer;
+   
    @UiField(provided = true)
    final Resources resources;
 
    @UiField
    Styles style;
 
-   @UiField
-   MenuBar topMenuBar;
-
-   @UiField
-   PushButton keyShortcuts, searchAndReplace, notificationBtn;
-
-
-   MenuItem helpMenuItem;
-   
-   MenuItem reportProblemMenuItem;
-
-   MenuItem leaveWorkspaceMenuItem;
-
-   MenuItem signOutMenuItem;
-   
-   MenuItem layoutMenuItem;
-   
-   MenuItemSeparator layoutMenuSeperator;
-
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
    private Widget translationView;
    private Widget searchResultsView;
-   private Widget dashboardView;
-   
 
    private final WebTransMessages messages;
    
-   private final String userAvatarUrl;
+   private final static String STYLE_MAXIMIZE = "icon-resize-full-3";
+   private final static String STYLE_MINIMIZE = "icon-resize-small-2";
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, DashboardPresenter.Display dashboardView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuPresenter.Display sideMenuView, final Identity identity)
    {
       this.resources = resources;
       this.messages = messages;
@@ -137,29 +109,27 @@ public class AppView extends Composite implements AppPresenter.Display
       translationStatsBar = new TransUnitCountBar(messages, true);
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
-
       initWidget(uiBinder.createAndBindUi(this));
-
-//      searchAndReplace.setText(messages.searchAndReplace());
-      userAvatarUrl = identity.getPerson().getAvatarUrl();
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
+      documentList.setTitle(messages.documentListTitle());
+      notification.setTitle(messages.notification());
+
+      resize.setTitle(messages.maximize());
+      resize.addStyleName(STYLE_MAXIMIZE);
 
       this.documentListView = documentListView.asWidget();
-      this.container.add(this.documentListView);
+      this.editorContainer.add(this.documentListView);
 
       this.translationView = translationView.asWidget();
-      this.container.add(this.translationView);
+      this.editorContainer.add(this.translationView);
 
       this.searchResultsView = searchResultsView.asWidget();
-      this.container.add(this.searchResultsView);
+      this.editorContainer.add(this.searchResultsView);
       
-      this.dashboardView = dashboardView.asWidget();
-      this.container.add(this.dashboardView);
-
-      notificationBtn.setTitle(messages.notification());
-
+      sideMenuContainer.add(sideMenuView.asWidget());
+      
       Window.enableScrolling(false);
    }
 
@@ -178,25 +148,16 @@ public class AppView extends Composite implements AppPresenter.Display
          setWidgetVisible(documentListView, true);
          setWidgetVisible(searchResultsView, false);
          setWidgetVisible(translationView, false);
-         setWidgetVisible(dashboardView, false);
          break;
       case Search:
          setWidgetVisible(documentListView, false);
          setWidgetVisible(searchResultsView, true);
          setWidgetVisible(translationView, false);
-         setWidgetVisible(dashboardView, false);
-         break;
-      case Dashboard:
-         setWidgetVisible(documentListView, false);
-         setWidgetVisible(searchResultsView, false);
-         setWidgetVisible(translationView, false);
-         setWidgetVisible(dashboardView, true);
          break;
       case Editor:
          setWidgetVisible(documentListView, false);
          setWidgetVisible(searchResultsView, false);
          setWidgetVisible(translationView, true);
-         setWidgetVisible(dashboardView, false);
          break;
       }
    }
@@ -205,11 +166,11 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       if (visible)
       {
-         container.setWidgetTopBottom(widget, 0, Unit.PX, 0, Unit.PX);
+         editorContainer.setWidgetTopBottom(widget, 0, Unit.PX, 0, Unit.PX);
       }
       else
       {
-         container.setWidgetTopHeight(widget, 0, Unit.PX, 0, Unit.PX);
+         editorContainer.setWidgetTopHeight(widget, 0, Unit.PX, 0, Unit.PX);
       }
    }
 
@@ -217,52 +178,6 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasClickHandlers getDocumentsLink()
    {
       return documentsLink;
-   }
-
-   @Override
-   public void initMenuList(String userLabel, Command helpMenuCommand, Command reportProblemMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand)
-   {
-      MenuBar menuBar = new MenuBar(true);
-      menuBar.addStyleName(style.menuBar());
-
-      ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help());
-      helpImageLabel.setImageStyle(style.image());
-
-      ImageLabel reportProblemImageLabel = new ImageLabel(resources.bug(), messages.reportAProblem());
-      reportProblemImageLabel.setImageStyle(style.image());
-
-      ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.layoutSelection());
-      layoutImageLabel.setImageStyle(style.image());
-
-      ImageLabel signOutImageLabel = new ImageLabel(resources.logout(), messages.signOut());
-      signOutImageLabel.setImageStyle(style.image());
-
-      ImageLabel leaveWorkspaceImageLabel = new ImageLabel("", messages.leaveWorkspace());
-      leaveWorkspaceImageLabel.setImageStyle(style.image());
-
-      helpMenuItem = menuBar.addItem(helpImageLabel.getElement().getString(), true, helpMenuCommand);
-      helpMenuItem.addStyleName(style.menuItem());
-      menuBar.addSeparator();
-
-      reportProblemMenuItem = menuBar.addItem(reportProblemImageLabel.getElement().getString(), true, reportProblemMenuCommand);
-      reportProblemMenuItem.addStyleName(style.menuItem());
-      menuBar.addSeparator();
-
-      layoutMenuItem = menuBar.addItem(layoutImageLabel.getElement().getString(), true, layoutMenuCommand);
-      layoutMenuItem.addStyleName(style.menuItem());
-      layoutMenuSeperator = menuBar.addSeparator();
-
-      leaveWorkspaceMenuItem = menuBar.addItem(leaveWorkspaceImageLabel.getElement().getString(), true, leaveWorkspaceMenuCommand);
-      leaveWorkspaceMenuItem.addStyleName(style.menuItem());
-
-      signOutMenuItem = menuBar.addItem(signOutImageLabel.getElement().getString(), true, signOutMenuCommand);
-      signOutMenuItem.addStyleName(style.menuItem());
-
-      ImageLabel userMenu = new ImageLabel(userAvatarUrl, userLabel + " " + messages.downArrow());
-      userMenu.setLabelStyle(style.userName());
-      userMenu.setImageStyle(style.image());
-
-      topMenuBar.addItem(userMenu.getElement().getString(), true, menuBar);
    }
 
    @Override
@@ -305,43 +220,92 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       return searchAndReplace;
    }
+   
+   @Override
+   public HasClickHandlers getDocumentListButton()
+   {
+      return documentList;
+   }
 
    @Override
    public HasClickHandlers getNotificationBtn()
    {
-      return notificationBtn;
+      return notification;
+   }
+  
+   @Override
+   public HasClickHandlers getResizeButton()
+   {
+      return resize;
    }
 
+   /**
+    * return false if to be maximise, true for minimise
+    * 
+    */
    @Override
-   public void setLayoutMenuVisible(boolean visible)
+   public boolean getAndToggleResizeButton()
    {
-      layoutMenuItem.setVisible(visible);
-      layoutMenuSeperator.setVisible(visible);
+      if (resize.getStyleName().contains(STYLE_MAXIMIZE))
+      {
+         resize.removeStyleName(STYLE_MAXIMIZE);
+         resize.addStyleName(STYLE_MINIMIZE);
+         resize.setTitle(messages.minimize());
+         return false;
+      }
+      else
+      {
+         resize.removeStyleName(STYLE_MINIMIZE);
+         resize.addStyleName(STYLE_MAXIMIZE);
+         resize.setTitle(messages.maximize());
+         return true;
+      }
    }
 
    @Override
    public void setNotificationText(int count, Severity severity)
-
    {
-      notificationBtn.setText(String.valueOf(count));
-      notificationBtn.getDownFace().setText(String.valueOf(count));
-      notificationBtn.getDownDisabledFace().setText(String.valueOf(count));
-      notificationBtn.getDownHoveringFace().setText(String.valueOf(count));
-      notificationBtn.getUpDisabledFace().setText(String.valueOf(count));
-      notificationBtn.getUpFace().setText(String.valueOf(count));
-      notificationBtn.getUpHoveringFace().setText(String.valueOf(count));
+      notificationLabel.setText(String.valueOf(count));
    }
 
    @Override
    public void showNotificationAlert()
    {
-      notificationBtn.addStyleName(style.hasWarning());
-      
+      notification.addStyleName(style.hasWarning());
    }
 
    @Override
    public void cancelNotificationAlert()
    {
-      notificationBtn.removeStyleName(style.hasWarning());
+      notification.removeStyleName(style.hasWarning());
+   }
+
+   @Override
+   public void setResizeVisible(boolean visible)
+   {
+      resize.setVisible(visible);
+   }
+
+   private final static double MIN_MENU_WIDTH = 24.0;
+   private final static double EXPENDED_MENU_RIGHT = 304.0;
+
+   private final static double MINIMISED_EDITOR_RIGHT = 280.0;
+   private final static int ANIMATE_DURATION = 300;
+
+   @Override
+   public void showSideMenu(boolean isShowing)
+   {
+      rootContainer.forceLayout();
+      if (isShowing)
+      {
+         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
+         rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
+      }
+      else
+      {
+         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, 0.0, Unit.PX);
+         rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
+      }
+      rootContainer.animate(ANIMATE_DURATION);
    }
 }

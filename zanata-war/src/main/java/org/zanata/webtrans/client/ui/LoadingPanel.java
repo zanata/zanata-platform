@@ -27,15 +27,19 @@ import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
+@Singleton
 public class LoadingPanel extends DecoratedPopupPanel
 {
 
+   @Inject
    public LoadingPanel(final  WebTransMessages messages, final Resources resources)
    {
       this(messages.loading(), resources);

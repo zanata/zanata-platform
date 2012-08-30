@@ -1,0 +1,35 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+    <ui:style field="style" type="org.zanata.webtrans.client.view.TransUnitEditView.Styles">
+        .oddRow {
+
+        }
+
+        .evenRow {
+            background-color: #F3F7FB;
+        }
+
+        .cellFormat {
+            border-bottom: 1px solid silver;
+        }
+
+        .table {
+            border-collapse: collapse;
+            /* setting width to 99% to leave some space from the scroll bar */
+            width: 99%;
+            margin: 5px;
+            table-layout: fixed;
+        }
+
+        .selected {
+            /*background-color: #EEEEEE;*/
+            border-right: 5px solid #8a2be2;
+            border-left: 5px solid #8a2be2;
+        }
+    </ui:style>
+
+    <g:ScrollPanel>
+        <g:Grid ui:field="transUnitTable" styleName="{style.table}" />
+    </g:ScrollPanel>
+</ui:UiBinder>

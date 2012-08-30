@@ -176,7 +176,7 @@ public class EventProcessor implements RemoteEventListener
          GwtEvent<?> gwtEvent = eventRegistry.getEvent(ed);
          if (gwtEvent != null)
          {
-            Log.info("received event " + event + ", GWT event " + gwtEvent.getClass().getName());
+            Log.debug("received event " + event + ", GWT event " + gwtEvent.getClass().getName());
             try
             {
                eventBus.fireEvent(gwtEvent);

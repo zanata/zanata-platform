@@ -15,9 +15,10 @@
 		<title>#{messages['jsf.ZanataMainTitle']}: <ui:insert name="page_title" /></title>
 		<link rel="shortcut icon"
 		  href="#{request.contextPath}/images/favicon.ico" type="image/x-icon" />
-		<a:loadStyle src="/stylesheet/base.css" />
 		<a:loadStyle src="/stylesheet/zanata.css" />
 		<a:loadStyle src="/stylesheet/2.0.css" />
+		<a:loadStyle src="/stylesheet/menu.css" />
+		<a:loadStyle src="/images/fontello/css/fontello.css" />
 		<ui:insert name="head" />
 	</head>
 
@@ -38,7 +39,7 @@
 					<div class="yui-b">
 						<a:outputPanel ajaxRendered="true">
 						<h:messages id="messages" globalOnly="true" styleClass="message"
-						errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+						errorClass="errormsg icon-info-circle-2" infoClass="infomsg icon-info-circle-2" warnClass="warnmsg icon-attention"
 						rendered="#{showGlobalMessages != 'false'}" />
 						</a:outputPanel>
 						<div id="main_body_content">
@@ -47,7 +48,7 @@
 					</div>
 				</div>
 				<div class="yui-b">
-        			<ui:insert name="left_content" />
+        			<ui:insert name="right_content" />
 				</div>
 			</div>
 		</div>

@@ -10,7 +10,9 @@
   	 <h:outputText rendered="#{s:hasRole('admin')}" value="#{messages['jsf.Obsolete']}"/>
      <h:selectBooleanCheckbox id="inc_obs" value="#{projectSearch.includeObsolete}" rendered="#{s:hasPermission('HProject', 'view-obsolete')}"
      	title="#{messages['jsf.project.search.IncludeObsoleteTooltip']}"/>
-     <h:inputText id="q" styleClass="with_icon search_icon"  value="#{projectSearch.searchQuery}"/>
+     
+     <span class="icon-search search-icon"/>
+     <h:inputText id="q" styleClass="with_icon"  value="#{projectSearch.searchQuery}"/>
      <h:commandButton value="#{messages['jsf.SearchProjects']}" action="#{projectSearch.search}" styleClass="projectSearchButton"/>
   </h:form>
   

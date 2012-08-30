@@ -29,6 +29,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Predicate;
 import com.google.inject.Singleton;
 
@@ -39,89 +40,64 @@ import com.google.inject.Singleton;
  **/
 
 @Singleton
+//TODO after retiring TableEditorPresenter remove unused methods and maybe rename it to something else (NavigationStateHolder?) and get the NavigationController to be named after Service.
 public class TransUnitNavigationService
 {
-   public static final Predicate<ContentState> FUZZY_OR_NEW_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.New || contentState == ContentState.NeedReview;
-      }
-   };
-   public static final Predicate<ContentState> FUZZY_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.NeedReview;
-      }
-   };
-   public static final Predicate<ContentState> NEW_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.New;
-      }
-   };
-
-   private Map<Long, ContentState> transIdStateList;
+   private Map<Long, ContentState> idAndStateMap;
    private ArrayList<Long> idIndexList;
 
    private int pageSize;
-   private int curRowIndex = 0;
+   private int rowIndexInDocument = -1;
    private int curPage = 0;
+   private int totalCount;
+   private int pageCount;
 
-   public void init(Map<Long, ContentState> transIdStateList, ArrayList<Long> idIndexList, int pageSize)
+   protected void init(Map<Long, ContentState> transIdStateMap, ArrayList<Long> idIndexList, int pageSize)
    {
-      this.transIdStateList = transIdStateList;
+      this.idAndStateMap = transIdStateMap;
       this.idIndexList = idIndexList;
       this.pageSize = pageSize;
+      totalCount = idIndexList.size();
+      pageCount = (int) Math.ceil(totalCount * 1.0 / pageSize);
    }
 
-   public void updateMap(Long id, ContentState newState)
+   protected void updateState(Long id, ContentState newState)
    {
-      transIdStateList.put(id, newState);
+      idAndStateMap.put(id, newState);
    }
 
-   public int getNextStateRowIndex(Predicate<ContentState> condition)
+   protected int getNextStateRowIndex(Predicate<ContentState> condition)
    {
-      if (curRowIndex >= idIndexList.size() - 1)
+      for (int i = rowIndexInDocument + 1; i <= maxRowIndex(); i++)
       {
-         return curRowIndex;
-      }
-
-      for (int i = curRowIndex + 1; i <= idIndexList.size() - 1; i++)
-      {
-         ContentState contentState = transIdStateList.get(idIndexList.get(i));
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
          if (condition.apply(contentState))
          {
             return i;
          }
       }
-      return curRowIndex;
+      return rowIndexInDocument;
    }
 
-   public int getPreviousStateRowIndex(Predicate<ContentState> condition)
+   protected int maxRowIndex()
    {
-      if (curRowIndex == 0)
-      {
-         return curRowIndex;
-      }
+      return totalCount - 1;
+   }
 
-      for (int i = curRowIndex - 1; i >= 0; i--)
+   protected int getPreviousStateRowIndex(Predicate<ContentState> condition)
+   {
+      for (int i = rowIndexInDocument - 1; i >= 0; i--)
       {
-         ContentState contentState = transIdStateList.get(idIndexList.get(i));
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
          if (condition.apply(contentState))
          {
             return i;
          }
       }
-      return curRowIndex;
+      return rowIndexInDocument;
    }
 
-   public Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
+   protected Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
    {
       if (tu == null)
       {
@@ -139,8 +115,7 @@ public class TransUnitNavigationService
          {
             if (transUnitId.equals(transUnit.getId()))
             {
-               int row = n + (curPage * pageSize);
-               return row;
+               return n + (curPage * pageSize);
             }
             n++;
          }
@@ -148,56 +123,49 @@ public class TransUnitNavigationService
       return null;
    }
 
-   public Integer getRowNumber(TransUnit tu, List<TransUnit> rowValues)
-   {
-      if (tu == null)
-      {
-         return null;
-      }
-      else
-      {
-         TransUnitId transUnitId = tu.getId();
-         int n = 0;
-         for (TransUnit transUnit : rowValues)
-         {
-            if (transUnitId.equals(transUnit.getId()))
-            {
-               return n;
-            }
-            n++;
-         }
-      }
-      return null;
-   }
-
-   public void updateCurrentPageAndRowIndex(int curPage, int selectedRow)
-   {
-      this.curPage = curPage;
-      curRowIndex = this.curPage * pageSize + selectedRow;
-   }
-
-   public int getCurrentPage()
+   protected int getCurrentPage()
    {
       return curPage;
    }
 
-   public int getCurrentRowIndex()
+   protected int getNextRowIndex()
    {
-      return curRowIndex;
+      return Math.min(rowIndexInDocument + 1, maxRowIndex());
    }
 
-   public int getCurrentRowNumber()
+   protected int getPrevRowIndex()
    {
-      return curRowIndex - (curPage * pageSize);
+      return Math.max(rowIndexInDocument - 1, 0);
    }
 
-   public int getNextRowIndex()
+   protected int getTargetPage(int targetIndex)
    {
-      return curRowIndex + 1;
+      return targetIndex / pageSize;
    }
 
-   public int getPrevRowIndex()
+   protected TransUnitId getTargetTransUnitId(int rowIndex)
    {
-      return curRowIndex - 1;
+      return new TransUnitId(idIndexList.get(rowIndex));
+   }
+
+   protected int lastPage()
+   {
+      return pageCount - 1;
+   }
+
+   protected int getPageCount()
+   {
+      return pageCount;
+   }
+
+   protected void updateCurrentPage(int currentPageIndex)
+   {
+      curPage = currentPageIndex;
+   }
+
+   protected void updateRowIndexInDocument(int rowIndexOnPage)
+   {
+      rowIndexInDocument = this.curPage * pageSize + rowIndexOnPage;
+      Log.info("update current page:" + curPage + ", current row index in document:" + rowIndexInDocument);
    }
 }

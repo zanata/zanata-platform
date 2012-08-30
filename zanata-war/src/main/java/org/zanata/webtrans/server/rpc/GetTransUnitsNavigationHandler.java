@@ -58,11 +58,14 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
    @In
    private LocaleService localeServiceImpl;
 
+   @In
+   ZanataIdentity identity;
+
    @Override
    public GetTransUnitsNavigationResult execute(GetTransUnitsNavigation action, ExecutionContext context) throws ActionException
    {
 
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
       HLocale hLocale;
       try
       {

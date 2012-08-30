@@ -20,26 +20,22 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.events.PageChangeEvent;
+import org.zanata.webtrans.client.events.PageChangeEventHandler;
+import org.zanata.webtrans.client.events.PageCountChangeEvent;
+import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
+import org.zanata.webtrans.client.ui.HasPager;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
-import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.HasPager;
-import org.zanata.webtrans.shared.model.TransUnit;
-
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
-
-public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorPresenter.Display>
+public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorPresenter.Display> implements PageChangeEventHandler, PageCountChangeEventHandler
 {
 
    public interface Display extends WidgetDisplay
@@ -58,17 +54,17 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    }
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
-   private final TableEditorPresenter tableEditorPresenter;
    private final TransFilterPresenter transFilterPresenter;
+   private final TransUnitEditPresenter transUnitEditPresenter;
 
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final TransFilterPresenter transFilterPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitEditPresenter transUnitEditPresenter)
    {
       super(display, eventBus);
-      this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.transFilterPresenter = transFilterPresenter;
+      this.transUnitEditPresenter = transUnitEditPresenter;
    }
 
    @Override
@@ -77,53 +73,42 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transFilterPresenter.bind();
       display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
-      tableEditorPresenter.bind();
-      display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
+      transUnitEditPresenter.bind();
+      display.setEditorView(transUnitEditPresenter.getDisplay().asWidget());
 
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
 
-      // undoRedoPresenter.bind();
-      // display.setUndoRedo(undoRedoPresenter.getDisplay().asWidget());
-      // Label spacer = new Label();
-      // spacer.setWidth("80px");
-      // display.setUndoRedo(spacer);
 
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
          @Override
          public void onValueChange(ValueChangeEvent<Integer> event)
          {
-            tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
-            tableEditorPresenter.gotoPage(event.getValue() - 1, false);
+            transUnitEditPresenter.goToPage(event.getValue());
          }
       }));
+      registerHandler(eventBus.addHandler(PageChangeEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(PageCountChangeEvent.TYPE, this));
+   }
 
-      // TODO this uses incubator's HandlerRegistration
-      tableEditorPresenter.addPageChangeHandler(new PageChangeHandler()
-      {
-         @Override
-         public void onPageChange(PageChangeEvent event)
-         {
-            display.getPageNavigation().setValue(event.getNewPage() + 1);
-         }
-      });
+   @Override
+   public void onPageChange(PageChangeEvent event)
+   {
+      display.getPageNavigation().setValue(event.getPageNumber());
+   }
 
-      // TODO this uses incubator's HandlerRegistration
-      tableEditorPresenter.addPageCountChangeHandler(new PageCountChangeHandler()
-      {
-         @Override
-         public void onPageCountChange(PageCountChangeEvent event)
-         {
-            display.getPageNavigation().setPageCount(event.getNewPageCount());
-         }
-      });
+   @Override
+   public void onPageCountChange(PageCountChangeEvent event)
+   {
+      display.getPageNavigation().setPageCount(event.getPageCount());
    }
 
    @Override
    protected void onUnbind()
    {
-      tableEditorPresenter.unbind();
+      transFilterPresenter.unbind();
+      transUnitEditPresenter.unbind();
       transUnitNavigationPresenter.unbind();
    }
 
@@ -132,45 +117,13 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    {
    }
 
-   public TransUnit getSelectedTransUnit()
-   {
-      return tableEditorPresenter.getSelectedTransUnit();
-   }
-
-   public void saveEditorPendingChange()
-   {
-      tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
-   }
-
-   public boolean isEditing()
-   {
-      return tableEditorPresenter.getDisplay().getTargetCellEditor().isEditing();
-   }
-
    public boolean isTransFilterFocused()
    {
       return transFilterPresenter.isFocused();
    }
 
-   public void gotoCurrentRow()
-   {
-      tableEditorPresenter.gotoCurrentRow();
-   }
-
-   public void gotoPrevRow(boolean andEdit)
-   {
-      tableEditorPresenter.gotoPrevRow(andEdit);
-   }
-
-   public void gotoNextRow(boolean andEdit)
-   {
-      tableEditorPresenter.gotoNextRow(andEdit);
-   }
-
    public void openEditorOnSelectedRow()
    {
-      tableEditorPresenter.getDisplay().gotoRow(tableEditorPresenter.getSelectedRowIndex(), true);
-      tableEditorPresenter.getDisplay().getTargetCellEditor().showEditors(tableEditorPresenter.getSelectedRowIndex(), 0);
-
+      transUnitEditPresenter.startEditing();
    }
 }

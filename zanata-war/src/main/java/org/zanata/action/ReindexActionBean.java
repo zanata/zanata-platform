@@ -1,6 +1,6 @@
 package org.zanata.action;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -22,7 +22,7 @@ public class ReindexActionBean
    @In
    ReindexAsyncBean reindexAsync;
 
-   public Collection<ReindexClassOptions> getClasses()
+   public List<ReindexClassOptions> getClasses()
    {
       return reindexAsync.getReindexOptions();
    }
@@ -33,6 +33,66 @@ public class ReindexActionBean
       {
          opts.setPurge(selected);
          opts.setReindex(selected);
+         opts.setOptimize(selected);
+      }
+   }
+
+   public boolean isPurgeAll()
+   {
+      for (ReindexClassOptions opts : reindexAsync.getReindexOptions())
+      {
+         if (!opts.isPurge())
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public void setPurgeAll(boolean selected)
+   {
+      for (ReindexClassOptions opts : reindexAsync.getReindexOptions())
+      {
+         opts.setPurge(selected);
+      }
+   }
+
+   public boolean isReindexAll()
+   {
+      for (ReindexClassOptions opts : reindexAsync.getReindexOptions())
+      {
+         if (!opts.isReindex())
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public void setReindexAll(boolean selected)
+   {
+      for (ReindexClassOptions opts : reindexAsync.getReindexOptions())
+      {
+         opts.setReindex(selected);
+      }
+   }
+
+   public boolean isOptimizeAll()
+   {
+      for (ReindexClassOptions opts : reindexAsync.getReindexOptions())
+      {
+         if (!opts.isOptimize())
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public void setOptimizeAll(boolean selected)
+   {
+      for (ReindexClassOptions opts : reindexAsync.getReindexOptions())
+      {
          opts.setOptimize(selected);
       }
    }

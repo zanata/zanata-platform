@@ -108,7 +108,7 @@ public class TranslationHistoryPresenterTest
       // Given: two items are selected
       TransHistoryItem itemOne = historyItem("1");
       TransHistoryItem itemTwo = historyItem("2");
-      // this is to get around arbitrary order in set
+      // this is to get around arbitrary order in set (so that we can mock the method call)
       Iterator<TransHistoryItem> tempIterator = Lists.newArrayList(itemOne, itemTwo).iterator();
       Set<TransHistoryItem> mockHistoryItems = Mockito.mock(Set.class);
       when(selectionModel.getSelectedSet()).thenReturn(mockHistoryItems);
@@ -159,6 +159,7 @@ public class TranslationHistoryPresenterTest
       presenter.showTranslationHistory(transUnitId);
 
       // Then:
+      verify(dataProvider).setLoading(true);
       verify(display).resetView();
       verify(display).center();
       assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
@@ -167,6 +168,7 @@ public class TranslationHistoryPresenterTest
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
       MatcherAssert.assertThat(dataProvider.getList(), Matchers.contains(latest, historyItem));
+      verify(dataProvider).setLoading(false);
    }
 
    @Test
@@ -179,7 +181,7 @@ public class TranslationHistoryPresenterTest
       // latest contents and current contents are NOT equal
       when(targetContentsPresenter.getNewTargets()).thenReturn(Lists.newArrayList("b"));
       when(messages.latestVersion(latestVersion)).thenReturn("2 latest");
-      when(messages.current()).thenReturn("current");
+      when(messages.unsaved()).thenReturn("current");
 
       // When: request history for trans unit id 1
       presenter.showTranslationHistory(transUnitId);

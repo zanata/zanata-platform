@@ -4,13 +4,13 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
 {
-
+   public static final UserConfigChangeEvent EVENT = new UserConfigChangeEvent();
    /**
     * Handler type.
     */
    private static Type<UserConfigChangeHandler> TYPE;
 
-   public UserConfigChangeEvent()
+   private UserConfigChangeEvent()
    {
    }
 

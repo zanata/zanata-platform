@@ -1,0 +1,70 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client">
+
+	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources" />
+
+	<ui:style>
+		.mainPanel {
+			
+		}
+		
+		.mainPanel table td {
+			font-size:13px;
+			padding:2px;
+			border-radius:5px;
+			color:#FFFFFF;
+		}
+		
+		.mainPanel select
+		{
+			color:#000000;
+		}
+
+        .translated {
+	       border-left:3px solid #099B09;
+	       margin-left:5px;
+        }
+
+        .needReview {
+	       border-left:3px solid #ffc000;
+           margin-left:5px;
+        }
+
+	   .untranslated {
+	       border-left:3px solid #e5e5e5;
+           margin-left:5px;
+        }
+		
+	</ui:style>
+	
+    <g:LayoutPanel>
+    	<g:layer top="0px" bottom="0" left="0" right="0">
+    		<g:LayoutPanel ui:field="container" styleName="{style.mainPanel}">
+                <g:layer top="5px" height="100px" left="5px" right="5px">
+	        		<g:VerticalPanel width="100%">
+	                    <g:Label ui:field="editorOptionHeader" styleName="sideMenuHeader"/>
+	                    <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
+	                    <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
+	                    <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
+	                </g:VerticalPanel>
+                </g:layer>
+                <g:layer left="5px" right="5px" top="108px" height="120px">
+                	<g:VerticalPanel width="100%">
+                		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
+                         <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
+                         <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
+                         <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
+                	</g:VerticalPanel>
+                </g:layer>
+                <g:layer top="210px" height="55px" left="5px" right="5px">
+                	<g:VerticalPanel width="100%">
+                	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
+                     	<g:ListBox ui:field="optionsList"/>
+                    </g:VerticalPanel>
+                </g:layer>
+            </g:LayoutPanel>
+    	</g:layer>
+    </g:LayoutPanel>
+
+</ui:UiBinder> 

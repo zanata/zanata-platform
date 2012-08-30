@@ -24,11 +24,13 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -47,7 +49,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private static TranslationHistoryViewUiBinder uiBinder = GWT.create(TranslationHistoryViewUiBinder.class);
    private final CellTable<TransHistoryItem> historyTable;
    private final EventBus eventBus;
-   private final TabLayoutPanel container;
+   private final HTMLPanel container;
    @UiField
    WebTransMessages messages;
    @UiField
@@ -56,6 +58,10 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    HistoryEntryComparisonPanel comparisonPanel;
    @UiField
    Styles style;
+   @UiField
+   PushButton closeButton;
+   @UiField
+   TabLayoutPanel tabLayoutPanel;
 
    private Column<TransHistoryItem,String> versionColumn;
    private final PushButton compareButton;
@@ -85,7 +91,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
          @Override
          public void onClick(ClickEvent event)
          {
-            container.selectTab(1);
+            tabLayoutPanel.selectTab(1);
          }
       });
       historyPanel.add(compareButton);
@@ -96,6 +102,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    {
       CellTable<TransHistoryItem> historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, CELL_TABLE_RESOURCES, HISTORY_ITEM_PROVIDES_KEY);
       historyTable.setEmptyTableWidget(new Label(messages.noContent()));
+      historyTable.setLoadingIndicator(new Label(messages.loading()));
 
       versionColumn = createVersionColumn();
       versionColumn.setSortable(true);
@@ -157,6 +164,12 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       };
    }
 
+   @UiHandler("closeButton")
+   public void onCloseButtonClick(ClickEvent event)
+   {
+      hide();
+   }
+
    @Override
    public void showDiff(TransHistoryItem one, TransHistoryItem two, String description)
    {
@@ -199,7 +212,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 
    private void setComparisonTitle(String description)
    {
-      container.setTabText(1, description);
+      tabLayoutPanel.setTabText(1, description);
       compareButton.setText(description);
    }
 
@@ -291,7 +304,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
    }
 
-   interface TranslationHistoryViewUiBinder extends UiBinder<TabLayoutPanel, TranslationHistoryView>
+   interface TranslationHistoryViewUiBinder extends UiBinder<HTMLPanel, TranslationHistoryView>
    {
    }
 
@@ -299,5 +312,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    {
 
       String compareButton();
+
+      String closeButton();
    }
 }

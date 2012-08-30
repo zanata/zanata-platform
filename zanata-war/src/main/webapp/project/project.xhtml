@@ -53,7 +53,7 @@
                    <div class="version_title">
                        <h:outputText value="#{_iteration.slug}"/>
                    </div>
-                   <img src="#{request.contextPath}/images/zanata-icon/16x16/lock.png" alt="#{messages['jsf.ReadOnlyVersions']}" title="#{messages['jsf.ReadOnlyVersions']}"/>
+                   <span class="icon-lock-4" title="#{messages['jsf.ReadOnlyVersions']}"/>
                    <div class="version_info">
                        Documents: #{_iteration.documents.size()}
                    </div>
@@ -74,7 +74,8 @@
                    <div class="version_title">
                        <h:outputText value="#{_iteration.slug}"/>
                    </div>
-                   <img src="#{request.contextPath}/images/zanata-icon/16x16/ban.png" alt="#{messages['jsf.ObsoleteVersions']}" title="#{messages['jsf.ObsoleteVersions']}"/>
+                   
+                   <span class="icon-block" title="#{messages['jsf.ObsoleteVersions']}"/>
                    <div class="version_info">
                        Documents: #{_iteration.documents.size()}
                    </div>
@@ -85,7 +86,7 @@
     </s:decorate>
 </ui:define>
 
-<ui:define name="left_content">
+<ui:define name="right_content">
 
   <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>

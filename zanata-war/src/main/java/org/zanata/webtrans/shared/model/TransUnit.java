@@ -13,7 +13,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnit implements IsSerializable
+public class TransUnit implements IsSerializable, HasTransUnitId
 {
    private ContentState status;
 
@@ -73,7 +73,8 @@ public class TransUnit implements IsSerializable
       this.rowIndex = rowIndex;
       this.verNum = obj.getVerNum();
    }
-   
+
+   @Override
    public TransUnitId getId()
    {
       return id;
@@ -218,6 +219,25 @@ public class TransUnit implements IsSerializable
          };
       }
       return rowIndexComparator;
+   }
+
+   public String debugString()
+   {
+      return Objects.toStringHelper(this).
+            add("id", id).
+            add("rowIndex", rowIndex).
+            add("resId", resId).
+            add("verNum", verNum).
+            add("status", status).
+            add("localeId", localeId).
+            add("plural", plural).
+//            add("sources", sources).
+//            add("sourceComment", sourceComment).
+//            add("targets", targets).
+//            add("msgContext", msgContext).
+//            add("lastModifiedBy", lastModifiedBy).
+//            add("lastModifiedTime", lastModifiedTime).
+            toString();
    }
 
    public static class Builder

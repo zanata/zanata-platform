@@ -10,9 +10,9 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -137,7 +137,7 @@ public class Application implements EntryPoint
                @Override
                public void onFailure(Throwable e)
                {
-                  RootLayoutPanel.get().add(new HTML("<h1>Server communication failed...</h1>" + "<b>Exception:</b> " + e.getMessage()));
+                  RootPanel.get("contentDiv").add(new HTML("<h1>Server communication failed...</h1>" + "<b>Exception:</b> " + e.getMessage()));
                }
                @Override
                public void onSuccess(NoOpResult result)
@@ -150,17 +150,19 @@ public class Application implements EntryPoint
          @Override
          public void onFailure(Throwable e)
          {
-            RootLayoutPanel.get().add(new HTML("<h1>Failed to start Event Service...</h1>" + "<b>Exception:</b> " + e.getMessage()));
+            RootPanel.get("contentDiv").add(new HTML("<h1>Failed to start Event Service...</h1>" + "<b>Exception:</b> " + e.getMessage()));
          }
       });
 
+      Window.enableScrolling(true);
    }
 
    private void delayedStartApp()
    {
       final AppPresenter appPresenter = injector.getAppPresenter();
-      RootLayoutPanel.get().add(appPresenter.getDisplay().asWidget());
+      RootPanel.get("contentDiv").add(appPresenter.getDisplay().asWidget());
       appPresenter.bind();
+      Window.enableScrolling(true);
    }
 
    public static ProjectIterationId getProjectIterationId()
@@ -202,6 +204,10 @@ public class Application implements EntryPoint
 
    public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
+   }-*/;
+
+   public static native void openNewWindowToUrl(String url)/*-{
+		$wnd.open(url);
    }-*/;
 
    public static native void closeWindow()/*-{
@@ -272,7 +278,7 @@ public class Application implements EntryPoint
          layoutPanel.add(stackTracePanel);
       }
 
-      RootLayoutPanel.get().add(layoutPanel);
+      RootPanel.get("contentDiv").get().add(layoutPanel);
    }
 
    private void registerUncaughtExceptionHandler()

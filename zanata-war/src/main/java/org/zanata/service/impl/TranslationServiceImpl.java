@@ -291,7 +291,6 @@ public class TranslationServiceImpl implements TranslationService
     * @param nPlurals number of plurals for this locale for this message: use 1 if message does not support plurals
     * @param warnings a warning string will be added if state is adjusted
     * @return true if and only if some state was changed
-    * @see org.zanata.webtrans.client.editor.table.InlineTargetCellEditor#determineStatus
     */
    private static boolean adjustContentsAndState(@Nonnull HTextFlowTarget target, int nPlurals, @Nonnull List<String> warnings)
    {

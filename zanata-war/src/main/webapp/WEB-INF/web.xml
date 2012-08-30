@@ -1,5 +1,5 @@
 <web-app>
-	<display-name>Zanata WebTrans GWT Application</display-name>
+	<display-name>Zanata WebTrans GWT Application (dummy mode)</display-name>
 
     <filter>
          <filter-name>gwtCacheControlFilter</filter-name>
@@ -31,6 +31,25 @@
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
 		<url-pattern>/webtrans/gwt-log</url-pattern>
 	</servlet-mapping>
+
+	<servlet>
+	  <servlet-name>jUnitHostImpl</servlet-name>
+	  <servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>jUnitHostImpl</servlet-name>
+	  <url-pattern>/webtrans/junithost/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+	  <servlet-name>remoteLoggingService</servlet-name>
+	  <servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>remoteLoggingService</servlet-name>
+	  <url-pattern>/webtrans/logging</url-pattern>
+	</servlet-mapping>
+
 
 	<welcome-file-list>
 		<welcome-file>/webtrans/Application.html</welcome-file>

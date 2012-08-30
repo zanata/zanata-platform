@@ -42,6 +42,10 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       String userName();
 
       String systemWarn();
+      
+      String msg();
+
+      String timeStamp();
    }
 
    @UiField
@@ -68,7 +72,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @Inject
    public WorkspaceUsersView(final UiMessages uiMessages)
    {
-      mainPanel = new SplitLayoutPanel(3);
+      mainPanel = new SplitLayoutPanel(5);
       initWidget(uiBinder.createAndBindUi(this));
 
       sendButton.setText(uiMessages.sendLabel());
@@ -116,16 +120,19 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    public void appendChat(String user, String timestamp, String msg, MESSAGE_TYPE messageType)
    {
       Label timestampLabel = new Label("[" + timestamp + "]");
+      timestampLabel.setStylePrimaryName(style.timeStamp());
       Label msgLabel = new Label(msg);
       if (messageType == MESSAGE_TYPE.SYSTEM_MSG)
       {
-         timestampLabel.setStyleName(style.systemMsg());
          msgLabel.setStyleName(style.systemMsg());
       }
       else if (messageType == MESSAGE_TYPE.SYSTEM_WARNING)
       {
-         timestampLabel.setStyleName(style.systemWarn());
          msgLabel.setStyleName(style.systemWarn());
+      } 
+      else
+      {
+         msgLabel.setStyleName(style.msg());
       }
 
       HorizontalPanel hp = new HorizontalPanel();
@@ -133,6 +140,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       if (!Strings.isNullOrEmpty(timestamp))
       {
          hp.add(timestampLabel);
+         hp.setCellWidth(timestampLabel, "107px");
       }
       if (!Strings.isNullOrEmpty(user))
       {

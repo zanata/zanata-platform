@@ -7,23 +7,32 @@
             margin: 5px;
             width: 30%;
         }
+
+        .closeButton {
+            width: 50px;
+            margin: 10px 5px 5px 0;
+            float: right;
+            text-align: center;
+        }
     </ui:style>
 
-    <g:TabLayoutPanel barUnit='PX' barHeight='20' width="800px" height="600px">
-        <g:tab>
-            <g:customHeader>
-                <g:InlineHTML text="{messages.translationHistory}" />
-            </g:customHeader>
-            <g:ScrollPanel>
-                <g:VerticalPanel ui:field="historyPanel" width="100%" height="100%" />
-            </g:ScrollPanel>
-            <!--TODO add a compare button-->
-        </g:tab>
-        <g:tab>
-            <g:customHeader size='7'>
-                <g:InlineHTML text="{messages.translationHistoryComparisonTitle}" />
-            </g:customHeader>
-            <z:HistoryEntryComparisonPanel ui:field="comparisonPanel" visible="false"/>
-        </g:tab>
-    </g:TabLayoutPanel>
+    <g:HTMLPanel width="800px" height="600px">
+        <g:TabLayoutPanel ui:field="tabLayoutPanel" barUnit='PX' barHeight='20' width="100%" height="95%">
+            <g:tab>
+                <g:customHeader>
+                    <g:InlineHTML text="{messages.translationHistory}" />
+                </g:customHeader>
+                <g:ScrollPanel>
+                    <g:VerticalPanel ui:field="historyPanel" width="100%" height="100%" />
+                </g:ScrollPanel>
+            </g:tab>
+            <g:tab>
+                <g:customHeader size='7'>
+                    <g:InlineHTML text="{messages.translationHistoryComparisonTitle}" />
+                </g:customHeader>
+                <z:HistoryEntryComparisonPanel ui:field="comparisonPanel" visible="false"/>
+            </g:tab>
+        </g:TabLayoutPanel>
+        <g:PushButton ui:field="closeButton" text="{messages.close}" addStyleNames="{style.closeButton}"/>
+    </g:HTMLPanel>
 </ui:UiBinder>

@@ -25,6 +25,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public class FindMessageEvent extends GwtEvent<FindMessageHandler>
 {
    private String message;
+   public static final FindMessageEvent DEFAULT = new FindMessageEvent(null);
 
    public FindMessageEvent(String message)
    {
