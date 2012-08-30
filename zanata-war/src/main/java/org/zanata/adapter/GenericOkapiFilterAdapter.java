@@ -22,9 +22,7 @@ package org.zanata.adapter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
@@ -60,7 +58,6 @@ import org.zanata.util.HashUtil;
  */
 public class GenericOkapiFilterAdapter implements FileFormatAdapter
 {
-
    private Logger log;
 
    /**
@@ -75,7 +72,6 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 
    private final IFilter filter;
    private final IdSource idSource;
-   private boolean requireUriRawDoc;
    private boolean requireFileOutput;
 
    /**
@@ -96,7 +92,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     */
    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource)
    {
-      this(filter, idSource, false, false);
+      this(filter, idSource, false);
    }
 
    /**
@@ -105,11 +101,10 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     * @param filter {@link IFilter} used to parse the document
     * @param idSource determines how ids are assigned to TextFlows
     */
-   public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource, boolean requireUriRawDoc, boolean requireFileOutput)
+   public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource, boolean requireFileOutput)
    {
       this.filter = filter;
       this.idSource = idSource;
-      this.requireUriRawDoc = requireUriRawDoc;
       this.requireFileOutput = requireFileOutput;
 
       log = LoggerFactory.getLogger(GenericOkapiFilterAdapter.class);
@@ -180,26 +175,15 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    }
 
    @Override
-   public TranslationsResource parseTranslationFile(InputStream fileContents, String localeId) throws FileFormatAdapterException, IllegalArgumentException
+   public TranslationsResource parseTranslationFile(URI fileUri, String localeId) throws FileFormatAdapterException, IllegalArgumentException
    {
-      if (fileContents == null)
-      {
-         throw new IllegalArgumentException("File contents cannot be null");
-      }
       if (localeId == null || localeId.isEmpty())
       {
          throw new IllegalArgumentException("locale id string cannot be null or empty");
       }
 
-      if (requireUriRawDoc)
-      {
-         return parseTranslationFileWithUrlRawDoc(fileContents);
-      }
-      else
-      {
-         RawDocument rawDoc = new RawDocument(fileContents, "UTF-8", net.sf.okapi.common.LocaleId.fromString(localeId));
-         return parseTranslationFile(rawDoc);
-      }
+      RawDocument rawDoc = new RawDocument(fileUri, "UTF-8", net.sf.okapi.common.LocaleId.fromString("en"));
+      return parseTranslationFile(rawDoc);
    }
 
    private TranslationsResource parseTranslationFile(RawDocument rawDoc)
@@ -241,44 +225,6 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       }
       return transRes;
    }
-
-   private TranslationsResource parseTranslationFileWithUrlRawDoc(InputStream fileContents)
-   {
-      File tempFile = null;
-      try
-      {
-         tempFile = File.createTempFile("filename", "extension");
-
-         byte[] buffer = new byte[4096]; // To hold file contents
-         int bytesRead;
-         FileOutputStream output;
-
-         output = new FileOutputStream(tempFile);
-         while ((bytesRead = fileContents.read(buffer)) != -1)
-         {
-            output.write(buffer, 0, bytesRead);
-         }
-         output.close();
-      }
-      catch (IOException e)
-      {
-         throw new FileFormatAdapterException("Error while writing translation file to temporary location", e);
-      }
-
-      RawDocument rawDoc = new RawDocument(tempFile.toURI(), "UTF-8", net.sf.okapi.common.LocaleId.fromString("en"));
-      TranslationsResource transRes = parseTranslationFile(rawDoc);
-
-      if (tempFile != null)
-      {
-         if (!tempFile.delete())
-         {
-            log.warn("unable to remove temporary file {}, marked for delete on exit", tempFile.getAbsolutePath());
-            tempFile.deleteOnExit();
-         }
-      }
-      return transRes;
-   }
-
 
    @Override
    public void writeTranslatedFile(OutputStream output, URI originalFile, Map<String, TextFlowTarget> translations, String locale)

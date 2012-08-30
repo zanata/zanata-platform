@@ -94,14 +94,18 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
       else if (hasAdapterFor(fileName))
       {
+         File tempFile = persistToTempFile(fileContents);
+         TranslationsResource transRes;
          try
          {
-            return getAdapterFor(fileName).parseTranslationFile(fileContents, localeId);
+            transRes = getAdapterFor(fileName).parseTranslationFile(tempFile.toURI(), localeId);
          }
          catch (FileFormatAdapterException e)
          {
             throw new ZanataServiceException("Error parsing translation file: " + fileName, e);
          }
+         removeTempFile(tempFile);
+         return transRes;
       }
       else
       {

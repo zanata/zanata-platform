@@ -32,7 +32,7 @@ public class OpenOfficeAdapter extends GenericOkapiFilterAdapter
 {
    public OpenOfficeAdapter()
    {
-      super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true, true);
+      super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
    }
 
    private static OpenOfficeFilter prepareFilter()

@@ -20,7 +20,6 @@
  */
 package org.zanata.adapter;
 
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Map;
@@ -39,8 +38,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public interface FileFormatAdapter
 {
-
-
    /**
     * Extract source strings from the given document content.
     * 
@@ -61,7 +58,7 @@ public interface FileFormatAdapter
     * @throws FileFormatAdapterException if the document cannot be parsed
     * @throws IllegalArgumentException if translatedDocumentContent or localeId is null
     */
-   TranslationsResource parseTranslationFile(InputStream translatedDocumentContent, String localeId) throws FileFormatAdapterException, IllegalArgumentException;
+   TranslationsResource parseTranslationFile(URI fileUri, String localeId) throws FileFormatAdapterException, IllegalArgumentException;
 
    /**
     * Write translated file to the given output, using the given list of translations.
