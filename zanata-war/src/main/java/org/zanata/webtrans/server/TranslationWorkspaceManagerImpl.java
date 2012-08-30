@@ -55,7 +55,7 @@ import de.novanic.eventservice.service.registry.EventRegistryFactory;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
-@Synchronized
+@Synchronized(timeout = 5000)
 public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceManager
 {
    private static final Logger LOGGER = LoggerFactory.getLogger(TranslationWorkspaceManagerImpl.class);
@@ -240,22 +240,18 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
 
    private WorkspaceContext validateAndGetWorkspaceContext(WorkspaceId workspaceId) throws NoSuchWorkspaceException
    {
-      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
-
-      if (project == null)
-      {
-         throw new NoSuchWorkspaceException("Invalid workspace Id");
-      }
-      if (project.getStatus() == EntityStatus.OBSOLETE)
-      {
-         throw new NoSuchWorkspaceException("Project is obsolete");
-      }
-
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
+      String projectSlug = workspaceId.getProjectIterationId().getProjectSlug();
+      String iterationSlug = workspaceId.getProjectIterationId().getIterationSlug();
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
       if (projectIteration == null)
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");
+      }
+      HProject project = projectIteration.getProject();
+      if (project.getStatus() == EntityStatus.OBSOLETE)
+      {
+         throw new NoSuchWorkspaceException("Project is obsolete");
       }
       if (projectIteration.getStatus() == EntityStatus.OBSOLETE)
       {

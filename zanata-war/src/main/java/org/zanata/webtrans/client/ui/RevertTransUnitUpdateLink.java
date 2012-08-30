@@ -70,6 +70,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher, WebTransMessages messages, EventBus eventBus, UserWorkspaceContext userWorkspaceContext)
    {
       super(messages.undo());
+      setStyleName("icon-undo");
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.eventBus = eventBus;

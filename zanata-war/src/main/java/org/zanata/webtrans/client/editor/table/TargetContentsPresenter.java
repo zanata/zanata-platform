@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -134,6 +133,7 @@ public class TargetContentsPresenter implements
    private final KeyShortcut prevStateShortcut;
    private String findMessage;
    private UserConfigHolder.ConfigurationState configuration;
+   private TransUnitId currentTransUnitId;
 
    @Inject
    //TODO too many constructor dependencies
@@ -284,7 +284,7 @@ public class TargetContentsPresenter implements
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            saveAsFuzzy();
+            saveAsFuzzy(currentTransUnitId);
          }
       }));
 
@@ -293,7 +293,7 @@ public class TargetContentsPresenter implements
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            saveAsApprovedAndMoveNext();
+            saveAsApprovedAndMoveNext(currentTransUnitId);
          }
       };
 
@@ -313,7 +313,7 @@ public class TargetContentsPresenter implements
          {
             if (configuration.isEscClosesEditor() && !keyShortcutPresenter.getDisplay().isShowing())
             {
-               onCancel();
+               onCancel(currentTransUnitId);
             }
          }
       });
@@ -372,6 +372,7 @@ public class TargetContentsPresenter implements
 
    public void showEditors(final TransUnitId currentTransUnitId)
    {
+      this.currentTransUnitId = currentTransUnitId;
       Log.info("enter show editor with id:" + currentTransUnitId);
       clearTranslatorList(currentEditors); // clear previous selection's translator list
 
@@ -388,14 +389,14 @@ public class TargetContentsPresenter implements
       }
       display.showButtons(isDisplayButtons());
 
-      if (!userWorkspaceContext.hasReadOnlyAccess())
+      if (userWorkspaceContext.hasReadOnlyAccess())
       {
-         display.focusEditor(currentEditorIndex);
-         updateTranslators();
+         display.setToMode(ViewMode.VIEW);
       }
       else
       {
-         display.setToMode(ViewMode.VIEW);
+         display.focusEditor(currentEditorIndex);
+         updateTranslators();
       }
    }
 
@@ -436,7 +437,7 @@ public class TargetContentsPresenter implements
 
    private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, EditorClientId editorClientId)
    {
-      if (!editorClientId.equals(identity.getEditorClientId()) && Objects.equal(getCurrentTransUnitIdOrNull(), selectedTransUnitId))
+      if (!editorClientId.equals(identity.getEditorClientId()) && Objects.equal(currentTransUnitId, selectedTransUnitId))
       {
          for (ToggleEditor editor : currentEditors)
          {
@@ -489,10 +490,12 @@ public class TargetContentsPresenter implements
     * Will fire a save event and also update cached targets so that a following navigation event won't cause another pending save event.
     * If the save failed, TransUnitSaveService will revert the value back to what it was.
     * @see org.zanata.webtrans.client.service.TransUnitSaveService#onTransUnitSave(org.zanata.webtrans.client.events.TransUnitSaveEvent)
+    * @param transUnitId the state variable of the display that user has clicked on
     */
    @Override
-   public void saveAsApprovedAndMoveNext()
+   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId)
    {
+      ensureRowSelection(transUnitId);
       if (currentEditorIndex + 1 < currentEditors.size())
       {
          display.focusEditor(currentEditorIndex + 1);
@@ -508,14 +511,15 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void saveAsFuzzy()
+   public void saveAsFuzzy(TransUnitId transUnitId)
    {
+      ensureRowSelection(transUnitId);
       saveCurrent(ContentState.NeedReview);
    }
 
    public TransUnitId getCurrentTransUnitIdOrNull()
    {
-      return display == null ? null : display.getId();
+      return currentTransUnitId;
    }
 
    @Override
@@ -531,24 +535,43 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void showHistory()
+   public void showHistory(TransUnitId transUnitId)
    {
-      historyPresenter.showTranslationHistory(display.getId());
+      ensureRowSelection(transUnitId);
+      historyPresenter.showTranslationHistory(currentTransUnitId);
    }
 
    @Override
    public void onFocus(TransUnitId id, int editorIndex)
    {
+      ensureRowSelection(id);
       currentEditorIndex = editorIndex;
-      eventBus.fireEvent(new TableRowSelectedEvent(id));
    }
 
    @Override
-   public void onCancel()
+   public void onCancel(TransUnitId transUnitId)
    {
+      ensureRowSelection(transUnitId);
       display.updateCachedAndInEditorTargets(display.getCachedTargets());
       display.setFindMessage(findMessage);
       setFocus();
+   }
+
+   /**
+    * user is able to click on buttons on different rows now. (save, save as fuzzy, cancel, show history, undo, validate)
+    * TODO discuss solution for above scenario:
+    * 1. (current solution) ensure row selection first and then continue with button action. Drawback: continue save may not be user's intention.
+    * 2. disable buttons not on selected row. Drawback: disabled buttons may not be able to receive focus event and row selection won't trigger if click on them??
+    * 3. hide buttons not on selected row. Drawback: show and hide buttons cause screen movement and distraction.
+    * @param transUnitId coming from the display that user is clicked on
+    */
+   private void ensureRowSelection(TransUnitId transUnitId)
+   {
+      if (!Objects.equal(currentTransUnitId, transUnitId))
+      {
+         //user click on buttons that is not on current selected row
+         eventBus.fireEvent(new TableRowSelectedEvent(transUnitId));
+      }
    }
 
    @Override
@@ -648,7 +671,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (Objects.equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), getCurrentTransUnitIdOrNull()))
+      if (Objects.equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
       {
          for (ToggleEditor editor : display.getEditors())
          {

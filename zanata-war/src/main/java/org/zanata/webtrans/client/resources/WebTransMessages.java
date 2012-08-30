@@ -385,6 +385,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Workspace is set to edit mode")
    String notifyEditableWorkspace();
 
+
+   @DefaultMessage("Close")
+   String close();
+
    @DefaultMessage("Editor options")
    String editorOptions();
 

@@ -7,6 +7,7 @@ import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -29,10 +30,16 @@ public class TransUnitDetailsPanel extends Composite
    Label headerLabel;
    @UiField
    Label resId, msgContext, sourceComment, lastModifiedBy, lastModifiedTime;
+   @UiField
+   DisclosurePanel disclosurePanel;
+   @UiField
+   Styles style;
 
    public TransUnitDetailsPanel()
    {
       initWidget(uiBinder.createAndBindUi(this));
+      //this is to remove the .header class so that it won't get style from menu.css
+      disclosurePanel.getHeader().getParent().setStyleName(style.header());
    }
 
    public void setDetails(TransUnit transUnit)
@@ -69,7 +76,18 @@ public class TransUnitDetailsPanel extends Composite
       headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), headerSummary.toString()));
    }
 
-   interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
+   interface TransUnitDetailsPanelUiBinder extends UiBinder<DisclosurePanel, TransUnitDetailsPanel>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+      String tuDetails();
+
+      String container();
+
+      String header();
+
+      String tuDetailsLabel();
    }
 }

@@ -65,6 +65,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    public void showTranslationHistory(final TransUnitId transUnitId)
    {
+      listDataProvider.setLoading(true);
       display.resetView();
       display.center();
       dispatcher.execute(new GetTranslationHistoryAction(transUnitId), new AsyncCallback<GetTranslationHistoryResult>()
@@ -98,6 +99,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
             listDataProvider.getList().addAll(result.getHistoryItems());
             Comparator<TransHistoryItem> reverseComparator = Collections.reverseOrder(TransHistoryVersionComparator.COMPARATOR);
             Collections.sort(listDataProvider.getList(), reverseComparator);
+            listDataProvider.setLoading(false);
          }
       });
    }
