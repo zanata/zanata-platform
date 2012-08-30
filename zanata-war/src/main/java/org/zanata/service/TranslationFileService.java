@@ -25,6 +25,7 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Set;
@@ -75,6 +76,24 @@ public interface TranslationFileService
 
    FileFormatAdapter getAdapterFor(String fileNameOrExtension);
 
+   /**
+    * Persist an input stream to a temporary file.
+    * 
+    * The created file should be removed using {@link #removeTempFile(File)} when it is no longer required.
+    * 
+    * @param fileContents stream of bytes to persist
+    * @return reference to the created file
+    */
+   File persistToTempFile(InputStream fileContents);
+
+   /**
+    * Attempts to remove a temporary file from disk.
+    * 
+    * If the file cannot be removed, it is marked for removal on application exit.
+    * 
+    * @param tempFile file to remove
+    */
+   void removeTempFile(File tempFile);
 
    /**
     * Add a document to persistent storage, overwriting any equivalent existing document.
@@ -86,8 +105,9 @@ public interface TranslationFileService
     * @param iterationSlug
     * @param docPath
     * @param docNameAndExt
+    * @throws ZanataServiceException if the document cannot be persisted
     */
-   void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName);
+   void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName) throws ZanataServiceException;
 
    boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName);
 

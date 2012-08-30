@@ -22,8 +22,10 @@ package org.zanata.action;
 
 import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -206,7 +208,6 @@ public class ProjectIterationFilesAction
 
    private void showUploadSuccessMessage()
    {
-      // TODO localized string by UI language
       FacesMessages.instance().add(Severity.INFO, "Document file {0} uploaded.", documentFileUpload.getFileName());
    }
 
@@ -240,40 +241,46 @@ public class ProjectIterationFilesAction
    {
       String documentPath = documentFileUpload.getDocumentPath();
       String fileName = documentFileUpload.getFileName();
-
+      File tempFile = null;
       try
       {
-         // FIXME uploading a corrupt version of a file will overwrite a non-corrupt file, leaving
-         // it in a bad state. Change this so that old file is still present after failed upload.
-         translationFileServiceImpl.persistDocument(documentFileUpload.getFileContents(), projectSlug, iterationSlug, documentPath, fileName);
+         tempFile = translationFileServiceImpl.persistToTempFile(documentFileUpload.getFileContents());
       }
       catch (ZanataServiceException e) {
-         FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} to server.", documentFileUpload.getFileName());
+         FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} to server.", fileName);
          return;
       }
 
       try
       {
-         URI uri = translationFileServiceImpl.getDocumentURI(projectSlug, iterationSlug, documentPath, fileName);
-         Resource doc = translationFileServiceImpl.parseDocumentFile(uri, documentPath, fileName);
-
+         Resource doc = translationFileServiceImpl.parseDocumentFile(tempFile.toURI(), documentPath, fileName);
          doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
          Set<String> extensions = Collections.<String>emptySet();
-
          // TODO Copy Trans values
          documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, extensions, false);
-
          showUploadSuccessMessage();
       }
       catch (SecurityException e)
       {
-         FacesMessages.instance().add(Severity.ERROR, "Error reading uploaded document {0} on server.", documentFileUpload.getFileName());
-         // TODO try to remove persisted document?
+         FacesMessages.instance().add(Severity.ERROR, "Error reading uploaded document {0} on server.", fileName);
       }
       catch (ZanataServiceException e) {
-         FacesMessages.instance().add(Severity.ERROR, "Invalid document format for {0}.", documentFileUpload.getFileName());
-         // TODO remove persisted document
+         FacesMessages.instance().add(Severity.ERROR, "Invalid document format for {0}.", fileName);
       }
+
+      try
+      {
+         translationFileServiceImpl.persistDocument(new FileInputStream(tempFile), projectSlug, iterationSlug, documentPath, fileName);
+      }
+      catch (FileNotFoundException e)
+      {
+         FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} on server, download in original format may fail.", documentFileUpload.getFileName());
+      }
+      catch (ZanataServiceException e)
+      {
+         FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} on server, download in original format may fail.", documentFileUpload.getFileName());
+      }
+      translationFileServiceImpl.removeTempFile(tempFile);
    }
 
    public List<HLocale> getAvailableSourceLocales()

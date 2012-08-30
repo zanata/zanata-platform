@@ -22,8 +22,10 @@ package org.zanata.service.impl;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
@@ -72,6 +74,9 @@ public class TranslationFileServiceImpl implements TranslationFileService
       supported.add("dtd");
       return supported;
    }
+
+   @Logger
+   Log log;
 
    @Override
    public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException
@@ -251,12 +256,46 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return extension;
    }
 
+   @Override
+   public File persistToTempFile(InputStream fileContents)
+   {
+      File tempFile = null;
+      try
+      {
+         tempFile = File.createTempFile("zupload", ".tmp");
+         byte[] buffer = new byte[4096]; // To hold file contents
+         int bytesRead;
+         FileOutputStream output = new FileOutputStream(tempFile);
+         while ((bytesRead = fileContents.read(buffer)) != -1)
+         {
+            output.write(buffer, 0, bytesRead);
+         }
+         output.close();
+      }
+      catch (IOException e)
+      {
+         throw new ZanataServiceException("Error while writing uploaded file to temporary location", e);
+      }
+      return tempFile;
+   }
 
+   @Override
+   public void removeTempFile(File tempFile)
+   {
+      if (tempFile != null)
+      {
+         if (!tempFile.delete())
+         {
+            log.warn("unable to remove temporary file {}, marking for delete on exit", tempFile.getAbsolutePath());
+            tempFile.deleteOnExit();
+         }
+      }
+   }
 
    private static final String DOCUMENT_FILE_PERSIST_DIRECTORY = "/tmp/persisted/";
 
    @Override
-   public void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName)
+   public void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName) throws ZanataServiceException
    {
       OutputStream persistFile;
       try
