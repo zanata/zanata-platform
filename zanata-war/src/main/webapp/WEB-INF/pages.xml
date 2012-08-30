@@ -459,9 +459,7 @@
   <page view-id="/project/edit.xhtml" login-required="true">
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{localeListAction.slug}" />
-    
-  
-    
+
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
          (at some stages of the JSF lifecycle)
@@ -469,7 +467,7 @@
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view'.concat(projectHome.slug), projectHome.instance.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
         
     <navigation from-action="#{projectHome.update}">

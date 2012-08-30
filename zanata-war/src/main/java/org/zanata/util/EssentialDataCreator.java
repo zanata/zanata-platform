@@ -20,8 +20,12 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+
+import static org.zanata.model.HAccountRole.RoleType.AUTO;
+import static org.zanata.model.HAccountRole.RoleType.MANUAL;
 
 /**
  * Ensures that roles 'user', 'admin' and 'translator' exist, and that there is
@@ -76,7 +80,7 @@ public class EssentialDataCreator
          if (!accountRoleDAO.roleExists("user"))
          {
             log.info("Creating 'user' role");
-            if (accountRoleDAO.create("user") == null)
+            if (accountRoleDAO.create("user", MANUAL) == null)
             {
                throw new RuntimeException("Couldn't create 'user' role");
             }
@@ -85,7 +89,7 @@ public class EssentialDataCreator
          if (!accountRoleDAO.roleExists("glossarist"))
          {
             log.info("Creating 'glossarist' role");
-            if (accountRoleDAO.create("glossarist") == null)
+            if (accountRoleDAO.create("glossarist", MANUAL) == null)
             {
                throw new RuntimeException("Couldn't create 'glossarist' role");
             }
@@ -93,7 +97,7 @@ public class EssentialDataCreator
          if (!accountRoleDAO.roleExists("glossary-admin"))
          {
             log.info("Creating 'glossary-admin' role");
-            if (accountRoleDAO.create("glossary-admin", "glossarist") == null)
+            if (accountRoleDAO.create("glossary-admin", MANUAL, "glossarist") == null)
             {
                throw new RuntimeException("Couldn't create 'glossary-admin' role");
             }
@@ -107,7 +111,7 @@ public class EssentialDataCreator
          else
          {
             log.info("Creating 'admin' role");
-            if (accountRoleDAO.create("admin", "user", "glossary-admin") == null)
+            if (accountRoleDAO.create("admin", MANUAL, "user", "glossary-admin") == null)
             {
                throw new RuntimeException("Couldn't create 'admin' role");
             }
@@ -132,9 +136,32 @@ public class EssentialDataCreator
          if (!accountRoleDAO.roleExists("translator"))
          {
             log.info("Creating 'translator' role");
-            if (accountRoleDAO.create("translator") == null)
+            if (accountRoleDAO.create("translator", MANUAL) == null)
             {
                throw new RuntimeException("Couldn't create 'translator' role");
+            }
+         }
+
+         // Domain roles for OpenId authentication
+         if( applicationConfiguration.isFedoraOpenIdAuth() )
+         {
+            log.info("Creating Domain roles for Open Id");
+
+            if( !accountRoleDAO.roleExists("Fedora") )
+            {
+               accountRoleDAO.create("Fedora", AUTO);
+            }
+            if( !accountRoleDAO.roleExists("Yahoo") )
+            {
+               accountRoleDAO.create("Yahoo", AUTO);
+            }
+            if( !accountRoleDAO.roleExists("Google") )
+            {
+               accountRoleDAO.create("Google", AUTO);
+            }
+            if( !accountRoleDAO.roleExists("MyOpenID") )
+            {
+               accountRoleDAO.create("MyOpenID", AUTO);
             }
          }
 

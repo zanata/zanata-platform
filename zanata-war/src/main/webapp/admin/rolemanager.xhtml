@@ -47,11 +47,11 @@
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
-	            <s:fragment rendered="#{s:hasPermission('seam.role', 'update')}">
+	            <s:fragment rendered="#{s:hasPermission('seam.role', 'update') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}">
 	              <h:commandButton value="#{messages['jsf.Edit']}" action="#{roleAction.editRole(roleSearch.selectedRole)}"/>
 	            </s:fragment>
 	            <h:commandButton value="#{messages['jsf.Delete']}" action="#{identityManager.deleteRole(roleSearch.selectedRole)}"
-	                    rendered="#{s:hasPermission('seam.role', 'delete')}"
+	                    rendered="#{s:hasPermission('seam.role', 'delete') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
 	  	    </rich:dataTable>

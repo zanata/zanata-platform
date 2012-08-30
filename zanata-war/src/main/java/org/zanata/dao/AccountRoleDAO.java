@@ -39,10 +39,11 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer>
       return (HAccountRole) getSession().createCriteria(HAccountRole.class).add(Restrictions.naturalId().set("name", roleName)).uniqueResult();
    }
 
-   public HAccountRole create(String roleName, String... includesRoles)
+   public HAccountRole create(String roleName, HAccountRole.RoleType type, String... includesRoles)
    {
       HAccountRole role = new HAccountRole();
       role.setName(roleName);
+      role.setRoleType(type);
       for (String includeRole : includesRoles)
       {
          Set<HAccountRole> groups = role.getGroups();

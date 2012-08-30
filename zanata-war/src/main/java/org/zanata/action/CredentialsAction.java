@@ -33,6 +33,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.core.Conversation;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -45,6 +48,9 @@ import org.zanata.security.openid.MyOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.YahooOpenIdProvider;
+
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+import static org.jboss.seam.international.StatusMessage.Severity.INFO;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -201,13 +207,19 @@ public class CredentialsAction implements Serializable
             // NB: Need to get the entity manager this way as injection won't work here
             EntityManager em = (EntityManager)Component.getInstance("entityManager");
 
+            FacesMessages.instance().clear();
+            Conversation.instance().begin(true, false); // (To retain messages)
             try
             {
                em.persist(this.newCredentials);
+               FacesMessages.instance().add(INFO, "jsf.identities.IdentityAdded", null,
+                     "Identity Added", "Your new identity has been added to this account.");
             }
             catch( InvalidStateException isex )
             {
                em.clear(); // remove dirty entities
+               FacesMessages.instance().add(ERROR, "jsf.identities.invalid.Duplicate", null,
+                     "Duplicate identity", "This Identity is already in use.");
             }
          }
       }
@@ -215,7 +227,7 @@ public class CredentialsAction implements Serializable
       @Override
       public String getRedirectToUrl()
       {
-         return "/profile/identities.seam";
+         return "/profile/identities.seam?cid=" + Conversation.instance().getId(); // keep the same conversation
       }
    }
 }

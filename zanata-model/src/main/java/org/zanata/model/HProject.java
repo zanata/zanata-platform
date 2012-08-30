@@ -67,9 +67,12 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    private String description;
    private String homeContent;
    private boolean overrideLocales = false;
+   private boolean restrictedByRoles = false;
    private Set<HLocale> customizedLocales;
 
    private Set<HPerson> maintainers;
+
+   private Set<HAccountRole> allowedRoles;
 
    @Length(max = 80)
    @NotEmpty
@@ -82,6 +85,11 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public boolean getOverrideLocales()
    {
       return this.overrideLocales;
+   }
+
+   public boolean isRestrictedByRoles()
+   {
+      return restrictedByRoles;
    }
 
    @Length(max = 100)
@@ -129,4 +137,14 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       return customizedLocales;
    }
 
+   @ManyToMany
+   @JoinTable(name = "HProject_AllowedRole", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
+   public Set<HAccountRole> getAllowedRoles()
+   {
+      if(allowedRoles == null)
+      {
+         allowedRoles = new HashSet<HAccountRole>();
+      }
+      return allowedRoles;
+   }
 }

@@ -76,4 +76,46 @@
         <customChange class="org.zanata.liquibase.custom.MigrateDataToHCredentials"/>
     </changeSet>
 
+    <changeSet id="4" author="camunoz@redhat.com">
+        <comment>Add role type column.</comment>
+        <addColumn tableName="HAccountRole">
+            <column name="roleType" type="char(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <update tableName="HAccountRole">
+            <column name="roleType" value="M"/>
+        </update>
+    </changeSet>
+
+    <changeSet id="5" author="camunoz@redhat.com">
+        <comment>Add HProject_AllowedRole table.</comment>
+        <createTable tableName="HProject_AllowedRole">
+            <column name="projectId" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roleId" type="int(11)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="HProject_AllowedRole" columnNames="projectId, roleId"/>
+        <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Project"
+                                 baseTableName="HProject_AllowedRole"
+                                 baseColumnNames="projectId"
+                                 referencedTableName="HProject"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Role"
+                                 baseTableName="HProject_AllowedRole"
+                                 baseColumnNames="roleId"
+                                 referencedTableName="HAccountRole"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    
+    <changeSet id="6" author="camunoz@redhat.com">
+        <comment>Add 'Restricted by Roles' column to HProject table.</comment>
+        <addColumn tableName="HProject">
+            <column name="restrictedByRoles" type="boolean" valueBoolean="false" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

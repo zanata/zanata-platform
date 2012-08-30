@@ -30,14 +30,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.management.RoleConditional;
 import org.jboss.seam.annotations.security.management.RoleGroups;
 import org.jboss.seam.annotations.security.management.RoleName;
+import org.zanata.model.type.RoleTypeType;
 
 import lombok.Setter;
 
 @Entity
 @Setter
+@TypeDef(name = "roleType", typeClass = RoleTypeType.class)
 public class HAccountRole implements Serializable
 {
    private static final long serialVersionUID = 9177366120789064801L;
@@ -45,6 +50,7 @@ public class HAccountRole implements Serializable
    private Integer id;
    private String name;
    private boolean conditional;
+   private RoleType roleType = RoleType.MANUAL;
 
    private Set<HAccountRole> groups;
 
@@ -74,6 +80,38 @@ public class HAccountRole implements Serializable
    public boolean isConditional()
    {
       return conditional;
+   }
+
+   @Type(type = "roleType")
+   @NotNull
+   public RoleType getRoleType()
+   {
+      return roleType;
+   }
+
+
+   public enum RoleType
+   {
+      AUTO,
+      MANUAL;
+
+      public char getInitial()
+      {
+         return name().charAt(0);
+      }
+
+      public static RoleType valueOf(char initial)
+      {
+         switch (initial)
+         {
+            case 'A':
+               return AUTO;
+            case 'M':
+               return MANUAL;
+            default:
+               throw new IllegalArgumentException(String.valueOf(initial));
+         }
+      }
    }
 
 }
