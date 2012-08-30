@@ -6,6 +6,11 @@ body {
 	font: 12px helvetica, arial, Tahoma, Geneva, sans-serif;
 }
 
+select
+{
+	height:24px;
+}
+
 select,input,button,textarea,button {
 	font: 99% arial, helvetica, clean, sans-serif;
 }
@@ -1019,6 +1024,7 @@ div.glosaryFileUploadDialog label
 div.glosaryFileUploadDialog select
 {
 	float:right;
+	height:22px;
 	
 }
 
@@ -1058,6 +1064,7 @@ a.admin_link {
     color: #7092C3;
     text-decoration: none;
     text-align: center;
+    outline:none;
 }
 
 a.admin_link:hover {
