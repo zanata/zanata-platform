@@ -27,6 +27,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Set;
 
 /**
  * Provides basic services to transform and process translation files.
@@ -67,6 +68,8 @@ public interface TranslationFileService
     * @return
     */
    boolean hasAdapterFor(String fileNameOrExtension);
+
+   Set<String> getSupportedExtensions();
 
    public URI getDocumentURI(String projectSlug, String iterationSlug, String docPath, String docName);
 

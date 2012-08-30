@@ -46,6 +46,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.jboss.seam.ScopeType.STATELESS;
 
@@ -60,6 +62,16 @@ import static org.jboss.seam.ScopeType.STATELESS;
 public class TranslationFileServiceImpl implements TranslationFileService
 {
    private static String[] ODF_EXTENSIONS = {"odt", "fodt", "odp", "fodp", "ods", "fods", "odg", "fodg", "odb", "odf"};
+
+   private static Set<String> SUPPORTED_EXTENSIONS = buildSupportedExtensionSet();
+
+   private static Set<String> buildSupportedExtensionSet()
+   {
+      Set<String> supported = new HashSet<String>(Arrays.asList(ODF_EXTENSIONS));
+      supported.add("txt");
+      supported.add("dtd");
+      return supported;
+   }
 
    @Override
    public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException
@@ -177,20 +189,16 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return res;
    }
 
-
+   @Override
+   public Set<String> getSupportedExtensions()
+   {
+      return SUPPORTED_EXTENSIONS;
+   }
 
    @Override
    public boolean hasAdapterFor(String fileNameOrExtension)
    {
-      String extension = extractExtension(fileNameOrExtension);
-      if (extension == null)
-      {
-         return false;
-      }
-      else
-      {
-         return extension.equals("txt") || extension.equals("dtd") || Arrays.asList(ODF_EXTENSIONS).contains(extension);
-      }
+      return SUPPORTED_EXTENSIONS.contains(extractExtension(fileNameOrExtension));
    }
 
    @Override
