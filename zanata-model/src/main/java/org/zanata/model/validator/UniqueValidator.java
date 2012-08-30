@@ -25,6 +25,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.hibernate.EntityMode;
+import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
@@ -77,8 +78,13 @@ public class UniqueValidator implements Validator<Unique>
       }
       criteria.setProjection(Projections.rowCount());
 
+      // change the flush mode temporarily to perform the query or else incomplete entities will try to get flushed
+      // After the query, go back to the original mode
+      FlushMode flushMode = session.getFlushMode();
+      session.setFlushMode(FlushMode.MANUAL);
       List results = criteria.getExecutableCriteria( session ).list();
       Number count = (Number)results.iterator().next();
+      session.setFlushMode(flushMode);
       return count.intValue();
    }
 

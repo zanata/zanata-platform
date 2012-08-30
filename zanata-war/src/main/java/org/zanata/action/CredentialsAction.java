@@ -217,7 +217,6 @@ public class CredentialsAction implements Serializable
             }
             catch( InvalidStateException isex )
             {
-               em.clear(); // remove dirty entities
                FacesMessages.instance().add(ERROR, "jsf.identities.invalid.Duplicate", null,
                      "Duplicate identity", "This Identity is already in use.");
             }

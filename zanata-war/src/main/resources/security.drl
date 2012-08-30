@@ -15,6 +15,8 @@ import org.jboss.seam.security.Role;
 import org.jboss.seam.security.permission.PermissionCheck;
 import org.jboss.seam.security.permission.RoleCheck;
 
+import function org.zanata.security.SecurityFunctions.isUserAllowedAccess;
+
 /* admin can do anything */
 rule AdminAnything
   no-loop
@@ -185,7 +187,8 @@ rule LangTeamMemberAddTranslation
   activation-group "permissions"
 when
   check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
-  authenticatedPerson: HPerson() 
+  authenticatedPerson: HPerson()
+  $project: HProject( eval(isUserAllowedAccess($project)) )
   eval(authenticatedPerson != null)
   $locale: HLocale(
     eval(authenticatedPerson.isMember($locale))

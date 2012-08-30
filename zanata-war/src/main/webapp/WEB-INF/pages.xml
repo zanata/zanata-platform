@@ -80,7 +80,7 @@
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SignIn'])}"/>
-    <navigation from-action="#{identity.login}">
+    <navigation from-action="#{loginAction.login}">
       <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
