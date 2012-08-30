@@ -37,6 +37,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -66,8 +67,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiField
    VerticalPanel buttons;
 
-   @UiField
-   SimplePanel undoContainer;
    @UiField(provided = true)
    ValidationMessagePanelView validationPanel;
    @UiField
@@ -78,6 +77,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    InlineLabel cancelIcon;
    @UiField
    InlineLabel historyIcon;
+   @UiField
+   Styles style;
 
    private HorizontalPanel rootPanel;
    private String findMessage;
@@ -125,20 +126,22 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void addUndo(final UndoLink undoLink)
    {
+      undoLink.setLinkStyle("icon-undo " + style.button());
       undoLink.setUndoCallback(new UndoLink.UndoCallback()
       {
          @Override
          public void preUndo()
          {
+            undoLink.setLinkStyle("icon-progress " + style.button());
          }
 
          @Override
          public void postUndoSuccess()
          {
-            undoContainer.remove(undoLink);
+            undoLink.removeFromParent();
          }
       });
-      undoContainer.setWidget(undoLink);
+      buttons.add(undoLink);
    }
 
    @Override
@@ -303,5 +306,15 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public String toString()
    {
       return Objects.toStringHelper(this).add("editors", editors).toString();
+   }
+
+   interface Styles extends CssResource
+   {
+
+      String button();
+
+      String targetContentsCell();
+
+      String editorGridWrapper();
    }
 }

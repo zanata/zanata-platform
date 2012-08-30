@@ -34,6 +34,7 @@ import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.ui.InlineLink;
@@ -86,12 +87,14 @@ public class TransMemoryMergePresenterTest
    private ArgumentCaptor<AsyncCallback<UpdateTransUnitResult>> callbackCaptor;
    @Mock
    private NavigationController navigationController;
+   @Mock
+   private WebTransMessages webTranMessages;
 
    @BeforeMethod
    public void setUp()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransMemoryMergePresenter(display, eventBus, dispatcher, navigationController, messages, undoLinkProvider);
+      presenter = new TransMemoryMergePresenter(display, eventBus, dispatcher, navigationController, messages, undoLinkProvider, webTranMessages);
 
       verify(display).setListener(presenter);
    }

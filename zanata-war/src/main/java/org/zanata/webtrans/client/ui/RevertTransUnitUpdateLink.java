@@ -69,8 +69,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    @Inject
    public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher, WebTransMessages messages, EventBus eventBus, UserWorkspaceContext userWorkspaceContext)
    {
-      super(messages.undo());
-      setStyleName("icon-undo");
+      super();
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.eventBus = eventBus;
@@ -149,7 +148,6 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
             return;
          }
          callback.preUndo();
-         setText(messages.undoInProgress());
          disableLink();
 
          dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
@@ -158,7 +156,10 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
             public void onFailure(Throwable caught)
             {
                eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.undoFailure()));
-               setText(messages.undo());
+               if (!Strings.isNullOrEmpty(getText()))
+               {
+                  setText(messages.undo());
+               }
                enableLink();
             }
 
@@ -168,7 +169,6 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
                if (result.isAllSuccess())
                {
                   eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
-                  setText(messages.undone());
                   callback.postUndoSuccess();
                }
                else

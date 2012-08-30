@@ -26,13 +26,14 @@ import java.util.List;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
+import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.ImplementedBy;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ImplementedBy(RevertTransUnitUpdateLink.class)
-public interface UndoLink extends InlineLink
+public interface UndoLink extends InlineLink, HasText
 {
    /**
     * Give the UpdateTransUnitResult object returned from trans unit update handler, then it will create a click handler.
@@ -46,6 +47,8 @@ public interface UndoLink extends InlineLink
    void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult);
 
    void setUndoCallback(UndoCallback callback);
+
+   void removeFromParent();
 
    interface UndoCallback
    {

@@ -8,7 +8,7 @@
 
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
 
-    <ui:style>
+    <ui:style field="style" type="org.zanata.webtrans.client.editor.table.TargetContentsView.Styles">
         .targetContentsCell
         {
             table-layout: fixed;
@@ -34,9 +34,8 @@
                 <fui:ValidationMessagePanelView ui:field="validationPanel" />
             </g:FlowPanel>
         </g:cell>
-        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="40px">
-            <g:VerticalPanel ui:field="buttons" >
-                <g:SimplePanel ui:field="undoContainer"  />
+        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="30px">
+            <g:VerticalPanel ui:field="buttons" spacing="2" height="120px">
                 <g:InlineLabel ui:field="saveIcon" title="{messages.editSaveShortcut}" styleName="icon-install {style.button}"/>
                 <g:InlineLabel ui:field="fuzzyIcon" title="{messages.saveAsFuzzy}" styleName="icon-flag-1 {style.button}" />
                 <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}" styleName="icon-cancel-circle {style.button}" />

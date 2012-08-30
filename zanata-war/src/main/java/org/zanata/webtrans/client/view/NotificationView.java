@@ -161,7 +161,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       panel.add(msgLabel);
       if (inlineLink != null)
       {
-         inlineLink.setLinkStyle(style.inlineLink());
+         inlineLink.setLinkStyle(style.inlineLink() + " icon-undo");
          inlineLink.setDisabledStyle(style.disabledInlineLink());
          panel.add(inlineLink);
          panel.setCellWidth(inlineLink, "16px");
