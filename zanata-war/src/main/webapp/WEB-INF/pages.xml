@@ -138,7 +138,7 @@
     <action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Glossary'])}"/>
   	
-  	<action execute="#{glossaryFilesAction.initialize()}" />
+  	<action execute="#{glossaryAction.initialize()}" />
   </page>
 
   <!-- Admin -->

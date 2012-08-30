@@ -115,6 +115,10 @@ public class GlossaryFileServiceImpl implements GlossaryFileService
 
    private List<Glossary> parsePoFile(InputStream fileContents, LocaleId sourceLang, LocaleId transLang, boolean treatSourceCommentsAsTarget) throws IOException
    {
+      if (sourceLang == null || transLang == null)
+      {
+         throw new ZanataServiceException("Mandatory fields for PO file format: Source Language and Target Language");
+      }
       GlossaryPoReader poReader = new GlossaryPoReader(sourceLang, transLang, treatSourceCommentsAsTarget, BATCH_SIZE);
       return poReader.extractGlossary(new InputStreamReader(fileContents));
    }
