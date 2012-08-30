@@ -65,19 +65,19 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
    {
       void validate(ToggleEditor editor);
 
-      void saveAsApprovedAndMoveNext();
+      void saveAsApprovedAndMoveNext(TransUnitId transUnitId);
 
       void copySource(ToggleEditor editor);
 
-      void onCancel();
+      void onCancel(TransUnitId transUnitId);
 
-      void saveAsFuzzy();
+      void saveAsFuzzy(TransUnitId transUnitId);
 
       boolean isDisplayButtons();
 
       boolean isReadOnly();
 
-      void showHistory();
+      void showHistory(TransUnitId transUnitId);
 
       void onFocus(TransUnitId id, int editorIndex);
    }

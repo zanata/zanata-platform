@@ -172,7 +172,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.saveAsFuzzy();
+      presenter.saveAsFuzzy(selectedTU.getId());
 
       // Then:
       ArgumentCaptor<TransUnitSaveEvent> captor = ArgumentCaptor.forClass(TransUnitSaveEvent.class);
@@ -264,7 +264,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.onCancel();
+      presenter.onCancel(selectedTU.getId());
 
       // Then:
       verify(display, atLeastOnce()).getId();
@@ -324,7 +324,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.saveAsApprovedAndMoveNext();
+      presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
 
       // Then:
       verify(display).focusEditor(1);
@@ -345,7 +345,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.saveAsApprovedAndMoveNext();
+      presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
 
       // Then:
       verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
@@ -383,7 +383,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.showHistory();
+      presenter.showHistory(selectedTU.getId());
 
       // Then:
       verify(historyPresenter).showTranslationHistory(selectedTU.getId());

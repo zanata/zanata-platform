@@ -187,28 +187,29 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiHandler("saveButton")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApprovedAndMoveNext();
+      listener.saveAsApprovedAndMoveNext(transUnitId);
       event.stopPropagation();
    }
 
    @UiHandler("fuzzyButton")
    public void onSaveAsFuzzy(ClickEvent event)
    {
-      listener.saveAsFuzzy();
+      listener.saveAsFuzzy(transUnitId);
       event.stopPropagation();
    }
 
    @UiHandler("cancelButton")
    public void onCancel(ClickEvent event)
    {
-      listener.onCancel();
+      listener.onCancel(transUnitId);
       event.stopPropagation();
    }
 
    @UiHandler("historyButton")
    public void onHistoryClick(ClickEvent event)
    {
-      listener.showHistory();
+      listener.showHistory(transUnitId);
+      event.stopPropagation();
    }
 
    @Override
