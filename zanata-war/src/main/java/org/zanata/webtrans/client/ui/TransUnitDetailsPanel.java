@@ -29,10 +29,14 @@ public class TransUnitDetailsPanel extends Composite
    Label headerLabel;
    @UiField
    Label resId, msgContext, sourceComment, lastModifiedBy, lastModifiedTime;
+   @UiField
+   DisclosurePanel disclosurePanel;
 
    public TransUnitDetailsPanel()
    {
       initWidget(uiBinder.createAndBindUi(this));
+      //this is to remove the .header class so that it won't get style from menu.css
+      disclosurePanel.getHeader().getParent().removeStyleName("header");
    }
 
    public void setDetails(TransUnit transUnit)
@@ -69,7 +73,7 @@ public class TransUnitDetailsPanel extends Composite
       headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), transUnit.getId().toString(), headerSummary.toString()));
    }
 
-   interface TransUnitDetailsPanelUiBinder extends UiBinder<Widget, TransUnitDetailsPanel>
+   interface TransUnitDetailsPanelUiBinder extends UiBinder<DisclosurePanel, TransUnitDetailsPanel>
    {
    }
 }

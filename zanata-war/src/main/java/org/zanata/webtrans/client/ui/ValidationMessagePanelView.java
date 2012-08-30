@@ -32,6 +32,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
@@ -55,8 +56,6 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
       String clickable();
 
       String content();
-
-      String scrollSection();
 
       String container();
 
@@ -85,12 +84,16 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
 
    @UiField
    TableEditorMessages messages;
+   @UiField
+   DisclosurePanel disclosurePanel;
 
    @Inject
    public ValidationMessagePanelView(final EventBus eventBus)
    {
       this.eventBus = eventBus;
       initWidget(uiBinder.createAndBindUi(this));
+      //this is to remove the .header class so that it won't get style from menu.css
+      disclosurePanel.getHeader().getParent().removeStyleName("header");
       runValidationAnchor.setText(messages.runValidation());
       setHeaderText(messages.validationWarningsHeading(0));
    }
