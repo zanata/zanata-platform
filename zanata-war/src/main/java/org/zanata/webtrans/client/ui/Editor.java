@@ -3,11 +3,9 @@ package org.zanata.webtrans.client.ui;
 import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
-import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnitId;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -22,11 +20,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleEditor
@@ -71,16 +68,13 @@ public class Editor extends Composite implements ToggleEditor
    @UiField
    HorizontalPanel translatorList;
 
-   @UiField
-   TableResources images;
-
    NavigationMessages messages = GWT.create(NavigationMessages.class);
 
    @UiField
    EditorTextArea textArea;
 
    @UiField
-   PushButton copySourceButton;
+   InlineLabel copyIcon;
 
    private boolean keypressed;
    private boolean typing;
@@ -175,7 +169,7 @@ public class Editor extends Composite implements ToggleEditor
       }
    }
 
-   @UiHandler("copySourceButton")
+   @UiHandler("copyIcon")
    public void onCopySource(ClickEvent event)
    {
       listener.copySource(this);
@@ -265,7 +259,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void showCopySourceButton(boolean displayButtons)
    {
-      copySourceButton.setVisible(displayButtons);
+      copyIcon.setVisible(displayButtons);
    }
 
    @Override

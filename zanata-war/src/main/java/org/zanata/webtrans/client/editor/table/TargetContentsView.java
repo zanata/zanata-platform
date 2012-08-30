@@ -44,7 +44,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -65,18 +65,19 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    Grid editorGrid;
    @UiField
    VerticalPanel buttons;
-   @UiField
-   PushButton saveButton;
-   @UiField
-   PushButton fuzzyButton;
-   @UiField
-   PushButton cancelButton;
+
    @UiField
    SimplePanel undoContainer;
-   @UiField
-   PushButton historyButton;
    @UiField(provided = true)
    ValidationMessagePanelView validationPanel;
+   @UiField
+   InlineLabel saveIcon;
+   @UiField
+   InlineLabel fuzzyIcon;
+   @UiField
+   InlineLabel cancelIcon;
+   @UiField
+   InlineLabel historyIcon;
 
    private HorizontalPanel rootPanel;
    private String findMessage;
@@ -184,28 +185,28 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       return styles;
    }
 
-   @UiHandler("saveButton")
+   @UiHandler("saveIcon")
    public void onSaveAsApproved(ClickEvent event)
    {
       listener.saveAsApprovedAndMoveNext(transUnitId);
       event.stopPropagation();
    }
 
-   @UiHandler("fuzzyButton")
+   @UiHandler("fuzzyIcon")
    public void onSaveAsFuzzy(ClickEvent event)
    {
       listener.saveAsFuzzy(transUnitId);
       event.stopPropagation();
    }
 
-   @UiHandler("cancelButton")
+   @UiHandler("cancelIcon")
    public void onCancel(ClickEvent event)
    {
       listener.onCancel(transUnitId);
       event.stopPropagation();
    }
 
-   @UiHandler("historyButton")
+   @UiHandler("historyIcon")
    public void onHistoryClick(ClickEvent event)
    {
       listener.showHistory(transUnitId);

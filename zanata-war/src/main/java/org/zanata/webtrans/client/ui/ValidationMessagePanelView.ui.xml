@@ -2,8 +2,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
-
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 	
 	<ui:style
@@ -15,13 +13,6 @@
         }
 
         .label {
-            font-size: 11px;
-            font-weight: bold;
-            font-style: normal;
-        }
-
-        .clickable {
-            cursor: pointer;
             font-size: 11px;
             font-weight: bold;
             font-style: normal;
@@ -41,6 +32,7 @@
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+            padding: 2px 5px 2px 5px;
         }
 
         .content {
@@ -58,13 +50,8 @@
                 <g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">
                     <g:Label ui:field="headerLabel" styleName="{style.label}" />
                 </g:cell>
-                <g:cell horizontalAlignment="ALIGN_RIGHT" width="95px" verticalAlignment="ALIGN_MIDDLE">
-                    <g:Anchor ui:field="runValidationAnchor" styleName="{style.clickable}"/>
-                </g:cell>
                 <g:cell horizontalAlignment="ALIGN_RIGHT" width="16px" verticalAlignment="ALIGN_MIDDLE">
-                    <g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">
-                        <g:upFace image="{images.cellEditorValidate}" />
-                    </g:PushButton>
+                    <g:InlineLabel ui:field="validateButton" title="{messages.runValidation}" styleName="icon-check {style.label}" text="{messages.runValidation}" />
                 </g:cell>
             </g:HorizontalPanel>
         </g:customHeader>

@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 	
-	<ui:style>
+	<ui:style field="style" type="org.zanata.webtrans.client.ui.TransUnitDetailsPanel.Styles">
         .container {
             width: 50%;
             padding-top: 5px;
@@ -23,6 +23,7 @@
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+            padding: 2px 5px 2px 5px;
         }
 
         .tuDetailsLabel {
@@ -42,7 +43,7 @@
 
     <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container}" ui:field="disclosurePanel">
         <g:customHeader>
-            <g:Label ui:field="headerLabel" styleName="{style.header}" />
+            <g:Label ui:field="headerLabel" />
         </g:customHeader>
         <g:Grid>
             <g:row>

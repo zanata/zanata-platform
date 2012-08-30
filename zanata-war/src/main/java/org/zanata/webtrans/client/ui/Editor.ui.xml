@@ -4,9 +4,9 @@
     xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
     xmlns:tui="urn:import:org.zanata.webtrans.client.editor.table"
         >
-	
-	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
-	
+
+    <ui:with field="tableMessages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+
 	<ui:style field="style" type="org.zanata.webtrans.client.ui.Editor.Styles">
         .rootContainer {
             outline: none;
@@ -29,16 +29,19 @@
             border: 1px solid #ff0000;
         }
 
+        .copyButton {
+            font-size: 18px;
+            cursor: pointer;
+        }
+
     </ui:style>
 	
 	<g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
 	<g:VerticalPanel width="100%" spacing="3">
 		<g:cell horizontalAlignment="ALIGN_LEFT">
 			<g:HorizontalPanel ui:field="topContainer" width="100%" height="100%">
-				<g:cell width="20px" verticalAlignment="middle">
-	                <g:PushButton ui:field="copySourceButton" styleName="gwt-Button">
-	                    <g:upFace image="{images.copySrcButton}" />
-	                </g:PushButton>
+				<g:cell width="22px" verticalAlignment="middle">
+                    <g:InlineLabel ui:field="copyIcon" title="{tableMessages.copyFromSource}" styleName="icon-fast-fw {style.copyButton}" />
                 </g:cell>
                 <g:cell>
                 	<g:FlowPanel styleName="TableEditorCell-Target">
