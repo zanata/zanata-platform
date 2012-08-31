@@ -161,15 +161,6 @@ public class TargetContentsPresenter implements
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
 
-      if (userWorkspaceContext.hasReadOnlyAccess())
-      {
-         concealDisplay();
-      }
-      else
-      {
-         revealDisplay();
-      }
-
       bindEventHandlers();
 
       keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1)), ShortcutContext.Edit, messages.copyFromTM(1), new KeyShortcutEventHandler()
@@ -330,7 +321,7 @@ public class TargetContentsPresenter implements
          {
             if (getCurrentEditor().isFocused())
             {
-               copySource(getCurrentEditor());
+               copySource(getCurrentEditor(), currentTransUnitId);
             }
          }
       }));
@@ -392,11 +383,13 @@ public class TargetContentsPresenter implements
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          display.setToMode(ViewMode.VIEW);
+         concealDisplay();
       }
       else
       {
          display.focusEditor(currentEditorIndex);
          updateTranslators();
+         revealDisplay();
       }
    }
 
@@ -575,8 +568,9 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void copySource(ToggleEditor editor)
+   public void copySource(ToggleEditor editor, TransUnitId id)
    {
+      ensureRowSelection(id);
       currentEditorIndex = editor.getIndex();
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
       editor.setFocus();

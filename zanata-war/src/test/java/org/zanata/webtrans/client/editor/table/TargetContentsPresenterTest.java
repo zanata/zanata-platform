@@ -188,9 +188,14 @@ public class TargetContentsPresenterTest
    @Test
    public void canCopySource()
    {
+      // Given: selected one trans unit
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      presenter.showEditors(selectedTU.getId());
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
 
-      presenter.copySource(editor);
+      presenter.copySource(editor, selectedTU.getId());
 
       verify(editor).setTextAndValidate("source");
       verify(editor).setFocus();

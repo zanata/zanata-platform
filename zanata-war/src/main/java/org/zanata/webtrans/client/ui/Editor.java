@@ -44,6 +44,8 @@ public class Editor extends Composite implements ToggleEditor
       String translatorList();
 
       String hasValidationError();
+
+      String copyButton();
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
@@ -172,7 +174,7 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("copyIcon")
    public void onCopySource(ClickEvent event)
    {
-      listener.copySource(this);
+      listener.copySource(this, id);
    }
 
    @Override

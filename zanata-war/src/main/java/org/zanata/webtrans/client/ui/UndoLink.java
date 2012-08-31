@@ -48,8 +48,6 @@ public interface UndoLink extends InlineLink, HasText
 
    void setUndoCallback(UndoCallback callback);
 
-   void removeFromParent();
-
    interface UndoCallback
    {
       void preUndo();
