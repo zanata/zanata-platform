@@ -182,7 +182,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       int page = normalizePageIndex(pageIndex);
       if (page != navigationService.getCurrentPage() || forceReload)
       {
-         GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(null);
+         GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
          Log.info("page index: " + pageIndex + " page context: " + newContext);
          requestTransUnitsAndUpdatePageIndex(newContext);
       }
@@ -191,7 +191,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    private void loadPageAndGoToRow(int pageIndex, TransUnitId transUnitId)
    {
       int page = normalizePageIndex(pageIndex);
-      GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(transUnitId);
+      GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(transUnitId);
       Log.debug("page index: " + pageIndex + " page context: " + newContext);
       requestTransUnitsAndUpdatePageIndex(newContext);
    }
@@ -270,7 +270,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    {
       // TODO modal navigation disabled if there's findMessage. turn FindMessageEvent into UpdateContextCommand like the rest.
       String findMessage = event.getMessage();
-      context = context.setFindMessage(findMessage);
+      context = context.changeFindMessage(findMessage);
       if (Strings.isNullOrEmpty(findMessage))
       {
          init(context);
@@ -296,7 +296,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
          DocumentId documentId = ((DocumentSelectionEvent) command).getDocumentId();
          //TODO need to listen to user config change event for page size changes
-         init(GetTransUnitActionContext.of(documentId).setCount(configHolder.getPageSize()));
+         init(new GetTransUnitActionContext(documentId).changeCount(configHolder.getPageSize()));
       }
       else
       {
@@ -316,7 +316,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    private GetTransUnitActionContext setTargetTransUnitIdIfApplicable(GetTransUnitActionContext context)
    {
       TransUnit selected = pageModel.getSelectedOrNull();
-      return selected != null ? context.setTargetTransUnitId(selected.getId()) : context;
+      return selected != null ? context.changeTargetTransUnitId(selected.getId()) : context;
    }
 
    public void selectByRowIndex(int rowIndexOnPage)

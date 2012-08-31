@@ -156,7 +156,7 @@ public class NavigationControllerTest
       controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages);
       controller.addPageDataChangeListener(transUnitEditPresenter);
 
-      context = GetTransUnitActionContext.of(documentId);
+      context = new GetTransUnitActionContext(documentId);
    }
 
    @SuppressWarnings("unchecked")
@@ -240,7 +240,7 @@ public class NavigationControllerTest
    @Test
    public void canMockHandler()
    {
-      controller.init(context.setCount(6));
+      controller.init(context.changeCount(6));
       verifyDispatcherAndCaptureArguments();
 
       GetTransUnitListResult getTransUnitListResult = callHandler(getTransUnitListHandler, getTransUnitList);
@@ -261,7 +261,7 @@ public class NavigationControllerTest
    @Test
    public void canGoToFirstPage()
    {
-      controller.init(context.setCount(3));
+      controller.init(context.changeCount(3));
       simulateRPCCallback();
       controller.gotoPage(0, NOT_FORCE_RELOAD);
       simulateRPCCallback();
@@ -283,7 +283,7 @@ public class NavigationControllerTest
    @Test
    public void canGoToLastPageWithNotPerfectDivide()
    {
-      controller.init(context.setCount(4));
+      controller.init(context.changeCount(4));
       simulateRPCCallback();
       controller.gotoPage(1, NOT_FORCE_RELOAD);
       simulateRPCCallback();
@@ -296,7 +296,7 @@ public class NavigationControllerTest
 
    @Test
    public void canGoToLastPageWithPerfectDivide() {
-      controller.init(context.setCount(3));
+      controller.init(context.changeCount(3));
       simulateRPCCallback();
       controller.gotoPage(1, NOT_FORCE_RELOAD);
       simulateRPCCallback();
@@ -311,7 +311,7 @@ public class NavigationControllerTest
 
    @Test
    public void canHavePageCountGreaterThanActualSize() {
-      controller.init(context.setCount(10));
+      controller.init(context.changeCount(10));
       simulateRPCCallback();
       controller.gotoPage(100, NOT_FORCE_RELOAD);
       simulateRPCCallback();
@@ -327,7 +327,7 @@ public class NavigationControllerTest
    @Test
    public void canGoToNextPage()
    {
-      controller.init(context.setCount(2));
+      controller.init(context.changeCount(2));
       simulateRPCCallback();
       controller.gotoPage(1, NOT_FORCE_RELOAD);
       simulateRPCCallback();
@@ -349,7 +349,7 @@ public class NavigationControllerTest
    @Test
    public void canGoToPreviousPage()
    {
-      controller.init(context.setCount(2));
+      controller.init(context.changeCount(2));
       simulateRPCCallback();
       //should be on first page already
       controller.gotoPage(0, NOT_FORCE_RELOAD);
@@ -381,7 +381,7 @@ public class NavigationControllerTest
    @Test
    public void canGoToPage()
    {
-      controller.init(context.setCount(3));
+      controller.init(context.changeCount(3));
       simulateRPCCallback();
       controller.gotoPage(1, NOT_FORCE_RELOAD);
       simulateRPCCallback();
@@ -404,7 +404,7 @@ public class NavigationControllerTest
    @Test
    public void canForceReload()
    {
-      controller.init(context.setCount(3));
+      controller.init(context.changeCount(3));
       simulateRPCCallback();
       controller.gotoPage(1, NOT_FORCE_RELOAD);
       simulateRPCCallback();
