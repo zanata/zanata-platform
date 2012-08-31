@@ -23,27 +23,27 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;
+import org.zanata.webtrans.client.ui.NavOptionRenderer;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class EditorOptionsView extends Composite implements EditorOptionsPresenter.Display
 {
    private static EditorOptionsUiBinder uiBinder = GWT.create(EditorOptionsUiBinder.class);
-
-   interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView>
-   {
-   }
+   private final EnumRadioButtonGroup<NavOption> navOptionGroup;
 
    @UiField
    LayoutPanel container;
@@ -55,26 +55,18 @@ public class EditorOptionsView extends Composite implements EditorOptionsPresent
    Label navOptionHeader, editorOptionHeader, filterHeader;
 
    @UiField
-   ListBox optionsList;
+   VerticalPanel optionsContainer;
 
    @Inject
-   public EditorOptionsView(WebTransMessages messages)
+   public EditorOptionsView(WebTransMessages messages, NavOptionRenderer navOptionRenderer)
    {
       initWidget(uiBinder.createAndBindUi(this));
+      navOptionGroup = new EnumRadioButtonGroup<NavOption>("navOption", NavOption.class, navOptionRenderer);
+      navOptionGroup.addToContainer(optionsContainer);
+
       editorOptionHeader.setText(messages.editorOptions());
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
-      populateOptionsList();
-   }
-
-   private void populateOptionsList()
-   {
-      // TODO localise strings
-      optionsList.addItem("Next Fuzzy/Untranslated", KEY_FUZZY_UNTRANSLATED);
-      optionsList.addItem("Next Fuzzy", KEY_FUZZY);
-      optionsList.addItem("Next Untranslated", KEY_UNTRANSLATED);
-
-      optionsList.setSelectedIndex(0);
    }
 
    @Override
@@ -123,18 +115,17 @@ public class EditorOptionsView extends Composite implements EditorOptionsPresent
    public void setNavOptionVisible(boolean visible)
    {
       navOptionHeader.setVisible(visible);
-      optionsList.setVisible(visible);
+      optionsContainer.setVisible(visible);
    }
 
    @Override
-   public HasChangeHandlers getModalNavigationOptionsSelect()
+   public void setNavOptionHandler(EnumRadioButtonGroup.SelectionChangeListener<NavOption> listener)
    {
-      return optionsList;
+      navOptionGroup.setSelectionChangeListener(listener);
+      navOptionGroup.setDefaultSelected(NavOption.FUZZY_UNTRANSLATED);
    }
 
-   @Override
-   public String getSelectedFilter()
+   interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView>
    {
-      return optionsList.getValue(optionsList.getSelectedIndex());
    }
 }

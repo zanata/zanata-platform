@@ -49,7 +49,7 @@
 	                    <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
 	                </g:VerticalPanel>
                 </g:layer>
-                <g:layer left="5px" right="5px" top="108px" height="120px">
+                <g:layer top="108px" height="120px" left="5px" right="5px">
                 	<g:VerticalPanel width="100%">
                 		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
                          <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
@@ -57,10 +57,10 @@
                          <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
                 	</g:VerticalPanel>
                 </g:layer>
-                <g:layer top="210px" height="55px" left="5px" right="5px">
+                <g:layer top="210px" height="100px" left="5px" right="5px">
                 	<g:VerticalPanel width="100%">
                 	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
-                     	<g:ListBox ui:field="optionsList"/>
+                        <g:VerticalPanel ui:field="optionsContainer" />
                     </g:VerticalPanel>
                 </g:layer>
             </g:LayoutPanel>

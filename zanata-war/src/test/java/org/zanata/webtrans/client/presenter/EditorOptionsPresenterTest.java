@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,9 +27,6 @@ import org.zanata.webtrans.client.presenter.EditorOptionsPresenter.Display;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -58,8 +56,6 @@ public class EditorOptionsPresenterTest extends PresenterTest
    HasValue<Boolean> mockEnterChk;
    HasValue<Boolean> mockEscChk;
 
-   HasChangeHandlers mockFilterOptionsSelect;
-
 
    //captures for checkbox value change handlers
    Capture<ValueChangeHandler<Boolean>> capturedEditorButtonsChkValueChangeEventHandler;
@@ -68,7 +64,6 @@ public class EditorOptionsPresenterTest extends PresenterTest
    Capture<ValueChangeHandler<Boolean>> capturedTranslatedChkValueChangeEventHandler;
    Capture<ValueChangeHandler<Boolean>> capturedNeedReviewChkValueChangeEventHandler;
    Capture<ValueChangeHandler<Boolean>> capturedUntranslatedChkValueChangeEventHandler;
-   Capture<ChangeHandler> capturedNavigationOptionsSelectChangeHandler;
 
    Capture<FilterViewEventHandler> capturedFilterViewEventHandler;
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler;
@@ -100,7 +95,6 @@ public class EditorOptionsPresenterTest extends PresenterTest
       mockEditorButtonsChk = createAndAddMock(HasValue.class);
       mockEnterChk = createAndAddMock(HasValue.class);
       mockEscChk = createAndAddMock(HasValue.class);
-      mockFilterOptionsSelect = createAndAddMock(HasChangeHandlers.class);
    }
 
    private void createAllCaptures()
@@ -111,7 +105,6 @@ public class EditorOptionsPresenterTest extends PresenterTest
       capturedTranslatedChkValueChangeEventHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
       capturedNeedReviewChkValueChangeEventHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
       capturedUntranslatedChkValueChangeEventHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
-      capturedNavigationOptionsSelectChangeHandler = addCapture(new Capture<ChangeHandler>());
 
       capturedFilterViewEventHandler = addCapture(new Capture<FilterViewEventHandler>());
       capturedWorkspaceContextUpdateEventHandler = addCapture(new Capture<WorkspaceContextUpdateEventHandler>());
@@ -505,58 +498,7 @@ public class EditorOptionsPresenterTest extends PresenterTest
    }
 
 
-   public void selectFuzzyNavigation()
-   {
-      String selectedFilter = "F";
-      boolean expectFuzzyNavigation = true;
-      boolean expectUntranslatedNavigation = false;
-      testNavigationTypeSelection(selectedFilter, expectFuzzyNavigation, expectUntranslatedNavigation);
-   }
-
-   public void selectUntranslatedNavigation()
-   {
-      String selectedFilter = "U";
-      boolean expectFuzzyNavigation = false;
-      boolean expectUntranslatedNavigation = true;
-      testNavigationTypeSelection(selectedFilter, expectFuzzyNavigation, expectUntranslatedNavigation);
-   }
-
-   public void selectFuzzyUntranslatedNavigation()
-   {
-      String selectedFilter = "FU";
-      boolean expectFuzzyNavigation = true;
-      boolean expectUntranslatedNavigation = true;
-      testNavigationTypeSelection(selectedFilter, expectFuzzyNavigation, expectUntranslatedNavigation);
-   }
-
-   /**
-    * Checks that a user config change event with correct values is fired in
-    * response to a specific navigation type being selected.
-    * 
-    * @param selectedFilter
-    * @param expectFuzzyNavigation
-    * @param expectUntranslatedNavigation
-    */
-   private void testNavigationTypeSelection(String selectedFilter, boolean expectFuzzyNavigation, boolean expectUntranslatedNavigation)
-   {
-      expectBindMethodBehaviour(false);
-      ChangeEvent event = createMock(ChangeEvent.class);
-      expect(mockDisplay.getSelectedFilter()).andReturn(selectedFilter).anyTimes();
-      mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
-
-      replay(event);
-      replayAllMocks();
-
-      optionsPanelPresenter.bind();
-      capturedNavigationOptionsSelectChangeHandler.getValue().onChange(event);
-
-      verifyAllMocks();
-      assertThat(configHolder.isButtonFuzzy(), is(expectFuzzyNavigation));
-      assertThat(configHolder.isButtonUntranslated(), is(expectUntranslatedNavigation));
-   }
-
-
-   /**
+      /**
     * Set up expectations for all the default bind behaviour, with variation for
     * workspace starting as read-only
     * 
@@ -578,8 +520,6 @@ public class EditorOptionsPresenterTest extends PresenterTest
       expectRegisterEditorOptionsChangeHandlers();
       expectSetDefaultEditorOptionsChkStates();
 
-      expect(mockDisplay.getModalNavigationOptionsSelect()).andReturn(mockFilterOptionsSelect).anyTimes();
-      expect(mockFilterOptionsSelect.addChangeHandler(capture(capturedNavigationOptionsSelectChangeHandler))).andReturn(createMock(HandlerRegistration.class)).once();
    }
 
    private void expectSetDefaultEditorOptionsChkStates()
@@ -621,6 +561,6 @@ public class EditorOptionsPresenterTest extends PresenterTest
    @Override
    protected void setDefaultBindExpectations()
    {
-      // Not used as boolean required, see .expectBindMethodBehaviour(boolean)
+      mockDisplay.setNavOptionHandler(optionsPanelPresenter);
    }
 }

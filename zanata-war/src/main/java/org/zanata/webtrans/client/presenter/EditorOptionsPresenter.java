@@ -31,7 +31,9 @@ import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -42,7 +44,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresenter.Display>
+public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresenter.Display> implements EnumRadioButtonGroup.SelectionChangeListener<NavOption>
 {
    public interface Display extends WidgetDisplay
    {
@@ -60,14 +62,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
 
       void setNavOptionVisible(boolean visible);
 
-      HasChangeHandlers getModalNavigationOptionsSelect();
-
-      // possible filter values
-      static final String KEY_FUZZY_UNTRANSLATED = "FU";
-      static final String KEY_FUZZY = "F";
-      static final String KEY_UNTRANSLATED = "U";
-
-      String getSelectedFilter();
+      void setNavOptionHandler(EnumRadioButtonGroup.SelectionChangeListener<NavOption> listener);
    }
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
@@ -96,6 +91,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
    @Override
    protected void onBind()
    {
+      display.setNavOptionHandler(this);
       validationOptionsPresenter.bind();
       if(userWorkspaceContext.hasReadOnlyAccess())
       {
@@ -160,31 +156,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
       display.getEnterChk().setValue(configHolder.isEnterSavesApproved(), false);
       display.getEscChk().setValue(configHolder.isEscClosesEditor(), false);
 
-      registerHandler(display.getModalNavigationOptionsSelect().addChangeHandler(new ChangeHandler()
-      {
-         @Override
-         public void onChange(ChangeEvent event)
-         {
-            String selectedOption = display.getSelectedFilter();
-            if (selectedOption.equals(Display.KEY_FUZZY_UNTRANSLATED))
-            {
-               configHolder.setButtonUntranslated(true);
-               configHolder.setButtonFuzzy(true);
-            }
-            else if (selectedOption.equals(Display.KEY_FUZZY))
-            {
-               configHolder.setButtonFuzzy(true);
-               configHolder.setButtonUntranslated(false);
-            }
-            else if (selectedOption.equals(Display.KEY_UNTRANSLATED))
-            {
-               configHolder.setButtonFuzzy(false);
-               configHolder.setButtonUntranslated(true);
-            }
-            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
-         }
-      }));
-
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
          @Override
@@ -209,6 +180,28 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
    {
       boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
       configHolder.setDisplayButtons(displayButtons);
+      eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+   }
+
+   @Override
+   public void onSelectionChange(String groupName, NavOption value)
+   {
+      // TODO change configHolder to accept NavOption enum
+      if (value == NavOption.FUZZY_UNTRANSLATED)
+      {
+         configHolder.setButtonUntranslated(true);
+         configHolder.setButtonFuzzy(true);
+      }
+      else if (value == NavOption.FUZZY)
+      {
+         configHolder.setButtonFuzzy(true);
+         configHolder.setButtonUntranslated(false);
+      }
+      else if (value == NavOption.UNTRANSLATED)
+      {
+         configHolder.setButtonFuzzy(false);
+         configHolder.setButtonUntranslated(true);
+      }
       eventBus.fireEvent(UserConfigChangeEvent.EVENT);
    }
 
