@@ -32,10 +32,10 @@ import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
+import net.sf.okapi.common.filterwriter.GenericContent;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.resource.StartSubDocument;
-import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
 
 import org.slf4j.Logger;
@@ -74,6 +74,8 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    private final IdSource idSource;
    private boolean requireFileOutput;
 
+   private final GenericContent converter;
+
    /**
     * Create an adapter that will use filter-provided id as TextFlow id.
     * 
@@ -106,6 +108,8 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       this.filter = filter;
       this.idSource = idSource;
       this.requireFileOutput = requireFileOutput;
+
+      this.converter = new GenericContent();
 
       log = LoggerFactory.getLogger(GenericOkapiFilterAdapter.class);
    }
@@ -145,7 +149,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
                {
                   TextFlow tf = new TextFlow(getIdFor(tu, subDocName), sourceLocale);
                   tf.setPlural(false);
-                  tf.setContents(tu.getSource().toString());
+                  tf.setContents(converter.fromFragmentToLetterCoded(tu.getSource().getFirstContent()));
                   resources.add(tf);
                }
             }
@@ -208,7 +212,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
                if (tu.isTranslatable())
                {
                   TextFlowTarget tft = new TextFlowTarget(getIdFor(tu, subDocName));
-                  tft.setContents(tu.getSource().toString());
+                  tft.setContents(converter.fromFragmentToLetterCoded(tu.getSource().getFirstContent()));
                   tft.setState(ContentState.Approved);
                   translations.add(tft);
                }
@@ -307,7 +311,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
                TextFlowTarget tft = translations.get(getIdFor(tu, subDocName));
                if (tft != null)
                {
-                  tu.setTargetContent(localeId, new TextFragment(tft.getContents().get(0)));
+                  tu.setTargetContent(localeId, converter.fromLetterCodedToFragment(tft.getContents().get(0), tu.getSource().getFirstContent().clone(), true));
                }
             }
             writer.handleEvent(event);
