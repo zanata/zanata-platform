@@ -130,4 +130,13 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Action")
    String action();
+
+   @DefaultMessage("Glossary Details")
+   String glossaryDetails();
+
+   @DefaultMessage("Dismiss")
+   String dismiss();
+
+   @DefaultMessage("Save")
+   String save();
 }

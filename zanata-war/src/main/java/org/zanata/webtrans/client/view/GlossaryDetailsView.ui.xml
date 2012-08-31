@@ -9,15 +9,14 @@
 	
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
-	<g:DialogBox autoHide="true" modal="true">
-	  <g:caption><b><ui:msg>Glossary Details</ui:msg></b></g:caption>
-	  <g:HTMLPanel>
+	<g:DialogBox autoHide="true" modal="true" styleName="GWTDialogBox">
+	  <g:HTMLPanel width="100%" height="100%">
 			<g:VerticalPanel>
 				<g:HorizontalPanel width="100%">
 					<g:cell width="50%">
 						<g:HorizontalPanel>
 						<g:Label><ui:msg>Entries:</ui:msg></g:Label>
-					    <g:ListBox ui:field='entryListBox' visibleItemCount='5'/>
+					    <g:ListBox ui:field='entryListBox'/>
 					    </g:HorizontalPanel>
 				    </g:cell>
 				    <g:cell width="50%">
@@ -36,13 +35,14 @@
 					</g:VerticalPanel>
 					<g:VerticalPanel>
 						<g:Label ui:field="targetLabel"/>
-						<g:TextArea ui:field='targetText' readOnly='true'/>
+						<g:TextArea ui:field='targetText'/>
 						<g:Label><ui:msg>Comments:</ui:msg></g:Label>
 						<g:TextArea ui:field='targetComment' readOnly='true'/>
 					</g:VerticalPanel>
 				</g:HorizontalPanel>
 			</g:VerticalPanel>
-	    <g:Button ui:field='dismissButton'><ui:msg>Dismiss</ui:msg></g:Button>
+	    <g:Button ui:field='dismissButton'/>
+	    <g:Button ui:field='saveButton'/>
 	  </g:HTMLPanel>
 	</g:DialogBox>
 </ui:UiBinder>

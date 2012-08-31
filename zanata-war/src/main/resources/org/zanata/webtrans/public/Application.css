@@ -921,3 +921,26 @@ td.ApprovedStateDecoration div div div
 	box-shadow:0 0 6px gray inset;
 }
 
+/* -------------- GWT Dialog Box ----------------*/
+.GWTDialogBox
+{
+	width:500px;
+	height:300px;
+	background:#F2F2F2;
+	border:1px solid #C0C0C0;
+	border-radius:3px;
+	padding:5px;
+	box-shadow:1px 1px 3px #5C5C5C;
+}
+
+.GWTDialogBox .Caption
+{
+	padding:4px;
+	font-weight:bold;
+	font-size:1.1em;
+	border-radius:3px;
+	background:#575757;
+	color:#FFFFFF;
+	cursor:pointer;
+}
+

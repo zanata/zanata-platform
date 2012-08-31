@@ -10,6 +10,8 @@ import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
+import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
+import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -24,8 +26,6 @@ import com.google.inject.Inject;
 
 public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPresenter.Display>
 {
-   private final CachingDispatchAsync dispatcher;
-
    public interface Display extends WidgetDisplay
    {
       void hide();
@@ -52,6 +52,8 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
       HasClickHandlers getDismissButton();
 
+      HasClickHandlers getSaveButton();
+
       void clearEntries();
 
       void addEntry(String text);
@@ -59,10 +61,14 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
    private GetGlossaryDetailsResult glossaryDetails;
 
+   private GlossaryDetails selectedDetailEntry;
+
    private final UiMessages messages;
 
+   private final CachingDispatchAsync dispatcher;
+
    @Inject
-   public GlossaryDetailsPresenter(final Display display, EventBus eventBus, UiMessages messages, CachingDispatchAsync dispatcher)
+   public GlossaryDetailsPresenter(final Display display, EventBus eventBus, UiMessages messages, final CachingDispatchAsync dispatcher)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -74,8 +80,38 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
          public void onClick(ClickEvent event)
          {
             display.hide();
+            selectedDetailEntry = null;
          }
       }));
+
+      registerHandler(display.getSaveButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (selectedDetailEntry != null)
+            {
+               // check if there's any changes and save
+               if(!display.getTargetText().getText().equals(selectedDetailEntry.getTarget()))
+               {
+                  dispatcher.execute(new UpdateGlossaryTermAction(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getTargetLocale(), selectedDetailEntry.getSource(), display.getTargetText().getText(), selectedDetailEntry.getTargetVersionNum()), new AsyncCallback<UpdateGlossaryTermResult>()
+                  {
+                     @Override
+                     public void onFailure(Throwable caught)
+                     {
+                        Log.error(caught.getMessage(), caught);
+                     }
+                     @Override
+                     public void onSuccess(UpdateGlossaryTermResult result)
+                     {
+                        //Update with lastest term details in list
+                     }
+                  });
+               }
+            }
+         }
+      }));
+
       registerHandler(display.getEntryListBox().addChangeHandler(new ChangeHandler()
       {
          @Override
@@ -126,15 +162,15 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       String srcRef = "";
       if (selected >= 0)
       {
-         GlossaryDetails item = glossaryDetails.getGlossaryDetails().get(selected);
-         srcRef = item.getSourceRef();
-         for (String srcComment : item.getSourceComment())
+         selectedDetailEntry = glossaryDetails.getGlossaryDetails().get(selected);
+         srcRef = selectedDetailEntry.getSourceRef();
+         for (String srcComment : selectedDetailEntry.getSourceComment())
          {
             srcComments.append(srcComment);
             srcComments.append("\n");
          }
 
-         for (String targetComment : item.getTargetComment())
+         for (String targetComment : selectedDetailEntry.getTargetComment())
          {
             targetComments.append(targetComment);
             targetComments.append("\n");

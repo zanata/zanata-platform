@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
+import org.zanata.webtrans.client.resources.UiMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
 {
@@ -48,14 +50,18 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    TextArea targetComment;
 
    @UiField
-   Button dismissButton;
+   Button dismissButton, saveButton;
 
    @UiField
    ListBox entryListBox;
 
-   public GlossaryDetailsView()
+   @Inject
+   public GlossaryDetailsView(UiMessages messages)
    {
       dialogBox = uiBinder.createAndBindUi(this);
+      dialogBox.setText(messages.glossaryDetails());
+      dismissButton.setText(messages.dismiss());
+      saveButton.setText(messages.save());
    }
 
    public void hide()
@@ -109,6 +115,13 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    {
       return dismissButton;
    }
+   
+   @Override
+   public HasClickHandlers getSaveButton()
+   {
+      return saveButton;
+   }
+   
 
    @Override
    public int getSelectedDocumentIndex()

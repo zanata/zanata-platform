@@ -76,7 +76,7 @@ public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossary
          {
             targetComments.add(termComment.getComment());
          }
-         items.add(new GlossaryDetails(srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId()));
+         items.add(new GlossaryDetails(srcTerm.getContent(), entry.getGlossaryTerms().get(hLocale).getContent(), srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId(), entry.getGlossaryTerms().get(hLocale).getVersionNum()));
       }
 
       return new GetGlossaryDetailsResult(items);

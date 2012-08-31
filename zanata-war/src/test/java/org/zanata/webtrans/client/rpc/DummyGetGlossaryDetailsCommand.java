@@ -41,7 +41,7 @@ public class DummyGetGlossaryDetailsCommand implements Command
          targetComments.add("Target Comment " + (2 + i));
          targetComments.add("Target Comment " + (3 + i));
          
-         items.add(new GlossaryDetails(srcComments, targetComments, "Dummy source ref " + (1 + i), new LocaleId("en-us"), action.getWorkspaceId().getLocaleId()));
+         items.add(new GlossaryDetails(srcComments, targetComments, "Dummy source ref " + (1 + i), new LocaleId("en-us"), action.getWorkspaceId().getLocaleId(), null));
       }
       
       callback.onSuccess(new GetGlossaryDetailsResult(items));
