@@ -39,7 +39,9 @@
         </s:decorate>
 
         <a4j:outputPanel rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
-            <h:outputText styleClass="name">#{messages['jsf.login.openid.SelectProvider']}</h:outputText><br/>
+            <h:outputText>#{messages['jsf.login.openid.SelectProvider']}</h:outputText>
+            <br/>
+            <br/>
             <rich:spacer height="10"/>
             <a4j:commandButton id="fedora_signin" image="../images/openid/fedora.png" action="#{loginAction.useFedoraLogin}"
                                styleClass="login_option" title="Fedora"
@@ -65,7 +67,7 @@
                 <ui:define name="label">
                     <span id="identityLabel" class="loginForm_label">#{messages['jsf.FedoraUsername']}</span>
                 </ui:define>
-                <h:inputText id="username" value="#{loginAction.username}"/>
+                <h:inputText styleClass="name" id="username" value="#{loginAction.username}"/>
                 <ui:remove><h:inputHidden id="password" value="#{credentials.password}"/></ui:remove>
                 <br/>
             </s:decorate>

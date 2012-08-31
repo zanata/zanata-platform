@@ -188,7 +188,7 @@ rule LangTeamMemberAddTranslation
 when
   check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
   authenticatedPerson: HPerson()
-  $project: HProject( eval(isUserAllowedAccess($project)) )
+  # $project: HProject( eval(isUserAllowedAccess($project)) )
   eval(authenticatedPerson != null)
   $locale: HLocale(
     eval(authenticatedPerson.isMember($locale))

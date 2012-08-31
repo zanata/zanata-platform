@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,7 +101,15 @@ public class ZPathService
 
    public String generatePathForDocument( HDocument document )
    {
-      String docIdNoSlash = RestUtil.convertToDocumentURIId( document.getDocId() );
+      String docIdNoSlash = null;
+      try
+      {
+         docIdNoSlash = URLEncoder.encode( RestUtil.convertToDocumentURIId( document.getDocId() ), "UTF-8" );
+      }
+      catch (UnsupportedEncodingException e)
+      {
+         throw new RuntimeException(e);
+      }
 
       MessageFormat mssgFormat = new MessageFormat( DOCUMENT_ZPATH_PRIVATE );
       return mssgFormat.format(

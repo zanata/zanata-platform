@@ -7,7 +7,7 @@
                 xmlns:s="http://jboss.com/products/seam/taglib"
                 template="../WEB-INF/layout/template.xhtml">
 
-    <ui:define name="page_title">Credentials</ui:define>
+    <ui:define name="page_title">#{messages['jsf.identities.Title']}</ui:define>
 
     <ui:define name="head">
         <script type="text/javascript">
@@ -74,7 +74,7 @@
 
     </ui:define>
 
-    <ui:define name="left_content">
+    <ui:define name="right_content">
         <rich:panel>
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <s:link styleClass="action_link" view="/profile/add_identity.xhtml" propagation="none">

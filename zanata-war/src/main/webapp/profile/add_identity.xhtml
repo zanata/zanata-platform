@@ -35,7 +35,9 @@
 
         <h:form>
             <rich:panel>
-                <h:outputText >#{messages['jsf.identities.SelectIdentityType']}</h:outputText><br/>
+                <h:outputText >#{messages['jsf.identities.SelectIdentityType']}</h:outputText>
+                <br/>
+                <br/>
                 <rich:spacer height="20"/>
                 <a4j:commandButton id="fedora_signin" image="../images/openid/fedora.png" action="#{credentialsAction.addFedoraCredentials}"
                                    styleClass="login_option" title="Fedora"

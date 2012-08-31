@@ -20,16 +20,6 @@
  */
 package org.zanata;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListResourceBundle;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.apache.log4j.HTMLLayout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -43,10 +33,24 @@ import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
+import org.jboss.seam.web.ServletContexts;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.AuthenticationType;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListResourceBundle;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -216,7 +220,14 @@ public class ApplicationConfiguration implements Serializable
 
    public String getServerPath()
    {
-      return configValues.get(HApplicationConfiguration.KEY_HOST);
+      String configuredValue = configValues.get(HApplicationConfiguration.KEY_HOST);
+      // Try to determine a server path if one is not configured
+      if( configuredValue == null )
+      {
+         HttpServletRequest request = ServletContexts.instance().getRequest();
+         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+      }
+      return null;
    }
 
    public String getByKey(String key)
