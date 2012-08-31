@@ -38,7 +38,7 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    Styles style;
 
    @UiField
-   InlineLabel editorOptionsTab, validationOptionsTab, chatTab, participantsLabel;
+   InlineLabel editorOptionsTab, validationOptionsTab, chatTab;
    
    @UiField
    LayoutPanel container;
@@ -135,12 +135,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       return container;
    }
 
-   @Override
-   public void setParticipantsTitle(int size)
-   {
-      participantsLabel.setText(String.valueOf(size));
-   }
-   
    @Override
    public void setChatTabAlert(boolean alert)
    {

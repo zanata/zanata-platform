@@ -223,7 +223,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    @Override
    public void setPopupTopRightCorner()
    {
-      super.setPopupPosition(Window.getClientWidth() - (getWidth() + 5), 65);
+      super.setPopupPosition(Window.getClientWidth() - (getWidth() + 30), 65);
    }
 
    @Override
