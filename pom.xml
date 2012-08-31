@@ -166,7 +166,6 @@
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt.version>2.4.0</gwt.version>
-		<gwt-incubator.version>2.2.0-zanata-0</gwt-incubator.version>
         <hamcrest.version>1.2.1</hamcrest.version>
 		<resteasy.version>2.1.0.GA</resteasy.version>
 		<seam.version>2.2.0.GA</seam.version>
@@ -589,11 +588,6 @@
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
 				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-incubator</artifactId>
-				<version>${gwt-incubator.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.inject</groupId>
