@@ -154,10 +154,10 @@
                 </rich:column>
                 <rich:column rendered="#{projectIterationFilesAction.fileUploadAllowed}">
                     <f:facet name="header">
-                        #{messages['jsf.iteration.files.Upload']}
+                        #{messages['jsf.Upload']}
                     </f:facet>
                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link">
-                        #{messages['jsf.iteration.files.Upload']}
+                        #{messages['jsf.Upload']}
                     </a>
                 </rich:column>
                 <rich:column>
@@ -225,7 +225,7 @@
                 <h:selectBooleanCheckbox value="#{projectIterationFilesAction.translationFileUpload.mergeTranslations}"
                                          title="#{messages['jsf.iteration.files.MergeCheckbox.Title']}"/>
                 <div align="right">
-                    <h:commandButton value="#{messages['jsf.iteration.files.Upload']}"
+                    <h:commandButton value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadTranslationFile}"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideUploadPanel();"/>
@@ -235,7 +235,7 @@
 
     </ui:define>
 
-    <ui:define name="left_content">
+    <ui:define name="right_content">
 
         <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
@@ -294,7 +294,7 @@
                               styleClass="action_link"
                               title="Supported types: .pot"
                               rendered="#{projectIterationFilesAction.documentUploadAllowed}">
-                    #{messages['jsf.iteration.files.Upload']} Document
+                    #{messages['jsf.Upload']} Document
                     <rich:componentControl for="uploadDocPanel"
                                            operation="show"
                                            event="onclick"
@@ -329,7 +329,7 @@
                     <h:outputLabel value="Source Language"/>
                 </h:selectOneMenu>
                 <div align="right">
-                    <h:commandButton value="#{messages['jsf.iteration.files.Upload']}"
+                    <h:commandButton value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideDocUploadPanel();"/>

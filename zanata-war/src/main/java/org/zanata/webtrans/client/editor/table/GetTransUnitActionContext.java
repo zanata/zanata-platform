@@ -33,7 +33,7 @@ import com.google.common.base.Objects;
  */
 public class GetTransUnitActionContext
 {
-   private final DocumentId documentId;
+   private DocumentId documentId;
    private String findMessage;
    private int offset = 0;
    private int count = 5; //this should be set to UserConfigHolder.getPageSize()
@@ -42,7 +42,7 @@ public class GetTransUnitActionContext
    private boolean filterUntranslated;
    private TransUnitId targetTransUnitId;
 
-   private GetTransUnitActionContext(DocumentId documentId)
+   public GetTransUnitActionContext(DocumentId documentId)
    {
       this.documentId = documentId;
    }
@@ -59,19 +59,16 @@ public class GetTransUnitActionContext
       targetTransUnitId = other.getTargetTransUnitId();
    }
 
-   public static GetTransUnitActionContext of(DocumentId documentId)
-   {
-      return new GetTransUnitActionContext(documentId);
-   }
-
-   public static GetTransUnitActionContext of(DocumentId documentId, String findMessage)
-   {
-      return new GetTransUnitActionContext(documentId).setFindMessage(findMessage);
-   }
-
    public DocumentId getDocumentId()
    {
       return documentId;
+   }
+
+   public GetTransUnitActionContext changeDocument(DocumentId document)
+   {
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.documentId = document;
+      return result;
    }
 
    public String getFindMessage()
@@ -79,7 +76,7 @@ public class GetTransUnitActionContext
       return findMessage;
    }
 
-   public GetTransUnitActionContext setFindMessage(String findMessage)
+   public GetTransUnitActionContext changeFindMessage(String findMessage)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.findMessage = findMessage;
@@ -91,7 +88,7 @@ public class GetTransUnitActionContext
       return filterTranslated;
    }
 
-   public GetTransUnitActionContext setFilterTranslated(boolean filterTranslated)
+   public GetTransUnitActionContext changeFilterTranslated(boolean filterTranslated)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.filterTranslated = filterTranslated;
@@ -103,7 +100,7 @@ public class GetTransUnitActionContext
       return filterNeedReview;
    }
 
-   public GetTransUnitActionContext setFilterNeedReview(boolean filterNeedReview)
+   public GetTransUnitActionContext changeFilterNeedReview(boolean filterNeedReview)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.filterNeedReview = filterNeedReview;
@@ -115,7 +112,7 @@ public class GetTransUnitActionContext
       return filterUntranslated;
    }
 
-   public GetTransUnitActionContext setFilterUntranslated(boolean filterUntranslated)
+   public GetTransUnitActionContext changeFilterUntranslated(boolean filterUntranslated)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.filterUntranslated = filterUntranslated;
@@ -127,7 +124,7 @@ public class GetTransUnitActionContext
       return targetTransUnitId;
    }
 
-   public GetTransUnitActionContext setTargetTransUnitId(TransUnitId targetTransUnitId)
+   public GetTransUnitActionContext changeTargetTransUnitId(TransUnitId targetTransUnitId)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.targetTransUnitId = targetTransUnitId;
@@ -139,7 +136,7 @@ public class GetTransUnitActionContext
       return offset;
    }
 
-   public GetTransUnitActionContext setOffset(int offset)
+   public GetTransUnitActionContext changeOffset(int offset)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.offset = offset;
@@ -151,7 +148,7 @@ public class GetTransUnitActionContext
       return count;
    }
 
-   public GetTransUnitActionContext setCount(int count)
+   public GetTransUnitActionContext changeCount(int count)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.count = count;

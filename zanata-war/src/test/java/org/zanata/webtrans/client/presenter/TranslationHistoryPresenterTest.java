@@ -159,6 +159,7 @@ public class TranslationHistoryPresenterTest
       presenter.showTranslationHistory(transUnitId);
 
       // Then:
+      verify(dataProvider).setLoading(true);
       verify(display).resetView();
       verify(display).center();
       assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
@@ -167,6 +168,7 @@ public class TranslationHistoryPresenterTest
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
       MatcherAssert.assertThat(dataProvider.getList(), Matchers.contains(latest, historyItem));
+      verify(dataProvider).setLoading(false);
    }
 
    @Test

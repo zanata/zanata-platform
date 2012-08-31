@@ -6,6 +6,11 @@ body {
 	font: 12px helvetica, arial, Tahoma, Geneva, sans-serif;
 }
 
+select
+{
+	height:24px;
+}
+
 select,input,button,textarea,button {
 	font: 99% arial, helvetica, clean, sans-serif;
 }
@@ -291,18 +296,20 @@ a.breadcrumbs_link:hover
 }
 
 .message li.infomsg {
-	background-image: url(../images/msginfo.png);
-	background-color: #fafafe;
+	color:#003CC2;
+	font-size:1.2em;
 }
 
 .message li.errormsg {
-	background-image: url(../images/msgerror.png);
-	background-color: #fefafa;
+	color:#B62918;
+	font-size:1.2em;
+	font-weight:bold;
 }
 
 .message li.warnmsg {
-	background-image: url(../images/msgwarn.png);
-	background-color: #fefefa;
+	color:#D77D00;
+	font-size:1.2em;
+	font-weight:bold;
 }
 
 .name {
@@ -999,6 +1006,57 @@ a.version_link:hover {
 
 /* ------------------------ End Profile Page CSS --------------------------------------*/
 
+
+
+/* ------------------------ Glossary Page CSS -------------------------------------*/
+div.glosaryFileUploadDialog
+{
+	padding:10px 5px;
+	
+}
+
+div.glosaryFileUploadDialog label
+{
+	font-weight:bold;
+	
+}
+
+div.glosaryFileUploadDialog select
+{
+	float:right;
+	height:22px;
+	
+}
+
+div.glosaryDeleteDialog
+{
+	padding:10px 5px;
+}
+
+div.glosaryFileUploadDialog label
+{
+	font-weight:bold;
+	
+}
+
+div.glosaryDeleteWarn
+{
+	font-size:12px;
+	font-weight:bold;
+	padding:8px 0;
+}
+
+div.glosaryDeleteWarn span.warn
+{
+	font-size:1.0em;
+	font-weight:bold;
+	color:#D77D00;
+}
+
+/* ------------------------ End Glossary Page CSS --------------------------------------*/
+
+
+
 /* ------------------------ Admin Page CSS -------------------------------------*/
 a.admin_link {
     font-size: 1.0em;
@@ -1006,6 +1064,7 @@ a.admin_link {
     color: #7092C3;
     text-decoration: none;
     text-align: center;
+    outline:none;
 }
 
 a.admin_link:hover {

@@ -53,7 +53,6 @@
 	<g:LayoutPanel>
 		<g:layer top="24px" bottom="0" left="0" width="24px">
 			<g:FlowPanel>
-	    		<g:InlineLabel ui:field="participantsLabel" addStyleNames="{style.participantsLabel}"/>
 	    		<g:InlineLabel ui:field="chatTab" styleName="icon-chat-1 {style.menuButton}"/>
 	    		<g:InlineLabel ui:field="editorOptionsTab" styleName="icon-cog {style.menuButton}"/>
 	    		<g:InlineLabel ui:field="validationOptionsTab" styleName="icon-ok-circle-2 {style.menuButton}"/>

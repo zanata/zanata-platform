@@ -235,7 +235,7 @@ rule GlossaristDeleteGlossary
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(action == "glossary-delete" || action == "glossary-update", granted == false)
+  check: PermissionCheck(action == "glossary-delete" || action == "glossary-update" || action == "glossary-insert", granted == false)
   Role(name == "glossarist-admin")
 then
   check.grant();

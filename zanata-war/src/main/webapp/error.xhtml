@@ -13,7 +13,7 @@
 
         <h1>#{messages['jsf.ErrorTitle']}</h1>
 
-        <h:messages id="errorMessage" styleClass="message" errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg" />
+        <h:messages id="errorMessage" styleClass="message" errorClass="errormsg icon-info-circle-2" infoClass="infomsg icon-info-circle-2" warnClass="warnmsg icon-attention" />
         <h:outputText id="noErrorsMessage" rendered="#{empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">#{messages['jsf.NoErrors']}</h:outputText>
 
     </ui:define>

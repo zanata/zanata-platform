@@ -18,7 +18,6 @@
         <a4j:jsFunction name="validateLangName" action="#{languageManagerAction.updateLanguage()}"
                         reRender="output,localeNameMssgs"/>
 
-        <f:facet name="header">#{messages['jsf.SupportedLanguageDetails']}</f:facet>
         <h:panelGrid>
             <s:decorate id="localeField"
                         template="edit.xhtml">

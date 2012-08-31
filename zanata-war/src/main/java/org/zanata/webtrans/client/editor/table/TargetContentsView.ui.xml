@@ -7,9 +7,8 @@
 
 
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
-    <ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 
-    <ui:style>
+    <ui:style field="style" type="org.zanata.webtrans.client.editor.table.TargetContentsView.Styles">
         .targetContentsCell
         {
             table-layout: fixed;
@@ -21,14 +20,11 @@
 			overflow-x:auto;
 		}
 
-        .undoContainer
+        .button
         {
-            text-decoration: underline;
             cursor: pointer;
-            color: orange;
-            font-size: 0.8em;
-            font-weight: bold;
-            padding-right: 2px;
+            font-size: 20px;
+            padding-left: 3px;
         }
     </ui:style>
 
@@ -39,22 +35,14 @@
                 <fui:ValidationMessagePanelView ui:field="validationPanel" />
             </g:FlowPanel>
         </g:cell>
-        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="40px">
-            <g:VerticalPanel ui:field="buttons" styleName="gwt-Button">
-                <g:SimplePanel ui:field="undoContainer" styleName="{style.undoContainer}" />
-                <g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editSaveShortcut}">
-                    <g:upFace image="{images.cellEditorAccept}" />
-                </g:PushButton>
-                <g:PushButton ui:field="fuzzyButton" styleName="gwt-Button" title="{messages.saveAsFuzzy}">
-                    <g:upFace image="{images.cellEditorFuzzy}" />
-                </g:PushButton>
-                <g:PushButton ui:field="cancelButton" styleName="gwt-Button" title="{messages.editCancelShortcut}">
-                    <g:upFace image="{images.cellEditorCancel}" />
-                </g:PushButton>
-                <g:PushButton ui:field="historyButton" styleName="gwt-Button" title="{messages.history}" >
-                    <g:upFace image="{images.copySrcButton}" />
-                </g:PushButton>
-            </g:VerticalPanel>
+        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="30px">
+            <g:HTMLPanel ui:field="buttons" height="120px">
+                <g:InlineLabel ui:field="saveIcon" title="{messages.editSaveShortcut}" styleName="icon-install {style.button}"/>
+                <g:InlineLabel ui:field="fuzzyIcon" title="{messages.saveAsFuzzy}" styleName="icon-flag-1 {style.button}" />
+                <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}" styleName="icon-cancel-circle {style.button}" />
+                <g:InlineLabel ui:field="historyIcon" title="{messages.history}" styleName="icon-back-in-time {style.button}" />
+                <g:SimplePanel ui:field="undoContainer" />
+            </g:HTMLPanel>
         </g:cell>
     </g:HorizontalPanel>
 </ui:UiBinder>

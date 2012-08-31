@@ -85,8 +85,6 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
 
       HasVisibility getContainer();
 
-      void setParticipantsTitle(int size);
-
       void setChatTabAlert(boolean alert);
 
       Tab getCurrentTab();
@@ -234,7 +232,6 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
          public void onSuccess(GetTranslatorListResult result)
          {
             workspaceUsersPresenter.initUserList(result.getTranslatorList());
-            display.setParticipantsTitle(result.getSize());
          }
       });
 
@@ -244,7 +241,6 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
             workspaceUsersPresenter.removeTranslator(event.getEditorClientId(), event.getPerson());
-            display.setParticipantsTitle(workspaceUsersPresenter.getTranslatorsSize());
          }
       }));
 
@@ -255,7 +251,6 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
          {
             workspaceUsersPresenter.addTranslator(event.getEditorClientId(), event.getPerson(), null);
             workspaceUsersPresenter.dispatchChatAction(null, messages.hasJoinedWorkspace(event.getPerson().getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
-            display.setParticipantsTitle(workspaceUsersPresenter.getTranslatorsSize());
          }
       }));
 

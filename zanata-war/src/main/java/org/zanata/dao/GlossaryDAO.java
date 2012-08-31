@@ -42,6 +42,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HLocale;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 /**
@@ -163,21 +164,21 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       return matches;
    }
 
-   public Map<String, Integer> getGlossaryTermCountByLocale()
+   public Map<HLocale, Integer> getGlossaryTermCountByLocale()
    {
-      Map<String, Integer> result = new HashMap<String, Integer>();
+      Map<HLocale, Integer> result = new HashMap<HLocale, Integer>();
       
-      Query query = getSession().createQuery("select term.locale.localeId, count(*) from HGlossaryTerm term GROUP BY term.locale.localeId");
+      Query query = getSession().createQuery("select term.locale, count(*) from HGlossaryTerm term GROUP BY term.locale.localeId");
 
       @SuppressWarnings("unchecked")
       List<Object[]> list = query.list();
 
       for (Object[] obj : list)
       {
-         LocaleId locale = (LocaleId) obj[0];
+         HLocale locale = (HLocale) obj[0];
          Long count = (Long) obj[1];
          int countInt = count == null ? 0 : count.intValue();
-         result.put(locale.getId(), countInt);
+         result.put(locale, countInt);
       }
 
       return result;

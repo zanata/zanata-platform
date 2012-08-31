@@ -10,7 +10,7 @@
     template="../WEB-INF/layout/template.xhtml">
    
     <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupMaintainerManageAction.group.name}:#{messages['jsf.AddGroupMaintainer']}</ui:define>
-    <ui:define name="left_content">
+    <ui:define name="right_content">
 		<rich:panel>
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddGroupMaintainer']}</a>

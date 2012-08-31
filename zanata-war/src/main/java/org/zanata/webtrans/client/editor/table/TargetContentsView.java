@@ -30,23 +30,23 @@ import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -64,19 +64,22 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiField
    Grid editorGrid;
    @UiField
-   VerticalPanel buttons;
-   @UiField
-   PushButton saveButton;
-   @UiField
-   PushButton fuzzyButton;
-   @UiField
-   PushButton cancelButton;
-   @UiField
-   SimplePanel undoContainer;
-   @UiField
-   PushButton historyButton;
+   HTMLPanel buttons;
+
    @UiField(provided = true)
    ValidationMessagePanelView validationPanel;
+   @UiField
+   InlineLabel saveIcon;
+   @UiField
+   InlineLabel fuzzyIcon;
+   @UiField
+   InlineLabel cancelIcon;
+   @UiField
+   InlineLabel historyIcon;
+   @UiField
+   Styles style;
+   @UiField
+   SimplePanel undoContainer;
 
    private HorizontalPanel rootPanel;
    private String findMessage;
@@ -124,11 +127,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void addUndo(final UndoLink undoLink)
    {
+      undoLink.setLinkStyle("icon-undo " + style.button());
       undoLink.setUndoCallback(new UndoLink.UndoCallback()
       {
          @Override
          public void preUndo()
          {
+            undoLink.setLinkStyle("icon-progress " + style.button());
          }
 
          @Override
@@ -184,31 +189,32 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       return styles;
    }
 
-   @UiHandler("saveButton")
+   @UiHandler("saveIcon")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApprovedAndMoveNext();
+      listener.saveAsApprovedAndMoveNext(transUnitId);
       event.stopPropagation();
    }
 
-   @UiHandler("fuzzyButton")
+   @UiHandler("fuzzyIcon")
    public void onSaveAsFuzzy(ClickEvent event)
    {
-      listener.saveAsFuzzy();
+      listener.saveAsFuzzy(transUnitId);
       event.stopPropagation();
    }
 
-   @UiHandler("cancelButton")
+   @UiHandler("cancelIcon")
    public void onCancel(ClickEvent event)
    {
-      listener.onCancel();
+      listener.onCancel(transUnitId);
       event.stopPropagation();
    }
 
-   @UiHandler("historyButton")
+   @UiHandler("historyIcon")
    public void onHistoryClick(ClickEvent event)
    {
-      listener.showHistory();
+      listener.showHistory(transUnitId);
+      event.stopPropagation();
    }
 
    @Override
@@ -301,5 +307,15 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public String toString()
    {
       return Objects.toStringHelper(this).add("editors", editors).toString();
+   }
+
+   interface Styles extends CssResource
+   {
+
+      String button();
+
+      String targetContentsCell();
+
+      String editorGridWrapper();
    }
 }

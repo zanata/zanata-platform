@@ -196,7 +196,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void discardChangesAndFilter()
    {
-      targetContentsPresenter.onCancel();
+      targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
       hideFilterConfirmationAndDoFiltering();
    }
 

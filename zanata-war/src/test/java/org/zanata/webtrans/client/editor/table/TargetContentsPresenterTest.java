@@ -172,7 +172,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.saveAsFuzzy();
+      presenter.saveAsFuzzy(selectedTU.getId());
 
       // Then:
       ArgumentCaptor<TransUnitSaveEvent> captor = ArgumentCaptor.forClass(TransUnitSaveEvent.class);
@@ -188,9 +188,14 @@ public class TargetContentsPresenterTest
    @Test
    public void canCopySource()
    {
+      // Given: selected one trans unit
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      presenter.showEditors(selectedTU.getId());
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
 
-      presenter.copySource(editor);
+      presenter.copySource(editor, selectedTU.getId());
 
       verify(editor).setTextAndValidate("source");
       verify(editor).setFocus();
@@ -264,7 +269,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.onCancel();
+      presenter.onCancel(selectedTU.getId());
 
       // Then:
       verify(display, atLeastOnce()).getId();
@@ -324,7 +329,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.saveAsApprovedAndMoveNext();
+      presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
 
       // Then:
       verify(display).focusEditor(1);
@@ -345,7 +350,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.saveAsApprovedAndMoveNext();
+      presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
 
       // Then:
       verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
@@ -383,7 +388,7 @@ public class TargetContentsPresenterTest
       presenter.showEditors(selectedTU.getId());
 
       // When:
-      presenter.showHistory();
+      presenter.showHistory(selectedTU.getId());
 
       // Then:
       verify(historyPresenter).showTranslationHistory(selectedTU.getId());

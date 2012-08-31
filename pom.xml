@@ -21,7 +21,7 @@
     <properties>
       <zanata.api.version>1.8.0-SNAPSHOT</zanata.api.version>
       <zanata.client.version>1.6.0</zanata.client.version>
-      <zanata.common.version>1.6.1</zanata.common.version>
+      <zanata.common.version>1.8.0-SNAPSHOT</zanata.common.version>
 
 	  <richfaces.version>3.3.3.Final</richfaces.version>
 
@@ -60,6 +60,11 @@
           <dependency>
                 <groupId>org.zanata</groupId>
                 <artifactId>zanata-adapter-po</artifactId>
+                <version>${zanata.common.version}</version>
+          </dependency>
+           <dependency>
+                <groupId>org.zanata</groupId>
+                <artifactId>zanata-adapter-glossary</artifactId>
                 <version>${zanata.common.version}</version>
           </dependency>
     
@@ -258,11 +263,6 @@
             <dependency>
                <groupId>com.google.gwt</groupId>
                <artifactId>gwt-user</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>com.google.gwt</groupId>
-               <artifactId>gwt-incubator</artifactId>
                <scope>provided</scope>
             </dependency>
             <dependency>

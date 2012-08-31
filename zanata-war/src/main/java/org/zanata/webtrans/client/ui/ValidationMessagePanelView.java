@@ -18,26 +18,23 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 public class ValidationMessagePanelView extends Composite implements HasUpdateValidationWarning
 {
@@ -52,11 +49,7 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
    {
       String label();
 
-      String clickable();
-
       String content();
-
-      String scrollSection();
 
       String container();
 
@@ -67,31 +60,28 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
    Label headerLabel;
 
    @UiField
-   Anchor runValidationAnchor;
-
-   @UiField
    VerticalPanel contents;
 
    @UiField
-   PushButton validateButton;
+   InlineLabel validateButton;
 
    @UiField
    Styles style;
-
-   @UiField
-   TableResources images;
 
    private final EventBus eventBus;
 
    @UiField
    TableEditorMessages messages;
+   @UiField
+   DisclosurePanel disclosurePanel;
 
    @Inject
    public ValidationMessagePanelView(final EventBus eventBus)
    {
       this.eventBus = eventBus;
       initWidget(uiBinder.createAndBindUi(this));
-      runValidationAnchor.setText(messages.runValidation());
+      // this is to remove the .header class so that it won't get style from menu.css
+      disclosurePanel.getHeader().getParent().removeStyleName("header");
       setHeaderText(messages.validationWarningsHeading(0));
    }
 
@@ -101,12 +91,6 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
    }
 
    // TODO do we need below two handlers? we already do validation on focus and other scenarios
-   @UiHandler("runValidationAnchor")
-   public void onClick(ClickEvent event)
-   {
-      onValidationButtonClick(event);
-   }
-
    @UiHandler("validateButton")
    public void onValidationButtonClick(ClickEvent event)
    {

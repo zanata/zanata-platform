@@ -21,13 +21,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.GlossaryDAO;
-import org.zanata.dao.LocaleDAO;
 import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.service.impl.GlossaryFileServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 
 public class GlossaryRestTest extends ZanataRestTest
@@ -72,7 +71,8 @@ public class GlossaryRestTest extends ZanataRestTest
       seam.ignoreNonResolvable()
             .use("session", getSession())
             .use("identity", mockIdentity)
-            .useImpl(LocaleServiceImpl.class);
+.useImpl(LocaleServiceImpl.class)
+            .useImpl(GlossaryFileServiceImpl.class);
 
       GlossaryService glossaryService = seam.autowire(GlossaryService.class);
 

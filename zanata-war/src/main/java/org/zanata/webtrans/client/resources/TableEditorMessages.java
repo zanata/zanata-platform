@@ -31,14 +31,15 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Validation error - See validation message")
    String notifyValidationError();
 
+   // @formatter:off
    @DefaultMessage("Validation Warnings: {0}")
    @AlternateMessage({
       "one", "Validation Warnings: 1",
       "=0", "Validation Warnings: none" })
-   String validationWarningsHeading(@PluralCount
-   int warningCount);
+   String validationWarningsHeading(@PluralCount int warningCount);
+   // @formatter:on
 
-   @DefaultMessage("Run Validation")
+   @DefaultMessage(" Run Validation")
    String runValidation();
    
    @DefaultMessage("Copy from translation memory match result no.{0}")

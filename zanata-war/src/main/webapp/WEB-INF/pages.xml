@@ -129,7 +129,17 @@
     <action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Register'])}"/>
   </page>
-
+  
+  
+  <!-- Glossary -->
+  <page view-id="/glossary/view.xhtml">
+  	<restrict>#{identity.loggedIn}</restrict>
+  	
+    <action execute="#{breadcrumbs.clear}"/>
+  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Glossary'])}"/>
+  	
+  	<action execute="#{glossaryAction.initialize()}" />
+  </page>
 
   <!-- Admin -->
 
@@ -140,12 +150,6 @@
   <page view-id="/admin/home.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Administration'])}"/>
-  </page>
-  
-  <page view-id="/admin/glossary.xhtml">
-    <action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
-  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Glossary'])}"/>
   </page>
   
   <page view-id="/admin/search.xhtml">

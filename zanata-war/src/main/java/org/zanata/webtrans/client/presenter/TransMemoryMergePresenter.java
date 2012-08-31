@@ -27,6 +27,7 @@ import java.util.List;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
@@ -62,9 +63,10 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    private final NavigationController navigationController;
    private final UiMessages messages;
    private final Provider<UndoLink> undoLinkProvider;
+   private final WebTransMessages webTransMessages;
 
    @Inject
-   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, NavigationController navigationController, UiMessages messages, Provider<UndoLink> undoLinkProvider)
+   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, NavigationController navigationController, UiMessages messages, Provider<UndoLink> undoLinkProvider, WebTransMessages webTransMessages)
    {
       super(display, eventBus);
       this.display = display;
@@ -73,6 +75,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       this.navigationController = navigationController;
       this.messages = messages;
       this.undoLinkProvider = undoLinkProvider;
+      this.webTransMessages = webTransMessages;
       display.setListener(this);
    }
 
@@ -101,7 +104,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
          }
 
          @Override
-         public void onSuccess(UpdateTransUnitResult result)
+         public void onSuccess(final UpdateTransUnitResult result)
          {
             if (result.getUpdateInfoList().isEmpty())
             {
@@ -109,8 +112,23 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
             }
             else
             {
-               UndoLink undoLink = undoLinkProvider.get();
+               final UndoLink undoLink = undoLinkProvider.get();
+               undoLink.setText(webTransMessages.undo());
                undoLink.prepareUndoFor(result);
+               undoLink.setUndoCallback(new UndoLink.UndoCallback()
+               {
+                  @Override
+                  public void preUndo()
+                  {
+                     undoLink.setText(webTransMessages.undoInProgress());
+                  }
+
+                  @Override
+                  public void postUndoSuccess()
+                  {
+                     undoLink.setText(webTransMessages.undone());
+                  }
+               });
                NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(), undoLink);
                eventBus.fireEvent(event);
             }

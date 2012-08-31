@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.resources;
 
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
@@ -32,15 +31,6 @@ public interface Resources extends ClientBundle
 
    @Source("org/zanata/webtrans/WebTransStyles.css")
    WebTransStyles style();
-
-   @Source("images/banner_bg.png")
-   DataResource bannerBackground();
-   
-   @Source("images/z-logo-16px.png")
-   ImageResource logo();
-
-   @Source("images/logo-small.png")
-   ImageResource logo2();
 
    @Source("images/crystal_project/_16x16/filesystems/file_doc.png")
    ImageResource documentImage();
