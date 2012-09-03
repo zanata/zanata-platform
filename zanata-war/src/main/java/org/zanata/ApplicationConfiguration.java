@@ -225,9 +225,9 @@ public class ApplicationConfiguration implements Serializable
       if( configuredValue == null )
       {
          HttpServletRequest request = ServletContexts.instance().getRequest();
-         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+         configuredValue = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
       }
-      return null;
+      return configuredValue;
    }
 
    public String getByKey(String key)

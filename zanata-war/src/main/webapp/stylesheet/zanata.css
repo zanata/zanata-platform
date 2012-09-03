@@ -961,6 +961,18 @@ a.version_link:hover {
 }
 /* -----------------------  End project iteration CSS  -------------------------*/
 
+/* -----------------------  Project Iteration Files CSS  -----------------------------*/
+
+.translate_restriction_title {
+    color: #B62918;
+}
+
+.translate_restriction_mssg_row {
+    padding-bottom: 10px
+}
+
+/* -----------------------  End Project Iteration Files CSS  -----------------------------*/
+
 /* -----------------------  Project Iteration Copy Trans CSS  -----------------------------*/
 
 .copy_trans_options_table td {

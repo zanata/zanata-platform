@@ -299,6 +299,19 @@
             </a4j:form>
         </rich:panel>
 
+        <rich:panel rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate()}">
+            <h3 class="translate_restriction_title">
+                <span class="icon-eye" style="font-size: 16px"></span>#{messages['jsf.iteration.files.WhyCantITranslate']}
+            </h3>
+            <h:dataTable value="#{projectIterationFilesAction.translationDeniedReasonMessages}"
+                         var="mssg"
+                         columnClasses="translate_restriction_mssg_row">
+                <h:column>
+                    <h:outputText value="#{mssg}"/>
+                </h:column>
+            </h:dataTable>
+        </rich:panel>
+
         <rich:modalPanel id="uploadDocPanel"
                          moveable="#{false}"
                          resizeable="#{false}"

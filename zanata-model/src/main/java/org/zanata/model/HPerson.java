@@ -183,33 +183,4 @@ public class HPerson extends ModelEntityBase implements Serializable
       return !getMaintainerProjects().isEmpty();
    }
 
-   @Transient
-   public boolean isCoordinator(HLocale locale)
-   {
-      // TODO PERF consider implementing business key equality
-      for (HLocaleMember membership : locale.getMembers())
-      {
-         if (membership.getPerson().getId().equals( this.getId() ) 
-               && membership.isCoordinator())
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-   
-   @Transient
-   public boolean isMember(HLocale locale)
-   {
-      // TODO PERF consider implementing business key equality
-      for (HLocaleMember membership : locale.getMembers())
-      {
-         if (membership.getPerson().getId().equals( this.getId() ) )
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
 }

@@ -22,7 +22,13 @@ package org.zanata.security;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.dao.AccountRoleDAO;
+import org.zanata.dao.PersonDAO;
+import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
+import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 
 /**
@@ -38,14 +44,15 @@ public class SecurityFunctions
 
    public static boolean isUserAllowedAccess( HProject project )
    {
-      ZanataIdentity identity =
-            (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-
       if( project.isRestrictedByRoles() )
       {
+         ZanataIdentity identity = getIdentity();
+
          if( identity != null )
          {
-            for(HAccountRole role : project.getAllowedRoles())
+            AccountRoleDAO accountRoleDAO = (AccountRoleDAO)Component.getInstance(AccountRoleDAO.class);
+
+            for(HAccountRole role : accountRoleDAO.getByProject(project))
             {
                if( identity.hasRole( role.getName() ) )
                {
@@ -61,5 +68,41 @@ public class SecurityFunctions
       {
          return true;
       }
+   }
+
+   public static boolean isUserMemberOfLanguageTeam( HLocale lang )
+   {
+      HAccount authenticatedAccount = getAuthenticatedAccount();
+      PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);
+
+      if( authenticatedAccount != null )
+      {
+         return personDAO.isMemberOfLanguageTeam( authenticatedAccount.getPerson(), lang );
+      }
+
+      return false; // No authenticated user
+   }
+
+   public static boolean isUserCoordinatorOfLanguageTeam( HLocale lang )
+   {
+      HAccount authenticatedAccount = getAuthenticatedAccount();
+      PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);
+
+      if( authenticatedAccount != null )
+      {
+         return personDAO.isCoordinatorOfLanguageTeam( authenticatedAccount.getPerson(), lang );
+      }
+
+      return false; // No authenticated user
+   }
+
+   private static final ZanataIdentity getIdentity()
+   {
+      return (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
+   }
+
+   private static final HAccount getAuthenticatedAccount()
+   {
+      return (HAccount) Component.getInstance(JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION);
    }
 }

@@ -118,4 +118,39 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       return totalCount.intValue();
    }
 
+   /**
+    * Indicates if a Person is member of a language team.
+    * @param person The person
+    * @param language The language team
+    * @return True if person is a member of the language team.
+    */
+   public boolean isMemberOfLanguageTeam( HPerson person, HLocale language )
+   {
+      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
+            "where id.person = :person and id.supportedLanguage = :language")
+            .setParameter("person", person)
+            .setParameter("language", language);
+      q.setCacheable(true).setComment("PersonDAO.isMemberOfLanguageTeam");
+      Long totalCount = (Long) q.uniqueResult();
+      return totalCount > 0L;
+   }
+
+   /**
+    * Indicates if a Person is a coordinator of a language team.
+    * @param person The person
+    * @param language The language team
+    * @return True if person is a coordinator of the language team.
+    */
+   public boolean isCoordinatorOfLanguageTeam( HPerson person, HLocale language )
+   {
+      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
+            "where id.person = :person and id.supportedLanguage = :language " +
+            "and coordinator = true")
+            .setParameter("person", person)
+            .setParameter("language", language);
+      q.setCacheable(true).setComment("PersonDAO.isCoordinatorOfLanguageTeam");
+      Long totalCount = (Long) q.uniqueResult();
+      return totalCount > 0L;
+   }
+
 }
