@@ -89,5 +89,7 @@ public class TransUnitDetailsPanel extends Composite
       String header();
 
       String tuDetailsLabel();
+
+      String headerLabel();
    }
 }

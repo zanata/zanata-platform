@@ -73,7 +73,7 @@ public class UserConfigHolder
 
    protected void setEscClosesEditor(boolean escClosesEditor)
    {
-      state = new ConfigurationState(state.enterSavesApproved, escClosesEditor, state.isButtonFuzzy(), state.isButtonUntranslated(), state.isDisplayButtons(), state.getPageSize());
+      state = new ConfigurationState(state.isEnterSavesApproved(), escClosesEditor, state.isButtonFuzzy(), state.isButtonUntranslated(), state.isDisplayButtons(), state.getPageSize());
    }
 
    public boolean isButtonFuzzy()
@@ -83,7 +83,7 @@ public class UserConfigHolder
 
    protected void setButtonFuzzy(boolean buttonFuzzy)
    {
-      state = new ConfigurationState(state.enterSavesApproved, state.isEscClosesEditor(), buttonFuzzy, state.isButtonUntranslated(), state.isDisplayButtons(), state.getPageSize());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), buttonFuzzy, state.isButtonUntranslated(), state.isDisplayButtons(), state.getPageSize());
    }
 
    public boolean isButtonUntranslated()
@@ -93,7 +93,7 @@ public class UserConfigHolder
 
    protected void setButtonUntranslated(boolean buttonUntranslated)
    {
-      state = new ConfigurationState(state.enterSavesApproved, state.isEscClosesEditor(), state.isButtonFuzzy(), buttonUntranslated, state.isDisplayButtons(), state.getPageSize());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isButtonFuzzy(), buttonUntranslated, state.isDisplayButtons(), state.getPageSize());
    }
 
    public boolean isDisplayButtons()

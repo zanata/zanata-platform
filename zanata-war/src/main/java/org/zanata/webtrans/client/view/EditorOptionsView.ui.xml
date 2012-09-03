@@ -4,39 +4,49 @@
 
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources" />
 
-	<ui:style>
-		.mainPanel {
-			
-		}
-		
-		.mainPanel table td {
-			font-size:13px;
-			padding:2px;
-			border-radius:5px;
-			color:#FFFFFF;
-		}
-		
-		.mainPanel select
-		{
-			color:#000000;
-		}
+	<ui:style field="style" type="org.zanata.webtrans.client.view.EditorOptionsView.Styles">
+        .mainPanel table td {
+            font-size: 13px;
+            padding: 2px;
+            border-radius: 5px;
+            color: #FFFFFF;
+        }
+
+        .mainPanel select {
+            color: #000000;
+        }
 
         .translated {
-	       border-left:3px solid #099B09;
-	       margin-left:5px;
+            border-left: 3px solid #099B09;
+            margin-left: 5px;
         }
 
         .needReview {
-	       border-left:3px solid #ffc000;
-           margin-left:5px;
+            border-left: 3px solid #ffc000;
+            margin-left: 5px;
         }
 
-	   .untranslated {
-	       border-left:3px solid #e5e5e5;
-           margin-left:5px;
+        .untranslated {
+            border-left: 3px solid #e5e5e5;
+            margin-left: 5px;
         }
-		
-	</ui:style>
+
+        .selectedPageSize {
+            background-color: #B62918;
+        }
+
+        .pageSizeContainer {
+            margin-left: 8px;
+            margin-top: 8px;
+        }
+
+        .pageSizeContainer span {
+            padding: 3px;
+            border: 1px solid #808080;
+            cursor: pointer;
+        }
+
+    </ui:style>
 	
     <g:LayoutPanel>
     	<g:layer top="0px" bottom="0" left="0" right="0">
@@ -61,6 +71,16 @@
                 	<g:VerticalPanel width="100%">
                 	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
                         <g:VerticalPanel ui:field="optionsContainer" />
+                    </g:VerticalPanel>
+                </g:layer>
+                <g:layer top="310px" height="100px" left="5px" right="5px">
+                    <g:VerticalPanel width="100%">
+                        <g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
+                        <g:HTMLPanel styleName="{style.pageSizeContainer}">
+                            <g:InlineLabel ui:field="ten" >10</g:InlineLabel>
+                            <g:InlineLabel ui:field="twentyFive" >25</g:InlineLabel>
+                            <g:InlineLabel ui:field="fifty" >50</g:InlineLabel>
+                        </g:HTMLPanel>
                     </g:VerticalPanel>
                 </g:layer>
             </g:LayoutPanel>

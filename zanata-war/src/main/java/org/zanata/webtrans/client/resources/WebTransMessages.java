@@ -400,4 +400,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Navigation key/button")
    String navOption();
+
+   @DefaultMessage("Page size")
+   String pageSize();
 }

@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
 import org.zanata.webtrans.client.presenter.SideMenuPresenter;
 import org.zanata.webtrans.client.presenter.SideMenuPresenter.Tab;
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
@@ -46,7 +45,7 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    private final Widget editorOptionView, validationOptionView, workspaceUsersView;
 
    @Inject
-   public SideMenuView(final WebTransMessages messages, final EditorOptionsPresenter.Display editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView)
+   public SideMenuView(final WebTransMessages messages, final EditorOptionsDisplay editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView)
    {
       initWidget(uiBinder.createAndBindUi(this));
       editorOptionsTab.setTitle(messages.editorOptions());
