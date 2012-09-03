@@ -190,18 +190,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       escChk.setValue(state.isEscClosesEditor());
       editorButtonsChk.setValue(state.isDisplayButtons());
 
-      if (state.isButtonUntranslated() && state.isButtonFuzzy())
-      {
-         navOptionGroup.setDefaultSelected(NavOption.FUZZY_UNTRANSLATED);
-      }
-      else if (state.isButtonFuzzy())
-      {
-         navOptionGroup.setDefaultSelected(NavOption.FUZZY);
-      }
-      else if (state.isButtonUntranslated())
-      {
-         navOptionGroup.setDefaultSelected(NavOption.UNTRANSLATED);
-      }
+      navOptionGroup.setDefaultSelected(state.getNavOption());
       selectPageSize(state.getPageSize());
    }
 

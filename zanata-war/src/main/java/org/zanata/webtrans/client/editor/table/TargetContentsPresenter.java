@@ -594,23 +594,7 @@ public class TargetContentsPresenter implements
       changeDisplayButtons(oldState);
       changeEnterSavesApproved(oldState);
       changeEscCloseEditor(oldState);
-
-      if (configuration.isButtonFuzzy() && !configuration.isButtonUntranslated())
-      {
-         nextStateShortcut.setDescription(messages.nextFuzzy());
-         prevStateShortcut.setDescription(messages.prevFuzzy());
-      }
-      else if (configuration.isButtonUntranslated() && !configuration.isButtonFuzzy())
-      {
-         nextStateShortcut.setDescription(messages.nextUntranslated());
-         prevStateShortcut.setDescription(messages.prevUntranslated());
-      }
-      else if (configuration.isButtonUntranslated() && configuration.isButtonFuzzy())
-      {
-         nextStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
-         prevStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
-      }
-
+      changeNavShortcutDescription(oldState);
    }
 
    private void changeDisplayButtons(UserConfigHolder.ConfigurationState oldState)
@@ -658,6 +642,28 @@ public class TargetContentsPresenter implements
             {
                escClosesEditorHandlerRegistration.removeHandler();
             }
+         }
+      }
+   }
+
+   private void changeNavShortcutDescription(UserConfigHolder.ConfigurationState oldState)
+   {
+      if (oldState.getNavOption() != configuration.getNavOption())
+      {
+         switch (configuration.getNavOption())
+         {
+            case FUZZY_UNTRANSLATED:
+               nextStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
+               prevStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
+               break;
+            case FUZZY:
+               nextStateShortcut.setDescription(messages.nextFuzzy());
+               prevStateShortcut.setDescription(messages.prevFuzzy());
+               break;
+            case UNTRANSLATED:
+               nextStateShortcut.setDescription(messages.nextUntranslated());
+               prevStateShortcut.setDescription(messages.prevUntranslated());
+               break;
          }
       }
    }

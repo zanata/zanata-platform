@@ -15,6 +15,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
@@ -214,6 +215,17 @@ public class EditorOptionsPresenterTest
       presenter.onEditorButtonsOptionChanged(true);
 
       assertThat(configHolder.isDisplayButtons(), Matchers.is(true));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+   }
+
+   @Test
+   public void onNavOptionChange()
+   {
+      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+
+      presenter.onSelectionChange("", NavOption.FUZZY);
+
+      assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
    }
 }

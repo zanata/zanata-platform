@@ -120,25 +120,13 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    }
 
    @Override
-   public void onSelectionChange(String groupName, NavOption value)
+   public void onSelectionChange(String groupName, NavOption navOption)
    {
-      // TODO change configHolder to accept NavOption enum
-      if (value == NavOption.FUZZY_UNTRANSLATED)
+      if (configHolder.getNavOption() != navOption)
       {
-         configHolder.setButtonUntranslated(true);
-         configHolder.setButtonFuzzy(true);
+         configHolder.setNavOption(navOption);
+         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
       }
-      else if (value == NavOption.FUZZY)
-      {
-         configHolder.setButtonFuzzy(true);
-         configHolder.setButtonUntranslated(false);
-      }
-      else if (value == NavOption.UNTRANSLATED)
-      {
-         configHolder.setButtonFuzzy(false);
-         configHolder.setButtonUntranslated(true);
-      }
-      eventBus.fireEvent(UserConfigChangeEvent.EVENT);
    }
 
    @Override

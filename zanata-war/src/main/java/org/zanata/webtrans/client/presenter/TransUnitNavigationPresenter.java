@@ -32,6 +32,7 @@ import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -60,9 +61,9 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 
       HasClickHandlers getNextStateButton();
 
-      void setNavModeTooltip(boolean isButtonFuzzy, boolean isButtonUntranslated);
-
       void setModalNavVisible(boolean visible);
+
+      void setNavModeTooltip(NavOption navOption);
    }
 
    @Inject
@@ -141,7 +142,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onValueChanged(UserConfigChangeEvent event)
          {
-            display.setNavModeTooltip(configHolder.isButtonFuzzy(), configHolder.isButtonUntranslated());
+            display.setNavModeTooltip(configHolder.getNavOption());
          }
       }));
 
