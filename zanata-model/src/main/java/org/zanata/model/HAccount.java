@@ -30,6 +30,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -81,6 +82,7 @@ public class HAccount extends ModelEntityBase implements Serializable
    private HAccountActivationKey accountActivationKey;
    private HAccountResetPasswordKey accountResetPasswordKey;
    private Set<HCredentials> credentials;
+   private HAccount mergedInto;
 
 
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -161,5 +163,12 @@ public class HAccount extends ModelEntityBase implements Serializable
          credentials = new HashSet<HCredentials>();
       }
       return credentials;
+   }
+
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "mergedInto")
+   public HAccount getMergedInto()
+   {
+      return mergedInto;
    }
 }

@@ -100,7 +100,7 @@ public class HPerson extends ModelEntityBase implements Serializable
     * This is a read-only side of the relationship. Changes to this collection are allowed but will not
     * be persisted.
     */
-   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers")
+   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers", cascade = CascadeType.ALL)
    public Set<HProject> getMaintainerProjects()
    {
       if (maintainerProjects == null)
@@ -110,7 +110,7 @@ public class HPerson extends ModelEntityBase implements Serializable
       return maintainerProjects;
    }
 
-   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers")
+   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers", cascade = CascadeType.ALL)
    public Set<HIterationGroup> getMaintainerVersionGroups()
    {
       if (maintainerVersionGroups == null)

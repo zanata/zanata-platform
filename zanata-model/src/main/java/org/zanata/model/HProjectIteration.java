@@ -45,6 +45,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.annotation.EntityRestrict;
 import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.ProjectIteration;
@@ -52,6 +53,10 @@ import org.zanata.rest.dto.ProjectIteration;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import static org.jboss.seam.security.EntityAction.DELETE;
+import static org.jboss.seam.security.EntityAction.INSERT;
+import static org.jboss.seam.security.EntityAction.UPDATE;
 
 /**
  * 
@@ -62,6 +67,7 @@ import lombok.ToString;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
+@EntityRestrict({INSERT, UPDATE, DELETE})
 @Indexed
 @Setter
 @NoArgsConstructor

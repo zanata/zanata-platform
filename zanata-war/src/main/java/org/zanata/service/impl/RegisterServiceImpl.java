@@ -21,6 +21,10 @@
 package org.zanata.service.impl;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -33,7 +37,12 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
+import org.zanata.model.HAccountRole;
+import org.zanata.model.HIterationGroup;
+import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.security.AuthenticationType;
@@ -45,6 +54,9 @@ import org.zanata.util.HashUtil;
 @Scope(ScopeType.STATELESS)
 public class RegisterServiceImpl implements RegisterService
 {
+   @In
+   EntityManager entityManager;
+
    @In
    IdentityStore identityStore;
    
@@ -109,5 +121,83 @@ public class RegisterServiceImpl implements RegisterService
       accountActivationKeyDAO.makePersistent(key);
       accountActivationKeyDAO.flush();
       return key.getKeyHash();
+   }
+
+   @Override
+   public void mergeAccounts( HAccount active, HAccount obsolete )
+   {
+      obsolete = entityManager.merge( obsolete );
+      active = entityManager.merge( active );
+
+      HPerson activePerson = active.getPerson();
+      HPerson obsoletePerson = obsolete.getPerson();
+
+      // Disable obsolete account
+      obsolete.setEnabled(false);
+
+      // Merge all Roles
+      for( HAccountRole role: obsolete.getRoles() )
+      {
+         active.getRoles().add( role );
+      }
+      obsolete.getRoles().clear();
+
+      // Add Credentials
+      for( HCredentials credentials : obsolete.getCredentials() )
+      {
+         credentials.setAccount( active );
+         active.getCredentials().add( credentials );
+      }
+
+      // Merge all Maintained Projects
+      List<HProject> maintainedProjects = new ArrayList<HProject>( obsoletePerson.getMaintainerProjects() );
+      for( HProject proj : maintainedProjects )
+      {
+         proj.getMaintainers().add( activePerson );
+         proj.getMaintainers().remove( obsoletePerson );
+      }
+
+      // Merge all maintained Version Groups
+      List<HIterationGroup> maintainedGroups = new ArrayList<HIterationGroup>( obsoletePerson.getMaintainerVersionGroups() );
+      for( HIterationGroup group : maintainedGroups )
+      {
+         group.getMaintainers().add( activePerson );
+         group.getMaintainers().remove( obsoletePerson );
+      }
+
+      // Merge all language teams
+      List<HLocaleMember> obsoleteMemberships = personDAO.getAllLanguageTeamMemberships(obsoletePerson);
+      List<HLocaleMember> activeMemberships = personDAO.getAllLanguageTeamMemberships(activePerson);
+
+      for( HLocaleMember obsoleteMembership : obsoleteMemberships )
+      {
+         HLocaleMember activeMembership = null;
+
+         for( HLocaleMember m : activeMemberships )
+         {
+            if( m.getPerson().getId().equals( obsoleteMembership.getPerson().getId() )
+                  && m.getSupportedLanguage().getLocaleId().equals(obsoleteMembership.getSupportedLanguage().getLocaleId()))
+            {
+               activeMembership = m;
+               break;
+            }
+         }
+
+         if( activeMembership == null )
+         {
+            activeMembership = new HLocaleMember(activePerson, obsoleteMembership.getSupportedLanguage(), obsoleteMembership.isCoordinator());
+         }
+
+         activeMembership.setCoordinator(activeMembership.isCoordinator() || obsoleteMembership.isCoordinator());
+         entityManager.remove(obsoleteMembership);
+      }
+
+      // Link all merged accounts
+      List<HAccount> previouslyMerged = accountDAO.getAllMergedAccounts( obsolete );
+      for( HAccount acc : previouslyMerged )
+      {
+         acc.setMergedInto( active );
+      }
+      obsolete.setMergedInto( active );
    }
 }

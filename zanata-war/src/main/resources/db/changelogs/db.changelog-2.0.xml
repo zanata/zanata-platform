@@ -118,4 +118,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="7" author="camunoz@redhat.com">
+        <comment>Add 'merged_into' column to HAccount table.</comment>
+        <addColumn tableName="HAccount">
+            <column name="mergedInto" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="FK_HAccount_MergedIntoAccount"
+                                 baseTableName="HAccount"
+                                 baseColumnNames="mergedInto"
+                                 referencedTableName="HAccount"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

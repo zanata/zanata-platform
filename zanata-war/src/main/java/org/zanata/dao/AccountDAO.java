@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -128,8 +129,30 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
    public List<HAccount> searchQuery(String searchQuery)
    {
       String userName = searchQuery + "%";
-      org.hibernate.Query query = getSession().createQuery("from HAccount as a where a.username like :username");
+      Query query = getSession().createQuery("from HAccount as a where a.username like :username");
       query.setParameter("username", userName);
+      return query.list();
+   }
+
+   public HAccount getByCredentialsId( String credentialsId )
+   {
+      Query query = getSession()
+            .createQuery("from HAccount as a where exists ( from HCredentials c where c.account = a and c.user = :id)");
+      query.setParameter("id", credentialsId);
+      return (HAccount)query.uniqueResult();
+   }
+
+   /**
+    * Returns all accounts merged into the another one.
+    *
+    * @param mergedInto The account into which all returned accounts were merged.
+    * @return A list of accounts that in the past were merged into the given account.
+    */
+   public List<HAccount> getAllMergedAccounts(HAccount mergedInto)
+   {
+      Query query = getSession()
+            .createQuery("from HAccount as a where a.mergedInto = :mergedInto");
+      query.setParameter("mergedInto", mergedInto);
       return query.list();
    }
 

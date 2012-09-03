@@ -42,11 +42,16 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.annotation.EntityRestrict;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.Project;
 
 import lombok.Setter;
 import lombok.ToString;
+
+import static org.jboss.seam.security.EntityAction.DELETE;
+import static org.jboss.seam.security.EntityAction.INSERT;
+import static org.jboss.seam.security.EntityAction.UPDATE;
 
 /**
  * @see Project
@@ -58,6 +63,7 @@ import lombok.ToString;
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
+@EntityRestrict({INSERT, UPDATE, DELETE})
 @Setter
 @ToString(callSuper = true, of = "name")
 public abstract class HProject extends SlugEntityBase implements Serializable
