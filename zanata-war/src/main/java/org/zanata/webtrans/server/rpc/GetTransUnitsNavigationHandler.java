@@ -21,6 +21,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,12 +39,17 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TextFlowSearchService;
+import org.zanata.util.HTextFlowPosComparator;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import com.google.common.base.Strings;
 
 @Name("webtrans.gwt.GetTransUnitsNavigationHandler")
 @Scope(ScopeType.STATELESS)
@@ -60,6 +66,10 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
 
    @In
    ZanataIdentity identity;
+
+   @In
+   private TextFlowSearchService textFlowSearchServiceImpl;
+
 
    @Override
    public GetTransUnitsNavigationResult execute(GetTransUnitsNavigation action, ExecutionContext context) throws ActionException
@@ -81,17 +91,14 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
 
       List<HTextFlow> textFlows;
 
-      if (action.getPhrase() != null && !action.getPhrase().isEmpty())
+      if (Strings.isNullOrEmpty(action.getPhrase()))
       {
-         log.info("find message:" + action.getPhrase());
-         //FIXME use hibernate search
-         List<Long> idList = textFlowDAO.getNavigationBy(action.getId(), action.getPhrase().toLowerCase(), action.getWorkspaceId().getLocaleId());
-
-         textFlows = textFlowDAO.findByIdList(idList);
+         textFlows = textFlowDAO.getNavigationByDocumentId(action.getId());
       }
       else
       {
-         textFlows = textFlowDAO.getNavigationByDocumentId(action.getId());
+         log.info("find message:" + action.getPhrase());
+         textFlows = searchByPhrase(action);
       }
 
       for (HTextFlow textFlow : textFlows)
@@ -118,6 +125,15 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
    @Override
    public void rollback(GetTransUnitsNavigation action, GetTransUnitsNavigationResult result, ExecutionContext context) throws ActionException
    {
+   }
+
+   private List<HTextFlow> searchByPhrase(GetTransUnitsNavigation action)
+   {
+      FilterConstraints constraints = FilterConstraints.filterBy(action.getPhrase()).ignoreCase();
+
+      List<HTextFlow> textFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), new DocumentId(action.getId()), constraints);
+      Collections.sort(textFlows, HTextFlowPosComparator.INSTANCE);
+      return textFlows;
    }
 
    private boolean checkStateAndValidate(boolean isNewState, boolean isFuzzyState, boolean isApprovedState, HTextFlowTarget textFlowTarget)

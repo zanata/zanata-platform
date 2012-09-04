@@ -275,7 +275,6 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    @Override
    public void onFindMessage(FindMessageEvent event)
    {
-      // TODO modal navigation disabled if there's findMessage.
       // TODO turn FindMessageEvent into UpdateContextCommand like the rest.
       findMessage = event.getMessage();
       // FIXME context may be null if loading from bookmark (document is not yet loaded)
@@ -284,16 +283,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          return;
       }
       context = context.changeFindMessage(findMessage);
-      if (Strings.isNullOrEmpty(findMessage))
-      {
-         init(context);
-         eventBus.fireEvent(new EnableModalNavigationEvent(true));
-      }
-      else
-      {
-         eventBus.fireEvent(new EnableModalNavigationEvent(false));
-         requestTransUnitsAndUpdatePageIndex(context);
-      }
+      init(context);
    }
 
    @Override

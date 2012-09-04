@@ -246,41 +246,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return q.list();
    }
 
-   // TODO: use hibernate search
-   @SuppressWarnings("unchecked")
-   public List<Long> getNavigationBy(Long documentId, String search, LocaleId localeId)
-   {
-      Query textFlowQuery;
-      Query textFlowTargetQuery;
-      Set<Long> idSet;
-
-      textFlowQuery = getSession().createQuery("select tf.id from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content order by tf.pos");
-      textFlowQuery.setParameter("id", documentId);
-      textFlowQuery.setParameter("content", "%" + search + "%");
-      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTF-rev");
-
-      textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId order by tft.textFlow.pos");
-      textFlowTargetQuery.setParameter("id", documentId);
-      textFlowTargetQuery.setParameter("content", "%" + search + "%");
-      textFlowTargetQuery.setParameter("localeId", localeId);
-      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTFT-rev");
-      idSet = new TreeSet<Long>(new Comparator<Long>()
-      {
-         @Override
-         public int compare(Long arg0, Long arg1)
-         {
-            return ((Long) arg0).compareTo((Long) arg1);
-         }
-      });
-
-      List<Long> ids1 = textFlowQuery.list();
-      List<Long> ids2 = textFlowTargetQuery.list();
-      idSet.addAll(ids1);
-      idSet.addAll(ids2);
-
-      return new ArrayList<Long>(idSet);
-   }
-
    /**
     * for a given locale, we first find text flow where has no target (targets map has no key equals the locale),
     * or (the text flow target has zero size contents OR content state is NEW).
