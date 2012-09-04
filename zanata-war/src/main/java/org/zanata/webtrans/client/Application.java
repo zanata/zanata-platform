@@ -278,7 +278,7 @@ public class Application implements EntryPoint
          layoutPanel.add(stackTracePanel);
       }
 
-      RootPanel.get("contentDiv").get().add(layoutPanel);
+      RootPanel.get("contentDiv").add(layoutPanel);
    }
 
    private void registerUncaughtExceptionHandler()

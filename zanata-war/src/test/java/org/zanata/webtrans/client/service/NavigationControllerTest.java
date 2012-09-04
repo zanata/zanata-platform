@@ -98,9 +98,6 @@ public class NavigationControllerTest
          TestFixture.makeHTextFlow(4, hLocale, ContentState.NeedReview),
          TestFixture.makeHTextFlow(5, hLocale, ContentState.New)
    );
-   // @formatter:on
-   private static final boolean NOT_FORCE_RELOAD = false;
-   private static final boolean FORCE_RELOAD = true;
 
    private NavigationController controller;
    @Mock
@@ -263,13 +260,13 @@ public class NavigationControllerTest
    {
       controller.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(0, NOT_FORCE_RELOAD);
+      controller.gotoPage(0);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       //go again won't cause another call to server
-      controller.gotoPage(0, NOT_FORCE_RELOAD);
+      controller.gotoPage(0);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
@@ -285,12 +282,12 @@ public class NavigationControllerTest
    {
       controller.init(context.changeCount(4));
       simulateRPCCallback();
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       verifyNoMoreInteractions(dispatcher);
    }
 
@@ -298,12 +295,12 @@ public class NavigationControllerTest
    public void canGoToLastPageWithPerfectDivide() {
       controller.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
@@ -313,12 +310,12 @@ public class NavigationControllerTest
    public void canHavePageCountGreaterThanActualSize() {
       controller.init(context.changeCount(10));
       simulateRPCCallback();
-      controller.gotoPage(100, NOT_FORCE_RELOAD);
+      controller.gotoPage(100);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(0));
 
-      controller.gotoPage(0, NOT_FORCE_RELOAD);
+      controller.gotoPage(0);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(0));
@@ -329,18 +326,18 @@ public class NavigationControllerTest
    {
       controller.init(context.changeCount(2));
       simulateRPCCallback();
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(2, 3));
       assertThat(navigationService.getCurrentPage(), is(1));
 
-      controller.gotoPage(2, NOT_FORCE_RELOAD);
+      controller.gotoPage(2);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
 
       //can't go any further
-      controller.gotoPage(2, NOT_FORCE_RELOAD);
+      controller.gotoPage(2);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
@@ -352,28 +349,28 @@ public class NavigationControllerTest
       controller.init(context.changeCount(2));
       simulateRPCCallback();
       //should be on first page already
-      controller.gotoPage(0, NOT_FORCE_RELOAD);
+      controller.gotoPage(0);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(0, 1));
       assertThat(navigationService.getCurrentPage(), is(0));
 
-      controller.gotoPage(2, NOT_FORCE_RELOAD);
+      controller.gotoPage(2);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
 
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(2, 3));
       assertThat(navigationService.getCurrentPage(), is(1));
 
-      controller.gotoPage(0, NOT_FORCE_RELOAD);
+      controller.gotoPage(0);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       //can't go any further
-      controller.gotoPage(0, NOT_FORCE_RELOAD);
+      controller.gotoPage(0);
       verifyNoMoreInteractions(dispatcher);
       assertThat(navigationService.getCurrentPage(), is(0));
    }
@@ -383,19 +380,19 @@ public class NavigationControllerTest
    {
       controller.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       //page out of bound
-      controller.gotoPage(7, NOT_FORCE_RELOAD);
+      controller.gotoPage(7);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       //page is negative
-      controller.gotoPage(-1, NOT_FORCE_RELOAD);
+      controller.gotoPage(-1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
@@ -406,15 +403,15 @@ public class NavigationControllerTest
    {
       controller.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       simulateRPCCallback();
       assertThat(navigationService.getCurrentPage(), is(1));
 
-      controller.gotoPage(1, NOT_FORCE_RELOAD);
+      controller.gotoPage(1);
       verifyNoMoreInteractions(dispatcher);
       assertThat(navigationService.getCurrentPage(), is(1));
 
-      controller.gotoPage(1, FORCE_RELOAD);
+      controller.gotoPage(1);
       simulateRPCCallback();
       assertThat(navigationService.getCurrentPage(), is(1));
    }

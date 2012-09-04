@@ -84,6 +84,7 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
       {
          log.info("find message:" + action.getPhrase());
+         //FIXME use hibernate search
          List<Long> idList = textFlowDAO.getNavigationBy(action.getId(), action.getPhrase().toLowerCase(), action.getWorkspaceId().getLocaleId());
 
          textFlows = textFlowDAO.findByIdList(idList);

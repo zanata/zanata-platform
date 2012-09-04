@@ -27,6 +27,12 @@
             border-right: 5px solid #8a2be2;
             border-left: 5px solid #8a2be2;
         }
+
+        .noContent {
+            text-align: center;
+            font-style: italic;
+            color: grey;
+        }
     </ui:style>
 
     <g:ScrollPanel>

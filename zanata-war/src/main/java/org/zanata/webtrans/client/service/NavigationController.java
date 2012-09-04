@@ -85,6 +85,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
 
    //tracking variables
    private GetTransUnitActionContext context;
+   private String findMessage;
 
    @Inject
    public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, UserConfigHolder configHolder, TableEditorMessages messages)
@@ -158,7 +159,10 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
             }
             navigationService.updateCurrentPage(currentPageIndex);
 
-            eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
+            if (!units.isEmpty())
+            {
+               eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
+            }
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
             eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
          }
@@ -180,10 +184,10 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       });
    }
 
-   public void gotoPage(int pageIndex, boolean forceReload)
+   public void gotoPage(int pageIndex)
    {
       int page = normalizePageIndex(pageIndex);
-      if (page != navigationService.getCurrentPage() || forceReload)
+      if (page != navigationService.getCurrentPage())
       {
          GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
          Log.info("page index: " + pageIndex + " page context: " + newContext);
@@ -271,8 +275,14 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    @Override
    public void onFindMessage(FindMessageEvent event)
    {
-      // TODO modal navigation disabled if there's findMessage. turn FindMessageEvent into UpdateContextCommand like the rest.
-      String findMessage = event.getMessage();
+      // TODO modal navigation disabled if there's findMessage.
+      // TODO turn FindMessageEvent into UpdateContextCommand like the rest.
+      findMessage = event.getMessage();
+      // FIXME context may be null if loading from bookmark (document is not yet loaded)
+      if (context == null)
+      {
+         return;
+      }
       context = context.changeFindMessage(findMessage);
       if (Strings.isNullOrEmpty(findMessage))
       {

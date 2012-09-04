@@ -100,7 +100,6 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
       focused = false;
       if (filterTextBox.getText().isEmpty())
       {
-         filterTextBox.setValue("");
          filterTextBox.addStyleName(style.transFilterTextBoxEmpty());
          filterTextBox.setValue(hintMessage);
       }

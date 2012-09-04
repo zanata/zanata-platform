@@ -138,7 +138,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void goToPage(int pageNumber)
    {
       targetContentsPresenter.savePendingChangesIfApplicable();
-      navigationController.gotoPage(pageNumber - 1, false);
+      navigationController.gotoPage(pageNumber - 1);
    }
 
    @Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 
@@ -18,6 +19,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -38,13 +40,15 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 
    private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
    private final LoadingPanel loadingPanel;
+   private final Label noContentLabel;
    private Listener listener;
 
    @Inject
-   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel)
+   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel, WebTransMessages messages)
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
       this.loadingPanel = loadingPanel;
+      noContentLabel = new Label(messages.noContent());
       initWidget(uiBinder.createAndBindUi(this));
 
       transUnitTable.addClickHandler(new ClickHandler()
@@ -89,6 +93,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    public void buildTable(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays)
    {
       transUnitTable.resizeRows(sourceDisplays.size());
+      showEmptyContentIfNoData(sourceDisplays.size());
       for (int i = 0; i < sourceDisplays.size(); i++)
       {
          SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
@@ -105,6 +110,16 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       transUnitTable.getColumnFormatter().setWidth(0, "50%");
       transUnitTable.getColumnFormatter().setWidth(1, "50%");
       applyRowStyle();
+   }
+
+   private void showEmptyContentIfNoData(int dataSize)
+   {
+      if (dataSize == 0)
+      {
+         transUnitTable.resizeRows(1);
+         transUnitTable.setWidget(0, 0, noContentLabel);
+         transUnitTable.getCellFormatter().setStyleName(0, 0, style.noContent());
+      }
    }
 
    private void applyRowStyle()
@@ -169,6 +184,8 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       String table();
 
       String selected();
+
+      String noContent();
    }
 
    interface TransUnitEditViewUiBinder extends UiBinder<Widget, TransUnitEditView>
