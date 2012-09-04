@@ -22,11 +22,9 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -56,9 +54,8 @@ public class TransUnitNavigationService
    {
       this.idAndStateMap = transIdStateMap;
       this.idIndexList = idIndexList;
-      this.pageSize = pageSize;
       totalCount = idIndexList.size();
-      pageCount = (int) Math.ceil(totalCount * 1.0 / pageSize);
+      updatePageSize(pageSize);
    }
 
    protected void updateState(Long id, ContentState newState)
@@ -95,32 +92,6 @@ public class TransUnitNavigationService
          }
       }
       return rowIndexInDocument;
-   }
-
-   protected Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
-   {
-      if (tu == null)
-      {
-         return null;
-      }
-      if (!isFiltering)
-      {
-         return tu.getRowIndex();
-      }
-      else
-      {
-         TransUnitId transUnitId = tu.getId();
-         int n = 0;
-         for (TransUnit transUnit : rowValues)
-         {
-            if (transUnitId.equals(transUnit.getId()))
-            {
-               return n + (curPage * pageSize);
-            }
-            n++;
-         }
-      }
-      return null;
    }
 
    protected int getCurrentPage()
@@ -168,4 +139,11 @@ public class TransUnitNavigationService
       rowIndexInDocument = this.curPage * pageSize + rowIndexOnPage;
       Log.info("update current page:" + curPage + ", current row index in document:" + rowIndexInDocument);
    }
+
+   protected void updatePageSize(int pageSize)
+   {
+      this.pageSize = pageSize;
+      pageCount = (int) Math.ceil(totalCount * 1.0 / pageSize);
+   }
+
 }

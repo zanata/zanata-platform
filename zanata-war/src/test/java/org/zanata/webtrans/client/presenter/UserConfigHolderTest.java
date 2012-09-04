@@ -50,10 +50,7 @@ public class UserConfigHolderTest
 
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("escClosesEditor", "false"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonFuzzy", "true"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("buttonUntranslated", "true"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("fuzzyAndUntranslated", "true"));
    }
 
    @SuppressWarnings("unchecked")
@@ -70,14 +67,10 @@ public class UserConfigHolderTest
 
       configHolder.setEnterSavesApproved(value);
       configHolder.setEscClosesEditor(value);
-      configHolder.setButtonFuzzy(value);
-      configHolder.setButtonUntranslated(value);
       configHolder.setDisplayButtons(value);
 
       MatcherAssert.assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(value));
       MatcherAssert.assertThat(configHolder.isEscClosesEditor(), Matchers.equalTo(value));
-      MatcherAssert.assertThat(configHolder.isButtonFuzzy(), Matchers.equalTo(value));
-      MatcherAssert.assertThat(configHolder.isButtonUntranslated(), Matchers.equalTo(value));
       MatcherAssert.assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(value));
    }
 }

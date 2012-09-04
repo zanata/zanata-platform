@@ -36,6 +36,8 @@ import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
+import org.zanata.webtrans.client.events.PageSizeChangeEvent;
+import org.zanata.webtrans.client.events.PageSizeChangeEventHandler;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -69,7 +71,7 @@ import net.customware.gwt.presenter.client.EventBus;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler
+public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNSELECTED = -1;
@@ -102,6 +104,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
+      eventBus.addHandler(PageSizeChangeEvent.TYPE, this);
    }
 
    protected void init(GetTransUnitActionContext context)
@@ -139,7 +142,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          public void onSuccess(GetTransUnitListResult result)
          {
             ArrayList<TransUnit> units = result.getUnits();
-            Log.debug("result unit: " + units.size());
+            Log.info("result unit: " + units.size());
             pageModel.setData(units);
             pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
 
@@ -153,7 +156,6 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
                currentPageIndex = result.getGotoRow() / itemPerPage;
                gotoRow = result.getGotoRow() % itemPerPage;
             }
-//            navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
             navigationService.updateCurrentPage(currentPageIndex);
 
             eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
@@ -165,6 +167,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
 
    private void requestNavigationIndex(GetTransUnitActionContext context)
    {
+      Log.info("requesting navigation index: " + context);
       final int itemPerPage = context.getCount();
       dispatcher.execute(GetTransUnitsNavigation.newAction(context), new AbstractAsyncCallback<GetTransUnitsNavigationResult>()
       {
@@ -289,13 +292,20 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       execute(documentSelection);
    }
 
+   @Override
+   public void onPageSizeChange(PageSizeChangeEvent pageSizeChangeEvent)
+   {
+      execute(pageSizeChangeEvent);
+      navigationService.updatePageSize(pageSizeChangeEvent.getPageSize());
+      eventBus.fireEvent(new PageCountChangeEvent(navigationService.getPageCount()));
+   }
+
    public void execute(UpdateContextCommand command)
    {
       if (context == null)
       {
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
          DocumentId documentId = ((DocumentSelectionEvent) command).getDocumentId();
-         //TODO need to listen to user config change event for page size changes
          init(new GetTransUnitActionContext(documentId).changeCount(configHolder.getPageSize()));
       }
       else
