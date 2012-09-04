@@ -558,7 +558,7 @@
     <param name="project" value="#{projectIterationZipFileAction.projectSlug}" />
     <param name="iteration" value="#{projectIterationZipFileAction.iterationSlug}" />
     <param name="localeId" value="#{projectIterationZipFileAction.localeId}" />
-    
+
     <action execute="#{projectIterationFilesAction.initialize()}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
