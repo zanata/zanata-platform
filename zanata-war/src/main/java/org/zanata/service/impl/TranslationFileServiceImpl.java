@@ -116,13 +116,22 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @Override
    public Resource parseDocumentFile(InputStream fileContents, String path, String fileName)
    {
-      if( fileName.endsWith(".pot") )
+      if (fileName.endsWith(".pot"))
       {
-         // remove the .pot extension
          fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+      }
+
+      return parseUpdatedDocumentFile(fileContents, convertToValidPath(path) + fileName, fileName);
+   }
+
+   @Override
+   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName)
+   {
+      if (fileName.endsWith(".pot"))
+      {
          try
          {
-            return parsePotFile(fileContents, path, fileName);
+            return parsePotFile(fileContents, docId);
          }
          catch (Exception e)
          {
@@ -138,6 +147,12 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @Override
    public Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
    {
+      return parseUpdatedDocumentFile(documentFile, convertToValidPath(path) + fileName, fileName);
+   }
+
+   @Override
+   public Resource parseUpdatedDocumentFile(URI documentFile, String docId, String fileName) throws ZanataServiceException
+   {
       if (hasAdapterFor(fileName))
       {
          FileFormatAdapter adapter = getAdapterFor(fileName);
@@ -150,9 +165,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
          {
             throw new ZanataServiceException("Error parsing document file: " + fileName, e);
          }
-
-         path = convertToValidPath(path);
-         doc.setName(path + fileName);
+         doc.setName(docId);
          return doc;
       }
       else
@@ -187,14 +200,11 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return poReader.extractTarget(new InputSource(fileContents) );
    }
 
-   private Resource parsePotFile( InputStream fileContents, String docPath, String fileName )
+   private Resource parsePotFile(InputStream fileContents, String docId)
    {
       PoReader2 poReader = new PoReader2();
       // assume english as source locale
-      Resource res = poReader.extractTemplate(new InputSource(fileContents), new LocaleId("en"), fileName);
-      docPath = convertToValidPath(docPath);
-
-      res.setName( docPath + fileName );
+      Resource res = poReader.extractTemplate(new InputSource(fileContents), new LocaleId("en"), docId);
       return res;
    }
 

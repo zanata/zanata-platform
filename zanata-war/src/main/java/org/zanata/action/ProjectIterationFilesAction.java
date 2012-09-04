@@ -110,7 +110,7 @@ public class ProjectIterationFilesAction
    private TranslationFileUploadHelper translationFileUpload;
 
    private DocumentFileUploadHelper documentFileUpload;
-   
+
    private HProjectIteration projectIteration;
    
    public void initialize()
@@ -215,8 +215,17 @@ public class ProjectIterationFilesAction
    {
       try
       {
-         Resource doc = translationFileServiceImpl.parseDocumentFile(documentFileUpload.getFileContents(),
-               documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
+         Resource doc;
+         if (documentFileUpload.getDocId() == null)
+         {
+            doc = translationFileServiceImpl.parseDocumentFile(documentFileUpload.getFileContents(),
+                  documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
+         }
+         else
+         {
+            doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentFileUpload.getFileContents(),
+                  documentFileUpload.getDocId(), documentFileUpload.getFileName());
+         }
 
          doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
 
@@ -239,8 +248,18 @@ public class ProjectIterationFilesAction
    // TODO add logging for disk writing errors
    private void uploadAdapterFile()
    {
-      String documentPath = documentFileUpload.getDocumentPath();
       String fileName = documentFileUpload.getFileName();
+      String docId = documentFileUpload.getDocId();
+      String documentPath = "";
+      if (docId == null)
+      {
+         documentPath = documentFileUpload.getDocumentPath();
+      }
+      else if (docId.contains("/"))
+      {
+         documentPath = docId.substring(0, docId.lastIndexOf('/'));
+      }
+
       File tempFile = null;
       try
       {
@@ -253,7 +272,15 @@ public class ProjectIterationFilesAction
 
       try
       {
-         Resource doc = translationFileServiceImpl.parseDocumentFile(tempFile.toURI(), documentPath, fileName);
+         Resource doc;
+         if (docId == null)
+         {
+            doc = translationFileServiceImpl.parseDocumentFile(tempFile.toURI(), documentPath, fileName);
+         }
+         else
+         {
+            doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileName);
+         }
          doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
          Set<String> extensions = Collections.<String>emptySet();
          // TODO Copy Trans values
@@ -464,8 +491,13 @@ public class ProjectIterationFilesAction
 
       @Getter
       @Setter
+      private String docId;
+
+      @Getter
+      @Setter
       private String fileName;
 
+      // TODO rename to customDocumentPath (update in EL also)
       @Getter
       @Setter
       private String documentPath;

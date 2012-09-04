@@ -48,7 +48,26 @@ public interface TranslationFileService
     */
    TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException;
 
+   /**
+    * Extract the translatable strings from a document file to a usable form.
+    * May be used for new or existing documents.
+    * 
+    * @param fileContents
+    * @param path to use within the Zanata project-iteration
+    * @param fileName to use within the Zanata project-iteration
+    * @return a usable representation of the document
+    */
    Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
+
+   /**
+    * Extract the translatable strings from a new version of an existing document file to a usable form.
+    * 
+    * @param fileContents
+    * @param docId the id of an existing document
+    * @param uploadFileName name of the new file being parsed, used only to identify format
+    * @return a usable representation of the document
+    */
+   Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String uploadFileName);
 
    /**
     * Extracts the translatable strings from a document file to a usable form.
@@ -56,11 +75,22 @@ public interface TranslationFileService
     * @param documentFile location of the document to parse
     * @param path to use within the Zanata project-iteration
     * @param fileName to use within the Zanata project-iteration
-    * @return a representation of the document
+    * @return a usable representation of the document
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
     */
    Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
+
+   /**
+    * Extract the translatable strings from a new version of an existing document file to a usable form.
+    * 
+    * @param documentFile location of the document to parse
+    * @param docId the id of an existing document
+    * @param uploadFileName name of the new file being parsed, used only to identify format
+    * @return a usable representation of the document
+    * @throws ZanataServiceException
+    */
+   Resource parseUpdatedDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
 
    /**
     * Check whether a handler for the given file type is available.

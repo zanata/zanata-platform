@@ -70,6 +70,11 @@
   </rule>
 
   <rule>
+    <from casesensitive="true">^/iteration/source_files/([^/]+)/([^/]+)/?$</from>
+    <to last="true">/iteration/source_files.seam\?project=$1&amp;iteration=$2</to>
+  </rule>
+
+  <rule>
     <from casesensitive="true">^/iteration/files/([^/]+)/([^/]+)/([^/]+)/?$</from>
     <to last="true">/iteration/files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3</to>
   </rule>
@@ -315,6 +320,10 @@
   <outbound-rule>
     <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
     <to>$1/iteration/view/$2/$3?$5</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/iteration/source_files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/source_files/$2/$3?$5</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
