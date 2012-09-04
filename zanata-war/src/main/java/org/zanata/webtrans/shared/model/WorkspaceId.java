@@ -62,5 +62,4 @@ public final class WorkspaceId implements IsSerializable
    {
       return localeId.toString() + ":" + projectIterationId;
    }
-
 }

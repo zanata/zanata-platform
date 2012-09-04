@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -14,13 +15,15 @@ import org.jboss.seam.log.Log;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTermComment;
+import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
-@Name("webtrans.gwt.GetGlossaryDetailsHandler")
+@Name("webtrans.gwt.UpdateGlossaryTermHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(UpdateGlossaryTermAction.class)
 public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGlossaryTermAction, UpdateGlossaryTermResult>
@@ -32,19 +35,23 @@ public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGloss
    @In
    private GlossaryDAO glossaryDAO;
    
+   @In
+   private LocaleService localeServiceImpl;
 
 
    @Override
    public UpdateGlossaryTermResult execute(UpdateGlossaryTermAction action, ExecutionContext context) throws ActionException
    {
       HGlossaryEntry entry = glossaryDAO.getEntryBySrcLocaleAndContent(action.getSrcLocale(), action.getSrcContent());
-      
-      HGlossaryTerm targetTerm = entry.getGlossaryTerms().get(action.getTargetLocale());
+
+      HLocale targetLocale = localeServiceImpl.getByLocaleId(action.getTargetLocale());
+
+      HGlossaryTerm targetTerm = entry.getGlossaryTerms().get(targetLocale);
       if(targetTerm == null)
       {
          throw new ActionException("Update failed for glossary term with source content: " + action.getSrcContent() + " and target locale: " + action.getTargetLocale());
       }
-      else if(action.getCurrentVerNum() != targetTerm.getVersionNum())
+      else if (action.getCurrentVerNum().compareTo(targetTerm.getVersionNum()) != 0)
       {
          throw new ActionException("Update failed for glossary term " + action.getTargetContent() + " base versionNum " + action.getCurrentVerNum() + " does not match current versionNum " + targetTerm.getVersionNum());
       }
@@ -52,7 +59,8 @@ public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGloss
       {
          targetTerm.setContent(action.getTargetContent());
          HGlossaryEntry entryResult = glossaryDAO.makePersistent(entry);
-         
+         glossaryDAO.flush();
+
          ArrayList<String> srcComments = new ArrayList<String>();
          ArrayList<String> targetComments = new ArrayList<String>();
 
@@ -66,7 +74,9 @@ public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGloss
             targetComments.add(termComment.getComment());
          }
          
-         GlossaryDetails details = new GlossaryDetails(action.getSrcContent(), action.getTargetContent(), srcComments, targetComments, entryResult.getSourceRef(), action.getSrcLocale(), action.getTargetLocale(), targetTerm.getVersionNum());
+         SimpleDateFormat dateFormat = new SimpleDateFormat();
+
+         GlossaryDetails details = new GlossaryDetails(entryResult.getGlossaryTerms().get(entryResult.getSrcLocale()).getContent(), entryResult.getGlossaryTerms().get(targetLocale).getContent(), srcComments, targetComments, entryResult.getSourceRef(), action.getSrcLocale(), action.getTargetLocale(), targetTerm.getVersionNum(), dateFormat.format(targetTerm.getLastChanged()));
          
          return new UpdateGlossaryTermResult(details);
       }

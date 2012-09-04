@@ -66,13 +66,10 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel readOnlyLabel, documentsLink, resize, notification, keyShortcuts;
+   InlineLabel projectLink, iterationFilesLink, resize, notification, keyShortcuts;
    
    @UiField
-   InlineLabel notificationLabel;
-
-   @UiField
-   InlineLabel searchAndReplace, documentList;
+   InlineLabel notificationLabel, readOnlyLabel, searchAndReplace, documentList;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
@@ -110,6 +107,8 @@ public class AppView extends Composite implements AppPresenter.Display
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
       initWidget(uiBinder.createAndBindUi(this));
+
+      readOnlyLabel.setText("[" + messages.readOnly() + "]");
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
@@ -177,16 +176,19 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public HasClickHandlers getDocumentsLink()
    {
-      return documentsLink;
+      return projectLink;
    }
 
    @Override
-   public void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle)
+   public void setProjectLinkLabel(String workspaceNameLabel)
    {
-      if (workspaceTitle == null || workspaceTitle.length() == 0)
-         documentsLink.setText(workspaceNameLabel);
-      else
-         documentsLink.setText(workspaceNameLabel + " - " + workspaceTitle);
+      projectLink.setText(workspaceNameLabel);
+   }
+
+   @Override
+   public void setIterationFilesLabel(String name)
+   {
+      iterationFilesLink.setText(name);
    }
 
    @Override
@@ -307,5 +309,17 @@ public class AppView extends Composite implements AppPresenter.Display
          rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
       }
       rootContainer.animate(ANIMATE_DURATION);
+   }
+
+   @Override
+   public HasClickHandlers getProjectLink()
+   {
+      return projectLink;
+   }
+
+   @Override
+   public HasClickHandlers getIterationFilesLink()
+   {
+      return iterationFilesLink;
    }
 }

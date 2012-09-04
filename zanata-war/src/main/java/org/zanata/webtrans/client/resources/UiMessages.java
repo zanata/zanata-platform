@@ -139,4 +139,14 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Save")
    String save();
+
+   @DefaultMessage("Last modified on {0}")
+   String lastModifiedOn(String date);
+
+   @DefaultMessage("Loading...")
+   String loading();
+
+   @DefaultMessage("Found no glossary results")
+   String foundNoGlossaryResults();
+
 }

@@ -16,21 +16,25 @@ public class GlossaryDetails implements IsSerializable
    private Integer targetVersionNum;
    private String source;
    private String target;
+   private String lastModifiedOn;
 
    @SuppressWarnings("unused")
    private GlossaryDetails()
    {
-      this(null, null, null, null, null, null, null, null);
+      this(null, null, null, null, null, null, null, null, null);
    }
 
-   public GlossaryDetails(String source, String target, List<String> sourceComment, List<String> targetComment, String sourceRef, LocaleId srcLocale, LocaleId targetLocale, Integer targetVersionNum)
+   public GlossaryDetails(String source, String target, List<String> sourceComment, List<String> targetComment, String sourceRef, LocaleId srcLocale, LocaleId targetLocale, Integer targetVersionNum, String lastModifiedOn)
    {
+      this.source = source;
+      this.target = target;
       this.sourceComment = sourceComment;
       this.targetComment = targetComment;
       this.sourceRef = sourceRef;
       this.srcLocale = srcLocale;
       this.targetLocale = targetLocale;
       this.targetVersionNum = targetVersionNum;
+      this.lastModifiedOn = lastModifiedOn;
    }
 
    public List<String> getSourceComment()
@@ -71,5 +75,10 @@ public class GlossaryDetails implements IsSerializable
    public String getTarget()
    {
       return target;
+   }
+
+   public String getLastModified()
+   {
+      return lastModifiedOn;
    }
 }

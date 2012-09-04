@@ -57,6 +57,8 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       void clearEntries();
 
       void addEntry(String text);
+
+      HasText getLastModified();
    }
 
    private GetGlossaryDetailsResult glossaryDetails;
@@ -104,7 +106,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
                      @Override
                      public void onSuccess(UpdateGlossaryTermResult result)
                      {
-                        //Update with lastest term details in list
+                        Log.info("Glossary term updated:" + result.getDetail().getTarget());
                      }
                   });
                }
@@ -180,6 +182,8 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       display.getSrcRef().setText(srcRef);
       display.getSourceComment().setText(srcComments.toString());
       display.getTargetComment().setText(targetComments.toString());
+      display.getLastModified().setText(messages.lastModifiedOn(selectedDetailEntry.getLastModified()));
+
    }
 
    @Override

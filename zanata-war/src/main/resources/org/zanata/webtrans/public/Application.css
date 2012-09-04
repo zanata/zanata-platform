@@ -841,9 +841,66 @@ td.ApprovedStateDecoration div div div
 
 .southTable th {
 	border-bottom: 0px;
-	color: blue;
+	color: #C35817;
 	font-style: normal;
-	font-weight: bold
+	font-weight: bold;
+	font-size:13px;
+	text-shadow:none;
+	text-decoration:underline;
+}
+
+.glossaryTable
+{
+	width:100%;
+	height:100%;
+}
+
+.glossaryTable tr:hover
+{
+	background:#E7E7E7;
+}
+
+.glossaryTable td.detailCol
+{
+	width:54px;
+}
+
+.glossaryTable td.actionCol
+{
+	width:46px;
+}
+
+.glossaryTable .th
+{
+	color: #C35817;
+	font-weight: bold;
+	font-size:13px;
+	text-decoration:underline;
+}
+
+.glossaryTable .centered
+{
+	text-align:center;
+}
+
+.glossaryTable .details
+{
+	font-size:16px;
+	color:#00264C;
+	cursor:pointer;
+}
+
+.glossaryTable .details:hover
+{
+	color:red;
+}
+
+.tableMsg
+{
+	font-size:16px;
+	font-weight:bold;
+	text-align:center;
+	padding:25px;
 }
 
 .loadingPanel {
@@ -942,5 +999,11 @@ td.ApprovedStateDecoration div div div
 	background:#575757;
 	color:#FFFFFF;
 	cursor:pointer;
+}
+
+.GWTDialogBox table
+{
+	width:100%;
+	height:100%;
 }
 

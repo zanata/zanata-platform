@@ -1,50 +1,43 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.ArrayList;
+
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
+import org.zanata.webtrans.client.presenter.HasGlossaryEvent;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
+import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
-import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
-import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
-import org.zanata.webtrans.client.ui.table.column.HighlightingLabelGlossaryColumn;
-import org.zanata.webtrans.client.view.TransMemoryView.Styles;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class GlossaryView extends Composite implements GlossaryPresenter.Display
 {
    private static GlossaryViewUiBinder uiBinder = GWT.create(GlossaryViewUiBinder.class);
-
-   CellTable<GlossaryResultItem> glossaryTable;
-
-   private ListDataProvider<GlossaryResultItem> dataProvider;
 
    interface GlossaryViewUiBinder extends UiBinder<Widget, GlossaryView>
    {
@@ -52,7 +45,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    interface Styles extends CssResource
    {
-      String narrowColumn();
    }
 
    @UiField
@@ -76,29 +68,51 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @UiField
    ScrollPanel scrollPanel;
 
-   private final UiMessages messages;
-   
-   private final HighlightingLabelGlossaryColumn sourceColumn;
-   private final HighlightingLabelGlossaryColumn targetColumn;
-   private final CopyButtonColumn<GlossaryResultItem> copyColumn;
-   private final DetailsColumn<GlossaryResultItem> detailsColumn;
+   private final FlexTable table;
+
+   private final Label loadingLabel, noResultFoundLabel;
+
+   private HasGlossaryEvent listener;
+
+   private final static int SOURCE_COL = 0;
+   private final static int TARGET_COL = 1;
+   private final static int ACTION_COL = 2;
+   private final static int DETAILS_COL = 3;
 
    @Inject
    public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
-      this.messages = messages;
-      
-      sourceColumn = new HighlightingLabelGlossaryColumn(true, false);
-      targetColumn = new HighlightingLabelGlossaryColumn(false, true);
-      copyColumn = new CopyButtonColumn<GlossaryResultItem>();
-      detailsColumn = new DetailsColumn<GlossaryResultItem>(resources);
-      
+      table = new FlexTable();
+      table.setStyleName("glossaryTable");
+      table.setCellSpacing(0);
+
+      FlexCellFormatter formatter = table.getFlexCellFormatter();
+      formatter.setStyleName(0, SOURCE_COL, "th");
+      formatter.setStyleName(0, TARGET_COL, "th");
+      formatter.setStyleName(0, ACTION_COL, "th");
+      formatter.addStyleName(0, ACTION_COL, "centered");
+      formatter.addStyleName(0, ACTION_COL, "actionCol");
+      formatter.setStyleName(0, DETAILS_COL, "th");
+      formatter.addStyleName(0, DETAILS_COL, "centered");
+      formatter.addStyleName(0, DETAILS_COL, "detailCol");
+
+      table.setWidget(0, 0, new Label(messages.srcTermLabel()));
+      table.setWidget(0, 1, new Label(messages.targetTermLabel()));
+      table.setWidget(0, 2, null);
+      table.setWidget(0, 3, new Label(messages.detailsLabel()));
+
+      loadingLabel = new Label(messages.loading());
+      loadingLabel.setStyleName("tableMsg");
+      noResultFoundLabel = new Label(messages.foundNoGlossaryResults());
+      noResultFoundLabel.setStyleName("tableMsg");
+
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
-      dataProvider = new ListDataProvider<GlossaryResultItem>();
       initWidget(uiBinder.createAndBindUi(this));
 
-      copyColumn.setCellStyleNames(style.narrowColumn());
-      detailsColumn.setCellStyleNames(style.narrowColumn());
+      scrollPanel.add(loadingLabel);
+
+      // copyColumn.setCellStyleNames(style.narrowCenteredColumn());
+      // detailsColumn.setCellStyleNames(style.narrowCenteredColumn());
       headerLabel.setText(messages.glossaryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
@@ -112,12 +126,12 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
          searchButton.click();
       }
    }
-   
+
    @UiHandler("clearButton")
-   void onClearButtonClicked(ClickEvent event)
+   public void onClearButtonClicked(ClickEvent event)
    {
       glossaryTextBox.setText("");
-      dataProvider.getList().clear();
+      clearTableContent();
    }
 
    @Override
@@ -140,7 +154,18 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Override
    public void startProcessing()
    {
-      dataProvider.getList().clear();
+      scrollPanel.clear();
+      scrollPanel.add(loadingLabel);
+
+      clearTableContent();
+   }
+
+   private void clearTableContent()
+   {
+      for (int i = 1; i < table.getRowCount(); i++)
+      {
+         table.removeRow(i);
+      }
    }
 
    @Override
@@ -149,61 +174,68 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       return searchType;
    }
 
-
-   public void renderTable()
-   {
-      glossaryTable = new CellTable<GlossaryResultItem>();
-      glossaryTable.addStyleName("glossaryTable");
-      glossaryTable.addStyleName("southTable");
-      glossaryTable.addColumn(sourceColumn, messages.srcTermLabel());
-      glossaryTable.addColumn(targetColumn, messages.targetTermLabel());
-      glossaryTable.addColumn(detailsColumn, messages.detailsLabel());
-      glossaryTable.addColumn(copyColumn);
-
-      Label noResult = new Label("Found no glossary results");
-      noResult.setStyleName("boldFont");
-      glossaryTable.setEmptyTableWidget(noResult);
-
-      final NoSelectionModel<GlossaryResultItem> selectionModel = new NoSelectionModel<GlossaryResultItem>();
-      final DefaultSelectionEventManager<GlossaryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
-      glossaryTable.setSelectionModel(selectionModel, manager);
-
-      glossaryTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
-
-      dataProvider.addDataDisplay(glossaryTable);
-
-      scrollPanel.clear();
-      scrollPanel.add(glossaryTable);
-   }
-
-   @Override
-   public Column<GlossaryResultItem, String> getCopyColumn()
-   {
-      return copyColumn;
-   }
-   
-   @Override
-   public Column<GlossaryResultItem, ImageResource> getDetailsColumn()
-   {
-      return detailsColumn;
-   }
-
-   @Override
-   public void setDataProvider(ListDataProvider<GlossaryResultItem> dataProvider)
-   {
-      this.dataProvider = dataProvider;
-      renderTable();
-   }
-
-   @Override
-   public void setPageSize(int size)
-   {
-      glossaryTable.setPageSize(size);
-   }
-
    @Override
    public HasAllFocusHandlers getFocusGlossaryTextBox()
    {
       return glossaryTextBox;
+   }
+
+   @Override
+   public void renderTable(ArrayList<GlossaryResultItem> glossaries)
+   {
+      startProcessing();
+
+      if (!glossaries.isEmpty())
+      {
+         for (int i = 0; i < glossaries.size(); i++)
+         {
+            final GlossaryResultItem item = glossaries.get(i);
+
+            table.setWidget(i + 1, SOURCE_COL, new HighlightingLabel(item.getSource()));
+            table.setWidget(i + 1, TARGET_COL, new HighlightingLabel(item.getTarget()));
+
+            Button copyButton = new Button("Copy");
+            copyButton.addClickHandler(new ClickHandler()
+            {
+               @Override
+               public void onClick(ClickEvent event)
+               {
+                  listener.fireCopyEvent(item);
+               }
+            });
+
+            table.setWidget(i + 1, ACTION_COL, copyButton);
+            table.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
+            table.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
+
+            InlineLabel infoCell = new InlineLabel();
+            infoCell.setStyleName("icon-info-circle-2 details");
+            infoCell.addClickHandler(new ClickHandler()
+            {
+               @Override
+               public void onClick(ClickEvent event)
+               {
+                  listener.showGlossaryDetail(item);
+               }
+            });
+
+            table.setWidget(i + 1, DETAILS_COL, infoCell);
+            table.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
+            table.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
+         }
+         scrollPanel.clear();
+         scrollPanel.add(table);
+      }
+      else
+      {
+         scrollPanel.add(noResultFoundLabel);
+      }
+   }
+
+   @Override
+   public void setListener(HasGlossaryEvent listener)
+   {
+      this.listener = listener;
+
    }
 }

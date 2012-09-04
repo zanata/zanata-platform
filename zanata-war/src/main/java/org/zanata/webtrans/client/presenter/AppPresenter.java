@@ -26,6 +26,7 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
@@ -51,6 +52,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -66,9 +68,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    {
       void showInMainView(MainView editor);
 
+      HasClickHandlers getProjectLink();
+
+      HasClickHandlers getIterationFilesLink();
+
       HasClickHandlers getDocumentsLink();
 
-      void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
+      void setProjectLinkLabel(String workspaceNameLabel);
 
       void setDocumentLabel(String docPath, String docName);
 
@@ -97,6 +103,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void setResizeVisible(boolean visible);
 
       void showSideMenu(boolean isShowing);
+
+      void setIterationFilesLabel(String iterationSlug);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -221,7 +229,25 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onClick(ClickEvent event)
          {
-            gotoDocumentListView();
+            Application.redirectToIterationFiles(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
+         }
+      }));
+
+      registerHandler(display.getProjectLink().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
+         }
+      }));
+
+      registerHandler(display.getIterationFilesLink().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            Application.redirectToIterationFiles(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
          }
       }));
 
@@ -341,9 +367,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
+      display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
+      display.setIterationFilesLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug() + "(" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + ")");
+
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
-      display.setWorkspaceNameLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), workspaceTitle);
-      window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
+      if (!Strings.isNullOrEmpty(workspaceTitle))
+      {
+         window.setTitle(messages.windowTitle2(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName(), workspaceTitle));
+      }
+      else
+      {
+         window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
+      }
 
       display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
 

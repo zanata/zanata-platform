@@ -1,10 +1,12 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -23,10 +25,6 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
-
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetTransMemoryDetailsHandler")
 @Scope(ScopeType.STATELESS)
@@ -94,10 +92,5 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
    @Override
    public void rollback(GetTransMemoryDetailsAction action, TransMemoryDetailsList result, ExecutionContext context) throws ActionException
    {
-   }
-   
-   public static void main(String args[])
-   {
-      SimpleDateFormat dateFormat = new SimpleDateFormat();
    }
 }

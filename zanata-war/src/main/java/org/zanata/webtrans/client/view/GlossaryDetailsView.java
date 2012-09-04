@@ -41,10 +41,7 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    TextArea sourceComment;
 
    @UiField
-   Label sourceLabel;
-
-   @UiField
-   Label targetLabel;
+   Label sourceLabel, targetLabel, lastModified;
 
    @UiField
    TextArea targetComment;
@@ -157,6 +154,12 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    public HasText getSrcRef()
    {
       return srcRef;
+   }
+
+   @Override
+   public HasText getLastModified()
+   {
+      return lastModified;
    }
 
 }

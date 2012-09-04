@@ -41,23 +41,18 @@
 			color: #595959;
 		}
 		
-        .readOnly {
-            font-weight: bold;
-            color: #ff6622;
-        }
-		
 		.divider {
 			color: #000000;
+			font-size:12px;
 		}
         
-        .documents-link {
+        .breadcrumbs-link {
             cursor: pointer;
-            display: inline;
             font-weight:bold;
             color:#0085CC;
         }
         
-         .documents-link:hover 
+         .breadcrumbs-link:hover 
         {
 			text-decoration:underline;
         }
@@ -100,6 +95,15 @@
 		{
 			margin-left:5px;
 		}
+		
+		.breadcrumbs_display
+		{
+			font-size:14px;
+			font-weight:bold;
+			color:#B62918;
+			font-style:normal;
+		}
+		
 	</ui:style>
 	<g:LayoutPanel stylePrimaryName="{style.rootContainer}" ui:field="rootContainer">
 		<g:layer top="0px" height="30px">
@@ -109,11 +113,14 @@
 						<g:cell>
 							<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 								<nobr>
-									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.readOnly}"><ui:msg>Read-only mode</ui:msg></g:InlineLabel>
-								    <g:InlineLabel ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:InlineLabel>
+									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.breadcrumbs_display}"/>
+								  	<g:InlineLabel ui:field="projectLink" styleName="{style.breadcrumbs-link}"/>
+									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
+									<g:InlineLabel ui:field="iterationFilesLink" styleName="{style.breadcrumbs-link}"/>
 									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
 									<em>
-										<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
+										<span ui:field="selectedDocumentPathSpan" class="{style.breadcrumbs_display}"/>
+										<span ui:field="selectedDocumentSpan" class="{style.breadcrumbs_display}"/>
 									</em>
 								</nobr>
 							</g:HTMLPanel>

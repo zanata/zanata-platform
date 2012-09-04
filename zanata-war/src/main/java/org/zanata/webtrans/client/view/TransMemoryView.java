@@ -55,7 +55,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    interface Styles extends CssResource
    {
       String headerLabel();
-      String narrowColumn();
+      String narrowCenteredColumn();
    }
 
    @UiField
@@ -236,15 +236,15 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          }
       };
 
-      countColumn.setCellStyleNames(style.narrowColumn());
+      countColumn.setCellStyleNames(style.narrowCenteredColumn());
       tmTable.addColumn(countColumn, Tooltips.textWithTooltip(messages.matchCountLabel(), messages.matchCountHeaderTooltip()));
 
-      copyColumn.setCellStyleNames(style.narrowColumn());
+      copyColumn.setCellStyleNames(style.narrowCenteredColumn());
       tmTable.addColumn(copyColumn);
       SimilarityColumn<TransMemoryResultItem> similarityColumn = new SimilarityColumn<TransMemoryResultItem>();
-      similarityColumn.setCellStyleNames(style.narrowColumn());
+      similarityColumn.setCellStyleNames(style.narrowCenteredColumn());
       tmTable.addColumn(similarityColumn, messages.similarityLabel());
-      detailsColumn.setCellStyleNames(style.narrowColumn());
+      detailsColumn.setCellStyleNames(style.narrowCenteredColumn());
       tmTable.addColumn(detailsColumn, messages.detailsLabel());
 
       noResultWidget.setStyleName("boldFont");
