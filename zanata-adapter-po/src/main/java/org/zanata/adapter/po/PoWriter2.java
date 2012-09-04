@@ -88,6 +88,15 @@ public class PoWriter2
    }
 
    /**
+    * Generates a pot file from a Resource, writing it directly to an output stream.
+    */
+   public void writePot(OutputStream stream, String charset, Resource doc) throws IOException
+   {
+      OutputStreamWriter osWriter = new OutputStreamWriter(stream, charset);
+      write(osWriter, charset, doc, null);
+   }
+
+   /**
     * Generates a po file from a Resource and a TranslationsResource, using the
     * publican directory layout.
     * 
