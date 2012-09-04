@@ -576,8 +576,7 @@
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
-    <action execute="#{breadcrumbs.addLocation('/language/view/'.concat(projectIterationFilesAction.localeId), projectIterationFilesAction.localeId)}"/>
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Documents'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Documents'].concat(' (').concat(projectIterationFilesAction.localeId).concat(')'))}"/>
   </page>
 
   <page view-id="/iteration/edit.xhtml">
