@@ -326,8 +326,13 @@
     <to>$1/iteration/source_files/$2/$3?$5</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
-    <to>$1/iteration/files/$2/$3/$4</to>
+    <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/files/$2/$3/$4?$6</to>
+  </outbound-rule>
+  <!-- Duplicate rule to handle different parameter order. -->
+  <outbound-rule>
+    <from>^(/.+)?/iteration/files.seam\?localeId=([^&amp;]+)&amp;project=([^&amp;]+)&amp;iteration=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/files/$3/$4/$2?$6</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/edit.seam\?projectSlug=([^&amp;]+)&amp;slug=([^&amp;]+)$</from>
