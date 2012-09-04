@@ -159,9 +159,9 @@ public class ProjectIterationFilesAction
 
          // translate it
          List<String> warnings =
-            this.translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, translationFileUpload.getDocId(),
+            translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, translationFileUpload.getDocId(),
                new LocaleId(localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
-               this.translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
+               translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
 
          StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
          if (!warnings.isEmpty())
@@ -169,15 +169,15 @@ public class ProjectIterationFilesAction
             facesInfoMssg.append(" There were some warnings, see below.");
          }
 
-         FacesMessages.instance().add(Severity.INFO, facesInfoMssg.toString(), this.translationFileUpload.getFileName());
+         FacesMessages.instance().add(Severity.INFO, facesInfoMssg.toString(), translationFileUpload.getFileName());
          for (String warning : warnings)
          {
             FacesMessages.instance().add(Severity.WARN, warning);
          }
       }
-      catch (ZanataServiceException zex)
+      catch (ZanataServiceException e)
       {
-         FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), this.translationFileUpload.getFileName());
+         FacesMessages.instance().add(Severity.ERROR, e.getMessage(), translationFileUpload.getFileName());
       }
 
       // NB This needs to be done as for some reason seam is losing the parameters when redirecting
@@ -235,11 +235,11 @@ public class ProjectIterationFilesAction
 
          showUploadSuccessMessage();
       }
-      catch (ZanataServiceException zex)
+      catch (ZanataServiceException e)
       {
-         FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), documentFileUpload.getFileName());
+         FacesMessages.instance().add(Severity.ERROR, e.getMessage(), documentFileUpload.getFileName());
       }
-      catch (InvalidStateException isex)
+      catch (InvalidStateException e)
       {
          FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
       }

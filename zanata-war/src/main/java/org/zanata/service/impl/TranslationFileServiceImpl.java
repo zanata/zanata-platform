@@ -89,7 +89,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
          }
          catch (Exception e)
          {
-            throw new ZanataServiceException("Invalid PO file contents on file: " + fileName);
+            throw new ZanataServiceException("Invalid PO file contents on file: " + fileName, e);
          }
       }
       else if (hasAdapterFor(fileName))
@@ -135,7 +135,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
          }
          catch (Exception e)
          {
-            throw new ZanataServiceException("Invalid POT file contents on file: " + fileName);
+            throw new ZanataServiceException("Invalid POT file contents on file: " + fileName, e);
          }
       }
       else
