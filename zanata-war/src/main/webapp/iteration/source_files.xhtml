@@ -83,10 +83,11 @@
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
                     </f:facet>
-
-                    <!-- TODO add .pot download -->
-
-                    <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/raw/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}">
+                    <s:link styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{messages['jsf.iteration.files.dotpot']}"/>
+                    </s:link>
+                    <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/raw">
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.name)}"/>
                     </s:link>

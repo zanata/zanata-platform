@@ -66,8 +66,9 @@ import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 @Consumes( { MediaType.APPLICATION_OCTET_STREAM })
 public class FileService implements FileResource
 {
-   public static final String RAW_DOWNLOAD_TEMPLATE = "/raw/{projectSlug}/{iterationSlug}";
+   public static final String SOURCE_DOWNLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}/{fileType}";
 
+   private static final String RAW_DOCUMENT = "raw";
    private static final String SUBSTITUTE_APPROVED_AND_FUZZY = "half-baked";
    private static final String SUBSTITUTE_APPROVED = "baked";
 
@@ -86,17 +87,34 @@ public class FileService implements FileResource
    @In
    private ResourceUtils resourceUtils;
 
+   /**
+    * Downloads a single source file.
+    * 
+    * @param projectSlug
+    * @param iterationSlug
+    * @param fileType use 'raw' for original source if available, or 'pot' to
+    *           generate pot from source strings
+    * @param docId
+    * @return response with status code 404 if the document is not found, 415 if
+    *         fileType is not valid for the document, otherwise 200 with
+    *         attached document.
+    */
    @GET
-   @Path(RAW_DOWNLOAD_TEMPLATE)
-   // /file/raw/{projectSlug}/{iterationSlug}?docId={docId}
-   public Response downloadRawFile( @PathParam("projectSlug") String projectSlug,
-                                    @PathParam("iterationSlug") String iterationSlug,
-                                    @QueryParam("docId") String docId)
+   @Path(SOURCE_DOWNLOAD_TEMPLATE)
+   // /file/source/{projectSlug}/{iterationSlug}/{fileType}?docId={docId}
+   public Response downloadSourceFile( @PathParam("projectSlug") String projectSlug,
+                                       @PathParam("iterationSlug") String iterationSlug,
+                                       @PathParam("fileType") String fileType,
+                                       @QueryParam("docId") String docId)
    {
       final Response response;
-      HDocument document = this.documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
+      HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
 
-      if( document != null && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+      if( document == null )
+      {
+         response = Response.status(Status.NOT_FOUND).build();
+      }
+      else if (RAW_DOCUMENT.equals(fileType) && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
       {
          InputStream fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, document.getPath(), document.getName());
          StreamingOutput output = new InputStreamStreamingOutput(fileContents);
@@ -104,9 +122,17 @@ public class FileService implements FileResource
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
       }
+      else if ("pot".equals(fileType))
+      {
+         Resource res = resourceUtils.buildResource(document);
+         StreamingOutput output = new POTStreamingOutput(res);
+         response = Response.ok()
+               .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".pot\"")
+               .entity(output).build();
+      }
       else
       {
-         response = Response.status(Status.NOT_FOUND).build();
+         response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
       }
       return response;
    }
@@ -114,16 +140,25 @@ public class FileService implements FileResource
    /**
     * Downloads a single translation file.
     * 
+    * To download a preview-document or translated document where a raw source
+    * document is available, use fileType 'half_baked' and 'baked' respectively.
+    * 
     * @param projectSlug Project identifier.
     * @param iterationSlug Project iteration identifier.
-    * @param locale Translations for this locale will be contained in the downloaded document.
-    * @param fileExtension File type to be downloaded. (Options: 'po')
+    * @param locale Translations for this locale will be contained in the
+    *           downloaded document.
+    * @param fileType File type to be downloaded. (Options: 'po', 'half_baked',
+    *           'baked')
     * @param docId Document identifier to fetch translations for.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - A translation file in the requested format with translations for the requested document in a
-    * project, iteration and locale. <br>
-    * NOT FOUND(404) - If a document is not found with the given parameters.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    * @return The following response status codes will be returned from this
+    *         operation:<br>
+    *         OK(200) - A translation file in the requested format with
+    *         translations for the requested document in a project, iteration
+    *         and locale. <br>
+    *         NOT FOUND(404) - If a document is not found with the given
+    *         parameters.<br>
+    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+    *         the server while performing this operation.
     */
    @Override
    @GET
@@ -132,7 +167,7 @@ public class FileService implements FileResource
    public Response downloadTranslationFile( @PathParam("projectSlug") String projectSlug,
                                             @PathParam("iterationSlug") String iterationSlug,
                                             @PathParam("locale") String locale,
-                                            @PathParam("fileType") String fileExtension,
+                                            @PathParam("fileType") String fileType,
                                             @QueryParam("docId") String docId )
    {
       final Response response;
@@ -142,7 +177,7 @@ public class FileService implements FileResource
       {
          response = Response.status(Status.NOT_FOUND).build();
       }
-      else if ("po".equals(fileExtension))
+      else if ("po".equals(fileType))
       {
          final Set<String> extensions = new HashSet<String>();
          extensions.add("gettext");
@@ -158,7 +193,7 @@ public class FileService implements FileResource
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
                .entity(output).build();
       }
-      else if ( (SUBSTITUTE_APPROVED.equals(fileExtension) || SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileExtension))
+      else if ( (SUBSTITUTE_APPROVED.equals(fileType) || SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileType))
             && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
       {
          final Set<String> extensions = Collections.<String>emptySet();
@@ -167,7 +202,7 @@ public class FileService implements FileResource
          // Filter to only provide translated targets. "Preview" downloads include fuzzy.
          // Using new list is used as transRes list appears not to be a modifiable implementation.
          Map<String, TextFlowTarget> translations = new HashMap<String, TextFlowTarget>();
-         boolean useFuzzy = SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileExtension);
+         boolean useFuzzy = SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileType);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
             if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
@@ -262,6 +297,23 @@ public class FileService implements FileResource
       {         
          PoWriter2 writer = new PoWriter2();
          writer.writePo(output, "UTF-8", this.resource, this.transRes);
+      }
+   }
+
+   private class POTStreamingOutput implements StreamingOutput
+   {
+      private Resource resource;
+
+      public POTStreamingOutput(Resource resource)
+      {
+         this.resource = resource;
+      }
+
+      @Override
+      public void write(OutputStream output) throws IOException, WebApplicationException
+      {
+         PoWriter2 writer = new PoWriter2();
+         writer.writePot(output, "UTF-8", resource);
       }
    }
 
