@@ -66,6 +66,7 @@ import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
 import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DocumentListView;
+import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryView;
 import org.zanata.webtrans.client.view.KeyShortcutView;
@@ -122,7 +123,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(GlossaryDetailsPresenter.class, GlossaryDetailsPresenter.Display.class, GlossaryDetailsView.class);
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
-      bindPresenter(EditorOptionsPresenter.class, EditorOptionsPresenter.Display.class, EditorOptionsView.class);
+      bindPresenter(EditorOptionsPresenter.class, EditorOptionsDisplay.class, EditorOptionsView.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationPresenter.Display.class, NotificationView.class);

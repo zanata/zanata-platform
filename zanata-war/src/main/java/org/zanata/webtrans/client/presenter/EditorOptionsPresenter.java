@@ -21,68 +21,30 @@
 package org.zanata.webtrans.client.presenter;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresenter.Display>
+public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, EnableModalNavigationEventHandler, FilterViewEventHandler
 {
-   public interface Display extends WidgetDisplay
-   {
-      HasValue<Boolean> getTranslatedChk();
-
-      HasValue<Boolean> getNeedReviewChk();
-
-      HasValue<Boolean> getUntranslatedChk();
-
-      HasValue<Boolean> getEditorButtonsChk();
-
-      HasValue<Boolean> getEnterChk();
-
-      HasValue<Boolean> getEscChk();
-
-      void setNavOptionVisible(boolean visible);
-
-      HasChangeHandlers getModalNavigationOptionsSelect();
-
-      // possible filter values
-      static final String KEY_FUZZY_UNTRANSLATED = "FU";
-      static final String KEY_FUZZY = "F";
-      static final String KEY_UNTRANSLATED = "U";
-
-      String getSelectedFilter();
-   }
-
    private final ValidationOptionsPresenter validationOptionsPresenter;
-
-   private UserConfigHolder configHolder;
+   private final UserConfigHolder configHolder;
    private final UserWorkspaceContext userWorkspaceContext;
-
-   @Inject
-   public EditorOptionsPresenter(final Display display, final EventBus eventBus, UserWorkspaceContext userWorkspaceContext, final ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder)
-   {
-      super(display, eventBus);
-      this.validationOptionsPresenter = validationDetailsPresenter;
-      this.configHolder = configHolder;
-      this.userWorkspaceContext = userWorkspaceContext;
-   }
 
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
    {
@@ -92,6 +54,16 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
          eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), false));
       }
    };
+
+   @Inject
+   public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext, ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder)
+   {
+      super(display, eventBus);
+      this.validationOptionsPresenter = validationDetailsPresenter;
+      this.configHolder = configHolder;
+      this.userWorkspaceContext = userWorkspaceContext;
+      display.setListener(this);
+   }
 
    @Override
    protected void onBind()
@@ -105,111 +77,96 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsPresent
       registerHandler(display.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
       registerHandler(display.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
       registerHandler(display.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
+      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+      registerHandler(eventBus.addHandler(EnableModalNavigationEvent.getType(), this));
 
-      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), new FilterViewEventHandler()
-      {
-         @Override
-         public void onFilterView(FilterViewEvent event)
-         {
-            // filter cancel will revert a checkbox value, so the checkboxes are
-            // updated to reflect this reversion
-            if (event.isCancelFilter())
-            {
-               display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
-               display.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
-               display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
-            }
-         }
-      }));
+      //set options default values
+      display.setOptionsState(configHolder.getState());
+   }
 
-      registerHandler(display.getEditorButtonsChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Show editor buttons: " + event.getValue());
-            configHolder.setDisplayButtons(event.getValue());
-            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
-         }
-      }));
-
-      registerHandler(display.getEnterChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            configHolder.setEnterSavesApproved(event.getValue());
-            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
-         }
-      }));
-
-      registerHandler(display.getEscChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
-            configHolder.setEscClosesEditor(event.getValue());
-            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
-         }
-      }));
-
-      // editor buttons always shown by default
-      display.getEditorButtonsChk().setValue(true, false);
-      display.getEnterChk().setValue(configHolder.isEnterSavesApproved(), false);
-      display.getEscChk().setValue(configHolder.isEscClosesEditor(), false);
-
-      registerHandler(display.getModalNavigationOptionsSelect().addChangeHandler(new ChangeHandler()
-      {
-         @Override
-         public void onChange(ChangeEvent event)
-         {
-            String selectedOption = display.getSelectedFilter();
-            if (selectedOption.equals(Display.KEY_FUZZY_UNTRANSLATED))
-            {
-               configHolder.setButtonUntranslated(true);
-               configHolder.setButtonFuzzy(true);
-            }
-            else if (selectedOption.equals(Display.KEY_FUZZY))
-            {
-               configHolder.setButtonFuzzy(true);
-               configHolder.setButtonUntranslated(false);
-            }
-            else if (selectedOption.equals(Display.KEY_UNTRANSLATED))
-            {
-               configHolder.setButtonFuzzy(false);
-               configHolder.setButtonUntranslated(true);
-            }
-            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
-      {
-         @Override
-         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-         {
-            userWorkspaceContext.setProjectActive(event.isProjectActive());
-            setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(EnableModalNavigationEvent.getType(), new EnableModalNavigationEventHandler()
-      {
-         @Override
-         public void onEnable(EnableModalNavigationEvent event)
-         {
-            display.setNavOptionVisible(event.isEnable());
-         }
-      }));
+   @Override
+   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+   {
+      userWorkspaceContext.setProjectActive(event.isProjectActive());
+      setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
    }
 
    private void setReadOnly(boolean readOnly)
    {
-      boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
+      boolean displayButtons = !readOnly && configHolder.isDisplayButtons();
       configHolder.setDisplayButtons(displayButtons);
+      display.setOptionsState(configHolder.getState());
       eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+   }
+
+   @Override
+   public void onEnable(EnableModalNavigationEvent event)
+   {
+      display.setNavOptionVisible(event.isEnable());
+   }
+
+   @Override
+   public void onFilterView(FilterViewEvent event)
+   {
+      // filter cancel will revert a checkbox value, so the checkboxes are
+      // updated to reflect this reversion
+      if (event.isCancelFilter())
+      {
+         display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
+         display.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
+         display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
+      }
+   }
+
+   @Override
+   public void onSelectionChange(String groupName, NavOption navOption)
+   {
+      if (configHolder.getNavOption() != navOption)
+      {
+         configHolder.setNavOption(navOption);
+         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+      }
+   }
+
+   @Override
+   public void onPageSizeClick(int pageSize)
+   {
+      if (configHolder.getPageSize() != pageSize)
+      {
+         configHolder.setPageSize(pageSize);
+         eventBus.fireEvent(new PageSizeChangeEvent(pageSize));
+      }
+   }
+
+   @Override
+   public void onEnterSaveOptionChanged(Boolean enterSaveApproved)
+   {
+      if (configHolder.isEnterSavesApproved() != enterSaveApproved)
+      {
+         configHolder.setEnterSavesApproved(enterSaveApproved);
+         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+      }
+   }
+
+   @Override
+   public void onEscCancelEditOptionChanged(Boolean escCancelEdit)
+   {
+      if (configHolder.isEscClosesEditor() != escCancelEdit)
+      {
+         configHolder.setEscClosesEditor(escCancelEdit);
+         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+      }
+   }
+
+   @Override
+   public void onEditorButtonsOptionChanged(Boolean editorButtons)
+   {
+      if (configHolder.isDisplayButtons() != editorButtons)
+      {
+         configHolder.setDisplayButtons(editorButtons);
+         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+      }
    }
 
    @Override

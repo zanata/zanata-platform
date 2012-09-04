@@ -74,12 +74,6 @@ public class TransUnitNavigationServiceTest
    }
 
    @Test
-   public void testGetInitialRowIndex()
-   {
-//      assertEquals(navigationService.getCurrentRowIndex(), 0);
-   }
-
-   @Test
    public void testGetNextRowIndex()
    {
       navigationService.updateRowIndexInDocument(0);
@@ -87,11 +81,9 @@ public class TransUnitNavigationServiceTest
       assertEquals(navigationService.getNextRowIndex(), 1);
 
       navigationService.updateRowIndexInDocument(3);
-//      assertEquals(navigationService.getCurrentRowIndex(), 3);
       assertEquals(navigationService.getNextRowIndex(), 4);
 
       navigationService.updateRowIndexInDocument(5);
-//      assertEquals(navigationService.getCurrentRowIndex(), 5);
       assertEquals(navigationService.getNextRowIndex(), 6);
 
    }
@@ -100,22 +92,10 @@ public class TransUnitNavigationServiceTest
    public void testGetPrevRowIndex()
    {
       navigationService.updateRowIndexInDocument(1);
-//      assertEquals(navigationService.getCurrentRowIndex(), 1);
       assertEquals(navigationService.getPrevRowIndex(), 0);
 
       navigationService.updateRowIndexInDocument(4);
-//      assertEquals(navigationService.getCurrentRowIndex(), 4);
       assertEquals(navigationService.getPrevRowIndex(), 3);
-   }
-
-   @Test
-   public void testGetRowIndex()
-   {
-      assertEquals(navigationService.getRowIndex(tuList.get(0), false, tuList), new Integer(0));
-
-      assertEquals(navigationService.getRowIndex(tuList.get(1), true, tuList), new Integer(1));
-      assertEquals(navigationService.getRowIndex(tuList.get(2), false, tuList), new Integer(2));
-
    }
 
    @Test
@@ -227,5 +207,18 @@ public class TransUnitNavigationServiceTest
       assertThat(navigationService.getTargetPage(7), Matchers.equalTo(2));
       assertThat(navigationService.getTargetPage(9), Matchers.equalTo(3));
       assertThat(navigationService.getTargetPage(10), Matchers.equalTo(3));
+   }
+
+   @Test
+   public void canUpdatePageSize()
+   {
+      navigationService.init(transIdStateMap, idIndexList, 3);
+      assertThat(navigationService.getPageCount(), Matchers.equalTo(4));
+      navigationService.updateRowIndexInDocument(3);
+      assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
+
+      navigationService.updatePageSize(4);
+      assertThat(navigationService.getPageCount(), Matchers.equalTo(3));
+      assertEquals(navigationService.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
    }
 }

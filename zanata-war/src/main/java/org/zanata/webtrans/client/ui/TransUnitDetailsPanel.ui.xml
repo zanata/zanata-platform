@@ -20,10 +20,13 @@
             border: 1px solid #E0E8EE;
             color: #686868;
             text-decoration: none;
+            padding: 2px 5px 2px 5px;
+        }
+
+        .headerLabel {
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
-            padding: 2px 5px 2px 5px;
         }
 
         .tuDetailsLabel {
@@ -43,7 +46,7 @@
 
     <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container}" ui:field="disclosurePanel">
         <g:customHeader>
-            <g:Label ui:field="headerLabel" />
+            <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
         </g:customHeader>
         <g:Grid>
             <g:row>

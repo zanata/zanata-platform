@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.shared.rpc.NavOption;
 import com.google.common.base.Predicate;
 import com.google.inject.Singleton;
 
@@ -54,7 +55,7 @@ public class UserConfigHolder
    };
    
    // default state
-   private ConfigurationState state = new ConfigurationState(false, false, true, true, true, 10);
+   private ConfigurationState state = new ConfigurationState(false, false, true, 10, NavOption.FUZZY_UNTRANSLATED);
 
    public boolean isEnterSavesApproved()
    {
@@ -63,7 +64,7 @@ public class UserConfigHolder
 
    protected void setEnterSavesApproved(boolean enterSavesApproved)
    {
-      state = new ConfigurationState(enterSavesApproved, state.isEscClosesEditor(), state.isButtonFuzzy(), state.isButtonUntranslated(), state.isDisplayButtons(), state.getPageSize());
+      state = new ConfigurationState(enterSavesApproved, state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption());
    }
 
    public boolean isEscClosesEditor()
@@ -73,27 +74,7 @@ public class UserConfigHolder
 
    protected void setEscClosesEditor(boolean escClosesEditor)
    {
-      state = new ConfigurationState(state.enterSavesApproved, escClosesEditor, state.isButtonFuzzy(), state.isButtonUntranslated(), state.isDisplayButtons(), state.getPageSize());
-   }
-
-   public boolean isButtonFuzzy()
-   {
-      return state.isButtonFuzzy();
-   }
-
-   protected void setButtonFuzzy(boolean buttonFuzzy)
-   {
-      state = new ConfigurationState(state.enterSavesApproved, state.isEscClosesEditor(), buttonFuzzy, state.isButtonUntranslated(), state.isDisplayButtons(), state.getPageSize());
-   }
-
-   public boolean isButtonUntranslated()
-   {
-      return state.isButtonUntranslated();
-   }
-
-   protected void setButtonUntranslated(boolean buttonUntranslated)
-   {
-      state = new ConfigurationState(state.enterSavesApproved, state.isEscClosesEditor(), state.isButtonFuzzy(), buttonUntranslated, state.isDisplayButtons(), state.getPageSize());
+      state = new ConfigurationState(state.isEnterSavesApproved(), escClosesEditor, state.isDisplayButtons(), state.getPageSize(), state.getNavOption());
    }
 
    public boolean isDisplayButtons()
@@ -103,21 +84,26 @@ public class UserConfigHolder
 
    protected void setDisplayButtons(boolean displayButtons)
    {
-      state = new ConfigurationState(state.enterSavesApproved, state.isEscClosesEditor(), state.isButtonFuzzy(), state.isButtonUntranslated(), displayButtons, state.getPageSize());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), displayButtons, state.getPageSize(), state.getNavOption());
    }
 
-   public boolean isFuzzyAndUntranslated()
+   protected void setNavOption(NavOption navOption)
    {
-      return state.isButtonFuzzy() && state.isButtonUntranslated();
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), navOption);
+   }
+
+   public NavOption getNavOption()
+   {
+      return state.getNavOption();
    }
 
    public Predicate<ContentState> getContentStatePredicate()
    {
-      if (isFuzzyAndUntranslated())
+      if (state.getNavOption() == NavOption.FUZZY_UNTRANSLATED)
       {
          return FUZZY_OR_NEW_PREDICATE;
       }
-      else if (isButtonFuzzy())
+      else if (state.getNavOption() == NavOption.FUZZY)
       {
          return FUZZY_PREDICATE;
       }
@@ -134,7 +120,7 @@ public class UserConfigHolder
 
    protected void setPageSize(int pageSize)
    {
-      state = new ConfigurationState(state.enterSavesApproved, state.isEscClosesEditor(), state.isButtonFuzzy(), state.isButtonUntranslated(), state.isDisplayButtons(), pageSize);
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), pageSize, state.getNavOption());
    }
 
    public ConfigurationState getState()
@@ -149,19 +135,17 @@ public class UserConfigHolder
    {
       private boolean enterSavesApproved = false;
       private boolean escClosesEditor = false;
-      private boolean buttonFuzzy = true;
-      private boolean buttonUntranslated = true;
       private boolean displayButtons = true;
       private int pageSize = 10;
+      private NavOption navOption;
 
-      private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean buttonFuzzy, boolean buttonUntranslated, boolean displayButtons, int pageSize)
+      private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean displayButtons, int pageSize, NavOption navOption)
       {
          this.enterSavesApproved = enterSavesApproved;
          this.escClosesEditor = escClosesEditor;
-         this.buttonFuzzy = buttonFuzzy;
-         this.buttonUntranslated = buttonUntranslated;
          this.displayButtons = displayButtons;
          this.pageSize = pageSize;
+         this.navOption = navOption;
       }
 
       public boolean isEnterSavesApproved()
@@ -174,16 +158,6 @@ public class UserConfigHolder
          return escClosesEditor;
       }
 
-      public boolean isButtonFuzzy()
-      {
-         return buttonFuzzy;
-      }
-
-      public boolean isButtonUntranslated()
-      {
-         return buttonUntranslated;
-      }
-
       public boolean isDisplayButtons()
       {
          return displayButtons;
@@ -192,6 +166,11 @@ public class UserConfigHolder
       public int getPageSize()
       {
          return pageSize;
+      }
+
+      public NavOption getNavOption()
+      {
+         return navOption;
       }
    }
 }

@@ -883,7 +883,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                message = messages.replacedTextInMultipleTextFlows(searchText, replacement, updateInfoList.size());
             }
 
-            UndoLink undoLink = undoLinkProvider.get();
+            final UndoLink undoLink = undoLinkProvider.get();
+            undoLink.setText(messages.undo());
             undoLink.prepareUndoFor(result);
             undoLink.setUndoCallback(new UndoLink.UndoCallback()
             {
@@ -891,11 +892,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                public void preUndo()
                {
                   executePreUndo(updateInfoList);
+                  undoLink.setText(messages.undoInProgress());
                }
 
                @Override
                public void postUndoSuccess()
                {
+                  undoLink.setText(messages.undone());
                   executePostSucess(result);
                }
             });

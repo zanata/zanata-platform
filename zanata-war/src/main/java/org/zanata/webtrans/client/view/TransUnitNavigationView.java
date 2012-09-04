@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -71,22 +72,6 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       firstEntry.setTitle(messages.firstEntry());
       lastEntry.setTitle(messages.lastEntry());
       setFuzzyUntranslatedModeTooltip();
-   }
-
-   public void setNavModeTooltip(boolean fuzzyMode, boolean untranslatedMode)
-   {
-      if (fuzzyMode && !untranslatedMode)
-      {
-         setFuzzyModeTooltip();
-      }
-      else if (untranslatedMode && !fuzzyMode)
-      {
-         setUntranslatedModeTooltip();
-      }
-      else if (untranslatedMode && fuzzyMode)
-      {
-         setFuzzyUntranslatedModeTooltip();
-      }
    }
 
    private void setFuzzyModeTooltip()
@@ -154,5 +139,22 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    {
       prevState.setVisible(visible);
       nextState.setVisible(visible);
+   }
+
+   @Override
+   public void setNavModeTooltip(NavOption navOption)
+   {
+      switch (navOption)
+      {
+         case FUZZY_UNTRANSLATED:
+            setFuzzyUntranslatedModeTooltip();
+            break;
+         case FUZZY:
+            setFuzzyModeTooltip();
+            break;
+         case UNTRANSLATED:
+            setUntranslatedModeTooltip();
+            break;
+      }
    }
 }

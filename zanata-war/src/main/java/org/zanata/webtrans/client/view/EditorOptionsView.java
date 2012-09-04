@@ -21,29 +21,33 @@
 package org.zanata.webtrans.client.view;
 
 
-import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;
+import org.zanata.webtrans.client.ui.NavOptionRenderer;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class EditorOptionsView extends Composite implements EditorOptionsPresenter.Display
+public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 {
    private static EditorOptionsUiBinder uiBinder = GWT.create(EditorOptionsUiBinder.class);
-
-   interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView>
-   {
-   }
+   private final EnumRadioButtonGroup<NavOption> navOptionGroup;
 
    @UiField
    LayoutPanel container;
@@ -55,26 +59,30 @@ public class EditorOptionsView extends Composite implements EditorOptionsPresent
    Label navOptionHeader, editorOptionHeader, filterHeader;
 
    @UiField
-   ListBox optionsList;
+   VerticalPanel optionsContainer;
+   @UiField
+   Label pageSizeHeader;
+   @UiField
+   InlineLabel ten;
+   @UiField
+   InlineLabel fifty;
+   @UiField
+   InlineLabel twentyFive;
+   @UiField
+   Styles style;
+   private Listener listener;
 
    @Inject
-   public EditorOptionsView(WebTransMessages messages)
+   public EditorOptionsView(WebTransMessages messages, NavOptionRenderer navOptionRenderer)
    {
       initWidget(uiBinder.createAndBindUi(this));
+      navOptionGroup = new EnumRadioButtonGroup<NavOption>("navOption", NavOption.class, navOptionRenderer);
+      navOptionGroup.addToContainer(optionsContainer);
+
       editorOptionHeader.setText(messages.editorOptions());
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
-      populateOptionsList();
-   }
-
-   private void populateOptionsList()
-   {
-      // TODO localise strings
-      optionsList.addItem("Next Fuzzy/Untranslated", KEY_FUZZY_UNTRANSLATED);
-      optionsList.addItem("Next Fuzzy", KEY_FUZZY);
-      optionsList.addItem("Next Untranslated", KEY_UNTRANSLATED);
-
-      optionsList.setSelectedIndex(0);
+      pageSizeHeader.setText(messages.pageSize());
    }
 
    @Override
@@ -102,39 +110,123 @@ public class EditorOptionsView extends Composite implements EditorOptionsPresent
    }
 
    @Override
-   public HasValue<Boolean> getEditorButtonsChk()
-   {
-      return editorButtonsChk;
-   }
-
-   @Override
-   public HasValue<Boolean> getEnterChk()
-   {
-      return enterChk;
-   }
-
-   @Override
-   public HasValue<Boolean> getEscChk()
-   {
-      return escChk;
-   }
-
-   @Override
    public void setNavOptionVisible(boolean visible)
    {
       navOptionHeader.setVisible(visible);
-      optionsList.setVisible(visible);
+      optionsContainer.setVisible(visible);
+   }
+
+   @UiHandler("ten")
+   public void onPageSizeTenClicked(ClickEvent event)
+   {
+      selectTen();
+      listener.onPageSizeClick(10);
+   }
+
+   private void selectTen()
+   {
+      ten.setStyleName(style.selectedPageSize());
+      twentyFive.removeStyleName(style.selectedPageSize());
+      fifty.removeStyleName(style.selectedPageSize());
+   }
+
+   @UiHandler("twentyFive")
+   public void onPageSizeTwentyFiveClicked(ClickEvent event)
+   {
+      selectTwentyFive();
+      listener.onPageSizeClick(25);
+   }
+
+   private void selectTwentyFive()
+   {
+      ten.removeStyleName(style.selectedPageSize());
+      twentyFive.setStyleName(style.selectedPageSize());
+      fifty.removeStyleName(style.selectedPageSize());
+   }
+
+   @UiHandler("fifty")
+   public void onPageSizeFiftyClicked(ClickEvent event)
+   {
+      selectFifty();
+      listener.onPageSizeClick(50);
+   }
+
+   private void selectFifty()
+   {
+      ten.removeStyleName(style.selectedPageSize());
+      twentyFive.removeStyleName(style.selectedPageSize());
+      fifty.setStyleName(style.selectedPageSize());
+   }
+
+   @UiHandler("editorButtonsChk")
+   public void onEditorButtonsOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onEditorButtonsOptionChanged(editorButtonsChk.getValue());
+   }
+
+   @UiHandler("enterChk")
+   public void onEnterSaveOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onEnterSaveOptionChanged(enterChk.getValue());
+   }
+
+   @UiHandler("escChk")
+   public void onEscCancelEditOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onEscCancelEditOptionChanged(escChk.getValue());
    }
 
    @Override
-   public HasChangeHandlers getModalNavigationOptionsSelect()
+   public void setListener(Listener listener)
    {
-      return optionsList;
+      this.listener = listener;
+      navOptionGroup.setSelectionChangeListener(listener);
    }
 
    @Override
-   public String getSelectedFilter()
+   public void setOptionsState(UserConfigHolder.ConfigurationState state)
    {
-      return optionsList.getValue(optionsList.getSelectedIndex());
+      enterChk.setValue(state.isEnterSavesApproved());
+      escChk.setValue(state.isEscClosesEditor());
+      editorButtonsChk.setValue(state.isDisplayButtons());
+
+      navOptionGroup.setDefaultSelected(state.getNavOption());
+      selectPageSize(state.getPageSize());
+   }
+
+   private void selectPageSize(int pageSize)
+   {
+      if (pageSize == 10)
+      {
+         selectTen();
+      }
+      else if (pageSize == 25)
+      {
+         selectTwentyFive();
+      }
+      else if (pageSize ==50)
+      {
+         selectFifty();
+      }
+   }
+
+   interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView>
+   {
+   }
+
+   interface Styles extends CssResource
+   {
+
+      String translated();
+
+      String needReview();
+
+      String selectedPageSize();
+
+      String mainPanel();
+
+      String untranslated();
+
+      String pageSizeContainer();
    }
 }

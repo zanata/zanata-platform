@@ -67,7 +67,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
       void saveAsApprovedAndMoveNext(TransUnitId transUnitId);
 
-      void copySource(ToggleEditor editor);
+      void copySource(ToggleEditor editor, TransUnitId id);
 
       void onCancel(TransUnitId transUnitId);
 
