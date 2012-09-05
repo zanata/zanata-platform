@@ -49,7 +49,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private static TranslationHistoryViewUiBinder uiBinder = GWT.create(TranslationHistoryViewUiBinder.class);
    private final CellTable<TransHistoryItem> historyTable;
    private final EventBus eventBus;
-   private final HTMLPanel container;
    @UiField
    WebTransMessages messages;
    @UiField
@@ -70,7 +69,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public TranslationHistoryView(EventBus eventBus)
    {
       super(true, true);
-      container = uiBinder.createAndBindUi(this);
+      HTMLPanel container = uiBinder.createAndBindUi(this);
       this.eventBus = eventBus;
       ensureDebugId("transHistory");
       setGlassEnabled(true);
@@ -109,23 +108,24 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       Column<TransHistoryItem, List<String>> contentsColumn = createContentsColumn();
       Column<TransHistoryItem, String> modifiedByColumn = createModifiedByColumn();
       Column<TransHistoryItem, String> modifiedDateColumn = createModifiedDateColumn();
-      Column<TransHistoryItem, TransHistoryItem> copyActionColumn = createCopyActionColumn(messages);
+      Column<TransHistoryItem, TransHistoryItem> pasteActionColumn = createCopyActionColumn(messages);
 
       historyTable.addColumn(versionColumn, messages.versionNumber());
-      historyTable.setColumnWidth(versionColumn, 15, Style.Unit.PCT);
+      historyTable.setColumnWidth(versionColumn, 10, Style.Unit.PCT);
       historyTable.getColumnSortList().push(versionColumn);
 
       historyTable.addColumn(contentsColumn, messages.target());
-      historyTable.setColumnWidth(contentsColumn, 45, Style.Unit.PCT);
+      historyTable.setColumnWidth(contentsColumn, 40, Style.Unit.PCT);
+
+      historyTable.addColumn(pasteActionColumn, messages.actions());
+      historyTable.setColumnWidth(pasteActionColumn, 20, Style.Unit.PCT);
+      pasteActionColumn.setCellStyleNames(style.pasteButton());
 
       historyTable.addColumn(modifiedByColumn, messages.modifiedBy());
       historyTable.setColumnWidth(modifiedByColumn, 10, Style.Unit.PCT);
 
       historyTable.addColumn(modifiedDateColumn, messages.modifiedDate());
       historyTable.setColumnWidth(modifiedDateColumn, 20, Style.Unit.PCT);
-
-      historyTable.addColumn(copyActionColumn, messages.actions());
-      historyTable.setColumnWidth(copyActionColumn, 10, Style.Unit.PCT);
 
       return historyTable;
    }
@@ -144,7 +144,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 
    private Column<TransHistoryItem, TransHistoryItem> createCopyActionColumn(WebTransMessages messages)
    {
-      Cell<TransHistoryItem> copyActionCell = new ActionCell<TransHistoryItem>(messages.copy(), new ActionCell.Delegate<TransHistoryItem>()
+      Cell<TransHistoryItem> copyActionCell = new ActionCell<TransHistoryItem>(messages.pasteIntoEditor(), new ActionCell.Delegate<TransHistoryItem>()
       {
          @Override
          public void execute(TransHistoryItem historyItem)
@@ -314,5 +314,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       String compareButton();
 
       String closeButton();
+
+      String pasteButton();
    }
 }

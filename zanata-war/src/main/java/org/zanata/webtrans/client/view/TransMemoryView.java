@@ -100,7 +100,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       this.messages = messages;
 
       sourceColumn = new TransMemorySourceColumn();
-      copyColumn = new CopyButtonColumn<TransMemoryResultItem>();
+      copyColumn = new CopyButtonColumn<TransMemoryResultItem>(messages.copy(), messages.copyTooltip());
       detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);

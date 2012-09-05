@@ -21,6 +21,8 @@
 package org.zanata.webtrans.client.ui.table.column;
 
 import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 
 /**
@@ -31,9 +33,18 @@ import com.google.gwt.user.cellview.client.Column;
 public class CopyButtonColumn<T> extends Column<T, String>
 {
 
-   public CopyButtonColumn()
+   public CopyButtonColumn(final String buttonText, final String buttonTooltip)
    {
-      super(new ButtonCell());
+      super(new ButtonCell()
+      {
+         @Override
+         public void render(Context context, SafeHtml data, SafeHtmlBuilder sb)
+         {
+            sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\" title=\"" + buttonTooltip + "\">");
+            sb.appendHtmlConstant(buttonText);
+            sb.appendHtmlConstant("</button>");
+         }
+      });
    }
 
    @Override

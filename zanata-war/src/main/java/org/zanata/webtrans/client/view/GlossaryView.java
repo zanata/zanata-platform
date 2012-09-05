@@ -90,7 +90,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       
       sourceColumn = new HighlightingLabelGlossaryColumn(true, false);
       targetColumn = new HighlightingLabelGlossaryColumn(false, true);
-      copyColumn = new CopyButtonColumn<GlossaryResultItem>();
+      copyColumn = new CopyButtonColumn<GlossaryResultItem>(messages.copy(), messages.copyTooltip());
       detailsColumn = new DetailsColumn<GlossaryResultItem>(resources);
       
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);

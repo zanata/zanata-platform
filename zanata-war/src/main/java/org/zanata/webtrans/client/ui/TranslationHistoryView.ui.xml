@@ -14,6 +14,10 @@
             float: right;
             text-align: center;
         }
+
+        .pasteButton Button {
+            font-size: smaller;
+        }
     </ui:style>
 
     <g:HTMLPanel width="800px" height="600px">

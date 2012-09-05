@@ -130,4 +130,10 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Action")
    String action();
+
+   @DefaultMessage("Copy")
+   String copy();
+
+   @DefaultMessage("Copy text and paste into editor")
+   String copyTooltip();
 }

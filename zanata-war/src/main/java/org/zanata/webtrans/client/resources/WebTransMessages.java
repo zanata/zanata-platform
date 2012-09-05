@@ -348,14 +348,14 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Version")
    String versionNumber();
 
-   @DefaultMessage("Modified By")
+   @DefaultMessage("User")
    String modifiedBy();
 
    @DefaultMessage("Modified Date")
    String modifiedDate();
 
-   @DefaultMessage("Copy")
-   String copy();
+   @DefaultMessage("Paste into Editor")
+   String pasteIntoEditor();
 
    @DefaultMessage("Translation History")
    String translationHistory();
