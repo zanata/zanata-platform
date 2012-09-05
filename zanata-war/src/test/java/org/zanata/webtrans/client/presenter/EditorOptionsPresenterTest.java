@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -16,13 +15,14 @@ import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.NavOption;
-
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @Test(groups = { "unit-tests" })
 public class EditorOptionsPresenterTest
@@ -77,7 +77,6 @@ public class EditorOptionsPresenterTest
 
       verify(eventBus).addHandler(FilterViewEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
-      verify(eventBus).addHandler(EnableModalNavigationEvent.getType(), presenter);
       verify(display).setOptionsState(configHolder.getState());
    }
 
@@ -135,18 +134,6 @@ public class EditorOptionsPresenterTest
             return projectActive;
          }
       };
-   }
-
-   @Test
-   public void willToggleNavOptionOnEnableNavigationEvent()
-   {
-      EnableModalNavigationEvent enableEvent = new EnableModalNavigationEvent(true);
-      presenter.onEnable(enableEvent);
-      verify(display).setNavOptionVisible(enableEvent.isEnable());
-
-      EnableModalNavigationEvent disableEvent = new EnableModalNavigationEvent(false);
-      presenter.onEnable(disableEvent);
-      verify(display).setNavOptionVisible(disableEvent.isEnable());
    }
 
    @Test

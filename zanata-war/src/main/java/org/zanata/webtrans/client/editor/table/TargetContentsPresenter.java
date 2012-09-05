@@ -31,8 +31,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
-import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
-import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -93,7 +91,6 @@ import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType
 // @formatter:off
 public class TargetContentsPresenter implements
       TargetContentsDisplay.Listener,
-      EnableModalNavigationEventHandler,
       TransUnitEditEventHandler,
       UserConfigChangeHandler,
       RequestValidationEventHandler,
@@ -117,8 +114,6 @@ public class TargetContentsPresenter implements
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
    private int currentEditorIndex = 0;
    private List<ToggleEditor> currentEditors = Collections.emptyList();
-
-   private boolean isModalNavEnabled = true;
 
    private final Identity identity;
    private final UserWorkspaceContext userWorkspaceContext;
@@ -244,11 +239,8 @@ public class TargetContentsPresenter implements
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (isModalNavEnabled)
-            {
-               savePendingChangesIfApplicable();
-               eventBus.fireEvent(new NavTransUnitEvent(NextState));
-            }
+            savePendingChangesIfApplicable();
+            eventBus.fireEvent(new NavTransUnitEvent(NextState));
          }
       });
       keyShortcutPresenter.register(nextStateShortcut);
@@ -260,11 +252,8 @@ public class TargetContentsPresenter implements
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (isModalNavEnabled)
-            {
-               savePendingChangesIfApplicable();
-               eventBus.fireEvent(new NavTransUnitEvent(PrevState));
-            }
+            savePendingChangesIfApplicable();
+            eventBus.fireEvent(new NavTransUnitEvent(PrevState));
          }
       });
       keyShortcutPresenter.register(prevStateShortcut);
@@ -334,7 +323,6 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
-      eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
    }
 
@@ -709,12 +697,6 @@ public class TargetContentsPresenter implements
          }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-   }
-
-   @Override
-   public void onEnable(EnableModalNavigationEvent event)
-   {
-      isModalNavEnabled = event.isEnable();
    }
 
    public void revealDisplay()

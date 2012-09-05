@@ -27,7 +27,6 @@ import java.util.List;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
-import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
@@ -306,7 +305,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       {
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
          DocumentId documentId = ((DocumentSelectionEvent) command).getDocumentId();
-         init(new GetTransUnitActionContext(documentId).changeCount(configHolder.getPageSize()));
+         init(new GetTransUnitActionContext(documentId).changeCount(configHolder.getPageSize()).changeFindMessage(findMessage));
       }
       else
       {

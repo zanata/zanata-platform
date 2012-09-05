@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.presenter;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
-import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
@@ -40,7 +38,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
-public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, EnableModalNavigationEventHandler, FilterViewEventHandler
+public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler
 {
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final UserConfigHolder configHolder;
@@ -79,7 +77,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       registerHandler(display.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
       registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-      registerHandler(eventBus.addHandler(EnableModalNavigationEvent.getType(), this));
 
       //set options default values
       display.setOptionsState(configHolder.getState());
@@ -98,12 +95,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       configHolder.setDisplayButtons(displayButtons);
       display.setOptionsState(configHolder.getState());
       eventBus.fireEvent(UserConfigChangeEvent.EVENT);
-   }
-
-   @Override
-   public void onEnable(EnableModalNavigationEvent event)
-   {
-      display.setNavOptionVisible(event.isEnable());
    }
 
    @Override

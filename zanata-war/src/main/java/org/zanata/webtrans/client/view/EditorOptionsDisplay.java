@@ -18,8 +18,6 @@ public interface EditorOptionsDisplay extends WidgetDisplay
 
    HasValue<Boolean> getUntranslatedChk();
 
-   void setNavOptionVisible(boolean visible);
-
    void setListener(Listener listener);
 
    void setOptionsState(UserConfigHolder.ConfigurationState state);

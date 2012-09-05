@@ -135,13 +135,6 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    }
 
    @Override
-   public void setModalNavVisible(boolean visible)
-   {
-      prevState.setVisible(visible);
-      nextState.setVisible(visible);
-   }
-
-   @Override
    public void setNavModeTooltip(NavOption navOption)
    {
       switch (navOption)

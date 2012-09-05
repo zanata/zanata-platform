@@ -109,13 +109,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       return untranslatedChk;
    }
 
-   @Override
-   public void setNavOptionVisible(boolean visible)
-   {
-      navOptionHeader.setVisible(visible);
-      optionsContainer.setVisible(visible);
-   }
-
    @UiHandler("ten")
    public void onPageSizeTenClicked(ClickEvent event)
    {
