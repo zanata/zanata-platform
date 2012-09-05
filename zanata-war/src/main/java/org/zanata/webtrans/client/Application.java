@@ -200,6 +200,21 @@ public class Application implements EntryPoint
       redirectToUrl(getModuleParentBaseUrl() + "account/sign_in?continue=" + URL.encodeQueryString(Window.Location.getHref()));
    }
 
+   public static void redirectToLogout()
+   {
+      redirectToUrl(getModuleParentBaseUrl() + "account/sign_out");
+   }
+
+   public static void redirectToZanataProjectHome(WorkspaceId workspaceId)
+   {
+      redirectToUrl(getModuleParentBaseUrl() + "project/view/" + workspaceId.getProjectIterationId().getProjectSlug());
+   }
+
+   public static void redirectToIterationFiles(WorkspaceId workspaceId)
+   {
+      redirectToUrl(getModuleParentBaseUrl() + "iteration/files/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId());
+   }
+
    public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
    }-*/;

@@ -144,7 +144,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService
          HLocale termHLocale = localeServiceImpl.validateSourceLocale(glossaryTerm.getLocale());
 
          // check if there's existing term with same content, overrides comments
-         HGlossaryTerm hGlossaryTerm = getOrCreateGlossaryTerm(to, termHLocale, glossaryTerm.getContent());
+         HGlossaryTerm hGlossaryTerm = getOrCreateGlossaryTerm(to, termHLocale, glossaryTerm);
 
          hGlossaryTerm.getComments().clear();
 
@@ -152,11 +152,13 @@ public class GlossaryFileServiceImpl implements GlossaryFileService
          {
             hGlossaryTerm.getComments().add(new HTermComment(comment));
          }
+         
+         to.getGlossaryTerms().put(termHLocale, hGlossaryTerm);
       }
       glossaryDAO.makePersistent(to);
    }
 
-   private HGlossaryEntry getOrCreateGlossaryEntry(LocaleId srcLocale, String srcContent)
+   public HGlossaryEntry getOrCreateGlossaryEntry(LocaleId srcLocale, String srcContent)
    {
       HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcLocaleAndContent(srcLocale, srcContent);
 
@@ -169,17 +171,21 @@ public class GlossaryFileServiceImpl implements GlossaryFileService
       return hGlossaryEntry;
    }
 
-   private HGlossaryTerm getOrCreateGlossaryTerm(HGlossaryEntry hGlossaryEntry, HLocale termHLocale, String content)
+   private HGlossaryTerm getOrCreateGlossaryTerm(HGlossaryEntry hGlossaryEntry, HLocale termHLocale, GlossaryTerm newTerm)
    {
       HGlossaryTerm hGlossaryTerm = hGlossaryEntry.getGlossaryTerms().get(termHLocale);
 
       if (hGlossaryTerm == null)
       {
-         hGlossaryTerm = new HGlossaryTerm(content);
+         hGlossaryTerm = new HGlossaryTerm(newTerm.getContent());
          hGlossaryTerm.setLocale(termHLocale);
          hGlossaryTerm.setGlossaryEntry(hGlossaryEntry);
-         hGlossaryEntry.getGlossaryTerms().put(termHLocale, hGlossaryTerm);
       }
+      else if(!hGlossaryTerm.getContent().equals(newTerm.getContent()))
+      {
+         hGlossaryTerm.setContent(newTerm.getContent());
+      }
+      
       return hGlossaryTerm;
    }
 

@@ -841,9 +841,66 @@ td.ApprovedStateDecoration div div div
 
 .southTable th {
 	border-bottom: 0px;
-	color: blue;
+	color: #C35817;
 	font-style: normal;
-	font-weight: bold
+	font-weight: bold;
+	font-size:13px;
+	text-shadow:none;
+	text-decoration:underline;
+}
+
+.glossaryTable
+{
+	width:100%;
+	height:100%;
+}
+
+.glossaryTable tr:hover
+{
+	background:#E7E7E7;
+}
+
+.glossaryTable td.detailCol
+{
+	width:54px;
+}
+
+.glossaryTable td.actionCol
+{
+	width:46px;
+}
+
+.glossaryTable .th
+{
+	color: #C35817;
+	font-weight: bold;
+	font-size:13px;
+	text-decoration:underline;
+}
+
+.glossaryTable .centered
+{
+	text-align:center;
+}
+
+.glossaryTable .details
+{
+	font-size:16px;
+	color:#00264C;
+	cursor:pointer;
+}
+
+.glossaryTable .details:hover
+{
+	color:red;
+}
+
+.tableMsg
+{
+	font-size:14px;
+	font-weight:bold;
+	text-align:center;
+	padding:25px;
 }
 
 .loadingPanel {
@@ -919,5 +976,33 @@ td.ApprovedStateDecoration div div div
 {
 	border-radius:2px;
 	box-shadow:0 0 6px gray inset;
+}
+
+/* -------------- GWT Dialog Box ----------------*/
+.GWTDialogBox
+{
+	width:600px;
+	height:400px;
+	background:#F2F2F2;
+	border:1px solid #C0C0C0;
+	border-radius:3px;
+	padding:5px;
+	box-shadow:1px 1px 3px #5C5C5C;
+}
+
+.GWTDialogBox .Caption
+{
+	padding:4px;
+	font-weight:bold;
+	font-size:1.1em;
+	border-radius:3px;
+	background:#575757;
+	color:#FFFFFF;
+	cursor:move;
+}
+
+.GWTDialogBox table
+{
+	width:100%;
 }
 

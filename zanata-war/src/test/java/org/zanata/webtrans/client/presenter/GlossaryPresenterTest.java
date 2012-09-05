@@ -39,19 +39,14 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.view.client.ListDataProvider;
 
 /**
  *
@@ -75,8 +70,6 @@ public class GlossaryPresenterTest extends PresenterTest
    
    HasAllFocusHandlers mockFocusTextBox;
    HasClickHandlers mockSearchButton;
-   Column<GlossaryResultItem, ImageResource> mockDetailsColumn;
-   Column<GlossaryResultItem, String> mockCopyColumn;
 
    private Capture<ClickHandler> capturedSearchButtonClickHandler;
    private Capture<KeyShortcut> capturedKeyShortcuts;
@@ -91,14 +84,13 @@ public class GlossaryPresenterTest extends PresenterTest
       mockEventBus = createAndAddMock(EventBus.class);
       mockDispatcher = createAndAddMock(CachingDispatchAsync.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
+
       mockGlossaryDetailsPresenter = createAndAddMock(GlossaryDetailsPresenter.class);
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
 
       mockFocusTextBox = createAndAddMock(HasAllFocusHandlers.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
-      mockDetailsColumn = createAndAddMock(Column.class);
-      mockCopyColumn = createAndAddMock(Column.class);
 
       capturedSearchButtonClickHandler = addCapture(new Capture<ClickHandler>());
       capturedKeyShortcuts = addCapture(new Capture<KeyShortcut>());
@@ -120,15 +112,13 @@ public class GlossaryPresenterTest extends PresenterTest
       replayAllMocks();
       glossaryPresenter = new GlossaryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockMessages, mockGlossaryDetailsPresenter, mockUserWorkspaceContext, mockKeyShortcutPresenter);
       glossaryPresenter.bind();
+
       verifyAllMocks();
    }
 
    @Override
    protected void setDefaultBindExpectations()
    {
-      mockDisplay.setDataProvider(isA(ListDataProvider.class));
-      expectLastCall().once();
-
       expect(mockDisplay.getSearchButton()).andReturn(mockSearchButton).anyTimes();
       expect(mockSearchButton.addClickHandler(capture(capturedSearchButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
 
@@ -137,17 +127,15 @@ public class GlossaryPresenterTest extends PresenterTest
 
       expect(mockEventBus.addHandler(eq(TransUnitSelectionEvent.getType()), and(capture(capturedTransUnitSelectionEventHandler), isA(TransUnitSelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
-      expect(mockDisplay.getCopyColumn()).andReturn(mockCopyColumn).once();
-      mockCopyColumn.setFieldUpdater(isA(FieldUpdater.class));
-      expectLastCall().once();
-
-      expect(mockDisplay.getDetailsColumn()).andReturn(mockDetailsColumn).once();
-      mockDetailsColumn.setFieldUpdater(isA(FieldUpdater.class));
-      expectLastCall().once();
-
       expect(mockDisplay.getFocusGlossaryTextBox()).andReturn(mockFocusTextBox).times(2);
       expect(mockFocusTextBox.addFocusHandler(capture(capturedFocusHandler))).andReturn(createMock(HandlerRegistration.class)).once();
       expect(mockFocusTextBox.addBlurHandler(capture(capturedBlurHandler))).andReturn(createMock(HandlerRegistration.class)).once();
+
+      mockDisplay.setListener(isA(HasGlossaryEvent.class));
+      expectLastCall().once();
+
+      mockGlossaryDetailsPresenter.setGlossaryListener(isA(HasGlossaryEvent.class));
+      expectLastCall().once();
 
    }
 

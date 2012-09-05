@@ -105,9 +105,10 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       
       boolean isProjectActive = isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
       boolean hasWriteAccess = hasPermission(project, locale);
-      
+      boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
+
       Identity identity = new Identity(editorClientId, person);
-      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess);
+      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);
       return new ActivateWorkspaceResult(userWorkspaceContext, identity);
    }
    
@@ -116,6 +117,11 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       return ZanataIdentity.instance().hasPermission("modify-translation", project, locale);
    }
    
+   private boolean hasGlossaryUpdatePermission()
+   {
+      return ZanataIdentity.instance().hasPermission("glossary-update", "");
+   }
+
    private boolean isProjectIterationActive(EntityStatus projectStatus, EntityStatus iterStatus)
    {
       return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));

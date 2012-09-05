@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -43,7 +45,6 @@ import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -53,12 +54,9 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
 /**
@@ -66,7 +64,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display>
+public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display> implements HasGlossaryEvent
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
@@ -77,8 +75,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private KeyShortcutPresenter keyShortcutPresenter;
 
    private boolean isFocused;
-
-   private ListDataProvider<GlossaryResultItem> dataProvider;
 
    public interface Display extends WidgetDisplay
    {
@@ -92,13 +88,9 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
       void startProcessing();
 
-      Column<GlossaryResultItem, String> getCopyColumn();
+      void renderTable(ArrayList<GlossaryResultItem> glossaries);
 
-      Column<GlossaryResultItem, ImageResource> getDetailsColumn();
-
-      void setDataProvider(ListDataProvider<GlossaryResultItem> dataProvider);
-
-      void setPageSize(int size);
+      void setListener(HasGlossaryEvent listener);
    }
 
    @Inject
@@ -110,8 +102,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       this.glossaryDetailsPresenter = glossaryDetailsPresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.messages = messages;
-      dataProvider = new ListDataProvider<GlossaryResultItem>();
-      display.setDataProvider(dataProvider);
    }
 
    @Override
@@ -144,24 +134,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          }
       }));
 
-      display.getCopyColumn().setFieldUpdater(new FieldUpdater<GlossaryResultItem, String>()
-      {
-         @Override
-         public void update(int index, GlossaryResultItem object, String value)
-         {
-            eventBus.fireEvent(new InsertStringInEditorEvent(object.getSource(), object.getTarget()));
-         }
-      });
-
-      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<GlossaryResultItem, ImageResource>()
-      {
-         @Override
-         public void update(int index, GlossaryResultItem object, ImageResource value)
-         {
-            glossaryDetailsPresenter.show(object);
-         }
-      });
-
       display.getFocusGlossaryTextBox().addFocusHandler(new FocusHandler()
       {
          @Override
@@ -184,9 +156,13 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
             isFocused = false;
          }
       });
+
+      display.setListener(this);
+      glossaryDetailsPresenter.setGlossaryListener(this);
    }
 
-   private void fireSearchEvent()
+   @Override
+   public void fireSearchEvent()
    {
       String query = display.getGlossaryTextBox().getText();
       createGlossaryRequest(query, display.getSearchType().getValue());
@@ -272,13 +248,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       display.getGlossaryTextBox().setText(query);
       display.getSearchType().setValue(submittedRequest.getSearchType());
 
-      dataProvider.getList().clear();
-      for (final GlossaryResultItem glossary : result.getGlossaries())
-      {
-         dataProvider.getList().add(glossary);
-      }
-      display.setPageSize(dataProvider.getList().size());
-      dataProvider.refresh();
+      display.renderTable(result.getGlossaries());
    }
 
    @Override
@@ -294,5 +264,17 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    public boolean isFocused()
    {
       return isFocused;
+   }
+
+   @Override
+   public void fireCopyEvent(GlossaryResultItem item)
+   {
+      eventBus.fireEvent(new InsertStringInEditorEvent(item.getSource(), item.getTarget()));
+   }
+
+   @Override
+   public void showGlossaryDetail(GlossaryResultItem item)
+   {
+      glossaryDetailsPresenter.show(item);
    }
 }

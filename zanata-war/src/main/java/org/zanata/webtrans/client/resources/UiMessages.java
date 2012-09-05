@@ -136,4 +136,25 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Copy text and paste into editor")
    String copyTooltip();
+
+   @DefaultMessage("Glossary Details")
+   String glossaryDetails();
+
+   @DefaultMessage("Dismiss")
+   String dismiss();
+
+   @DefaultMessage("Save")
+   String save();
+
+   @DefaultMessage("Last modified on {0}")
+   String lastModifiedOn(String date);
+
+   @DefaultMessage("Loading...")
+   String loading();
+
+   @DefaultMessage("Found no glossary results")
+   String foundNoGlossaryResults();
+
+   @DefaultMessage("Glossary save fail")
+   String saveGlossaryFailed();
 }

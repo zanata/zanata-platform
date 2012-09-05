@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.easymock.EasyMock.and;
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
@@ -45,8 +44,10 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -62,6 +63,9 @@ public class AppPresenterTest extends PresenterTest
    private static final String TEST_WORKSPACE_NAME = "Test Workspace Name";
    private static final String TEST_LOCALE_NAME = "Test Locale Name";
    private static final String TEST_WINDOW_TITLE = "Test Window Title";
+   private static final String TEST_PPROJET_SLUG = "sample-project";
+   private static final String TEST_LOCALE_ID = "en-us";
+   private static final String TEST_ITERATION_SLUG = "iteration-slug";
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
    private static final String NO_DOCUMENTS_STRING = "No document selected";
@@ -76,6 +80,8 @@ public class AppPresenterTest extends PresenterTest
    private AppPresenter appPresenter;
 
    HasClickHandlers mockDocumentsLink;
+   HasClickHandlers mockProjectLink;
+   HasClickHandlers mockIterationFilesLink;
    HasClickHandlers mockErrorNotificationBtn;
    HasClickHandlers mockSearchButton;
    HasClickHandlers mockDocumentListButton;
@@ -101,8 +107,10 @@ public class AppPresenterTest extends PresenterTest
    Location mockWindowLocation;
    UserWorkspaceContext mockUserWorkspaceContext;
    WorkspaceContext mockWorkspaceContext;
-
+   
    private Capture<ClickHandler> capturedDocumentLinkClickHandler;
+   private Capture<ClickHandler> capturedProjectLinkClickHandler;
+   private Capture<ClickHandler> capturedIterationFilesLinkClickHandler;
    private Capture<ClickHandler> capturedSearchLinkClickHandler;
    private Capture<ClickHandler> capturedDocumentListClickHandler;
    private Capture<ClickHandler> capturedResizeClickHandler;
@@ -137,6 +145,8 @@ public class AppPresenterTest extends PresenterTest
       mockDisplay = createAndAddMock(AppPresenter.Display.class);
       mockDocumentListPresenter = createAndAddMock(DocumentListPresenter.class);
       mockDocumentsLink = createAndAddMock(HasClickHandlers.class);
+      mockProjectLink = createAndAddMock(HasClickHandlers.class);
+      mockIterationFilesLink = createAndAddMock(HasClickHandlers.class);
       mockErrorNotificationBtn = createAndAddMock(HasClickHandlers.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
       mockDocumentListButton = createAndAddMock(HasClickHandlers.class);
@@ -156,7 +166,6 @@ public class AppPresenterTest extends PresenterTest
       mockNotificationPresenter = createAndAddMock(NotificationPresenter.class);
       mockLayoutPresenter = createAndAddMock(LayoutSelectorPresenter.class);
       mockSideMenuPresenter = createAndAddMock(SideMenuPresenter.class);
-      
    }
 
    private void createAllCaptures()
@@ -166,6 +175,8 @@ public class AppPresenterTest extends PresenterTest
       capturedResizeClickHandler = new Capture<ClickHandler>();
       capturedKeyShortcutButtonClickHandler = new Capture<ClickHandler>();
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
+      capturedProjectLinkClickHandler = new Capture<ClickHandler>();
+      capturedIterationFilesLinkClickHandler = new Capture<ClickHandler>();
       capturedErrorNotificationBtnHandler = new Capture<ClickHandler>();
       capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
       capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
@@ -410,66 +421,6 @@ public class AppPresenterTest extends PresenterTest
       // update document stats
       capturedDocumentStatsUpdatedEventHandler.getValue().onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(testDocId, updatedStats));
       simulateReturnToEditorView(token);
-
-      verifyAllMocks();
-   }
-
-   public void testDocumentsLinkGeneratesHistoryToken()
-   {
-      ClickEvent docLinkClickEvent = createMock(ClickEvent.class);
-
-      // 1 - click doc link from default state
-      expect(mockHistory.getToken()).andReturn("").once();
-
-      // 2 - load a document in the editor
-      expectLoadDocAndViewEditor();
-
-      // 3 - click doc link to return to doclist
-      HistoryToken expectedDocInEditorToken = buildDocInEditorToken();
-      expect(mockHistory.getToken()).andReturn(expectedDocInEditorToken.toTokenString()).once();
-      expectViewTransitionFromEditorToDoclist(emptyProjectStats);
-
-      // 4 - click doc link to return to editor
-      HistoryToken expectedDocListWithLoadedDocToken = new HistoryToken();
-      expectedDocListWithLoadedDocToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
-      expect(mockHistory.getToken()).andReturn(expectedDocListWithLoadedDocToken.toTokenString()).once();
-
-      // NOTE not expecting return to editor view as this test does not simulate
-      // the event for the new history item
-
-      replayAllMocks();
-
-      appPresenter.bind();
-      // discard captured tokens from bind to allow easy check for new token
-      capturedHistoryTokenString.reset();
-
-      // 1 - no doc loaded, don't generate MainView.Editor token
-      capturedDocumentLinkClickHandler.getValue().onClick(docLinkClickEvent);
-      assertThat(capturedHistoryTokenString.hasCaptured(), is(false));
-
-      // 2 - load doc in editor
-      HistoryToken token = simulateLoadDocAndViewEditor();
-
-      // 3 - doc loaded in editor, return to doclist
-      capturedDocumentLinkClickHandler.getValue().onClick(docLinkClickEvent);
-      HistoryToken returnToDoclistToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
-      assertThat("clicking documents link should always show doclist when editor is visible", returnToDoclistToken.getView(), is(MainView.Documents));
-      assertThat("document path should be maintained when clicking documents link", returnToDoclistToken.getDocumentPath(), is(token.getDocumentPath()));
-
-      // simulate history token event for new token
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(returnToDoclistToken.toTokenString())
-      {
-      });
-
-      // 4 - doc loaded, return to editor
-      capturedDocumentLinkClickHandler.getValue().onClick(docLinkClickEvent);
-      HistoryToken returnToEditorToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
-      assertThat("clicking documents link should show editor when doclist is visible and a valid document is selected", returnToEditorToken.getView(), is(MainView.Editor));
-      assertThat("document path should be maintained when clicking documents link", returnToEditorToken.getDocumentPath(), is(token.getDocumentPath()));
-
-      // NOTE not simulating history change event for newest history token
-
-      // TODO could check that filter parameters haven't changed as well
 
       verifyAllMocks();
    }
@@ -771,6 +722,8 @@ public class AppPresenterTest extends PresenterTest
       expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(mockHandlerRegistration()).once();
 
       expectClickHandlerRegistration(mockDocumentsLink, capturedDocumentLinkClickHandler);
+      expectClickHandlerRegistration(mockProjectLink, capturedProjectLinkClickHandler);
+      expectClickHandlerRegistration(mockIterationFilesLink, capturedIterationFilesLinkClickHandler);
       expectClickHandlerRegistration(mockErrorNotificationBtn, capturedErrorNotificationBtnHandler);
       expectClickHandlerRegistration(mockSearchButton, capturedSearchLinkClickHandler);
       expectClickHandlerRegistration(mockKeyShortcutButton, capturedKeyShortcutButtonClickHandler);
@@ -788,8 +741,9 @@ public class AppPresenterTest extends PresenterTest
    {
       mockWindow.setTitle(TEST_WINDOW_TITLE);
       expectLastCall().once();
-      mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
-      expectLastCall().anyTimes();
+      // mockDisplay.setProjectLinkLabel(TEST_WORKSPACE_NAME,
+      // TEST_WORKSPACE_TITLE);
+      // expectLastCall().anyTimes();
       mockDisplay.setReadOnlyVisible(false);
       expectLastCall().once();
       // initially empty project stats
@@ -820,8 +774,16 @@ public class AppPresenterTest extends PresenterTest
 
    private void setupMockGetterReturnValues()
    {
+      expect(mockDisplay.getProjectLink()).andReturn(mockProjectLink).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
+      expect(mockDisplay.getIterationFilesLink()).andReturn(mockIterationFilesLink).anyTimes();
       expect(mockDisplay.getNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
+
+      mockDisplay.setProjectLinkLabel(TEST_PPROJET_SLUG);
+      expectLastCall().once();
+
+      mockDisplay.setIterationFilesLabel(TEST_ITERATION_SLUG + "(" + TEST_LOCALE_ID + ")");
+      expectLastCall().once();
 
       expect(mockDisplay.getSearchAndReplaceButton()).andReturn(mockSearchButton).anyTimes();
       expect(mockDisplay.getDocumentListButton()).andReturn(mockDocumentListButton).anyTimes();
@@ -833,6 +795,9 @@ public class AppPresenterTest extends PresenterTest
       expect(mockWindowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY)).andReturn(TEST_WORKSPACE_TITLE).anyTimes();
 
       expect(mockMessages.windowTitle(TEST_WORKSPACE_NAME, TEST_LOCALE_NAME)).andReturn(TEST_WINDOW_TITLE).anyTimes();
+
+      expect(mockMessages.windowTitle2(TEST_WORKSPACE_NAME, TEST_LOCALE_NAME, TEST_WORKSPACE_TITLE)).andReturn(TEST_WINDOW_TITLE).anyTimes();
+
       expect(mockMessages.noDocumentSelected()).andReturn(NO_DOCUMENTS_STRING).anyTimes();
       expect(mockMessages.projectWideSearchAndReplace()).andReturn(SEARCH_PAGE_LABEL).anyTimes();
       expect(mockMessages.showDocumentListKeyShortcut()).andReturn(DOCUMENT_LIST_KEY_SHORTCUT_DESCRIPTION).anyTimes();
@@ -842,6 +807,8 @@ public class AppPresenterTest extends PresenterTest
       expect(mockUserWorkspaceContext.getWorkspaceContext()).andReturn(mockWorkspaceContext).anyTimes();
       expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false).anyTimes();
       
+      expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(TEST_PPROJET_SLUG, TEST_ITERATION_SLUG), new LocaleId(TEST_LOCALE_ID))).anyTimes();
+
       expect(mockWorkspaceContext.getWorkspaceName()).andReturn(TEST_WORKSPACE_NAME).anyTimes();
       expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
 

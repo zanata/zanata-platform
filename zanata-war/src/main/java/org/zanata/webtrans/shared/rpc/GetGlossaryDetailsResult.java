@@ -26,6 +26,4 @@ public class GetGlossaryDetailsResult implements DispatchResult
    {
       return glossaryDetails;
    }
-
-   
 }

@@ -26,6 +26,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("{0} to {1} - Zanata Web Translation")
    String windowTitle(String workspaceName, String localeName);
 
+   @DefaultMessage("{0} to {1} - {2}")
+   String windowTitle2(String workspaceName, String localeName, String title);
+
    @DefaultMessage("First Page")
    String firstPage();
 
@@ -402,5 +405,8 @@ public interface WebTransMessages extends Messages
    String navOption();
 
    @DefaultMessage("Page size")
-   String pageSize();
+   String pageSize(); 
+
+   @DefaultMessage("Read only")
+   String readOnly();
 }

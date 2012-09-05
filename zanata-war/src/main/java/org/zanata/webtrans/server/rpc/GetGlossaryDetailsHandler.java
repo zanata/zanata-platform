@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +77,10 @@ public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossary
          {
             targetComments.add(termComment.getComment());
          }
-         items.add(new GlossaryDetails(srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId()));
+         
+         SimpleDateFormat dateFormat = new SimpleDateFormat();
+         
+         items.add(new GlossaryDetails(srcTerm.getContent(), entry.getGlossaryTerms().get(hLocale).getContent(), srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId(), entry.getGlossaryTerms().get(hLocale).getVersionNum(), dateFormat.format(entry.getGlossaryTerms().get(hLocale).getLastChanged())));
       }
 
       return new GetGlossaryDetailsResult(items);
