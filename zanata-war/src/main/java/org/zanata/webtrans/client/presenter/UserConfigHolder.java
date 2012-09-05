@@ -133,10 +133,10 @@ public class UserConfigHolder
     */
    public static class ConfigurationState
    {
-      private boolean enterSavesApproved = false;
-      private boolean escClosesEditor = false;
-      private boolean displayButtons = true;
-      private int pageSize = 10;
+      private boolean enterSavesApproved;
+      private boolean escClosesEditor;
+      private boolean displayButtons;
+      private int pageSize;
       private NavOption navOption;
 
       private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean displayButtons, int pageSize, NavOption navOption)

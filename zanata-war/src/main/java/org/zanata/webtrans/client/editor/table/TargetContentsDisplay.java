@@ -59,6 +59,11 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    void setListener(Listener listener);
 
+   /**
+    * Update cached targets so that any following navigation event won't cause another pending save event.
+    * If the save failed, TransUnitSaveService will revert the value back to what it was.
+    * @param targets targets
+    */
    void updateCachedAndInEditorTargets(List<String> targets);
 
    interface Listener

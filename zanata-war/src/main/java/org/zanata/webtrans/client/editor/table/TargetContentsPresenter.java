@@ -343,6 +343,7 @@ public class TargetContentsPresenter implements
       if (currentEditorContentHasChanged())
       {
          saveCurrent(ContentState.NeedReview);
+         display.updateCachedAndInEditorTargets(getNewTargets());
       }
    }
 
