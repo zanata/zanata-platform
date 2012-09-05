@@ -30,10 +30,12 @@
         
         <HAccountRole id="1"
                       conditional="FALSE"
+                      roleType="M"
                       name="admin"
         />
         <HAccountRole id="2"
-                      conditional="FALSE" 
+                      conditional="FALSE"
+                      roleType="M"
                       name="user"
         />
 

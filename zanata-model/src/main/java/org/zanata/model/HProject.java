@@ -42,11 +42,16 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.annotation.EntityRestrict;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.Project;
 
 import lombok.Setter;
 import lombok.ToString;
+
+import static org.jboss.seam.security.EntityAction.DELETE;
+import static org.jboss.seam.security.EntityAction.INSERT;
+import static org.jboss.seam.security.EntityAction.UPDATE;
 
 /**
  * @see Project
@@ -58,6 +63,7 @@ import lombok.ToString;
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
+@EntityRestrict({INSERT, UPDATE, DELETE})
 @Setter
 @ToString(callSuper = true, of = "name")
 public abstract class HProject extends SlugEntityBase implements Serializable
@@ -67,9 +73,12 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    private String description;
    private String homeContent;
    private boolean overrideLocales = false;
+   private boolean restrictedByRoles = false;
    private Set<HLocale> customizedLocales;
 
    private Set<HPerson> maintainers;
+
+   private Set<HAccountRole> allowedRoles;
 
    @Length(max = 80)
    @NotEmpty
@@ -82,6 +91,11 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public boolean getOverrideLocales()
    {
       return this.overrideLocales;
+   }
+
+   public boolean isRestrictedByRoles()
+   {
+      return restrictedByRoles;
    }
 
    @Length(max = 100)
@@ -129,4 +143,14 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       return customizedLocales;
    }
 
+   @ManyToMany
+   @JoinTable(name = "HProject_AllowedRole", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
+   public Set<HAccountRole> getAllowedRoles()
+   {
+      if(allowedRoles == null)
+      {
+         allowedRoles = new HashSet<HAccountRole>();
+      }
+      return allowedRoles;
+   }
 }

@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="page_title">#{messages['jsf.profile.MergeAccount']}</ui:define>
+
+    <ui:define name="head">
+        <!-- Load jQuery -->
+        <rich:jQuery query="jquery"/>
+
+        <script type="text/javascript">
+            function showLoginButton()
+            {
+                jQuery("[id='#{rich:clientId('verifyButton')}']").show();
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="center_content">
+        <h:form rendered="#{not accountMergeAction.accountSelected}">
+
+            <rich:panel>
+                <ui:include src="../WEB-INF/layout/login_provider.xhtml">
+                    <ui:param name="providerField" value="#{accountMergeAction.providerType}"/>
+                    <ui:param name="usernameField" value="#{accountMergeAction.username}"/>
+                    <ui:param name="onProviderChange" value="showLoginButton();"/>
+                </ui:include>
+
+                <div style="clear: both">
+                    <h:commandButton id="verifyButton"
+                                     value="#{messages['jsf.identities.Verify']}"
+                                     action="#{accountMergeAction.loginToMergingAccount}"
+                                     style="display:none"/>
+                </div>
+            </rich:panel>
+
+        </h:form>
+
+        <h:form rendered="#{accountMergeAction.accountSelected}">
+            <h:outputText escape="false" value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
+            <br/>
+            <br/>
+            <h:commandButton value="#{messages['jsf.profile.MergeAccount.confirm']}" action="#{accountMergeAction.mergeAccounts}"/>
+            <h:commandButton value="#{messages['jsf.Cancel']}" action="#{accountMergeAction.cancel}" />
+        </h:form>
+    </ui:define>
+
+</ui:composition>

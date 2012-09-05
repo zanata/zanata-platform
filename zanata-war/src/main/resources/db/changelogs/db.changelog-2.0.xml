@@ -42,4 +42,94 @@
         </update>
     </changeSet>
 
+    <changeSet id="2" author="camunoz@redhat.com">
+        <comment>Create HCredentials table.</comment>
+        <createTable tableName="HCredentials">
+            <column name="account_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user" type="longtext"/>
+            <column name="email" type="varchar(100)"/>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="HCredentials" baseColumnNames="account_id" constraintName="FK_credentials_account"
+                                 referencedTableName="HAccount" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3" author="camunoz@redhat.com">
+        <comment>Migrate data to HCredentials table.</comment>
+        <customChange class="org.zanata.liquibase.custom.MigrateDataToHCredentials"/>
+    </changeSet>
+
+    <changeSet id="4" author="camunoz@redhat.com">
+        <comment>Add role type column.</comment>
+        <addColumn tableName="HAccountRole">
+            <column name="roleType" type="char(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <update tableName="HAccountRole">
+            <column name="roleType" value="M"/>
+        </update>
+    </changeSet>
+
+    <changeSet id="5" author="camunoz@redhat.com">
+        <comment>Add HProject_AllowedRole table.</comment>
+        <createTable tableName="HProject_AllowedRole">
+            <column name="projectId" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roleId" type="int(11)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="HProject_AllowedRole" columnNames="projectId, roleId"/>
+        <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Project"
+                                 baseTableName="HProject_AllowedRole"
+                                 baseColumnNames="projectId"
+                                 referencedTableName="HProject"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Role"
+                                 baseTableName="HProject_AllowedRole"
+                                 baseColumnNames="roleId"
+                                 referencedTableName="HAccountRole"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    
+    <changeSet id="6" author="camunoz@redhat.com">
+        <comment>Add 'Restricted by Roles' column to HProject table.</comment>
+        <addColumn tableName="HProject">
+            <column name="restrictedByRoles" type="boolean" valueBoolean="false" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="7" author="camunoz@redhat.com">
+        <comment>Add 'merged_into' column to HAccount table.</comment>
+        <addColumn tableName="HAccount">
+            <column name="mergedInto" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="FK_HAccount_MergedIntoAccount"
+                                 baseTableName="HAccount"
+                                 baseColumnNames="mergedInto"
+                                 referencedTableName="HAccount"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

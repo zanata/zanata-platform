@@ -113,6 +113,14 @@
     </rich:dataList>
   </rich:panel>
 
+  <rich:panel rendered="#{projectHome.instance.restrictedByRoles}">
+    <f:facet name="header">#{messages['jsf.project.RoleRestrictions']}</f:facet>
+    <h:outputText>#{messages['jsf.project.ProjectRestrictedToFollowingRoles']}</h:outputText><br/>
+    <rich:dataList value="#{projectHome.instance.allowedRoles.toArray()}" var="role">
+      <h:outputText value="#{role.name}"/>
+    </rich:dataList>
+  </rich:panel>
+
 </ui:define>
 
 </ui:composition>

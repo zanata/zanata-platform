@@ -43,14 +43,15 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
    public void beforePhase(PhaseEvent event)
    {
       String viewId = Pages.getCurrentViewId();
+      event.getFacesContext().getExternalContext().getRequestParameterMap();
 
       if (viewId == null || !viewId.startsWith("/openid."))
       {
          return;
       }
 
-      FedoraOpenId open = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
-      if (open.getId() == null)
+      FedoraOpenId openid = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
+      if (openid.getId() == null)
       {
          try
          {
@@ -63,14 +64,12 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
          return;
       }
 
-      FedoraOpenId openid = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
-
       openid.verify();
 
       Pages.handleOutcome(event.getFacesContext(), null, "/openid.xhtml");
    }
 
-   public void sendXRDS() throws IOException
+   private void sendXRDS() throws IOException
    {
       FacesContext context = FacesContext.getCurrentInstance();
       ExternalContext extContext = context.getExternalContext();

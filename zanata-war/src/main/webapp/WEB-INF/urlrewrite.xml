@@ -154,17 +154,7 @@
   <rule>
     <from casesensitive="true">^/account/changepassword(.+)?$</from>
     <to last="true">/account/changepassword.seam$1</to>
-  </rule>  
-
-  <rule>
-    <from casesensitive="true">^/profile/edit(.+)?$</from>
-    <to last="true">/profile/edit.seam$1</to>
-  </rule>  
-
-  <rule>
-    <from casesensitive="true">^/profile/view(.+)?$</from>
-    <to last="true">/profile/view.seam$1</to>
-  </rule>  
+  </rule>
 
   <rule>
     <from casesensitive="true">^/account/password_reset_request(.+)?$</from>
@@ -175,7 +165,34 @@
     <from casesensitive="true">^/account/password_reset/(.+)$</from>
     <to last="true">/account/password_reset.seam\?key=$1</to>
   </rule>
-  
+
+  <!-- Profile -->
+  <rule>
+    <from casesensitive="true">^/profile/edit(.+)?$</from>
+    <to last="true">/profile/edit.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/profile/view(.+)?$</from>
+    <to last="true">/profile/view.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/profile/identities(\?.*)?$</from>
+    <to last="true">/profile/identities.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/profile/add_identity(\?.*)?$</from>
+    <to last="true">/profile/add_identity.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/profile/merge_account(\?.*)?$</from>
+    <to last="true">/profile/merge_account.seam$1</to>
+  </rule>
+
+
   <!-- help / -->
 
   <rule>
@@ -412,6 +429,21 @@
   <outbound-rule>
     <from>^(/.+)?/profile/view.seam(.+)?$</from>
     <to>$1/profile/view$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/profile/identities.seam(.+)?$</from>
+    <to>$1/profile/identities$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/profile/add_identity.seam(.+)?$</from>
+    <to>$1/profile/add_identity$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/profile/merge_account.seam(.+)?$</from>
+    <to>$1/profile/merge_account$2</to>
   </outbound-rule>
 
   <outbound-rule>

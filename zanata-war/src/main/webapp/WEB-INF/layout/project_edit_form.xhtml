@@ -98,6 +98,29 @@
 	</a4j:region>
 	</s:div>
 
+    <s:div>
+        <a4j:region>
+            <h:selectBooleanCheckbox
+                    title="Restrict Project Access"
+                    value="#{projectRoleRestrictionAction.restrictByRoles}" >
+                <a4j:support event="onchange" reRender="roleList" />
+            </h:selectBooleanCheckbox>
+        </a4j:region>
+        <h:outputText
+                value="Would you like to restrict access to this project to certain User roles?"/>
+    </s:div>
+
+    <s:div id="roleList">
+        <rich:spacer height="20px" />
+        <a4j:region renderRegionOnly="true">
+            <rich:dataGrid value="#{projectRoleRestrictionAction.availableRoles}" var="role" columns="4"
+                           rendered="#{projectRoleRestrictionAction.restrictByRoles}">
+                <h:selectBooleanCheckbox value="#{projectRoleRestrictionAction.roleRestrictions[role.name]}"/>
+                <h:outputLabel value="#{role.name}"/>
+            </rich:dataGrid>
+        </a4j:region>
+    </s:div>
+
     <div class="actionButtons">
         <h:commandButton id="save"
                       value="#{messages['jsf.Save']}"

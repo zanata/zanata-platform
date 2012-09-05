@@ -20,15 +20,11 @@
  */
 package org.zanata.action;
 
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
-
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-
+import javax.annotation.Nullable;
 import javax.faces.context.FacesContext;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
@@ -38,6 +34,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
@@ -45,9 +42,13 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
 import org.zanata.model.HDocument;
+import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.StringSet;
@@ -57,10 +58,19 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
+import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
+import org.zanata.util.ZanataMessages;
+import org.zanata.util.StringUtil;
+import com.google.common.base.Function;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -77,6 +87,9 @@ public class ProjectIterationFilesAction
    @In
    private ZanataIdentity identity;
 
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   private HAccount authenticatedAccount;
+
    @In
    private DocumentDAO documentDAO;
    
@@ -85,6 +98,9 @@ public class ProjectIterationFilesAction
 
    @In
    private ProjectIterationDAO projectIterationDAO;
+
+   @In
+   private PersonDAO personDAO;
 
    @In
    private TranslationFileService translationFileServiceImpl;
@@ -97,6 +113,9 @@ public class ProjectIterationFilesAction
 
    @In
    private StatisticsResource statisticsServiceImpl;
+
+   @In
+   private ZanataMessages zanataMessages;
 
    private List<HDocument> iterationDocuments;
    
@@ -221,7 +240,7 @@ public class ProjectIterationFilesAction
    public boolean isFileUploadAllowed()
    {
       HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HLocale hLocale = this.localeDAO.findByLocaleId( new LocaleId(localeId) );
+      HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(localeId));
 
       return projectIteration.getStatus() == EntityStatus.ACTIVE
             && identity != null && identity.hasPermission("modify-translation", projectIteration, hLocale);
@@ -316,6 +335,59 @@ public class ProjectIterationFilesAction
    public boolean isIterationObsolete()
    {
       return getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
+   }
+
+   /**
+    * Returns the display zanataMessages to show when a user cannot translate.
+    */
+   public List<String> getTranslationDeniedReasonMessages()
+   {
+      List<String> displayMessages = new ArrayList<String>(5);
+      final String separator = "<br/>";
+
+      // Account not logged in
+      if( identity == null )
+      {
+         displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.NotLoggedIn"));
+         return displayMessages;
+      }
+
+      // Iteration is read only
+      if( isIterationReadOnly() )
+      {
+         displayMessages.add( zanataMessages.getMessage("jsf.iteration.files.translateDenied.VersionIsReadOnly") );
+      }
+
+      // Iteration is Obsolete
+      if( isIterationObsolete() )
+      {
+         displayMessages.add( zanataMessages.getMessage("jsf.iteration.files.translateDenied.VersionIsObsolete") );
+      }
+
+      // User not member of language team
+      if( !personDAO.isMemberOfLanguageTeam( authenticatedAccount.getPerson(), getLocale() ) )
+      {
+         displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotInLanguageTeam", getLocale().retrieveDisplayName()));
+      }
+
+      // User not part of the allowed roles
+      HIterationProject project = getProjectIteration().getProject();
+      if(!SecurityFunctions.isUserAllowedAccess(project))
+      {
+         //jsf.iteration.files.translateDenied.UserNotInProjectRole
+         displayMessages.add( zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotInProjectRole",
+               StringUtil.concat(project.getAllowedRoles(), ',', new Function<HAccountRole, String>()
+               {
+                  @Override
+                  public String apply(@Nullable HAccountRole from)
+                  {
+                     return from.getName();
+                  }
+               })
+         ));
+      }
+
+      return displayMessages;
    }
 
    /**

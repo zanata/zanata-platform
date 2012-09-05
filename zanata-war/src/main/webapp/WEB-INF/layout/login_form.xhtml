@@ -5,7 +5,18 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
 >
+    <!-- Load jQuery -->
+    <rich:jQuery query="jquery"/>
+
+    <script type="text/javascript">
+        function showLoginButton()
+        {
+            jQuery("[id='login:Sign_in']").show();
+        }
+    </script>
+
 	<s:token allowMultiplePosts="true" />
     <rich:panel rendered="#{not identity.loggedIn}">
         <f:facet name="header" class="loginForm_header">#{messages['jsf.SignIn']}</f:facet>
@@ -15,13 +26,14 @@
             <h:inputText id="username"
                       value="#{credentials.username}" class="loginForm_input"/>
         </s:decorate>
-  
-        <s:decorate id="fedoraUsernameField" template="edit.xhtml" rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
-            <ui:define name="label"><span class="loginForm_label">#{messages['jsf.FedoraUsername']}</span></ui:define>
-            <h:inputText id="username"
-                      value="#{credentials.username}"/>
-            <h:inputHidden id="password" value="#{credentials.password}" class="loginForm_input"/>
-        </s:decorate>
+
+        <s:div rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
+            <ui:include src="login_provider.xhtml">
+                <ui:param name="providerField" value="#{loginAction.providerType}"/>
+                <ui:param name="usernameField" value="#{loginAction.username}"/>
+                <ui:param name="onProviderChange" value="showLoginButton();"/>
+            </ui:include>
+        </s:div>
 
         <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Password']}</span></ui:define>
@@ -32,14 +44,15 @@
             	rendered="#{applicationConfiguration.internalAuth}"
             	propagation="none">#{messages['jsf.ForgotYourPassword']}</s:link>
         </s:decorate>
-        <s:decorate id="rememberMeField" template="edit.xhtml" >
+        <s:decorate id="rememberMeField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
             <ui:define name="label">#{messages['jsf.RememberMe']}</ui:define>
             <h:selectBooleanCheckbox id="rememberMe"
                                   value="#{rememberMe.enabled}"/>
         </s:decorate>
         <div style="clear:both"/>
         <div class="actionButtons">
-            <h:commandButton id="Sign_in" value="#{messages['jsf.SignIn']}" action="#{identity.login}"/>
+            <h:commandButton id="Sign_in" value="#{messages['jsf.SignIn']}" action="#{loginAction.login}"
+                    style="#{applicationConfiguration.fedoraOpenIdAuth ? 'display:none' : ''}"/>
         </div>
     </rich:panel>
 

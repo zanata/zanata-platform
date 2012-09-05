@@ -110,6 +110,7 @@ public class ZPathService
       {
          throw new RuntimeException(e);
       }
+
       MessageFormat mssgFormat = new MessageFormat( DOCUMENT_ZPATH_PRIVATE );
       return mssgFormat.format(
             new Object[]{

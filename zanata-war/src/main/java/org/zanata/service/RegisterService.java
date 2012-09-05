@@ -20,8 +20,26 @@
  */
 package org.zanata.service;
 
+import org.zanata.model.HAccount;
+import org.zanata.model.security.HCredentials;
+import org.zanata.security.AuthenticationType;
+
 public interface RegisterService
 {
    String register(final String username, final String password, String name, String email);
 
+   /**
+    * Use this for external authentication.
+    */
+   String register(final String username, final String externalId, AuthenticationType authType, String name, String email);
+
+   /**
+    * Merge two accounts together. One of the accounts will be rendered inactive while the other will inherit all
+    * security permissions.
+    *
+    * @param active This account will retain all roles, permissions and credentials it already had, plus all the
+    *               ones from the obsolete account.
+    * @param obsolete This account will be disabled, and stripped of all credentials and permissions.
+    */
+   void mergeAccounts( HAccount active, HAccount obsolete );
 }

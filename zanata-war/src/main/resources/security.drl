@@ -15,6 +15,10 @@ import org.jboss.seam.security.Role;
 import org.jboss.seam.security.permission.PermissionCheck;
 import org.jboss.seam.security.permission.RoleCheck;
 
+import function org.zanata.security.SecurityFunctions.isUserAllowedAccess;
+import function org.zanata.security.SecurityFunctions.isUserMemberOfLanguageTeam;
+import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguageTeam;
+
 /* admin can do anything */
 rule AdminAnything
   no-loop
@@ -185,10 +189,11 @@ rule LangTeamMemberAddTranslation
   activation-group "permissions"
 when
   check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
-  authenticatedPerson: HPerson() 
+  authenticatedPerson: HPerson()
+  $project: HProject( eval(isUserAllowedAccess($project)) )
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(authenticatedPerson.isMember($locale))
+    eval(isUserMemberOfLanguageTeam($locale))
   )
 then
   check.grant();
@@ -271,7 +276,7 @@ when
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(authenticatedPerson.isCoordinator($locale))
+    eval(isUserCoordinatorOfLanguageTeam($locale))
   )
   check: PermissionCheck(action == "manage-language-team", granted == false)
 then
@@ -292,7 +297,7 @@ when
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $member: HLocaleMember(
-    $locale: supportedLanguage -> (authenticatedPerson.isCoordinator($locale))
+    $locale: supportedLanguage -> (isUserCoordinatorOfLanguageTeam($locale))
   )
   check: PermissionCheck(
     target == $member, 

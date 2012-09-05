@@ -323,6 +323,21 @@ a.breadcrumbs_link:hover
 	font-size:12px;
 }
 
+img.login_option {
+    border-width: 3px;
+    border-style: none;
+    cursor: pointer;
+    padding: 3px;
+
+}
+
+img.selected_login_option {
+    border-color: #FFFCC9;
+    background-color: #FFFCC9;
+    border-style: solid;
+    border-radius: 6px;
+}
+
 .prop {
 	vertical-align: middle;
 }
@@ -954,6 +969,18 @@ a.version_link:hover {
 	background-color:#FFFFD5;
 }
 /* -----------------------  End project iteration CSS  -------------------------*/
+
+/* -----------------------  Project Iteration Files CSS  -----------------------------*/
+
+.translate_restriction_title {
+    color: #B62918;
+}
+
+.translate_restriction_mssg_row {
+    padding-bottom: 10px
+}
+
+/* -----------------------  End Project Iteration Files CSS  -----------------------------*/
 
 /* -----------------------  Project Iteration Copy Trans CSS  -----------------------------*/
 

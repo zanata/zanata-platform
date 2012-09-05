@@ -10,6 +10,7 @@
 		  homeContent=""
 		  name="Sample Project"
 		  overrideLocales="FALSE"
+          restrictedByRoles="FALSE"
 		  status="A"
 	    />
         <HProjectIteration id="1"
@@ -47,6 +48,7 @@
 			  homeContent=""
 			  name="Sample Retired Project"
 			  overrideLocales="FALSE"
+              restrictedByRoles="FALSE"
 			  status="R"
 		    />
 		<HProjectIteration id="3"
@@ -71,6 +73,7 @@
 			  homeContent=""
 			  name="Sample Obsolete Project"
 			  overrideLocales="FALSE"
+              restrictedByRoles="FALSE"
 			  status="O"
 		    />
 		<HProjectIteration id="4"
@@ -95,6 +98,7 @@
 			  homeContent=""
 			  name="Sample Current Project"
 			  overrideLocales="FALSE"
+              restrictedByRoles="FALSE"
 			  status="A"
 		    />
 		<HProjectIteration id="5"
