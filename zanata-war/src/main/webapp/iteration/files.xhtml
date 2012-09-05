@@ -43,13 +43,32 @@
     <ui:define name="center_content">
         <h:form>
             <s:token allowMultiplePosts="true"/>
-            <rich:datascroller id="data_table_scroller" align="center" for="data_table"
+            <rich:datascroller id="data_table_scroller" align="center" for="data_table" fastControls="hide"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
-                <f:facet name="next">
-                    <h:outputText value="next" style="font-size: 0.8em"/>
+                <f:facet name="first">
+                    <h:outputText value="" styleClass="icon-to-start"/>
                 </f:facet>
                 <f:facet name="previous">
-                    <h:outputText value="prev" style="font-size: 0.8em"/>
+                    <h:outputText value="" styleClass="icon-left-open"/>
+                </f:facet>
+                <f:facet name="next">
+                    <h:outputText value="" styleClass="icon-right-open-1"/>
+                </f:facet>
+                <f:facet name="last">
+                    <h:outputText value="" styleClass="icon-to-end"/>
+                </f:facet>
+
+                <f:facet name="first_disabled">
+                    <h:outputText value="" styleClass="icon-to-start"/>
+                </f:facet>
+                <f:facet name="previous_disabled">
+                    <h:outputText value="" styleClass="icon-left-open"/>
+                </f:facet>
+                <f:facet name="next_disabled">
+                    <h:outputText value="" styleClass="icon-right-open-1"/>
+                </f:facet>
+                <f:facet name="last_disabled">
+                    <h:outputText value="" styleClass="icon-to-end"/>
                 </f:facet>
             </rich:datascroller>
             <rich:spacer height="20"/>
