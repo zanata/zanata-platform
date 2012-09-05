@@ -149,4 +149,6 @@ public interface UiMessages extends Messages
    @DefaultMessage("Found no glossary results")
    String foundNoGlossaryResults();
 
+   @DefaultMessage("Glossary save fail")
+   String saveGlossaryFailed();
 }

@@ -1,9 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
@@ -14,6 +18,7 @@ import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,9 +41,9 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
       HasText getTargetText();
 
-      HasText getSourceComment();
+      void setSourceComment(List<String> comments);
 
-      HasText getTargetComment();
+      void setTargetComment(List<String> comments);
 
       HasText getSourceLabel();
 
@@ -59,6 +64,18 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       void addEntry(String text);
 
       HasText getLastModified();
+
+      HasClickHandlers getAddNewCommentButton();
+
+      void addRowIntoTargetComment(int row, String comment);
+
+      HasText getNewCommentText();
+
+      int getTargetCommentRowCount();
+
+      List<String> getCurrentTargetComments();
+
+      void showLoading(boolean visible);
    }
 
    private GetGlossaryDetailsResult glossaryDetails;
@@ -69,8 +86,10 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
    private final CachingDispatchAsync dispatcher;
 
+   private HasGlossaryEvent glossaryListener;
+
    @Inject
-   public GlossaryDetailsPresenter(final Display display, EventBus eventBus, UiMessages messages, final CachingDispatchAsync dispatcher)
+   public GlossaryDetailsPresenter(final Display display, final EventBus eventBus, final UiMessages messages, final CachingDispatchAsync dispatcher)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -93,23 +112,47 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
          {
             if (selectedDetailEntry != null)
             {
-               // check if there's any changes and save
-               if(!display.getTargetText().getText().equals(selectedDetailEntry.getTarget()))
+               // check if there's any changes on the target term or the target
+               // comments and save
+               if (!display.getTargetText().getText().equals(selectedDetailEntry.getTarget()))
                {
-                  dispatcher.execute(new UpdateGlossaryTermAction(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getTargetLocale(), selectedDetailEntry.getSource(), display.getTargetText().getText(), selectedDetailEntry.getTargetVersionNum()), new AsyncCallback<UpdateGlossaryTermResult>()
+                  display.showLoading(true);
+                  UpdateGlossaryTermAction action = new UpdateGlossaryTermAction(selectedDetailEntry, display.getTargetText().getText(), display.getCurrentTargetComments());
+
+                  dispatcher.execute(action, new AsyncCallback<UpdateGlossaryTermResult>()
                   {
                      @Override
                      public void onFailure(Throwable caught)
                      {
                         Log.error(caught.getMessage(), caught);
+                        eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.saveGlossaryFailed()));
+                        display.showLoading(false);
                      }
+
                      @Override
                      public void onSuccess(UpdateGlossaryTermResult result)
                      {
                         Log.info("Glossary term updated:" + result.getDetail().getTarget());
+                        glossaryListener.fireSearchEvent();
+                        selectedDetailEntry = result.getDetail();
+                        populateDisplayData();
+                        display.showLoading(false);
                      }
                   });
                }
+            }
+         }
+      }));
+
+      registerHandler(display.getAddNewCommentButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (!Strings.isNullOrEmpty(display.getNewCommentText().getText()))
+            {
+               display.addRowIntoTargetComment(display.getTargetCommentRowCount(), display.getNewCommentText().getText());
+               display.getNewCommentText().setText("");
             }
          }
       }));
@@ -157,33 +200,21 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       });
    }
 
-   protected void selectEntry(int selected)
+   private void populateDisplayData()
    {
-      StringBuilder srcComments = new StringBuilder();
-      StringBuilder targetComments = new StringBuilder();
-      String srcRef = "";
+      display.getSrcRef().setText(selectedDetailEntry.getSourceRef());
+      display.setSourceComment(selectedDetailEntry.getSourceComment());
+      display.setTargetComment(selectedDetailEntry.getTargetComment());
+      display.getLastModified().setText(messages.lastModifiedOn(selectedDetailEntry.getLastModified()));
+   }
+
+   private void selectEntry(int selected)
+   {
       if (selected >= 0)
       {
          selectedDetailEntry = glossaryDetails.getGlossaryDetails().get(selected);
-         srcRef = selectedDetailEntry.getSourceRef();
-         for (String srcComment : selectedDetailEntry.getSourceComment())
-         {
-            srcComments.append(srcComment);
-            srcComments.append("\n");
-         }
-
-         for (String targetComment : selectedDetailEntry.getTargetComment())
-         {
-            targetComments.append(targetComment);
-            targetComments.append("\n");
-         }
       }
-
-      display.getSrcRef().setText(srcRef);
-      display.getSourceComment().setText(srcComments.toString());
-      display.getTargetComment().setText(targetComments.toString());
-      display.getLastModified().setText(messages.lastModifiedOn(selectedDetailEntry.getLastModified()));
-
+      populateDisplayData();
    }
 
    @Override
@@ -199,5 +230,10 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
    @Override
    public void onRevealDisplay()
    {
+   }
+
+   public void setGlossaryListener(HasGlossaryEvent glossaryListener)
+   {
+      this.glossaryListener = glossaryListener;
    }
 }

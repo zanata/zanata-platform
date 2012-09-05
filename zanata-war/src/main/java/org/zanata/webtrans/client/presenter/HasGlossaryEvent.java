@@ -7,4 +7,6 @@ public interface HasGlossaryEvent
    void fireCopyEvent(GlossaryResultItem item);
 
    void showGlossaryDetail(GlossaryResultItem item);
+
+   void fireSearchEvent();
 }

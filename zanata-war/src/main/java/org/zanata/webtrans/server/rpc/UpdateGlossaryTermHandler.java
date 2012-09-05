@@ -42,22 +42,31 @@ public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGloss
    @Override
    public UpdateGlossaryTermResult execute(UpdateGlossaryTermAction action, ExecutionContext context) throws ActionException
    {
-      HGlossaryEntry entry = glossaryDAO.getEntryBySrcLocaleAndContent(action.getSrcLocale(), action.getSrcContent());
+      GlossaryDetails selectedDetailEntry = action.getSelectedDetailEntry();
 
-      HLocale targetLocale = localeServiceImpl.getByLocaleId(action.getTargetLocale());
+      HGlossaryEntry entry = glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource());
+
+      HLocale targetLocale = localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale());
 
       HGlossaryTerm targetTerm = entry.getGlossaryTerms().get(targetLocale);
       if(targetTerm == null)
       {
-         throw new ActionException("Update failed for glossary term with source content: " + action.getSrcContent() + " and target locale: " + action.getTargetLocale());
+         throw new ActionException("Update failed for glossary term with source content: " + selectedDetailEntry.getSrcLocale() + " and target locale: " + selectedDetailEntry.getTargetLocale());
       }
-      else if (action.getCurrentVerNum().compareTo(targetTerm.getVersionNum()) != 0)
+      else if (selectedDetailEntry.getTargetVersionNum().compareTo(targetTerm.getVersionNum()) != 0)
       {
-         throw new ActionException("Update failed for glossary term " + action.getTargetContent() + " base versionNum " + action.getCurrentVerNum() + " does not match current versionNum " + targetTerm.getVersionNum());
+         throw new ActionException("Update failed for glossary term " + selectedDetailEntry.getTarget() + " base versionNum " + selectedDetailEntry.getTargetVersionNum() + " does not match current versionNum " + targetTerm.getVersionNum());
       }
       else
       {
-         targetTerm.setContent(action.getTargetContent());
+         targetTerm.setContent(action.getNewTargetTerm());
+         targetTerm.getComments().clear();
+
+         for(String newComment: action.getNewTargetComment())
+         {
+            targetTerm.getComments().add(new HTermComment(newComment));
+         }
+
          HGlossaryEntry entryResult = glossaryDAO.makePersistent(entry);
          glossaryDAO.flush();
 
@@ -76,7 +85,7 @@ public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGloss
          
          SimpleDateFormat dateFormat = new SimpleDateFormat();
 
-         GlossaryDetails details = new GlossaryDetails(entryResult.getGlossaryTerms().get(entryResult.getSrcLocale()).getContent(), entryResult.getGlossaryTerms().get(targetLocale).getContent(), srcComments, targetComments, entryResult.getSourceRef(), action.getSrcLocale(), action.getTargetLocale(), targetTerm.getVersionNum(), dateFormat.format(targetTerm.getLastChanged()));
+         GlossaryDetails details = new GlossaryDetails(entryResult.getGlossaryTerms().get(entryResult.getSrcLocale()).getContent(), entryResult.getGlossaryTerms().get(targetLocale).getContent(), srcComments, targetComments, entryResult.getSourceRef(), selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getTargetLocale(), targetTerm.getVersionNum(), dateFormat.format(targetTerm.getLastChanged()));
          
          return new UpdateGlossaryTermResult(details);
       }

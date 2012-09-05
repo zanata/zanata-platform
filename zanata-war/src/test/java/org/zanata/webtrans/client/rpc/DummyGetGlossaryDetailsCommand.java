@@ -40,6 +40,9 @@ public class DummyGetGlossaryDetailsCommand implements Command
          targetComments.add("Target Comment " + (1 + i));
          targetComments.add("Target Comment " + (2 + i));
          targetComments.add("Target Comment " + (3 + i));
+         targetComments.add("Target Comment " + (4 + i));
+         targetComments.add("Target Comment " + (5 + i));
+         targetComments.add("Target Comment " + (6 + i));
          
          GlossaryDetails details = new GlossaryDetails("source content:" + (i + 1), "target content:" + (i + 1), srcComments, targetComments, "Dummy source ref " + (i + 1), new LocaleId("en-us"), action.getWorkspaceId().getLocaleId(), i, "8/08/8888 12:00");
          items.add(details);

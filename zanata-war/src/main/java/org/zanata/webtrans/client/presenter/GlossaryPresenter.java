@@ -158,9 +158,11 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       });
 
       display.setListener(this);
+      glossaryDetailsPresenter.setGlossaryListener(this);
    }
 
-   private void fireSearchEvent()
+   @Override
+   public void fireSearchEvent()
    {
       String query = display.getGlossaryTextBox().getText();
       createGlossaryRequest(query, display.getSearchType().getValue());

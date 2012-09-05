@@ -16,6 +16,7 @@
 		{
 			border:1px solid #A7A7A7;
 			border-radius:3px;
+			padding:2px;
 		}
 		
 	</ui:style>
@@ -24,7 +25,7 @@
 		<g:layer top="0px" height="30px">
 			<g:HorizontalPanel>
 				<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
-				<g:TextBox ui:field="glossaryTextBox" styleNames="{style.searchBox}" />
+				<g:TextBox ui:field="glossaryTextBox" styleName="{style.searchBox}" />
 				<g:ValueListBox ui:field="searchType" />
 				<g:Button ui:field="searchButton" />
 				<g:Button ui:field="clearButton" />

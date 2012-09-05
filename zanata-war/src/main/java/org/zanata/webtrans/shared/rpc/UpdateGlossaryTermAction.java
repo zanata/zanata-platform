@@ -1,52 +1,42 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.common.LocaleId;
+import java.util.List;
+
+import org.zanata.webtrans.shared.model.GlossaryDetails;
 
 public class UpdateGlossaryTermAction extends AbstractWorkspaceAction<UpdateGlossaryTermResult>
 {
    private static final long serialVersionUID = 1L;
 
-   private LocaleId srcLocale, targetLocale;
-   private String srcContent, targetContent;
-   private Integer currentVerNum;
-   
+   private GlossaryDetails selectedDetailEntry;
+   private String newTargetTerm;
+   private List<String> newTargetComment;
+
    @SuppressWarnings("unused")
    private UpdateGlossaryTermAction()
    {
-      this(null, null, null, null, null);
+      this(null, null, null);
    }
    
-   public UpdateGlossaryTermAction(LocaleId srcLocale, LocaleId targetLocale, String srcContent, String targetContent, Integer currentVerNum)
+   public UpdateGlossaryTermAction(GlossaryDetails selectedDetailEntry, String newTargetTerm, List<String> newTargetComment)
    {
-      this.srcLocale = srcLocale;
-      this.srcContent = srcContent;
-      this.targetLocale = targetLocale;
-      this.targetContent = targetContent;
-      this.currentVerNum = currentVerNum;
+      this.selectedDetailEntry = selectedDetailEntry;
+      this.newTargetComment = newTargetComment;
+      this.newTargetTerm = newTargetTerm;
    }
 
-   public LocaleId getSrcLocale()
+   public GlossaryDetails getSelectedDetailEntry()
    {
-      return srcLocale;
+      return selectedDetailEntry;
    }
 
-   public String getSrcContent()
+   public String getNewTargetTerm()
    {
-      return srcContent;
+      return newTargetTerm;
    }
 
-   public LocaleId getTargetLocale()
+   public List<String> getNewTargetComment()
    {
-      return targetLocale;
-   }
-
-   public String getTargetContent()
-   {
-      return targetContent;
-   }
-
-   public Integer getCurrentVerNum()
-   {
-      return currentVerNum;
+      return newTargetComment;
    }
 }

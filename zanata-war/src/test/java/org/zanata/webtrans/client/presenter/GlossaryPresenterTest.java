@@ -133,6 +133,10 @@ public class GlossaryPresenterTest extends PresenterTest
 
       mockDisplay.setListener(isA(HasGlossaryEvent.class));
       expectLastCall().once();
+
+      mockGlossaryDetailsPresenter.setGlossaryListener(isA(HasGlossaryEvent.class));
+      expectLastCall().once();
+
    }
 
 }
