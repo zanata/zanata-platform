@@ -118,6 +118,10 @@ public class MigrateDataToHCredentials implements CustomTaskChange
       {
          dbAuthType = "KERBEROS";
       }
+      else
+      {
+         dbAuthType = "OTHER";
+      }
    }
 
    @Override
