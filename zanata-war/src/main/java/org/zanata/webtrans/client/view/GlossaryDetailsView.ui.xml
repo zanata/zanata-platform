@@ -26,11 +26,7 @@
 		{
 			width:280px;
 			height:40px;
-		}
-		
-		.textArea[readonly] 
-		{
-			background:#DDDDDD;
+			resize:none;
 		}
 		
 		.listBox
@@ -42,8 +38,8 @@
 		.button
 		{
 			width:70px;
-			padding:3px;
 			margin:1px;
+			padding:2px;
 		}
 		
 		.lastModifiedLabel
@@ -85,6 +81,7 @@
 		{
 			width:260px;
 			height:40px;
+			resize:none;
 		}
 		
 		.buttonDiv
@@ -106,21 +103,21 @@
 			<g:layer top="5px" height="46px" left="176px" right="0">
 				<g:HTMLPanel>
 					<g:InlineLabel styleName="{style.headerLabel} {style.alignTop}"><ui:msg>Source Reference:</ui:msg></g:InlineLabel>
-					<g:TextArea ui:field="srcRef" readOnly='true' styleName="{style.textArea}"/>
+					<g:TextArea ui:field="srcRef" styleName="{style.textArea}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="70px" height="85px" left="0" right="300px">
 				<g:HTMLPanel>
 						<g:Label ui:field="sourceLabel" styleName="{style.headerLabel}"/>
-						<g:TextArea ui:field='sourceText' readOnly='true' styleName="{style.textArea}"/>
+						<g:TextArea ui:field='sourceText' styleName="{style.textArea}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="70px" height="85px" left="300px" right="0">
 				<g:HTMLPanel>
 						<g:Label styleName="{style.headerLabel}"><ui:msg>Comments:</ui:msg></g:Label>
-						<g:ListBox ui:field='sourceComment' styleName="{style.listBox}" enabled="false"/>
+						<g:ListBox ui:field='sourceComment' styleName="{style.listBox}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
@@ -152,7 +149,7 @@
 				<g:Label ui:field='lastModified' styleName="{style.lastModifiedLabel}"/>
 			</g:layer>
 			
-			<g:layer height="26px" top="348px" right="0" width="170px">
+			<g:layer height="32px" top="348px" right="0" width="170px">
 				<g:HTMLPanel styleName="{style.buttonDiv}">
 					<g:Image ui:field="loadingIcon"/>
 				 	<g:Button ui:field='dismissButton' addStyleNames="{style.button}"/>

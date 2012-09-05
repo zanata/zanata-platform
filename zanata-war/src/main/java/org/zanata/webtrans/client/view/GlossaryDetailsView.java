@@ -73,6 +73,8 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
 
    private final int VISIBLE_COMMENTS = 4;
 
+   private boolean hasGlossaryUpdateAccess;
+
    private class DeleteRowHandler implements ClickHandler
    {
       private final Widget panel;
@@ -107,12 +109,17 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
       dismissButton.setText(messages.dismiss());
       saveButton.setText(messages.save());
       sourceComment.setVisibleItemCount(VISIBLE_COMMENTS);
+
+      sourceComment.setEnabled(false);
+      sourceText.setEnabled(false);
+      srcRef.setEnabled(false);
+
       targetCommentsTable.setCellPadding(0);
       targetCommentsTable.setCellSpacing(1);
 
       addNewCommentButton.addStyleName("icon-plus-1");
       targetCommentScrollTable.setAlwaysShowScrollBars(true);
-      
+
       loadingIcon.setResource(resources.spinner());
       loadingIcon.setVisible(false);
    }
@@ -154,21 +161,25 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    {
       FlowPanel panel = new FlowPanel();
 
-      Button deleteButton = new Button();
-      deleteButton.setStyleName("icon-minus-1");
-      deleteButton.addStyleName(style.targetCommentListButton());
-
-      deleteButton.addClickHandler(new DeleteRowHandler(panel));
-
       TextArea commentArea = new TextArea();
       commentArea.setStyleName(style.targetCommentTextArea());
       commentArea.setVisibleLines(2);
-
       commentArea.setValue(comment);
 
+      if (!hasGlossaryUpdateAccess)
+      {
+         commentArea.setEnabled(false);
+      }
       panel.add(commentArea);
-      panel.add(deleteButton);
 
+      if (hasGlossaryUpdateAccess)
+      {
+         Button deleteButton = new Button();
+         deleteButton.setStyleName("icon-minus-1");
+         deleteButton.addStyleName(style.targetCommentListButton());
+         deleteButton.addClickHandler(new DeleteRowHandler(panel));
+         panel.add(deleteButton);
+      }
       return panel;
    }
 
@@ -187,7 +198,7 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    public List<String> getCurrentTargetComments()
    {
       ArrayList<String> currentComments = new ArrayList<String>();
-      
+
       for (int i = 0; i < targetCommentsTable.getRowCount(); i++)
       {
          FlowPanel panel = (FlowPanel) targetCommentsTable.getWidget(i, 0);
@@ -295,6 +306,16 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    public void showLoading(boolean visible)
    {
       loadingIcon.setVisible(visible);
+   }
+
+   @Override
+   public void setHasUpdateAccess(boolean hasGlossaryUpdateAccess)
+   {
+      saveButton.setEnabled(hasGlossaryUpdateAccess);
+      newTargetComment.setEnabled(hasGlossaryUpdateAccess);
+      targetText.setEnabled(hasGlossaryUpdateAccess);
+      addNewCommentButton.setVisible(hasGlossaryUpdateAccess);
+      this.hasGlossaryUpdateAccess = hasGlossaryUpdateAccess;
    }
 
 }

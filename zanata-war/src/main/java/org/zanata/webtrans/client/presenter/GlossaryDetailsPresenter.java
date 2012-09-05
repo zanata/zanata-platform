@@ -12,6 +12,7 @@ import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
@@ -76,6 +77,8 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       List<String> getCurrentTargetComments();
 
       void showLoading(boolean visible);
+
+      void setHasUpdateAccess(boolean hasGlossaryUpdateAccess);
    }
 
    private GetGlossaryDetailsResult glossaryDetails;
@@ -86,14 +89,17 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
    private final CachingDispatchAsync dispatcher;
 
+   private final UserWorkspaceContext userWorkspaceContext;
+
    private HasGlossaryEvent glossaryListener;
 
    @Inject
-   public GlossaryDetailsPresenter(final Display display, final EventBus eventBus, final UiMessages messages, final CachingDispatchAsync dispatcher)
+   public GlossaryDetailsPresenter(final Display display, final EventBus eventBus, final UiMessages messages, final CachingDispatchAsync dispatcher, final UserWorkspaceContext userWorkspaceContext)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.messages = messages;
+      this.userWorkspaceContext = userWorkspaceContext;
 
       registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
       {
@@ -110,7 +116,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
          @Override
          public void onClick(ClickEvent event)
          {
-            if (selectedDetailEntry != null)
+            if (selectedDetailEntry != null && userWorkspaceContext.hasGlossaryUpdateAccess())
             {
                // check if there's any changes on the target term or the target
                // comments and save
@@ -149,7 +155,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
          @Override
          public void onClick(ClickEvent event)
          {
-            if (!Strings.isNullOrEmpty(display.getNewCommentText().getText()))
+            if (!Strings.isNullOrEmpty(display.getNewCommentText().getText()) && userWorkspaceContext.hasGlossaryUpdateAccess())
             {
                display.addRowIntoTargetComment(display.getTargetCommentRowCount(), display.getNewCommentText().getText());
                display.getNewCommentText().setText("");
@@ -165,6 +171,8 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
             selectEntry(display.getSelectedDocumentIndex());
          }
       }));
+      
+      display.setHasUpdateAccess(userWorkspaceContext.hasGlossaryUpdateAccess());
    }
 
    public void show(final GlossaryResultItem item)
