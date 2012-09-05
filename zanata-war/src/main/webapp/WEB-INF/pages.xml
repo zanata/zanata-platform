@@ -373,6 +373,7 @@
   </page>
 
   <page view-id="/profile/identities.xhtml" login-required="true">
+    <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.Title'])}"/>
     <action execute="#{credentialsAction.loadUserCredentials}"/>
@@ -385,9 +386,17 @@
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.AddIdentity'])}"/>
 
     <navigation from-action="#{credentialsAction.cancel}">
-        <rule>
-            <redirect view-id="/profile/identities.xhtml"/>
-        </rule>
+      <redirect view-id="/profile/identities.xhtml"/>
+    </navigation>
+  </page>
+
+  <page view-id="/profile/merge_account.xhtml" login-required="true">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.profile.MergeAccount'])}"/>
+
+    <navigation from-action="#{accountMergeAction.cancel}">
+        <redirect view-id="/profile/view.xhtml"/>
     </navigation>
   </page>
 

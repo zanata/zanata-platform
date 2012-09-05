@@ -187,6 +187,11 @@
     <to last="true">/profile/add_identity.seam$1</to>
   </rule>
 
+  <rule>
+    <from casesensitive="true">^/profile/merge_account(\?.*)?$</from>
+    <to last="true">/profile/merge_account.seam$1</to>
+  </rule>
+
 
   <!-- help / -->
 
@@ -429,6 +434,11 @@
   <outbound-rule>
     <from>^(/.+)?/profile/add_identity.seam(.+)?$</from>
     <to>$1/profile/add_identity$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/profile/merge_account.seam(.+)?$</from>
+    <to>$1/profile/merge_account$2</to>
   </outbound-rule>
 
   <outbound-rule>

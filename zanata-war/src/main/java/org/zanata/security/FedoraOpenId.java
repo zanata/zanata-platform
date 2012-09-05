@@ -59,6 +59,7 @@ import org.zanata.security.openid.MyOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProvider;
+import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 
 import static org.jboss.seam.ScopeType.SESSION;
@@ -68,8 +69,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @Name("org.jboss.seam.security.fedoraOpenId")
 @Scope(SESSION)
 @AutoCreate
-//@Install(precedence = APPLICATION)
-//@BypassInterceptors
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
@@ -339,28 +338,33 @@ public class FedoraOpenId implements OpenIdAuthCallback
       return null;
    }
 
-   public void useGoogleProvider()
+   public void setProvider( OpenIdProviderType providerType )
    {
-      this.openIdProvider = new GoogleOpenIdProvider();
-   }
+      switch (providerType)
+      {
+         case Fedora:
+            this.openIdProvider = new FedoraOpenIdProvider();
+            break;
 
-   public void useFedoraProvider()
-   {
-      this.openIdProvider = new FedoraOpenIdProvider();
-   }
+         case Google:
+            this.openIdProvider = new GoogleOpenIdProvider();
+            break;
 
-   public void useMyOpenIdProvider()
-   {
-      this.openIdProvider = new MyOpenIdProvider();
-   }
+         case MyOpenId:
+            this.openIdProvider = new MyOpenIdProvider();
+            break;
 
-   public void useYahooOpenIdProvider()
-   {
-      this.openIdProvider = new YahooOpenIdProvider();
-   }
+         case Yahoo:
+            this.openIdProvider = new YahooOpenIdProvider();
+            break;
 
-   public void useGenericOpenIdProvider()
-   {
-      this.openIdProvider = new GenericOpenIdProvider();
+         case Generic:
+            this.openIdProvider = new GenericOpenIdProvider();
+            break;
+
+         default:
+            this.openIdProvider = new GenericOpenIdProvider();
+            break;
+      }
    }
 }

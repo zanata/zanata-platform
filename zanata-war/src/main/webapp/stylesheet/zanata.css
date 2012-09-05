@@ -323,10 +323,19 @@ a.breadcrumbs_link:hover
 	font-size:12px;
 }
 
-input.login_option {
-    width: 40px;
-    height: 40px;
-    border: none;
+img.login_option {
+    border-width: 3px;
+    border-style: none;
+    cursor: pointer;
+    padding: 3px;
+
+}
+
+img.selected_login_option {
+    border-color: #FFFCC9;
+    background-color: #FFFCC9;
+    border-style: solid;
+    border-radius: 6px;
 }
 
 .prop {

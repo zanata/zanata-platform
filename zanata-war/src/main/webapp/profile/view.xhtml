@@ -24,6 +24,11 @@
           <s:link styleClass="action_link" view="/profile/identities.xhtml" propagation="none" rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
               #{messages['jsf.ManageIdentities']}
           </s:link>
+          <s:link styleClass="action_link" view="/profile/merge_account.xhtml" propagation="none"
+                  title="#{messages['jsf.identities.MergeAccount.tootip']}"
+                  rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
+            #{messages['jsf.identities.MergeAccount']}
+          </s:link>
         </rich:panel>
       </s:fragment>
     </ui:define>

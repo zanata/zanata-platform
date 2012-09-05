@@ -39,7 +39,6 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HIterationGroup;
-import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -124,80 +123,103 @@ public class RegisterServiceImpl implements RegisterService
    }
 
    @Override
-   public void mergeAccounts( HAccount active, HAccount obsolete )
+   public void mergeAccounts( final HAccount active, final HAccount obsolete )
    {
-      obsolete = entityManager.merge( obsolete );
-      active = entityManager.merge( active );
+      // Have to run this as admin, as projects and iterations will be updated
+      new MergeAccountsOperation(active, obsolete).run();
+   }
 
-      HPerson activePerson = active.getPerson();
-      HPerson obsoletePerson = obsolete.getPerson();
+   /**
+    * Implements the RunAsOperation to run as a system op.
+    */
+   private class MergeAccountsOperation extends RunAsOperation
+   {
+      private HAccount active;
+      private HAccount obsolete;
 
-      // Disable obsolete account
-      obsolete.setEnabled(false);
-
-      // Merge all Roles
-      for( HAccountRole role: obsolete.getRoles() )
+      private MergeAccountsOperation(HAccount active, HAccount obsolete)
       {
-         active.getRoles().add( role );
-      }
-      obsolete.getRoles().clear();
-
-      // Add Credentials
-      for( HCredentials credentials : obsolete.getCredentials() )
-      {
-         credentials.setAccount( active );
-         active.getCredentials().add( credentials );
+         super(true); // system op
+         this.active = active;
+         this.obsolete = obsolete;
       }
 
-      // Merge all Maintained Projects
-      List<HProject> maintainedProjects = new ArrayList<HProject>( obsoletePerson.getMaintainerProjects() );
-      for( HProject proj : maintainedProjects )
+      @Override
+      public void execute()
       {
-         proj.getMaintainers().add( activePerson );
-         proj.getMaintainers().remove( obsoletePerson );
-      }
+         obsolete = entityManager.merge( obsolete );
+         active = entityManager.merge( active );
 
-      // Merge all maintained Version Groups
-      List<HIterationGroup> maintainedGroups = new ArrayList<HIterationGroup>( obsoletePerson.getMaintainerVersionGroups() );
-      for( HIterationGroup group : maintainedGroups )
-      {
-         group.getMaintainers().add( activePerson );
-         group.getMaintainers().remove( obsoletePerson );
-      }
+         HPerson activePerson = active.getPerson();
+         HPerson obsoletePerson = obsolete.getPerson();
 
-      // Merge all language teams
-      List<HLocaleMember> obsoleteMemberships = personDAO.getAllLanguageTeamMemberships(obsoletePerson);
-      List<HLocaleMember> activeMemberships = personDAO.getAllLanguageTeamMemberships(activePerson);
+         // Disable obsolete account
+         obsolete.setEnabled(false);
 
-      for( HLocaleMember obsoleteMembership : obsoleteMemberships )
-      {
-         HLocaleMember activeMembership = null;
-
-         for( HLocaleMember m : activeMemberships )
+         // Merge all Roles
+         for( HAccountRole role: obsolete.getRoles() )
          {
-            if( m.getPerson().getId().equals( obsoleteMembership.getPerson().getId() )
-                  && m.getSupportedLanguage().getLocaleId().equals(obsoleteMembership.getSupportedLanguage().getLocaleId()))
+            active.getRoles().add( role );
+         }
+         obsolete.getRoles().clear();
+
+         // Add Credentials
+         for( HCredentials credentials : obsolete.getCredentials() )
+         {
+            credentials.setAccount( active );
+            active.getCredentials().add( credentials );
+         }
+
+         // Merge all Maintained Projects
+         List<HProject> maintainedProjects = new ArrayList<HProject>( obsoletePerson.getMaintainerProjects() );
+         for( HProject proj : maintainedProjects )
+         {
+            proj.getMaintainers().add( activePerson );
+            proj.getMaintainers().remove( obsoletePerson );
+         }
+
+         // Merge all maintained Version Groups
+         List<HIterationGroup> maintainedGroups = new ArrayList<HIterationGroup>( obsoletePerson.getMaintainerVersionGroups() );
+         for( HIterationGroup group : maintainedGroups )
+         {
+            group.getMaintainers().add( activePerson );
+            group.getMaintainers().remove( obsoletePerson );
+         }
+
+         // Merge all language teams
+         List<HLocaleMember> obsoleteMemberships = personDAO.getAllLanguageTeamMemberships(obsoletePerson);
+         List<HLocaleMember> activeMemberships = personDAO.getAllLanguageTeamMemberships(activePerson);
+
+         for( HLocaleMember obsoleteMembership : obsoleteMemberships )
+         {
+            HLocaleMember activeMembership = null;
+
+            for( HLocaleMember m : activeMemberships )
             {
-               activeMembership = m;
-               break;
+               if( m.getPerson().getId().equals( obsoleteMembership.getPerson().getId() )
+                     && m.getSupportedLanguage().getLocaleId().equals(obsoleteMembership.getSupportedLanguage().getLocaleId()))
+               {
+                  activeMembership = m;
+                  break;
+               }
             }
+
+            if( activeMembership == null )
+            {
+               activeMembership = new HLocaleMember(activePerson, obsoleteMembership.getSupportedLanguage(), obsoleteMembership.isCoordinator());
+            }
+
+            activeMembership.setCoordinator(activeMembership.isCoordinator() || obsoleteMembership.isCoordinator());
+            entityManager.remove(obsoleteMembership);
          }
 
-         if( activeMembership == null )
+         // Link all merged accounts
+         List<HAccount> previouslyMerged = accountDAO.getAllMergedAccounts( obsolete );
+         for( HAccount acc : previouslyMerged )
          {
-            activeMembership = new HLocaleMember(activePerson, obsoleteMembership.getSupportedLanguage(), obsoleteMembership.isCoordinator());
+            acc.setMergedInto( active );
          }
-
-         activeMembership.setCoordinator(activeMembership.isCoordinator() || obsoleteMembership.isCoordinator());
-         entityManager.remove(obsoleteMembership);
+         obsolete.setMergedInto( active );
       }
-
-      // Link all merged accounts
-      List<HAccount> previouslyMerged = accountDAO.getAllMergedAccounts( obsolete );
-      for( HAccount acc : previouslyMerged )
-      {
-         acc.setMergedInto( active );
-      }
-      obsolete.setMergedInto( active );
    }
 }

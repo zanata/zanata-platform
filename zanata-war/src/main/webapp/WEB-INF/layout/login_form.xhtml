@@ -11,19 +11,8 @@
     <rich:jQuery query="jquery"/>
 
     <script type="text/javascript">
-        function adjustLoginInput(visible, label)
+        function showLoginButton()
         {
-            var fieldSelector = "[id='#{rich:clientId('fedoraUsernameField')}']";
-            if( visible )
-            {
-                jQuery('#identityLabel').html( label );
-                jQuery('#' + fieldSelector).show();
-            }
-            else
-            {
-                jQuery('#' + fieldSelector).hide();
-            }
-
             jQuery("[id='login:Sign_in']").show();
         }
     </script>
@@ -38,40 +27,13 @@
                       value="#{credentials.username}" class="loginForm_input"/>
         </s:decorate>
 
-        <a4j:outputPanel rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
-            <h:outputText>#{messages['jsf.login.openid.SelectProvider']}</h:outputText>
-            <br/>
-            <br/>
-            <rich:spacer height="10"/>
-            <a4j:commandButton id="fedora_signin" image="../images/openid/fedora.png" action="#{loginAction.useFedoraLogin}"
-                               styleClass="login_option" title="Fedora"
-                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid.fedora']}')"/>
-            <rich:spacer width="10"/>
-            <h:commandButton id="google_signin" image="../images/openid/google.png" action="#{loginAction.useGoogleLogin}"
-                               styleClass="login_option" title="Google"/>
-            <rich:spacer width="10"/>
-            <a4j:commandButton id="myopenid_signin" image="../images/openid/myopenid.png" action="#{loginAction.useGenericOpenIdLogin}"
-                               styleClass="login_option" title="MyOpenID"
-                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid.myopenid']}')"/>
-            <rich:spacer width="10"/>
-            <a4j:commandButton id="yahoo_signin" image="../images/openid/yahoo.png" action="#{loginAction.useYahooOpenIdLogin}"
-                               styleClass="login_option" title="Yahoo"
-                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid.yahoo']}')"/>
-            <rich:spacer width="10"/>
-            <a4j:commandButton id="openid_signin" image="../images/openid/openid.png" action="#{loginAction.useGenericOpenIdLogin}"
-                               styleClass="login_option" title="Open Id"
-                               onclick="adjustLoginInput(true, '#{messages['jsf.login.openid']}')"/>
-            <rich:spacer width="10"/>
-
-            <s:decorate id="fedoraUsernameField" template="edit.xhtml" style="display: none">
-                <ui:define name="label">
-                    <span id="identityLabel" class="loginForm_label">#{messages['jsf.FedoraUsername']}</span>
-                </ui:define>
-                <h:inputText styleClass="name" id="username" value="#{loginAction.username}"/>
-                <ui:remove><h:inputHidden id="password" value="#{credentials.password}"/></ui:remove>
-                <br/>
-            </s:decorate>
-        </a4j:outputPanel>
+        <s:div rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
+            <ui:include src="login_provider.xhtml">
+                <ui:param name="providerField" value="#{loginAction.providerType}"/>
+                <ui:param name="usernameField" value="#{loginAction.username}"/>
+                <ui:param name="onProviderChange" value="showLoginButton();"/>
+            </ui:include>
+        </s:div>
 
         <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Password']}</span></ui:define>

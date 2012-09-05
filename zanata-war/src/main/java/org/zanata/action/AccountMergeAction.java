@@ -34,6 +34,7 @@ import org.zanata.model.HAccount;
 import org.zanata.security.FedoraOpenId;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
+import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.RegisterService;
 
 import lombok.Getter;
@@ -64,8 +65,29 @@ public class AccountMergeAction
    @Getter
    private HAccount obsoleteAccount;
 
+   private OpenIdProviderType providerType;
+
+
+   public String getProviderType()
+   {
+      return providerType != null ? providerType.toString() : "";
+   }
+
+   public void setProviderType(String providerType)
+   {
+      try
+      {
+         this.providerType = OpenIdProviderType.valueOf(providerType);
+      }
+      catch (IllegalArgumentException e)
+      {
+         this.providerType = OpenIdProviderType.Generic;
+      }
+   }
+
    public void loginToMergingAccount()
    {
+      fedoraOpenId.setProvider( providerType );
       fedoraOpenId.login( username, new AccountMergeAuthCallback() );
    }
 
@@ -79,6 +101,12 @@ public class AccountMergeAction
       registerServiceImpl.mergeAccounts(authenticatedAccount, obsoleteAccount);
       obsoleteAccount = null; // reset the obsolete account
       FacesMessages.instance().add("Your accounts have been merged.");
+   }
+
+   public void cancel()
+   {
+      // see pages.xml
+      obsoleteAccount = null;
    }
 
    private class AccountMergeAuthCallback implements OpenIdAuthCallback

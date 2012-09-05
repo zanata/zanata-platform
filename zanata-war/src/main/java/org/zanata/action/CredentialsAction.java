@@ -47,6 +47,7 @@ import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.MyOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
+import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 
 import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
@@ -76,12 +77,31 @@ public class CredentialsAction implements Serializable
 
    private String credentialsUsername;
 
+   private OpenIdProviderType providerType;
+
 
    public void loadUserCredentials()
    {
       // Get the list of credentials from the database
       HAccount account = accountDAO.findById( authenticatedAccount.getId(), false );
       userCredentials = new ArrayList<HCredentials>( account.getCredentials() );
+   }
+
+   public String getProviderType()
+   {
+      return providerType != null ? providerType.toString() : "";
+   }
+
+   public void setProviderType(String providerType)
+   {
+      try
+      {
+         this.providerType = OpenIdProviderType.valueOf(providerType);
+      }
+      catch (IllegalArgumentException e)
+      {
+         this.providerType = OpenIdProviderType.Generic;
+      }
    }
 
    public List<HCredentials> getUserCredentials()
@@ -122,39 +142,17 @@ public class CredentialsAction implements Serializable
       // See pages.xml
    }
 
-   public void addGoogleCredentials()
-   {
-      // NB: Google does authentication directly
-      fedoraOpenId.useGoogleProvider();
-      HOpenIdCredentials newCreds = new HOpenIdCredentials();
-      newCreds.setAccount( authenticatedAccount );
-      fedoraOpenId.login("google", new CredentialsCreationCallback(newCreds));
-   }
-
-   public void addFedoraCredentials()
-   {
-      fedoraOpenId.useFedoraProvider();
-   }
-
-   public void addMyOpenIdCredentials()
-   {
-      fedoraOpenId.useMyOpenIdProvider();
-   }
-
-   public void addGenericOpenIdCredentials()
-   {
-      fedoraOpenId.useGenericOpenIdProvider();
-   }
-
-   public void addYahooCredentials()
-   {
-      fedoraOpenId.useYahooOpenIdProvider();
-   }
-
    public void verifyCredentials()
    {
       HOpenIdCredentials newCreds = new HOpenIdCredentials();
       newCreds.setAccount( authenticatedAccount );
+      fedoraOpenId.setProvider( providerType );
+
+      if( providerType == OpenIdProviderType.Google )
+      {
+         credentialsUsername = "google";
+      }
+
       fedoraOpenId.login(credentialsUsername, new CredentialsCreationCallback(newCreds));
    }
 
