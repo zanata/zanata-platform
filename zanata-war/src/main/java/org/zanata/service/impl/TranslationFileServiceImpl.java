@@ -116,12 +116,13 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @Override
    public Resource parseDocumentFile(InputStream fileContents, String path, String fileName)
    {
-      if (fileName.endsWith(".pot"))
+      String docName = fileName;
+      if (docName.endsWith(".pot"))
       {
-         fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+         docName = docName.substring(0, docName.lastIndexOf('.'));
       }
 
-      return parseUpdatedDocumentFile(fileContents, convertToValidPath(path) + fileName, fileName);
+      return parseUpdatedDocumentFile(fileContents, convertToValidPath(path) + docName, fileName);
    }
 
    @Override
