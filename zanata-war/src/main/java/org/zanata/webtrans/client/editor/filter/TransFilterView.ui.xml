@@ -11,16 +11,15 @@
 			outline: none;
 			padding-left: 4px;
 			width:98%;
-            color: #000000;
 		}
 		
 		.transFilterTextBoxEmpty {
-			/*color: grey;*/
+			color: grey;
 			font-style: italic;
 		}
 	</ui:style>
 
 
-	<g:TextBox ui:field="filterTextBox" styleName='{style.transFilterTextBox}' />
+	<g:TextBox ui:field="filterTextBox" addStyleNames='{style.transFilterTextBox}' />
 
 </ui:UiBinder> 

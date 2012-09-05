@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.gin;
 
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.EventProcessor;
+import org.zanata.webtrans.client.editor.filter.TransFilterDisplay;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
@@ -116,7 +117,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
-      bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
+      bindPresenter(TransFilterPresenter.class, TransFilterDisplay.class, TransFilterView.class);
       bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
       bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
       bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);

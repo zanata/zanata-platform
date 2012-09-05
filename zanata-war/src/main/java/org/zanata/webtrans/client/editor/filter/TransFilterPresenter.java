@@ -21,35 +21,27 @@
 package org.zanata.webtrans.client.editor.filter;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.Display>
+public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> implements TransFilterDisplay.Listener
 {
-   public interface Display extends WidgetDisplay
-   {
-      HasValue<String> getFilterText();
-
-      boolean isFocused();
-   }
 
    private final History history;
    private HistoryToken currentState;
 
    @Inject
-   public TransFilterPresenter(final Display display, final EventBus eventBus, final History history)
+   public TransFilterPresenter(final TransFilterDisplay display, final EventBus eventBus, final History history)
    {
       super(display, eventBus);
+      display.setListener(this);
       this.history = history;
       currentState = new HistoryToken();
    }
@@ -57,21 +49,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
    @Override
    protected void onBind()
    {
-
-      display.getFilterText().addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            if (!event.getValue().equals(currentState.getSearchText()))
-            {
-               HistoryToken newToken = history.getHistoryToken();
-               newToken.setSearchText(event.getValue());
-               history.newItem(newToken);
-            }
-         }
-      });
-
       registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -81,7 +58,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
             HistoryToken token = history.getHistoryToken();
             if (!token.getSearchText().equals(currentState.getSearchText()))
             {
-               display.getFilterText().setValue(token.getSearchText(), false);
+               display.setSearchTerm(token.getSearchText());
                eventBus.fireEvent(new FindMessageEvent(token.getSearchText()));
             }
             currentState = token;
@@ -90,23 +67,30 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 
    }
 
-   @Override
-   protected void onUnbind()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
-   public void onRevealDisplay()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
    public boolean isFocused()
    {
       return display.isFocused();
    }
 
+   @Override
+   public void searchTerm(String searchTerm)
+   {
+      if (!searchTerm.equals(currentState.getSearchText()))
+      {
+         HistoryToken newToken = history.getHistoryToken();
+         newToken.setSearchText(searchTerm);
+         history.newItem(newToken);
+         display.setSearchTerm(searchTerm);
+      }
+   }
+
+   @Override
+   protected void onUnbind()
+   {
+   }
+
+   @Override
+   public void onRevealDisplay()
+   {
+   }
 }

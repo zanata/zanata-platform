@@ -20,51 +20,43 @@
  */
 package org.zanata.webtrans.client.editor.filter;
 
-import org.zanata.webtrans.client.resources.Resources;
-import org.zanata.webtrans.client.resources.UiMessages;
-
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransFilterView extends Composite implements TransFilterPresenter.Display
+public class TransFilterView extends Composite implements TransFilterDisplay
 {
-
    private static TransFilterViewUiBinder uiBinder = GWT.create(TransFilterViewUiBinder.class);
-
-   interface TransFilterViewUiBinder extends UiBinder<Widget, TransFilterView>
-   {
-   }
-
-   interface Styles extends CssResource
-   {
-      String transFilterTextBox();
-
-      String transFilterTextBoxEmpty();
-   }
 
    // TODO deal with showing greyed-out text
 
    @UiField
    TextBox filterTextBox;
-
    @UiField
    Styles style;
 
    private String hintMessage;
 
    private boolean focused = false;
+   private Listener listener;
 
    @Inject
-   public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages)
+   public TransFilterView(TransFilterMessages messages)
    {
       hintMessage = messages.findSourceOrTargetString();
       initWidget(uiBinder.createAndBindUi(this));
@@ -77,14 +69,14 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
       return this;
    }
 
-   @Override
-   public TextBox getFilterText()
+   @UiHandler("filterTextBox")
+   public void onFilterTextBoxValueChange(ValueChangeEvent<String> event)
    {
-      return filterTextBox;
+      listener.searchTerm(event.getValue());
    }
 
    @UiHandler("filterTextBox")
-   public void onFilterTextBoxFocus(FocusEvent event)
+   public void onFilterTextBoxClick(ClickEvent event)
    {
       focused = true;
       if (filterTextBox.getStyleName().contains(style.transFilterTextBoxEmpty()))
@@ -111,4 +103,36 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
       return focused;
    }
 
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
+
+   @Override
+   public void setSearchTerm(String searchTerm)
+   {
+      Log.info("setting search term:[" + searchTerm + "]");
+      if (Strings.isNullOrEmpty(searchTerm))
+      {
+         filterTextBox.setText(hintMessage);
+         filterTextBox.addStyleName(style.transFilterTextBoxEmpty());
+      }
+      else
+      {
+         filterTextBox.removeStyleName(style.transFilterTextBoxEmpty());
+      }
+      filterTextBox.setText(searchTerm);
+   }
+
+   interface TransFilterViewUiBinder extends UiBinder<Widget, TransFilterView>
+   {
+   }
+
+   interface Styles extends CssResource
+   {
+      String transFilterTextBox();
+
+      String transFilterTextBoxEmpty();
+   }
 }
