@@ -20,9 +20,12 @@
  */
 package org.zanata.webtrans.client.events;
 
+import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.service.NavigationController;
+import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class FindMessageEvent extends GwtEvent<FindMessageHandler>
+public class FindMessageEvent extends GwtEvent<FindMessageHandler> implements NavigationController.UpdateContextCommand
 {
    private String message;
    public static final FindMessageEvent DEFAULT = new FindMessageEvent(null);
@@ -68,4 +71,10 @@ public class FindMessageEvent extends GwtEvent<FindMessageHandler>
       handler.onFindMessage(this);
    }
 
+   @Override
+   public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
+   {
+      Preconditions.checkNotNull(currentContext, "current context can not be null");
+      return currentContext.changeFindMessage(message);
+   }
 }

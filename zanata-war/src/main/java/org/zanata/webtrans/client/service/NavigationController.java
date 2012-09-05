@@ -272,17 +272,15 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    }
 
    @Override
-   public void onFindMessage(FindMessageEvent event)
+   public void onFindMessage(FindMessageEvent findMessageEvent)
    {
-      // TODO turn FindMessageEvent into UpdateContextCommand like the rest.
-      findMessage = event.getMessage();
-      // FIXME context may be null if loading from bookmark (document is not yet loaded)
+      findMessage = findMessageEvent.getMessage();
+      // context may be null if loading from bookmark (document is not yet loaded)
       if (context == null)
       {
          return;
       }
-      context = context.changeFindMessage(findMessage);
-      init(context);
+      execute(findMessageEvent);
    }
 
    @Override

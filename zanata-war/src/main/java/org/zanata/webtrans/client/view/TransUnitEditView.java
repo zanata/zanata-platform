@@ -40,15 +40,15 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 
    private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
    private final LoadingPanel loadingPanel;
-   private final Label noContentLabel;
+   @UiField
+   Label noContentLabel;
    private Listener listener;
 
    @Inject
-   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel, WebTransMessages messages)
+   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel)
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
       this.loadingPanel = loadingPanel;
-      noContentLabel = new Label(messages.noContent());
       initWidget(uiBinder.createAndBindUi(this));
 
       transUnitTable.addClickHandler(new ClickHandler()
@@ -64,6 +64,8 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
          }
       });
       transUnitTable.resize(0, 2);
+      transUnitTable.getColumnFormatter().setWidth(0, "50%");
+      transUnitTable.getColumnFormatter().setWidth(1, "50%");
    }
 
    private void selectRow(int rowIndex)
@@ -92,8 +94,9 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    @Override
    public void buildTable(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays)
    {
-      transUnitTable.resizeRows(sourceDisplays.size());
       showEmptyContentIfNoData(sourceDisplays.size());
+
+      transUnitTable.resizeRows(sourceDisplays.size());
       for (int i = 0; i < sourceDisplays.size(); i++)
       {
          SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
@@ -107,19 +110,12 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
          cellFormatter.setStyleName(i, 1, style.cellFormat());
 
       }
-      transUnitTable.getColumnFormatter().setWidth(0, "50%");
-      transUnitTable.getColumnFormatter().setWidth(1, "50%");
       applyRowStyle();
    }
 
    private void showEmptyContentIfNoData(int dataSize)
    {
-      if (dataSize == 0)
-      {
-         transUnitTable.resizeRows(1);
-         transUnitTable.setWidget(0, 0, noContentLabel);
-         transUnitTable.getCellFormatter().setStyleName(0, 0, style.noContent());
-      }
+      noContentLabel.setVisible(dataSize == 0);
    }
 
    private void applyRowStyle()
