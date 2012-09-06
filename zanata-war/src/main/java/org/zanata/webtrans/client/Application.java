@@ -17,13 +17,14 @@ import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
-
+import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
@@ -38,6 +39,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -291,32 +293,79 @@ public class Application implements EntryPoint
       GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler()
       {
          @Override
-         public void onUncaughtException(Throwable e)
+         public void onUncaughtException(Throwable exception)
          {
-            Log.error("uncaught exception", e);
+            Throwable e = unwrapUmbrellaException(exception);
+            Log.fatal("uncaught exception", e);
+            
             globalPopup.getCaption().setHTML("<div class=\"globalPopupCaption\">ERROR: " + e.getMessage() + "</div>");
+
+            VerticalPanel popupContent = new VerticalPanel();
+
+            // description text
             SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
-            htmlBuilder.appendHtmlConstant("<h3>")
-                  .appendEscaped("Stack trace for the error:")
-                  .appendHtmlConstant("</h3>");
-            htmlBuilder.appendHtmlConstant("<pre>");
-            for (StackTraceElement ste : e.getStackTrace())
-            {
-               htmlBuilder.appendEscaped(ste.toString() + "\n\t");
-            }
-            htmlBuilder.appendHtmlConstant("</pre>");
-            htmlBuilder.appendHtmlConstant("<h3>Please recall your actions and take one of the following steps:</h3>")
+            htmlBuilder
+                  .appendHtmlConstant("<h3>You may close this window and continue with your work</h3>")
+                  .appendHtmlConstant("<div>If you want to let us know the error, Please recall your actions and take one of the following steps:</div>")
                   .appendHtmlConstant("<ul>")
+                  .appendHtmlConstant("<li>Email administration; Or</li>")
                   .appendHtmlConstant("<li>Check if it's a <a href=\"https://bugzilla.redhat.com/buglist.cgi?product=Zanata&bug_status=__open__\" target=\"_blank\">known issue</a>; Or</li>")
                   .appendHtmlConstant("<li><a href=\"https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata\" target=\"_blank\">Report a problem</a>; Or</li>")
                   .appendHtmlConstant("<li>Email <a href=\"mailto:zanata-users@redhat.com\">Zanata users mailing list</a></li>")
-                  .appendHtmlConstant("</ul>");
-            HTMLPanel popupContent = new HTMLPanel(htmlBuilder.toSafeHtml());
+                  .appendHtmlConstant("</ul>")
+            ;
+
+            // stack trace
+            String stackTrace = buildStackTraceMessages(e);
+            DisclosurePanel disclosurePanel = buildStackTraceDisclosurePanel(stackTrace);
+
+            // send stack trace log to server
+            injector.getDispatcher().execute(new RemoteLoggingAction(stackTrace), new NoOpAsyncCallback<NoOpResult>());
+
+            popupContent.add(new HTMLPanel(htmlBuilder.toSafeHtml()));
+            popupContent.add(disclosurePanel);
             popupContent.add(closeGlobalPopupButton);
             globalPopup.setWidget(popupContent);
             globalPopup.center();
          }
       });
+   }
+
+   public static Throwable unwrapUmbrellaException(Throwable e)
+   {
+      if(e instanceof UmbrellaException)
+      {
+         UmbrellaException ue = (UmbrellaException) e;
+         if(ue.getCauses().size() == 1)
+         {
+            return unwrapUmbrellaException(ue.getCauses().iterator().next());
+         }
+      }
+      return e;
+   }
+
+   private static String buildStackTraceMessages(Throwable e)
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append(e.getMessage()).append("\n");
+      for (StackTraceElement ste : e.getStackTrace())
+      {
+         builder.append("\tat ").append(ste.toString()).append("\n");
+      }
+      return builder.toString();
+   }
+
+   private static DisclosurePanel buildStackTraceDisclosurePanel(String stackTrace)
+   {
+      DisclosurePanel disclosurePanel = new DisclosurePanel("Stack trace of the exception (helpful to us)");
+      disclosurePanel.getHeader().getParent().setStyleName(""); //conflict style from menu.css
+      SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
+      htmlBuilder.appendHtmlConstant("<pre>");
+      htmlBuilder.appendHtmlConstant(stackTrace);
+      htmlBuilder.appendHtmlConstant("</pre>");
+      disclosurePanel.setContent(new HTMLPanel(htmlBuilder.toSafeHtml()));
+      disclosurePanel.setOpen(false);
+      return disclosurePanel;
    }
 
 }
