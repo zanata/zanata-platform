@@ -55,20 +55,22 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    @UiField
    Button searchButton;
+   
+   @UiField
+   Button clearButton;
 
    @UiField
    Label headerLabel;
 
    @UiField(provided = true)
    ValueListBox<SearchType> searchType;
-
-   @UiField
-   Button clearButton;
-
+   
    @UiField
    HTMLPanel container;
 
    private final FlexTable resultTable;
+   
+   private final UiMessages messages;
 
    private final Label loadingLabel, noResultFoundLabel;
 
@@ -82,6 +84,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Inject
    public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
+      this.messages = messages;
       resultTable = new FlexTable();
       resultTable.setStyleName("glossaryTable");
       resultTable.setCellSpacing(0);
@@ -96,12 +99,12 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       formatter.addStyleName(0, DETAILS_COL, "centered");
       formatter.addStyleName(0, DETAILS_COL, "detailCol");
 
-      resultTable.setWidget(0, 0, new Label(messages.srcTermLabel()));
-      resultTable.setWidget(0, 1, new Label(messages.targetTermLabel()));
-      resultTable.setWidget(0, 2, null);
-      resultTable.setWidget(0, 3, new Label(messages.detailsLabel()));
+      resultTable.setWidget(0, SOURCE_COL, new Label(messages.srcTermLabel()));
+      resultTable.setWidget(0, TARGET_COL, new Label(messages.targetTermLabel()));
+      resultTable.setWidget(0, ACTION_COL, null);
+      resultTable.setWidget(0, DETAILS_COL, new Label(messages.detailsLabel()));
 
-      loadingLabel = new Label(messages.loading());
+      loadingLabel = new Label(messages.searching());
       loadingLabel.setStyleName("tableMsg");
       noResultFoundLabel = new Label(messages.foundNoGlossaryResults());
       noResultFoundLabel.setStyleName("tableMsg");
@@ -192,7 +195,9 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
             resultTable.setWidget(i + 1, SOURCE_COL, new HighlightingLabel(item.getSource()));
             resultTable.setWidget(i + 1, TARGET_COL, new HighlightingLabel(item.getTarget()));
 
-            Button copyButton = new Button("Copy");
+            Button copyButton = new Button(messages.copy());
+            copyButton.setTitle(messages.copyTooltip());
+            
             copyButton.addClickHandler(new ClickHandler()
             {
                @Override
@@ -223,7 +228,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
          }
          container.clear();
          container.add(resultTable);
-//         scrollPanel.setWidget(table);
       }
       else
       {

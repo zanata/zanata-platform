@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -52,8 +53,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       HasClickHandlers getSearchButton();
 
-      HasClickHandlers getClearButton();
-
       HasValue<SearchType> getSearchType();
 
       HasText getTmTextBox();
@@ -61,20 +60,12 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       HasAllFocusHandlers getFocusTmTextBox();
 
       void startProcessing();
-      void setLoading(boolean loading);
+      
       void stopProcessing();
 
-      void setPageSize(int size);
-
-      Column<TransMemoryResultItem, ImageResource> getDetailsColumn();
-
-      Column<TransMemoryResultItem, String> getCopyColumn();
-
-      void setDataProvider(ListDataProvider<TransMemoryResultItem> dataProvider);
-
-      void setQueries(List<String> queries);
-
       HasClickHandlers getMergeButton();
+
+      void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries);
    }
 
    private final UserWorkspaceContext userWorkspaceContext;
@@ -85,7 +76,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private TransMemoryDetailsPresenter tmInfoPresenter;
    private TransMemoryMergePresenter transMemoryMergePresenter;
    private KeyShortcutPresenter keyShortcutPresenter;
-   private LoadingListDataProvider<TransMemoryResultItem> dataProvider;
+//   private LoadingListDataProvider<TransMemoryResultItem> dataProvider;
 
    private final WebTransMessages messages;
 
@@ -101,9 +92,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       this.transMemoryMergePresenter = transMemoryMergePresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.messages = messages;
-
-      dataProvider = new LoadingListDataProvider<TransMemoryResultItem>();
-      display.setDataProvider(dataProvider);
    }
 
    @Override
@@ -126,16 +114,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void onClick(ClickEvent event)
          {
             fireSearchEvent();
-         }
-      });
-
-      display.getClearButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.getTmTextBox().setText("");
-            dataProvider.getList().clear();
          }
       });
 
@@ -237,20 +215,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       createTMRequest(new TransMemoryQuery(transUnit.getSources(), searchType));
    }
 
-   private void setLoading(boolean loading)
-   {
-      // This line should be enough...
-      dataProvider.setLoading(loading);
-
-      // but GWT still shows the empty table widget, so we temporarily change it:
-      display.setLoading(loading);
-   }
-
    private void createTMRequest(TransMemoryQuery query)
    {
-      setLoading(true);
-      dataProvider.getList().clear();
-      dataProvider.refresh();
       display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query,
             userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(),
@@ -318,15 +284,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private void displayTMResult(GetTranslationMemoryResult result)
    {
       List<String> queries = submittedRequest.getQuery().getQueries();
-      display.setQueries(queries);
-      dataProvider.getList().clear();
-      for (final TransMemoryResultItem memory : result.getMemories())
-      {
-         dataProvider.getList().add(memory);
-      }
-      setLoading(false);
-      display.setPageSize(dataProvider.getList().size());
-      dataProvider.refresh();
+      display.renderTable(result.getMemories(), queries);
    }
 
    @Override

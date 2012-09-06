@@ -9,11 +9,7 @@
             padding-top:5px;	
             font-weight:bold;
         }
-        .narrowCenteredColumn {
-            width: 1em;
-            text-align:center;
-        }
-        
+       
         .searchBox
 		{
 			border:1px solid #A7A7A7;
@@ -35,7 +31,7 @@
 			</g:HorizontalPanel>
 		</g:layer>
 		<g:layer top="25px" bottom="0px">
-			<g:ScrollPanel ui:field="scrollPanel"/>
+			<g:HTMLPanel ui:field="container"/>
 		</g:layer>
 	</g:LayoutPanel>
 </ui:UiBinder> 

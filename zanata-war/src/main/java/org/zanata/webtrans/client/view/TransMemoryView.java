@@ -1,11 +1,14 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.EnumListBox;
+import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TooltipTextColumn;
 import org.zanata.webtrans.client.ui.Tooltips;
@@ -14,10 +17,13 @@ import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.SimilarityColumn;
 import org.zanata.webtrans.client.ui.table.column.TransMemorySourceColumn;
 import org.zanata.webtrans.client.ui.table.column.TransMemoryTargetColumn;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -32,12 +38,17 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
@@ -55,7 +66,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    interface Styles extends CssResource
    {
       String headerLabel();
-      String narrowCenteredColumn();
    }
 
    @UiField
@@ -77,12 +87,15 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    Button clearButton;
 
    @UiField
-   ScrollPanel scrollPanel;
-
-   @UiField
    Button mergeTMButton;
+   
+   @UiField
+   HTMLPanel container;
 
-   CellTable<TransMemoryResultItem> tmTable;
+//   CellTable<TransMemoryResultItem> tmTable;
+   
+   private final FlexTable resultTable;
+   
 
    private UiMessages messages;
    private ListDataProvider<TransMemoryResultItem> dataProvider;
@@ -93,15 +106,60 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    private Label noResultWidget = new Label("Found no translation memory results");
    private Label loadingWidget = new Label("Searching translation memory...");
+   
+   private final Label loadingLabel, noResultFoundLabel;
+   
+   
+   private final static int SOURCE_COL = 0;
+   private final static int TARGET_COL = 1;
+   private final static int NUM_TRANS_COL = 2;
+   private final static int ACTION_COL = 3;
+   private final static int SIMILARITY_COL = 4;
+   private final static int DETAILS_COL = 5;
 
    @Inject
    public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
    {
       this.messages = messages;
+     
+      resultTable = new FlexTable();
+      resultTable.setStyleName("glossaryTable");
+      resultTable.setCellSpacing(0);
+      
+      FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
+      formatter.setStyleName(0, SOURCE_COL, "th");
+      formatter.setStyleName(0, TARGET_COL, "th");
+      formatter.setStyleName(0, NUM_TRANS_COL, "th");
+      formatter.addStyleName(0, NUM_TRANS_COL, "centered");
+      formatter.setStyleName(0, ACTION_COL, "th");
+      formatter.addStyleName(0, ACTION_COL, "centered");
+      formatter.addStyleName(0, ACTION_COL, "actionCol");
+      formatter.setStyleName(0, SIMILARITY_COL, "th");
+      formatter.addStyleName(0, SIMILARITY_COL, "centered");
+      formatter.setStyleName(0, DETAILS_COL, "th");
+      formatter.addStyleName(0, DETAILS_COL, "centered");
+      formatter.addStyleName(0, DETAILS_COL, "detailCol");
 
-      sourceColumn = new TransMemorySourceColumn();
-      copyColumn = new CopyButtonColumn<TransMemoryResultItem>(messages.copy(), messages.copyTooltip());
-      detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
+      resultTable.setWidget(0, SOURCE_COL, new Label(messages.sourceLabel()));
+      resultTable.setWidget(0, TARGET_COL, new Label(messages.targetLabel()));
+      
+      Label numTrans = new Label(messages.hash());
+      numTrans.setTitle(messages.matchCountHeaderTooltip());
+      
+      resultTable.setWidget(0, NUM_TRANS_COL, numTrans);
+      resultTable.setWidget(0, ACTION_COL, null);
+      resultTable.setWidget(0, SIMILARITY_COL, new Label(messages.similarityLabel()));
+      resultTable.setWidget(0, DETAILS_COL, new Label(messages.detailsLabel()));
+      
+      loadingLabel = new Label(messages.searching());
+      loadingLabel.setStyleName("tableMsg");
+      noResultFoundLabel = new Label(messages.foundNoTMResults());
+      noResultFoundLabel.setStyleName("tableMsg");
+      
+      
+//      sourceColumn = new TransMemorySourceColumn();
+//      copyColumn = new CopyButtonColumn<TransMemoryResultItem>(messages.copy(), messages.copyTooltip());
+//      detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       initWidget(uiBinder.createAndBindUi(this));
@@ -111,12 +169,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       searchButton.setText(messages.searchButtonLabel());
       mergeTMButton.setText(messages.mergeTMButtonLabel());
       mergeTMButton.setTitle(messages.mergeTMTooltip());
-   }
-
-   @Override
-   public void setQueries(List<String> queries)
-   {
-      sourceColumn.setQueries(queries);
    }
 
    @UiHandler("tmTextBox")
@@ -132,12 +184,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public HasClickHandlers getMergeButton()
    {
       return mergeTMButton;
-   }
-
-   @Override
-   public HasClickHandlers getClearButton()
-   {
-      return clearButton;
    }
 
    @Override
@@ -166,7 +212,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @Override
    public void startProcessing()
    {
-      // TODO show waiting indicator
+      container.clear();
+      container.add(loadingLabel);
+
+      clearTableContent();
    }
 
    @Override
@@ -176,46 +225,104 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       // TODO add test for start and stop processing at appropriate times
    }
 
-   @Override
-   public void setPageSize(int size)
-   {
-      tmTable.setPageSize(size);
-   }
 
-   @Override
-   public Column<TransMemoryResultItem, ImageResource> getDetailsColumn()
+   @UiHandler("clearButton")
+   public void onClearButtonClicked(ClickEvent event)
    {
-      return detailsColumn;
+      tmTextBox.setText("");
+      clearTableContent();
    }
-
-   @Override
-   public Column<TransMemoryResultItem, String> getCopyColumn()
+   
+   private void clearTableContent()
    {
-      return copyColumn;
-   }
-
-   @Override
-   public void setDataProvider(ListDataProvider<TransMemoryResultItem> dataProvider)
-   {
-      this.dataProvider = dataProvider;
-      renderTable();
-   }
-
-   @Override
-   public void setLoading(boolean loading)
-   {
-      if (loading)
+      for (int i = 1; i < resultTable.getRowCount(); i++)
       {
-         tmTable.setEmptyTableWidget(loadingWidget);
+         resultTable.removeRow(i);
+      }
+   }
+   
+   public VerticalPanel getValue(TransMemoryResultItem object, List<String> queries)
+   {
+      VerticalPanel panel = new VerticalPanel();
+      panel.setSize("100%", "100%");
+      ArrayList<String> sourceContents = object.getSourceContents();
+
+      // display multiple source/target strings
+      for (int i = 0; i < sourceContents.size(); i++)
+      {
+         String sourceContent = sourceContents.get(i);
+         String query;
+         if (queries.size() > i)
+         {
+            query = queries.get(i);
+         }
+         else
+         {
+            query = queries.get(0);
+         }
+         DiffMatchPatchLabel label = new DiffMatchPatchLabel();
+         label.setOriginal(query);
+         label.setText(sourceContent);
+         panel.add(label);
+      }
+      return panel;
+   }
+   
+   @Override
+   public void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries)
+   {
+      startProcessing();
+      if(!memories.isEmpty())
+      {
+         for (int i = 0; i < memories.size(); i++)
+         {
+            final TransMemoryResultItem item = memories.get(i);
+
+            VerticalPanel soucePanel = getValue(item, queries);
+            
+            resultTable.setWidget(i + 1, SOURCE_COL, soucePanel);
+            resultTable.setWidget(i + 1, TARGET_COL, new HighlightingLabel(item.getTarget()));
+
+            Button copyButton = new Button(messages.copy());
+            copyButton.setTitle(messages.copyTooltip());
+            
+            copyButton.addClickHandler(new ClickHandler()
+            {
+               @Override
+               public void onClick(ClickEvent event)
+               {
+                  listener.fireCopyEvent(item);
+               }
+            });
+
+            resultTable.setWidget(i + 1, ACTION_COL, copyButton);
+            resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
+            resultTable.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
+
+            InlineLabel infoCell = new InlineLabel();
+            infoCell.setStyleName("icon-info-circle-2 details");
+            infoCell.addClickHandler(new ClickHandler()
+            {
+               @Override
+               public void onClick(ClickEvent event)
+               {
+                  listener.showTMDetail(item);
+               }
+            });
+
+            resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
+            resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
+            resultTable.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
+         }
+         container.clear();
+         container.add(resultTable);
       }
       else
       {
-         tmTable.setEmptyTableWidget(noResultWidget);
+         container.clear();
+         container.add(noResultFoundLabel);
       }
-   }
-
-   private void renderTable()
-   {
+      
       tmTable = new CellTable<TransMemoryResultItem>();
       tmTable.addStyleName("tmTable");
       tmTable.addStyleName("southTable");
@@ -247,21 +354,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       detailsColumn.setCellStyleNames(style.narrowCenteredColumn());
       tmTable.addColumn(detailsColumn, messages.detailsLabel());
 
-      noResultWidget.setStyleName("boldFont");
-      setLoading(false);
-      loadingWidget.setStyleName("boldFont");
-      tmTable.setLoadingIndicator(loadingWidget);
-
-      final NoSelectionModel<TransMemoryResultItem> selectionModel = new NoSelectionModel<TransMemoryResultItem>();
-      final DefaultSelectionEventManager<TransMemoryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
-      tmTable.setSelectionModel(selectionModel, manager);
-
-      tmTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
-
-      dataProvider.addDataDisplay(tmTable);
-
-      scrollPanel.clear();
-      scrollPanel.add(tmTable);
    }
 
    @Override
