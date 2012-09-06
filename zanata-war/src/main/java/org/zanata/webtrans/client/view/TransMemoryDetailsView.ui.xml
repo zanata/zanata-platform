@@ -9,43 +9,82 @@
 	
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
-	<g:DialogBox autoHide="true" modal="true">
-	  <g:caption><b><ui:msg>Translation Memory Details</ui:msg></b></g:caption>
-	  <g:HTMLPanel>
-			<g:VerticalPanel>
-				<g:HorizontalPanel>
-					<g:Label><ui:msg>Locations:</ui:msg></g:Label>
-				    <g:ListBox ui:field='documentListBox' visibleItemCount='5'/>
-				</g:HorizontalPanel>
-				<g:HorizontalPanel>
-					<g:Label><ui:msg>Project:</ui:msg></g:Label>
-					<g:Label ui:field='projectName' ><ui:msg>Project Name</ui:msg></g:Label>
-				</g:HorizontalPanel>
-				<g:HorizontalPanel>
-					<g:Label><ui:msg>Iteration:</ui:msg></g:Label>
-					<g:Label ui:field='iterationName' ><ui:msg>Iteration Name</ui:msg></g:Label>
-				</g:HorizontalPanel>
-				<g:HorizontalPanel>
-					<g:Label><ui:msg>Document:</ui:msg></g:Label>
-					<g:Label ui:field='docName' ><ui:msg>Document Name</ui:msg></g:Label>
-				</g:HorizontalPanel>
-				<g:HorizontalPanel>
-					<g:VerticalPanel>
-						<g:Label><ui:msg>Source: </ui:msg></g:Label>
-						<g:TextArea ui:field='sourceText' readOnly='true'><ui:msg>Source Text</ui:msg></g:TextArea>
-						<g:Label><ui:msg>Comment:</ui:msg></g:Label>
-						<g:TextArea ui:field='sourceComment' readOnly='true'><ui:msg>Source Comment</ui:msg></g:TextArea>
-					</g:VerticalPanel>
-					<g:VerticalPanel>
-						<g:Label><ui:msg>Target:</ui:msg></g:Label>
-						<g:TextArea ui:field='targetText' readOnly='true'><ui:msg>Target Text</ui:msg></g:TextArea>
-						<g:Label><ui:msg>Comment:</ui:msg></g:Label>
-						<g:TextArea ui:field='targetComment' readOnly='true'><ui:msg>Target Comment</ui:msg></g:TextArea>
-					</g:VerticalPanel>
-				</g:HorizontalPanel>
-				<g:Label ui:field='lastModified' ><ui:msg>Last modified</ui:msg></g:Label>
-			</g:VerticalPanel>
-	    <g:Button ui:field='dismissButton'><ui:msg>Dismiss</ui:msg></g:Button>
-	  </g:HTMLPanel>
+	<ui:style>
+		.buttonDiv
+		{
+			text-align:right;
+		}
+		
+		.textArea
+		{
+			width:280px;
+			height:40px;
+			resize:none;
+		}
+		
+		.button
+		{
+			float:right;
+		}
+		
+	</ui:style>
+	
+	<g:DialogBox autoHide="true" modal="true" styleName="GWTDialogBox">
+		<g:LayoutPanel>
+			<g:layer top="5px" height="90px" left="0" right="0">
+				<g:HTMLPanel>
+					<g:InlineLabel styleName="headerLabel alignTop" text="Locations:"/>
+						<g:ListBox ui:field='documentListBox' visibleItemCount='5' width="518px"/>
+				</g:HTMLPanel>
+			</g:layer>
+			
+			<g:layer top="106px" height="38px" left="0" right="0">
+				<g:HTMLPanel>
+					<g:InlineLabel styleName="headerLabel" text="Project/Iteration:"/>
+					<g:InlineLabel ui:field='projectIterationName'/>
+					<br/>
+					<g:InlineLabel styleName="headerLabel" text="Document:"/>
+					<g:InlineLabel ui:field='docName' />
+				</g:HTMLPanel>
+			</g:layer>
+			
+			<g:layer top="160px" height="70px" left="0" right="300px">
+				<g:HTMLPanel>
+					<g:Label styleName="headerLabel" text="Source:"/>
+					<g:TextArea ui:field='sourceText' readOnly='true' styleName="{style.textArea}"/>
+				</g:HTMLPanel>
+			</g:layer>
+			
+			<g:layer top="160px" height="70px" left="300px" right="0">
+				<g:HTMLPanel>
+					<g:Label styleName="headerLabel" text="Comment:"/>
+					<g:TextArea ui:field='sourceComment' readOnly='true' styleName="{style.textArea}"/>
+				</g:HTMLPanel>
+			</g:layer>
+			
+			
+			<g:layer top="245px" height="70px" left="0" right="300px">
+				<g:HTMLPanel>
+					<g:Label styleName="headerLabel" text="Target:"/>
+					<g:TextArea ui:field='targetText' readOnly='true' styleName="{style.textArea}"/>
+				</g:HTMLPanel>
+			</g:layer>
+			
+			<g:layer top="245px" height="70px" left="300px" right="0">
+				<g:HTMLPanel>
+					<g:Label styleName="headerLabel" text="Comment:"/>
+					<g:TextArea ui:field='targetComment' readOnly='true' styleName="{style.textArea}"/>
+				</g:HTMLPanel>
+			</g:layer>
+			
+			
+			
+			<g:layer top="350px" height="25px">
+				<g:HTMLPanel>
+					<g:InlineLabel ui:field='lastModified' styleName="lastModifiedLabel"/>
+					<g:Button ui:field='dismissButton' addStyleNames="button {style.button}"/>
+				</g:HTMLPanel>
+			</g:layer>
+		</g:LayoutPanel>
 	</g:DialogBox>
 </ui:UiBinder>

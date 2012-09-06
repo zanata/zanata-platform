@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
 {
 
-   interface GlossaryIUiBinder extends UiBinder<DialogBox, GlossaryDetailsView>
+   interface GlossaryDetailsIUiBinder extends UiBinder<DialogBox, GlossaryDetailsView>
    {
    }
 
@@ -43,7 +43,7 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
       String targetCommentTextArea();
    }
 
-   private static GlossaryIUiBinder uiBinder = GWT.create(GlossaryIUiBinder.class);
+   private static GlossaryDetailsIUiBinder uiBinder = GWT.create(GlossaryDetailsIUiBinder.class);
 
    DialogBox dialogBox;
 
@@ -70,7 +70,7 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
 
    @UiField
    Styles style;
-
+   
    private final int VISIBLE_COMMENTS = 4;
 
    private boolean hasGlossaryUpdateAccess;

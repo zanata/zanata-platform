@@ -40,10 +40,6 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
 
       HasText getTargetComment();
 
-      HasText getProjectName();
-
-      HasText getIterationName();
-
       HasText getDocumentName();
 
       HasChangeHandlers getDocumentListBox();
@@ -57,6 +53,8 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       void addDoc(String text);
 
       HasText getLastModified();
+
+      HasText getProjectIterationName();
    }
 
    TransMemoryDetailsList tmDetails;
@@ -140,8 +138,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       }
       display.getSourceComment().setText(sourceComment);
       display.getTargetComment().setText(targetComment);
-      display.getProjectName().setText(project);
-      display.getIterationName().setText(iter);
+      display.getProjectIterationName().setText(project + " / " + iter);
       display.getDocumentName().setText(doc);
       if (!Strings.isNullOrEmpty(lastModifiedBy))
       {

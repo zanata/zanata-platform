@@ -64,6 +64,9 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Translation Memory")
    String translationMemoryHeading();
+   
+   @DefaultMessage("Translation Memory Details")
+   String translationMemoryDetails();
 
    @DefaultMessage("Glossary")
    String glossaryHeading();

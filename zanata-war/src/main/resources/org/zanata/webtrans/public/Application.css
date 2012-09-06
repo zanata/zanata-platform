@@ -1006,3 +1006,28 @@ td.ApprovedStateDecoration div div div
 	width:100%;
 }
 
+.GWTDialogBox .headerLabel
+{
+	padding-right:5px;
+	color:#C35817;
+	font-weight:bold;
+}
+
+.GWTDialogBox .alignTop
+{
+	vertical-align:top;
+}
+
+.GWTDialogBox .lastModifiedLabel
+{
+	color:#C35817;
+	font-weight:bold;
+}
+
+.GWTDialogBox .button
+{
+	width:70px;
+	margin:1px;
+	padding:2px;
+}
+

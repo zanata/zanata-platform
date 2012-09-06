@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
+import org.zanata.webtrans.client.resources.UiMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
@@ -10,10 +11,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Display
 {
@@ -27,30 +30,29 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
    DialogBox dialogBox;
 
    @UiField
-   TextArea sourceText;
+   TextArea sourceText, targetText;
+   
    @UiField
-   TextArea targetText;
+   TextArea sourceComment, targetComment;
+   
    @UiField
-   TextArea sourceComment;
-   @UiField
-   TextArea targetComment;
-   @UiField
-   Label projectName;
-   @UiField
-   Label iterationName;
-   @UiField
-   Label docName;
+   InlineLabel projectIterationName, docName;
+   
    @UiField
    Label lastModified;
+   
    @UiField
    Button dismissButton;
 
    @UiField
    ListBox documentListBox;
-
-   public TransMemoryDetailsView()
+   
+   @Inject
+   public TransMemoryDetailsView(UiMessages messages)
    {
       dialogBox = uiBinder.createAndBindUi(this);
+      dialogBox.setText(messages.translationMemoryDetails());
+      dismissButton.setText(messages.dismiss());
    }
 
    public void hide()
@@ -70,16 +72,11 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
    }
 
    @Override
-   public HasText getProjectName()
+   public HasText getProjectIterationName()
    {
-      return projectName;
+      return projectIterationName;
    }
 
-   @Override
-   public HasText getIterationName()
-   {
-      return iterationName;
-   }
 
    @Override
    public HasText getDocumentName()

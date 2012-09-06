@@ -29,8 +29,10 @@ public class DummyGetTranslationMemoryCommand implements Command
       ArrayList<TransMemoryResultItem> matches = new ArrayList<TransMemoryResultItem>();
       ArrayList<String> source = new ArrayList<String>();
       source.add("<s>source1</s>");
+      source.add("<s>source2</s>");
       ArrayList<String> target1 = new ArrayList<String>();
       target1.add("<tr> &lt;target1</tr>");
+      target1.add("<tr> &lt;target1-1</tr>");
       ArrayList<String> target2 = new ArrayList<String>();
       target2.add("<tr> &lt;target2</tr>");
       ArrayList<String> target3 = new ArrayList<String>();
