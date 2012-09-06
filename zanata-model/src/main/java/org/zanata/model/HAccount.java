@@ -30,6 +30,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -37,6 +39,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -47,6 +50,7 @@ import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
 import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
+import org.zanata.model.security.HCredentials;
 import org.zanata.model.type.UserApiKey;
 import org.zanata.rest.dto.Account;
 
@@ -77,6 +81,8 @@ public class HAccount extends ModelEntityBase implements Serializable
    private Set<HAccountRole> roles;
    private HAccountActivationKey accountActivationKey;
    private HAccountResetPasswordKey accountResetPasswordKey;
+   private Set<HCredentials> credentials;
+   private HAccount mergedInto;
 
 
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -146,5 +152,23 @@ public class HAccount extends ModelEntityBase implements Serializable
          setRoles(roles);
       }
       return roles;
+   }
+
+   @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+   @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+   public Set<HCredentials> getCredentials()
+   {
+      if(credentials == null)
+      {
+         credentials = new HashSet<HCredentials>();
+      }
+      return credentials;
+   }
+
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "mergedInto")
+   public HAccount getMergedInto()
+   {
+      return mergedInto;
    }
 }

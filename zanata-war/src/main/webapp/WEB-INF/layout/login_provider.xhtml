@@ -1,0 +1,93 @@
+<s:div xmlns:rich="http://richfaces.org/rich"
+       xmlns:s="http://jboss.com/products/seam/taglib"
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:f="http://java.sun.com/jsf/core"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:remove>
+    <!--
+    This file renders a choice selector for the login type (Open Id) as well as a username field
+    when needed.
+    Use it as such:
+    <ui:include src="login_provider.xhtml">
+        <ui:param name="providerField" value="#{...}"/>
+        <ui:param name="usernameField" value="#{...}"/>
+        <ui:param name="onProviderChange" value="..."/>
+    </ui:include>
+
+    Parameters:
+    providerField - String field to bind the value of the provider type (Fedora, Google, etc.)
+    usernameField - String field to bind the value of the user name.
+    onProviderChange - Javascript code to be executed when the provider is changed.
+    -->
+    </ui:remove>
+
+    <!-- Load jQuery -->
+    <rich:jQuery query="jquery"/>
+
+    <script type="text/javascript">
+        function updateLoginType(selectedElement, type, visible, label)
+        {
+            jQuery(".selected_login_option").each( function(){ jQuery(this).removeClass('selected_login_option') } );
+            jQuery(selectedElement).addClass('selected_login_option');
+
+            var fieldSelector = "[id='#{rich:clientId('openid_provider')}']";
+            jQuery(fieldSelector).val(type);
+
+            var usernamefieldSelector = "[id='#{rich:clientId('providerUsernameField')}']";
+            if( visible )
+            {
+                jQuery('#identityLabel').html( label );
+                jQuery('#' + usernamefieldSelector).show();
+            }
+            else
+            {
+                jQuery('#' + usernamefieldSelector).hide();
+            }
+
+            ${onProviderChange}
+        }
+    </script>
+
+    <h:outputText>#{messages['jsf.login.openid.SelectProvider']}</h:outputText>
+    <br/>
+    <br/>
+    <rich:spacer height="10"/>
+    <h:graphicImage id="fedora_signin" value="../images/openid/fedora.png" styleClass="login_option"
+                    title="Fedora"
+                    height="40" width="40"
+                    onclick="updateLoginType(this, 'Fedora', true, '#{messages['jsf.login.openid.fedora']}')"/>
+    <rich:spacer width="10"/>
+    <h:graphicImage id="google_signin" value="../images/openid/google.png" styleClass="login_option"
+                    title="Google"
+                    height="40" width="40"
+                    onclick="updateLoginType(this, 'Google', false)"/>
+    <rich:spacer width="10"/>
+    <h:graphicImage id="myopenid_signin" value="../images/openid/myopenid.png" styleClass="login_option"
+                    title="MyOpenID"
+                    height="40" width="40"
+                    onclick="updateLoginType(this, 'MyOpenId', true, '#{messages['jsf.login.openid.myopenid']}')"/>
+    <rich:spacer width="10"/>
+    <h:graphicImage id="yahoo_signin" value="../images/openid/yahoo.png" styleClass="login_option"
+                    title="Yahoo"
+                    height="40" width="40"
+                    onclick="updateLoginType(this, 'Yahoo', true, '#{messages['jsf.login.openid.yahoo']}')"/>
+    <rich:spacer width="10"/>
+    <h:graphicImage id="openid_signin" value="../images/openid/openid.png" styleClass="login_option"
+                    title="Open ID"
+                    height="40" width="40"
+                    onclick="updateLoginType(this, 'Generic', true, '#{messages['jsf.login.openid']}')"/>
+    <rich:spacer width="10"/>
+
+    <h:inputHidden id="openid_provider" value="${providerField}"/>
+
+    <s:decorate id="providerUsernameField" template="edit.xhtml" style="display: none">
+        <ui:define name="label">
+            <span id="identityLabel" class="loginForm_label">#{messages['jsf.FedoraUsername']}</span>
+        </ui:define>
+        <h:inputText styleClass="name" id="username" value="${usernameField}"/>
+        <br/>
+    </s:decorate>
+
+</s:div>

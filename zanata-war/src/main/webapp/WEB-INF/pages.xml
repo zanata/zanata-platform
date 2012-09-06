@@ -10,7 +10,8 @@
       </rule>
     </navigation>
   </page>
- 
+
+  <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
 	 <navigation evaluate="#{fedoraOpenId.loginImmediate()}">
 	      <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
@@ -79,7 +80,7 @@
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SignIn'])}"/>
-    <navigation from-action="#{identity.login}">
+    <navigation from-action="#{loginAction.login}">
       <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
@@ -371,6 +372,34 @@
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.MyProfile'])}"/>
   </page>
 
+  <page view-id="/profile/identities.xhtml" login-required="true">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.Title'])}"/>
+    <action execute="#{credentialsAction.loadUserCredentials}"/>
+  </page>
+
+  <page view-id="/profile/add_identity.xhtml" login-required="true">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/identities', messages['jsf.identities.Title'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.AddIdentity'])}"/>
+
+    <navigation from-action="#{credentialsAction.cancel}">
+      <redirect view-id="/profile/identities.xhtml"/>
+    </navigation>
+  </page>
+
+  <page view-id="/profile/merge_account.xhtml" login-required="true">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.profile.MergeAccount'])}"/>
+
+    <navigation from-action="#{accountMergeAction.cancel}">
+        <redirect view-id="/profile/view.xhtml"/>
+    </navigation>
+  </page>
+
   <!-- Help -->
   <page view-id="/help/view.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
@@ -443,9 +472,7 @@
   <page view-id="/project/edit.xhtml" login-required="true">
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{localeListAction.slug}" />
-    
-  
-    
+
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
          (at some stages of the JSF lifecycle)

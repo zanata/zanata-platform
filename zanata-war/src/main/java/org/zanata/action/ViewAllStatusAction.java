@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -42,6 +41,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
+import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
@@ -86,13 +86,13 @@ public class ViewAllStatusAction implements Serializable
    ProjectIterationDAO projectIterationDAO;
 
    @In
+   PersonDAO personDAO;
+
+   @In
    LocaleService localeServiceImpl;
 
    @In
    CopyTransService copyTransServiceImpl;
-
-   @In
-   Map<String, String> messages;
 
    @In
    VersionGroupService versionGroupServiceImpl;
@@ -231,7 +231,7 @@ public class ViewAllStatusAction implements Serializable
             per = (int) Math.ceil(100 * wordStats.getTranslated() / wordStats.getTotal());
 
          }
-         boolean isMember = authenticatedAccount != null ? authenticatedAccount.getPerson().isMember(var) : false;
+         boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;
 
          Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), wordStats, per, isMember);
          result.add(op);

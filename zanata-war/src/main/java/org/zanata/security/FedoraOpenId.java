@@ -22,18 +22,21 @@ package org.zanata.security;
 
 import java.util.List;
 import javax.faces.context.ExternalContext;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.openid.OpenIdPrincipal;
 import org.openid4java.OpenIDException;
@@ -43,11 +46,21 @@ import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
+import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.security.openid.FedoraOpenIdProvider;
+import org.zanata.security.openid.GenericOpenIdProvider;
+import org.zanata.security.openid.GoogleOpenIdProvider;
+import org.zanata.security.openid.MyOpenIdProvider;
+import org.zanata.security.openid.OpenIdAuthCallback;
+import org.zanata.security.openid.OpenIdAuthenticationResult;
+import org.zanata.security.openid.OpenIdProvider;
+import org.zanata.security.openid.OpenIdProviderType;
+import org.zanata.security.openid.YahooOpenIdProvider;
 
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -55,21 +68,30 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 
 @Name("org.jboss.seam.security.fedoraOpenId")
 @Scope(SESSION)
-@Install(precedence = APPLICATION)
-@BypassInterceptors
+@AutoCreate
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
-public class FedoraOpenId
+public class FedoraOpenId implements OpenIdAuthCallback
 {
-   private static final String FEDORA_HOST = ".id.fedoraproject.org/";
    private static final Logger LOGGER = LoggerFactory.getLogger(FedoraOpenId.class);
 
    private ZanataIdentity identity;
    private ApplicationConfiguration applicationConfiguration;
 
+   @In
+   private EntityManager entityManager;
+
+   @In
+   private Credentials credentials;
+
+   @In
+   private UserRedirectBean userRedirect;
+
    private String id;
-   private String validatedId;
+   private OpenIdAuthenticationResult authResult;
+   private OpenIdAuthCallback callback;
+   private OpenIdProvider openIdProvider;
 
    private ConsumerManager manager;
    private DiscoveryInformation discovered;
@@ -84,10 +106,19 @@ public class FedoraOpenId
       this.id = id;
    }
 
+   public OpenIdAuthenticationResult getAuthResult()
+   {
+      return authResult;
+   }
+
+   public void setCallback(OpenIdAuthCallback callback)
+   {
+      this.callback = callback;
+   }
 
    public void login()
    {
-      validatedId = null;
+      authResult = new OpenIdAuthenticationResult();
       String returnToUrl = returnToUrl();
 
       String url = authRequest(id, returnToUrl);
@@ -109,21 +140,19 @@ public class FedoraOpenId
          // perform discovery on the user-supplied identifier
          List discoveries = manager.discover(userSuppliedString);
 
-         // attempt to associate with the OpenID provider
+         // attempt to associate with the OpenID providerType
          // and retrieve one service endpoint for authentication
          discovered = manager.associate(discoveries);
 
          // // store the discovery information in the user's session
          // httpReq.getSession().setAttribute("openid-disc", discovered);
 
-         // obtain a AuthRequest message to be sent to the OpenID provider
+         // obtain a AuthRequest message to be sent to the OpenID providerType
          AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
 
          // Attribute Exchange example: fetching the 'email' attribute
          FetchRequest fetch = FetchRequest.createFetchRequest();
-         fetch.addAttribute("email", "http://schema.openid.net/contact/email", // type
-                                                                               // URI
-               true); // required
+         openIdProvider.prepareRequest(fetch);
 
          // attach the extension to the authentication request
          authReq.addExtension(fetch);
@@ -143,29 +172,18 @@ public class FedoraOpenId
       ExternalContext context = javax.faces.context.FacesContext.getCurrentInstance().getExternalContext();
       HttpServletRequest request = (HttpServletRequest) context.getRequest();
 
-      validatedId = verifyResponse(request);
+      authResult.setAuthenticatedId( verifyResponse(request) );
    }
 
    public boolean loginImmediately()
    {
-      if (validatedId != null)
+      if (authResult.isAuthenticated())
       {
-         Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(validatedId)));
+         Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(authResult.getAuthenticatedId())));
          return true;
       }
 
       return false;
-   }
-
-   public boolean isValid()
-   {
-      return validatedId != null;
-   }
-
-
-   public String getValidatedId()
-   {
-      return validatedId;
    }
 
    public String verifyResponse(HttpServletRequest httpReq)
@@ -173,7 +191,7 @@ public class FedoraOpenId
       try
       {
          // extract the parameters from the authentication response
-         // (which comes in as a HTTP request from the OpenID provider)
+         // (which comes in as a HTTP request from the OpenID providerType)
          ParameterList response = new ParameterList(httpReq.getParameterMap());
 
          StringBuilder receivingURL = new StringBuilder(returnToUrl());
@@ -190,6 +208,23 @@ public class FedoraOpenId
          // examine the verification result and extract the verified identifier
          Identifier verified = verification.getVerifiedId();
          if (verified != null)
+         {
+            authResult = new OpenIdAuthenticationResult();
+            authResult.setAuthenticatedId( verified.getIdentifier() );
+            authResult.setEmail( openIdProvider.getEmail(response) ); // Get the email address
+         }
+
+         // invoke the callbacks
+         if( callback != null )
+         {
+            callback.afterOpenIdAuth(authResult);
+            if( callback.getRedirectToUrl() != null )
+            {
+               userRedirect.setLocalUrl(callback.getRedirectToUrl());
+            }
+         }
+
+         if( verified != null )
          {
             return verified.getIdentifier();
          }
@@ -215,7 +250,7 @@ public class FedoraOpenId
          manager = new ConsumerManager();
          discovered = null;
          id = null;
-         validatedId = null;
+         authResult = new OpenIdAuthenticationResult();
       }
       catch (ConsumerException e)
       {
@@ -242,10 +277,16 @@ public class FedoraOpenId
 
    public void login(String username)
    {
+      this.login(username, this);
+   }
+
+   public void login(String username, OpenIdAuthCallback callback)
+   {
       try
       {
-         String var = "http://" + username + FEDORA_HOST;
+         String var = openIdProvider.getOpenId(username);
          setId(var);
+         setCallback(callback);
          LOGGER.info("openid: {}", getId());
          login();
       }
@@ -260,4 +301,70 @@ public class FedoraOpenId
       return applicationConfiguration.getServerPath() + "/openid.seam";
    }
 
+   /**
+    * Looks up a zanata user name based on the open id provided.
+    * If none is found, returns null.
+    */
+   private String getZanataUsername( String openId )
+   {
+      List results =
+            entityManager.createQuery("select c.account.username from HCredentials c where c.user = :openId")
+                              .setParameter("openId", openId)
+                              .getResultList();
+
+      return results.size() > 0 ? (String)results.get(0) : null;
+   }
+
+   /**
+    * Default implementation for an authentication callback. This implementations simply authenticates
+    * the user locally.
+    */
+   @Override
+   public void afterOpenIdAuth(OpenIdAuthenticationResult result)
+   {
+      if( result.isAuthenticated() )
+      {
+         credentials.setUsername(this.getZanataUsername( result.getAuthenticatedId() ));
+         Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(authResult.getAuthenticatedId())));
+      }
+   }
+
+   /**
+    * Default implementation for an authentication callback. This implementation does not provide a redirect url.
+    */
+   @Override
+   public String getRedirectToUrl()
+   {
+      return null;
+   }
+
+   public void setProvider( OpenIdProviderType providerType )
+   {
+      switch (providerType)
+      {
+         case Fedora:
+            this.openIdProvider = new FedoraOpenIdProvider();
+            break;
+
+         case Google:
+            this.openIdProvider = new GoogleOpenIdProvider();
+            break;
+
+         case MyOpenId:
+            this.openIdProvider = new MyOpenIdProvider();
+            break;
+
+         case Yahoo:
+            this.openIdProvider = new YahooOpenIdProvider();
+            break;
+
+         case Generic:
+            this.openIdProvider = new GenericOpenIdProvider();
+            break;
+
+         default:
+            this.openIdProvider = new GenericOpenIdProvider();
+            break;
+      }
+   }
 }

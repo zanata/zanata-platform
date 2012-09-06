@@ -223,12 +223,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
             table.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
             table.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
          }
-         scrollPanel.clear();
-         scrollPanel.add(table);
+         scrollPanel.setWidget(table);
       }
       else
       {
-         scrollPanel.add(noResultFoundLabel);
+         scrollPanel.setWidget(noResultFoundLabel);
       }
    }
 

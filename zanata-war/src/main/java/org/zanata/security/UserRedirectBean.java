@@ -29,6 +29,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.web.ServletContexts;
 
 /**
  * This bean is used store a url from the query string for use with redirects.
@@ -98,6 +99,18 @@ public class UserRedirectBean implements Serializable
          return originalUrl;
       }
 
+   }
+
+   /**
+    * Sets the redirect url to a context local url.
+    *
+    * @param url The context local url to redirect to.
+    * @see UserRedirectBean#setUrl(String)
+    */
+   public void setLocalUrl(String url)
+   {
+      String ctxPath = ServletContexts.instance().getRequest().getContextPath();
+      setUrl( ctxPath + url );
    }
 
    /**

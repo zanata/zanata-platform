@@ -392,20 +392,6 @@ th,td {
 	color: silver;
 }
 
-.rich-datascr-button {
-	border-radius: 5px;
-	border-color: silver;
-	font-family: Arial, Verdana, sans-serif;
-	font-size: 11px;
-	border: 1px solid #999;
-	border-radius: 4px;
-	background: #CCC;
-}
-
-.rich-datascr-button:hover {
-	background: #e2e2e2;
-}
-
 .rich-datascr-button:active {
 	background: #CCC;
 	background: -moz-linear-gradient(top, #DDD 0%, white 100%);
@@ -425,15 +411,18 @@ th,td {
 
 .rich-datascr-button-dsbld:hover {
     cursor: default;
-    background: #CCC;
 }
 
 .rich-datascr-button {
-	border-width: 1px;
-	border-style: solid;
+    border: none;
 	width: 23px;
 	cursor: pointer;
 	text-align: center;
+    font-size: 14px;
+    background: none;
+}
+
+.rich-datascr-button:hover {
 }
 
 .rich-datascr-act { 

@@ -44,6 +44,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -68,11 +69,21 @@ public class ProjectHome extends SlugHome<HIterationProject>
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
 
+   /* Outjected from LocaleListAction */
    @In(required = false)
    Map<String, String> customizedItems;
 
+   /* Outjected from LocaleListAction */
    @In(required = false)
    private Boolean overrideLocales;
+
+   /* Outjected from ProjectRoleRestrictionAction */
+   @In(required = false)
+   private Set<HAccountRole> customizedProjectRoleRestrictions;
+
+   /* Outjected from ProjectRoleRestrictionAction */
+   @In(required = false)
+   private Boolean restrictByRoles;
 
    @In
    LocaleService localeServiceImpl;
@@ -138,6 +149,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
       if (authenticatedAccount != null)
       {
          updateOverrideLocales();
+         updateRoleRestrictions();
          getInstance().addMaintainer(authenticatedAccount.getPerson());
          retValue = super.persist();
          Events.instance().raiseEvent("projectAdded");
@@ -223,6 +235,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
    public String update()
    {
       updateOverrideLocales();
+      updateRoleRestrictions();
       String state = super.update();
       Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
 
@@ -269,6 +282,17 @@ public class ProjectHome extends SlugHome<HIterationProject>
             getInstance().getCustomizedLocales().clear();
             getInstance().getCustomizedLocales().addAll(locale);
          }
+      }
+   }
+
+   private void updateRoleRestrictions()
+   {
+      getInstance().setRestrictedByRoles( restrictByRoles );
+      getInstance().getAllowedRoles().clear();
+
+      if(restrictByRoles)
+      {
+         getInstance().getAllowedRoles().addAll( customizedProjectRoleRestrictions );
       }
    }
 
