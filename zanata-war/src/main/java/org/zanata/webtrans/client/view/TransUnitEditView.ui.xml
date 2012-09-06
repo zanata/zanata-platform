@@ -37,10 +37,7 @@
         }
     </ui:style>
 
-    <g:HTMLPanel>
-        <g:ScrollPanel>
+        <g:ScrollPanel ui:field="root">
             <g:Grid ui:field="transUnitTable" styleName="{style.table}" />
         </g:ScrollPanel>
-        <g:Label ui:field="noContentLabel" styleName="{style.noContent}" visible="false" text="{messages.noContent}" />
-    </g:HTMLPanel>
 </ui:UiBinder>
