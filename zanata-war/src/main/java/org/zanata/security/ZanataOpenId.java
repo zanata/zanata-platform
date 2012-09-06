@@ -30,7 +30,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
@@ -46,7 +45,6 @@ import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
-import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.slf4j.Logger;
@@ -63,18 +61,17 @@ import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 
 import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 
-@Name("org.jboss.seam.security.fedoraOpenId")
+@Name("org.jboss.seam.security.zanataOpenId")
 @Scope(SESSION)
 @AutoCreate
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
-public class FedoraOpenId implements OpenIdAuthCallback
+public class ZanataOpenId implements OpenIdAuthCallback
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(FedoraOpenId.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(ZanataOpenId.class);
 
    private ZanataIdentity identity;
    private ApplicationConfiguration applicationConfiguration;

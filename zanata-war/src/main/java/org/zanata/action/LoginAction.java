@@ -27,8 +27,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.security.FedoraOpenId;
-import org.zanata.security.openid.OpenIdProvider;
+import org.zanata.security.ZanataOpenId;
 import org.zanata.security.openid.OpenIdProviderType;
 
 /**
@@ -51,7 +50,7 @@ public class LoginAction
    private Identity identity;
 
    @In
-   private FedoraOpenId fedoraOpenId;
+   private ZanataOpenId zanataOpenId;
 
    @In
    private Credentials credentials;
@@ -110,10 +109,10 @@ public class LoginAction
 
    public String login()
    {
-      if( applicationConfiguration.isFedoraOpenIdAuth() )
+      if( applicationConfiguration.isOpenIdAuth() )
       {
          credentials.setUsername( username );
-         fedoraOpenId.setProvider( this.providerType );
+         zanataOpenId.setProvider( this.providerType );
 
          // Google is a special case (federated)
          if( this.providerType == OpenIdProviderType.Google )

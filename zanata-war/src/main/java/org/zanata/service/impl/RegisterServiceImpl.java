@@ -125,6 +125,11 @@ public class RegisterServiceImpl implements RegisterService
    @Override
    public void mergeAccounts( final HAccount active, final HAccount obsolete )
    {
+      if( active.getId().equals( obsolete.getId() ) )
+      {
+         throw new RuntimeException("Attempting to merge the same account");
+      }
+
       // Have to run this as admin, as projects and iterations will be updated
       new MergeAccountsOperation(active, obsolete).run();
    }

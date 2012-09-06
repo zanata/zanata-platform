@@ -29,6 +29,6 @@ public enum AuthenticationType
 {
    INTERNAL,
    KERBEROS,
-   FEDORA_OPENID,
+   OPENID,
    JAAS
 }

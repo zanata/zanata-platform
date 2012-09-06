@@ -41,8 +41,6 @@ import org.zanata.security.AuthenticationType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -271,9 +269,9 @@ public class ApplicationConfiguration implements Serializable
       return this.authType != null && this.authType == AuthenticationType.INTERNAL;
    }
    
-   public boolean isFedoraOpenIdAuth() 
+   public boolean isOpenIdAuth()
    {
-      return this.authType != null && this.authType == AuthenticationType.FEDORA_OPENID;
+      return this.authType != null && this.authType == AuthenticationType.OPENID;
    }
    
    public boolean isKerberosAuth()

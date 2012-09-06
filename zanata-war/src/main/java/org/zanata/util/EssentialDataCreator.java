@@ -20,7 +20,6 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 
@@ -143,7 +142,7 @@ public class EssentialDataCreator
          }
 
          // Domain roles for OpenId authentication
-         if( applicationConfiguration.isFedoraOpenIdAuth() )
+         if( applicationConfiguration.isOpenIdAuth() )
          {
             log.info("Creating Domain roles for Open Id");
 

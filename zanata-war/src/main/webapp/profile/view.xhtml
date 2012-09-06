@@ -21,12 +21,12 @@
           <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{applicationConfiguration.internalAuth}">
             #{messages['jsf.ChangePassword']}
           </s:link>
-          <s:link styleClass="action_link" view="/profile/identities.xhtml" propagation="none" rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
+          <s:link styleClass="action_link" view="/profile/identities.xhtml" propagation="none" rendered="#{applicationConfiguration.openIdAuth}">
               #{messages['jsf.ManageIdentities']}
           </s:link>
           <s:link styleClass="action_link" view="/profile/merge_account.xhtml" propagation="none"
                   title="#{messages['jsf.identities.MergeAccount.tootip']}"
-                  rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
+                  rendered="#{applicationConfiguration.openIdAuth}">
             #{messages['jsf.identities.MergeAccount']}
           </s:link>
         </rich:panel>
