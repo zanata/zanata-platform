@@ -2,6 +2,7 @@ package org.zanata.webtrans.client;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.gin.WebTransGinjector;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
@@ -303,6 +304,7 @@ public class Application implements EntryPoint
 
             if (!injector.getUserConfig().isShowError())
             {
+               injector.getEventBus().fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "There is an error occurred in the application. Please refresh your page and try again (enable the 'Show Error' option to show it)"));
                return;
             }
             globalPopup.getCaption().setHTML("<div class=\"globalPopupCaption\">ERROR: " + e.getMessage() + "</div>");
