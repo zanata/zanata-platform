@@ -16,6 +16,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -54,7 +55,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    TextBox glossaryTextBox;
 
    @UiField
-   Button searchButton;
+   Button searchButton, clearButton;
 
    @UiField
    Label headerLabel;
@@ -63,12 +64,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    ValueListBox<SearchType> searchType;
 
    @UiField
-   Button clearButton;
-
-   @UiField
    HTMLPanel container;
 
    private final FlexTable resultTable;
+
+   private final UiMessages messages;
 
    private final Label loadingLabel, noResultFoundLabel;
 
@@ -82,9 +82,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Inject
    public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
+      this.messages = messages;
       resultTable = new FlexTable();
-      resultTable.setStyleName("glossaryTable");
+      resultTable.setStyleName("resultTable");
       resultTable.setCellSpacing(0);
+      resultTable.setCellPadding(3);
 
       FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
       formatter.setStyleName(0, SOURCE_COL, "th");
@@ -96,12 +98,12 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       formatter.addStyleName(0, DETAILS_COL, "centered");
       formatter.addStyleName(0, DETAILS_COL, "detailCol");
 
-      resultTable.setWidget(0, 0, new Label(messages.srcTermLabel()));
-      resultTable.setWidget(0, 1, new Label(messages.targetTermLabel()));
-      resultTable.setWidget(0, 2, null);
-      resultTable.setWidget(0, 3, new Label(messages.detailsLabel()));
+      resultTable.setWidget(0, SOURCE_COL, new Label(messages.srcTermLabel()));
+      resultTable.setWidget(0, TARGET_COL, new Label(messages.targetTermLabel()));
+      resultTable.setWidget(0, ACTION_COL, null);
+      resultTable.setWidget(0, DETAILS_COL, new Label(messages.detailsLabel()));
 
-      loadingLabel = new Label(messages.loading());
+      loadingLabel = new Label(messages.searching());
       loadingLabel.setStyleName("tableMsg");
       noResultFoundLabel = new Label(messages.foundNoGlossaryResults());
       noResultFoundLabel.setStyleName("tableMsg");
@@ -125,11 +127,10 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       }
    }
 
-   @UiHandler("clearButton")
-   public void onClearButtonClicked(ClickEvent event)
+   @Override
+   public HasClickHandlers getClearButton()
    {
-      glossaryTextBox.setText("");
-      clearTableContent();
+      return clearButton;
    }
 
    @Override
@@ -158,11 +159,29 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       clearTableContent();
    }
 
-   private void clearTableContent()
+   @Override
+   public void stopProcessing(boolean showResult)
    {
-      for (int i = 1; i < resultTable.getRowCount(); i++)
+      container.clear();
+      if (!showResult)
       {
-         resultTable.removeRow(i);
+         container.add(noResultFoundLabel);
+      }
+      else
+      {
+         container.add(resultTable);
+      }
+   }
+
+   @Override
+   public void clearTableContent()
+   {
+      if(resultTable.getRowCount() > 1)
+      {
+         for (int i = 1; i < resultTable.getRowCount(); i++)
+         {
+            resultTable.removeRow(i);
+         }
       }
    }
 
@@ -181,54 +200,43 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Override
    public void renderTable(ArrayList<GlossaryResultItem> glossaries)
    {
-      startProcessing();
-
-      if (!glossaries.isEmpty())
+      for (int i = 0; i < glossaries.size(); i++)
       {
-         for (int i = 0; i < glossaries.size(); i++)
+         final GlossaryResultItem item = glossaries.get(i);
+
+         resultTable.setWidget(i + 1, SOURCE_COL, new HighlightingLabel(item.getSource()));
+         resultTable.setWidget(i + 1, TARGET_COL, new HighlightingLabel(item.getTarget()));
+
+         Button copyButton = new Button(messages.copy());
+         copyButton.setTitle(messages.copyTooltip());
+
+         copyButton.addClickHandler(new ClickHandler()
          {
-            final GlossaryResultItem item = glossaries.get(i);
-
-            resultTable.setWidget(i + 1, SOURCE_COL, new HighlightingLabel(item.getSource()));
-            resultTable.setWidget(i + 1, TARGET_COL, new HighlightingLabel(item.getTarget()));
-
-            Button copyButton = new Button("Copy");
-            copyButton.addClickHandler(new ClickHandler()
+            @Override
+            public void onClick(ClickEvent event)
             {
-               @Override
-               public void onClick(ClickEvent event)
-               {
-                  listener.fireCopyEvent(item);
-               }
-            });
+               listener.fireCopyEvent(item);
+            }
+         });
 
-            resultTable.setWidget(i + 1, ACTION_COL, copyButton);
-            resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
-            resultTable.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
+         resultTable.setWidget(i + 1, ACTION_COL, copyButton);
+         resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
+         resultTable.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
 
-            InlineLabel infoCell = new InlineLabel();
-            infoCell.setStyleName("icon-info-circle-2 details");
-            infoCell.addClickHandler(new ClickHandler()
+         InlineLabel infoCell = new InlineLabel();
+         infoCell.setStyleName("icon-info-circle-2 details");
+         infoCell.addClickHandler(new ClickHandler()
+         {
+            @Override
+            public void onClick(ClickEvent event)
             {
-               @Override
-               public void onClick(ClickEvent event)
-               {
-                  listener.showGlossaryDetail(item);
-               }
-            });
+               listener.showGlossaryDetail(item);
+            }
+         });
 
-            resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
-            resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
-            resultTable.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
-         }
-         container.clear();
-         container.add(resultTable);
-//         scrollPanel.setWidget(table);
-      }
-      else
-      {
-         container.clear();
-         container.add(noResultFoundLabel);
+         resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
+         resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
+         resultTable.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
       }
    }
 

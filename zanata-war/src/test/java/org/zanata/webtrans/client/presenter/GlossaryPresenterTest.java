@@ -70,8 +70,10 @@ public class GlossaryPresenterTest extends PresenterTest
    
    HasAllFocusHandlers mockFocusTextBox;
    HasClickHandlers mockSearchButton;
+   HasClickHandlers mockClearButton;
 
    private Capture<ClickHandler> capturedSearchButtonClickHandler;
+   private Capture<ClickHandler> capturedClearButtonClickHandler;
    private Capture<KeyShortcut> capturedKeyShortcuts;
    private Capture<TransUnitSelectionHandler> capturedTransUnitSelectionEventHandler;
    private Capture<FocusHandler> capturedFocusHandler;
@@ -91,8 +93,10 @@ public class GlossaryPresenterTest extends PresenterTest
 
       mockFocusTextBox = createAndAddMock(HasAllFocusHandlers.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
+      mockClearButton = createAndAddMock(HasClickHandlers.class);
 
       capturedSearchButtonClickHandler = addCapture(new Capture<ClickHandler>());
+      capturedClearButtonClickHandler = addCapture(new Capture<ClickHandler>());
       capturedKeyShortcuts = addCapture(new Capture<KeyShortcut>());
       capturedTransUnitSelectionEventHandler = addCapture(new Capture<TransUnitSelectionHandler>());
       capturedFocusHandler = addCapture(new Capture<FocusHandler>());
@@ -121,7 +125,10 @@ public class GlossaryPresenterTest extends PresenterTest
    {
       expect(mockDisplay.getSearchButton()).andReturn(mockSearchButton).anyTimes();
       expect(mockSearchButton.addClickHandler(capture(capturedSearchButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
-
+      
+      expect(mockDisplay.getClearButton()).andReturn(mockClearButton).anyTimes();
+      expect(mockClearButton.addClickHandler(capture(capturedClearButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
+      
       expect(mockKeyShortcutPresenter.register(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).once();
       expect(mockMessages.searchGlossary()).andReturn("Search glossary");
 
