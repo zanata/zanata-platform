@@ -8,7 +8,7 @@
             font-weight:bold;
         }
        
-        .container {
+        .rootContainer {
 			border-left:2px solid #E0E8EE;
 			min-width:400px;
 			width:100%;
@@ -24,7 +24,7 @@
 	</ui:style>
 	
 	<g:ScrollPanel>
-		<g:VerticalPanel styleName="{style.container}">
+		<g:VerticalPanel styleName="{style.rootContainer}">
 			<g:cell height="30px">
 				<g:HorizontalPanel>
 					<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>

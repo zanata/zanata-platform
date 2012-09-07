@@ -58,8 +58,6 @@ public class TransMemoryPresenterTest extends PresenterTest
    HasAllFocusHandlers mockFocusTextBox;
    HasValue<SearchType> mockSearchType;
    HasClickHandlers mockSearchButton;
-   Column<TransMemoryResultItem, ImageResource> mockDetailsColumn;
-   Column<TransMemoryResultItem, String> mockCopyColumn;
    HasClickHandlers mockClearButton;
 
    private Capture<TransUnitSelectionHandler> capturedTransUnitSelectionEventHandler;
@@ -87,8 +85,6 @@ public class TransMemoryPresenterTest extends PresenterTest
       mockClearButton = createAndAddMock(HasClickHandlers.class);
       mockSearchType = createAndAddMock(HasValue.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
-      mockDetailsColumn = createAndAddMock(Column.class);
-      mockCopyColumn = createAndAddMock(Column.class);
 
       capturedTransUnitSelectionEventHandler = addCapture(new Capture<TransUnitSelectionHandler>());
       capturedFocusHandler = addCapture(new Capture<FocusHandler>());
@@ -117,9 +113,6 @@ public class TransMemoryPresenterTest extends PresenterTest
    @Override
    protected void setDefaultBindExpectations()
    {
-      mockDisplay.setDataProvider(isA(ListDataProvider.class));
-      expectLastCall().once();
-
       expect(mockDisplay.getSearchType()).andReturn(mockSearchType).anyTimes();
 
       mockSearchType.setValue(SearchType.FUZZY);
@@ -141,14 +134,9 @@ public class TransMemoryPresenterTest extends PresenterTest
       expect(mockEventBus.addHandler(eq(TransUnitSelectionEvent.getType()), and(capture(capturedTransUnitSelectionEventHandler), isA(TransUnitSelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       expect(mockEventBus.addHandler(eq(TransMemoryShortcutCopyEvent.getType()), and(capture(capturedTransMemoryShortcutCopyEventHandler), isA(TransMemoryShorcutCopyHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
-      expect(mockDisplay.getDetailsColumn()).andReturn(mockDetailsColumn).once();
-      mockDetailsColumn.setFieldUpdater(isA(FieldUpdater.class));
-      expectLastCall().once();
-
-      expect(mockDisplay.getCopyColumn()).andReturn(mockCopyColumn).once();
-      mockCopyColumn.setFieldUpdater(isA(FieldUpdater.class));
-      expectLastCall().once();
-
       expect(mockDisplay.getMergeButton()).andReturn(createMock(HasClickHandlers.class)).once();
+      
+      mockDisplay.setListener(isA(HasTMEvent.class));
+      expectLastCall().once();
    }
 }
