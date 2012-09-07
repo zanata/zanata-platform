@@ -331,4 +331,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    {
       return new MultiSelectionModel<TransUnitReplaceInfo>();
    }
+
+   @Override
+   public void addSearchFieldsSelect(String item, String value)
+   {
+      searchFieldsSelect.addItem(item, value);
+   }
 }
