@@ -55,7 +55,7 @@ public class UserConfigHolder
    };
    
    // default state
-   private ConfigurationState state = new ConfigurationState(false, false, true, 10, NavOption.FUZZY_UNTRANSLATED);
+   private ConfigurationState state = new ConfigurationState(false, false, true, 10, NavOption.FUZZY_UNTRANSLATED, false);
 
    public boolean isEnterSavesApproved()
    {
@@ -64,7 +64,7 @@ public class UserConfigHolder
 
    protected void setEnterSavesApproved(boolean enterSavesApproved)
    {
-      state = new ConfigurationState(enterSavesApproved, state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption());
+      state = new ConfigurationState(enterSavesApproved, state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError());
    }
 
    public boolean isEscClosesEditor()
@@ -74,7 +74,7 @@ public class UserConfigHolder
 
    protected void setEscClosesEditor(boolean escClosesEditor)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), escClosesEditor, state.isDisplayButtons(), state.getPageSize(), state.getNavOption());
+      state = new ConfigurationState(state.isEnterSavesApproved(), escClosesEditor, state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError());
    }
 
    public boolean isDisplayButtons()
@@ -84,12 +84,12 @@ public class UserConfigHolder
 
    protected void setDisplayButtons(boolean displayButtons)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), displayButtons, state.getPageSize(), state.getNavOption());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), displayButtons, state.getPageSize(), state.getNavOption(), state.isShowError());
    }
 
    protected void setNavOption(NavOption navOption)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), navOption);
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), navOption, state.isShowError());
    }
 
    public NavOption getNavOption()
@@ -120,12 +120,22 @@ public class UserConfigHolder
 
    protected void setPageSize(int pageSize)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), pageSize, state.getNavOption());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), pageSize, state.getNavOption(), state.isShowError());
    }
 
    public ConfigurationState getState()
    {
       return state;
+   }
+
+   public boolean isShowError()
+   {
+      return state.isShowError();
+   }
+
+   public void setShowError(boolean showError)
+   {
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), showError);
    }
 
    /**
@@ -138,14 +148,16 @@ public class UserConfigHolder
       private boolean displayButtons;
       private int pageSize;
       private NavOption navOption;
+      private boolean showError;
 
-      private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean displayButtons, int pageSize, NavOption navOption)
+      private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean displayButtons, int pageSize, NavOption navOption, boolean showError)
       {
          this.enterSavesApproved = enterSavesApproved;
          this.escClosesEditor = escClosesEditor;
          this.displayButtons = displayButtons;
          this.pageSize = pageSize;
          this.navOption = navOption;
+         this.showError = showError;
       }
 
       public boolean isEnterSavesApproved()
@@ -171,6 +183,11 @@ public class UserConfigHolder
       public NavOption getNavOption()
       {
          return navOption;
+      }
+
+      public boolean isShowError()
+      {
+         return showError;
       }
    }
 }

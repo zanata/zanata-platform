@@ -297,7 +297,14 @@ public class Application implements EntryPoint
          {
             Throwable e = unwrapUmbrellaException(exception);
             Log.fatal("uncaught exception", e);
-            
+
+            String stackTrace = buildStackTraceMessages(e);
+            injector.getDispatcher().execute(new RemoteLoggingAction(stackTrace), new NoOpAsyncCallback<NoOpResult>());
+
+            if (!injector.getUserConfig().isShowError())
+            {
+               return;
+            }
             globalPopup.getCaption().setHTML("<div class=\"globalPopupCaption\">ERROR: " + e.getMessage() + "</div>");
 
             VerticalPanel popupContent = new VerticalPanel();
@@ -316,11 +323,9 @@ public class Application implements EntryPoint
             ;
 
             // stack trace
-            String stackTrace = buildStackTraceMessages(e);
             DisclosurePanel disclosurePanel = buildStackTraceDisclosurePanel(stackTrace);
 
             // send stack trace log to server
-            injector.getDispatcher().execute(new RemoteLoggingAction(stackTrace), new NoOpAsyncCallback<NoOpResult>());
 
             popupContent.add(new HTMLPanel(htmlBuilder.toSafeHtml()));
             popupContent.add(disclosurePanel);

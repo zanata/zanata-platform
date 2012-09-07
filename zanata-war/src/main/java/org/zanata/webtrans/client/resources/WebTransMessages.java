@@ -409,4 +409,10 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Read only")
    String readOnly();
+
+   @DefaultMessage("Other configuration")
+   String otherConfiguration();
+
+   @DefaultMessage("When unexpected error happens, a popup window will display and show it.")
+   String showErrorsTooltip();
 }

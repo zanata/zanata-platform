@@ -39,20 +39,8 @@ public class RemoteLoggingHandler extends AbstractActionHandler<RemoteLoggingAct
          log.warn("can not authenticate user. Ignore logging request.");
       }
 
-      log.info("[gwt-log] from user: {} on workspace: {}", identity.getTrimUsername(), action.getWorkspaceId());
-      String messages = "[gwt-log] " + action.getMessage();
-      if (action.getLogLevel() == Level.SEVERE)
-      {
-         log.error(messages);
-      }
-      else if (action.getLogLevel() == Level.WARNING)
-      {
-         log.warn(messages);
-      }
-      else if (action.getLogLevel() == Level.INFO)
-      {
-         log.info(messages);
-      }
+      log.error("[gwt-log] from user: {} on workspace: {}", identity.getTrimUsername(), action.getWorkspaceId());
+      log.error("[gwt-log] {}", action.getMessage());
 
       return new NoOpResult();
    }
