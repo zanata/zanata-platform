@@ -88,7 +88,6 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       // request TM details from the server
       dispatcher.execute(new GetTransMemoryDetailsAction(item.getSourceIdList()), new AsyncCallback<TransMemoryDetailsList>()
       {
-
          @Override
          public void onFailure(Throwable caught)
          {

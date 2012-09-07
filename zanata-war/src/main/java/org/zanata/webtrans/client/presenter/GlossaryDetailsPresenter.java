@@ -100,7 +100,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.userWorkspaceContext = userWorkspaceContext;
-
+      
       registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
       {
          @Override
