@@ -161,6 +161,14 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    }
 
    @Override
+   public void onShowErrorsOptionChanged(Boolean showErrorChkValue)
+   {
+      // this config value is only used in org.zanata.webtrans.client.Application.registerUncaughtExceptionHandler
+      // therefore we don't need to broadcast the change event
+      configHolder.setShowError(showErrorChkValue);
+   }
+
+   @Override
    protected void onUnbind()
    {
    }

@@ -9,14 +9,17 @@ public class RemoteLoggingAction extends AbstractWorkspaceAction<NoOpResult>
 {
    private String message;
 
-   // default log to severe level
-   private Level logLevel = Level.SEVERE;
-
    @SuppressWarnings("unused")
    public RemoteLoggingAction()
    {
    }
 
+   /**
+    * We only log as ERROR in the handler.
+    *
+    * @param message log message
+    * @see org.zanata.webtrans.server.rpc.RemoteLoggingHandler
+    */
    public RemoteLoggingAction(String message)
    {
       this.message = message;
@@ -25,20 +28,5 @@ public class RemoteLoggingAction extends AbstractWorkspaceAction<NoOpResult>
    public String getMessage()
    {
       return message;
-   }
-
-   public Level getLogLevel()
-   {
-      return logLevel;
-   }
-
-   /**
-    * We only log Severe, Warning or Info in the handler.
-    * @see org.zanata.webtrans.server.rpc.RemoteLoggingHandler
-    * @param logLevel log level
-    */
-   public void setLogLevel(Level logLevel)
-   {
-      this.logLevel = logLevel;
    }
 }

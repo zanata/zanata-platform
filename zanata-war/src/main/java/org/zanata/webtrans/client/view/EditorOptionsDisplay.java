@@ -31,5 +31,7 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onEscCancelEditOptionChanged(Boolean escCancelEdit);
 
       void onEditorButtonsOptionChanged(Boolean editorButtons);
+
+      void onShowErrorsOptionChanged(Boolean showErrorChkValue);
    }
 }
