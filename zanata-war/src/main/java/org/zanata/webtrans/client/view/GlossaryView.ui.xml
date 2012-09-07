@@ -9,7 +9,6 @@
         }
        
         .rootContainer {
-			border-left:2px solid #E0E8EE;
 			min-width:400px;
 			width:100%;
 		}

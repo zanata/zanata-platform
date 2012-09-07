@@ -6,10 +6,11 @@
 	
 	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
 	<ui:style>
+		
 		.editor {
 			background-color: #ffffff;
-			border: 2px solid #e0e8ee;
-			border-radius: 5px;
+			border-top: 2px solid #e0e8ee;
+			border-bottom: 2px solid #e0e8ee;
 		}
 		
 		.unitStatus {
@@ -38,15 +39,15 @@
 			}
 				
 	</ui:style>
-			<g:LayoutPanel styleName="{style.editor}">
-	            <g:layer left="1px" width="40%" top="2px" height="23px">
+			<g:LayoutPanel>
+	            <g:layer left="1px" width="400px" top="2px" height="23px">
 		            <g:LayoutPanel ui:field="filterPanelContainer" styleName="{style.filterPanelContainer}"/>			    
 	            </g:layer>
 				<g:layer width="50%" right="30px" top="3px" height="23px">
 						<g:FlowPanel ui:field="transUnitNavigationContainer"  styleName="{style.centerText}"/>
 				</g:layer>
 				<g:layer top="25px" bottom="2em">
-					<g:LayoutPanel ui:field="editor" />
+					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
 				</g:layer>
 				<g:layer bottom="0px" height="2em" left="30px" right="30px">
 					<g:FlowPanel styleName="{style.pager}">

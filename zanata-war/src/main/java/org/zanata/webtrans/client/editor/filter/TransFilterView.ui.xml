@@ -6,10 +6,10 @@
 		.transFilterTextBox {
 			margin: 0px;
 			font-size: 1em;
-			border: 2px solid lightgrey;
-			border-radius: 6px;
+			border: 2px solid #C5C5C5;
+			border-radius: 3px;
 			outline: none;
-			padding-left: 4px;
+			padding: 4px;
 			width:98%;
 		}
 		

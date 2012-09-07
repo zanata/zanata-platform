@@ -31,12 +31,12 @@ Removes some of the styling on the page-level splitters
 */
 .gwt-SplitLayoutPanel-HDragger {
 	cursor: col-resize;
-	background:#F8F9FA;
+	background:#E0E8EE;
 }
 
 .gwt-SplitLayoutPanel-VDragger {
 	cursor: row-resize;
-	background:#F8F9FA;
+	background:#E0E8EE;
 }
 
 .CenterDiv {
