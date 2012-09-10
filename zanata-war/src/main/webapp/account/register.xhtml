@@ -85,6 +85,9 @@
         </s:decorate>
         
         <div style="clear:both"/>
+        <s:div rendered="#{applicationConfiguration.openIdAuth}">
+          <h:outputText value="#{messages['jsf.register.LoginUsingOpenId']}" escape="false"/>
+        </s:div>
         <div class="actionButtons">
             <h:commandButton value="#{messages['jsf.Register']}" action="#{register.register}"/>
         </div>
@@ -111,7 +114,7 @@
         </a4j:form>
       </h:panelGroup>
     </rich:modalPanel>
- 
+
     <rich:panel rendered="#{not applicationConfiguration.internalAuth}">
           <h:outputText value="#{messages['jsf.PleaseContactAdministrationToGetRegistrationLink']}"/>
     </rich:panel>

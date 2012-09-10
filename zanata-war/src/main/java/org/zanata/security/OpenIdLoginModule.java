@@ -33,8 +33,6 @@ import javax.security.auth.spi.LoginModule;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
 
 public class OpenIdLoginModule implements LoginModule
 {
@@ -73,7 +71,7 @@ public class OpenIdLoginModule implements LoginModule
          // Get the username and password from the callback handler
          callbackHandler.handle(new Callback[] { cbName, cbPassword });
          username = cbName.getName();
-         FedoraOpenId openid = (FedoraOpenId) Component.getInstance(FedoraOpenId.class, ScopeType.SESSION);
+         ZanataOpenId openid = (ZanataOpenId) Component.getInstance(ZanataOpenId.class, ScopeType.SESSION);
          openid.login(username);
       }
       catch (Exception ex)

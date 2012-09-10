@@ -21,13 +21,13 @@
     <rich:panel rendered="#{not identity.loggedIn}">
         <f:facet name="header" class="loginForm_header">#{messages['jsf.SignIn']}</f:facet>
 
-        <s:decorate id="usernameField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
+        <s:decorate id="usernameField" template="edit.xhtml" rendered="#{!applicationConfiguration.openIdAuth}">
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Username']}</span></ui:define>
             <h:inputText id="username"
                       value="#{credentials.username}" class="loginForm_input"/>
         </s:decorate>
 
-        <s:div rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
+        <s:div rendered="#{applicationConfiguration.openIdAuth}">
             <ui:include src="login_provider.xhtml">
                 <ui:param name="providerField" value="#{loginAction.providerType}"/>
                 <ui:param name="usernameField" value="#{loginAction.username}"/>
@@ -35,16 +35,13 @@
             </ui:include>
         </s:div>
 
-        <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
+        <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.openIdAuth}">
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Password']}</span></ui:define>
             <h:inputSecret id="password"
                         value="#{credentials.password}" class="loginForm_input"/>
             <rich:spacer width="10px"/>
-            <s:link view="/account/password_reset_request.xhtml"
-            	rendered="#{applicationConfiguration.internalAuth}"
-            	propagation="none">#{messages['jsf.ForgotYourPassword']}</s:link>
         </s:decorate>
-        <s:decorate id="rememberMeField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
+        <s:decorate id="rememberMeField" template="edit.xhtml" rendered="#{!applicationConfiguration.openIdAuth}">
             <ui:define name="label">#{messages['jsf.RememberMe']}</ui:define>
             <h:selectBooleanCheckbox id="rememberMe"
                                   value="#{rememberMe.enabled}"/>
@@ -52,7 +49,7 @@
         <div style="clear:both"/>
         <div class="actionButtons">
             <h:commandButton id="Sign_in" value="#{messages['jsf.SignIn']}" action="#{loginAction.login}"
-                    style="#{applicationConfiguration.fedoraOpenIdAuth ? 'display:none' : ''}"/>
+                    style="#{applicationConfiguration.openIdAuth ? 'display:none' : ''}"/>
         </div>
     </rich:panel>
 

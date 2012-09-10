@@ -47,6 +47,7 @@ import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.security.AuthenticationType;
 import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
+import org.zanata.util.PasswordGenerator;
 
 @Name("registerServiceImpl")
 @AutoCreate
@@ -101,7 +102,7 @@ public class RegisterServiceImpl implements RegisterService
       {
          public void execute()
          {
-            identityStore.createUser(username, "");
+            identityStore.createUser(username, PasswordGenerator.generateRandomPassword()); // randomize the password
             identityStore.disableUser(username);
          }
       }.addRole("admin").run();
@@ -125,6 +126,11 @@ public class RegisterServiceImpl implements RegisterService
    @Override
    public void mergeAccounts( final HAccount active, final HAccount obsolete )
    {
+      if( active.getId().equals( obsolete.getId() ) )
+      {
+         throw new RuntimeException("Attempting to merge the same account");
+      }
+
       // Have to run this as admin, as projects and iterations will be updated
       new MergeAccountsOperation(active, obsolete).run();
    }

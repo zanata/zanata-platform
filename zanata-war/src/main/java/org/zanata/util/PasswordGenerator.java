@@ -18,17 +18,22 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.security;
+package org.zanata.util;
+
+import java.security.SecureRandom;
+
+import org.jboss.seam.util.RandomStringUtils;
 
 /**
- * Different authentication types configurable for Zanata.
- * 
- * @author camunoz@redhat.com
+ * Utility to generate paasswords.
+ *
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public enum AuthenticationType
+public class PasswordGenerator
 {
-   INTERNAL,
-   KERBEROS,
-   OPENID,
-   JAAS
+   public static String generateRandomPassword()
+   {
+      return RandomStringUtils.random(8, 0, 0, true, true, null, new SecureRandom());
+   }
+
 }
