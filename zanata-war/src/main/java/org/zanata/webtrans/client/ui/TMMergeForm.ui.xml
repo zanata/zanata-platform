@@ -56,7 +56,7 @@
             </g:customCell>
             <g:customCell width="70px">
                 <g:ListBox ui:field="matchThreshold">
-                    <g:item value='100'>100%</g:item>
+                    <g:item value='100'>100</g:item>
                     <g:item value='90'>90%</g:item>
                     <g:item value='80'>80%</g:item>
                 </g:ListBox>

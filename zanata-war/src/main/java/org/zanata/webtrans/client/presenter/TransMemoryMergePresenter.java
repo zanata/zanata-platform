@@ -82,9 +82,9 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    @Override
    public void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
-      Collection<TransUnit> newItems = getUntranslatedItems();
+      Collection<TransUnit> items = getNotApprovedItems();
 
-      if (newItems.isEmpty())
+      if (items.isEmpty())
       {
          eventBus.fireEvent(new NotificationEvent(Info, messages.noTranslationToMerge()));
          display.hide();
@@ -92,7 +92,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       }
 
       display.showProcessing();
-      TransMemoryMerge action = prepareTMMergeAction(newItems, percentage, differentProjectOption, differentDocumentOption, differentResIdOption);
+      TransMemoryMerge action = prepareTMMergeAction(items, percentage, differentProjectOption, differentDocumentOption, differentResIdOption);
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
          @Override
@@ -137,7 +137,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       });
    }
 
-   private Collection<TransUnit> getUntranslatedItems()
+   private Collection<TransUnit> getNotApprovedItems()
    {
       List<TransUnit> currentItems = navigationController.getCurrentPageValues();
       return Collections2.filter(currentItems, new Predicate<TransUnit>()
@@ -145,7 +145,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
          @Override
          public boolean apply(TransUnit input)
          {
-            return input.getStatus() == ContentState.New;
+            return input.getStatus() != ContentState.Approved;
          }
       });
    }
