@@ -47,6 +47,9 @@ public class MemberLanguageList implements Serializable
 
    @In
    private LanguageTeamService languageTeamServiceImpl;
+   
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
 
    @Logger
    Log log;
@@ -64,9 +67,6 @@ public class MemberLanguageList implements Serializable
    {
       return memberTribes;
    }
-
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
 
    @Observer(create = false, value = { "personJoinedTribe", "personLeftTribe", "disableLanguage", "enableLanguage", JpaIdentityStore.EVENT_USER_AUTHENTICATED })
    synchronized public void fetchMemberTribes()
