@@ -203,10 +203,10 @@ Removes some of the styling on the page-level splitters
 	
 }
 
-.transUnitTable tr.selected
+.transUnitTable tr:hover, .transUnitTable tr.selected
 {
-	border-right: 5px solid #8a2be2;
-    border-left: 5px solid #8a2be2;
+	border-right: 2px dotted #0085CC;
+    border-left: 2px dotted #0085CC;
 }
 
 .transUnitTable tr:hover .fadeElement, .transUnitTable tr.selected .fadeElement
