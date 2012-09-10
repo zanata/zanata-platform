@@ -27,23 +27,33 @@
     <rich:jQuery query="jquery"/>
 
     <script type="text/javascript">
-        function updateLoginType(selectedElement, type, visible, label)
+        function updateLoginType(selectedElement, type, showUsername, usernameLabel, showPassword)
         {
             jQuery(".selected_login_option").each( function(){ jQuery(this).removeClass('selected_login_option') } );
             jQuery(selectedElement).addClass('selected_login_option');
 
-            var fieldSelector = "[id='#{rich:clientId('openid_provider')}']";
+            var fieldSelector = "[id='#{rich:clientId('login_provider')}']";
             jQuery(fieldSelector).val(type);
 
             var usernamefieldSelector = "[id='#{rich:clientId('providerUsernameField')}']";
-            if( visible )
+            if( showUsername )
             {
-                jQuery('#identityLabel').html( label );
+                jQuery('#identityLabel').html( usernameLabel );
                 jQuery('#' + usernamefieldSelector).show();
             }
             else
             {
                 jQuery('#' + usernamefieldSelector).hide();
+            }
+
+            var passwordfieldSelector = "[id='#{rich:clientId('providerPasswordField')}']";
+            if( showPassword )
+            {
+                jQuery('#' + passwordfieldSelector).show();
+            }
+            else
+            {
+                jQuery('#' + passwordfieldSelector).hide();
             }
 
             ${onProviderChange}
@@ -79,14 +89,28 @@
                     height="40" width="40"
                     onclick="updateLoginType(this, 'Generic', true, '#{messages['jsf.login.openid']}')"/>
     <rich:spacer width="10"/>
+    <h:graphicImage id="internal_signin" value="../images/z-logo-50px.png" styleClass="login_option"
+                    title="Zanata"
+                    height="40" width="40"
+                    onclick="updateLoginType(this, 'INTERNAL', true, '#{messages['jsf.login.internal']}', true)"
+                    rendered="#{applicationConfiguration.internalAuth}"/>
+    <rich:spacer width="10"/>
 
-    <h:inputHidden id="openid_provider" value="${providerField}"/>
+    <h:inputHidden id="login_provider" value="#{loginAction.authProvider}"/>
 
     <s:decorate id="providerUsernameField" template="edit.xhtml" style="display: none">
         <ui:define name="label">
             <span id="identityLabel" class="loginForm_label">#{messages['jsf.FedoraUsername']}</span>
         </ui:define>
         <h:inputText styleClass="name" id="username" value="${usernameField}"/>
+        <br/>
+    </s:decorate>
+
+    <s:decorate id="providerPasswordField" template="edit.xhtml" style="display: none">
+        <ui:define name="label">
+            <span id="passwordLabel" class="loginForm_label">#{messages['jsf.Password']}</span>
+        </ui:define>
+        <h:inputSecret styleClass="name" id="password" value="#{credentials.password}"/>
         <br/>
     </s:decorate>
 

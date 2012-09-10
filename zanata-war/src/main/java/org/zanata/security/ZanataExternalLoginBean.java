@@ -76,7 +76,7 @@ public class ZanataExternalLoginBean implements Serializable
 
    public boolean externalLogin()
    {
-      return !applicationConfiguration.isInternalAuth() && !identity.isApiRequest();
+      return identity.getAuthenticationType() != AuthenticationType.INTERNAL && !identity.isApiRequest();
    }
 
    public void applyAuthentication()
@@ -125,12 +125,12 @@ public class ZanataExternalLoginBean implements Serializable
 
    public String redirect()
    {
-      if (applicationConfiguration.isKerberosAuth() && identity.isLoggedIn() && isNewUser())
+      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS && identity.isLoggedIn() && isNewUser())
       {
          return "edit";
       }
 
-      if (applicationConfiguration.isKerberosAuth() && identity.isLoggedIn() && !isNewUser())
+      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS && identity.isLoggedIn() && !isNewUser())
       {
          if (userRedirectBean.isRedirect())
          {
@@ -142,12 +142,12 @@ public class ZanataExternalLoginBean implements Serializable
          }
       }
 
-      if (applicationConfiguration.isKerberosAuth() && !identity.isLoggedIn())
+      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS && !identity.isLoggedIn())
       {
          return "home";
       }
 
-      if (!applicationConfiguration.isKerberosAuth())
+      if (identity.getAuthenticationType() != AuthenticationType.KERBEROS)
       {
          return "login";
       }

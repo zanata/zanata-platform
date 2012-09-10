@@ -20,7 +20,6 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 
@@ -139,29 +138,6 @@ public class EssentialDataCreator
             if (accountRoleDAO.create("translator", MANUAL) == null)
             {
                throw new RuntimeException("Couldn't create 'translator' role");
-            }
-         }
-
-         // Domain roles for OpenId authentication
-         if( applicationConfiguration.isFedoraOpenIdAuth() )
-         {
-            log.info("Creating Domain roles for Open Id");
-
-            if( !accountRoleDAO.roleExists("Fedora") )
-            {
-               accountRoleDAO.create("Fedora", AUTO);
-            }
-            if( !accountRoleDAO.roleExists("Yahoo") )
-            {
-               accountRoleDAO.create("Yahoo", AUTO);
-            }
-            if( !accountRoleDAO.roleExists("Google") )
-            {
-               accountRoleDAO.create("Google", AUTO);
-            }
-            if( !accountRoleDAO.roleExists("MyOpenID") )
-            {
-               accountRoleDAO.create("MyOpenID", AUTO);
             }
          }
 

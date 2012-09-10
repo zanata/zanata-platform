@@ -50,7 +50,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
          return;
       }
 
-      FedoraOpenId openid = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
+      ZanataOpenId openid = (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
       if (openid.getId() == null)
       {
          try
@@ -79,7 +79,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
       PrintWriter out = response.getWriter();
 
       // XXX ENCODE THE URL!
-      FedoraOpenId open = (FedoraOpenId) Component.getInstance(FedoraOpenId.class);
+      ZanataOpenId open = (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
 
       out.println("<XRDS xmlns=\"xri://$xrd*($v*2.0)\"><XRD><Service>" + "<Type>http://specs.openid.net/auth/2.0/return_to</Type><URI>" + open.returnToUrl() + "</URI></Service></XRD></XRDS>");
 

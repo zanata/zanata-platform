@@ -120,9 +120,9 @@ public class ZanataInit
          log.info("Internal authentication: enabled");
          authlogged = true;
       }
-      if ( applicationConfiguration.isFedoraOpenIdAuth() )
+      if ( applicationConfiguration.isOpenIdAuth() )
       {
-         log.info("Fedora OpenID authentication: enabled");
+         log.info("OpenID authentication: enabled");
          authlogged = true;
       }
       if ( applicationConfiguration.isKerberosAuth() )

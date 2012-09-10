@@ -172,7 +172,7 @@ public class TransMemoryMergeHandlerTest
       assertThat(updateRequest, Matchers.hasSize(1));
       TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
       assertThat(transUnitUpdateRequest.getNewContents(), Matchers.equalTo(mostSimilarTM.getTargetContents()));
-      assertThat(transUnitUpdateRequest.getTargetComment(), Matchers.equalTo("auto translated by TM merge"));
+      assertThat(transUnitUpdateRequest.getTargetComment(), Matchers.equalTo("auto translated by TM merge from project: project a, version: master, DocId: pot/msg.pot"));
    }
 
    @Test
@@ -250,13 +250,13 @@ public class TransMemoryMergeHandlerTest
    }
 
    @Test
-   public void willIgnoreNotNewTextFlows() throws ActionException
+   public void willIgnoreApprovedTextFlows() throws ActionException
    {
        // Given: text flow id 1 is not untranslated
       final long transUnitId = 1L;
       TransMemoryMerge action = prepareActionAndMockSecurityService(80, transUnitId);
 
-      HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.NeedReview, "pot/a.po");
+      HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.Approved, "pot/a.po");
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
 
       // When: execute the action
@@ -339,5 +339,15 @@ public class TransMemoryMergeHandlerTest
       assertThat(updateRequest, Matchers.hasSize(2));
       assertThat(updateRequest.get(0).getNewContents(), Matchers.equalTo(tm100.getTargetContents()));
       assertThat(updateRequest.get(1).getNewContents(), Matchers.equalTo(tm90.getTargetContents()));
+   }
+
+   @Test
+   public void doubleToInt()
+   {
+      double oneHundred = 100.00000001D;
+
+      assertThat(oneHundred <= 100, Matchers.is(false));
+      assertThat((int)oneHundred <= 100, Matchers.is(true));
+
    }
 }

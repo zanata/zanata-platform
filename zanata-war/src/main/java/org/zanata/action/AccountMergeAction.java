@@ -28,10 +28,11 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
-import org.zanata.security.FedoraOpenId;
+import org.zanata.security.ZanataOpenId;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -39,6 +40,8 @@ import org.zanata.service.RegisterService;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -51,7 +54,7 @@ public class AccountMergeAction
    private HAccount authenticatedAccount;
 
    @In
-   private FedoraOpenId fedoraOpenId;
+   private ZanataOpenId zanataOpenId;
 
    @In
    private RegisterService registerServiceImpl;
@@ -66,6 +69,8 @@ public class AccountMergeAction
    private HAccount obsoleteAccount;
 
    private OpenIdProviderType providerType;
+
+   private boolean accountsValid;
 
 
    public String getProviderType()
@@ -85,15 +90,42 @@ public class AccountMergeAction
       }
    }
 
+   public boolean getAccountsValid()
+   {
+      return accountsValid;
+   }
+
    public void loginToMergingAccount()
    {
-      fedoraOpenId.setProvider( providerType );
-      fedoraOpenId.login( username, new AccountMergeAuthCallback() );
+      zanataOpenId.setProvider( providerType );
+      zanataOpenId.login( username, new AccountMergeAuthCallback() );
    }
 
    public boolean isAccountSelected()
    {
       return obsoleteAccount != null;
+   }
+
+   public void validateAccounts()
+   {
+      boolean valid = true;
+
+      // The account to merge in has been authenticated
+      if( obsoleteAccount != null )
+      {
+         if( obsoleteAccount.getId() == null )
+         {
+            FacesMessages.instance().add(ERROR, "Could not find an account for that user.");
+            valid = false;
+         }
+         else if( authenticatedAccount.getId().equals( obsoleteAccount.getId() ) )
+         {
+            FacesMessages.instance().add(ERROR, "You are attempting to merge the same account.");
+            valid = false;
+         }
+      }
+
+      this.accountsValid = valid;
    }
 
    public void mergeAccounts()
@@ -118,16 +150,11 @@ public class AccountMergeAction
          {
             AccountDAO accountDAO = (AccountDAO)Component.getInstance(AccountDAO.class);
             HAccount account = accountDAO.getByCredentialsId( result.getAuthenticatedId() );
-            Contexts.getSessionContext().set("obsoleteAccount", account); // Outject the account
-
-            if( obsoleteAccount == null )
+            if( account == null )
             {
-               FacesMessages.instance().add("Could not find an account for that user.");
+               account = new HAccount(); // In case an account is not found
             }
-         }
-         else
-         {
-            FacesMessages.instance().add("Unable to authenticate that account.");
+            Contexts.getSessionContext().set("obsoleteAccount", account); // Outject the account
          }
       }
 

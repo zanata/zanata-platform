@@ -35,13 +35,12 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
-import org.zanata.security.FedoraOpenId;
+import org.zanata.security.ZanataOpenId;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.MyOpenIdProvider;
@@ -67,7 +66,7 @@ public class CredentialsAction implements Serializable
    private AccountDAO accountDAO;
 
    @In
-   private FedoraOpenId fedoraOpenId;
+   private ZanataOpenId zanataOpenId;
 
    @DataModel
    private List<HCredentials> userCredentials;
@@ -146,14 +145,14 @@ public class CredentialsAction implements Serializable
    {
       HOpenIdCredentials newCreds = new HOpenIdCredentials();
       newCreds.setAccount( authenticatedAccount );
-      fedoraOpenId.setProvider( providerType );
+      zanataOpenId.setProvider( providerType );
 
       if( providerType == OpenIdProviderType.Google )
       {
          credentialsUsername = "google";
       }
 
-      fedoraOpenId.login(credentialsUsername, new CredentialsCreationCallback(newCreds));
+      zanataOpenId.login(credentialsUsername, new CredentialsCreationCallback(newCreds));
    }
 
    public boolean isGoogleOpenId( String openId )

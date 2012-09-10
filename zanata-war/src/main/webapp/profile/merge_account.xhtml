@@ -22,7 +22,7 @@
     </ui:define>
 
     <ui:define name="center_content">
-        <h:form rendered="#{not accountMergeAction.accountSelected}">
+        <h:form rendered="#{not accountMergeAction.accountSelected or not accountMergeAction.accountsValid}">
 
             <rich:panel>
                 <ui:include src="../WEB-INF/layout/login_provider.xhtml">
@@ -41,7 +41,7 @@
 
         </h:form>
 
-        <h:form rendered="#{accountMergeAction.accountSelected}">
+        <h:form rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
             <h:outputText escape="false" value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
             <br/>
             <br/>
