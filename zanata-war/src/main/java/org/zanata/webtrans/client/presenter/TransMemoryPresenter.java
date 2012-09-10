@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -18,7 +19,6 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.LoadingListDataProvider;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -28,7 +28,6 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,21 +37,16 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
-public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display>
+public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> implements HasTMEvent
 {
    public interface Display extends WidgetDisplay
    {
       HasClickHandlers getSearchButton();
-
-      HasClickHandlers getClearButton();
 
       HasValue<SearchType> getSearchType();
 
@@ -61,20 +55,18 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       HasAllFocusHandlers getFocusTmTextBox();
 
       void startProcessing();
-      void setLoading(boolean loading);
-      void stopProcessing();
-
-      void setPageSize(int size);
-
-      Column<TransMemoryResultItem, ImageResource> getDetailsColumn();
-
-      Column<TransMemoryResultItem, String> getCopyColumn();
-
-      void setDataProvider(ListDataProvider<TransMemoryResultItem> dataProvider);
-
-      void setQueries(List<String> queries);
 
       HasClickHandlers getMergeButton();
+      
+      HasClickHandlers getClearButton();
+
+      void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries);
+
+      void setListener(HasTMEvent listener);
+
+      void stopProcessing(boolean showResult);
+
+      void clearTableContent();
    }
 
    private final UserWorkspaceContext userWorkspaceContext;
@@ -85,7 +77,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private TransMemoryDetailsPresenter tmInfoPresenter;
    private TransMemoryMergePresenter transMemoryMergePresenter;
    private KeyShortcutPresenter keyShortcutPresenter;
-   private LoadingListDataProvider<TransMemoryResultItem> dataProvider;
+   // private LoadingListDataProvider<TransMemoryResultItem> dataProvider;
 
    private final WebTransMessages messages;
 
@@ -101,9 +93,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       this.transMemoryMergePresenter = transMemoryMergePresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.messages = messages;
-
-      dataProvider = new LoadingListDataProvider<TransMemoryResultItem>();
-      display.setDataProvider(dataProvider);
    }
 
    @Override
@@ -131,14 +120,15 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       display.getClearButton().addClickHandler(new ClickHandler()
       {
+         
          @Override
          public void onClick(ClickEvent event)
          {
             display.getTmTextBox().setText("");
-            dataProvider.getList().clear();
+            display.clearTableContent();
          }
       });
-
+      
       display.getFocusTmTextBox().addFocusHandler(new FocusHandler()
       {
          @Override
@@ -178,41 +168,25 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          {
             if (!userWorkspaceContext.hasReadOnlyAccess())
             {
-               TransMemoryResultItem item;
-               try
-               {
-                  item = dataProvider.getList().get(event.getIndex());
-               }
-               catch (IndexOutOfBoundsException ex)
-               {
-                  item = null;
-               }
-               if (item != null)
-               {
-                  Log.debug("Copy from translation memory:" + (event.getIndex() + 1));
-                  eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
-               }
+               // TransMemoryResultItem item;
+               // try
+               // {
+               // item = dataProvider.getList().get(event.getIndex());
+               // }
+               // catch (IndexOutOfBoundsException ex)
+               // {
+               // item = null;
+               // }
+               // if (item != null)
+               // {
+               // Log.debug("Copy from translation memory:" + (event.getIndex()
+               // + 1));
+               // eventBus.fireEvent(new
+               // CopyDataToEditorEvent(item.getTargetContents()));
+               // }
             }
          }
       }));
-
-      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<TransMemoryResultItem, ImageResource>()
-      {
-         @Override
-         public void update(int index, TransMemoryResultItem object, ImageResource value)
-         {
-            tmInfoPresenter.show(object);
-         }
-      });
-
-      display.getCopyColumn().setFieldUpdater(new FieldUpdater<TransMemoryResultItem, String>()
-      {
-         @Override
-         public void update(int index, TransMemoryResultItem object, String value)
-         {
-            eventBus.fireEvent(new CopyDataToEditorEvent(object.getTargetContents()));
-         }
-      });
 
       display.getMergeButton().addClickHandler(new ClickHandler()
       {
@@ -222,6 +196,20 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
             transMemoryMergePresenter.prepareTMMerge();
          }
       });
+
+      display.setListener(this);
+   }
+
+   @Override
+   public void showTMDetails(TransMemoryResultItem object)
+   {
+      tmInfoPresenter.show(object);
+   }
+
+   @Override
+   public void fireCopyEvent(TransMemoryResultItem object)
+   {
+      eventBus.fireEvent(new CopyDataToEditorEvent(object.getTargetContents()));
    }
 
    private void fireSearchEvent()
@@ -237,24 +225,10 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       createTMRequest(new TransMemoryQuery(transUnit.getSources(), searchType));
    }
 
-   private void setLoading(boolean loading)
-   {
-      // This line should be enough...
-      dataProvider.setLoading(loading);
-
-      // but GWT still shows the empty table widget, so we temporarily change it:
-      display.setLoading(loading);
-   }
-
    private void createTMRequest(TransMemoryQuery query)
    {
-      setLoading(true);
-      dataProvider.getList().clear();
-      dataProvider.refresh();
       display.startProcessing();
-      final GetTranslationMemory action = new GetTranslationMemory(query,
-            userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(),
-            userWorkspaceContext.getSelectedDoc().getSourceLocale());
+      final GetTranslationMemory action = new GetTranslationMemory(query, userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(), userWorkspaceContext.getSelectedDoc().getSourceLocale());
       scheduleTMRequest(action);
    }
 
@@ -281,6 +255,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    private void submitTMRequest(GetTranslationMemory action)
    {
+      display.startProcessing();
       Log.debug("submitting TM request");
       dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>()
       {
@@ -288,6 +263,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void onFailure(Throwable caught)
          {
             Log.error(caught.getMessage(), caught);
+            display.stopProcessing(false);
             submittedRequest = null;
          }
 
@@ -303,6 +279,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
             else
             {
                Log.debug("ignoring old TM result for query");
+               display.stopProcessing(false);
             }
             submittedRequest = null;
             if (lastRequest != null)
@@ -318,15 +295,16 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private void displayTMResult(GetTranslationMemoryResult result)
    {
       List<String> queries = submittedRequest.getQuery().getQueries();
-      display.setQueries(queries);
-      dataProvider.getList().clear();
-      for (final TransMemoryResultItem memory : result.getMemories())
+
+      if (!result.getMemories().isEmpty())
       {
-         dataProvider.getList().add(memory);
+         display.renderTable(result.getMemories(), queries);
+         display.stopProcessing(true);
       }
-      setLoading(false);
-      display.setPageSize(dataProvider.getList().size());
-      dataProvider.refresh();
+      else
+      {
+         display.stopProcessing(false);
+      }
    }
 
    @Override

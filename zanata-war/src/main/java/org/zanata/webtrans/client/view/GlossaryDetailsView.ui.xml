@@ -2,26 +2,11 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:f="urn:import:org.zanata.webtrans.client"
-	xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
-    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-    ui:generateLocales="en">
+	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 	
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
 	<ui:style type="org.zanata.webtrans.client.view.GlossaryDetailsView.Styles">
-		.headerLabel
-		{
-			padding-right:5px;
-			color:#C35817;
-			font-weight:bold;
-		}
-		
-		.alignTop
-		{
-			vertical-align:top;
-		}
-		
 		.textArea
 		{
 			width:280px;
@@ -33,19 +18,6 @@
 		{
 			width:285px;
 			margin:0;
-		}
-		
-		.button
-		{
-			width:70px;
-			margin:1px;
-			padding:2px;
-		}
-		
-		.lastModifiedLabel
-		{
-			color:#C35817;
-			font-weight:bold;
 		}
 		
 		.targetCommentList
@@ -95,42 +67,42 @@
 		<g:LayoutPanel width="100%" height="100%">
 			<g:layer top="5px" height="22px" left="0" width="150px">
 				<g:HTMLPanel>
-					<g:InlineLabel styleName="{style.headerLabel}"><ui:msg>Entries:</ui:msg></g:InlineLabel>
+					<g:InlineLabel styleName="headerLabel" text="Entries:"/>
 					<g:ListBox ui:field='entryListBox'/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="5px" height="46px" left="176px" right="0">
 				<g:HTMLPanel>
-					<g:InlineLabel styleName="{style.headerLabel} {style.alignTop}"><ui:msg>Source Reference:</ui:msg></g:InlineLabel>
+					<g:InlineLabel styleName="headerLabel alignTop" text="Source Reference:"/>
 					<g:TextArea ui:field="srcRef" styleName="{style.textArea}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="70px" height="85px" left="0" right="300px">
 				<g:HTMLPanel>
-						<g:Label ui:field="sourceLabel" styleName="{style.headerLabel}"/>
+						<g:Label ui:field="sourceLabel" styleName="headerLabel"/>
 						<g:TextArea ui:field='sourceText' styleName="{style.textArea}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="70px" height="85px" left="300px" right="0">
 				<g:HTMLPanel>
-						<g:Label styleName="{style.headerLabel}"><ui:msg>Comments:</ui:msg></g:Label>
+						<g:Label styleName="headerLabel" text="Comments:"/>
 						<g:ListBox ui:field='sourceComment' styleName="{style.listBox}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="165px" height="85px" left="0" right="300px">
 				<g:HTMLPanel>
-						<g:Label ui:field="targetLabel" styleName="{style.headerLabel}"/>
+						<g:Label ui:field="targetLabel" styleName="headerLabel"/>
 						<g:TextArea ui:field='targetText' styleName="{style.textArea}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="165px" height="166px" left="300px" right="5px">
 				<g:HTMLPanel>
-						<g:Label styleName="{style.headerLabel}"><ui:msg>Comments:</ui:msg></g:Label>
+						<g:Label styleName="headerLabel" text="Comments:"/>
 						<g:ScrollPanel height="148px" styleName="{style.targetCommentList}" ui:field="targetCommentScrollTable">
 							<g:FlexTable ui:field="targetCommentsTable" width="100%" />
 						</g:ScrollPanel>
@@ -139,21 +111,21 @@
 			
 			<g:layer top="255px" height="80px" left="0" right="300px">
 				<g:HTMLPanel>
-						<g:Label styleName="{style.headerLabel}"><ui:msg>New target comment:</ui:msg></g:Label>
+						<g:Label styleName="headerLabel" text="New target comment:"/>
 						<g:TextArea ui:field="newTargetComment" styleName="{style.newTargetCommentTextArea}"/>
 						<g:Button ui:field="addNewCommentButton" styleName="{style.targetCommentListButton}"/>
 				</g:HTMLPanel>
 			</g:layer>
 			
 			<g:layer top="355px" height="15px" width="350px" left="0">
-				<g:Label ui:field='lastModified' styleName="{style.lastModifiedLabel}"/>
+				<g:Label ui:field='lastModified' styleName="lastModifiedLabel"/>
 			</g:layer>
 			
 			<g:layer height="32px" top="348px" right="0" width="170px">
 				<g:HTMLPanel styleName="{style.buttonDiv}">
 					<g:Image ui:field="loadingIcon"/>
-				 	<g:Button ui:field='dismissButton' addStyleNames="{style.button}"/>
-	    		 	<g:Button ui:field='saveButton' addStyleNames="{style.button}"/>
+				 	<g:Button ui:field='dismissButton' addStyleNames="button"/>
+	    		 	<g:Button ui:field='saveButton' addStyleNames="button"/>
 	    		 </g:HTMLPanel>
 			</g:layer>
 			

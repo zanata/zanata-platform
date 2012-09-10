@@ -64,6 +64,9 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Translation Memory")
    String translationMemoryHeading();
+   
+   @DefaultMessage("Translation Memory Details")
+   String translationMemoryDetails();
 
    @DefaultMessage("Glossary")
    String glossaryHeading();
@@ -149,12 +152,19 @@ public interface UiMessages extends Messages
    @DefaultMessage("Last modified on {0}")
    String lastModifiedOn(String date);
 
-   @DefaultMessage("Loading...")
-   String loading();
+   @DefaultMessage("Searching...")
+   String searching();
 
    @DefaultMessage("Found no glossary results")
    String foundNoGlossaryResults();
+   
+   @DefaultMessage("Found no translation memory results")
+   String foundNoTMResults();
 
    @DefaultMessage("Glossary save fail")
    String saveGlossaryFailed();
+
+   @DefaultMessage("#")
+   String hash();
+   
 }

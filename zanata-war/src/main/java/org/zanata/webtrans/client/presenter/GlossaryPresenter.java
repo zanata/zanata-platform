@@ -91,6 +91,12 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       void renderTable(ArrayList<GlossaryResultItem> glossaries);
 
       void setListener(HasGlossaryEvent listener);
+
+      void stopProcessing(boolean showResult);
+
+      void clearTableContent();
+
+      HasClickHandlers getClearButton();
    }
 
    @Inject
@@ -113,6 +119,16 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          public void onClick(ClickEvent event)
          {
             fireSearchEvent();
+         }
+      });
+      
+      display.getClearButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+           display.getGlossaryTextBox().setText("");
+           display.clearTableContent();
          }
       });
 
@@ -170,7 +186,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
    private void createGlossaryRequest(final String query, GetGlossary.SearchType searchType)
    {
-      display.startProcessing();
       LocaleId srcLocale = LocaleId.EN_US;
       if (userWorkspaceContext.getSelectedDoc().getSourceLocale() != null)
       {
@@ -208,6 +223,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
    private void submitGlossaryRequest(GetGlossary action)
    {
+      display.startProcessing();
       Log.debug("submitting glossary request");
       dispatcher.execute(action, new AsyncCallback<GetGlossaryResult>()
       {
@@ -215,6 +231,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          public void onFailure(Throwable caught)
          {
             Log.error(caught.getMessage(), caught);
+            display.stopProcessing(false);
             submittedRequest = null;
          }
 
@@ -230,6 +247,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
             else
             {
                Log.debug("ignoring old glossary result for query");
+               display.stopProcessing(false);
             }
             submittedRequest = null;
             if (lastRequest != null)
@@ -248,7 +266,15 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       display.getGlossaryTextBox().setText(query);
       display.getSearchType().setValue(submittedRequest.getSearchType());
 
-      display.renderTable(result.getGlossaries());
+      if(!result.getGlossaries().isEmpty())
+      {
+         display.renderTable(result.getGlossaries());
+         display.stopProcessing(true);
+      }
+      else
+      {
+         display.stopProcessing(false);
+      }
    }
 
    @Override

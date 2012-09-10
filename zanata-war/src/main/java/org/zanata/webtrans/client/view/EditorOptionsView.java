@@ -70,6 +70,11 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    InlineLabel twentyFive;
    @UiField
    Styles style;
+   @UiField
+   Label otherConfigHeader;
+   @UiField
+   CheckBox showErrorChk;
+
    private Listener listener;
 
    @Inject
@@ -83,6 +88,9 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
       pageSizeHeader.setText(messages.pageSize());
+      otherConfigHeader.setText(messages.otherConfiguration());
+
+      showErrorChk.setTitle(messages.showErrorsTooltip());
    }
 
    @Override
@@ -169,6 +177,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onEscCancelEditOptionChanged(escChk.getValue());
    }
 
+   @UiHandler("showErrorChk")
+   public void onShowErrorOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onShowErrorsOptionChanged(showErrorChk.getValue());
+   }
+
    @Override
    public void setListener(Listener listener)
    {
@@ -185,6 +199,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
       navOptionGroup.setDefaultSelected(state.getNavOption());
       selectPageSize(state.getPageSize());
+      showErrorChk.setValue(state.isShowError());
    }
 
    private void selectPageSize(int pageSize)
@@ -203,7 +218,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       }
    }
 
-   interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView>
+   interface EditorOptionsUiBinder extends UiBinder<LayoutPanel, EditorOptionsView>
    {
    }
 

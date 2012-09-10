@@ -490,6 +490,11 @@ public class SearchResultsPresenterTest extends PresenterTest
       expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(workspaceIsReadOnly).anyTimes();
       mockDisplay.setReplaceAllButtonVisible(!workspaceIsReadOnly);
       mockDisplay.setReplaceAllButtonEnabled(false);
+      
+      mockDisplay.addSearchFieldsSelect("search target", "target");
+      mockDisplay.addSearchFieldsSelect("search source", "source");
+      mockDisplay.addSearchFieldsSelect("search both", "both");
+      
       expect(mockKeyShortcutPresenter.register(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(TOTAL_KEY_SHORTCUTS);
    }
 

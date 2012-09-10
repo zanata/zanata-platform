@@ -492,9 +492,9 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 .projectWideSearchButton
 {
 	color: #444444;
-	font-size: 1.3em;
+	font-size: 1.4em;
 	margin-right: 15px;
-	padding: 2px 8px;
+	padding: 3px 10px;
 }
 
 .projectWideReplacementBox
@@ -536,10 +536,9 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 
 .projectWideReplacementButton
 {
-	color: #223344;
+	color: #444444;
 	padding: 3px 10px;
-	font-size: 1.6em;
-	white-space: nowrap;
+	font-size: 1.4em;
 }
 
 .projectWideReplacButton-Disabled
@@ -547,7 +546,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	color: #777777;
 	background-color: #bbbbbb;
 	border: 2px solid #bbbbbb;
-	border-radius: 2px;
 }
 
 .projectWideReplaceFeedbackLabel
@@ -687,6 +685,31 @@ td.ApprovedStateDecoration div div div
 	font-size: 16px;
 }
 
+
+.DocumentListTable th {
+	padding: 15px 8px 15px 8px;
+	font-size: 13px;
+	color: #ffffff;
+	font-family: Arial, Verdana, sans-serif;
+	background-color:#461446;
+	border-bottom:none;
+	border-left:1px solid #FFFFFF;
+	text-align:center;
+}
+
+.DocumentListTable th:hover {
+	color:#FFFFFF;
+}
+
+.DocumentListTable th:first-child {
+	border-top-left-radius: 5px;
+	border-left:none;
+}
+
+.DocumentListTable th:last-child {
+	border-top-right-radius: 5px;
+}
+
 .DocumentListTable td {
 	font-size: 16px;
 	cursor: pointer;
@@ -703,6 +726,7 @@ td.ApprovedStateDecoration div div div
 
 .DocumentListTable td.statisticCol {
 	font-size:14px;
+	text-align:center;
 }
 
 .DocumentListTable td.translatedCol {
@@ -734,7 +758,7 @@ td.ApprovedStateDecoration div div div
 	border: 2px solid #818181;
 	padding:2px;
 	font-weight:bold;
-	box-shadow:5px 5px 4px #D1D1D1;
+	box-shadow:3px 3px 2px #D1D1D1;
 }
 
 .transUnitCountTooltipTable {
@@ -814,63 +838,54 @@ td.ApprovedStateDecoration div div div
 	white-space: pre-wrap;
 }
 
-.translationContainer .tmTable pre {
-   border: 1px solid #E0E8EE;
+.resultTable
+{
+	width:100%;
+}
+
+.resultTable .oddRow
+{
+	background:#F3F7FB;
+}
+
+.translationContainer .resultTable pre {
+   border: 1px dotted #C9C9C9;
    margin-top: 2px;
    padding: 2px;
    margin-bottom: 2px;
 }
 
-.tmTable{
-	width: 100%;
-}
-
-.glossaryTable {
-	width: 100%;
-}
-
-.southTable td img {
-	cursor: pointer;
-}
-
-.southTable td {
-	font-family: sans-serif;
-	font-size: small;
-	padding: 0 10px 0 0;
-}
-
-.southTable th {
-	border-bottom: 0px;
-	color: #C35817;
-	font-style: normal;
-	font-weight: bold;
-	font-size:13px;
-	text-shadow:none;
-	text-decoration:underline;
-}
-
-.glossaryTable
+.resultTable tr:first-child:hover
 {
-	width:100%;
-	height:100%;
+	background:none;
 }
 
-.glossaryTable tr:hover
+.resultTable tr:hover
 {
-	background:#E7E7E7;
+	background:#DFE3E7;
 }
 
-.glossaryTable td.detailCol
+.resultTable td.numTransCol
 {
-	width:54px;
+	width:60px;
 }
 
-.glossaryTable td.actionCol
+.resultTable td.detailCol
 {
-	width:46px;
+	width:60px;
 }
 
-.glossaryTable .th
+.resultTable td.similarityCol
+{
+	width:60px;
+}
+
+.resultTable td.actionCol
+{
+	width:60px;
+}
+
+.resultTable .th
 {
 	color: #C35817;
 	font-weight: bold;
@@ -878,19 +893,19 @@ td.ApprovedStateDecoration div div div
 	text-decoration:underline;
 }
 
-.glossaryTable .centered
+.resultTable .centered
 {
 	text-align:center;
 }
 
-.glossaryTable .details
+.resultTable .details
 {
 	font-size:16px;
 	color:#00264C;
 	cursor:pointer;
 }
 
-.glossaryTable .details:hover
+.resultTable .details:hover
 {
 	color:red;
 }
@@ -1004,5 +1019,30 @@ td.ApprovedStateDecoration div div div
 .GWTDialogBox table
 {
 	width:100%;
+}
+
+.GWTDialogBox .headerLabel
+{
+	padding-right:5px;
+	color:#C35817;
+	font-weight:bold;
+}
+
+.GWTDialogBox .alignTop
+{
+	vertical-align:top;
+}
+
+.GWTDialogBox .lastModifiedLabel
+{
+	color:#C35817;
+	font-weight:bold;
+}
+
+.GWTDialogBox .button
+{
+	width:70px;
+	margin:1px;
+	padding:2px;
 }
 

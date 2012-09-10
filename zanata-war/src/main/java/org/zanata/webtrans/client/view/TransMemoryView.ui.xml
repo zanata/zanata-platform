@@ -9,25 +9,37 @@
             padding-top:5px;	
             font-weight:bold;
         }
-        .narrowCenteredColumn {
-            width: 1em;
-            text-align:center;
-        }
+       
+        .searchBox
+		{
+			border:1px solid #A7A7A7;
+			border-radius:3px;
+			padding:2px;
+		}
+		
+		.rootContainer {
+			min-width:550px;
+			width:100%;
+		}
+		
     </ui:style>
         
-	<g:LayoutPanel>
-		<g:layer top="0px" height="30px">
-			<g:HorizontalPanel>
-				<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
-				<g:TextBox ui:field="tmTextBox" />
-                <g:ValueListBox ui:field="searchType"/>
-				<g:Button ui:field="searchButton"/>
-				<g:Button ui:field="clearButton"/>
-                <g:Button ui:field="mergeTMButton"/>
-			</g:HorizontalPanel>
-		</g:layer>
-		<g:layer top="25px" bottom="0px">
-			<g:ScrollPanel ui:field="scrollPanel"/>
-		</g:layer>
-	</g:LayoutPanel>
+	<g:ScrollPanel>
+		<g:VerticalPanel styleName="{style.rootContainer}">
+			<g:cell height="30px">
+				<g:HorizontalPanel>
+					<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
+					<g:TextBox ui:field="tmTextBox" styleName="{style.searchBox}"/>
+	                <g:ValueListBox ui:field="searchType"/>
+					<g:Button ui:field="searchButton"/>
+					<g:Button ui:field="clearButton"/>
+	                <g:Button ui:field="mergeTMButton"/>
+				</g:HorizontalPanel>
+			</g:cell>
+			
+			<g:cell>
+				<g:HTMLPanel ui:field="container"/>
+			</g:cell>
+		</g:VerticalPanel>
+	</g:ScrollPanel>
 </ui:UiBinder> 

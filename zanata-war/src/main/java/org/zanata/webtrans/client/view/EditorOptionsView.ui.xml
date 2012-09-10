@@ -2,8 +2,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client">
 
-	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources" />
-
 	<ui:style field="style" type="org.zanata.webtrans.client.view.EditorOptionsView.Styles">
         .mainPanel table td {
             font-size: 13px;
@@ -73,7 +71,7 @@
                         <g:VerticalPanel ui:field="optionsContainer" />
                     </g:VerticalPanel>
                 </g:layer>
-                <g:layer top="310px" height="100px" left="5px" right="5px">
+                <g:layer top="310px" height="70px" left="5px" right="5px">
                     <g:VerticalPanel width="100%">
                         <g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
                         <g:HTMLPanel styleName="{style.pageSizeContainer}">
@@ -81,6 +79,12 @@
                             <g:InlineLabel ui:field="twentyFive" >25</g:InlineLabel>
                             <g:InlineLabel ui:field="fifty" >50</g:InlineLabel>
                         </g:HTMLPanel>
+                    </g:VerticalPanel>
+                </g:layer>
+                <g:layer top="380px" height="100px" left="5px" right="5px">
+                    <g:VerticalPanel width="100%">
+                        <g:Label ui:field="otherConfigHeader" styleName="sideMenuHeader"/>
+                        <g:CheckBox ui:field="showErrorChk"><ui:msg>Show Errors</ui:msg></g:CheckBox>
                     </g:VerticalPanel>
                 </g:layer>
             </g:LayoutPanel>

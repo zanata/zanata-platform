@@ -37,11 +37,14 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    Grid transUnitTable;
    @UiField
    Styles style;
+   @UiField
+   WebTransMessages messages;
+   @UiField
+   ScrollPanel root;
 
    private final FilterViewConfirmationDisplay filterViewConfirmationDisplay;
    private final LoadingPanel loadingPanel;
-   @UiField
-   Label noContentLabel;
+   private final Label noContentLabel = new Label();
    private Listener listener;
 
    @Inject
@@ -50,6 +53,8 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
       this.loadingPanel = loadingPanel;
       initWidget(uiBinder.createAndBindUi(this));
+      noContentLabel.setText(messages.noContent());
+      noContentLabel.setStyleName(style.noContent());
 
       transUnitTable.addClickHandler(new ClickHandler()
       {
@@ -115,7 +120,14 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 
    private void showEmptyContentIfNoData(int dataSize)
    {
-      noContentLabel.setVisible(dataSize == 0);
+      if (dataSize == 0)
+      {
+         root.setWidget(noContentLabel);
+      }
+      else
+      {
+         root.setWidget(transUnitTable);
+      }
    }
 
    private void applyRowStyle()

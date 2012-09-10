@@ -16,6 +16,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -26,10 +27,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,7 +55,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    TextBox glossaryTextBox;
 
    @UiField
-   Button searchButton;
+   Button searchButton, clearButton;
 
    @UiField
    Label headerLabel;
@@ -63,12 +64,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    ValueListBox<SearchType> searchType;
 
    @UiField
-   Button clearButton;
+   HTMLPanel container;
 
-   @UiField
-   ScrollPanel scrollPanel;
+   private final FlexTable resultTable;
 
-   private final FlexTable table;
+   private final UiMessages messages;
 
    private final Label loadingLabel, noResultFoundLabel;
 
@@ -82,11 +82,13 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Inject
    public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
-      table = new FlexTable();
-      table.setStyleName("glossaryTable");
-      table.setCellSpacing(0);
+      this.messages = messages;
+      resultTable = new FlexTable();
+      resultTable.setStyleName("resultTable");
+      resultTable.setCellSpacing(0);
+      resultTable.setCellPadding(3);
 
-      FlexCellFormatter formatter = table.getFlexCellFormatter();
+      FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
       formatter.setStyleName(0, SOURCE_COL, "th");
       formatter.setStyleName(0, TARGET_COL, "th");
       formatter.setStyleName(0, ACTION_COL, "th");
@@ -96,12 +98,12 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       formatter.addStyleName(0, DETAILS_COL, "centered");
       formatter.addStyleName(0, DETAILS_COL, "detailCol");
 
-      table.setWidget(0, 0, new Label(messages.srcTermLabel()));
-      table.setWidget(0, 1, new Label(messages.targetTermLabel()));
-      table.setWidget(0, 2, null);
-      table.setWidget(0, 3, new Label(messages.detailsLabel()));
+      resultTable.setWidget(0, SOURCE_COL, new Label(messages.srcTermLabel()));
+      resultTable.setWidget(0, TARGET_COL, new Label(messages.targetTermLabel()));
+      resultTable.setWidget(0, ACTION_COL, null);
+      resultTable.setWidget(0, DETAILS_COL, new Label(messages.detailsLabel()));
 
-      loadingLabel = new Label(messages.loading());
+      loadingLabel = new Label(messages.searching());
       loadingLabel.setStyleName("tableMsg");
       noResultFoundLabel = new Label(messages.foundNoGlossaryResults());
       noResultFoundLabel.setStyleName("tableMsg");
@@ -109,10 +111,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       initWidget(uiBinder.createAndBindUi(this));
 
-      scrollPanel.add(loadingLabel);
+      container.add(loadingLabel);
 
-      // copyColumn.setCellStyleNames(style.narrowCenteredColumn());
-      // detailsColumn.setCellStyleNames(style.narrowCenteredColumn());
       headerLabel.setText(messages.glossaryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
@@ -127,11 +127,10 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       }
    }
 
-   @UiHandler("clearButton")
-   public void onClearButtonClicked(ClickEvent event)
+   @Override
+   public HasClickHandlers getClearButton()
    {
-      glossaryTextBox.setText("");
-      clearTableContent();
+      return clearButton;
    }
 
    @Override
@@ -154,17 +153,35 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Override
    public void startProcessing()
    {
-      scrollPanel.clear();
-      scrollPanel.add(loadingLabel);
+      container.clear();
+      container.add(loadingLabel);
 
       clearTableContent();
    }
 
-   private void clearTableContent()
+   @Override
+   public void stopProcessing(boolean showResult)
    {
-      for (int i = 1; i < table.getRowCount(); i++)
+      container.clear();
+      if (!showResult)
       {
-         table.removeRow(i);
+         container.add(noResultFoundLabel);
+      }
+      else
+      {
+         container.add(resultTable);
+      }
+   }
+
+   @Override
+   public void clearTableContent()
+   {
+      if(resultTable.getRowCount() > 1)
+      {
+         for (int i = 1; i < resultTable.getRowCount(); i++)
+         {
+            resultTable.removeRow(i);
+         }
       }
    }
 
@@ -183,52 +200,43 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Override
    public void renderTable(ArrayList<GlossaryResultItem> glossaries)
    {
-      startProcessing();
-
-      if (!glossaries.isEmpty())
+      for (int i = 0; i < glossaries.size(); i++)
       {
-         for (int i = 0; i < glossaries.size(); i++)
+         final GlossaryResultItem item = glossaries.get(i);
+
+         resultTable.setWidget(i + 1, SOURCE_COL, new HighlightingLabel(item.getSource()));
+         resultTable.setWidget(i + 1, TARGET_COL, new HighlightingLabel(item.getTarget()));
+
+         Button copyButton = new Button(messages.copy());
+         copyButton.setTitle(messages.copyTooltip());
+
+         copyButton.addClickHandler(new ClickHandler()
          {
-            final GlossaryResultItem item = glossaries.get(i);
-
-            table.setWidget(i + 1, SOURCE_COL, new HighlightingLabel(item.getSource()));
-            table.setWidget(i + 1, TARGET_COL, new HighlightingLabel(item.getTarget()));
-
-            Button copyButton = new Button("Copy");
-            copyButton.addClickHandler(new ClickHandler()
+            @Override
+            public void onClick(ClickEvent event)
             {
-               @Override
-               public void onClick(ClickEvent event)
-               {
-                  listener.fireCopyEvent(item);
-               }
-            });
+               listener.fireCopyEvent(item);
+            }
+         });
 
-            table.setWidget(i + 1, ACTION_COL, copyButton);
-            table.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
-            table.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
+         resultTable.setWidget(i + 1, ACTION_COL, copyButton);
+         resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
+         resultTable.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
 
-            InlineLabel infoCell = new InlineLabel();
-            infoCell.setStyleName("icon-info-circle-2 details");
-            infoCell.addClickHandler(new ClickHandler()
+         InlineLabel infoCell = new InlineLabel();
+         infoCell.setStyleName("icon-info-circle-2 details");
+         infoCell.addClickHandler(new ClickHandler()
+         {
+            @Override
+            public void onClick(ClickEvent event)
             {
-               @Override
-               public void onClick(ClickEvent event)
-               {
-                  listener.showGlossaryDetail(item);
-               }
-            });
+               listener.showGlossaryDetail(item);
+            }
+         });
 
-            table.setWidget(i + 1, DETAILS_COL, infoCell);
-            table.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
-            table.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
-         }
-         scrollPanel.clear();
-         scrollPanel.add(table);
-      }
-      else
-      {
-         scrollPanel.add(noResultFoundLabel);
+         resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
+         resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
+         resultTable.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
       }
    }
 

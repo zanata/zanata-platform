@@ -182,6 +182,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       MultiSelectionModel<TransUnitReplaceInfo> createMultiSelectionModel();
 
       HasValue<Boolean> getSelectAllCheckbox();
+
+      void addSearchFieldsSelect(String item, String value);
    }
 
    private final WebTransMessages messages;
@@ -250,6 +252,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       setUiForNothingSelected();
       display.setReplaceAllButtonVisible(!userWorkspaceContext.hasReadOnlyAccess());
 
+      display.addSearchFieldsSelect("search target", "target");
+      display.addSearchFieldsSelect("search source", "source");
+      display.addSearchFieldsSelect("search both", "both");
+      
       registerHandler(display.getSearchButton().addClickHandler(new ClickHandler()
       {
          @Override
