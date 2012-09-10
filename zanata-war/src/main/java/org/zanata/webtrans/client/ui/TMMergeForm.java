@@ -22,6 +22,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.EnumMessages;
+import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.GWT;
@@ -66,6 +67,8 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    InlineLabel differentContentStatus;
    @UiField
    Label differentContentLabel;
+   @UiField
+   UiMessages messages;
 
    private final EnumRadioButtonGroup<MergeOption> projectOptionGroup;
    private final EnumRadioButtonGroup<MergeOption> docIdOptionGroup;
@@ -79,6 +82,8 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    {
       this.mergeStatusRenderer = mergeStatusRenderer;
       initWidget(uiBinder.createAndBindUi(this));
+
+      matchThreshold.setItemText(0, messages.identical());
 
       projectOptionGroup = new EnumRadioButtonGroup<MergeOption>(OptionType.PROJECT_MISMATCH.name(), MergeOption.class, mergeOptionRenderer);
       projectOptionGroup.setSelectionChangeListener(this);

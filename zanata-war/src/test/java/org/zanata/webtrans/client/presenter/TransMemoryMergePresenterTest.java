@@ -117,14 +117,14 @@ public class TransMemoryMergePresenterTest
    }
 
    @Test
-   public void willIgnoreIfNoUntranslatedTextFlow() {
+   public void willIgnoreApprovedTextFlow() {
       // Given:
-      // current table page has a list of trans units but NONE of them are untranslated
+      // current table page has a list of trans units but all of them are approved
       // @formatter:off
       List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
             .add(makeTransUnit(2, ContentState.Approved))
-            .add(makeTransUnit(3, ContentState.NeedReview))
-            .add(makeTransUnit(6, ContentState.NeedReview))
+            .add(makeTransUnit(3, ContentState.Approved))
+            .add(makeTransUnit(6, ContentState.Approved))
             .build();
       // @formatter:on
       mockCurrentPageToReturn(currentPageRows);
@@ -172,8 +172,8 @@ public class TransMemoryMergePresenterTest
 
       TransMemoryMerge action = transMemoryMergeCaptor.getValue();
       List<TransUnitUpdateRequest> updateRequests = action.getUpdateRequests();
-      assertThat(updateRequests, Matchers.hasSize(3));
-      assertThat(getIds(updateRequests), Matchers.contains(1L, 4L, 5L));
+      assertThat(updateRequests, Matchers.hasSize(5));
+      assertThat(getIds(updateRequests), Matchers.contains(1L, 3L, 4L, 5L, 6L));
       assertThat(action.getDifferentProjectOption(), Matchers.equalTo(MergeOption.IGNORE_CHECK));
       assertThat(action.getDifferentDocumentOption(), Matchers.equalTo(MergeOption.REJECT));
       assertThat(action.getDifferentContextOption(), Matchers.equalTo(MergeOption.FUZZY));

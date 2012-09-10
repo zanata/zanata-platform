@@ -79,7 +79,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("TM merge")
    String mergeTMButtonLabel();
 
-   @DefaultMessage("Merge translation from Translation Memory for untranslated text flows on current page")
+   @DefaultMessage("Merge translation from Translation Memory for untranslated and fuzzy text flows on current page")
    String mergeTMTooltip();
 
    @DefaultMessage("Select TM match percentage to pre-fill translations. All the conditions will be checked to determine final state.")
@@ -123,4 +123,7 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Action")
    String action();
+
+   @DefaultMessage("100% (Identical)")
+   String identical();
 }
