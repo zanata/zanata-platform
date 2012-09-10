@@ -12,4 +12,11 @@
   <ui:define name="center_content">
     <ui:include src="../WEB-INF/layout/login_form.xhtml"/>
   </ui:define>
+
+  <ui:define name="right_content">
+    <rich:panel rendered="#{applicationConfiguration.internalAuth}">
+      <s:link view="/account/password_reset_request.xhtml"
+        propagation="none">#{messages['jsf.ForgotYourPassword']}</s:link>
+    </rich:panel>
+  </ui:define>
 </ui:composition>

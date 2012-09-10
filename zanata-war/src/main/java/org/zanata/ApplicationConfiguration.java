@@ -63,7 +63,7 @@ public class ApplicationConfiguration implements Serializable
    private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
 
-   private static final String KEY_EXT_AUTH_TYPE = "zanata.security.auth.type";
+   private static final String KEY_AUTH_POLICY = "zanata.security.auth.policy";
 
    private static final String[] allConfigKeys = new String[]
       {
@@ -92,7 +92,7 @@ public class ApplicationConfiguration implements Serializable
    private String version;
    private String buildTimestamp;
    private boolean enableCopyTrans = true;
-   private AuthenticationType authType;
+   private Map<AuthenticationType, String> loginModuleNames = new HashMap<AuthenticationType, String>();
 
    @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
@@ -112,19 +112,44 @@ public class ApplicationConfiguration implements Serializable
       this.configValues = configValues;
 
       this.loadExternalConfig();
+      this.validateConfiguration();
       this.applyLoggingConfiguration();
    }
 
    private void loadExternalConfig()
    {
       ResourceBundle config = getExternalConfig();
-      if( !config.containsKey(KEY_EXT_AUTH_TYPE) )
+      for( AuthenticationType authType : AuthenticationType.values() )
       {
-         throw new RuntimeException("Authentication type not present in zanata.properties.");
+         String key = KEY_AUTH_POLICY + "." + authType.name().toLowerCase();
+         if( config.containsKey( key ) )
+         {
+            loginModuleNames.put( authType, config.getString(key) );
+         }
       }
-      else
+   }
+
+   /**
+    * Validates that there are no invalid values set on the zanata configuration
+    */
+   private void validateConfiguration()
+   {
+      // Validate that only internal / openid authentication is enabled at once
+      if( loginModuleNames.size() > 2 )
       {
-         authType = AuthenticationType.valueOf( config.getString(KEY_EXT_AUTH_TYPE) );
+         throw new RuntimeException("Multiple invalid authentication types present in zanata.properties");
+      }
+      else if( loginModuleNames.size() == 2 )
+      {
+         // Internal and Open id are the only allowed combined authentication types
+         if( !(loginModuleNames.containsKey(AuthenticationType.INTERNAL) && loginModuleNames.containsKey(AuthenticationType.INTERNAL) ) )
+         {
+            throw new RuntimeException("Multiple invalid authentication types present in zanata.properties");
+         }
+      }
+      else if( loginModuleNames.size() < 1)
+      {
+         throw new RuntimeException("At least one authentication type must be configured in zanata.properties");
       }
    }
 
@@ -266,28 +291,27 @@ public class ApplicationConfiguration implements Serializable
    
    public boolean isInternalAuth()
    {
-      return this.authType != null && this.authType == AuthenticationType.INTERNAL;
+      return this.loginModuleNames.containsKey( AuthenticationType.INTERNAL );
    }
    
    public boolean isOpenIdAuth()
    {
-      return this.authType != null && this.authType == AuthenticationType.OPENID;
+      return this.loginModuleNames.containsKey( AuthenticationType.OPENID );
    }
    
    public boolean isKerberosAuth()
    {
-      return this.authType != null && this.authType == AuthenticationType.KERBEROS;
+      return this.loginModuleNames.containsKey( AuthenticationType.KERBEROS );
+   }
+
+   public boolean isJaasAuth()
+   {
+      return this.loginModuleNames.containsKey( AuthenticationType.JAAS );
    }
    
-   public String getAuthenticationType()
+   public String getLoginModuleName( AuthenticationType authType )
    {
-      String authTypeStr = AuthenticationType.JAAS.toString();
-      
-      if( this.authType != null )
-      {
-         authTypeStr = this.authType.toString();
-      }
-      return authTypeStr;
+      return this.loginModuleNames.get( authType );
    }
 
    public boolean isDebug()

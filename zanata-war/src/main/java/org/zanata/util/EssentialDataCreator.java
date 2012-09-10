@@ -141,29 +141,6 @@ public class EssentialDataCreator
             }
          }
 
-         // Domain roles for OpenId authentication
-         if( applicationConfiguration.isOpenIdAuth() )
-         {
-            log.info("Creating Domain roles for Open Id");
-
-            if( !accountRoleDAO.roleExists("Fedora") )
-            {
-               accountRoleDAO.create("Fedora", AUTO);
-            }
-            if( !accountRoleDAO.roleExists("Yahoo") )
-            {
-               accountRoleDAO.create("Yahoo", AUTO);
-            }
-            if( !accountRoleDAO.roleExists("Google") )
-            {
-               accountRoleDAO.create("Google", AUTO);
-            }
-            if( !accountRoleDAO.roleExists("MyOpenID") )
-            {
-               accountRoleDAO.create("MyOpenID", AUTO);
-            }
-         }
-
          // Enable en-US by default
          LocaleId localeId = new LocaleId("en-US");
          if( localeDAO.findByLocaleId( localeId ) == null )

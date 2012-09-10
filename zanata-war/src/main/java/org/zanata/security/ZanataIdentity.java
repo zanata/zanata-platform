@@ -47,6 +47,7 @@ import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.ApplicationConfiguration;
 
 import com.google.common.collect.Lists;
 
@@ -69,6 +70,8 @@ public class ZanataIdentity extends Identity
 
    private boolean preAuthenticated;
 
+   private AuthenticationType authenticationType;
+
    public String getApiKey()
    {
       return apiKey;
@@ -83,6 +86,11 @@ public class ZanataIdentity extends Identity
    public boolean isApiRequest()
    {
       return apiKey != null;
+   }
+
+   public AuthenticationType getAuthenticationType()
+   {
+      return authenticationType;
    }
 
    public static ZanataIdentity instance()
@@ -217,7 +225,8 @@ public class ZanataIdentity extends Identity
       }
       if (getJaasConfigName() != null && !getJaasConfigName().equals(JAAS_DEFAULT))
       {
-         return new LoginContext(getJaasConfigName(), getSubject(), getCredentials().createCallbackHandler());
+         ApplicationConfiguration appConfig = (ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class);
+         return new LoginContext(appConfig.getLoginModuleName(this.authenticationType), getSubject(), getCredentials().createCallbackHandler());
       }
 
       return new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance());
@@ -235,6 +244,13 @@ public class ZanataIdentity extends Identity
 
    public String login()
    {
+      // Default to internal authentication
+      return this.login( AuthenticationType.INTERNAL );
+   }
+
+   public String login( AuthenticationType authType )
+   {
+      this.authenticationType = authType;
       String result = super.login();
       if (result != null && result.equals("loggedIn"))
       {

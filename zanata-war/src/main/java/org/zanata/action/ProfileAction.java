@@ -25,6 +25,7 @@ import java.io.Serializable;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Pattern;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -174,6 +175,9 @@ public class ProfileAction implements Serializable
       this.email = email;
    }
 
+   @NotEmpty
+   @Length(min = 3, max = 20)
+   @Pattern(regex = "^[a-z\\d_]{3,20}$")
    public String getUsername()
    {
       return username;
