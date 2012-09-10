@@ -95,17 +95,33 @@ public class LoginAction
     */
    private void configureAuthentication()
    {
-      try
+      // All others
+      if( authProvider == null )
       {
-         // If it is open Id
-         OpenIdProviderType providerType = OpenIdProviderType.valueOf(authProvider);
-         this.authType = AuthenticationType.OPENID;
-         zanataOpenId.setProvider(providerType);
+         if( applicationConfiguration.isInternalAuth() )
+         {
+            this.authType = AuthenticationType.INTERNAL;
+         }
+         else if( applicationConfiguration.isJaasAuth() )
+         {
+            this.authType = AuthenticationType.JAAS;
+         }
       }
-      catch (IllegalArgumentException e)
+      // Open Id / internal auth
+      else
       {
-         // If it's not open id, it might be another authentication type
-         this.authType = AuthenticationType.valueOf(authProvider);
+         try
+         {
+            // If it is open Id
+            OpenIdProviderType providerType = OpenIdProviderType.valueOf(authProvider);
+            this.authType = AuthenticationType.OPENID;
+            zanataOpenId.setProvider(providerType);
+         }
+         catch (Exception e)
+         {
+            // If it's not open id, it might be another authentication type
+            this.authType = AuthenticationType.valueOf(authProvider);
+         }
       }
    }
 
@@ -177,13 +193,13 @@ public class LoginAction
 
    private String loginWithInternal()
    {
-      credentials.setUsername( username );
+      //credentials.setUsername( username );
       return this.identity.login(authType);
    }
 
    private String loginWithJaas()
    {
-      credentials.setUsername( username );
+      //credentials.setUsername( username );
       return this.identity.login(authType);
    }
 
