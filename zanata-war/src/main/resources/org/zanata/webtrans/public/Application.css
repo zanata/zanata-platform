@@ -158,31 +158,6 @@ Removes some of the styling on the page-level splitters
 	color: white;
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-	cursor: pointer;
-	margin-left: 6px;
-	padding: 3px 6px 3px 6px;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	background: #4a75b5;
-	color: #FFFFFF;
-	font-weight: bold;
-}
-
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
-	cursor: default;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	background: #183c66;
-	color: #FFFFFF;
-}
-
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
-	border: 2px solid #e0e8ee;
-	background: #FFFFFF;
-	border-radius: 5px;
-}
-
 .WebTransEditor-Outer tr.middle td.middleCenter {
 	height: 100%;
 	width: 100%;
@@ -222,6 +197,28 @@ Removes some of the styling on the page-level splitters
 	right: 0px;
 	display: inline;
 }
+
+.transUnitTable
+{
+	
+}
+
+.transUnitTable tr.selected
+{
+	border-right: 5px solid #8a2be2;
+    border-left: 5px solid #8a2be2;
+}
+
+.transUnitTable tr:hover .fadeElement, .transUnitTable tr.selected .fadeElement
+{
+	opacity:1;
+}
+
+.transUnitTable tr .fadeElement
+{
+	opacity:0.2;
+}
+
 
 .TableEditor tr td {
 	vertical-align: top;

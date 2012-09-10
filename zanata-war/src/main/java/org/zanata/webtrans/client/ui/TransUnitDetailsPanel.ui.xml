@@ -44,7 +44,7 @@
         }
     </ui:style>
 
-    <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container}" ui:field="disclosurePanel">
+    <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container} fadeElement" ui:field="disclosurePanel">
         <g:customHeader>
             <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
         </g:customHeader>

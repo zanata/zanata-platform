@@ -154,11 +154,11 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       {
          if (i == rowIndex)
          {
-            rowFormatter.addStyleName(i, style.selected());
+            rowFormatter.addStyleName(i, "selected");
          }
          else
          {
-            rowFormatter.removeStyleName(i, style.selected());
+            rowFormatter.removeStyleName(i, "selected");
          }
       }
    }
@@ -190,8 +190,6 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       String cellFormat();
 
       String table();
-
-      String selected();
 
       String noContent();
    }

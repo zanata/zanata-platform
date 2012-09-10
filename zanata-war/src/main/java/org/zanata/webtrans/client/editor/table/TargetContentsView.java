@@ -119,10 +119,10 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          @Override
          public void execute()
          {
-            if(editors.size() > currentEditorIndex)
-            {
+//            if(editors.size() > currentEditorIndex)
+//            {
                editors.get(currentEditorIndex).setFocus();
-            }
+//            }
          }
       });
    }
