@@ -10,7 +10,7 @@
 			border-radius: 3px;
 			outline: none;
 			padding: 4px;
-			width:98%;
+			width:388px;
 		}
 		
 		.transFilterTextBoxEmpty {

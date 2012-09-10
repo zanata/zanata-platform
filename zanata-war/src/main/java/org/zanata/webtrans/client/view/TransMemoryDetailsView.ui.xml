@@ -22,6 +22,11 @@
 			resize:none;
 		}
 		
+		.textArea[readonly]
+		{
+			background:lightgray;
+		}
+		
 		.button
 		{
 			float:right;

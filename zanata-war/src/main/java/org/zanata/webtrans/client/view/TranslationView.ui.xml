@@ -6,7 +6,7 @@
 	<ui:style>
 		.southPanel
 		{
-			border-bottom:2px solid #E0E8EE;
+			border-bottom:1px solid #E5E5E5;
 		}
 	</ui:style>
 

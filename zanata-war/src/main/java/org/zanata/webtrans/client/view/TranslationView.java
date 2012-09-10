@@ -73,9 +73,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       StyleInjector.inject(resources.style().getText(), true);
       southPanelContainer = new LayoutPanel();
 
-      tmGlossaryPanel = new SplitLayoutPanel(5);
+      tmGlossaryPanel = new SplitLayoutPanel(2);
       
-      mainSplitPanel = new SplitLayoutPanel(5);
+      mainSplitPanel = new SplitLayoutPanel(2);
 
       initWidget(uiBinder.createAndBindUi(this));
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) MIN_SOUTH_PANEL_HEIGHT);

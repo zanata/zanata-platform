@@ -110,9 +110,8 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
       saveButton.setText(messages.save());
       sourceComment.setVisibleItemCount(VISIBLE_COMMENTS);
 
-      sourceComment.setEnabled(false);
-      sourceText.setEnabled(false);
-      srcRef.setEnabled(false);
+      sourceText.setReadOnly(true);
+      srcRef.setReadOnly(true);
 
       targetCommentsTable.setCellPadding(0);
       targetCommentsTable.setCellSpacing(1);
@@ -168,7 +167,7 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
 
       if (!hasGlossaryUpdateAccess)
       {
-         commentArea.setEnabled(false);
+         commentArea.setReadOnly(true);
       }
       panel.add(commentArea);
 
@@ -312,8 +311,8 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    public void setHasUpdateAccess(boolean hasGlossaryUpdateAccess)
    {
       saveButton.setEnabled(hasGlossaryUpdateAccess);
-      newTargetComment.setEnabled(hasGlossaryUpdateAccess);
-      targetText.setEnabled(hasGlossaryUpdateAccess);
+      newTargetComment.setReadOnly(!hasGlossaryUpdateAccess);
+      targetText.setReadOnly(!hasGlossaryUpdateAccess);
       addNewCommentButton.setVisible(hasGlossaryUpdateAccess);
       this.hasGlossaryUpdateAccess = hasGlossaryUpdateAccess;
    }

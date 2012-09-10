@@ -9,8 +9,7 @@
 		
 		.editor {
 			background-color: #ffffff;
-			border-top: 2px solid #e0e8ee;
-			border-bottom: 2px solid #e0e8ee;
+			border-bottom: 1px solid #E5E5E5;
 		}
 		
 		.unitStatus {
@@ -27,11 +26,6 @@
 			text-align: center;
 		}
 		
-		.pager {
-			text-align: center;
-			display: inline;
-			}
-			
 			.filterPanelContainer
 			{
 	
@@ -49,8 +43,8 @@
 				<g:layer top="25px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
 				</g:layer>
-				<g:layer bottom="0px" height="2em" left="30px" right="30px">
-					<g:FlowPanel styleName="{style.pager}">
+				<g:layer bottom="0px" height="2em" left="0" right="0">
+					<g:FlowPanel>
 						<fui:Pager ui:field="pager"/>
 					</g:FlowPanel>
 				</g:layer>

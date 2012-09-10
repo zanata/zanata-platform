@@ -22,19 +22,28 @@
 			width:100%;
 		}
 		
+		.topBar
+		{
+			color:#C35817;
+			padding-left:10px;
+			background:#D3D3D3;
+		}
+		
     </ui:style>
         
 	<g:ScrollPanel>
 		<g:VerticalPanel styleName="{style.rootContainer}">
-			<g:cell height="30px">
-				<g:HorizontalPanel>
-					<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
-					<g:TextBox ui:field="tmTextBox" styleName="{style.searchBox}"/>
-	                <g:ValueListBox ui:field="searchType"/>
-					<g:Button ui:field="searchButton"/>
-					<g:Button ui:field="clearButton"/>
-	                <g:Button ui:field="mergeTMButton"/>
-				</g:HorizontalPanel>
+			<g:cell height="30px" verticalAlignment="ALIGN_MIDDLE">
+				<g:HTMLPanel styleName="{style.topBar}">
+					<g:HorizontalPanel>
+						<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
+						<g:TextBox ui:field="tmTextBox" styleName="{style.searchBox}"/>
+		                <g:ValueListBox ui:field="searchType"/>
+						<g:Button ui:field="searchButton"/>
+						<g:Button ui:field="clearButton"/>
+		                <g:Button ui:field="mergeTMButton"/>
+					</g:HorizontalPanel>
+				</g:HTMLPanel>
 			</g:cell>
 			
 			<g:cell>
