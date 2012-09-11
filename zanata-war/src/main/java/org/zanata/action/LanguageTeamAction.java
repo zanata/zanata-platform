@@ -69,9 +69,6 @@ public class LanguageTeamAction implements Serializable
    @Logger
    Log log;
    
-   @In
-   private List<HLocale> memberLanguage;
-
    private String language;
    private HLocale locale;
    private String searchTerm;
