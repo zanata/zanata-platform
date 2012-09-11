@@ -23,6 +23,7 @@ package org.zanata.webtrans.server.rpc;
 
 import org.zanata.common.ContentState;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.MergeOption;
@@ -48,10 +49,22 @@ public class TransMemoryMergeStatusResolver
    private boolean needReview = false;
    private boolean needSkip = false;
 
-   public ContentState workOutStatus(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail, TransMemoryResultItem tmResult)
+   /**
+    * 
+    * @param action TM merge action
+    * @param tfToBeFilled text flow to be filled
+    * @param tmDetail TM detail
+    * @param tmResult TM result
+    * @param oldTarget text flow target that may be null or has NEW or FUZZY
+    *           status
+    * 
+    * @return content state to be set on auto translated target. If null means
+    *         we want to reject the auto translation via TM merge
+    */
+   public ContentState workOutStatus(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail, TransMemoryResultItem tmResult, HTextFlowTarget oldTarget)
    {
 
-      if (tmResult.getSimilarityPercent() != 100)
+      if ((int) tmResult.getSimilarityPercent() != 100)
       {
          needReview = true;
       }
@@ -66,6 +79,11 @@ public class TransMemoryMergeStatusResolver
       }
       else if (needReview)
       {
+         // if there is an old translation and we only find TM needs review, we don't overwrite previous translation
+         if (oldTarget != null && oldTarget.getState() != ContentState.New)
+         {
+            return null;
+         }
          return ContentState.NeedReview;
       }
       return ContentState.Approved;
