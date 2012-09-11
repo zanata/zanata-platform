@@ -8,14 +8,11 @@
 		type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
         .container {
             width: 50%;
-            margin: 5px;
-            table-layout: fixed;
+            margin-top: 5px;
         }
 
         .label {
             font-size: 11px;
-            font-weight: bold;
-            font-style: normal;
         }
 
         .header {
@@ -38,7 +35,6 @@
         .content {
             height: 100%;
             color: #D14836;
-            font-style: normal;
         }
     </ui:style>
 

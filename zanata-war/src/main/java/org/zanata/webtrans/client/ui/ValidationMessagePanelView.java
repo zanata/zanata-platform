@@ -18,8 +18,11 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -33,8 +36,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 public class ValidationMessagePanelView extends Composite implements HasUpdateValidationWarning
 {
@@ -109,7 +110,9 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
 
       for (String error : errors)
       {
-         contents.add(new Label(error));
+         Label errorLabel = new Label(error);
+         errorLabel.addStyleName(style.label());
+         contents.add(errorLabel);
       }
       setHeaderText(messages.validationWarningsHeading(errors.size()));
    }
