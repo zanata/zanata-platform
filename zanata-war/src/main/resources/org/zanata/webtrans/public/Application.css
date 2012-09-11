@@ -939,12 +939,6 @@ td.ApprovedStateDecoration div div div
     word-break: break-all;
 }
 
-.notificationPanel 
-{
-	border:none;
-	max-height:350px;
-}
-
 .keyShortcutPanel
 {
 	border:none;

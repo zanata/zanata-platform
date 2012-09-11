@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.presenter.SideMenuPresenter;
 import org.zanata.webtrans.client.presenter.SideMenuPresenter.Tab;
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
@@ -37,17 +39,18 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    Styles style;
 
    @UiField
-   InlineLabel editorOptionsTab, validationOptionsTab, chatTab;
+   InlineLabel notificationTab, editorOptionsTab, validationOptionsTab, chatTab, notificationLabel;
    
    @UiField
    LayoutPanel container;
    
-   private final Widget editorOptionView, validationOptionView, workspaceUsersView;
+   private final Widget editorOptionView, validationOptionView, workspaceUsersView, notificationView;
 
    @Inject
-   public SideMenuView(final WebTransMessages messages, final EditorOptionsDisplay editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView)
+   public SideMenuView(final WebTransMessages messages, final EditorOptionsDisplay editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView, final NotificationPresenter.Display notificationView)
    {
       initWidget(uiBinder.createAndBindUi(this));
+      notificationTab.setTitle(messages.notification());
       editorOptionsTab.setTitle(messages.editorOptions());
       validationOptionsTab.setTitle(messages.validationOptions());
       chatTab.setTitle(messages.chatRoom());
@@ -55,6 +58,7 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       this.editorOptionView = editorOptionView.asWidget();
       this.validationOptionView = validationOptionView.asWidget();
       this.workspaceUsersView = workspaceUsersView.asWidget();
+      this.notificationView = notificationView.asWidget();
    }
 
    @Override
@@ -67,6 +71,12 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    public HasClickHandlers getEditorOptionsButton()
    {
       return editorOptionsTab;
+   }
+
+   @Override
+   public HasClickHandlers getNotificationButton()
+   {
+      return notificationTab;
    }
 
    @Override
@@ -87,6 +97,7 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       editorOptionsTab.removeStyleName(style.selectedButton());
       validationOptionsTab.removeStyleName(style.selectedButton());
       chatTab.removeStyleName(style.selectedButton());
+      notificationTab.removeStyleName(style.selectedButton());
       
       container.clear();
       
@@ -105,6 +116,10 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
             chatTab.addStyleName(style.selectedButton());
             setChatTabAlert(false);
             break;
+      case NOTIFICATION:
+         container.add(notificationView);
+         notificationTab.addStyleName(style.selectedButton());
+         break;
          default:
             break;
       }
@@ -148,9 +163,26 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    }
 
    @Override
+   public void setNotificationTabAlert(boolean alert)
+   {
+      if (alert)
+      {
+         notificationTab.addStyleName(style.alertTab());
+      }
+      else
+      {
+         notificationTab.removeStyleName(style.alertTab());
+      }
+   }
+
+   @Override
    public Tab getCurrentTab()
    {
-      if (chatTab.getStyleName().contains(style.selectedButton()))
+      if (notificationTab.getStyleName().contains(style.selectedButton()))
+      {
+         return Tab.NOTIFICATION;
+      }
+      else if (chatTab.getStyleName().contains(style.selectedButton()))
       {
          return Tab.CHAT;
       }
@@ -163,5 +195,11 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
          return Tab.VALIDATION_OPTION;
       }
       return null;
+   }
+
+   @Override
+   public void setNotificationText(int count, Severity severity)
+   {
+      notificationLabel.setText(String.valueOf(count));
    }
 }

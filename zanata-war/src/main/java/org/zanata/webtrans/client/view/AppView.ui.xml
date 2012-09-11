@@ -57,27 +57,6 @@
 			text-decoration:underline;
         }
 		
-		.notificationLabel
-		{
-			text-align:center;
-			font-size: 10px;
-		    font-weight: bold;
-		    color: white;
-		    position: absolute;
-		    margin-left: 0px;
-		    margin-top: 0px;
-		    background: orange;
-		    border-radius: 2px;
-		    min-width:10px;
-		    z-index:900;
-		    right:15px;
-		}
-		
-		.hasWarning
-		{
-			background:#FFC000;
-		}
-		
 		.topMenuButton
 		{
             cursor: pointer;
@@ -128,17 +107,11 @@
 						<g:cell width="200px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="100px" horizontalAlignment="ALIGN_RIGHT">
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="75px" horizontalAlignment="ALIGN_RIGHT">
 	                    	<g:FlowPanel width="100%">
 	                    			<g:InlineLabel ui:field="searchAndReplace" styleName="icon-search {style.topMenuButton}"/> 
-	                    		
 	                    			<g:InlineLabel ui:field="documentList" styleName="icon-list {style.topMenuButton}"/>
-	                    		
 	                    			<g:InlineLabel ui:field="keyShortcuts" styleName="icon-keyboard {style.topMenuButton}"/>
-	                    			
-	                    			<g:InlineLabel ui:field="notification" styleName="icon-bell {style.topMenuButton}"/> 
-	                    			<g:InlineLabel ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
-	                    			 
 	                    	</g:FlowPanel>
 	                    </g:cell>
 					</g:HorizontalPanel>

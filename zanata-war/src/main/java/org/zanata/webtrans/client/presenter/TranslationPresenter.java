@@ -45,7 +45,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
 
 
-public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements HasLayoutSelection
+public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
@@ -244,12 +244,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       transMemoryPresenter.unbind();
       glossaryPresenter.unbind();
-   }
-
-   @Override
-   public void setSouthPanelVisible(boolean visible)
-   {
-      setSouthPanelExpanded(visible);
    }
 
    public void concealDisplay()

@@ -75,9 +75,6 @@ public class NotificationPresenterTest extends PresenterTest
       mockDisplay.appendMessage(Severity.Error, testMessage, null);
       expectLastCall().once();
 
-      mockDisplay.show();
-      expectLastCall().once();
-      
       expect(mockDisplay.getMessageCount()).andReturn(1);
       
       mockListener.setNotificationLabel(0, Severity.Info);
@@ -104,9 +101,6 @@ public class NotificationPresenterTest extends PresenterTest
          mockDisplay.appendMessage(Severity.Error, msg, null);
          expectLastCall().once();
       }
-
-      mockDisplay.show();
-      expectLastCall().anyTimes();
 
       for (int count = 0;count<testMessages.length;count++)
       {
@@ -149,9 +143,6 @@ public class NotificationPresenterTest extends PresenterTest
          expectLastCall().once();
       }
       
-      mockDisplay.show();
-      expectLastCall().times(testMessages.length);
-
       mockListener.setNotificationLabel(0, Severity.Info);
       expectLastCall().once();
       
@@ -185,18 +176,12 @@ public class NotificationPresenterTest extends PresenterTest
 
    private void expectPresenterSetupActions()
    {
-      mockDisplay.setModal(false);
-      mockDisplay.setAutoHideEnabled(true);
-      mockDisplay.setAnimationEnabled(false);
-      mockDisplay.hide(true);
       mockDisplay.setMessagesToKeep(MSG_TO_KEEP);
-      mockDisplay.setPopupTopRightCorner();
       mockDisplay.setMessageOrder(DisplayOrder.ASCENDING);
    }
 
    private void setupMockGetterReturnValues()
    {
-      expect(mockDisplay.getDismissButton()).andReturn(mockDismiss).anyTimes();
       expect(mockDisplay.getClearButton()).andReturn(mockClear).anyTimes();
    }
 }

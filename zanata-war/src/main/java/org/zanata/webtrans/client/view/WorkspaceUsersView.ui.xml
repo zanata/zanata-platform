@@ -83,7 +83,7 @@
 		}
     </ui:style>
 
-    <g:SplitLayoutPanel ui:field="mainPanel" styleName="{style.mainPanel} workspaceUserPanel">
+    <g:SplitLayoutPanel ui:field="mainPanel" styleName="{style.mainPanel}">
         <g:north size="200">
             <g:ScrollPanel>
                 <g:VerticalPanel ui:field='userListPanel' styleName="{style.userListTable}"/>
