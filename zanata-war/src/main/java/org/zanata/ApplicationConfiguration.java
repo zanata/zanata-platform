@@ -44,11 +44,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListResourceBundle;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -64,6 +66,7 @@ public class ApplicationConfiguration implements Serializable
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
 
    private static final String KEY_AUTH_POLICY = "zanata.security.auth.policy";
+   private static final String KEY_ADMIN_USERS = "zanata.security.admin.users";
 
    private static final String[] allConfigKeys = new String[]
       {
@@ -93,6 +96,7 @@ public class ApplicationConfiguration implements Serializable
    private String buildTimestamp;
    private boolean enableCopyTrans = true;
    private Map<AuthenticationType, String> loginModuleNames = new HashMap<AuthenticationType, String>();
+   private Set<String> adminUsers = new HashSet<String>();
 
    @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
@@ -119,12 +123,25 @@ public class ApplicationConfiguration implements Serializable
    private void loadExternalConfig()
    {
       ResourceBundle config = getExternalConfig();
+
+      // Authentication policies
       for( AuthenticationType authType : AuthenticationType.values() )
       {
          String key = KEY_AUTH_POLICY + "." + authType.name().toLowerCase();
          if( config.containsKey( key ) )
          {
             loginModuleNames.put( authType, config.getString(key) );
+         }
+      }
+
+      // Admin users
+      if( config.containsKey( KEY_ADMIN_USERS ) )
+      {
+         String userList = config.getString( KEY_ADMIN_USERS );
+
+         for( String userName : userList.split(",") )
+         {
+            adminUsers.add( userName.trim() );
          }
       }
    }
@@ -347,6 +364,11 @@ public class ApplicationConfiguration implements Serializable
    public boolean getEnableCopyTrans()
    {
       return enableCopyTrans;
+   }
+
+   public Set<String> getAdminUsers()
+   {
+      return new HashSet<String>( adminUsers );
    }
 
    public boolean isEmailLogAppenderEnabled()

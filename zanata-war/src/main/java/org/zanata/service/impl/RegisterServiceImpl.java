@@ -32,8 +32,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityStore;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
@@ -65,9 +67,33 @@ public class RegisterServiceImpl implements RegisterService
    
    @In
    PersonDAO personDAO;
+
+   @In
+   AccountRoleDAO accountRoleDAO;
    
    @In
    AccountActivationKeyDAO accountActivationKeyDAO;
+
+   @In
+   ApplicationConfiguration applicationConfiguration;
+
+
+   /**
+    * Performs post-processing logic after registering an account.
+    *
+    * @param account The account that has just been created.
+    */
+   private void postProcessRegisteredAccount( final HAccount account )
+   {
+      if( applicationConfiguration.getAdminUsers().contains( account.getUsername() ) )
+      {
+         HAccountRole adminRole = accountRoleDAO.findByName("admin");
+         if( adminRole != null )
+         {
+            account.getRoles().add( adminRole );
+         }
+      }
+   }
 
    public String register(final String username, final String password, String name, String email)
    {
@@ -85,6 +111,8 @@ public class RegisterServiceImpl implements RegisterService
       person.setAccount(account);
       person.setEmail(email);
       person.setName(name);
+
+      this.postProcessRegisteredAccount(account);
       personDAO.makePersistent(person);
 
       HAccountActivationKey key = new HAccountActivationKey();
@@ -113,6 +141,8 @@ public class RegisterServiceImpl implements RegisterService
       person.setAccount(account);
       person.setEmail(email);
       person.setName(name);
+
+      this.postProcessRegisteredAccount(account);
       personDAO.makePersistent(person);
 
       HAccountActivationKey key = new HAccountActivationKey();
