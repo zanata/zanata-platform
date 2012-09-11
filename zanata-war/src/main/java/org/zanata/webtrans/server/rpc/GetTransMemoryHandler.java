@@ -54,6 +54,7 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -131,7 +132,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          if (transMemoryQuery.getSearchType() == SearchType.RAW)
          {
             // TODO tell the user
-            log.warn("Can't parse raw query {}", transMemoryQuery);
+            log.info("Can't parse raw query {}", transMemoryQuery);
          }
          else
          {

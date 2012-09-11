@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -35,19 +38,15 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
@@ -62,15 +61,13 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Name("textFlowDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
-   //TODO replace all getSession() code to use entityManager
+   // TODO replace all getSession() code to use entityManager
    private static final Version LUCENE_VERSION = Version.LUCENE_29;
 
    @In
@@ -151,15 +148,27 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       {
       case RAW:
          queryText = query.getQueries().get(0);
+         if (StringUtils.isEmpty(queryText))
+         {
+            return new ArrayList<Object[]>();
+         }
          break;
 
       case FUZZY:
          // search by N-grams
          queryText = QueryParser.escape(query.getQueries().get(0));
+         if (StringUtils.isEmpty(queryText))
+         {
+            return new ArrayList<Object[]>();
+         }
          break;
 
       case EXACT:
          queryText = "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
+         if (StringUtils.isEmpty(queryText))
+         {
+            return new ArrayList<Object[]>();
+         }
          break;
 
       case FUZZY_PLURAL:
@@ -167,6 +176,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          for (int i = 0; i < query.getQueries().size(); i++)
          {
             multiQueryText[i] = QueryParser.escape(query.getQueries().get(i));
+         }
+
+         if (containEmptyString(multiQueryText))
+         {
+            return new ArrayList<Object[]>();
          }
          break;
       default:
@@ -199,6 +213,18 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
       return matches;
+   }
+
+   private boolean containEmptyString(String[] queries)
+   {
+      for (int i = 0; i < queries.length; i++)
+      {
+         if (StringUtils.isEmpty(queries[i]))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    public int getTotalWords()
@@ -287,9 +313,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    /**
-    * for a given locale, we first find text flow where has no target (targets map has no key equals the locale),
-    * or (the text flow target has zero size contents OR content state is NEW).
-    *
+    * for a given locale, we first find text flow where has no target (targets
+    * map has no key equals the locale), or (the text flow target has zero size
+    * contents OR content state is NEW).
+    * 
     * @param documentId document id (NOT the String type docId)
     * @param hLocale locale
     * @return a list of HTextFlow that has no translation for given locale.
@@ -312,8 +339,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
       @SuppressWarnings("unchecked")
       List<HTextFlow> result = textFlowQuery.list();
-      log.debug("doc {} has {} untranslated textFlow for locale {}",
-            new Object [] { documentId, result.size(), hLocale.getLocaleId()});
+      log.debug("doc {} has {} untranslated textFlow for locale {}", new Object[] { documentId, result.size(), hLocale.getLocaleId() });
       return result;
    }
 
@@ -325,7 +351,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
       if (filterUntranslated)
       {
-         //hard part. leave it alone.
+         // hard part. leave it alone.
          untranslated = getAllUntranslatedTextFlowByDocumentId(documentId, hLocale);
          result.addAll(untranslated);
       }

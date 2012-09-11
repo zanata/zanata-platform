@@ -27,6 +27,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
+import org.drools.util.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -149,6 +150,11 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
 
       default:
          throw new RuntimeException("Unknown query type: " + searchType);
+      }
+
+      if (StringUtils.isEmpty(queryText))
+      {
+         return new ArrayList<Object[]>();
       }
 
       QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new StandardAnalyzer(Version.LUCENE_29));
