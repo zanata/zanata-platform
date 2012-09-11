@@ -129,6 +129,15 @@ public class JavaVariablesValidation extends AbstractValidation
 
          char c = inString.charAt(i);
 
+         if (c == '\'')
+         {
+            isQuoted = !isQuoted;
+            continue;
+         }
+         if (isQuoted)
+         {
+            continue;
+         }
          if (escapeChars.contains(c))
          {
             isEscaped = true;
