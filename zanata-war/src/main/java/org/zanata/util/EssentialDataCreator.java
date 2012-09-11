@@ -20,6 +20,7 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 
@@ -117,21 +118,25 @@ public class EssentialDataCreator
             adminExists = false;
          }
 
-         if (!adminExists && applicationConfiguration.isInternalAuth())
+         for( String adminUsername : applicationConfiguration.getAdminUsers() )
          {
-            log.warn("No admin users found: creating default user 'admin'");
-
-            HAccount account = accountDAO.create(username, password, true);
-            account.setApiKey(apiKey);
-            account.getRoles().add(accountRoleDAO.findByName("admin"));
-            account.getRoles().add(accountRoleDAO.findByName("user"));
-            accountDAO.flush();
-            HPerson person = new HPerson();
-            person.setAccount(account);
-            person.setEmail(email);
-            person.setName(name);
-            entityManager.persist(person);
+            HAccount adminAccount = accountDAO.getByUsername( adminUsername );
+            HAccountRole adminRole = accountRoleDAO.findByName("admin");
+            if( adminAccount != null && !adminAccount.getRoles().contains( adminRole ) )
+            {
+               log.info("Making user " + adminAccount.getUsername() + " a system admin.");
+               adminAccount.getRoles().add( adminRole );
+               accountDAO.makePersistent(adminAccount);
+               accountDAO.flush();
+               adminExists = true;
+            }
          }
+
+         if (!adminExists)
+         {
+            log.warn("No admin users found. Admin users can be enabled in zanata.properties");
+         }
+
          if (!accountRoleDAO.roleExists("translator"))
          {
             log.info("Creating 'translator' role");
