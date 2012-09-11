@@ -82,7 +82,6 @@ public class AppPresenterTest extends PresenterTest
    HasClickHandlers mockDocumentsLink;
    HasClickHandlers mockProjectLink;
    HasClickHandlers mockIterationFilesLink;
-   HasClickHandlers mockErrorNotificationBtn;
    HasClickHandlers mockSearchButton;
    HasClickHandlers mockDocumentListButton;
    HasClickHandlers mockResizeButton;
@@ -99,8 +98,6 @@ public class AppPresenterTest extends PresenterTest
    DocumentListPresenter mockDocumentListPresenter;
    SearchResultsPresenter mockSearchResultsPresenter;
    TranslationPresenter mockTranslationPresenter;
-   NotificationPresenter mockNotificationPresenter;
-   LayoutSelectorPresenter mockLayoutPresenter;
    SideMenuPresenter mockSideMenuPresenter;
 
    Window mockWindow;
@@ -115,7 +112,6 @@ public class AppPresenterTest extends PresenterTest
    private Capture<ClickHandler> capturedDocumentListClickHandler;
    private Capture<ClickHandler> capturedResizeClickHandler;
    private Capture<ClickHandler> capturedKeyShortcutButtonClickHandler;
-   private Capture<ClickHandler> capturedErrorNotificationBtnHandler;
 
    private Capture<DocumentSelectionEvent> capturedDocumentSelectionEvent;
    private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
@@ -147,7 +143,6 @@ public class AppPresenterTest extends PresenterTest
       mockDocumentsLink = createAndAddMock(HasClickHandlers.class);
       mockProjectLink = createAndAddMock(HasClickHandlers.class);
       mockIterationFilesLink = createAndAddMock(HasClickHandlers.class);
-      mockErrorNotificationBtn = createAndAddMock(HasClickHandlers.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
       mockDocumentListButton = createAndAddMock(HasClickHandlers.class);
       mockResizeButton = createAndAddMock(HasClickHandlers.class);
@@ -163,8 +158,6 @@ public class AppPresenterTest extends PresenterTest
       mockWindowLocation = createAndAddMock(Window.Location.class);
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
-      mockNotificationPresenter = createAndAddMock(NotificationPresenter.class);
-      mockLayoutPresenter = createAndAddMock(LayoutSelectorPresenter.class);
       mockSideMenuPresenter = createAndAddMock(SideMenuPresenter.class);
    }
 
@@ -177,7 +170,6 @@ public class AppPresenterTest extends PresenterTest
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
       capturedProjectLinkClickHandler = new Capture<ClickHandler>();
       capturedIterationFilesLinkClickHandler = new Capture<ClickHandler>();
-      capturedErrorNotificationBtnHandler = new Capture<ClickHandler>();
       capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
       capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
       capturedHistoryTokenString = new Capture<String>();
@@ -193,9 +185,7 @@ public class AppPresenterTest extends PresenterTest
    void beforeMethod()
    {
       resetAll();
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockSideMenuPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockLayoutPresenter, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
-      mockNotificationPresenter.setNotificationListener(appPresenter);
-      expectLastCall().once();
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockSideMenuPresenter, mockKeyShortcutPresenter, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockUserWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
    }
 
    // Note: unable to test 'sign out' and 'close window' links as these have
@@ -705,13 +695,6 @@ public class AppPresenterTest extends PresenterTest
       expectLastCall().once();
       mockTranslationPresenter.bind();
       expectLastCall().once();
-      mockNotificationPresenter.bind();
-      expectLastCall().once();
-
-      mockLayoutPresenter.bind();
-      expectLastCall().once();
-      mockLayoutPresenter.setLayoutListener(mockTranslationPresenter);
-      expectLastCall().once();
       mockSideMenuPresenter.bind();
       expectLastCall().once();
    }
@@ -724,7 +707,6 @@ public class AppPresenterTest extends PresenterTest
       expectClickHandlerRegistration(mockDocumentsLink, capturedDocumentLinkClickHandler);
       expectClickHandlerRegistration(mockProjectLink, capturedProjectLinkClickHandler);
       expectClickHandlerRegistration(mockIterationFilesLink, capturedIterationFilesLinkClickHandler);
-      expectClickHandlerRegistration(mockErrorNotificationBtn, capturedErrorNotificationBtnHandler);
       expectClickHandlerRegistration(mockSearchButton, capturedSearchLinkClickHandler);
       expectClickHandlerRegistration(mockKeyShortcutButton, capturedKeyShortcutButtonClickHandler);
       expectClickHandlerRegistration(mockDocumentListButton, capturedDocumentListClickHandler);
@@ -777,7 +759,6 @@ public class AppPresenterTest extends PresenterTest
       expect(mockDisplay.getProjectLink()).andReturn(mockProjectLink).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
       expect(mockDisplay.getIterationFilesLink()).andReturn(mockIterationFilesLink).anyTimes();
-      expect(mockDisplay.getNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
 
       mockDisplay.setProjectLinkLabel(TEST_PPROJET_SLUG);
       expectLastCall().once();

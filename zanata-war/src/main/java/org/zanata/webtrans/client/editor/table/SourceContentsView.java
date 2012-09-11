@@ -29,15 +29,11 @@ import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -57,8 +53,9 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider)
    {
       sourcePanelList = new ArrayList<HasSelectableSource>();
-      VerticalPanel root = new VerticalPanel();
-      root.setWidth("100%");
+      FlowPanel root = new FlowPanel();
+      root.setSize("100%", "100%");
+
       FlowPanel container = new FlowPanel();
       container.setSize("100%", "100%");
 
@@ -67,7 +64,6 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
 
       container.add(sourcePanelContainer);
       root.add(container);
-      root.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
       root.add(transUnitDetailsPanel);
 

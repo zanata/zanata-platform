@@ -5,74 +5,35 @@
 	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources"/>
 	
 	<ui:style>
-        .buttonImage {
-            cursor: pointer;
-        }
-        .link_disabled {
-			color: #e0e0e0;				
-			display: inline;
-			cursor: default;
-			
-		}
-
-		.divider {
-			color: #e0e0e0;	
-		}
-		
-		.inline-label {
-			margin-top:1px;
-			margin-right:3px;
-			margin-left:2px;
-			
-		}
-		
-		.link {
-			cursor: pointer;
-			margin-right:5px;
-		}
-		
 		 .nav-button {
-           width:16px;
-           height:10px;
-           border-radius:3px;   
-           -moz-border-radius:3px;
-           margin-right:3px;
-           border-style:solid;
-           outline:none;
-        }
-        
-        .nav-button img {
-	       padding-bottom:2px;
-	
+           padding:0 8px;
+           font-size:16px;
+           margin:0;
         }
         
         .rootContainer {
-	       margin:auto;
-	       padding-top:5px;
+	       text-align:center;
+	       margin-top:3px;
         }
         
         .textBox {
-	       border:1px inset #CCC;
-	       outline:none;
-	       border-radius:3px;
-	       -moz-border-radius:3px;
+	       border:1px solid #CCC;
+	       border-radius:2px;
 	       width:40px;
-	       height:14px;
+	       height:18px;
         }
         
-		
 	</ui:style>
 	
-	<g:HorizontalPanel styleName="{style.rootContainer}">
-		  
-		<g:PushButton ui:field="firstPage" addStyleNames="{style.nav-button}"/>
-		<g:PushButton ui:field="prevPage" addStyleNames="{style.nav-button}"/>
+	<g:HTMLPanel styleName="{style.rootContainer}">
+		<g:Button ui:field="firstPage" addStyleNames="{style.nav-button} icon-to-start"/>
+		<g:Button ui:field="prevPage" addStyleNames="{style.nav-button} icon-left-open"/>
 		  
 		<g:TextBox ui:field="gotoPage" maxLength="8" styleName="{style.textBox}" />
-		<g:Label ui:field="pageCountLabel" styleName="{style.inline-label}">of 0</g:Label>
+		<g:InlineLabel ui:field="pageCountLabel"/>
 		
-		<g:PushButton ui:field="nextPage" addStyleNames="{style.nav-button}"/>
-        <g:PushButton ui:field="lastPage" addStyleNames="{style.nav-button}"/>
+		<g:Button ui:field="nextPage" addStyleNames="{style.nav-button} icon-right-open-1"/>
+        <g:Button ui:field="lastPage" addStyleNames="{style.nav-button} icon-to-end"/>
 		
-	</g:HorizontalPanel>
+	</g:HTMLPanel>
 </ui:UiBinder>

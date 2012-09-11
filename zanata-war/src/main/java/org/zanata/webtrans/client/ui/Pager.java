@@ -17,25 +17,24 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 public class Pager extends Composite implements HasPager
 {
 
    private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
 
-   interface PagerUiBinder extends UiBinder<HorizontalPanel, Pager>
+   interface PagerUiBinder extends UiBinder<Widget, Pager>
    {
    }
 
 
-   @UiField(provided = true)
-   PushButton firstPage, lastPage, nextPage, prevPage;
+   @UiField
+   Button firstPage, lastPage, nextPage, prevPage;
 
    @UiField
    TextBox gotoPage;
@@ -54,11 +53,6 @@ public class Pager extends Composite implements HasPager
 
    public Pager(final WebTransMessages messages, final Resources resources)
    {
-      firstPage = new PushButton(new Image(resources.firstPageImage()));
-      lastPage = new PushButton(new Image(resources.lastPageImage()));
-      nextPage = new PushButton(new Image(resources.nextPageImage()));
-      prevPage = new PushButton(new Image(resources.prevPageImage()));
-
       this.resources = resources;
       initWidget(uiBinder.createAndBindUi(this));
 
@@ -193,7 +187,7 @@ public class Pager extends Composite implements HasPager
       }
    };
 
-   private void setEnabled(PushButton button, boolean enabled)
+   private void setEnabled(Button button, boolean enabled)
    {
       button.setEnabled(enabled);
    }

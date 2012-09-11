@@ -49,33 +49,17 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    public interface Display extends WidgetDisplay
    {
-      HasClickHandlers getDismissButton();
-
       HasClickHandlers getClearButton();
 
       void clearMessages();
-
-      void setModal(boolean modal);
-
-      void setAutoHideEnabled(boolean autoHide);
-
-      void setAnimationEnabled(boolean enable);
-
-      void hide(boolean autoClosed);
 
       void appendMessage(Severity severity, String message, InlineLink inlineLink);
 
       void setMessagesToKeep(int count);
 
-      void show();
-
       int getMessageCount();
 
-      void setPopupTopRightCorner();
-
       void setMessageOrder(DisplayOrder displayOrder);
-
-      boolean isShowing();
    }
 
    private HasNotificationLabel listener;
@@ -83,7 +67,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
    /**
     * Message count to keep in notification area
     */
-   private static final int MESSAGE_TO_KEEP = 500;
+   private static final int MESSAGE_TO_KEEP = 100;
 
    /**
     * 
@@ -97,22 +81,8 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
    @Override
    protected void onBind()
    {
-      display.setModal(false);
-      display.setAutoHideEnabled(true);
-      display.setAnimationEnabled(false);
-      display.hide(true);
       display.setMessagesToKeep(MESSAGE_TO_KEEP);
       display.setMessageOrder(DisplayOrder.ASCENDING);
-      display.setPopupTopRightCorner();
-
-      registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.hide(true);
-         }
-      }));
 
       registerHandler(display.getClearButton().addClickHandler(new ClickHandler()
       {
@@ -120,7 +90,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          public void onClick(ClickEvent event)
          {
             display.clearMessages();
-            display.hide(true);
             listener.setNotificationLabel(display.getMessageCount(), Severity.Info);
          }
       }));
@@ -143,17 +112,13 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       listener.setNotificationLabel(0, Severity.Info);
    }
 
-   public void showNotification()
-   {
-      display.show();
-   }
 
    private void appendNotification(Severity severity, String msg, InlineLink inlineLink)
    {
       display.appendMessage(severity, msg, inlineLink);
       if (severity == Severity.Error)
       {
-         showNotification();
+         listener.showNotification();
       }
    }
 

@@ -18,6 +18,7 @@
         {
 			display:block;
 			overflow-x:auto;
+			height:100%;
 		}
 
         .button
@@ -26,17 +27,23 @@
             font-size: 20px;
             padding-left: 3px;
         }
+        
+         .button:hover
+        {
+            color:#0085CC;
+        }
+        
     </ui:style>
 
     <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
         <g:cell verticalAlignment="ALIGN_TOP">
         	<g:FlowPanel styleName="{style.editorGridWrapper}">
             	<g:Grid ui:field="editorGrid" />
-                <fui:ValidationMessagePanelView ui:field="validationPanel" />
+                <fui:ValidationMessagePanelView ui:field="validationPanel" styleName="fadeElement"/>
             </g:FlowPanel>
         </g:cell>
         <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="30px">
-            <g:HTMLPanel ui:field="buttons" height="120px">
+            <g:HTMLPanel ui:field="buttons" height="120px" styleName="fadeElement">
                 <g:InlineLabel ui:field="saveIcon" title="{messages.editSaveShortcut}" styleName="icon-install {style.button}"/>
                 <g:InlineLabel ui:field="fuzzyIcon" title="{messages.saveAsFuzzy}" styleName="icon-flag-1 {style.button}" />
                 <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}" styleName="icon-cancel-circle {style.button}" />

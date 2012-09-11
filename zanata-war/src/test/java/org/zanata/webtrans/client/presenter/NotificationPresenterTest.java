@@ -22,7 +22,6 @@ public class NotificationPresenterTest extends PresenterTest
 {
    private NotificationPresenter notificationPresenter;
 
-   HasClickHandlers mockDismiss;
    HasClickHandlers mockClear;
 
    HasNotificationLabel mockListener;
@@ -30,22 +29,19 @@ public class NotificationPresenterTest extends PresenterTest
    Display mockDisplay;
    EventBus mockEventBus;
 
-   private Capture<ClickHandler> capturedDismissClickHandler;
    private Capture<ClickHandler> capturedClearClickHandler;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    
-   private final static int MSG_TO_KEEP = 500;
+   private final static int MSG_TO_KEEP = 100;
 
    @BeforeClass
    public void createMocks()
    {
-      mockDismiss = createAndAddMock(HasClickHandlers.class);
       mockClear = createAndAddMock(HasClickHandlers.class);
       mockDisplay = createAndAddMock(NotificationPresenter.Display.class);
       mockEventBus = createAndAddMock(EventBus.class);
       mockListener = createAndAddMock(HasNotificationLabel.class);
 
-      capturedDismissClickHandler = addCapture(new Capture<ClickHandler>());
       capturedClearClickHandler = addCapture(new Capture<ClickHandler>());
       capturedNotificationEventHandler = addCapture(new Capture<NotificationEventHandler>());
    }
@@ -75,9 +71,6 @@ public class NotificationPresenterTest extends PresenterTest
       mockDisplay.appendMessage(Severity.Error, testMessage, null);
       expectLastCall().once();
 
-      mockDisplay.show();
-      expectLastCall().once();
-      
       expect(mockDisplay.getMessageCount()).andReturn(1);
       
       mockListener.setNotificationLabel(0, Severity.Info);
@@ -86,6 +79,9 @@ public class NotificationPresenterTest extends PresenterTest
       mockListener.setNotificationLabel(1, Severity.Error);
       expectLastCall().once();
       
+      mockListener.showNotification();
+      expectLastCall().once();
+
       replayAllMocks();
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
@@ -105,14 +101,14 @@ public class NotificationPresenterTest extends PresenterTest
          expectLastCall().once();
       }
 
-      mockDisplay.show();
-      expectLastCall().anyTimes();
-
       for (int count = 0;count<testMessages.length;count++)
       {
          expect(mockDisplay.getMessageCount()).andReturn(count);
 
          mockListener.setNotificationLabel(count, Severity.Error);
+         expectLastCall().once();
+
+         mockListener.showNotification();
          expectLastCall().once();
       }
 
@@ -147,11 +143,11 @@ public class NotificationPresenterTest extends PresenterTest
 
          mockListener.setNotificationLabel(count, Severity.Error);
          expectLastCall().once();
+
+         mockListener.showNotification();
+         expectLastCall().once();
       }
       
-      mockDisplay.show();
-      expectLastCall().times(testMessages.length);
-
       mockListener.setNotificationLabel(0, Severity.Info);
       expectLastCall().once();
       
@@ -178,25 +174,18 @@ public class NotificationPresenterTest extends PresenterTest
 
    private void expectHandlerRegistrations()
    {
-      expectClickHandlerRegistration(mockDismiss, capturedDismissClickHandler);
       expectClickHandlerRegistration(mockClear, capturedClearClickHandler);
       expectEventHandlerRegistration(mockEventBus, NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
    }
 
    private void expectPresenterSetupActions()
    {
-      mockDisplay.setModal(false);
-      mockDisplay.setAutoHideEnabled(true);
-      mockDisplay.setAnimationEnabled(false);
-      mockDisplay.hide(true);
       mockDisplay.setMessagesToKeep(MSG_TO_KEEP);
-      mockDisplay.setPopupTopRightCorner();
       mockDisplay.setMessageOrder(DisplayOrder.ASCENDING);
    }
 
    private void setupMockGetterReturnValues()
    {
-      expect(mockDisplay.getDismissButton()).andReturn(mockDismiss).anyTimes();
       expect(mockDisplay.getClearButton()).andReturn(mockClear).anyTimes();
    }
 }

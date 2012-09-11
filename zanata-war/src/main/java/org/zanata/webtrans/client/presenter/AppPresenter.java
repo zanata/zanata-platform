@@ -60,7 +60,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasNotificationLabel
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
@@ -86,14 +86,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getSearchAndReplaceButton();
 
-      HasClickHandlers getNotificationBtn();
-
-      void setNotificationText(int count, Severity severity);
-
-      void showNotificationAlert();
-
-      void cancelNotificationAlert();
-
       HasClickHandlers getDocumentListButton();
 
       HasClickHandlers getResizeButton();
@@ -111,8 +103,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
-   private final NotificationPresenter notificationPresenter;
-   private final LayoutSelectorPresenter layoutSelectorPresenter;
    private final SideMenuPresenter sideMenuPresenter;
 
    private final History history;
@@ -131,7 +121,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
@@ -141,17 +131,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
-      this.notificationPresenter = notificationPresenter;
-      this.layoutSelectorPresenter = layoutSelectorPresenter;
       this.sideMenuPresenter = sideMenuPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
-   }
-
-   @Override
-   public void setNotificationLabel(int count, Severity severity)
-   {
-      display.setNotificationText(count, severity);
    }
 
    @Override
@@ -161,12 +143,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
-      notificationPresenter.bind();
-      layoutSelectorPresenter.bind();
       sideMenuPresenter.bind();
-
-      layoutSelectorPresenter.setLayoutListener(translationPresenter);
-      notificationPresenter.setNotificationListener(this);
 
       registerHandler(eventBus.addHandler(ShowSideMenuEvent.getType(), new ShowSideMenuEventHandler()
       {
@@ -257,15 +234,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          public void onValueChange(ValueChangeEvent<String> event)
          {
             processHistoryEvent(event);
-         }
-      }));
-
-      registerHandler(display.getNotificationBtn().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            notificationPresenter.showNotification();
          }
       }));
 
