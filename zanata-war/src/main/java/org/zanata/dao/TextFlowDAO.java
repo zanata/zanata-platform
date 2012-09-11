@@ -148,7 +148,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       {
       case RAW:
          queryText = query.getQueries().get(0);
-         if (StringUtils.isEmpty(queryText))
+         if (StringUtils.isBlank(queryText))
          {
             return new ArrayList<Object[]>();
          }
@@ -157,7 +157,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       case FUZZY:
          // search by N-grams
          queryText = QueryParser.escape(query.getQueries().get(0));
-         if (StringUtils.isEmpty(queryText))
+         if (StringUtils.isBlank(queryText))
          {
             return new ArrayList<Object[]>();
          }
@@ -165,7 +165,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
       case EXACT:
          queryText = "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
-         if (StringUtils.isEmpty(queryText))
+         if (StringUtils.isBlank(queryText))
          {
             return new ArrayList<Object[]>();
          }
@@ -176,11 +176,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          for (int i = 0; i < query.getQueries().size(); i++)
          {
             multiQueryText[i] = QueryParser.escape(query.getQueries().get(i));
-         }
-
-         if (containEmptyString(multiQueryText))
-         {
-            return new ArrayList<Object[]>();
+            if (StringUtils.isBlank(multiQueryText[i]))
+            {
+               return new ArrayList<Object[]>();
+            }
          }
          break;
       default:
@@ -213,18 +212,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
       return matches;
-   }
-
-   private boolean containEmptyString(String[] queries)
-   {
-      for (int i = 0; i < queries.length; i++)
-      {
-         if (StringUtils.isEmpty(queries[i]))
-         {
-            return true;
-         }
-      }
-      return false;
    }
 
    public int getTotalWords()
