@@ -22,7 +22,6 @@ public class NotificationPresenterTest extends PresenterTest
 {
    private NotificationPresenter notificationPresenter;
 
-   HasClickHandlers mockDismiss;
    HasClickHandlers mockClear;
 
    HasNotificationLabel mockListener;
@@ -30,22 +29,19 @@ public class NotificationPresenterTest extends PresenterTest
    Display mockDisplay;
    EventBus mockEventBus;
 
-   private Capture<ClickHandler> capturedDismissClickHandler;
    private Capture<ClickHandler> capturedClearClickHandler;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    
-   private final static int MSG_TO_KEEP = 500;
+   private final static int MSG_TO_KEEP = 100;
 
    @BeforeClass
    public void createMocks()
    {
-      mockDismiss = createAndAddMock(HasClickHandlers.class);
       mockClear = createAndAddMock(HasClickHandlers.class);
       mockDisplay = createAndAddMock(NotificationPresenter.Display.class);
       mockEventBus = createAndAddMock(EventBus.class);
       mockListener = createAndAddMock(HasNotificationLabel.class);
 
-      capturedDismissClickHandler = addCapture(new Capture<ClickHandler>());
       capturedClearClickHandler = addCapture(new Capture<ClickHandler>());
       capturedNotificationEventHandler = addCapture(new Capture<NotificationEventHandler>());
    }
@@ -83,6 +79,9 @@ public class NotificationPresenterTest extends PresenterTest
       mockListener.setNotificationLabel(1, Severity.Error);
       expectLastCall().once();
       
+      mockListener.showNotification();
+      expectLastCall().once();
+
       replayAllMocks();
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
@@ -107,6 +106,9 @@ public class NotificationPresenterTest extends PresenterTest
          expect(mockDisplay.getMessageCount()).andReturn(count);
 
          mockListener.setNotificationLabel(count, Severity.Error);
+         expectLastCall().once();
+
+         mockListener.showNotification();
          expectLastCall().once();
       }
 
@@ -141,6 +143,9 @@ public class NotificationPresenterTest extends PresenterTest
 
          mockListener.setNotificationLabel(count, Severity.Error);
          expectLastCall().once();
+
+         mockListener.showNotification();
+         expectLastCall().once();
       }
       
       mockListener.setNotificationLabel(0, Severity.Info);
@@ -169,7 +174,6 @@ public class NotificationPresenterTest extends PresenterTest
 
    private void expectHandlerRegistrations()
    {
-      expectClickHandlerRegistration(mockDismiss, capturedDismissClickHandler);
       expectClickHandlerRegistration(mockClear, capturedClearClickHandler);
       expectEventHandlerRegistration(mockEventBus, NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
    }

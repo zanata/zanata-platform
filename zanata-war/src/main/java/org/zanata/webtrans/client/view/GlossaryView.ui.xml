@@ -6,6 +6,7 @@
             padding-right:5px;
             padding-top:5px;	
             font-weight:bold;
+            color:#C35817;
         }
        
         .rootContainer {
@@ -22,7 +23,6 @@
 		
 		.topBar
 		{
-			color:#C35817;
 			padding-left:10px;
 			background:#D3D3D3;
 		}

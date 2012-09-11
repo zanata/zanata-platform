@@ -14,6 +14,7 @@
 		.messagePanel 
 		{
 			padding:3px;
+			width:100%;
 		}
 		
 		.messagePanel tr:hover
@@ -49,7 +50,7 @@
             text-decoration: underline;
             cursor: pointer;
             color:#ffa500;
-            font-size:0.8em;
+            font-size:0.9em;
             font-weight:bold;
         }
         
@@ -94,7 +95,7 @@
 		
 		.severity
 		{
-			font-size:15px;
+			font-size:13px;
 		}
 		
 	</ui:style>

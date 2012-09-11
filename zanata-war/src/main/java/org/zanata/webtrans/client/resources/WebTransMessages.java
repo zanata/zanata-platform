@@ -217,9 +217,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo")
    String undo();
 
-   @DefaultMessage("Undone")
-   String undone();
-
    @DefaultMessage("Undoing")
    String undoInProgress();
 

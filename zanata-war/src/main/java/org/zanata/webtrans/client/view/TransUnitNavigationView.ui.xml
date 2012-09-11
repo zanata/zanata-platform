@@ -6,7 +6,7 @@
             
         .nav-button {
 	       width:34px;
-	       height:14px;
+	       height:12px;
 	       border-radius:2px; 
 	       margin-right:1px;
 	       border-style:solid;
@@ -14,7 +14,7 @@
         }
         
         .nav-button img {
-	       margin-bottom:1px;
+	       margin-top:1px;
 	       margin-left:2px;
         }
         

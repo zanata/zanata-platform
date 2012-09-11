@@ -7,7 +7,7 @@
 	<ui:style>
 		 .nav-button {
            padding:0 8px;
-           font-size:15px;
+           font-size:16px;
            margin:0;
         }
         
@@ -20,7 +20,7 @@
 	       border:1px solid #CCC;
 	       border-radius:2px;
 	       width:40px;
-	       height:16px;
+	       height:18px;
         }
         
 	</ui:style>
