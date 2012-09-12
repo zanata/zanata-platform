@@ -28,6 +28,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.seam.SeamAutowire;
@@ -82,11 +83,11 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest
       UserAccountService userAccountService = seam.autowire(UserAccountServiceImpl.class);
       // Non admin account
       HAccount account = em.find(HAccount.class, 3L);
-      assertThat(new ArrayList(account.getRoles()), not(hasItem(hasProperty("name", Matchers.is("admin")))));
+      assertThat(new ArrayList<HAccountRole>(account.getRoles()), not(Matchers.<HAccountRole>hasItem(hasProperty("name", Matchers.is("admin")))));
 
       account = userAccountService.runRoleAssignmentRules(account, null, "zanata");
       // Now it's admin
-      assertThat(new ArrayList(account.getRoles()), hasItem(hasProperty("name", Matchers.is("admin"))));
+      assertThat(new ArrayList<HAccountRole>(account.getRoles()), Matchers.<HAccountRole>hasItem(hasProperty("name", Matchers.is("admin"))));
    }
 
    @Test
@@ -95,11 +96,11 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest
       UserAccountService userAccountService = seam.autowire(UserAccountServiceImpl.class);
       // Non Fedora account
       HAccount account = createFedoraAccount();
-      assertThat(new ArrayList(account.getRoles()), not(hasItem(hasProperty("name", Matchers.is("Fedora")))));
+      assertThat(new ArrayList<HAccountRole>(account.getRoles()), not(Matchers.<HAccountRole>hasItem(hasProperty("name", Matchers.is("Fedora")))));
 
       account = userAccountService.runRoleAssignmentRules(account, account.getCredentials().iterator().next(), "fedora");
       // Now it's fedora
-      assertThat(new ArrayList(account.getRoles()), hasItem(hasProperty("name", Matchers.is("Fedora"))));
+      assertThat(new ArrayList<HAccountRole>(account.getRoles()), Matchers.<HAccountRole>hasItem(hasProperty("name", Matchers.is("Fedora"))));
    }
 
    @Test
@@ -108,10 +109,10 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest
       UserAccountService userAccountService = seam.autowire(UserAccountServiceImpl.class);
       // Non Fedora account
       HAccount account = em.find(HAccount.class, 3L);
-      assertThat(new ArrayList(account.getRoles()), not(hasItem(hasProperty("name", Matchers.is("Fedora")))));
+      assertThat(new ArrayList<HAccountRole>(account.getRoles()), not(Matchers.<HAccountRole>hasItem(hasProperty("name", Matchers.is("Fedora")))));
 
       account = userAccountService.runRoleAssignmentRules(account, null, "fedora");
       // It's still not Fedora
-      assertThat(new ArrayList(account.getRoles()), not(hasItem(hasProperty("name", Matchers.is("Fedora")))));
+      assertThat(new ArrayList<HAccountRole>(account.getRoles()), not(Matchers.<HAccountRole>hasItem(hasProperty("name", Matchers.is("Fedora")))));
    }
 }
