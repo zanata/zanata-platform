@@ -336,7 +336,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       }));
 
       display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
-      display.setIterationFilesLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug() + "(" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + ")");
+      display.setIterationFilesLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug() + " [" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + "]");
 
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       if (!Strings.isNullOrEmpty(workspaceTitle))
