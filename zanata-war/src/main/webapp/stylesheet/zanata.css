@@ -980,6 +980,16 @@ a.version_link:hover {
     padding-bottom: 10px
 }
 
+input.filter_input
+{
+	width:120px;
+}
+
+td.actionCol
+{
+	width:65px;
+}
+
 /* -----------------------  End Project Iteration Files CSS  -----------------------------*/
 
 /* -----------------------  Project Iteration Copy Trans CSS  -----------------------------*/

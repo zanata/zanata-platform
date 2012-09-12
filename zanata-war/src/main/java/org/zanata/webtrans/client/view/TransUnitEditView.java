@@ -8,7 +8,6 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -154,11 +153,11 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       {
          if (i == rowIndex)
          {
-            rowFormatter.addStyleName(i, style.selected());
+            rowFormatter.addStyleName(i, "selected");
          }
          else
          {
-            rowFormatter.removeStyleName(i, style.selected());
+            rowFormatter.removeStyleName(i, "selected");
          }
       }
    }
@@ -190,8 +189,6 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       String cellFormat();
 
       String table();
-
-      String selected();
 
       String noContent();
    }

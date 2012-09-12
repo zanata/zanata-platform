@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -119,10 +120,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          @Override
          public void execute()
          {
-            if(editors.size() > currentEditorIndex)
-            {
-               editors.get(currentEditorIndex).setFocus();
-            }
+            editors.get(currentEditorIndex).setFocus();
          }
       });
    }

@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
@@ -57,7 +56,6 @@ public class AppView extends Composite implements AppPresenter.Display
 
    interface Styles extends CssResource
    {
-      String hasWarning();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -66,10 +64,10 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel projectLink, iterationFilesLink, resize, notification, keyShortcuts;
+   InlineLabel projectLink, iterationFilesLink, resize, keyShortcuts;
    
    @UiField
-   InlineLabel notificationLabel, readOnlyLabel, searchAndReplace, documentList;
+   InlineLabel readOnlyLabel, searchAndReplace, documentList;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
@@ -113,7 +111,6 @@ public class AppView extends Composite implements AppPresenter.Display
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
       searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
       documentList.setTitle(messages.documentListTitle());
-      notification.setTitle(messages.notification());
 
       resize.setTitle(messages.maximize());
       resize.addStyleName(STYLE_MAXIMIZE);
@@ -230,12 +227,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getNotificationBtn()
-   {
-      return notification;
-   }
-  
-   @Override
    public HasClickHandlers getResizeButton()
    {
       return resize;
@@ -262,24 +253,6 @@ public class AppView extends Composite implements AppPresenter.Display
          resize.setTitle(messages.maximize());
          return true;
       }
-   }
-
-   @Override
-   public void setNotificationText(int count, Severity severity)
-   {
-      notificationLabel.setText(String.valueOf(count));
-   }
-
-   @Override
-   public void showNotificationAlert()
-   {
-      notification.addStyleName(style.hasWarning());
-   }
-
-   @Override
-   public void cancelNotificationAlert()
-   {
-      notification.removeStyleName(style.hasWarning());
    }
 
    @Override

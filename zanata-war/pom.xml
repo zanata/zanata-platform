@@ -377,6 +377,38 @@
         </dependencies>
       </plugin>
 
+
+			<!--
+				This is to make the GWT plugin happy (http://code.google.com/p/google-web-toolkit/issues/detail?id=4600).
+				Taken from https://issues.sonatype.org/browse/MNGECLIPSE-864?focusedCommentId=148457&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-148457
+				See also https://code.google.com/p/gwt-m2e/
+			-->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>maven-replacer-plugin</artifactId>
+				<version>1.4.0</version>
+				<executions>
+					<execution>
+						<phase>clean</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<ignoreMissingFile>true</ignoreMissingFile>
+					<file>.classpath</file>
+					<regex>false</regex>
+					<replacements>
+						<replacement>
+							<xpath>/classpath/classpathentry[@path='src/main/resources' and @kind='src' and @excluding='**']/@excluding</xpath>
+							<token>**</token>
+							<value></value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
+
 		</plugins>
 
 		<pluginManagement>

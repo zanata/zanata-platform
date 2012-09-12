@@ -21,8 +21,14 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
+
 import java.util.Collection;
 import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -37,6 +43,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -45,11 +52,6 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
-import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -113,20 +115,17 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
             else
             {
                final UndoLink undoLink = undoLinkProvider.get();
-               undoLink.setText(webTransMessages.undo());
                undoLink.prepareUndoFor(result);
                undoLink.setUndoCallback(new UndoLink.UndoCallback()
                {
                   @Override
                   public void preUndo()
                   {
-                     undoLink.setText(webTransMessages.undoInProgress());
                   }
 
                   @Override
                   public void postUndoSuccess()
                   {
-                     undoLink.setText(webTransMessages.undone());
                   }
                });
                NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(), undoLink);

@@ -31,12 +31,12 @@ Removes some of the styling on the page-level splitters
 */
 .gwt-SplitLayoutPanel-HDragger {
 	cursor: col-resize;
-	background:#F8F9FA;
+	background:#E0E8EE;
 }
 
 .gwt-SplitLayoutPanel-VDragger {
 	cursor: row-resize;
-	background:#F8F9FA;
+	background:#E5E5E5;
 }
 
 .CenterDiv {
@@ -158,31 +158,6 @@ Removes some of the styling on the page-level splitters
 	color: white;
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-	cursor: pointer;
-	margin-left: 6px;
-	padding: 3px 6px 3px 6px;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	background: #4a75b5;
-	color: #FFFFFF;
-	font-weight: bold;
-}
-
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
-	cursor: default;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	background: #183c66;
-	color: #FFFFFF;
-}
-
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
-	border: 2px solid #e0e8ee;
-	background: #FFFFFF;
-	border-radius: 5px;
-}
-
 .WebTransEditor-Outer tr.middle td.middleCenter {
 	height: 100%;
 	width: 100%;
@@ -222,6 +197,28 @@ Removes some of the styling on the page-level splitters
 	right: 0px;
 	display: inline;
 }
+
+.transUnitTable
+{
+	
+}
+
+.transUnitTable tr:hover, .transUnitTable tr.selected
+{
+	border-right: 2px dotted #0085CC;
+    border-left: 2px dotted #0085CC;
+}
+
+.transUnitTable tr:hover .fadeElement, .transUnitTable tr.selected .fadeElement
+{
+	opacity:1;
+}
+
+.transUnitTable tr .fadeElement
+{
+	opacity:0.2;
+}
+
 
 .TableEditor tr td {
 	vertical-align: top;
@@ -942,12 +939,6 @@ td.ApprovedStateDecoration div div div
     word-break: break-all;
 }
 
-.notificationPanel 
-{
-	border:none;
-	max-height:350px;
-}
-
 .keyShortcutPanel
 {
 	border:none;
@@ -985,12 +976,6 @@ td.ApprovedStateDecoration div div div
     padding:3px 0;
     border-radius:5px;
     border:1px dotted gray;
-}
-
-.workspaceUserPanel .gwt-SplitLayoutPanel-VDragger
-{
-	border-radius:2px;
-	box-shadow:0 0 6px gray inset;
 }
 
 /* -------------- GWT Dialog Box ----------------*/

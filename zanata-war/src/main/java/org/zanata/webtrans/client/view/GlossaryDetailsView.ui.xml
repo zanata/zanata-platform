@@ -14,6 +14,11 @@
 			resize:none;
 		}
 		
+		.textArea[readonly]
+		{
+			background:lightgray;
+		}	
+		
 		.listBox
 		{
 			width:285px;
@@ -47,6 +52,11 @@
 		.targetCommentTextArea
 		{
 			width:240px;
+		}
+		
+		.targetCommentTextArea[readonly]
+		{
+			background:lightgray;
 		}	
 		
 		.newTargetCommentTextArea
@@ -54,6 +64,11 @@
 			width:260px;
 			height:40px;
 			resize:none;
+		}
+		
+		.newTargetCommentTextArea[readonly]
+		{
+			background:lightgray;
 		}
 		
 		.buttonDiv

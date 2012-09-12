@@ -21,6 +21,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -77,6 +78,9 @@ public class Editor extends Composite implements ToggleEditor
 
    @UiField
    InlineLabel copyIcon;
+   
+   @UiField
+   HTMLPanel targetWrapper;
 
    private boolean keypressed;
    private boolean typing;
@@ -269,11 +273,13 @@ public class Editor extends Composite implements ToggleEditor
    {
       if (!errors.isEmpty())
       {
-         addStyleName(style.hasValidationError());
+         targetWrapper.addStyleName(style.hasValidationError());
+//         addStyleName(style.hasValidationError());
       }
       else
       {
-         removeStyleName(style.hasValidationError());
+         targetWrapper.removeStyleName(style.hasValidationError());
+//         removeStyleName(style.hasValidationError());
       }
    }
 

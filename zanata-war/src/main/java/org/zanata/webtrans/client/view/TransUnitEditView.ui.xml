@@ -23,12 +23,6 @@
             table-layout: fixed;
         }
 
-        .selected {
-            /*background-color: #EEEEEE;*/
-            border-right: 5px solid #8a2be2;
-            border-left: 5px solid #8a2be2;
-        }
-
         .noContent {
             text-align: center;
             font-style: italic;
@@ -38,6 +32,6 @@
     </ui:style>
 
         <g:ScrollPanel ui:field="root">
-            <g:Grid ui:field="transUnitTable" styleName="{style.table}" />
+            <g:Grid ui:field="transUnitTable" styleName="{style.table} transUnitTable"/>
         </g:ScrollPanel>
 </ui:UiBinder>
