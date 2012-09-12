@@ -763,7 +763,7 @@ public class AppPresenterTest extends PresenterTest
       mockDisplay.setProjectLinkLabel(TEST_PPROJET_SLUG);
       expectLastCall().once();
 
-      mockDisplay.setIterationFilesLabel(TEST_ITERATION_SLUG + "(" + TEST_LOCALE_ID + ")");
+      mockDisplay.setIterationFilesLabel(TEST_ITERATION_SLUG + " [" + TEST_LOCALE_ID + "]");
       expectLastCall().once();
 
       expect(mockDisplay.getSearchAndReplaceButton()).andReturn(mockSearchButton).anyTimes();
