@@ -113,22 +113,6 @@ public class ZanataOpenId implements OpenIdAuthCallback
       this.callback = callback;
    }
 
-   public void login()
-   {
-      authResult = new OpenIdAuthenticationResult();
-      String returnToUrl = returnToUrl();
-
-      String url = authRequest(id, returnToUrl);
-
-      if (url != null)
-      {
-         Redirect redirect = Redirect.instance();
-         redirect.captureCurrentView();
-
-         FacesManager.instance().redirectToExternalURL(url);
-      }
-   }
-
    @SuppressWarnings("rawtypes")
    protected String authRequest(String userSuppliedString, String returnToUrl)
    {
@@ -272,15 +256,25 @@ public class ZanataOpenId implements OpenIdAuthCallback
       }
    }
 
-   public void login(String username)
+   public void login( String username )
    {
-      this.login(username, this);
+      if( this.openIdProvider == null )
+      {
+         throw new RuntimeException("Attempting to log in with Open Id without specifying the provider type.");
+      }
+      this.login(username, null);
    }
 
-   public void login(String username, OpenIdAuthCallback callback)
+   public void login(String username, OpenIdProviderType openIdProviderType)
+   {
+      this.login(username, openIdProviderType, this);
+   }
+
+   public void login(String username, OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback)
    {
       try
       {
+         this.setProvider(openIdProviderType);
          String var = openIdProvider.getOpenId(username);
          setId(var);
          setCallback(callback);
@@ -290,6 +284,22 @@ public class ZanataOpenId implements OpenIdAuthCallback
       catch (Exception e)
       {
          throw new RuntimeException(e);
+      }
+   }
+
+   private void login()
+   {
+      authResult = new OpenIdAuthenticationResult();
+      String returnToUrl = returnToUrl();
+
+      String url = authRequest(id, returnToUrl);
+
+      if (url != null)
+      {
+         Redirect redirect = Redirect.instance();
+         redirect.captureCurrentView();
+
+         FacesManager.instance().redirectToExternalURL(url);
       }
    }
 
@@ -337,31 +347,34 @@ public class ZanataOpenId implements OpenIdAuthCallback
 
    public void setProvider( OpenIdProviderType providerType )
    {
-      switch (providerType)
+      if( providerType != null )
       {
-         case Fedora:
-            this.openIdProvider = new FedoraOpenIdProvider();
-            break;
+         switch (providerType)
+         {
+            case Fedora:
+               this.openIdProvider = new FedoraOpenIdProvider();
+               break;
 
-         case Google:
-            this.openIdProvider = new GoogleOpenIdProvider();
-            break;
+            case Google:
+               this.openIdProvider = new GoogleOpenIdProvider();
+               break;
 
-         case MyOpenId:
-            this.openIdProvider = new MyOpenIdProvider();
-            break;
+            case MyOpenId:
+               this.openIdProvider = new MyOpenIdProvider();
+               break;
 
-         case Yahoo:
-            this.openIdProvider = new YahooOpenIdProvider();
-            break;
+            case Yahoo:
+               this.openIdProvider = new YahooOpenIdProvider();
+               break;
 
-         case Generic:
-            this.openIdProvider = new GenericOpenIdProvider();
-            break;
+            case Generic:
+               this.openIdProvider = new GenericOpenIdProvider();
+               break;
 
-         default:
-            this.openIdProvider = new GenericOpenIdProvider();
-            break;
+            default:
+               this.openIdProvider = new GenericOpenIdProvider();
+               break;
+         }
       }
    }
 

@@ -13,12 +13,14 @@
     <ui:include src="login_provider.xhtml">
         <ui:param name="providerField" value="#{...}"/>
         <ui:param name="usernameField" value="#{...}"/>
+        <ui:param name="internalAuthOption" value="true"/>
         <ui:param name="onProviderChange" value="..."/>
     </ui:include>
 
     Parameters:
     providerField - String field to bind the value of the provider type (Fedora, Google, etc.)
     usernameField - String field to bind the value of the user name.
+    internalAuthOption - Indicates whether to show or not the internal authentication option.
     onProviderChange - Javascript code to be executed when the provider is changed.
     -->
     </ui:remove>
@@ -96,7 +98,7 @@
                     rendered="#{applicationConfiguration.internalAuth}"/>
     <rich:spacer width="10"/>
 
-    <h:inputHidden id="login_provider" value="#{loginAction.authProvider}"/>
+    <h:inputHidden id="login_provider" value="${providerField}"/>
 
     <s:decorate id="providerUsernameField" template="edit.xhtml" style="display: none">
         <ui:define name="label">
@@ -110,7 +112,7 @@
         <ui:define name="label">
             <span id="passwordLabel" class="loginForm_label">#{messages['jsf.Password']}</span>
         </ui:define>
-        <h:inputSecret styleClass="name" id="password" value="#{credentials.password}"/>
+        <h:inputSecret styleClass="name" id="password" value="#{loginAction.password}"/>
         <br/>
     </s:decorate>
 

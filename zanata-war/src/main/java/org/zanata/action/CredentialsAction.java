@@ -40,7 +40,7 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
-import org.zanata.security.ZanataOpenId;
+import org.zanata.security.AuthenticationManager;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.MyOpenIdProvider;
@@ -66,7 +66,7 @@ public class CredentialsAction implements Serializable
    private AccountDAO accountDAO;
 
    @In
-   private ZanataOpenId zanataOpenId;
+   private AuthenticationManager authenticationManager;
 
    @DataModel
    private List<HCredentials> userCredentials;
@@ -118,16 +118,6 @@ public class CredentialsAction implements Serializable
       return credentialsUsername;
    }
 
-   public HCredentials getSelectedCredentials()
-   {
-      return selectedCredentials;
-   }
-
-   public void setSelectedCredentials(HCredentials selectedCredentials)
-   {
-      this.selectedCredentials = selectedCredentials;
-   }
-
    public void remove()
    {
       HAccount account = accountDAO.findById( authenticatedAccount.getId(), false );
@@ -144,15 +134,10 @@ public class CredentialsAction implements Serializable
    public void verifyCredentials()
    {
       HOpenIdCredentials newCreds = new HOpenIdCredentials();
-      newCreds.setAccount( authenticatedAccount );
-      zanataOpenId.setProvider( providerType );
+      newCreds.setAccount(authenticatedAccount);
 
-      if( providerType == OpenIdProviderType.Google )
-      {
-         credentialsUsername = "google";
-      }
-
-      zanataOpenId.login(credentialsUsername, new CredentialsCreationCallback(newCreds));
+      authenticationManager.openIdAuthenticate(
+            this.providerType, this.credentialsUsername, new CredentialsCreationCallback(newCreds) );
    }
 
    public boolean isGoogleOpenId( String openId )

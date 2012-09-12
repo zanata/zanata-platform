@@ -28,11 +28,10 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
-import org.zanata.security.ZanataOpenId;
+import org.zanata.security.AuthenticationManager;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -54,7 +53,7 @@ public class AccountMergeAction
    private HAccount authenticatedAccount;
 
    @In
-   private ZanataOpenId zanataOpenId;
+   private AuthenticationManager authenticationManager;
 
    @In
    private RegisterService registerServiceImpl;
@@ -97,8 +96,7 @@ public class AccountMergeAction
 
    public void loginToMergingAccount()
    {
-      zanataOpenId.setProvider( providerType );
-      zanataOpenId.login( username, new AccountMergeAuthCallback() );
+      authenticationManager.openIdAuthenticate(this.providerType, this.username, new AccountMergeAuthCallback());
    }
 
    public boolean isAccountSelected()

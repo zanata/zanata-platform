@@ -29,7 +29,7 @@
 
         <s:div rendered="#{applicationConfiguration.openIdAuth}">
             <ui:include src="login_provider.xhtml">
-                <ui:param name="providerField" value="#{loginAction.providerType}"/>
+                <ui:param name="providerField" value="#{loginAction.authProvider}"/>
                 <ui:param name="usernameField" value="#{loginAction.username}"/>
                 <ui:param name="onProviderChange" value="showLoginButton();"/>
             </ui:include>
@@ -38,7 +38,7 @@
         <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.openIdAuth}">
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Password']}</span></ui:define>
             <h:inputSecret id="password"
-                        value="#{credentials.password}" class="loginForm_input"/>
+                        value="#{loginAction.password}" class="loginForm_input"/>
             <rich:spacer width="10px"/>
         </s:decorate>
         <s:decorate id="rememberMeField" template="edit.xhtml" rendered="#{!applicationConfiguration.openIdAuth}">
