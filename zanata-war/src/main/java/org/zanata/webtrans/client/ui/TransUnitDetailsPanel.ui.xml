@@ -5,9 +5,10 @@
 	
 	<ui:style field="style" type="org.zanata.webtrans.client.ui.TransUnitDetailsPanel.Styles">
         .container {
-            width: 50%;
-            padding-top: 5px;
+            width: 99%;
+            margin-top: 5px;
             table-layout: fixed;
+            margin-left: 6px;
         }
 
         .header {
