@@ -172,14 +172,12 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    public void showLoading()
    {
       loadingPanel.center();
-      transUnitTable.setVisible(false);
    }
 
    @Override
    public void hideLoading()
    {
       loadingPanel.hide();
-      transUnitTable.setVisible(true);
    }
 
    interface Styles extends CssResource
