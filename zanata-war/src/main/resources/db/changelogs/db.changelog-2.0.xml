@@ -132,4 +132,37 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="8" author="camunoz@redhat.com">
+        <comment>Add HRoleAssignmentRule table.</comment>
+        <createTable tableName="HRoleAssignmentRule">
+            <column name="policyName" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="identityRegExp" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="role_to_assign_id" type="int(11)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="FK_HRoleAssignmentRule_HAccountRole"
+                                 baseTableName="HRoleAssignmentRule"
+                                 baseColumnNames="role_to_assign_id"
+                                 referencedTableName="HAccountRole"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

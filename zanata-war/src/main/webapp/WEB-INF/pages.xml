@@ -245,6 +245,33 @@
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageLanguage'])}"/>
   </page>
 
+  <page view-id="/admin/rolerules.xhtml">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.RoleAssignmentRules'])}"/>
+
+    <navigation from-action="#{roleAssignmentRuleAction.edit(rule)}">
+      <redirect view-id="/admin/roleruledetails.xhtml"/>
+    </navigation>
+  </page>
+
+  <page view-id="/admin/roleruledetails.xhtml">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/rolerules', messages['jsf.RoleAssignmentRules'])}"/>
+    <action if="#{!roleAssignmentRuleAction.managed}" execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.CreateRoleAssignmentRule'])}"/>
+    <action if="#{roleAssignmentRuleAction.managed}" execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.EditRoleAssignmentRule'])}"/>
+
+    <navigation>
+      <rule if-outcome="persisted">
+        <redirect view-id="/admin/rolerules.xhtml"/>
+      </rule>
+      <rule if-outcome="updated">
+        <redirect view-id="/admin/rolerules.xhtml"/>
+      </rule>
+    </navigation>
+  </page>
+
     <!-- Version Group -->
 
     <page view-id="/version-group/home.xhtml" >

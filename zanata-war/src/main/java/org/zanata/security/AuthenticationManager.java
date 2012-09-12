@@ -25,7 +25,10 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Credentials;
+import org.zanata.model.HAccount;
+import org.zanata.model.security.HCredentials;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 
@@ -42,6 +45,7 @@ import org.zanata.security.openid.OpenIdProviderType;
 @AutoCreate
 public class AuthenticationManager
 {
+   public static final String EVENT_LOGIN_COMPLETED = "org.zanata.security.event.loginCompleted";
 
    @In
    private ZanataIdentity identity;
@@ -124,6 +128,15 @@ public class AuthenticationManager
    public void openIdAuthenticate(OpenIdProviderType openIdProviderType, String username, OpenIdAuthCallback callback)
    {
       zanataOpenId.login(username, openIdProviderType, callback);
+   }
+
+
+   private void loginCompleted(AuthenticationType authType, HAccount account, HCredentials credentials)
+   {
+      if(Events.exists())
+      {
+         Events.instance().raiseEvent(EVENT_LOGIN_COMPLETED, authType, account, credentials);
+      }
    }
 
 }

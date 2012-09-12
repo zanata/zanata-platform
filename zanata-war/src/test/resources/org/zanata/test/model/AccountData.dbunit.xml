@@ -38,6 +38,11 @@
                       roleType="M"
                       name="user"
         />
+        <HAccountRole id="3"
+                  conditional="FALSE"
+                  roleType="M"
+                  name="Fedora"
+            />
 
         <HAccountMembership accountId="1" 
                             memberOf="1"

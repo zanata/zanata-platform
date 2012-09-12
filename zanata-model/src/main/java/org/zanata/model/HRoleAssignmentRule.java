@@ -18,30 +18,53 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.model;
 
-import org.zanata.model.HAccount;
-import org.zanata.model.HAccountResetPasswordKey;
-import org.zanata.model.security.HCredentials;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- * Business Service interface for User accounts.
+ * Represents a dynamic assignment of a role for HAccounts.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface UserAccountService
+@Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Setter
+@ToString(callSuper = true)
+public class HRoleAssignmentRule extends ModelEntityBase
 {
-   void clearPasswordResetRequests(HAccount account);
 
-   HAccountResetPasswordKey requestPasswordReset(HAccount account);
+   private String policyName;
 
-   /**
-    * Runs all dynamic role assignment rules against an account.
-    *
-    * @param account Account to run the rules against.
-    * @param credentials Optional credentials with which the user logged in.
-    * @param policyName The policy name used to authenticate the user.
-    * @return The updated account object, which will be persistent in the databse.
-    */
-   HAccount runRoleAssignmentRules(HAccount account, HCredentials credentials, String policyName);
+   private String identityRegExp;
+
+   private HAccountRole roleToAssign;
+
+
+   @Column(length = 100)
+   public String getPolicyName()
+   {
+      return policyName;
+   }
+
+   public String getIdentityRegExp()
+   {
+      return identityRegExp;
+   }
+
+   @ManyToOne(optional = false)
+   @JoinColumn(name = "role_to_assign_id", nullable = false)
+   public HAccountRole getRoleToAssign()
+   {
+      return roleToAssign;
+   }
 }

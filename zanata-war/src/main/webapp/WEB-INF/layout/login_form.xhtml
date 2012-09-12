@@ -31,6 +31,7 @@
             <ui:include src="login_provider.xhtml">
                 <ui:param name="providerField" value="#{loginAction.authProvider}"/>
                 <ui:param name="usernameField" value="#{loginAction.username}"/>
+                <ui:param name="internalAuthOption" value="#{applicationConfiguration.internalAuth}"/>
                 <ui:param name="onProviderChange" value="showLoginButton();"/>
             </ui:include>
         </s:div>

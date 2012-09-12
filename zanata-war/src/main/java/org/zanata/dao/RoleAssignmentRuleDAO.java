@@ -18,30 +18,28 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.dao;
 
-import org.zanata.model.HAccount;
-import org.zanata.model.HAccountResetPasswordKey;
-import org.zanata.model.security.HCredentials;
+import java.util.List;
+import javax.persistence.EntityManager;
+
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.zanata.model.HRoleAssignmentRule;
 
 /**
- * Business Service interface for User accounts.
- *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface UserAccountService
+@Name("roleAssignmentRuleDAO")
+@AutoCreate
+@Scope(ScopeType.STATELESS)
+public class RoleAssignmentRuleDAO extends AbstractDAOImpl<HRoleAssignmentRule, Long>
 {
-   void clearPasswordResetRequests(HAccount account);
-
-   HAccountResetPasswordKey requestPasswordReset(HAccount account);
-
-   /**
-    * Runs all dynamic role assignment rules against an account.
-    *
-    * @param account Account to run the rules against.
-    * @param credentials Optional credentials with which the user logged in.
-    * @param policyName The policy name used to authenticate the user.
-    * @return The updated account object, which will be persistent in the databse.
-    */
-   HAccount runRoleAssignmentRules(HAccount account, HCredentials credentials, String policyName);
+   public RoleAssignmentRuleDAO()
+   {
+      super(HRoleAssignmentRule.class);
+   }
 }

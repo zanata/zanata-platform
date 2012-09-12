@@ -95,7 +95,7 @@
                     title="Zanata"
                     height="40" width="40"
                     onclick="updateLoginType(this, 'INTERNAL', true, '#{messages['jsf.login.internal']}', true)"
-                    rendered="#{applicationConfiguration.internalAuth}"/>
+                    rendered="${internalAuthOption}"/>
     <rich:spacer width="10"/>
 
     <h:inputHidden id="login_provider" value="${providerField}"/>

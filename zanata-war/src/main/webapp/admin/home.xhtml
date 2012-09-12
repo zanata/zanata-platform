@@ -14,7 +14,7 @@
             <s:link id="Admin_Server_configuration_home" view="/admin/server_configuration.xhtml" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">
                     <div class="admin_link_img">
-                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/Service%20Manager.png"/>
+                        <h:graphicImage value="../images/crystal_project/_48x48/apps/Service%20Manager.png"/>
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.ServerConfiguration']}
@@ -25,7 +25,7 @@
             <s:link id="Admin_Manage_users_home" view="/admin/usermanager.xhtml" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">
                     <div class="admin_link_img">
-                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/Login%20Manager.png"/>
+                        <h:graphicImage value="../images/crystal_project/_48x48/apps/Login%20Manager.png"/>
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.ManageUsers']}
@@ -36,7 +36,7 @@
             <s:link id="Admin_Manage_roles_home" view="/admin/rolemanager.xhtml" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">
                     <div class="admin_link_img">
-                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/personal.png"/>
+                        <h:graphicImage value="../images/crystal_project/_48x48/apps/personal.png"/>
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.ManageRoles']}
@@ -47,7 +47,7 @@
             <s:link id="Admin_Manage_languages_home" view="/admin/languagemanager.xhtml" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">
                     <div class="admin_link_img">
-                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/locale.png"/>
+                        <h:graphicImage value="../images/crystal_project/_48x48/apps/locale.png"/>
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.ManageLanguage']}
@@ -59,7 +59,7 @@
             <s:link id="Admin_Manage_search_home" view="/admin/search.xhtml" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">
                     <div class="admin_link_img">
-                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/kappfinder.png"/>
+                        <h:graphicImage value="../images/crystal_project/_48x48/apps/kappfinder.png"/>
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.ManageSearch']}
@@ -70,7 +70,7 @@
             <s:link id="Admin_Manage_stats_home" view="/admin/stats.xhtml" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">
                     <div class="admin_link_img">
-                        <img src="#{request.contextPath}/images/crystal_project/_48x48/apps/kchart.png"/>
+                        <h:graphicImage value="../images/crystal_project/_48x48/apps/kchart.png"/>
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.OverallStatistics']}
@@ -78,10 +78,21 @@
                 </div>
             </s:link>
 
+            <s:link id="Admin_Role_Assignment_Rules_home" view="/admin/rolerules.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <h:graphicImage value="../images/crystal_project/_48x48/filesystems/folder_public.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.RoleAssignmentRules']}
+                    </div>
+                </div>
+            </s:link>
+
             <s:link id="Admin_Monitoring_home" view="/admin/monitoring" propagation="none" styleClass="admin_link">
                 <div class="admin_link_div">
                     <div class="admin_link_img">
-                        <img src="#{request.contextPath}/images/javamelody.png"/>
+                        <h:graphicImage value="../images/javamelody.png"/>
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.ServerMonitoring']}

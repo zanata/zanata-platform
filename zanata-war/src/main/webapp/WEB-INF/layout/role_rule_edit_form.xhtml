@@ -1,0 +1,49 @@
+
+<a4j:form id="projectForm"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:s="http://jboss.com/products/seam/taglib"
+          xmlns:ui="http://java.sun.com/jsf/facelets"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:rich="http://richfaces.org/rich"
+          xmlns:a4j="http://richfaces.org/a4j"
+        >
+    <s:token allowMultiplePosts="true" />
+    <rich:panel>
+
+        <s:decorate id="policyNameField" template="/WEB-INF/layout/edit.xhtml">
+            <ui:define name="label">#{messages['jsf.rolerules.PolicyName']}</ui:define>
+            <h:inputText id="policyName"
+                         value="#{roleAssignmentRuleAction.instance.policyName}"/>
+        </s:decorate>
+        <s:decorate id="identityPatternField" template="/WEB-INF/layout/edit.xhtml" >
+            <ui:define name="label">#{messages['jsf.rolerules.IdentityPattern']}</ui:define>
+            <h:inputText id="identityPattern"
+                         value="#{roleAssignmentRuleAction.instance.identityRegExp}"/>
+        </s:decorate>
+        <s:decorate id="roleField" template="/WEB-INF/layout/edit.xhtml">
+            <ui:define name="label">#{messages['jsf.rolerules.RoleToAssign']}</ui:define>
+            <h:selectOneMenu id="roles" value="#{roleAssignmentRuleAction.roleToAssign}">
+                <s:selectItems value="#{identityManager.listGrantableRoles()}" var="role" label="#{role}"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+        <div class="actionButtons">
+            <h:commandButton id="save"
+                             value="#{messages['jsf.Save']}"
+                             action="#{roleAssignmentRuleAction.persist}"
+                             rendered="#{!roleAssignmentRuleAction.managed}"/>
+            <h:commandButton id="update"
+                             value="#{messages['jsf.Update']}"
+                             action="#{roleAssignmentRuleAction.update}"
+                             rendered="#{roleAssignmentRuleAction.managed}"/>
+            <s:button id="cancel"
+                      value="#{messages['jsf.Cancel']}"
+                      propagation="none"
+                      view="/admin/rolerules.xhtml"/>
+        </div>
+
+    </rich:panel>
+</a4j:form>
