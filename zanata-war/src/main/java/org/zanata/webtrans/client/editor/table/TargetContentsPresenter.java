@@ -531,6 +531,12 @@ public class TargetContentsPresenter implements
    }
 
    @Override
+   public boolean isUsingCodeMirror()
+   {
+      return configuration.isUseCodeMirrorEditor();
+   }
+
+   @Override
    public void onCancel(TransUnitId transUnitId)
    {
       ensureRowSelection(transUnitId);
@@ -539,14 +545,6 @@ public class TargetContentsPresenter implements
       setFocus();
    }
 
-   /**
-    * user is able to click on buttons on different rows now. (save, save as fuzzy, cancel, show history, undo, validate)
-    * TODO discuss solution for above scenario:
-    * 1. (current solution) ensure row selection first and then continue with button action. Drawback: continue save may not be user's intention.
-    * 2. disable buttons not on selected row. Drawback: disabled buttons may not be able to receive focus event and row selection won't trigger if click on them??
-    * 3. hide buttons not on selected row. Drawback: show and hide buttons cause screen movement and distraction.
-    * @param transUnitId coming from the display that user is clicked on
-    */
    private void ensureRowSelection(TransUnitId transUnitId)
    {
       if (!Objects.equal(currentTransUnitId, transUnitId))

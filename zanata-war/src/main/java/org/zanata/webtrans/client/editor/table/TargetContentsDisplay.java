@@ -85,5 +85,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
       void showHistory(TransUnitId transUnitId);
 
       void onFocus(TransUnitId id, int editorIndex);
+
+      boolean isUsingCodeMirror();
    }
 }

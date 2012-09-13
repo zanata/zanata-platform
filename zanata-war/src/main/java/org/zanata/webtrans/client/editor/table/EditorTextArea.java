@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
@@ -31,14 +32,14 @@ import com.google.gwt.user.client.ui.TextArea;
 
 public class EditorTextArea extends TextArea
 {
-   // TODO this should go into UserConfigHolder and be part of user config
    private boolean useCodeMirrorFlag = true;
 
    private JavaScriptObject codeMirrorEditor;
 
-   public EditorTextArea()
+   public EditorTextArea(boolean isUseCodeMirror)
    {
       super();
+      useCodeMirrorFlag = isUseCodeMirror;
    }
 
    // see http://codemirror.net/doc/manual.html#usage

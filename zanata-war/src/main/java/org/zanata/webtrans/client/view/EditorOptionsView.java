@@ -74,6 +74,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    Label otherConfigHeader;
    @UiField
    CheckBox showErrorChk;
+   @UiField
+   CheckBox useCodeMirrorChk;
 
    private Listener listener;
 
@@ -91,6 +93,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       otherConfigHeader.setText(messages.otherConfiguration());
 
       showErrorChk.setTitle(messages.showErrorsTooltip());
+      useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
    }
 
    @Override
@@ -183,6 +186,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onShowErrorsOptionChanged(showErrorChk.getValue());
    }
 
+   @UiHandler("useCodeMirrorChk")
+   public void onCodeMirrorOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue());
+   }
+
    @Override
    public void setListener(Listener listener)
    {
@@ -200,6 +209,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       navOptionGroup.setDefaultSelected(state.getNavOption());
       selectPageSize(state.getPageSize());
       showErrorChk.setValue(state.isShowError());
+      useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
    }
 
    private void selectPageSize(int pageSize)

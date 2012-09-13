@@ -407,9 +407,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Read only")
    String readOnly();
 
-   @DefaultMessage("Other configuration")
+   @DefaultMessage("Advance user configuration")
    String otherConfiguration();
 
-   @DefaultMessage("When unexpected error happens, a popup window will display and show it.")
+   @DefaultMessage("When unexpected error happens, a popup window will display and show it")
    String showErrorsTooltip();
+
+   @DefaultMessage("Switch between CodeMirror Editor (supports syntax highlight) and plain textarea (no syntax highlight)")
+   String useCodeMirrorEditorTooltip();
 }

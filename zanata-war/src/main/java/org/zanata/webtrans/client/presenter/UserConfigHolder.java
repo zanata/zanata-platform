@@ -55,7 +55,7 @@ public class UserConfigHolder
    };
    
    // default state
-   private ConfigurationState state = new ConfigurationState(false, false, true, 10, NavOption.FUZZY_UNTRANSLATED, false);
+   private ConfigurationState state = new ConfigurationState(false, false, true, 10, NavOption.FUZZY_UNTRANSLATED, false, true);
 
    public boolean isEnterSavesApproved()
    {
@@ -64,7 +64,7 @@ public class UserConfigHolder
 
    protected void setEnterSavesApproved(boolean enterSavesApproved)
    {
-      state = new ConfigurationState(enterSavesApproved, state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError());
+      state = new ConfigurationState(enterSavesApproved, state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError(), state.isUseCodeMirrorEditor());
    }
 
    public boolean isEscClosesEditor()
@@ -74,7 +74,7 @@ public class UserConfigHolder
 
    protected void setEscClosesEditor(boolean escClosesEditor)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), escClosesEditor, state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError());
+      state = new ConfigurationState(state.isEnterSavesApproved(), escClosesEditor, state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError(), state.isUseCodeMirrorEditor());
    }
 
    public boolean isDisplayButtons()
@@ -84,12 +84,12 @@ public class UserConfigHolder
 
    protected void setDisplayButtons(boolean displayButtons)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), displayButtons, state.getPageSize(), state.getNavOption(), state.isShowError());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), displayButtons, state.getPageSize(), state.getNavOption(), state.isShowError(), state.isUseCodeMirrorEditor());
    }
 
    protected void setNavOption(NavOption navOption)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), navOption, state.isShowError());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), navOption, state.isShowError(), state.isUseCodeMirrorEditor());
    }
 
    public NavOption getNavOption()
@@ -120,7 +120,7 @@ public class UserConfigHolder
 
    protected void setPageSize(int pageSize)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), pageSize, state.getNavOption(), state.isShowError());
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), pageSize, state.getNavOption(), state.isShowError(), state.isUseCodeMirrorEditor());
    }
 
    public ConfigurationState getState()
@@ -135,7 +135,17 @@ public class UserConfigHolder
 
    public void setShowError(boolean showError)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), showError);
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), showError, state.isUseCodeMirrorEditor());
+   }
+
+   public boolean isUseCodeMirrorEditor()
+   {
+      return state.isUseCodeMirrorEditor();
+   }
+
+   public void setUseCodeMirrorEditor(boolean useCodeMirrorEditor)
+   {
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isEscClosesEditor(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError(), useCodeMirrorEditor);
    }
 
    /**
@@ -149,8 +159,9 @@ public class UserConfigHolder
       private int pageSize;
       private NavOption navOption;
       private boolean showError;
+      private boolean useCodeMirrorEditor;
 
-      private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean displayButtons, int pageSize, NavOption navOption, boolean showError)
+      private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean displayButtons, int pageSize, NavOption navOption, boolean showError, boolean useCodeMirrorEditor)
       {
          this.enterSavesApproved = enterSavesApproved;
          this.escClosesEditor = escClosesEditor;
@@ -158,6 +169,7 @@ public class UserConfigHolder
          this.pageSize = pageSize;
          this.navOption = navOption;
          this.showError = showError;
+         this.useCodeMirrorEditor = useCodeMirrorEditor;
       }
 
       public boolean isEnterSavesApproved()
@@ -188,6 +200,11 @@ public class UserConfigHolder
       public boolean isShowError()
       {
          return showError;
+      }
+
+      public boolean isUseCodeMirrorEditor()
+      {
+         return useCodeMirrorEditor;
       }
    }
 }

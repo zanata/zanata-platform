@@ -37,6 +37,8 @@ import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEventHandler;
+import org.zanata.webtrans.client.events.ReloadPageEvent;
+import org.zanata.webtrans.client.events.ReloadPageEventHandler;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -58,7 +60,6 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -70,7 +71,7 @@ import net.customware.gwt.presenter.client.EventBus;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler
+public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler, ReloadPageEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNSELECTED = -1;
@@ -85,6 +86,8 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    //tracking variables
    private GetTransUnitActionContext context;
    private String findMessage;
+   private boolean isLoadingTU = false;
+   private boolean isLoadingIndex =false;
 
    @Inject
    public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, UserConfigHolder configHolder, TableEditorMessages messages)
@@ -105,6 +108,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(PageSizeChangeEvent.TYPE, this);
+      eventBus.addHandler(ReloadPageEvent.TYPE, this);
    }
 
    protected void init(GetTransUnitActionContext context)
@@ -117,7 +121,8 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    private void requestTransUnitsAndUpdatePageIndex(final GetTransUnitActionContext context)
    {
       Log.info("requesting transUnits: " + context);
-      eventBus.fireEvent(LoadingEvent.START_EVENT);
+      isLoadingTU = true;
+      startLoading();
       final int itemPerPage = context.getCount();
       final int offset = context.getOffset();
 
@@ -135,7 +140,8 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
                Log.error("GetTransUnits failure " + caught, caught);
                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyLoadFailed()));
             }
-            eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
+            isLoadingTU = false;
+            finishLoading();
          }
 
          @Override
@@ -163,14 +169,34 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
                eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
             }
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
-            eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
+            isLoadingTU = false;
+            finishLoading();
          }
       });
+   }
+
+   private void startLoading()
+   {
+      if (isLoadingTU || isLoadingIndex)
+      {
+         eventBus.fireEvent(LoadingEvent.START_EVENT);
+      }
+   }
+
+   private void finishLoading()
+   {
+      // we only send finish event when all loading are finished
+      if (!isLoadingTU && !isLoadingIndex)
+      {
+         eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
+      }
    }
 
    private void requestNavigationIndex(GetTransUnitActionContext context)
    {
       Log.info("requesting navigation index: " + context);
+      isLoadingIndex = true;
+      startLoading();
       final int itemPerPage = context.getCount();
       dispatcher.execute(GetTransUnitsNavigation.newAction(context), new AbstractAsyncCallback<GetTransUnitsNavigationResult>()
       {
@@ -179,6 +205,8 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          {
             navigationService.init(result.getTransIdStateList(), result.getIdIndexList(), itemPerPage);
             eventBus.fireEvent(new PageCountChangeEvent(navigationService.getPageCount()));
+            isLoadingIndex = false;
+            finishLoading();
          }
       });
    }
@@ -189,7 +217,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       if (page != navigationService.getCurrentPage())
       {
          GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
-         Log.info("page index: " + pageIndex + " page context: " + newContext);
+         Log.info("page index: " + page + " page context: " + newContext);
          requestTransUnitsAndUpdatePageIndex(newContext);
       }
    }
@@ -198,7 +226,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    {
       int page = normalizePageIndex(pageIndex);
       GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(transUnitId);
-      Log.debug("page index: " + pageIndex + " page context: " + newContext);
+      Log.debug("page index: " + page + " page context: " + newContext);
       requestTransUnitsAndUpdatePageIndex(newContext);
    }
 
@@ -295,6 +323,17 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       execute(pageSizeChangeEvent);
       navigationService.updatePageSize(pageSizeChangeEvent.getPageSize());
       eventBus.fireEvent(new PageCountChangeEvent(navigationService.getPageCount()));
+   }
+
+   @Override
+   public void onReloadPage(ReloadPageEvent event)
+   {
+      Log.info("refreshing page");
+      isLoadingTU = true;
+      startLoading();
+      pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
+      isLoadingTU = false;
+      finishLoading();
    }
 
    public void execute(UpdateContextCommand command)

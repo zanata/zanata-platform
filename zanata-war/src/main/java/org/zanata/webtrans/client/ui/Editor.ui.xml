@@ -33,11 +33,15 @@
             font-size: 18px;
             cursor: pointer;
         }
-        
-        .targetWrapper
-        {
-			padding:2px;
-		}
+
+        .targetWrapper {
+            padding: 2px;
+        }
+
+        .targetWrapper textarea {
+            width: 100%;
+            min-height: 3em;
+        }
 
     </ui:style>
 	

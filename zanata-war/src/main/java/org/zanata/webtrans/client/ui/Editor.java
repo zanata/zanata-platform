@@ -73,7 +73,7 @@ public class Editor extends Composite implements ToggleEditor
 
    NavigationMessages messages = GWT.create(NavigationMessages.class);
 
-   @UiField
+   @UiField(provided = true)
    EditorTextArea textArea;
 
    @UiField
@@ -117,6 +117,7 @@ public class Editor extends Composite implements ToggleEditor
       this.listener = listener;
       this.index = index;
       this.id = id;
+      textArea = new EditorTextArea(listener.isUsingCodeMirror());
       initWidget(uiBinder.createAndBindUi(this));
 
       // determine whether to show or hide buttons

@@ -33,5 +33,7 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onEditorButtonsOptionChanged(Boolean editorButtons);
 
       void onShowErrorsOptionChanged(Boolean showErrorChkValue);
+
+      void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue);
    }
 }

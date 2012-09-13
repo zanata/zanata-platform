@@ -26,6 +26,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
+import org.zanata.webtrans.client.events.ReloadPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
@@ -166,6 +167,17 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       // this config value is only used in org.zanata.webtrans.client.Application.registerUncaughtExceptionHandler
       // therefore we don't need to broadcast the change event
       configHolder.setShowError(showErrorChkValue);
+   }
+
+   @Override
+   public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue)
+   {
+      if (configHolder.isUseCodeMirrorEditor() != useCodeMirrorChkValue)
+      {
+         configHolder.setUseCodeMirrorEditor(useCodeMirrorChkValue);
+         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+         eventBus.fireEvent(ReloadPageEvent.EVENT);
+      }
    }
 
    @Override
