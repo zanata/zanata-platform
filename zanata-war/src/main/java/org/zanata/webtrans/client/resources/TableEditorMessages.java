@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.resources;
 
-import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -39,8 +38,8 @@ public interface TableEditorMessages extends Messages
    String validationWarningsHeading(@PluralCount int warningCount);
    // @formatter:on
 
-   @DefaultMessage(" Run Validation")
-   String runValidation();
+   @DefaultMessage(" Run check")
+   String runCheck();
    
    @DefaultMessage("Copy from translation memory match result no.{0}")
    String copyFromTM(int index);

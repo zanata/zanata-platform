@@ -9,17 +9,26 @@
         .container {
             width: 50%;
             margin-top: 5px;
+            margin-left:28px;
         }
+        
+        .headerLabel
+        {
+			font-size: 11px;
+			font-weight: bold;
+		}
+		
+		.headerLabel:hover
+        {
+			text-decoration: underline;
+		}
 
         .label {
             font-size: 11px;
         }
-
+        
         .header {
             width: 100%;
-            font-size: 11px;
-            font-weight: bold;
-            text-align: left;
             text-indent: 5px;
             cursor: pointer;
             background: #FFFFFF;
@@ -44,10 +53,10 @@
         <g:customHeader>
             <g:HorizontalPanel styleName="{style.header}">
                 <g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">
-                    <g:Label ui:field="headerLabel" styleName="{style.label}" />
+                    <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
                 </g:cell>
                 <g:cell horizontalAlignment="ALIGN_RIGHT" width="16px" verticalAlignment="ALIGN_MIDDLE">
-                    <g:InlineLabel ui:field="validateButton" title="{messages.runValidation}" styleName="icon-check {style.label}" text="{messages.runValidation}" />
+                    <g:InlineLabel ui:field="validateButton" styleName="icon-check {style.headerLabel}" text="{messages.runCheck}" />
                 </g:cell>
             </g:HorizontalPanel>
         </g:customHeader>

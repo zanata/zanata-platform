@@ -27,6 +27,12 @@
             overflow: hidden;
             white-space: nowrap;
         }
+        
+        .container a:hover
+        {
+			color:#686868;
+            text-decoration:underline;
+		}
 
         .tuDetailsLabel {
             font-weight: bold;
@@ -44,7 +50,7 @@
     </ui:style>
 
     <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container} fadeElement" ui:field="disclosurePanel">
-        <g:customHeader>
+        <g:customHeader >
             <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
         </g:customHeader>
         <g:Grid>
