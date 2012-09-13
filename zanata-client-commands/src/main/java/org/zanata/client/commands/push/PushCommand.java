@@ -93,7 +93,14 @@ public class PushCommand extends PushPullCommand<PushOptions>
       log.info("Source language: {}", getOpts().getSourceLang());
       log.info("Copy previous translations: {}", getOpts().getCopyTrans());
       log.info("Merge type: {}", getOpts().getMergeType());
+      log.info("Batch size: {}", getOpts().getBatchSize());
       log.info("Enable modules: {}", getOpts().getEnableModules());
+
+      if (getOpts().getBatchSize() <= 0)
+      {
+         throw new RuntimeException("Batch size needs to be 1 or more.");
+      }
+
       if (getOpts().getEnableModules())
       {
          log.info("Current module: {}", getOpts().getCurrentModule());
@@ -115,7 +122,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("Pushing target documents only");
          log.info("Locales to push: {}", getOpts().getLocaleMapList());
       }
-      else if(getOpts().getPushType() == PushPullType.Source)
+      else if (getOpts().getPushType() == PushPullType.Source)
       {
          log.info("Pushing source documents only");
       }
@@ -159,8 +166,8 @@ public class PushCommand extends PushPullCommand<PushOptions>
    }
 
    /**
-    * gets doc list from server,
-    * returns a list of qualified doc names from obsolete modules, or from no module.
+    * gets doc list from server, returns a list of qualified doc names from
+    * obsolete modules, or from no module.
     */
    protected List<String> getObsoleteDocNamesForProjectIterationFromServer()
    {
@@ -245,17 +252,17 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("Obsolete docs: {}", obsoleteDocs);
       }
 
-      if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both )
+      if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
       {
          if (getOpts().getLocaleMapList() == null)
             throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
          log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
 
-         if( getOpts().getPushType() == PushPullType.Both )
+         if (getOpts().getPushType() == PushPullType.Both)
          {
             confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server, and delete obsolete documents.\n");
          }
-         else if( getOpts().getPushType() == PushPullType.Trans )
+         else if (getOpts().getPushType() == PushPullType.Trans)
          {
             confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
          }
@@ -273,7 +280,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          srcDoc.setName(qualifiedDocName);
          debug(srcDoc);
 
-         if( getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both )
+         if (getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both)
          {
             pushSrcDocToServer(docUri, srcDoc, extensions);
          }
@@ -294,8 +301,10 @@ public class PushCommand extends PushPullCommand<PushOptions>
    }
 
    /**
-    * Returns obsolete docs which belong to the current module.
-    * Returns any docs in the current module from the server, unless they are found in the localDocNames set.
+    * Returns obsolete docs which belong to the current module. Returns any docs
+    * in the current module from the server, unless they are found in the
+    * localDocNames set.
+    * 
     * @param localDocNames
     */
    private List<String> getObsoleteDocsInModuleFromServer(Set<String> localDocNames)
@@ -343,21 +352,68 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
    }
 
+   private List<TranslationsResource> splitIntoBatch(TranslationsResource doc, int batchSize)
+   {
+      List<TranslationsResource> targetDocList = new ArrayList<TranslationsResource>();
+      if (doc.getTextFlowTargets().size() > batchSize)
+      {
+         int loop = doc.getTextFlowTargets().size() / batchSize;
+
+         if (doc.getTextFlowTargets().size() % batchSize != 0)
+         {
+            loop = loop + 1;
+         }
+
+         int fromIndex = 0;
+         int toIndex = 0;
+
+         for (int i = 1; i <= loop; i++)
+         {
+            TranslationsResource resource = new TranslationsResource();
+            resource.setExtensions(doc.getExtensions());
+            resource.setLinks(doc.getLinks());
+            resource.setRevision(doc.getRevision());
+
+            toIndex = (i * batchSize) > doc.getTextFlowTargets().size() ? doc.getTextFlowTargets().size() : i * batchSize;
+
+            resource.getTextFlowTargets().addAll(doc.getTextFlowTargets().subList(fromIndex, toIndex));
+
+            fromIndex = i * batchSize;
+
+            targetDocList.add(resource);
+         }
+      }
+      else
+      {
+         targetDocList.add(doc);
+      }
+      return targetDocList;
+   }
+
    private void pushTargetDocToServer(final String docUri, LocaleMapping locale, final Resource srcDoc, TranslationsResource targetDoc, final StringSet extensions)
    {
       if (!getOpts().isDryRun())
       {
          log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
 
-         ConsoleUtils.startProgressFeedback();
-         ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
-         ConsoleUtils.endProgressFeedback();
+         List<TranslationsResource> targetDocList = splitIntoBatch(targetDoc, getOpts().getBatchSize());
 
-         ClientUtility.checkResult(putTransResponse, uri);
-         String entity = putTransResponse.getEntity(String.class);
-         if (entity != null && !entity.isEmpty())
+         int totalDone = 0;
+         for (TranslationsResource doc : targetDocList)
          {
-            log.warn("{}", entity);
+            ConsoleUtils.startProgressFeedback();
+
+            ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), doc, extensions, getOpts().getMergeType());
+            ConsoleUtils.endProgressFeedback();
+
+            ClientUtility.checkResult(putTransResponse, uri);
+            String entity = putTransResponse.getEntity(String.class);
+            if (entity != null && !entity.isEmpty())
+            {
+               log.warn("{}", entity);
+            }
+            totalDone = totalDone + doc.getTextFlowTargets().size();
+            log.info("Pushed " + totalDone + " of " + targetDoc.getTextFlowTargets().size() + " entries");
          }
       }
       else
