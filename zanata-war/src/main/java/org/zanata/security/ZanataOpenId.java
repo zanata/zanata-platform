@@ -22,7 +22,6 @@ package org.zanata.security;
 
 import java.util.List;
 import javax.faces.context.ExternalContext;
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.seam.Component;
@@ -50,6 +49,8 @@ import org.openid4java.message.ax.FetchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.dao.AccountDAO;
+import org.zanata.model.HAccount;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GenericOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
@@ -77,13 +78,13 @@ public class ZanataOpenId implements OpenIdAuthCallback
    private ApplicationConfiguration applicationConfiguration;
 
    @In
-   private EntityManager entityManager;
-
-   @In
    private Credentials credentials;
 
    @In
    private UserRedirectBean userRedirect;
+
+   @In
+   private AccountDAO accountDAO;
 
    private String id;
    private OpenIdAuthenticationResult authResult;
@@ -309,20 +310,6 @@ public class ZanataOpenId implements OpenIdAuthCallback
    }
 
    /**
-    * Looks up a zanata user name based on the open id provided.
-    * If none is found, returns null.
-    */
-   private String getZanataUsername( String openId )
-   {
-      List results =
-            entityManager.createQuery("select c.account.username from HCredentials c where c.user = :openId")
-                              .setParameter("openId", openId)
-                              .getResultList();
-
-      return results.size() > 0 ? (String)results.get(0) : null;
-   }
-
-   /**
     * Default implementation for an authentication callback. This implementations simply authenticates
     * the user locally.
     */
@@ -331,8 +318,14 @@ public class ZanataOpenId implements OpenIdAuthCallback
    {
       if( result.isAuthenticated() )
       {
-         credentials.setUsername(this.getZanataUsername( result.getAuthenticatedId() ));
-         Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(authResult.getAuthenticatedId())));
+         HAccount authenticatedAccount = accountDAO.getByCredentialsId( result.getAuthenticatedId() );
+         credentials.setUsername( authenticatedAccount.getUsername() );
+         Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(result.getAuthenticatedId())));
+
+         if( Events.exists() )
+         {
+            Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
+         }
       }
    }
 

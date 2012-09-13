@@ -262,11 +262,13 @@
     <action if="#{!roleAssignmentRuleAction.managed}" execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.CreateRoleAssignmentRule'])}"/>
     <action if="#{roleAssignmentRuleAction.managed}" execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.EditRoleAssignmentRule'])}"/>
 
-    <navigation>
+    <navigation from-action="#{roleAssignmentRuleAction.update}">
       <rule if-outcome="persisted">
+        <end-conversation/>
         <redirect view-id="/admin/rolerules.xhtml"/>
       </rule>
       <rule if-outcome="updated">
+        <end-conversation/>
         <redirect view-id="/admin/rolerules.xhtml"/>
       </rule>
     </navigation>

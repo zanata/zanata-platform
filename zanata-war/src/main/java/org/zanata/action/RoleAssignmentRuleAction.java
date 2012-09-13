@@ -20,19 +20,23 @@
  */
 package org.zanata.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.framework.EntityHome;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.model.HRoleAssignmentRule;
+import org.zanata.security.AuthenticationType;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -48,12 +52,16 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
    @In
    private AccountRoleDAO accountRoleDAO;
 
+   @In
+   private ApplicationConfiguration applicationConfiguration;
+
 
    public List<HRoleAssignmentRule> getAllRules()
    {
       return roleAssignmentRuleDAO.findAll();
    }
 
+   @Begin
    public void edit( HRoleAssignmentRule rule )
    {
       this.setInstance(rule);
@@ -82,4 +90,27 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
       }
    }
 
+   public List<String> getAvailablePolicyNames()
+   {
+      List<String> policyNames = new ArrayList<String>();
+
+      if( applicationConfiguration.isInternalAuth() )
+      {
+         policyNames.add(AuthenticationType.INTERNAL.name());
+      }
+      if( applicationConfiguration.isOpenIdAuth() )
+      {
+         policyNames.add(AuthenticationType.OPENID.name());
+      }
+      if( applicationConfiguration.isJaasAuth() )
+      {
+         policyNames.add(AuthenticationType.JAAS.name());
+      }
+      if( applicationConfiguration.isKerberosAuth() )
+      {
+         policyNames.add(AuthenticationType.KERBEROS.name());
+      }
+
+      return policyNames;
+   }
 }

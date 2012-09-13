@@ -137,7 +137,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
    public HAccount getByCredentialsId( String credentialsId )
    {
       Query query = getSession()
-            .createQuery("from HAccount as a where exists ( from HCredentials c where c.account = a and c.user = :id)");
+            .createQuery("select c.account from HCredentials c where c.user = :id");
       query.setParameter("id", credentialsId);
       return (HAccount)query.uniqueResult();
    }

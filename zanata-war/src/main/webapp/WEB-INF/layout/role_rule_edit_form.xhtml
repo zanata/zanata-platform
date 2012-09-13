@@ -13,8 +13,10 @@
 
         <s:decorate id="policyNameField" template="/WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.rolerules.PolicyName']}</ui:define>
-            <h:inputText id="policyName"
-                         value="#{roleAssignmentRuleAction.instance.policyName}"/>
+            <h:selectOneMenu id="policyName" value="#{roleAssignmentRuleAction.instance.policyName}">
+                <s:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}" var="policy" label="#{policy}"
+                        noSelectionLabel=""/>
+            </h:selectOneMenu>
         </s:decorate>
         <s:decorate id="identityPatternField" template="/WEB-INF/layout/edit.xhtml" >
             <ui:define name="label">#{messages['jsf.rolerules.IdentityPattern']}</ui:define>

@@ -20,17 +20,22 @@
  */
 package org.zanata.security;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.dao.AccountDAO;
+import org.zanata.dao.CredentialsDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
+import org.zanata.service.UserAccountService;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -45,6 +50,8 @@ import org.zanata.security.openid.OpenIdProviderType;
 @AutoCreate
 public class AuthenticationManager
 {
+   /* Event used to signal a successful login using the authentication manager.
+    * It is a compliment to the events in the Identity class.*/
    public static final String EVENT_LOGIN_COMPLETED = "org.zanata.security.event.loginCompleted";
 
    @In
@@ -56,9 +63,18 @@ public class AuthenticationManager
    @In
    private ZanataOpenId zanataOpenId;
 
+   @In
+   private UserAccountService userAccountServiceImpl;
+
+   @In
+   private CredentialsDAO credentialsDAO;
+
+   @In
+   private AccountDAO accountDAO;
+
 
    /**
-    * Logs in a user using internal athentication.
+    * Logs in a user using internal authentication.
     *
     * @param username User's name
     * @param password User's password
@@ -82,7 +98,13 @@ public class AuthenticationManager
       credentials.setUsername(username);
       credentials.setPassword(password);
 
-      return identity.login(authenticationType);
+      String result = identity.login(authenticationType);
+      if( result != null && result.equals("loggedIn") )
+      {
+         this.onLoginCompleted(authenticationType);
+      }
+
+      return result;
    }
 
    /**
@@ -131,12 +153,32 @@ public class AuthenticationManager
    }
 
 
-   private void loginCompleted(AuthenticationType authType, HAccount account, HCredentials credentials)
+   /**
+    * Performs operations after a successful login is completed.
+    *
+    * @param authType Authentication type that was used to login.
+    */
+   @Observer(EVENT_LOGIN_COMPLETED)
+   public void onLoginCompleted(AuthenticationType authType)
    {
-      if(Events.exists())
+      // Get the authenticated account and credentials
+      HAccount authenticatedAccount;
+      HCredentials authenticatedCredentials;
+
+      String username = credentials.getUsername();
+
+      if( authType == AuthenticationType.OPENID )
       {
-         Events.instance().raiseEvent(EVENT_LOGIN_COMPLETED, authType, account, credentials);
+         authenticatedCredentials = credentialsDAO.findByUser( zanataOpenId.getAuthResult().getAuthenticatedId() );
+         authenticatedAccount = authenticatedCredentials.getAccount();
       }
+      else
+      {
+         authenticatedCredentials = credentialsDAO.findByUser( username );
+         authenticatedAccount = accountDAO.getByUsername( username );
+      }
+
+      userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount, authenticatedCredentials, authType.name());
    }
 
 }
