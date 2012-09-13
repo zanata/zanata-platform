@@ -42,19 +42,25 @@
              	if(fileExtension == "CSV")
              	{
              		document.getElementById('targetLangDiv').style.display = "none";   
-			document.getElementById('sourceLangDiv').style.display = "none";       	
+					document.getElementById('sourceLangDiv').style.display = "none";       	
              		document.getElementById('commentColsDiv').style.display = "";   
+             		document.getElementById('treatCommentSameDiv').style.display = "";   
              		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled")
              	} 
              	else if(fileExtension == "PO")
              	{
              		document.getElementById('targetLangDiv').style.display = "";     
-			document.getElementById('sourceLangDiv').style.display = "";           	
-             		document.getElementById('commentColsDiv').style.display = "none";     
+					document.getElementById('sourceLangDiv').style.display = "";           	
+             		document.getElementById('commentColsDiv').style.display = "none";  
+             		document.getElementById('treatCommentSameDiv').style.display = "";   
              		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled");
              	}
              	else
              	{
+             		document.getElementById('targetLangDiv').style.display = "none";     
+					document.getElementById('sourceLangDiv').style.display = "none";          	
+             		document.getElementById('commentColsDiv').style.display = "none";  
+             		document.getElementById('treatCommentSameDiv').style.display = "none"; 
              		document.getElementById('#{rich:clientId('uploadButton')}').setAttribute("disabled", true);
              	}
             }
@@ -126,7 +132,7 @@
 					onchange="updateForm(this.value)">
 				</s:fileUpload>
 
-				<div class="glosaryFileUploadDialog" id="sourceLangDiv">
+				<div class="glosaryFileUploadDialog" id="sourceLangDiv" style="display:none">
 					<h:outputLabel value="Source Language" />
 					<h:selectOneMenu
 						value="#{glossaryAction.glossaryFileUpload.sourceLang}">
@@ -138,7 +144,7 @@
 					</h:selectOneMenu>
 				</div>
 				<div title="#{messages['jsf.Glossary.TargetLanguage.Title']}"
-					class="glosaryFileUploadDialog" id="targetLangDiv">
+					class="glosaryFileUploadDialog" id="targetLangDiv" style="display:none">
 					<h:outputLabel value="Target Language" />
 					<h:selectOneMenu
 						value="#{glossaryAction.glossaryFileUpload.transLang}">
@@ -150,7 +156,7 @@
 					</h:selectOneMenu>
 				</div>
 
-				<div class="glosaryFileUploadDialog">
+				<div class="glosaryFileUploadDialog" id="treatCommentSameDiv" style="display:none">
 					<h:outputText
 						value="#{messages['jsf.TreatSourceCommentsAsTarget']}?"
 						title="#{messages['jsf.TreatSourceCommentsAsTarget.Title']}" />
@@ -159,7 +165,7 @@
 						title="#{messages['jsf.TreatSourceCommentsAsTarget.Title']}" />
 				</div>
 
-				<div class="glosaryFileUploadDialog" id="commentColsDiv">
+				<div class="glosaryFileUploadDialog" id="commentColsDiv" style="display:none">
 					<h:outputText value="#{messages['jsf.CommentColumnNames']}"
 						title="#{messages['jsf.CommentColumnNames.Title']}" />
 					<h:inputText
