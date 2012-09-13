@@ -25,12 +25,13 @@ import java.util.Date;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
-import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
+import org.zanata.common.LocaleId;
 
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
 public class TestFixture
 {
@@ -70,5 +71,12 @@ public class TestFixture
 
       hTextFlow.getTargets().put(hLocale.getId(), target);
       return hTextFlow;
+   }
+
+   public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug)
+   {
+      LocaleId localeId = new LocaleId("en-US");
+      ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug);
+      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()), projectActive, hasWriteAccess, true);
    }
 }

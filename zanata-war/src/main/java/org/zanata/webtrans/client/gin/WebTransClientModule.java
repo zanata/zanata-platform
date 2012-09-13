@@ -69,6 +69,7 @@ import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
+import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
@@ -111,7 +112,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(WebTransMessages.class).in(Singleton.class);
       bind(ValidationService.class).in(Singleton.class);
 
-      bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
+      bindPresenter(AppPresenter.class, AppDisplay.class, AppView.class);
       bindPresenter(KeyShortcutPresenter.class, KeyShortcutPresenter.Display.class, KeyShortcutView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);

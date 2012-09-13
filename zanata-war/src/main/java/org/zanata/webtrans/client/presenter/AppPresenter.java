@@ -27,7 +27,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
-import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -47,81 +46,49 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
+// @formatter:off
+public class AppPresenter extends WidgetPresenter<AppDisplay> implements
+      ShowSideMenuEventHandler,
+      WorkspaceContextUpdateEventHandler,
+      DocumentStatsUpdatedEventHandler,
+      ProjectStatsUpdatedEventHandler,
+      PresenterRevealedHandler,
+      AppDisplay.Listener
+// @formatter:on
 {
-   // javac seems confused about which Display is which.
-   // somehow, qualifying WidgetDisplay helps!
-   public interface Display extends net.customware.gwt.presenter.client.widget.WidgetDisplay
-   {
-      void showInMainView(MainView editor);
 
-      HasClickHandlers getProjectLink();
-
-      HasClickHandlers getIterationFilesLink();
-
-      HasClickHandlers getDocumentsLink();
-
-      void setProjectLinkLabel(String workspaceNameLabel);
-
-      void setDocumentLabel(String docPath, String docName);
-
-      void setStats(TranslationStats transStats);
-
-      void setReadOnlyVisible(boolean visible);
-
-      HasClickHandlers getKeyShortcutButton();
-
-      HasClickHandlers getSearchAndReplaceButton();
-
-      HasClickHandlers getDocumentListButton();
-
-      HasClickHandlers getResizeButton();
-
-      boolean getAndToggleResizeButton();
-
-      void setResizeVisible(boolean visible);
-
-      void showSideMenu(boolean isShowing);
-
-      void setIterationFilesLabel(String iterationSlug);
-   }
+   private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
    private final SideMenuPresenter sideMenuPresenter;
-
    private final History history;
    private final Window window;
    private final Window.Location windowLocation;
    private final UserWorkspaceContext userWorkspaceContext;
    private final WebTransMessages messages;
 
+   // states
    private DocumentInfo selectedDocument;
-
-   private final TranslationStats selectedDocumentStats = new TranslationStats();
-   private final TranslationStats projectStats = new TranslationStats();
+   private TranslationStats selectedDocumentStats = new TranslationStats();
+   private TranslationStats projectStats = new TranslationStats();
    private TranslationStats currentDisplayStats = new TranslationStats();
    private MainView currentView = null;
 
-   private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
-
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(AppDisplay display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
@@ -134,6 +101,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       this.sideMenuPresenter = sideMenuPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
+
+      display.setListener(this);
    }
 
    @Override
@@ -145,156 +114,32 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       searchResultsPresenter.bind();
       sideMenuPresenter.bind();
 
-      registerHandler(eventBus.addHandler(ShowSideMenuEvent.getType(), new ShowSideMenuEventHandler()
-      {
-         @Override
-         public void onShowSideMenu(ShowSideMenuEvent event)
-         {
-            display.showSideMenu(event.isShowing());
-         }
-      }));
-      
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
-      {
-         @Override
-         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-         {
-            userWorkspaceContext.setProjectActive(event.isProjectActive());
-            if (userWorkspaceContext.hasReadOnlyAccess())
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyReadOnlyWorkspace()));
-            }
-            else
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyEditableWorkspace()));
-            }
-            display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
-         }
-      }));
+      registerHandler(eventBus.addHandler(ShowSideMenuEvent.getType(), this));
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+      registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), this));
+      registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
+      registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
 
-      registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), new DocumentStatsUpdatedEventHandler()
+      registerKeyShortcuts();
+
+      display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
+      display.setIterationFilesLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug() + " [" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + "]");
+
+      String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+      if (!Strings.isNullOrEmpty(workspaceTitle))
       {
-         @Override
-         public void onDocumentStatsUpdated(DocumentStatsUpdatedEvent event)
-         {
-            if (selectedDocument != null && event.getDocId().equals(selectedDocument.getId()))
-            {
-               selectedDocumentStats.set(event.getNewStats());
-               if (currentView.equals(MainView.Editor))
-               {
-                  refreshStatsDisplay();
-               }
-            }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), new ProjectStatsUpdatedEventHandler()
+         window.setTitle(messages.windowTitle2(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName(), workspaceTitle));
+      }
+      else
       {
-         @Override
-         public void onProjectStatsRetrieved(ProjectStatsUpdatedEvent event)
-         {
-            projectStats.set(event.getProjectStats());
-            if (currentView.equals(MainView.Documents))
-            {
-               refreshStatsDisplay();
-            }
-         }
-      }));
+         window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
+      }
 
-      registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            Application.redirectToIterationFiles(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
-         }
-      }));
+      display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
+   }
 
-      registerHandler(display.getProjectLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
-         }
-      }));
-
-      registerHandler(display.getIterationFilesLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            Application.redirectToIterationFiles(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
-         }
-      }));
-
-      registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            processHistoryEvent(event);
-         }
-      }));
-
-      display.getSearchAndReplaceButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (!token.getView().equals(MainView.Search))
-            {
-               token.setView(MainView.Search);
-               history.newItem(token.toTokenString());
-            }
-         }
-      });
-
-      display.getDocumentListButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            gotoDocumentListView();
-         }
-      });
-
-      display.getKeyShortcutButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            keyShortcutPresenter.showShortcuts();
-         }
-      });
-
-      display.getResizeButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            boolean expended = display.getAndToggleResizeButton();
-            translationPresenter.setSouthPanelExpanded(expended);
-         }
-      });
-
-      registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), new PresenterRevealedHandler()
-      {
-
-         @Override
-         public void onPresenterRevealed(PresenterRevealedEvent event)
-         {
-            // TODO disabled until tests are updated
-            // if (event.getPresenter() == searchResultsPresenter)
-            // {
-            // display.setDocumentLabel("",
-            // messages.projectWideSearchAndReplace());
-            // currentDisplayStats = projectStats;
-            // }
-         }
-      }));
-
+   private void registerKeyShortcuts()
+   {
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
       {
          @Override
@@ -334,45 +179,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             history.newItem(token.toTokenString());
          }
       }));
-
-      display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
-      display.setIterationFilesLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug() + " [" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + "]");
-
-      String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
-      if (!Strings.isNullOrEmpty(workspaceTitle))
-      {
-         window.setTitle(messages.windowTitle2(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName(), workspaceTitle));
-      }
-      else
-      {
-         window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
-      }
-
-      display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
-
-      // this may be redundant with the following history event line
-      showView(MainView.Documents);
-
-      history.fireCurrentHistoryState();
-   }
-
-   private void gotoDocumentListView()
-   {
-      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-
-      if (token.getView().equals(MainView.Documents))
-      {
-         if (selectedDocument == null)
-         {
-            return; // abort if no doc to edit
-         }
-         token.setView(MainView.Editor);
-      }
-      else
-      {
-         token.setView(MainView.Documents);
-      }
-      history.newItem(token.toTokenString());
    }
 
    @Override
@@ -385,40 +191,20 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    {
    }
 
-   private void processHistoryEvent(ValueChangeEvent<String> event)
+   public void showView(MainView viewToShow)
    {
-      Log.info("Responding to history token: " + event.getValue());
-
-      HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-
-      DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
-
-      if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
+      if (currentView == viewToShow)
       {
-         selectDocument(docId);
-         eventBus.fireEvent(new DocumentSelectionEvent(docId));
+         return;
       }
 
-      // if there is no valid document, don't show the editor
-      // default to document list instead
-      if (docId == null && token.getView() == MainView.Editor)
+      if (currentView == MainView.Editor)
       {
-         token.setView(MainView.Documents);
+         translationPresenter.saveEditorPendingChange();
       }
-
-      showView(token.getView());
-   }
-
-   private void showView(MainView viewToShow)
-   {
-      if (currentView != viewToShow)
+      Log.info("view to show is:" + viewToShow);
+      switch (viewToShow)
       {
-         if (currentView == MainView.Editor)
-         {
-            translationPresenter.saveEditorPendingChange();
-         }
-         switch (viewToShow)
-         {
          // TODO use revealDisplay/concealDisplay for editor and document views
          case Editor:
             if (selectedDocument != null)
@@ -444,29 +230,33 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             break;
          case Documents:
          default:
-            // TODO may want to continue showing selected document name
-            // if a document is selected.
-            display.setDocumentLabel("", messages.noDocumentSelected());
+            if (selectedDocument != null)
+            {
+               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+            }
+            else
+            {
+               display.setDocumentLabel("", messages.noDocumentSelected());
+            }
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
             sideMenuPresenter.showEditorMenu(false);
             display.setResizeVisible(false);
             break;
-         }
-         display.showInMainView(viewToShow);
-         currentView = viewToShow;
-         refreshStatsDisplay();
       }
+      display.showInMainView(viewToShow);
+      currentView = viewToShow;
+      refreshStatsDisplay();
    }
 
    /**
     * Set selected document to the given document, update name and stats to
     * match the newly selected document.
-    * 
+    *
     * @param docId id of the document to select
     */
-   private void selectDocument(DocumentId docId)
+   public void selectDocument(DocumentId docId)
    {
 
       if (selectedDocument == null || !docId.equals(selectedDocument.getId()))
@@ -491,5 +281,139 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private void refreshStatsDisplay()
    {
       display.setStats(currentDisplayStats);
+   }
+
+   public DocumentId getSelectedDocIdOrNull()
+   {
+      return selectedDocument == null ? null : selectedDocument.getId();
+   }
+
+   @Override
+   public void onShowSideMenu(ShowSideMenuEvent event)
+   {
+      display.showSideMenu(event.isShowing());
+   }
+
+   @Override
+   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+   {
+      userWorkspaceContext.setProjectActive(event.isProjectActive());
+      if (userWorkspaceContext.hasReadOnlyAccess())
+      {
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyReadOnlyWorkspace()));
+      }
+      else
+      {
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyEditableWorkspace()));
+      }
+      display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
+   }
+
+   @Override
+   public void onDocumentStatsUpdated(DocumentStatsUpdatedEvent event)
+   {
+      if (selectedDocument != null && event.getDocId().equals(selectedDocument.getId()))
+      {
+         selectedDocumentStats.set(event.getNewStats());
+         if (currentView.equals(MainView.Editor))
+         {
+            refreshStatsDisplay();
+         }
+      }
+   }
+
+   @Override
+   public void onProjectStatsRetrieved(ProjectStatsUpdatedEvent event)
+   {
+      projectStats.set(event.getProjectStats());
+      if (currentView.equals(MainView.Documents))
+      {
+         refreshStatsDisplay();
+      }
+   }
+
+   @Override
+   public void onProjectLinkClicked()
+   {
+      Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
+   }
+
+   @Override
+   public void onIterationFilesLinkClicked()
+   {
+      Application.redirectToIterationFiles(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
+   }
+
+   @Override
+   public void onSearchAndReplaceClicked()
+   {
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      if (!token.getView().equals(MainView.Search))
+      {
+         token.setView(MainView.Search);
+         history.newItem(token.toTokenString());
+      }
+   }
+
+   @Override
+   public void onDocumentListClicked()
+   {
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+
+      if (token.getView().equals(MainView.Documents))
+      {
+         if (selectedDocument == null)
+         {
+            return; // abort if no doc to edit
+         }
+         token.setView(MainView.Editor);
+      }
+      else
+      {
+         token.setView(MainView.Documents);
+      }
+      history.newItem(token.toTokenString());
+   }
+
+   @Override
+   public void onKeyShortcutsClicked()
+   {
+      keyShortcutPresenter.showShortcuts();
+   }
+
+   @Override
+   public void onResizeClicked()
+   {
+      boolean expended = display.getAndToggleResizeButton();
+      translationPresenter.setSouthPanelExpanded(expended);
+   }
+
+   @Override
+   public void onPresenterRevealed(PresenterRevealedEvent event)
+   {
+      // TODO disabled until tests are updated
+      // if (event.getPresenter() == searchResultsPresenter)
+      // {
+      // display.setDocumentLabel("",
+      // messages.projectWideSearchAndReplace());
+      // currentDisplayStats = projectStats;
+      // }
+   }
+
+   /**
+    * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
+    *
+    * @param projectStats project stats
+    * @param selectedDocumentStats selected document stats
+    * @param currentView current view
+    */
+   protected void setStatesForTest(TranslationStats projectStats, TranslationStats selectedDocumentStats, MainView currentView)
+   {
+      if (!GWT.isClient())
+      {
+         this.currentView = currentView;
+         this.projectStats = projectStats;
+         this.selectedDocumentStats = selectedDocumentStats;
+      }
    }
 }

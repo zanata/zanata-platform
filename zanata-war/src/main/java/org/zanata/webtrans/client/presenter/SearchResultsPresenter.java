@@ -216,11 +216,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private Map<TransUnitId, TransUnitReplaceInfo> allReplaceInfos;
 
-   /**
-    * most recent history state that was responded to
-    */
-   private HistoryToken currentHistoryState = null;
-
    private Map<Long, String> docPaths;
 
    private boolean autoPreview = true;
@@ -314,16 +309,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             replaceSelected();
          }
       }));
-
-      history.addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            processHistoryToken(HistoryToken.fromTokenString(event.getValue()));
-         }
-      });
 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
@@ -710,7 +695,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
          return;
       }
-      final String replacement = currentHistoryState.getProjectSearchReplacement();
+      final String replacement = display.getReplacementTextBox().getValue();
       // prevent failed requests for empty replacement
       if (replacement.isEmpty())
       {
@@ -741,8 +726,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          return;
       }
 
-      final String searchText = currentHistoryState.getProjectSearchText();
-      boolean caseSensitive = currentHistoryState.getProjectSearchCaseSensitive();
+      final String searchText = display.getFilterTextBox().getValue();
+      boolean caseSensitive = display.getCaseSensitiveChk().getValue();
       ReplaceText action = new ReplaceText(transUnits, searchText, replacement, caseSensitive);
       PreviewReplaceText previewAction = new PreviewReplaceText(action);
       dispatcher.execute(previewAction, new AsyncCallback<PreviewReplaceTextResult>()
@@ -847,9 +832,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          return;
       }
 
-      final String searchText = currentHistoryState.getProjectSearchText();
-      final String replacement = currentHistoryState.getProjectSearchReplacement();
-      boolean caseSensitive = currentHistoryState.getProjectSearchCaseSensitive();
+      final String searchText = display.getFilterTextBox().getValue();
+      final String replacement = display.getReplacementTextBox().getValue();
+      boolean caseSensitive = display.getCaseSensitiveChk().getValue();
       ReplaceText action = new ReplaceText(transUnits, searchText, replacement, caseSensitive);
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
@@ -1161,49 +1146,34 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       };
    }
 
-   private void processHistoryToken(HistoryToken token)
+   public void updateViewAndRun(String searchText, boolean caseSensitive, boolean searchInSource, boolean searchInTarget)
    {
-      if (currentHistoryState == null)
-         currentHistoryState = new HistoryToken(); // default values
+      display.setHighlightString(searchText);
+      display.getFilterTextBox().setValue(searchText, false);
+      display.getCaseSensitiveChk().setValue(caseSensitive, false);
 
-      boolean caseSensitivityChanged = token.getProjectSearchCaseSensitive() != currentHistoryState.getProjectSearchCaseSensitive();
-      boolean searchTextChanged = !token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText());
-      boolean searchFieldsChanged = token.isProjectSearchInSource() != currentHistoryState.isProjectSearchInSource();
-      searchFieldsChanged |= token.isProjectSearchInTarget() != currentHistoryState.isProjectSearchInTarget();
-      if (caseSensitivityChanged || searchTextChanged || searchFieldsChanged)
+      clearAllExistingData();
+
+      if (!searchText.isEmpty())
       {
-         display.setHighlightString(token.getProjectSearchText());
-         display.getFilterTextBox().setValue(token.getProjectSearchText(), false);
-         display.getCaseSensitiveChk().setValue(token.getProjectSearchCaseSensitive(), false);
-         // TODO set selection in source/target selector
-
-         clearAllExistingData();
-
-         if (!token.getProjectSearchText().isEmpty())
-         {
-            display.setSearching(true);
-            GetProjectTransUnitLists action = new GetProjectTransUnitLists(token.getProjectSearchText(), token.isProjectSearchInSource(), token.isProjectSearchInTarget(), token.getProjectSearchCaseSensitive(), windowLocation.getQueryDocuments());
-            dispatcher.execute(action, projectSearchCallback);
-         }
+         display.setSearching(true);
+         GetProjectTransUnitLists action = new GetProjectTransUnitLists(searchText, searchInSource, searchInTarget, caseSensitive, windowLocation.getQueryDocuments());
+         dispatcher.execute(action, projectSearchCallback);
       }
+   }
 
-      boolean replacementTextChanged = !token.getProjectSearchReplacement().equals(currentHistoryState.getProjectSearchReplacement());
-      if (replacementTextChanged)
+   public void updateReplacementText(String replacement)
+   {
+      display.getReplacementTextBox().setValue(replacement, true);
+      for (TransUnitReplaceInfo info : allReplaceInfos.values())
       {
-         display.getReplacementTextBox().setValue(token.getProjectSearchReplacement(), true);
-         for (TransUnitReplaceInfo info : allReplaceInfos.values())
-         {
-            info.setPreview(null);
-            info.setPreviewState(PreviewState.NotFetched);
-            refreshInfoDisplay(info);
-         }
-         refreshReplaceAllButton();
+         info.setPreview(null);
+         info.setPreviewState(PreviewState.NotFetched);
+         refreshInfoDisplay(info);
       }
+      refreshReplaceAllButton();
 
-      currentHistoryState = token;
-
-      // uses currentHistoryState so must execute after token is updated.
-      if (replacementTextChanged && autoPreview)
+      if (autoPreview)
       {
          previewSelected(true, false);
       }

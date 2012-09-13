@@ -85,7 +85,6 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
 
    //tracking variables
    private GetTransUnitActionContext context;
-   private String findMessage;
    private boolean isLoadingTU = false;
    private boolean isLoadingIndex =false;
 
@@ -302,12 +301,6 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    @Override
    public void onFindMessage(FindMessageEvent findMessageEvent)
    {
-      findMessage = findMessageEvent.getMessage();
-      // context may be null if loading from bookmark (document is not yet loaded)
-      if (context == null)
-      {
-         return;
-      }
       execute(findMessageEvent);
    }
 
@@ -341,8 +334,9 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       if (context == null)
       {
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
-         DocumentId documentId = ((DocumentSelectionEvent) command).getDocumentId();
-         init(new GetTransUnitActionContext(documentId).changeCount(configHolder.getPageSize()).changeFindMessage(findMessage));
+         DocumentSelectionEvent documentSelectionEvent = (DocumentSelectionEvent) command;
+         DocumentId documentId = documentSelectionEvent.getDocumentId();
+         init(new GetTransUnitActionContext(documentId).changeCount(configHolder.getPageSize()).changeFindMessage(documentSelectionEvent.getFindMessage()));
       }
       else
       {

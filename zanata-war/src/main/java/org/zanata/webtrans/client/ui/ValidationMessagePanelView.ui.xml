@@ -7,7 +7,7 @@
 	<ui:style
 		type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
         .container {
-            width: 99%;
+            width: 95%;
             margin-top: 5px;
             margin-left: 28px;
             table-layout: fixed;

@@ -24,6 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 
@@ -31,11 +32,10 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
-public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> implements TransFilterDisplay.Listener
+public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> implements TransFilterDisplay.Listener, FindMessageHandler
 {
 
    private final History history;
-   private HistoryToken currentState;
 
    @Inject
    public TransFilterPresenter(final TransFilterDisplay display, final EventBus eventBus, final History history)
@@ -43,28 +43,12 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
       super(display, eventBus);
       display.setListener(this);
       this.history = history;
-      currentState = new HistoryToken();
    }
 
    @Override
    protected void onBind()
    {
-      registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            HistoryToken token = history.getHistoryToken();
-            if (!token.getSearchText().equals(currentState.getSearchText()))
-            {
-               display.setSearchTerm(token.getSearchText());
-               eventBus.fireEvent(new FindMessageEvent(token.getSearchText()));
-            }
-            currentState = token;
-         }
-      }));
-
+      registerHandler(eventBus.addHandler(FindMessageEvent.getType(), this));
    }
 
    public boolean isFocused()
@@ -75,13 +59,16 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    @Override
    public void searchTerm(String searchTerm)
    {
-      if (!searchTerm.equals(currentState.getSearchText()))
-      {
-         HistoryToken newToken = history.getHistoryToken();
-         newToken.setSearchText(searchTerm);
-         history.newItem(newToken);
-         display.setSearchTerm(searchTerm);
-      }
+      HistoryToken newToken = history.getHistoryToken();
+      newToken.setSearchText(searchTerm);
+      history.newItem(newToken);
+   }
+
+   @Override
+   public void onFindMessage(FindMessageEvent event)
+   {
+      // this is fired from HistoryEventHandlerService
+      display.setSearchTerm(event.getMessage());
    }
 
    @Override

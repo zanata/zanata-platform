@@ -1,14 +1,21 @@
 package org.zanata.webtrans.client;
 
+import java.util.ArrayList;
+
 import org.zanata.common.LocaleId;
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.gin.WebTransGinjector;
+import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -17,6 +24,8 @@ import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.GetDocumentList;
+import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 import com.allen_sauer.gwt.log.client.Log;
@@ -41,6 +50,8 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -104,12 +115,13 @@ public class Application implements EntryPoint
          }
 
          @Override
-         public void onSuccess(ActivateWorkspaceResult result)
+         public void onSuccess(final ActivateWorkspaceResult result)
          {
             userWorkspaceContext = result.getUserWorkspaceContext();
             identity = result.getIdentity();
             injector.getDispatcher().setIdentity(identity);
             injector.getDispatcher().setUserWorkspaceContext(userWorkspaceContext);
+
             startApp();
          }
 
@@ -169,9 +181,46 @@ public class Application implements EntryPoint
    private void delayedStartApp()
    {
       final AppPresenter appPresenter = injector.getAppPresenter();
+      final DocumentListPresenter documentListPresenter = injector.getDocumentListPresenter();
       RootPanel.get("contentDiv").add(appPresenter.getDisplay().asWidget());
       appPresenter.bind();
       Window.enableScrolling(true);
+      // eager load document list
+      final EventBus eventBus = injector.getEventBus();
+      injector.getDispatcher().execute(new GetDocumentList(getWorkspaceId().getProjectIterationId(), injector.getLocation().getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to load documents"));
+         }
+
+         @Override
+         public void onSuccess(GetDocumentListResult result)
+         {
+            long start = System.currentTimeMillis();
+            final ArrayList<DocumentInfo> documents = result.getDocuments();
+            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+            documentListPresenter.setDocuments(documents);
+
+            History history = injector.getHistory();
+            history.addValueChangeHandler(injector.getHistoryEventHandlerService());
+            Log.info("=========== now firing current history state =========== ");
+            history.fireCurrentHistoryState();
+
+            start = System.currentTimeMillis();
+            TranslationStats projectStats = new TranslationStats(); // = 0
+            for (DocumentInfo doc : documents)
+            {
+               projectStats.add(doc.getStats());
+            }
+
+            documentListPresenter.setProjectStats(projectStats);
+            // re-use these stats for the project stats
+            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+         }
+      });
    }
 
    public static ProjectIterationId getProjectIterationId()
@@ -304,7 +353,6 @@ public class Application implements EntryPoint
 
             if (!injector.getUserConfig().isShowError())
             {
-               injector.getEventBus().fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "There is an error occurred in the application. Please refresh your page and try again (enable the 'Show Error' option to show it)"));
                return;
             }
             globalPopup.getCaption().setHTML("<div class=\"globalPopupCaption\">ERROR: " + e.getMessage() + "</div>");

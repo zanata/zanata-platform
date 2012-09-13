@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -35,23 +34,17 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.rpc.GetDocumentList;
-import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -59,7 +52,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -91,13 +83,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    private static final int PAGE_SIZE = 20;
 
-   private final DispatchAsync dispatcher;
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
    private final History history;
-   private final Location windowLocation;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
@@ -109,9 +99,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private HashMap<String, DocumentId> idsByPath;
 
    private final PathDocumentFilter filter = new PathDocumentFilter();
-
-   // used to determine whether to re-run filter
-   private HistoryToken currentHistoryState = null;
 
    private TranslationStats projectStats;
 
@@ -137,14 +124,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    };
 
    @Inject
-   public DocumentListPresenter(final Display display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
+   public DocumentListPresenter(final Display display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history)
    {
       super(display, eventBus);
       this.userworkspaceContext = userworkspaceContext;
-      this.dispatcher = dispatcher;
       this.messages = messages;
       this.history = history;
-      this.windowLocation = windowLocation;
 
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
@@ -178,14 +163,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             // prevent feedback loops between history and selection
             boolean isNewSelection;
             DocumentId docId = getDocumentId(token.getDocumentPath());
-            if (docId == null)
-            {
-               isNewSelection = true;
-            }
-            else
-            {
-               isNewSelection = !docId.equals(event.getSelectedItem().getId());
-            }
+            isNewSelection = (docId == null || !docId.equals(event.getSelectedItem().getId()));
 
             if (isNewSelection)
             {
@@ -257,60 +235,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          }
       }));
 
-      history.addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            if (currentHistoryState == null)
-               currentHistoryState = new HistoryToken(); // default values
-
-            boolean filterChanged = false;
-            HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-            // update textbox to match new history state
-            if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
-            {
-               display.getFilterTextBox().setValue(token.getDocFilterText(), true);
-            }
-
-            if (!token.getDocFilterText().equals(currentHistoryState.getDocFilterText()))
-            {
-               // different pattern
-               filter.setPattern(token.getDocFilterText());
-               filterChanged = true;
-            }
-
-            // update exact-match checkbox to match new history state
-            if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
-            {
-               display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
-            }
-
-            if (token.getDocFilterExact() != currentHistoryState.getDocFilterExact())
-            {
-               filter.setFullText(token.getDocFilterExact());
-               filterChanged = true;
-            }
-
-            // update case-sensitive checkbox to match new history state
-            if (token.isDocFilterCaseSensitive() != display.getCaseSensitiveCheckbox().getValue())
-            {
-               display.getCaseSensitiveCheckbox().setValue(token.isDocFilterCaseSensitive());
-            }
-            if (token.isDocFilterCaseSensitive() != currentHistoryState.isDocFilterCaseSensitive())
-            {
-               filter.setCaseSensitive(token.isDocFilterCaseSensitive());
-               filterChanged = true;
-            }
-
-            currentHistoryState = token;
-
-            if (filterChanged)
-               runFilter();
-         }
-      });
-
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
          @Override
@@ -345,10 +269,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          }
       }));
 
-      loadDocumentList();
       display.setPageSize(PAGE_SIZE);
-
-      history.fireCurrentHistoryState();
    }
 
    /**
@@ -360,7 +281,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
     * @author David Mason, damason@redhat.com
     * 
     */
-   final class PathDocumentFilter
+   public final class PathDocumentFilter
    {
       private static final String DOCUMENT_FILTER_LIST_DELIMITER = ",";
 
@@ -371,7 +292,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       public boolean accept(DocumentInfo value)
       {
          if (patterns.isEmpty())
+         {
             return true;
+         }
          String fullPath = value.getPath() + value.getName();
          if (!caseSensitive)
          {
@@ -386,7 +309,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             if (isFullText)
             {
                if (fullPath.equals(pattern))
+               {
                   return true;
+               }
             }
             else if (fullPath.contains(pattern))
             {
@@ -421,6 +346,19 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       }
    }
 
+   public void updateFilterAndRun(String docFilterText, boolean docFilterExact, boolean docFilterCaseSensitive)
+   {
+      display.getCaseSensitiveCheckbox().setValue(docFilterCaseSensitive, false);
+      display.getExactSearchCheckbox().setValue(docFilterExact, false);
+      display.getFilterTextBox().setValue(docFilterText, false);
+
+      filter.setCaseSensitive(docFilterCaseSensitive);
+      filter.setFullText(docFilterExact);
+      filter.setPattern(docFilterText);
+
+      runFilter();
+   }
+
    @Override
    protected void onUnbind()
    {
@@ -432,41 +370,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       // Auto-generated method stub
    }
 
-   private void loadDocumentList()
-   {
-      dispatcher.execute(new GetDocumentList(userworkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId(), windowLocation.getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.loadDocFailed()));
-         }
-
-         @Override
-         public void onSuccess(GetDocumentListResult result)
-         {
-            long start = System.currentTimeMillis();
-            final ArrayList<DocumentInfo> documents = result.getDocuments();
-            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
-            setList(documents);
-            start = System.currentTimeMillis();
-
-            history.fireCurrentHistoryState();
-
-            projectStats = new TranslationStats(); // = 0
-            for (DocumentInfo doc : documents)
-            {
-               projectStats.add(doc.getStats());
-            }
-
-            // re-use these stats for the project stats
-            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
-            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
-         }
-      });
-   }
-
-   private void setList(ArrayList<DocumentInfo> sortedList)
+   public void setDocuments(ArrayList<DocumentInfo> sortedList)
    {
       dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
@@ -535,22 +439,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       return null;
    }
 
-   private void clearSelection()
-   {
-      if (currentSelection == null)
-      {
-         return;
-      }
-      currentSelection = null;
-   }
-
    private void setSelection(final DocumentId documentId)
    {
       if (currentSelection != null && currentSelection.getDocInfo().getId() == documentId)
       {
+         Log.info("same selection doc id:" + documentId);
          return;
       }
-      clearSelection();
+      currentSelection = null;
       DocumentNode node = nodes.get(documentId);
       if (node != null)
       {
@@ -560,5 +456,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          // loading from bookmarked history token
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
+   }
+
+   public void setProjectStats(TranslationStats projectStats)
+   {
+      this.projectStats = projectStats;
    }
 }

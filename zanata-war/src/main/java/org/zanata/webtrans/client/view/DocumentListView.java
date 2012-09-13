@@ -20,13 +20,9 @@
  */
 package org.zanata.webtrans.client.view;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.resources.Resources;
-import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -44,9 +40,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
@@ -56,12 +50,7 @@ import com.google.inject.Inject;
 
 public class DocumentListView extends Composite implements DocumentListPresenter.Display, HasSelectionHandlers<DocumentInfo>
 {
-
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
-
-   interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
-   {
-   }
 
    @UiField
    FlowPanel documentListContainer;
@@ -83,7 +72,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    private ListDataProvider<DocumentNode> dataProvider;
 
    @Inject
-   public DocumentListView(Resources resources, WebTransMessages messages, UiMessages uiMessages, final CachingDispatchAsync dispatcher, EventBus eventBus)
+   public DocumentListView(Resources resources, WebTransMessages messages)
    {
 
       this.resources = resources;
@@ -93,7 +82,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       initWidget(uiBinder.createAndBindUi(this));
       filterTextBox.setTitle(messages.docListFilterDescription());
       
-      // TODO set this from the presenter if possible
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
    }
@@ -162,5 +150,9 @@ public class DocumentListView extends Composite implements DocumentListPresenter
 
       documentListContainer.clear();
       documentListContainer.add(documentListTable);
+   }
+
+   interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
+   {
    }
 }

@@ -14,6 +14,7 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> i
     */
    private static Type<DocumentSelectionHandler> TYPE;
    private final DocumentId document;
+   private String findMessage;
 
    /**
     * Gets the type associated with this event.
@@ -25,14 +26,25 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> i
       return TYPE != null ? TYPE : (TYPE = new Type<DocumentSelectionHandler>());
    }
 
+   public DocumentSelectionEvent(DocumentId document, String findMessage)
+   {
+      this.document = document;
+      this.findMessage = findMessage;
+   }
+
    public DocumentSelectionEvent(DocumentId documentId)
    {
-      this.document = documentId;
+      this(documentId, null);
    }
 
    public DocumentId getDocumentId()
    {
       return document;
+   }
+
+   public String getFindMessage()
+   {
+      return findMessage;
    }
 
    @Override
@@ -51,6 +63,6 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> i
    public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
    {
       Preconditions.checkNotNull(currentContext, "current context can not be null");
-      return currentContext.changeDocument(document);
+      return currentContext.changeDocument(document).changeFindMessage(findMessage);
    }
 }

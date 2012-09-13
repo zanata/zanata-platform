@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
@@ -36,10 +35,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppView extends Composite implements AppPresenter.Display
+public class AppView extends Composite implements AppDisplay
 {
 
    interface AppViewUiBinder extends UiBinder<LayoutPanel, AppView>
@@ -80,6 +80,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField
    Styles style;
+
+   private Listener listener;
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
@@ -171,12 +173,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getDocumentsLink()
-   {
-      return projectLink;
-   }
-
-   @Override
    public void setProjectLinkLabel(String workspaceNameLabel)
    {
       projectLink.setText(workspaceNameLabel);
@@ -186,6 +182,12 @@ public class AppView extends Composite implements AppPresenter.Display
    public void setIterationFilesLabel(String name)
    {
       iterationFilesLink.setText(name);
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
    }
 
    @Override
@@ -206,30 +208,6 @@ public class AppView extends Composite implements AppPresenter.Display
    public void setReadOnlyVisible(boolean visible)
    {
       readOnlyLabel.setVisible(visible);
-   }
-
-   @Override
-   public HasClickHandlers getKeyShortcutButton()
-   {
-      return keyShortcuts;
-   }
-
-   @Override
-   public HasClickHandlers getSearchAndReplaceButton()
-   {
-      return searchAndReplace;
-   }
-   
-   @Override
-   public HasClickHandlers getDocumentListButton()
-   {
-      return documentList;
-   }
-
-   @Override
-   public HasClickHandlers getResizeButton()
-   {
-      return resize;
    }
 
    /**
@@ -284,15 +262,40 @@ public class AppView extends Composite implements AppPresenter.Display
       rootContainer.animate(ANIMATE_DURATION);
    }
 
-   @Override
-   public HasClickHandlers getProjectLink()
+   @UiHandler("projectLink")
+   public void onProjectLinkClick(ClickEvent event)
    {
-      return projectLink;
+      listener.onProjectLinkClicked();
    }
 
-   @Override
-   public HasClickHandlers getIterationFilesLink()
+   @UiHandler("iterationFilesLink")
+   public void onIterationFilesLinkClick(ClickEvent event)
    {
-      return iterationFilesLink;
+      listener.onIterationFilesLinkClicked();
    }
+
+   @UiHandler("searchAndReplace")
+   public void onSearchAndReplaceClick(ClickEvent event)
+   {
+      listener.onSearchAndReplaceClicked();
+   }
+
+   @UiHandler("documentList")
+   public void onDocumentListIconClick(ClickEvent event)
+   {
+      listener.onDocumentListClicked();
+   }
+
+   @UiHandler("keyShortcuts")
+   public void onKeyShortcutsIconClick(ClickEvent event)
+   {
+      listener.onKeyShortcutsClicked();
+   }
+
+   @UiHandler("resize")
+   public void onResizeIconClick(ClickEvent event)
+   {
+      listener.onResizeClicked();
+   }
+
 }

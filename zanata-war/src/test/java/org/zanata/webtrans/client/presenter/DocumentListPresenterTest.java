@@ -87,7 +87,6 @@ public class DocumentListPresenterTest extends PresenterTest
    // mocks for interacting classes
    HasValue mockCaseSensitiveCheckbox; // Boolean
    ListDataProvider mockDataProvider;
-   CachingDispatchAsync mockDispatcher;
    DocumentListPresenter.Display mockDisplay;
    HasSelectionHandlers mockDocList;
    HasData mockDocListTable;
@@ -96,7 +95,6 @@ public class DocumentListPresenterTest extends PresenterTest
    HasValue mockFilterTextbox; // String
    History mockHistory;
    WebTransMessages mockMessages;
-   Window.Location mockWindowLocation;
    UserWorkspaceContext mockUserWorkspaceContext;
    WorkspaceContext mockWorkspaceContext;
 
@@ -125,7 +123,6 @@ public class DocumentListPresenterTest extends PresenterTest
    {
       mockCaseSensitiveCheckbox = createAndAddMock(HasValue.class);
       mockDataProvider = createAndAddMock(ListDataProvider.class);
-      mockDispatcher = createAndAddMock(CachingDispatchAsync.class);
       mockDisplay = createAndAddMock(DocumentListPresenter.Display.class);
       mockDocList = createAndAddMock(HasSelectionHandlers.class);
       mockDocListTable = createAndAddMock(HasData.class);
@@ -134,11 +131,9 @@ public class DocumentListPresenterTest extends PresenterTest
       mockFilterTextbox = createAndAddMock(HasValue.class);
       mockHistory = createAndAddMock(History.class);
       mockMessages = createAndAddMock(WebTransMessages.class);
-      mockWindowLocation = createAndAddMock(Window.Location.class);
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
 
-      capturedHistoryValueChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
       capturedTextboxChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
       capturedCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
       capturedCaseSensitiveCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
@@ -157,50 +152,7 @@ public class DocumentListPresenterTest extends PresenterTest
    public void resetMocks()
    {
       resetAll();
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockDispatcher, mockMessages, mockHistory, mockWindowLocation);
-   }
-
-   @Test
-   public void requestsDocumentsOnBind()
-   {
-      setDefaultMockBehaviour();
-      replayAllMocks();
-      documentListPresenter.bind();
-
-      verifyAllMocks();
-
-      GetDocumentList documentListRequest = capturedDocListRequest.getValue();
-      ProjectIterationId requestedProjectIteration = documentListRequest.getProjectIterationId();
-
-      assertThat("requested project slug should match that from workspace context", requestedProjectIteration.getProjectSlug(), is(TEST_PROJECT_SLUG));
-      assertThat("requested iteration slug should match that from workspace context", requestedProjectIteration.getIterationSlug(), is(TEST_ITERATION_SLUG));
-      assertThat("request filter parameters should be null when no filters are specified in the query string", documentListRequest.getFilters(), is(equalTo(null)));
-   }
-
-   @Test
-   public void preFiltersDocuments()
-   {
-      setupDefaultDoclistRequestAnswer();
-      setupMockHistory("");
-
-      // simulate "doc" query string parameters
-      String firstFilterString = "filter/string/one";
-      String secondFilterString = "filter/string/two";
-      List<String> filters = new ArrayList<String>();
-      filters.add(firstFilterString);
-      filters.add(secondFilterString);
-      Map<String, List<String>> paramMapWithFilters = new HashMap<String, List<String>>();
-      paramMapWithFilters.put("doc", filters);
-      expectWindowLocationCalls(paramMapWithFilters);
-
-      replayAllMocks();
-      documentListPresenter.bind();
-
-      verifyAllMocks();
-      String message = "all doc query parameters should be passed as filter strings to the rpc call";
-      assertThat(message, firstFilterString, isIn(capturedDocListRequest.getValue().getFilters()));
-      assertThat(message, secondFilterString, isIn(capturedDocListRequest.getValue().getFilters()));
-      assertThat("only filter strings from query parameters should be passed to the rpc call, too many detected", capturedDocListRequest.getValue().getFilters().size(), is(2));
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory);
    }
 
    @Test
@@ -215,34 +167,13 @@ public class DocumentListPresenterTest extends PresenterTest
       assertThat("display page size should be set on bind to a high enough value to show all documents on one page", capturedPageSize.getValue(), greaterThanOrEqualTo(3));
    }
 
-//   // FIXME
-//   @Test
-//   public void setsPageSizeZeroDocs()
-//   {
-//      resetAllMocks();
-//      setupDefaultMockExpectations();
-//      documentListPresenter = newDocListPresenter();
-//
-//      // another trial with 0 documents
-//      ArrayList<DocumentInfo> testDocList;
-//      // returning 0 documents
-//      testDocList = new ArrayList<DocumentInfo>();
-//      setupMockDispatcher(new DoclistSuccessAnswer(testDocList));
-//      expectDefaultWindowLocationCalls();
-//      setDefaultBindExpectations();
-//      replayAllMocks();
-//      documentListPresenter = newDocListPresenter();
-//      documentListPresenter.bind();
-//      verifyAllMocks();
-//      assertThat("display page size should be set on bind to a high enough value to show all documents on one page", capturedPageSize.getValue(), greaterThanOrEqualTo(0));
-//   }
-
    @Test
    public void loadDocsIntoDataProvider()
    {
       setDefaultMockBehaviour();
       replayAllMocks();
       documentListPresenter.bind();
+      documentListPresenter.setDocuments(buildSampleDocumentArray());
 
       verifyAllMocks();
 
@@ -262,50 +193,19 @@ public class DocumentListPresenterTest extends PresenterTest
    }
 
    @Test
-   public void docListFailureNotification()
-   {
-      setupMockDispatcher(new DocListFailAnswer());
-      expectDefaultWindowLocationCalls();
-      setupMockHistory("");
-
-      replayAllMocks();
-      documentListPresenter.bind();
-      verifyAllMocks();
-
-      assertThat("document request failure should be reported in a NotificationEvent", capturedEventBusEvent.getValue().getAssociatedType(), is((Type) NotificationEvent.getType()));
-      NotificationEvent capturedNotificationEvent = (NotificationEvent) capturedEventBusEvent.getValue();
-      assertThat("when document request from server fails, an error severity notification should occur", capturedNotificationEvent.getSeverity(), is(NotificationEvent.Severity.Error));
-      assertThat("the error message from localizable messages should be used to notify of failed document request from server", capturedNotificationEvent.getMessage(), is(TEST_DOC_LOAD_FAIL_MESSAGE));
-   }
-
-   @Test
-   public void generatesProjectStatsEvent()
-   {
-      setDefaultMockBehaviour();
-      replayAllMocks();
-      documentListPresenter.bind();
-
-      verifyAllMocks();
-      assertThat("when document list is retrieved, project stats should be sent with a ProjectStatsRetrievedEvent", capturedEventBusEvent.getValue().getAssociatedType(), is((Type) ProjectStatsUpdatedEvent.getType()));
-      TranslationStats projectStats = ((ProjectStatsUpdatedEvent) capturedEventBusEvent.getValue()).getProjectStats();
-
-      // sample doc stats set to 1, 2, 3, 4, 5, 6 for the following.
-      // multiplied by 3 for 3 sample documents.
-      // TODO extract fields for these numbers
-      assertThat("approved trans unit count", projectStats.getUnitCount().getApproved(), is(3));
-      assertThat("needs review trans unit count", projectStats.getUnitCount().getNeedReview(), is(6));
-      assertThat("untranslated trans unit count", projectStats.getUnitCount().getUntranslated(), is(9));
-      assertThat("approved word count", projectStats.getWordCount().getApproved(), is(12));
-      assertThat("needs review word count", projectStats.getWordCount().getNeedReview(), is(15));
-      assertThat("untranslated word count", projectStats.getWordCount().getUntranslated(), is(18));
-   }
-
-   @Test
    public void generatesDocumentStatsOnTuUpdate()
    {
       setDefaultMockBehaviour();
       replayAllMocks();
       documentListPresenter.bind();
+      ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
+      TranslationStats stats = new TranslationStats();
+      for (DocumentInfo documentInfo : documentInfos)
+      {
+         stats.add(documentInfo.getStats());
+      }
+      documentListPresenter.setDocuments(documentInfos);
+      documentListPresenter.setProjectStats(stats);
 
       simulateTransUnitUpdateInDocTwo();
 
@@ -339,6 +239,14 @@ public class DocumentListPresenterTest extends PresenterTest
       setDefaultMockBehaviour();
       replayAllMocks();
       documentListPresenter.bind();
+      ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
+      TranslationStats stats = new TranslationStats();
+      for (DocumentInfo documentInfo : documentInfos)
+      {
+         stats.add(documentInfo.getStats());
+      }
+      documentListPresenter.setDocuments(documentInfos);
+      documentListPresenter.setProjectStats(stats);
 
       simulateTransUnitUpdateInDocTwo();
 
@@ -428,9 +336,6 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void uncheckExactSearchCheckboxGeneratesHistoryToken()
    {
-      setupDefaultDoclistRequestAnswer();
-      expectDefaultWindowLocationCalls();
-
       // history reflects checkbox already checked
       HistoryToken exactSearchToken = new HistoryToken();
       exactSearchToken.setDocFilterExact(true);
@@ -470,54 +375,27 @@ public class DocumentListPresenterTest extends PresenterTest
    }
 
    @Test
-   public void historyTokenFiltersDoclist()
-   {
-      setDefaultMockBehaviour();
-      // should match 2 of the 3 sample documents
-      String filterText = "match/exact/filter";
-      expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
-      expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
-      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
-
-      replayAllMocks();
-      documentListPresenter.bind();
-
-      // simulate firing history change event
-      HistoryToken historyTokenWithFilter = new HistoryToken();
-      historyTokenWithFilter.setDocFilterText(filterText);
-      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithFilter.toTokenString());
-      verifyAllMocks();
-
-      ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
-      expectedDocs.remove(0); // first doc does not match the filter
-      ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-      for (DocumentNode node : dataProviderList)
-      {
-         assertThat("the data provider should have only documents that match the current filter", node.getDocInfo(), isIn(expectedDocs));
-         actualDocInfos.add(node.getDocInfo());
-      }
-      assertThat("the data provider should have all documents that match the filter", actualDocInfos, hasItems(expectedDocs.get(0), expectedDocs.get(1)));
-      assertThat("the data provider list should contain exactly the number of documents matching the filter", dataProviderList.size(), is(2));
-   }
-
-   @Test
    public void exactSearchMatchesExactOnly()
    {
       setDefaultMockBehaviour();
       // should match 1 of the 3 sample documents
       String filterText = "match/exact/filter";
-      expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
-      expect(mockExactSearchCheckbox.getValue()).andReturn(true).anyTimes();
-      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
+      mockFilterTextbox.setValue(filterText, false);
+      expectLastCall();
+      mockExactSearchCheckbox.setValue(true, false);
+      expectLastCall();
+      mockCaseSensitiveCheckbox.setValue(false, false);
+      expectLastCall();
 
       replayAllMocks();
       documentListPresenter.bind();
+      documentListPresenter.setDocuments(buildSampleDocumentArray());
+      documentListPresenter.updateFilterAndRun(filterText, true, false);
 
       // simulate firing history change event
       HistoryToken historyTokenWithExactFilter = new HistoryToken();
       historyTokenWithExactFilter.setDocFilterText(filterText);
       historyTokenWithExactFilter.setDocFilterExact(true);
-      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithExactFilter.toTokenString());
 
       verifyAllMocks();
 
@@ -544,17 +422,21 @@ public class DocumentListPresenterTest extends PresenterTest
       // multiple matching strings for third to check that there is no
       // duplication, also variable whitespace
       String filterText = " does/not, not/match ,no/filter ";
-      expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
-      expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
-      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
+      mockFilterTextbox.setValue(filterText, false);
+      expectLastCall();
+      mockExactSearchCheckbox.setValue(false, false);
+      expectLastCall();
+      mockCaseSensitiveCheckbox.setValue(false, false);
+      expectLastCall();
 
       replayAllMocks();
       documentListPresenter.bind();
+      documentListPresenter.setDocuments(buildSampleDocumentArray());
+      documentListPresenter.updateFilterAndRun(filterText, false, false);
 
       // simulate firing history change event
       HistoryToken historyTokenWithFilter = new HistoryToken();
       historyTokenWithFilter.setDocFilterText(filterText);
-      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithFilter.toTokenString());
 
       verifyAllMocks();
 
@@ -571,49 +453,6 @@ public class DocumentListPresenterTest extends PresenterTest
       assertThat("the data provider list should contain exactly the number of documents matching the filter", dataProviderList.size(), is(2));
    }
 
-   @SuppressWarnings("unchecked")
-   @Test
-   public void filterTextboxUpdatedFromHistory()
-   {
-      setDefaultMockBehaviour();
-      String filterText = "some filter text";
-      // must use fireEvents=true to prevent value being used as greyed-out
-      // 'hint' text that automatically clears
-      mockFilterTextbox.setValue(filterText, true);
-      // value should only be set if current value is different from history
-      expect(mockFilterTextbox.getValue()).andReturn("different text").anyTimes();
-      expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
-      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
-
-      replayAllMocks();
-      documentListPresenter.bind();
-      // simulate firing history change event
-      HistoryToken historyTokenWithFilter = new HistoryToken();
-      historyTokenWithFilter.setDocFilterText(filterText);
-      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithFilter.toTokenString());
-      verifyAllMocks();
-   }
-
-   @SuppressWarnings("unchecked")
-   @Test
-   public void filterCheckboxUpdatedFromHistory()
-   {
-      setDefaultMockBehaviour();
-      mockExactSearchCheckbox.setValue(true);
-      expect(mockFilterTextbox.getValue()).andReturn("").anyTimes();
-      // value should only be set if current value is different from history
-      expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
-      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
-
-      replayAllMocks();
-      documentListPresenter.bind();
-      // simulate firing history change event
-      HistoryToken historyTokenWithExactFilter = new HistoryToken();
-      historyTokenWithExactFilter.setDocFilterExact(true);
-      valueChangeEvent(capturedHistoryValueChangeHandler, historyTokenWithExactFilter.toTokenString());
-      verifyAllMocks();
-   }
-
    // TODO test case sensitive check updated from history
 
    // TODO test: update selected document when different from doc selection
@@ -625,6 +464,7 @@ public class DocumentListPresenterTest extends PresenterTest
       setDefaultMockBehaviour();
       replayAllMocks();
       documentListPresenter.bind();
+      documentListPresenter.setDocuments(buildSampleDocumentArray());
       verifyAllMocks();
 
       // third document from buildSampleDocumentArray()
@@ -642,6 +482,7 @@ public class DocumentListPresenterTest extends PresenterTest
       setDefaultMockBehaviour();
       replayAllMocks();
       documentListPresenter.bind();
+      documentListPresenter.setDocuments(buildSampleDocumentArray());
       verifyAllMocks();
 
       DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L));
@@ -676,25 +517,7 @@ public class DocumentListPresenterTest extends PresenterTest
     */
    private void setDefaultMockBehaviour()
    {
-      setupDefaultDoclistRequestAnswer();
-      expectDefaultWindowLocationCalls();
       setupMockHistory("");
-   }
-
-   private void setupDefaultDoclistRequestAnswer()
-   {
-      setupMockDispatcher(new DoclistSuccessAnswer(buildSampleDocumentArray()));
-   }
-
-   private void expectDefaultWindowLocationCalls()
-   {
-      expectWindowLocationCalls(Collections.<String, List<String>> emptyMap());
-   }
-
-   private void expectWindowLocationCalls(Map<String, List<String>> windowLocationParameters)
-   {
-      expect(mockWindowLocation.getParameterMap()).andReturn(windowLocationParameters).anyTimes();
-      expect(mockWindowLocation.getQueryDocuments()).andReturn(windowLocationParameters.get("doc")).anyTimes();
    }
 
    @SuppressWarnings("unchecked")
@@ -724,7 +547,6 @@ public class DocumentListPresenterTest extends PresenterTest
    private void setupMockHistory(String tokenToReturn)
    {
       // TODO set up History to properly extend ValueChangeHandler<String>, then use convenience method for handler registration
-      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(mockHandlerRegistration()).anyTimes();
       expect(mockHistory.getToken()).andReturn(tokenToReturn).anyTimes();
       expect(mockHistory.getHistoryToken()).andReturn(HistoryToken.fromTokenString(tokenToReturn)).anyTimes();
       mockHistory.fireCurrentHistoryState();
@@ -753,13 +575,6 @@ public class DocumentListPresenterTest extends PresenterTest
 
       mockEventBus.fireEvent(and(capture(capturedEventBusEvent), isA(GwtEvent.class)));
       expectLastCall().anyTimes();
-   }
-
-   @SuppressWarnings("unchecked")
-   private void setupMockDispatcher(IAnswer<? extends Object> docListRequestAnswer)
-   {
-      mockDispatcher.execute(and(capture(capturedDocListRequest), isA(Action.class)), and(capture(capturedDocListRequestCallback), isA(AsyncCallback.class)));
-      expectLastCall().andAnswer(docListRequestAnswer);
    }
 
    @SuppressWarnings("unchecked")
