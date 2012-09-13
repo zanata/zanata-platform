@@ -24,7 +24,7 @@
         <s:decorate id="usernameField" template="edit.xhtml" rendered="#{!applicationConfiguration.openIdAuth}">
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Username']}</span></ui:define>
             <h:inputText id="username"
-                      value="#{credentials.username}" class="loginForm_input"/>
+                      value="#{loginAction.username}" class="loginForm_input"/>
         </s:decorate>
 
         <s:div rendered="#{applicationConfiguration.openIdAuth}">

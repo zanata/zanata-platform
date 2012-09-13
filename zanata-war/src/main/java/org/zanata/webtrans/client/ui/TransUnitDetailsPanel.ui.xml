@@ -6,7 +6,8 @@
 	<ui:style field="style" type="org.zanata.webtrans.client.ui.TransUnitDetailsPanel.Styles">
         .container {
             width: 50%;
-            margin-top: 5px;
+            padding-top: 5px;
+            table-layout: fixed;
         }
 
         .header {
@@ -43,7 +44,7 @@
         }
     </ui:style>
 
-    <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container} fadeElement" ui:field="disclosurePanel">
+    <g:DisclosurePanel animationEnabled="true" addStyleNames="{style.container}" ui:field="disclosurePanel">
         <g:customHeader>
             <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
         </g:customHeader>

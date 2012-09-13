@@ -24,7 +24,6 @@
 		.topBar
 		{
 			padding-left:10px;
-			background:#D3D3D3;
 		}
 		
 	</ui:style>
