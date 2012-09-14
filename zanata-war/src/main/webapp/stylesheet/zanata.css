@@ -1090,6 +1090,13 @@ div.glosaryDeleteWarn span.warn
 	color:#D77D00;
 }
 
+.glossarySupportedFileLabel
+{
+	font-size:12px;
+	font-weight:bold;
+	color:#B62918;
+}
+
 /* ------------------------ End Glossary Page CSS --------------------------------------*/
 
 
