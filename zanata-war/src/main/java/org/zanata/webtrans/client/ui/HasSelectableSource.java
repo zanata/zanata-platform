@@ -7,4 +7,6 @@ public interface HasSelectableSource extends HasClickHandlers
    String getSource();
 
    void setSelected(boolean selected);
+
+   void refresh();
 }

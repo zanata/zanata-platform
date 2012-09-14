@@ -54,9 +54,6 @@ public class SourcePanel extends Composite implements HasSelectableSource
    HorizontalPanel container;
 
    @UiField
-   HighlightingLabel highlightingLabel;
-
-   @UiField
    RadioButton selectButton;
 
    @UiField
@@ -64,6 +61,8 @@ public class SourcePanel extends Composite implements HasSelectableSource
 
    @UiField
    Styles style;
+   @UiField
+   CodeMirrorReadOnlyWidget sourceContent;
 
    private String source = "";
 
@@ -77,8 +76,8 @@ public class SourcePanel extends Composite implements HasSelectableSource
    {
       this.source = source;
 
-      highlightingLabel.setText(source);
-      highlightingLabel.setTitle(messages.sourceCommentLabel(sourceComment));
+      sourceContent.setText(source);
+      sourceContent.setTitle(messages.sourceCommentLabel(sourceComment));
 
       if (!isPlural)
       {
@@ -112,8 +111,14 @@ public class SourcePanel extends Composite implements HasSelectableSource
       }
    }
 
+   @Override
+   public void refresh()
+   {
+      sourceContent.refresh();
+   }
+
    public void highlightSearch(String search)
    {
-      highlightingLabel.highlightSearch(search);
+      // TODO need to highlight search term
    }
 }
