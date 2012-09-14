@@ -3,11 +3,6 @@
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
 
     <ui:style field="style" type="org.zanata.webtrans.client.ui.TranslationHistoryView.Styles" >
-        .compareButton {
-            margin: 5px;
-            width: 30%;
-        }
-
         .closeButton {
             width: 50px;
             margin: 10px 5px 5px 0;
@@ -18,13 +13,21 @@
         .pasteButton Button {
             font-size: smaller;
         }
+
+        .compareButton {
+            margin: 5px;
+            padding: 5px;
+        }
     </ui:style>
 
     <g:HTMLPanel width="800px" height="600px">
+        <g:Button ui:field="compareButton" title="{messages.translationHistoryComparisonTitle}" styleName="icon-exchange {style.compareButton}" />
         <g:TabLayoutPanel ui:field="tabLayoutPanel" barUnit='PX' barHeight='20' width="100%" height="95%">
             <g:tab>
                 <g:customHeader>
-                    <g:InlineHTML text="{messages.translationHistory}" />
+                    <g:HTMLPanel>
+                        <g:InlineHTML text="{messages.translationHistory}" />
+                    </g:HTMLPanel>
                 </g:customHeader>
                 <g:ScrollPanel>
                     <g:VerticalPanel ui:field="historyPanel" width="100%" height="100%" />

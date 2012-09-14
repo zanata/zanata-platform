@@ -29,6 +29,7 @@
             text-shadow: #DDF 1px 1px 0;
             overflow: hidden;
             font-weight: bold;
+            height: 1em;
         }
 
         .grid {
@@ -43,6 +44,7 @@
 
         .flipButton {
             padding: 5px;
+            height: 1em;
         }
     </ui:style>
 

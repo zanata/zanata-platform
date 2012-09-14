@@ -961,6 +961,34 @@ td.ApprovedStateDecoration div div div
     background-color: #F3F2F2;
 }
 
+/* translation history style */
+#gwt-debug-transHistoryTabPanel.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+    cursor: pointer;
+    margin-left: 6px;
+    padding: 3px 6px 3px 6px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background: #4a75b5;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+#gwt-debug-transHistoryTabPanel.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
+    cursor: default;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background: #183c66;
+    color: #FFFFFF;
+}
+
+#gwt-debug-transHistoryTabPanel.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
+    border: 2px solid #e0e8ee;
+    background: #FFFFFF;
+    border-radius: 5px;
+}
+
+/* end translation history style*/
+
 .indexLabel
 {
 	font-size:0.8em;
