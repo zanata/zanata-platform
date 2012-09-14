@@ -23,12 +23,10 @@ package org.zanata.security;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 
 /**
@@ -50,9 +48,7 @@ public class SecurityFunctions
 
          if( identity != null )
          {
-            AccountRoleDAO accountRoleDAO = (AccountRoleDAO)Component.getInstance(AccountRoleDAO.class);
-
-            for(HAccountRole role : accountRoleDAO.getByProject(project))
+            for(HAccountRole role : project.getAllowedRoles())
             {
                if( identity.hasRole( role.getName() ) )
                {

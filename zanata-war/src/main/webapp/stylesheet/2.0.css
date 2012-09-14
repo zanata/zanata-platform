@@ -450,3 +450,17 @@ th,td {
 	/*box-shadow: 0 0 5px grey inset;*/
 }
 /* End Richfaces Data scroller styles */
+
+/* Richfaces Tab panel styles */
+
+.rich-tab-active {
+    background-color: #461446;
+    border-color: #461446;
+    color: #ffffff;
+}
+
+.rich-tab-inactive {
+    background-color: #eeeeee;
+}
+
+/* End Richfaces Tab panel styles */

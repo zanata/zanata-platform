@@ -34,19 +34,20 @@
     </ui:define>
     
     <ui:define name="center_content">
-        <h1>#{personHome.instance.name} - #{personHome.instance.account.username}</h1>
+        <h1>#{personHome.instance.name}</h1>
+        <h3>#{personHome.instance.account.username}</h3>
         <br/>
 
         <h:form>
           <s:token allowMultiplePosts="true" />
 
-          <rich:panel style="background-color: white">
+          <rich:panel>
           	  <table>
           	  	<tr>
           	  		<td><h2>#{messages['jsf.ApiKey']}</h2></td>
           	  		<td style="padding-left:15px"><h:commandButton action="#{personHome.regenerateApiKey}"
                   value="Generate API Key" reRender="api_key,no_api_key"
-                  onclick="if (!confirm('Are you sure you want to generate your API Key?')) return false" class="hightlight_button"/></td>
+                  onclick="if (!confirm('Are you sure you want to generate your API Key?')) return false" /></td>
           	  	</tr>
           	  </table>
               <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
@@ -57,7 +58,7 @@
               </s:fragment>
           </rich:panel>
 
-          <rich:panel style="background-color: white">
+          <rich:panel>
               <h2>#{messages['jsf.ConfigurationForZanataini']}</h2>
               <textarea rows="5" readonly="true" class="code configTextArea">
 [servers]

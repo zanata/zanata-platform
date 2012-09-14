@@ -59,16 +59,22 @@ public class ProjectRoleRestrictionAction implements Serializable
 
    private Map<String, Boolean> roleRestrictions;
 
+   private Boolean restrictByRoles;
+
 
    @Out(required = false)
    public boolean getRestrictByRoles()
    {
-      return projectHome.getInstance().isRestrictedByRoles();
+      if( restrictByRoles == null )
+      {
+         restrictByRoles = projectHome.getInstance().isRestrictedByRoles();
+      }
+      return restrictByRoles;
    }
 
    public void setRestrictByRoles(boolean restrictByRoles)
    {
-      projectHome.getInstance().setRestrictedByRoles(restrictByRoles);
+      this.restrictByRoles = restrictByRoles;
    }
 
    public Map<String, Boolean> getRoleRestrictions()

@@ -319,12 +319,17 @@ public class ZanataOpenId implements OpenIdAuthCallback
       if( result.isAuthenticated() )
       {
          HAccount authenticatedAccount = accountDAO.getByCredentialsId( result.getAuthenticatedId() );
-         credentials.setUsername( authenticatedAccount.getUsername() );
-         Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(result.getAuthenticatedId())));
 
-         if( Events.exists() )
+         // If the user hasn't been registered, there is no authenticated account
+         if( authenticatedAccount != null )
          {
-            Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
+            credentials.setUsername( authenticatedAccount.getUsername() );
+            Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(result.getAuthenticatedId())));
+
+            if( Events.exists() )
+            {
+               Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
+            }
          }
       }
    }
