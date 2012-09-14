@@ -863,16 +863,6 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 }
 /* -----------------------  End Language Administration CSS  -------------------------*/
 
-/* -----------------------  Project CSS  -------------------------*/
-.project_home_content {
-    border-top: 1px dotted #6D6D6D;
-    border-bottom: 1px dotted #6D6D6D;
-    background-color: #eeeeee;
-    padding: 0px 10px 0px 10px;
-    margin-bottom: 10px;
-}
-/* -----------------------  End Project CSS  -------------------------*/
-
 /* -----------------------  Project iteration CSS  -------------------------*/
 
 .iterations table {
@@ -1141,4 +1131,12 @@ a.admin_link:hover {
 
 .iteration_inline_tribes {
 	
+}
+
+.content_box {
+    border-top: 1px dotted #6D6D6D;
+    border-bottom: 1px dotted #6D6D6D;
+    background-color: #eeeeee;
+    padding: 0px 10px 0px 10px;
+    margin-bottom: 10px;
 }

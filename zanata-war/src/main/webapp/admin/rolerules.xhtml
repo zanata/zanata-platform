@@ -27,6 +27,11 @@
                 return confirm("#{messages['jsf.rolerules.ConfirmDelete']}");
             }
         </script>
+
+        <s:div styleClass="content_box">
+            <p><h:outputText escape="false" value="#{messages['jsf.rolerules.Description']}"/></p>
+        </s:div>
+
         <h:form>
             <s:token allowMultiplePosts="true" />
             <rich:dataTable

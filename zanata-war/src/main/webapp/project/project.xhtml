@@ -16,10 +16,10 @@
 <ui:define name="center_content">
     <s:decorate id="main_content">
 
-    <div class="project_home_content">
+    <s:div styleClass="content_box" rendered="#{not empty projectHome.instance.homeContent or not empty projectHome.instance.description}">
         <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"/>
         <s:formattedText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
-    </div>
+    </s:div>
 
    	<div class="iterations">
         <rich:dataGrid id="activeIterations" columns="5"
