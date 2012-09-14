@@ -37,6 +37,7 @@ import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.CredentialsDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
@@ -59,7 +60,7 @@ import static org.jboss.seam.international.StatusMessage.Severity.INFO;
 @Scope(ScopeType.PAGE)
 public class CredentialsAction implements Serializable
 {
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   @In(value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
 
    @In
@@ -186,21 +187,23 @@ public class CredentialsAction implements Serializable
          {
             this.newCredentials.setUser(result.getAuthenticatedId());
             this.newCredentials.setEmail( result.getEmail() );
-            // NB: Need to get the entity manager this way as injection won't work here
+            // NB: Seam component injection won't work on callbacks
             EntityManager em = (EntityManager)Component.getInstance("entityManager");
+            CredentialsDAO credentialsDAO = (CredentialsDAO)Component.getInstance(CredentialsDAO.class);
 
-            FacesMessages.instance().clear();
             Conversation.instance().begin(true, false); // (To retain messages)
-            try
+            FacesMessages.instance().clear();
+
+            if( credentialsDAO.findByUser( result.getAuthenticatedId() ) != null )
+            {
+               FacesMessages.instance().add(ERROR, "jsf.identities.invalid.Duplicate", null,
+                     "Duplicate identity", "This Identity is already in use.");
+            }
+            else
             {
                em.persist(this.newCredentials);
                FacesMessages.instance().add(INFO, "jsf.identities.IdentityAdded", null,
                      "Identity Added", "Your new identity has been added to this account.");
-            }
-            catch( InvalidStateException isex )
-            {
-               FacesMessages.instance().add(ERROR, "jsf.identities.invalid.Duplicate", null,
-                     "Duplicate identity", "This Identity is already in use.");
             }
          }
       }

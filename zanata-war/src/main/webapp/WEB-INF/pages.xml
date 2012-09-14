@@ -13,7 +13,7 @@
 
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
-	 <navigation evaluate="#{zanataOpenId.loginImmediate()}">
+	 <navigation>
 	      <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
 	        <redirect view-id="/profile/edit.xhtml" />
 	      </rule>

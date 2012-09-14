@@ -329,6 +329,8 @@ public class ZanataOpenId implements OpenIdAuthCallback
             if( Events.exists() )
             {
                Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
+               Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
+               Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL, AuthenticationType.OPENID);
             }
          }
       }
