@@ -47,7 +47,8 @@ public class MigrateDataToHCredentials implements CustomTaskChange
    @Override
    public void execute(Database database) throws CustomChangeException
    {
-      if( dbAuthType.equals("KERBEROS") || dbAuthType.equals("OPENID") || dbAuthType.equals("JAAS") )
+      // (Only Open Id for now)
+      if( dbAuthType.equals("OPENID") )
       {
          JdbcConnection conn = (JdbcConnection)database.getConnection();
 

@@ -114,7 +114,7 @@ public class PasswordChangeAction implements Serializable
       if (!validatePasswordsMatch())
          return null;
 
-      if (!identityManager.authenticate(authenticatedAccount.getUsername(), passwordOld))
+      if (!isFirstPasswordChange() && !identityManager.authenticate(authenticatedAccount.getUsername(), passwordOld))
       {
          FacesMessages.instance().addToControl("passwordOld", "Old password is incorrect, please check and try again.");
          return null;
@@ -131,5 +131,10 @@ public class PasswordChangeAction implements Serializable
       FacesMessages.instance().add("Your password has been successfully changed.");
 
       return "/profile/view.xhtml";
+   }
+
+   public boolean isFirstPasswordChange()
+   {
+      return authenticatedAccount.getPasswordHash() == null;
    }
 }
