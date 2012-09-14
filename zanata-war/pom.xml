@@ -916,13 +916,13 @@
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-dtd</artifactId>
-            <version>0.17</version>
+            <version>0.18</version>
         </dependency>
 
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-openoffice</artifactId>
-            <version>0.17</version>
+            <version>0.18</version>
         </dependency>
 
 
