@@ -309,6 +309,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
 
    private static final String DOCUMENT_FILE_PERSIST_DIRECTORY = "/tmp/persisted/";
 
+   // TODO check permissions
    @Override
    public void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName) throws ZanataServiceException
    {

@@ -22,6 +22,7 @@ package org.zanata.rest.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +36,7 @@ import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -45,17 +47,30 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Log;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
+import org.zanata.rest.StringSet;
+import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.files.DocumentFileUploadForm;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.DocumentService;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
@@ -68,13 +83,27 @@ public class FileService implements FileResource
 {
    public static final String SOURCE_DOWNLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}/{fileType}";
 
+   public static final String TEST_UPLOAD = "/source/{projectSlug}/{iterationSlug}";
+
    private static final String RAW_DOCUMENT = "raw";
    private static final String SUBSTITUTE_APPROVED_AND_FUZZY = "half-baked";
    private static final String SUBSTITUTE_APPROVED = "baked";
 
+   @Logger
+   private Log log;
+
+   @In
+   private ZanataIdentity identity;
+
    @In
    private DocumentDAO documentDAO;
-   
+
+   @In
+   private DocumentService documentServiceImpl;
+
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
    @In(create=true)
    private TranslatedDocResourceService translatedDocResourceService;
    
@@ -86,6 +115,214 @@ public class FileService implements FileResource
 
    @In
    private ResourceUtils resourceUtils;
+
+
+
+   @POST
+   @Path(TEST_UPLOAD)
+   @Consumes( MediaType.MULTIPART_FORM_DATA)
+   public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
+                                     @PathParam("iterationSlug") String iterationSlug,
+                                     @QueryParam("docId") String docId,
+                                     @MultipartForm DocumentFileUploadForm uploadForm )
+   {
+      // TODO extract method for checks common to source and translation upload
+      if (!identity.isLoggedIn())
+      {
+         return Response.status(Status.UNAUTHORIZED)
+               .entity("Valid combination of username and api-key for this server were not included in the request\n")
+               .build();
+      }
+      if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
+      {
+         return Response.status(Status.FORBIDDEN)
+               .entity("You do not have permission to upload source documents for this project-version\n")
+               .build();
+      }
+      if (docId == null || docId.length() == 0)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Required query string parameter 'docId' was not found.\n")
+               .build();
+      }
+
+      InputStream uploadStream = uploadForm.getFileStream();
+      if (uploadStream == null)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Required form parameter 'file' containing file content was not found.\n")
+               .build();
+      }
+
+      if (uploadForm.getFirst() == null || uploadForm.getLast() == null)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Form parameters 'first' and 'last' must both be provided.\n")
+               .build();
+      }
+
+      String fileType = uploadForm.getFileType();
+      if (fileType == null || fileType.length() == 0)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Required form parameter 'type' was not found.\n")
+               .build();
+      }
+      boolean isPotFile = fileType.equals(".pot");
+      if (!isPotFile && !translationFileServiceImpl.hasAdapterFor(fileType))
+      {
+         return Response.status(Status.BAD_REQUEST)
+               .entity("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for this server.\n")
+               .build();
+      }
+
+      boolean isNewDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
+
+      boolean isSinglePart = uploadForm.getFirst() && uploadForm.getLast();
+
+      if (isSinglePart && isPotFile)
+      {
+         parsePotFile(uploadStream, docId, fileType, projectSlug, iterationSlug);
+         return sourceUploadSuccessResponse(isNewDocument);
+      }
+
+      // persist bytes to file
+      File tempFile = null;
+      if (uploadForm.getFirst())
+      {
+         try
+         {
+            tempFile = translationFileServiceImpl.persistToTempFile(uploadStream);
+         }
+         catch (ZanataServiceException e) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
+                  .entity(e)
+                  .build();
+         }
+      }
+      else
+      {
+         // TODO append to existing temp file
+         return Response.status(Status.fromStatusCode(501))
+               .entity("Multiple part file upload is not yet implemented. Send entire file with first=true and last=true.\n")
+               .build();
+      }
+
+      if (!uploadForm.getLast())
+      {
+         return Response.status(Status.ACCEPTED)
+               .entity("File part accepted, awaiting remaining parts.\n")
+               .build();
+      }
+
+      // have entire file, proceed with parsing
+      if (isPotFile)
+      {
+         try
+         {
+            parsePotFile(new FileInputStream(tempFile), docId, fileType, projectSlug, iterationSlug);
+         }
+         catch (FileNotFoundException e)
+         {
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
+                  .entity(e)
+                  .build();
+         }
+         translationFileServiceImpl.removeTempFile(tempFile);
+         return sourceUploadSuccessResponse(isNewDocument);
+      }
+
+      // must be adapter file
+
+      try {
+         Resource doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileType);
+         doc.setLang( new LocaleId("en-US") );
+         // TODO Copy Trans values
+         documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, Collections.<String>emptySet(), false);
+      }
+      catch (SecurityException e)
+      {
+         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+      }
+      catch (ZanataServiceException e)
+      {
+         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+      }
+
+      try
+      {
+         persistSourceDocument(projectSlug, iterationSlug, docId, tempFile);
+      }
+      catch (FileNotFoundException e)
+      {
+         return Response.status(Status.INTERNAL_SERVER_ERROR)
+               .entity("Error saving uploaded document on server, download in original format may fail.\n")
+               .build();
+      }
+      catch (ZanataServiceException e)
+      {
+         return Response.status(Status.INTERNAL_SERVER_ERROR)
+               .entity("Error saving uploaded document on server, download in original format may fail.\n")
+               .build();
+      }
+      finally
+      {
+         translationFileServiceImpl.removeTempFile(tempFile);
+      }
+
+      return sourceUploadSuccessResponse(isNewDocument);
+   }
+
+   private boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug)
+   {
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      return projectIteration.getStatus() == EntityStatus.ACTIVE
+            && identity != null && identity.hasPermission("import-template", projectIteration);
+   }
+
+   private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug)
+   {
+      Resource doc;
+      doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentStream, docId, fileType);
+      doc.setLang( new LocaleId("en-US") );
+      // TODO Copy Trans values
+      documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
+   }
+
+   private void persistSourceDocument(String projectSlug, String iterationSlug, String docId, File tempFile) throws FileNotFoundException
+   {
+      String documentPath = "";
+      String docName = docId;
+      if (docId.contains("/"))
+      {
+         documentPath = docId.substring(0, docId.lastIndexOf('/'));
+         if (!docId.endsWith("/"))
+         {
+            docName = docId.substring(docId.lastIndexOf('/') + 1);
+         }
+      }
+
+      translationFileServiceImpl.persistDocument(new FileInputStream(tempFile), projectSlug, iterationSlug, documentPath, docName);
+   }
+
+
+   private Response sourceUploadSuccessResponse(boolean isNewDocument)
+   {
+      Response response;
+      if (isNewDocument)
+      {
+         response = Response.status(Status.CREATED)
+               .entity("Upload of new source document successful.\n")
+               .build();
+      }
+      else
+      {
+         response = Response.status(Status.OK)
+               .entity("Upload of new version of source document successful.\n")
+               .build();
+      }
+      return response;
+   }
 
    /**
     * Downloads a single source file.
