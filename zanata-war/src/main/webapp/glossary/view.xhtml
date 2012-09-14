@@ -41,20 +41,26 @@
             	var fileExtension = getFileExtension(fileName).toUpperCase();
              	if(fileExtension == "CSV")
              	{
-             		document.getElementById('#{rich:clientId('targetLang')}').setAttribute("disabled", true);           	
-             		document.getElementById('#{rich:clientId('commentCols')}').removeAttribute("disabled");   
+             		document.getElementById('targetLangDiv').style.display = "none";   
+					document.getElementById('sourceLangDiv').style.display = "none";       	
+             		document.getElementById('commentColsDiv').style.display = "";   
+             		document.getElementById('treatCommentSameDiv').style.display = "";   
              		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled")
              	} 
              	else if(fileExtension == "PO")
              	{
-             		document.getElementById('#{rich:clientId('targetLang')}').removeAttribute("disabled");           	
-             		document.getElementById('#{rich:clientId('commentCols')}').setAttribute("disabled", true);
+             		document.getElementById('targetLangDiv').style.display = "";     
+					document.getElementById('sourceLangDiv').style.display = "";           	
+             		document.getElementById('commentColsDiv').style.display = "none";  
+             		document.getElementById('treatCommentSameDiv').style.display = "";   
              		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled");
              	}
              	else
              	{
-             		document.getElementById('#{rich:clientId('targetLang')}').setAttribute("disabled", true);           	
-             		document.getElementById('#{rich:clientId('commentCols')}').setAttribute("disabled", true);
+             		document.getElementById('targetLangDiv').style.display = "none";     
+					document.getElementById('sourceLangDiv').style.display = "none";          	
+             		document.getElementById('commentColsDiv').style.display = "none";  
+             		document.getElementById('treatCommentSameDiv').style.display = "none"; 
              		document.getElementById('#{rich:clientId('uploadButton')}').setAttribute("disabled", true);
              	}
             }
@@ -120,13 +126,18 @@
 				<h:outputText value="#{messages['jsf.Upload']}" />
 			</f:facet>
 			<h:form id="uploadForm" enctype="multipart/form-data">
+				<div>
+					<h:outputLabel value="#{messages['jsf.Glossary.supportedFileFormat']}" class="glossarySupportedFileLabel" />
+				</div>
+				
 				<s:fileUpload id="fileUpload" accept="*"
 					data="#{glossaryAction.glossaryFileUpload.fileContents}"
 					fileName="#{glossaryAction.glossaryFileUpload.fileName}"
 					onchange="updateForm(this.value)">
 				</s:fileUpload>
 
-				<div class="glosaryFileUploadDialog">
+				<div title="#{messages['jsf.Glossary.SourceLocale.Title']}"
+					class="glosaryFileUploadDialog" id="sourceLangDiv" style="display:none">
 					<h:outputLabel value="Source Language" />
 					<h:selectOneMenu
 						value="#{glossaryAction.glossaryFileUpload.sourceLang}">
@@ -137,12 +148,11 @@
 
 					</h:selectOneMenu>
 				</div>
-				<div title="#{messages['jsf.Glossary.TargetLanguage.Title']}"
-					class="glosaryFileUploadDialog">
+				<div title="#{messages['jsf.Glossary.TargetLocale.Title']}"
+					class="glosaryFileUploadDialog" id="targetLangDiv" style="display:none">
 					<h:outputLabel value="Target Language" />
 					<h:selectOneMenu
-						value="#{glossaryAction.glossaryFileUpload.transLang}"
-						id="targetLang">
+						value="#{glossaryAction.glossaryFileUpload.transLang}">
 						<s:selectItems value="#{glossaryAction.availableLocales}"
 							var="locale"
 							label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
@@ -151,21 +161,21 @@
 					</h:selectOneMenu>
 				</div>
 
-				<div class="glosaryFileUploadDialog">
+				<div class="glosaryFileUploadDialog" id="treatCommentSameDiv" style="display:none">
 					<h:outputText
-						value="#{messages['jsf.TreatSourceCommentsAsTarget']}?"
-						title="#{messages['jsf.TreatSourceCommentsAsTarget.Title']}" />
+						value="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget']}?"
+						title="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}" />
 					<h:selectBooleanCheckbox
 						value="#{glossaryAction.glossaryFileUpload.treatSourceCommentsAsTarget}"
-						title="#{messages['jsf.TreatSourceCommentsAsTarget.Title']}" />
+						title="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}" />
 				</div>
 
-				<div class="glosaryFileUploadDialog">
-					<h:outputText value="#{messages['jsf.CommentColumnNames']}"
-						title="#{messages['jsf.CommentColumnNames.Title']}" />
-					<h:inputText id="commentCols"
+				<div class="glosaryFileUploadDialog" id="commentColsDiv" style="display:none">
+					<h:outputText value="#{messages['jsf.Glossary.CommentColumnNames']}"
+						title="#{messages['jsf.Glossary.CommentColumnNames.Title']}" />
+					<h:inputText
 						value="#{glossaryAction.glossaryFileUpload.commentCols}"
-						title="#{messages['jsf.CommentColumnNames.Title']}" />
+						title="#{messages['jsf.Glossary.CommentColumnNames.Title']}" />
 				</div>
 
 
