@@ -12,13 +12,13 @@
             margin-left: 28px;
             table-layout: fixed;
         }
-        
+
         .headerLabel
         {
 			font-size: 11px;
 			font-weight: bold;
 		}
-		
+
 		.headerLabel:hover
         {
 			text-decoration: underline;
@@ -27,7 +27,7 @@
         .label {
             font-size: 11px;
         }
-        
+
         .header {
             width: 100%;
             text-indent: 5px;
@@ -46,6 +46,11 @@
             height: 100%;
             color: #D14836;
         }
+
+        .hasError {
+            color: #D14836;
+            font-weight: bold;
+        }
     </ui:style>
 
 	
@@ -55,9 +60,6 @@
             <g:HorizontalPanel styleName="{style.header}">
                 <g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">
                     <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
-                </g:cell>
-                <g:cell horizontalAlignment="ALIGN_RIGHT" width="16px" verticalAlignment="ALIGN_MIDDLE">
-                    <g:InlineLabel ui:field="validateButton" styleName="icon-check {style.headerLabel}" text="{messages.runCheck}" />
                 </g:cell>
             </g:HorizontalPanel>
         </g:customHeader>

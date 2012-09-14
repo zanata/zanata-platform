@@ -55,6 +55,8 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
       String container();
 
       String header();
+
+      String hasError();
    }
 
    @UiField
@@ -64,38 +66,19 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
    VerticalPanel contents;
 
    @UiField
-   InlineLabel validateButton;
-
-   @UiField
    Styles style;
-
-   private final EventBus eventBus;
 
    @UiField
    TableEditorMessages messages;
    @UiField
    DisclosurePanel disclosurePanel;
 
-   @Inject
-   public ValidationMessagePanelView(final EventBus eventBus)
+   public ValidationMessagePanelView()
    {
-      this.eventBus = eventBus;
       initWidget(uiBinder.createAndBindUi(this));
       // this is to remove the .header class so that it won't get style from menu.css
       disclosurePanel.getHeader().getParent().removeStyleName("header");
-      setHeaderText(messages.validationWarningsHeading(0));
-   }
-
-   private void setHeaderText(String header)
-   {
-      headerLabel.setText(header);
-   }
-
-   // TODO do we need below two handlers? we already do validation on focus and other scenarios
-   @UiHandler("validateButton")
-   public void onValidationButtonClick(ClickEvent event)
-   {
-      eventBus.fireEvent(new RequestValidationEvent());
+      clear();
    }
 
    @Override
@@ -114,13 +97,15 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
          errorLabel.addStyleName(style.label());
          contents.add(errorLabel);
       }
-      setHeaderText(messages.validationWarningsHeading(errors.size()));
+      headerLabel.setText(messages.validationWarningsHeading(errors.size()));
+      headerLabel.addStyleName(style.hasError());
    }
 
    private void clear()
    {
       contents.clear();
-      setHeaderText(messages.validationWarningsHeading(0));
+      headerLabel.setText(messages.validationWarningsHeading(0));
+      headerLabel.removeStyleName(style.hasError());
    }
 
 }
