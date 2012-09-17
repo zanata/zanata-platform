@@ -60,6 +60,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -170,6 +171,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
             isLoadingTU = false;
             finishLoading();
+            highlightSearch();
          }
       });
    }
@@ -188,6 +190,14 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       if (!isLoadingTU && !isLoadingIndex)
       {
          eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
+      }
+   }
+
+   private void highlightSearch()
+   {
+      if (!Strings.isNullOrEmpty(context.getFindMessage()))
+      {
+         pageDataChangeListener.highlightSearch(context.getFindMessage());
       }
    }
 
@@ -327,6 +337,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
       isLoadingTU = false;
       finishLoading();
+      highlightSearch();
    }
 
    public void execute(UpdateContextCommand command)
@@ -409,5 +420,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       void showDataForCurrentPage(List<TransUnit> transUnits);
 
       void refreshView(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
+
+      void highlightSearch(String findMessage);
    }
 }

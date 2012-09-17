@@ -273,7 +273,7 @@ public class TargetContentsPresenterTest
       verify(display, atLeastOnce()).getId();
       verify(display).getCachedTargets();
       verify(display).updateCachedAndInEditorTargets(targets);
-      verify(display).setFindMessage(anyString());
+      verify(display).highlightSearch(anyString());
    }
 
    @Test

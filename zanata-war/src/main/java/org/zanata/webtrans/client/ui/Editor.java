@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleEditor
 {
-   private String findMessage;
    private TargetContentsDisplay.Listener listener;
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
@@ -48,6 +47,8 @@ public class Editor extends Composite implements ToggleEditor
       String hasValidationError();
 
       String copyButton();
+
+      String targetWrapper();
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
@@ -112,9 +113,8 @@ public class Editor extends Composite implements ToggleEditor
       }
    };
 
-   public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
+   public Editor(String displayString, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
    {
-      this.findMessage = findMessage;
       this.listener = listener;
       this.index = index;
       this.id = id;
@@ -303,6 +303,12 @@ public class Editor extends Composite implements ToggleEditor
    public void clearTranslatorList()
    {
       translatorList.clear();
+   }
+
+   @Override
+   public void highlightSearch(String findMessage)
+   {
+      textArea.highlight(findMessage);
    }
 
    @Override

@@ -54,6 +54,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 /**
@@ -61,7 +62,6 @@ import com.google.inject.Inject;
  */
 public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
       TransUnitSelectionHandler,
-      FindMessageHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
       NavigationController.PageDataChangeListener,
@@ -107,7 +107,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    protected void onBind()
    {
-      eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
       eventBus.addHandler(TableRowSelectedEvent.TYPE, this);
@@ -139,13 +138,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       targetContentsPresenter.savePendingChangesIfApplicable();
       navigationController.gotoPage(pageNumber - 1);
-   }
-
-   @Override
-   public void onFindMessage(FindMessageEvent event)
-   {
-      sourceContentsPresenter.highlightSearch(event.getMessage());
-      targetContentsPresenter.highlightSearch(event.getMessage());
    }
 
    @Override
@@ -240,6 +232,13 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       {
          targetContentsPresenter.setFocus();
       }
+   }
+
+   @Override
+   public void highlightSearch(String findMessage)
+   {
+      sourceContentsPresenter.highlightSearch(findMessage);
+      targetContentsPresenter.highlightSearch(findMessage);
    }
 
    @Override

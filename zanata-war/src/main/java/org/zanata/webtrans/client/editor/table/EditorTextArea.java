@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
@@ -228,4 +229,20 @@ public class EditorTextArea extends TextArea
       editor.setCursor(pos);
    }-*/;
 
+   public void highlight(String term)
+   {
+      if (useCodeMirrorFlag && !Strings.isNullOrEmpty(term))
+      {
+         codeMirrorHighlight(term);
+      }
+   }
+
+   private native void codeMirrorHighlight(String term) /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var searchCursor = editor.getSearchCursor(term, {line: 0, ch: 0}, true);
+      while(searchCursor.findNext())
+      {
+         editor.markText(searchCursor.from(), searchCursor.to(), "CodeMirror-searching");
+      }
+   }-*/;
 }

@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -27,7 +28,7 @@ public class CodeMirrorReadOnlyWidget extends Composite implements HasText
    }
 
    // see http://codemirror.net/doc/manual.html#usage
-   public native JavaScriptObject initCodeMirror(Element element) /*-{
+   private native JavaScriptObject initCodeMirror(Element element) /*-{
       var self = this;
       var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
          lineNumbers: true,
@@ -49,14 +50,38 @@ public class CodeMirrorReadOnlyWidget extends Composite implements HasText
    public void setText(String text)
    {
       textArea.setValue(text);
-      codeMirror = initCodeMirror(textArea);
+      if (codeMirror == null)
+      {
+         codeMirror = initCodeMirror(textArea);
+      }
       content = text;
    }
 
    public native void refresh() /*-{
       var codeMirror = this.@org.zanata.webtrans.client.ui.CodeMirrorReadOnlyWidget::codeMirror;
-      codeMirror.refresh();
+      if (codeMirror)
+      {
+         codeMirror.refresh();
+      }
    }-*/;
+
+   public void highlight(String term)
+   {
+      if (!Strings.isNullOrEmpty(term))
+      {
+         codeMirrorHighlight(term);
+      }
+   }
+
+   private native void codeMirrorHighlight(String term) /*-{
+      var codeMirror = this.@org.zanata.webtrans.client.ui.CodeMirrorReadOnlyWidget::codeMirror;
+      var searchCursor = codeMirror.getSearchCursor(term, {line: 0, ch: 0}, true);
+      while(searchCursor.findNext())
+      {
+         codeMirror.markText(searchCursor.from(), searchCursor.to(), "CodeMirror-searching");
+      }
+   }-*/;
+
 
    interface CodeMirrorWidgetUiBinder extends UiBinder<Widget, CodeMirrorReadOnlyWidget>
    {

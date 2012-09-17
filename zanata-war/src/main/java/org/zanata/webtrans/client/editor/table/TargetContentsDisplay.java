@@ -49,7 +49,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    void setToMode(ToggleEditor.ViewMode viewMode);
 
-   void setFindMessage(String findMessage);
+   void highlightSearch(String findMessage);
 
    List<String> getCachedTargets();
 

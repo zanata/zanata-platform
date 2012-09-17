@@ -117,8 +117,8 @@ public class SourcePanel extends Composite implements HasSelectableSource
       sourceContent.refresh();
    }
 
-   public void highlightSearch(String search)
+   public void highlightSearch(String searchTerm)
    {
-      // TODO need to highlight search term
+      sourceContent.highlight(searchTerm);
    }
 }
