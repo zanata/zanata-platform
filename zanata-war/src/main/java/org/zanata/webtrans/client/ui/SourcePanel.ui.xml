@@ -9,17 +9,19 @@
 		.selectedRow {
             background-color: #add8e6;
 			padding: 3px;
+            table-layout: fixed;
 		}
 		
 		.nonSelectedRow {
 			background-color: inherit;
 			padding: 3px;
+            table-layout: fixed;
 		}
 	</ui:style>
 
 
 	<g:HorizontalPanel width="100%" height="100%" styleName="{style.nonSelectedRow}" ui:field="container">
-		<g:cell horizontalAlignment="ALIGN_LEFT">
+		<g:cell horizontalAlignment="ALIGN_LEFT" width="98%">
             <g:HTMLPanel>
                 <!--<fui:HighlightingLabel ui:field="highlightingLabel" stylePrimaryName="TableEditorContent"/>-->
 
