@@ -55,9 +55,11 @@
                 <g:cell>
                 	<g:HTMLPanel ui:field="targetWrapper" styleName="{style.targetWrapper}">
 	                	<g:HTMLPanel styleName="TableEditorCell-Target">
-			                <g:HorizontalPanel ui:field="translatorList" styleName="{style.translatorList}" spacing="1"/>
-			                <tui:EditorTextArea ui:field="textArea" />
-		                </g:HTMLPanel>
+                            <g:HTMLPanel ui:field="translatorList" styleName="{style.translatorList}"/>
+                            <div>
+                                <tui:EditorTextArea ui:field="textArea" />
+                            </div>
+                        </g:HTMLPanel>
 	                </g:HTMLPanel>
                 </g:cell>
 			</g:HorizontalPanel>

@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleEditor
@@ -69,7 +70,7 @@ public class Editor extends Composite implements ToggleEditor
    HorizontalPanel topContainer;
 
    @UiField
-   HorizontalPanel translatorList;
+   HTMLPanel translatorList;
 
    NavigationMessages messages = GWT.create(NavigationMessages.class);
 
