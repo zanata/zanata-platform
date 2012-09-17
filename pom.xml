@@ -165,18 +165,13 @@
 		<!-- buildNumber is set by buildnumber-maven-plugin from git info -->
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<gwt.version>2.4.0</gwt.version>
+
         <hamcrest.version>1.2.1</hamcrest.version>
 		<resteasy.version>2.1.0.GA</resteasy.version>
-		<seam.version>2.2.0.GA</seam.version>
 		<guava.version>r06</guava.version>
+		<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
 		<jackson.version>1.5.0</jackson.version>
-		<icu4j.version>4.8</icu4j.version>
-		<enunciate.version>1.24</enunciate.version>
 
-        <cobertura.total-branch-rate>50</cobertura.total-branch-rate>
-        <cobertura.total-line-rate>50</cobertura.total-line-rate>
-		<cobertura.halt.failure>false</cobertura.halt.failure>
 		<javadoc.skip>true</javadoc.skip>
 
 		<checkstyle.skip>false</checkstyle.skip>
@@ -361,20 +356,34 @@
                     <version>2.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>gwt-maven-plugin</artifactId>
-                    <version>2.4.0</version>
-                </plugin>
-                <plugin>
                     <artifactId>maven-site-plugin</artifactId>
                     <!-- NB this version is overridden by the maven-3 profile -->
                     <version>2.1.1</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.codehaus.enunciate</groupId>
-                    <artifactId>maven-enunciate-plugin</artifactId>
-                    <version>${enunciate.version}</version>
-                </plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-enforcer-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
             </plugins>
 		</pluginManagement>
 		<extensions>
@@ -595,45 +604,11 @@
             </dependency>
 
 			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-servlet</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-user</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.inject</groupId>
-				<artifactId>guice</artifactId>
-				<version>3.0</version>
-			</dependency>
-
-			<dependency>
-				<groupId>de.novanic.gwteventservice</groupId>
-				<artifactId>gwteventservice</artifactId>
-				<version>1.2.0</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.google.gwt.inject</groupId>
-				<artifactId>gin</artifactId>
-				<version>1.5.0</version>
-			</dependency>
-
-			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
 			</dependency>
 
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava-gwt</artifactId>
-                <version>11.0.2</version>
-                <scope>provided</scope>
-            </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
@@ -676,13 +651,6 @@
 				<artifactId>h2</artifactId>
 				<version>1.2.134</version>
 				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.seam</groupId>
-				<artifactId>root</artifactId>
-				<version>${seam.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
 			</dependency>
 
 			<dependency>
@@ -734,54 +702,12 @@
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-search</artifactId>
-				<version>${hibernate.search.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
 				<version>${hibernate.validator.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-annotations</artifactId>
-				<version>${hibernate.annotations.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate.entitymanager.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javassist</groupId>
-						<artifactId>javassist</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
 			<!-- RestEasy dependencies -->
 
-			<dependency>
-				<groupId>org.jboss.seam</groupId>
-				<artifactId>jboss-seam-resteasy</artifactId>
-				<version>${seam.version}</version>
-				<exclusions>
-					<!-- We use Jackson for json, so exclude the default jettison provider -->
-					<exclusion>
-						<groupId>org.jboss.resteasy</groupId>
-						<artifactId>resteasy-jettison-provider</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-jaxrs</artifactId>
@@ -841,18 +767,6 @@
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>1.6</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.ibm.icu</groupId>
-				<artifactId>icu4j</artifactId>
-				<version>${icu4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.ibm.icu</groupId>
-				<artifactId>icu4j</artifactId>
-				<classifier>sources</classifier>
-				<version>${icu4j.version}</version>
 			</dependency>
 
 			<dependency>
