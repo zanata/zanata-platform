@@ -27,7 +27,7 @@
       <icu4j.version>4.8</icu4j.version>
       <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
       <lucene.version>2.9.2</lucene.version>
-      <seam.version>2.2.2.Final</seam.version>
+      <seam.version>2.2.0.GA</seam.version>
 
       <zanata.api.version>1.8.0-SNAPSHOT</zanata.api.version>
       <zanata.client.version>1.6.0</zanata.client.version>
