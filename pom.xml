@@ -389,7 +389,22 @@
 		</extensions>
 	</build>
 
+
 	<profiles>
+		<profile>
+			<id>sonatype-oss-release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<configuration>
+							<useAgent>true</useAgent>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 		<profile>
 			<!-- This profile lets us skip unit tests (but not integration tests) 
