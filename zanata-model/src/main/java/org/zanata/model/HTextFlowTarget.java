@@ -87,7 +87,7 @@ import com.google.common.base.Objects;
 @Entity
 @NamedQueries({
    @NamedQuery(name = "HTextFlowTarget.findLatestEquivalentTranslations",
-               query = "select match, textFlow " +
+               query = "select match, textFlow, match.textFlow.document.projectIteration.project " +
                        "from HTextFlowTarget match, HTextFlow textFlow " +
                        "left join fetch match.textFlow " +
                        "where " +

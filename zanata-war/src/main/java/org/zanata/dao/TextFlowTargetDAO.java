@@ -180,8 +180,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
     * @param document The document for which to find equivalent translations.
     * @param locale The locale. Only translations for this locale are fetched.
     * @return A scrollable result set (in case there is a large result set). Position 0 of the 
-    * result set is the matching translation (HTextFlowTarget) and position 1 is the HTextFlow 
-    * in the document that it matches against. 
+    * result set is the matching translation (HTextFlowTarget), position 1 is the HTextFlow
+    * in the document that it matches against, and position 2 is the HProject instance that the
+    * match belongs to.
     */
    public ScrollableResults findLatestEquivalentTranslations(HDocument document, HLocale locale)
    {

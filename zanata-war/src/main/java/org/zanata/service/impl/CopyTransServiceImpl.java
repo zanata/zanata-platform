@@ -41,6 +41,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
@@ -252,6 +253,7 @@ public class CopyTransServiceImpl implements CopyTransService
       {
          HTextFlowTarget currentTft = (HTextFlowTarget)results.get(0);
          HTextFlow currentTf = (HTextFlow)results.get(1);
+         HProject currentProj = (HProject)results.get(2); // NB: Could also use: currentTft.getTextFlow().getDocument().getProjectIteration().getProject();
 
          // If there is a change in the text flow, scroll back and return the best match found so far
          if ( !currentTf.getId().equals(originalTf.getId()) )
@@ -296,6 +298,24 @@ public class CopyTransServiceImpl implements CopyTransService
             else if( options.getDocIdMismatchAction() == CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
             {
                if( !docIdMatch )
+               {
+                  currentCandidateTargetState = ContentState.NeedReview;
+               }
+            }
+            // If the action is IGNORE, don't even check
+
+            // Project
+            boolean projectMatch = currentProj.getId().equals(originalTf.getDocument().getProjectIteration().getProject().getId());
+            if( options.getProjectMismatchAction() == CopyTransOptions.ConditionRuleAction.REJECT )
+            {
+               if( !projectMatch )
+               {
+                  continue; // rejected, continue
+               }
+            }
+            else if( options.getProjectMismatchAction() == CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            {
+               if( !projectMatch )
                {
                   currentCandidateTargetState = ContentState.NeedReview;
                }
