@@ -850,6 +850,10 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
 		</dependency>
@@ -942,6 +946,21 @@
          <artifactId>ehcache-core</artifactId>
          <version>2.5.1</version>
       </dependency>
+
+        <!-- Okapi Filters -->
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-dtd</artifactId>
+            <version>0.18</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-openoffice</artifactId>
+            <version>0.18</version>
+        </dependency>
+
 
 		<!-- Other -->
 

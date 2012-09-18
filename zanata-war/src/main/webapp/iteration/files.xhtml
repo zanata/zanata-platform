@@ -31,11 +31,6 @@
                 #{rich:component('uploadPanel')}.hide();
                 return false;
             }
-
-            function hideDocUploadPanel() {
-                #{rich:component('uploadDocPanel')}.hide();
-                return false;
-            }
         </script>
     </ui:define>
 
@@ -193,6 +188,10 @@
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
                     </s:link>
+                    <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/baked">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.name)}"/>
+                    </s:link>
                 </rich:column>
                 <rich:column>
                     <f:facet name="header">#{messages['jsf.iteration.files.Statistics']}</f:facet>
@@ -323,17 +322,6 @@
                                  action="#{projectIterationZipFileAction.prepareIterationZipFile}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
                                  reRender="downloadProgressBar"/>
-                <h:outputLink value="#"
-                              id="uploadDocLink"
-                              styleClass="action_link"
-                              title="Supported types: .pot"
-                              rendered="#{projectIterationFilesAction.documentUploadAllowed}">
-                    #{messages['jsf.Upload']} Document
-                    <rich:componentControl for="uploadDocPanel"
-                                           operation="show"
-                                           event="onclick"
-                                           disableDefault="true"/>
-                </h:outputLink>
             </a4j:form>
         </rich:panel>
 
@@ -349,41 +337,6 @@
                 </h:column>
             </h:dataTable>
         </rich:panel>
-
-        <rich:modalPanel id="uploadDocPanel"
-                         moveable="#{false}"
-                         resizeable="#{false}"
-                         autosized="#{true}"
-                         rendered="#{projectIterationFilesAction.documentUploadAllowed}">
-            <f:facet name="header">
-                <h:outputText value="#{messages['jsf.iteration.files.UploadDocument']}"/>
-            </f:facet>
-            <h:form id="uploadDocForm" enctype="multipart/form-data">
-                <s:fileUpload accept="*"
-                              data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
-                              fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
-                <h:inputText id="docPath"
-                             value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
-                    <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
-                </h:inputText>
-                <br/>
-                <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
-                    <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
-                                   var="locale"
-                                   label="#{locale.retrieveNativeName()}"
-                                   itemValue="#{locale.localeId.toString()}"
-                                   escape="true"/>
-                    <h:outputLabel value="Source Language"/>
-                </h:selectOneMenu>
-                <div align="right">
-                    <h:commandButton value="#{messages['jsf.Upload']}"
-                                     action="#{projectIterationFilesAction.uploadDocumentFile}"/>
-                    <h:commandButton value="#{messages['jsf.Cancel']}"
-                                     onclick="return hideDocUploadPanel();"/>
-                </div>
-            </h:form>
-        </rich:modalPanel>
-
     </ui:define>
 
 </ui:composition>
