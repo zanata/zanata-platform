@@ -50,6 +50,12 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    interface Styles extends CssResource
    {
       String headerLabel();
+
+      String rootContainer();
+
+      String searchBox();
+
+      String topBar();
    }
 
    @UiField
@@ -94,18 +100,13 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       resultTable.setCellPadding(3);
 
       FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
+
       formatter.setStyleName(0, SOURCE_COL, "th");
       formatter.setStyleName(0, TARGET_COL, "th");
-      formatter.setStyleName(0, NUM_TRANS_COL, "th");
-      formatter.addStyleName(0, NUM_TRANS_COL, "centered");
-      formatter.setStyleName(0, ACTION_COL, "th");
-      formatter.addStyleName(0, ACTION_COL, "centered");
-      formatter.addStyleName(0, ACTION_COL, "actionCol");
-      formatter.setStyleName(0, SIMILARITY_COL, "th");
-      formatter.addStyleName(0, SIMILARITY_COL, "centered");
-      formatter.setStyleName(0, DETAILS_COL, "th");
-      formatter.addStyleName(0, DETAILS_COL, "centered");
-      formatter.addStyleName(0, DETAILS_COL, "detailCol");
+      formatter.setStyleName(0, NUM_TRANS_COL, "th centered numTransCol");
+      formatter.setStyleName(0, ACTION_COL, "th centered actionCol");
+      formatter.setStyleName(0, SIMILARITY_COL, "th centered similarityCol");
+      formatter.setStyleName(0, DETAILS_COL, "th centered detailCol");
 
       resultTable.setWidget(0, SOURCE_COL, new Label(messages.sourceLabel()));
       resultTable.setWidget(0, TARGET_COL, new Label(messages.targetLabel()));
@@ -264,8 +265,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
          resultTable.setWidget(i + 1, NUM_TRANS_COL, countLabel);
          resultTable.getFlexCellFormatter().setStyleName(i + 1, NUM_TRANS_COL, "centered");
-         resultTable.getFlexCellFormatter().addStyleName(i + 1, NUM_TRANS_COL, "numTransCol");
-         
+
          if(i % 2 == 1)
          {
             resultTable.getRowFormatter().setStyleName(i + 1, "oddRow");
@@ -285,13 +285,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
          resultTable.setWidget(i + 1, ACTION_COL, copyButton);
          resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
-         resultTable.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
 
          Label similarityLabel = new Label((int) item.getSimilarityPercent() + "%");
          resultTable.setWidget(i + 1, SIMILARITY_COL, similarityLabel);
          resultTable.getFlexCellFormatter().setStyleName(i + 1, SIMILARITY_COL, "centered");
-         resultTable.getFlexCellFormatter().addStyleName(i + 1, SIMILARITY_COL, "similarityCol");
-         
+
          InlineLabel infoCell = new InlineLabel();
          infoCell.setStyleName("icon-info-circle-2 details");
          infoCell.addClickHandler(new ClickHandler()
@@ -305,7 +303,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
          resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
          resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
-         resultTable.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
       }
       container.clear();
       container.add(resultTable);
