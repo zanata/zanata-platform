@@ -71,47 +71,10 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Alt+PageUp")
    String prevFuzzyOrUntranslatedShortcut();
 
-   @DefaultMessage("Save as Approved (Ctrl+Enter)")
-   String editSaveShortcut();
-
-   @DefaultMessage("Save as Approved (Enter)")
-   String editSaveWithEnterShortcut();
-
-   @DefaultMessage("Cancel")
-   String editCancelShortcut();
-
-   @DefaultMessage("History")
-   String history();
-
-   // @DefaultMessage("Copy")
-   // String editClone();
-
-   // @DefaultMessage("Ctrl+Home")
-   // @DefaultMessage("Clone")
-   // String editCloneShortcut();
-
-   // @DefaultMessage("Clone & Save")
-   // String editCloneAndSave();
-
-   // @DefaultMessage("Ctrl+End")
-   // @DefaultMessage("Clone & Save")
-   // String editCloneAndSaveShortcut();
-
-   @DefaultMessage("Copy message from source language (Alt+G)")
-   String copySourceToTarget();
-
    @DefaultMessage("{0} ({1})")
    String actionToolTip(String actionName, String shortcut);
-
-   @DefaultMessage("Save as Fuzzy (Ctrl+S)")
-   String saveAsFuzzy();
 
    @DefaultMessage("Source comment: {0}")
    String sourceCommentLabel(String comment);
 
-   @DefaultMessage("Click here for more info")
-   String clickHereForMoreInfo();
-
-   @DefaultMessage("No content")
-   String noContent();
 }

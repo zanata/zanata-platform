@@ -12,9 +12,6 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Message has been copied to the target.")
    String notifyCopied();
 
-   @DefaultMessage("Please open the target in the editor first.")
-   String notifyUnopened();
-
    @DefaultMessage("Not logged in!")
    String notifyNotLoggedIn();
 
@@ -68,6 +65,12 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Move to prev Fuzzy/Untranslated")
    String prevFuzzyOrUntranslated();
 
+   @DefaultMessage("Save as Approved (Ctrl+Enter)")
+   String editSaveShortcut();
+
+   @DefaultMessage("Save as Fuzzy (Ctrl+S)")
+   String editSaveAsFuzzyShortcut();
+
    @DefaultMessage("Save as fuzzy")
    String saveAsFuzzy();
 
@@ -77,9 +80,15 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Close editor")
    String closeEditor();
 
+   @DefaultMessage("Cancel")
+   String editCancelShortcut();
+
+   @DefaultMessage("History")
+   String history();
+
    @DefaultMessage("Translation Unit Details: Row {0}; Id {1}; {2}")
    String transUnitDetailsHeadingWithInfo(int rowIndex, String transUnitId, String info);
 
-   @DefaultMessage("Copy from source")
+   @DefaultMessage("Copy message from source language (Alt+G)")
    String copyFromSource();
 }
