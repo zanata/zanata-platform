@@ -66,6 +66,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
     */
    void updateCachedAndInEditorTargets(List<String> targets);
 
+   void refresh();
+
    interface Listener
    {
       void validate(ToggleEditor editor);
