@@ -31,8 +31,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
    private String lastModifiedTime;
    private int rowIndex;
    private int verNum;
-
-   private static Comparator<TransUnit> rowIndexComparator;
+   private String targetComment;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -40,38 +39,22 @@ public class TransUnit implements IsSerializable, HasTransUnitId
    {
    }
 
-   //TODO make it truly an immutable class. TableEditorTableDefinition and InlineTargetCellEditor still uses some of the setter methods
-   private TransUnit(TransUnitId id, String resId, LocaleId localeId, boolean plural, List<String> sources, String sourceComment, List<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex, int verNum)
+   private TransUnit(Builder builder)
    {
-      this.id = id;
-      this.resId = resId;
-      this.localeId = localeId;
-      this.plural = plural;
-      this.sources = sources;
-      this.sourceComment = sourceComment;
-      this.targets = targets;
-      this.status = status;
-      this.lastModifiedBy = lastModifiedBy;
-      this.lastModifiedTime = lastModifiedTime;
-      this.msgContext = msgContext;
-      this.rowIndex = rowIndex;
-      this.verNum = verNum;
-   }
-   
-   public void OverrideWith(TransUnit obj, Integer rowIndex){
-      this.id = obj.getId();
-      this.resId = obj.getResId();
-      this.localeId = obj.getLocaleId();
-      this.plural = obj.isPlural();
-      this.sources = obj.getSources();
-      this.sourceComment = obj.getSourceComment();
-      this.targets = obj.getTargets();
-      this.status = obj.getStatus();
-      this.lastModifiedBy = obj.getLastModifiedBy();
-      this.lastModifiedTime = obj.getLastModifiedTime();
-      this.msgContext = obj.getMsgContext();
-      this.rowIndex = rowIndex;
-      this.verNum = obj.getVerNum();
+      this.id = builder.id;
+      this.resId = builder.resId;
+      this.localeId = builder.localeId;
+      this.plural = builder.plural;
+      this.sources = builder.sources;
+      this.sourceComment = builder.sourceComment;
+      this.targets = builder.targets;
+      this.status = builder.status;
+      this.lastModifiedBy = builder.lastModifiedBy;
+      this.lastModifiedTime = builder.lastModifiedTime;
+      this.msgContext = builder.msgContext;
+      this.rowIndex = builder.rowIndex;
+      this.verNum = builder.verNum;
+      this.targetComment = builder.targetComment;
    }
 
    @Override
@@ -111,7 +94,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       return sources;
    }
 
-   public void setSources(List<String> sources)
+   void setSources(List<String> sources)
    {
       this.sources = sources;
    }
@@ -121,7 +104,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       return sourceComment;
    }
 
-   public void setSourceComment(String sourceComment)
+   void setSourceComment(String sourceComment)
    {
       this.sourceComment = sourceComment;
    }
@@ -131,7 +114,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       return targets;
    }
 
-   public void setTargets(List<String> targets)
+   void setTargets(List<String> targets)
    {
       this.targets = targets;
    }
@@ -141,7 +124,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       return status;
    }
 
-   public void setStatus(ContentState status)
+   void setStatus(ContentState status)
    {
       this.status = status;
    }
@@ -191,34 +174,19 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       return verNum;
    }
 
-   public void setVerNum(Integer verNum)
+   void setVerNum(Integer verNum)
    {
       this.verNum = verNum;
    }
 
-   public static Comparator<TransUnit> getRowIndexComparator()
+   public String getTargetComment()
    {
-      if (rowIndexComparator == null)
-      {
-         rowIndexComparator = new Comparator<TransUnit>()
-               {
+      return targetComment;
+   }
 
-            @Override
-            public int compare(TransUnit o1, TransUnit o2)
-            {
-               if (o1 == o2)
-               {
-                  return 0;
-               }
-               if (o1 != null)
-               {
-                  return (o2 != null ? Integer.valueOf(o1.getRowIndex()).compareTo(o2.getRowIndex()) : 1);
-               }
-               return -1;
-            }
-         };
-      }
-      return rowIndexComparator;
+   void setTargetComment(String targetComment)
+   {
+      this.targetComment = targetComment;
    }
 
    public String debugString()
@@ -255,6 +223,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       private String lastModifiedTime;
       private int rowIndex;
       private int verNum = -1; // to fail check if not set before build
+      private String targetComment;
 
       private Builder(TransUnit transUnit)
       {
@@ -290,7 +259,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          lastModifiedTime = Strings.nullToEmpty(lastModifiedTime);
          status = Objects.firstNonNull(status, ContentState.New);
 
-         return new TransUnit(id, resId, localeId, plural, sources, sourceComment, targets, status, lastModifiedBy, lastModifiedTime, msgContext, rowIndex, verNum);
+         return new TransUnit(this);
       }
 
       public static Builder newTransUnitBuilder()
@@ -407,6 +376,12 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       public Builder setVerNum(int verNum)
       {
          this.verNum = verNum;
+         return this;
+      }
+
+      public Builder setTargetContent(String targetComment)
+      {
+         this.targetComment = targetComment;
          return this;
       }
    }
