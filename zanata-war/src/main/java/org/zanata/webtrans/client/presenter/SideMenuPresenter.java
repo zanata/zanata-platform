@@ -93,8 +93,6 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
 
       Tab getCurrentTab();
 
-      void setNotificationTabAlert(boolean alert);
-
       void setNotificationText(int count, Severity severity);
 
    }

@@ -163,19 +163,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    }
 
    @Override
-   public void setNotificationTabAlert(boolean alert)
-   {
-      if (alert)
-      {
-         notificationTab.addStyleName(style.alertTab());
-      }
-      else
-      {
-         notificationTab.removeStyleName(style.alertTab());
-      }
-   }
-
-   @Override
    public Tab getCurrentTab()
    {
       if (notificationTab.getStyleName().contains(style.selectedButton()))

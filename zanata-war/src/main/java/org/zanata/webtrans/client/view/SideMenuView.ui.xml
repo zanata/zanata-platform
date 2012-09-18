@@ -30,11 +30,6 @@
 		    background:#444444;
 		}
 		
-		.alertTab
-		{
-			color:yellow;
-		}
-		
 		.notificationLabel
 		{
 			text-align:center;
