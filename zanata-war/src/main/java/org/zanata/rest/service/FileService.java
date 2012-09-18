@@ -148,7 +148,7 @@ public class FileService implements FileResource
       if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
       {
          return Response.status(Status.FORBIDDEN)
-               .entity("You do not have permission to upload source documents for this project-version\n")
+               .entity("You do not have permission to upload source documents to project-version \"" + projectSlug + ":" + iterationSlug + "\".\n")
                .build();
       }
 
@@ -266,6 +266,7 @@ public class FileService implements FileResource
                .entity("Valid combination of username and api-key for this server were not included in the request\n")
                .build();
       }
+
       if (docId == null || docId.length() == 0)
       {
          return Response.status(Status.PRECONDITION_FAILED)
@@ -299,9 +300,24 @@ public class FileService implements FileResource
       if (projectIteration == null)
       {
          return Response.status(Status.NOT_FOUND)
-               .entity("The specified project-version does not exist on this server.")
+               .entity("The specified project-version \"" + projectSlug + ":" + iterationSlug + "\" does not exist on this server.\n")
                .build();
       }
+
+      if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE)
+      {
+         return Response.status(Status.FORBIDDEN)
+               .entity("The project \"" + projectSlug + "\" is not active. Document upload is not allowed.\n")
+               .build();
+      }
+
+      if (projectIteration.getStatus() != EntityStatus.ACTIVE)
+      {
+         return Response.status(Status.FORBIDDEN)
+               .entity("The project-version \"" + projectSlug + ":" + iterationSlug + "\" is not active. Document upload is not allowed.\n")
+               .build();
+      }
+
       return null;
    }
 
@@ -377,21 +393,22 @@ public class FileService implements FileResource
       if (localeId == null)
       {
          return Response.status(Status.NOT_FOUND)
-               .entity("The specified locale does not exist on this server\n")
+               .entity("The specified locale \"" + locale + "\" does not exist on this server.\n")
                .build();
       }
 
       if (!isTranslationUploadAllowed(projectSlug, iterationSlug, localeId))
       {
          return Response.status(Status.FORBIDDEN)
-               .entity("You do not have permission to upload translations for the specified locale to this project-version\n")
+               .entity("You do not have permission to upload translations for locale \"" + locale
+                     + "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\".\n")
                .build();
       }
 
       if (documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null)
       {
          return Response.status(Status.NOT_FOUND)
-               .entity("No document with the specified id exists in this project-version\n")
+               .entity("No document with id \"" + docId + "\" exists in project-version \"" + projectSlug + ":" + iterationSlug + "\".\n")
                .build();
       }
 
@@ -412,12 +429,10 @@ public class FileService implements FileResource
       MergeType mergeType;
       if ("import".equals(merge))
       {
-         log.info("merge type import");
          mergeType = MergeType.IMPORT;
       }
       else
       {
-         log.info("merge type: " + merge);
          mergeType = MergeType.AUTO;
       }
 
