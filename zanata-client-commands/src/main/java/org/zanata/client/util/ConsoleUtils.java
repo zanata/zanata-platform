@@ -46,7 +46,10 @@ public class ConsoleUtils
     */
    private static class TimeProgressTask extends TimerTask
    {
+      private static final String[] SEQUENCE = {"[==   ]","[ ==  ]","[  == ]","[   ==]","[  == ]","[ ==  ]"};
+      private String suffix = "";
       private Date start;
+      private int currentState = -1;
 
       @Override
       public void run()
@@ -55,7 +58,12 @@ public class ConsoleUtils
          {
             start = new Date();
          }
-         System.out.print(".");
+
+         if( currentState < 0 || currentState >= SEQUENCE.length )
+         {
+            currentState = 0;
+         }
+         System.out.print("\r" + SEQUENCE[currentState++] + this.suffix);
       }
 
       @Override
@@ -63,7 +71,7 @@ public class ConsoleUtils
       {
          if( start != null )
          {
-            System.out.print(" " + formatDuration(start, new Date()));
+            System.out.print("\rDone in " + formatDuration(start, new Date()));
             System.out.println();
          }
          return super.cancel();
@@ -85,6 +93,14 @@ public class ConsoleUtils
       TimerTask progressFeedbackTask = new TimeProgressTask();
       timer.schedule(progressFeedbackTask, 0, 1000);
       activeTasks.put(TimerTaskType.ProgressFeedback, progressFeedbackTask);
+   }
+
+   public static void setProgressFeedbackMessage( String mssg )
+   {
+      if( activeTasks.containsKey(TimerTaskType.ProgressFeedback) )
+      {
+         ((TimeProgressTask)activeTasks.get(TimerTaskType.ProgressFeedback)).suffix = mssg;
+      }
    }
 
    public static void endProgressFeedback()

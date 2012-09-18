@@ -28,9 +28,11 @@ import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.CopyTransResource;
 
 /**
  * @author Sean Flanigan <a
@@ -43,6 +45,8 @@ public class PushCommand extends PushPullCommand<PushOptions>
    private static final String UTF_8 = "UTF-8";
 
    private static final Map<String, AbstractPushStrategy> strategies = new HashMap<String, AbstractPushStrategy>();
+
+   private CopyTransResource copyTransResource;
 
    public static interface TranslationResourcesVisitor
    {
@@ -60,11 +64,13 @@ public class PushCommand extends PushPullCommand<PushOptions>
    public PushCommand(PushOptions opts)
    {
       super(opts);
+      copyTransResource = getRequestFactory().getCopyTransResource();
    }
 
    public PushCommand(PushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory, sourceDocResource, translationResources, uri);
+      copyTransResource = factory.getCopyTransResource();
    }
 
    private AbstractPushStrategy getStrategy(String strategyType)
@@ -296,6 +302,12 @@ public class PushCommand extends PushPullCommand<PushOptions>
                }
             });
          }
+
+         // Copy Trans after pushing
+         if( getOpts().getCopyTrans() )
+         {
+            this.copyTransForDocument(qualifiedDocName);
+         }
       }
       deleteDocsFromServer(obsoleteDocs);
    }
@@ -338,10 +350,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
       if (!getOpts().isDryRun())
       {
          log.info("pushing source doc [name={} size={}] to server", srcDoc.getName(), srcDoc.getTextFlows().size());
-         boolean copyTrans = getOpts().getCopyTrans();
 
          ConsoleUtils.startProgressFeedback();
-         ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, copyTrans);
+         // NB: Copy trans is set to false as using copy trans in this manner is deprecated.
+         // see PushCommand.copyTransForDocument
+         ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, false);
          ConsoleUtils.endProgressFeedback();
 
          ClientUtility.checkResult(putResponse, uri);
@@ -450,6 +463,44 @@ public class PushCommand extends PushPullCommand<PushOptions>
       else
       {
          log.info("deleting resource {} from server (skipped due to dry run)", qualifiedDocName);
+      }
+   }
+
+   private void copyTransForDocument(String docName)
+   {
+      log.info("Running Copy Trans for " + docName);
+      try
+      {
+         this.copyTransResource.startCopyTrans(getOpts().getProj(), getOpts().getProjectVersion(), docName);
+      }
+      catch( Exception ex )
+      {
+         log.warn("Could not start Copy Trans for above document. Proceeding");
+         return;
+      }
+      CopyTransStatus copyTransStatus =
+            this.copyTransResource.getCopyTransStatus(getOpts().getProj(), getOpts().getProjectVersion(), docName);
+      ConsoleUtils.startProgressFeedback();
+
+      while( copyTransStatus.isInProgress() )
+      {
+         try
+         {
+            Thread.sleep(2000);
+         }
+         catch (InterruptedException e)
+         {
+            log.warn("Interrupted while waiting for Copy Trans to finish.");
+         }
+         ConsoleUtils.setProgressFeedbackMessage(copyTransStatus.getPercentageComplete() + "%");
+         copyTransStatus =
+               this.copyTransResource.getCopyTransStatus(getOpts().getProj(), getOpts().getProjectVersion(), docName);
+      }
+      ConsoleUtils.endProgressFeedback();
+
+      if( copyTransStatus.getPercentageComplete() < 100 )
+      {
+         log.warn("Copy Trans for the above document stopped unexpectedly.");
       }
    }
 

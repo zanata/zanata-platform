@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
+import org.zanata.rest.service.CopyTransResource;
 import org.zanata.rest.service.StatisticsResource;
 
 import javax.ws.rs.Path;
@@ -244,7 +245,14 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
 
    public StatisticsResource getStatisticsResource()
    {
+      // NB: No specific client interface (not needed)
       return createProxy(StatisticsResource.class);
+   }
+
+   public CopyTransResource getCopyTransResource()
+   {
+      // NB: No specific client interface (not needed)
+      return createProxy(CopyTransResource.class);
    }
 
 
