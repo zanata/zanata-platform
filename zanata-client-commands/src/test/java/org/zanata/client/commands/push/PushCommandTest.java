@@ -175,8 +175,9 @@ public class PushCommandTest
       final ClientResponse<String> okResponse = new DummyResponse<String>(Status.OK, null);
       EasyMock.expect(mockSourceDocResource.deleteResource("obsolete")).andReturn(okResponse);
       StringSet extensionSet = new StringSet("gettext;comment");
-      EasyMock.expect(mockSourceDocResource.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).andReturn(okResponse);
-      EasyMock.expect(mockSourceDocResource.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).andReturn(okResponse);
+      // TODO These calls now use a false copyTrans value (2.0) but they invoke the copy Trans resource. Still need to add Copy Trans resource expectations
+      EasyMock.expect(mockSourceDocResource.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet), eq(false))).andReturn(okResponse);
+      EasyMock.expect(mockSourceDocResource.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet), eq(false))).andReturn(okResponse);
 
       if (pushTrans)
       {
