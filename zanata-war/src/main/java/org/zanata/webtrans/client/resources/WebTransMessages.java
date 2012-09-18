@@ -415,4 +415,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Switch between CodeMirror Editor (supports syntax highlight) and plain textarea (no syntax highlight)")
    String useCodeMirrorEditorTooltip();
+
+   @DefaultMessage("Go to row if on current page")
+   String goToRowOnCurrentPage();
 }
