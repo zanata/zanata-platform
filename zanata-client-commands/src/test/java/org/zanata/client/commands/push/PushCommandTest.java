@@ -2,6 +2,7 @@ package org.zanata.client.commands.push;
 
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.notNull;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.net.URI;
@@ -27,6 +28,7 @@ import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 @Test(groups = "unit-tests")
@@ -58,20 +60,65 @@ public class PushCommandTest
       push(true, true);
    }
 
-   @BeforeMethod
-   void beforeMethod()
+   @Test
+   public void testSplitTranslationResource() throws Exception
    {
-      control.reset();
+      int batchSize = 100;
+      int listSize = 500;
+
+      checkSplitResult(listSize, batchSize);
+
+      batchSize = 50;
+      listSize = 500;
+
+      checkSplitResult(listSize, batchSize);
    }
 
-   <T> T createMock(String name, Class<T> toMock)
+   @Test
+   public void testSplitTranslationResourceWithMod() throws Exception
    {
-      T mock = control.createMock(name, toMock);
-      return mock;
+      int batchSize = 100;
+      int listSize = 505;
+
+      checkSplitResult(listSize, batchSize);
+
+      batchSize = 100;
+      listSize = 510;
+
+      checkSplitResult(listSize, batchSize);
    }
-   
-   private void push(boolean pushTrans, boolean mapLocale) throws Exception
+
+   private void checkSplitResult(int listSize, int batchSize) throws Exception
    {
+      PushCommand cmd = generatePushCommand(true, true);
+      TranslationsResource transRes = new TranslationsResource();
+      for (int i = 0; i < listSize; i++)
+      {
+         transRes.getTextFlowTargets().add(new TextFlowTarget(String.valueOf(i)));
+      }
+
+      List<TranslationsResource> list = cmd.splitIntoBatch(transRes, batchSize);
+
+      int expectListSize = listSize / batchSize;
+      if (listSize % batchSize != 0)
+      {
+         expectListSize = expectListSize + 1;
+      }
+
+      int expectLastTftSize = listSize % batchSize;
+      if (expectLastTftSize == 0)
+      {
+         expectLastTftSize = batchSize;
+      }
+
+      assertEquals(list.size(), expectListSize);
+      assertEquals(list.get(0).getTextFlowTargets().size(), batchSize);
+      assertEquals(list.get(list.size() - 1).getTextFlowTargets().size(), expectLastTftSize);
+   }
+
+   private PushCommand generatePushCommand(boolean pushTrans, boolean mapLocale) throws Exception
+   {
+
       PushOptionsImpl opts = new PushOptionsImpl();
       opts.setInteractiveMode(false);
       String projectSlug = "project";
@@ -87,8 +134,7 @@ public class PushCommandTest
       opts.excludes = new ArrayList<String>();
       opts.sourceLang = "en-US";
       opts.mergeType = "auto";
-      opts.batchSize = 50;
-      OptionsUtil.applyConfigFiles(opts);
+      opts.batchSize = 100;
       LocaleList locales = new LocaleList();
       if (mapLocale)
       {
@@ -99,7 +145,28 @@ public class PushCommandTest
          locales.add(new LocaleMapping("ja-JP"));
       }
       opts.setLocaleMapList(locales);
+      OptionsUtil.applyConfigFiles(opts);
 
+      ZanataProxyFactory mockRequestFactory = EasyMock.createNiceMock(ZanataProxyFactory.class);
+
+      return new PushCommand(opts, mockRequestFactory, mockSourceDocResource, mockTranslationResources, new URI("http://example.com/"));
+   }
+
+   @BeforeMethod
+   void beforeMethod()
+   {
+      control.reset();
+   }
+
+   <T> T createMock(String name, Class<T> toMock)
+   {
+      T mock = control.createMock(name, toMock);
+      return mock;
+   }
+   
+
+   private void push(boolean pushTrans, boolean mapLocale) throws Exception
+   {
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
       resourceMetaList.add(new ResourceMeta("obsolete"));
       resourceMetaList.add(new ResourceMeta("RPM"));
@@ -115,15 +182,17 @@ public class PushCommandTest
       {
          LocaleId expectedLocale;
          if (mapLocale)
+         {
             expectedLocale = new LocaleId("ja");
+         }
          else
+         {
             expectedLocale = new LocaleId("ja-JP");
+         }
          EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet), eq("auto"))).andReturn(okResponse);
       }
-      ZanataProxyFactory mockRequestFactory = EasyMock.createNiceMock(ZanataProxyFactory.class);
-
       control.replay();
-      ZanataCommand cmd = new PushCommand(opts, mockRequestFactory, mockSourceDocResource, mockTranslationResources, new URI("http://example.com/"));
+      ZanataCommand cmd = generatePushCommand(pushTrans, mapLocale);
       cmd.run();
       control.verify();
    }
