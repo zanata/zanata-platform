@@ -66,4 +66,8 @@ public class CopyTransOptions
    @Setter
    private ConditionRuleAction docIdMismatchAction = ConditionRuleAction.REJECT;
 
+   @Getter
+   @Setter
+   private ConditionRuleAction projectMismatchAction = ConditionRuleAction.REJECT;
+
 }
