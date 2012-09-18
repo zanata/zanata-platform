@@ -352,29 +352,45 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
    }
 
-   private List<TranslationsResource> splitIntoBatch(TranslationsResource doc, int batchSize)
+   /**
+    * Split TranslationsResource into List<TranslationsResource> according to batch size
+    * 
+    * @param doc
+    * @param batchSize
+    * @return list of transaltionsResource
+    */
+   public List<TranslationsResource> splitIntoBatch(TranslationsResource doc, int batchSize)
    {
       List<TranslationsResource> targetDocList = new ArrayList<TranslationsResource>();
-      if (doc.getTextFlowTargets().size() > batchSize)
-      {
-         int loop = doc.getTextFlowTargets().size() / batchSize;
+      int size = doc.getTextFlowTargets().size();
 
-         if (doc.getTextFlowTargets().size() % batchSize != 0)
+      if (size > batchSize)
+      {
+         int batch = size / batchSize;
+
+         if (size % batchSize != 0)
          {
-            loop = loop + 1;
+            batch = batch + 1;
          }
 
          int fromIndex = 0;
          int toIndex = 0;
 
-         for (int i = 1; i <= loop; i++)
+         for (int i = 1; i <= batch; i++)
          {
             TranslationsResource resource = new TranslationsResource();
             resource.setExtensions(doc.getExtensions());
             resource.setLinks(doc.getLinks());
             resource.setRevision(doc.getRevision());
 
-            toIndex = (i * batchSize) > doc.getTextFlowTargets().size() ? doc.getTextFlowTargets().size() : i * batchSize;
+            if ((i * batchSize) > size)
+            {
+               toIndex = size;
+            }
+            else
+            {
+               toIndex = i * batchSize;
+            }
 
             resource.getTextFlowTargets().addAll(doc.getTextFlowTargets().subList(fromIndex, toIndex));
 
