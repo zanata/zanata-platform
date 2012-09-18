@@ -35,7 +35,6 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -288,7 +287,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
          resultTable.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
 
-         Label similarityLabel = new Label(item.getSimilarityPercent() + "%");
+         Label similarityLabel = new Label((int) item.getSimilarityPercent() + "%");
          resultTable.setWidget(i + 1, SIMILARITY_COL, similarityLabel);
          resultTable.getFlexCellFormatter().setStyleName(i + 1, SIMILARITY_COL, "centered");
          resultTable.getFlexCellFormatter().addStyleName(i + 1, SIMILARITY_COL, "similarityCol");

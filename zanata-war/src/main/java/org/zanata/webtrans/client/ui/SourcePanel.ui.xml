@@ -17,6 +17,18 @@
 			padding: 3px;
             table-layout: fixed;
 		}
+		
+		.selectedRow .CodeMirror-lines
+		{
+			cursor:default;
+
+		}
+		
+		.nonSelectedRow .CodeMirror-lines
+		{
+			cursor:default;
+
+		}
 	</ui:style>
 
 

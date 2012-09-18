@@ -117,16 +117,20 @@ public class AppView extends Composite implements AppDisplay
       resize.setTitle(messages.maximize());
       resize.addStyleName(STYLE_MAXIMIZE);
 
-      this.documentListView = documentListView.asWidget();
-      this.editorContainer.add(this.documentListView);
+      this.searchResultsView = searchResultsView.asWidget();
+      this.editorContainer.add(this.searchResultsView);
 
       this.translationView = translationView.asWidget();
       this.editorContainer.add(this.translationView);
 
-      this.searchResultsView = searchResultsView.asWidget();
-      this.editorContainer.add(this.searchResultsView);
-      
+      this.documentListView = documentListView.asWidget();
+      this.editorContainer.add(this.documentListView);
+
       sideMenuContainer.add(sideMenuView.asWidget());
+
+      setWidgetVisible(this.documentListView, false);
+      setWidgetVisible(this.searchResultsView, false);
+      setWidgetVisible(this.translationView, false);
       
       Window.enableScrolling(false);
    }

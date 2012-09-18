@@ -20,13 +20,10 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -36,25 +33,21 @@ import com.google.inject.Singleton;
  *
  **/
 @Singleton
-public class LoadingPanel extends DecoratedPopupPanel
+public class DiffColorLegendPanel extends PopupPanel
 {
 
    @Inject
-   public LoadingPanel(final  WebTransMessages messages, final Resources resources)
+   public DiffColorLegendPanel(final WebTransMessages messages)
    {
-      this(messages.loading(), resources);
-   }
+      super(true, true);
 
-   public LoadingPanel(String text, final Resources resources)
-   {
-      super(false, true);
       HorizontalPanel hp = new HorizontalPanel();
       hp.setSpacing(5);
       hp.setSize("100%", "100%");
-      Label loadingLabel = new Label(text);
-      loadingLabel.setStyleName("loadingLabel");
-      hp.add(loadingLabel);
-      hp.add(new Image(resources.loader()));
+      // Label loadingLabel = new Label(text);
+      // loadingLabel.setStyleName("loadingLabel");
+      // hp.add(loadingLabel);
+      // hp.add(new Image(resources.loader()));
       setStyleName("loadingPanel");
       add(hp);
    }

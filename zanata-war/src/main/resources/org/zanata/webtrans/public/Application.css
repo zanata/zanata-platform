@@ -918,9 +918,13 @@ td.ApprovedStateDecoration div div div
 .loadingPanel {
 	background: #000000;
 	padding: 20px 40px 20px 40px;
-	color: #FFFFFF;
 	opacity: 0.60;
 	border-radius: 20px;
+}
+
+.loadingPanel .loadingLabel
+{
+	color: #FFFFFF;
 	font-weight: bold;
 }
 
