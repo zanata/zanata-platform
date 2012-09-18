@@ -121,6 +121,15 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    }
 
    @Override
+   public void refresh()
+   {
+      for (HasSelectableSource hasSelectableSource : sourcePanelList)
+      {
+         hasSelectableSource.refresh();
+      }
+   }
+
+   @Override
    public TransUnitId getId()
    {
       return transUnitId;

@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.GoToRowLink;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -57,9 +58,10 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
    private final Provider<UndoLink> undoLinkProvider;
    private final TargetContentsPresenter targetContentsPresenter;
    private final NavigationController navigationController;
+   private final Provider<GoToRowLink> goToRowLinkProvider;
 
    @Inject
-   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationController navigationController)
+   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationController navigationController, Provider<GoToRowLink> goToRowLinkProvider)
    {
       this.messages = messages;
       this.eventBus = eventBus;
@@ -67,6 +69,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       this.undoLinkProvider = undoLinkProvider;
       this.targetContentsPresenter = targetContentsPresenter;
       this.navigationController = navigationController;
+      this.goToRowLinkProvider = goToRowLinkProvider;
    }
 
    @Override
@@ -102,9 +105,11 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       return status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
    }
 
-   private void saveFailure(String message)
+   private void saveFailure(String message, TransUnitId id)
    {
-      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message)));
+      GoToRowLink goToRowLink = goToRowLinkProvider.get();
+      goToRowLink.prepare("", id);
+      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message), goToRowLink));
    }
 
    private class UpdateTransUnitCallback implements AsyncCallback<UpdateTransUnitResult>
@@ -125,7 +130,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          targetContentsPresenter.updateTargets(event.getTransUnitId(), event.getOldContents());
          Log.error("UpdateTransUnit failure ", e);
          String message = e.getMessage();
-         saveFailure(message);
+         saveFailure(message, id);
       }
 
       @Override
@@ -144,10 +149,10 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
                undoLink.prepareUndoFor(result);
                targetContentsPresenter.addUndoLink(rowIndexOnPage, undoLink);
             }
-         } else
+         }
+         else
          {
-            // TODO localised message
-            saveFailure("id " + id);
+            saveFailure("id " + id, id);
          }
       }
    }

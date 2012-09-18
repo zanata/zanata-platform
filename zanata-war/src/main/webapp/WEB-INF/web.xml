@@ -43,7 +43,7 @@
 
 	<servlet>
 	  <servlet-name>remoteLoggingService</servlet-name>
-	  <servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
+	  <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 	  <servlet-name>remoteLoggingService</servlet-name>

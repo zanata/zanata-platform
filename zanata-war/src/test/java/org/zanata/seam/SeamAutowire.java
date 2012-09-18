@@ -275,7 +275,7 @@ public class SeamAutowire
       try
       {
          ClassPool pool = ClassPool.getDefault();
-         CtClass cls = pool.get("org.jboss.seam.Component");
+         CtClass componentCls = pool.get("org.jboss.seam.Component");
 
          // Commonly used CtClasses
          final CtClass stringCls = pool.get("java.lang.String");
@@ -284,22 +284,20 @@ public class SeamAutowire
          final CtClass scopeTypeCls = pool.get("org.jboss.seam.ScopeType");
 
          // Replace Component's method bodies with the ones in AutowireComponent
-         CtMethod methodToReplace = cls.getDeclaredMethod("getInstance", new CtClass[]{stringCls, booleanCls, booleanCls});
-         methodToReplace.setBody(
-               pool.get(AutowireComponent.class.getName()).getDeclaredMethod("getInstance", new CtClass[]{stringCls, booleanCls, booleanCls}),
-               null);
+         replaceGetInstance(pool, componentCls, stringCls, booleanCls, booleanCls);
+         replaceGetInstance(pool, componentCls, stringCls, scopeTypeCls, booleanCls, booleanCls);
+         try
+         {
+            // Seam 2.2.2
+            replaceGetInstance(pool, componentCls, stringCls, booleanCls, booleanCls, objectCls, scopeTypeCls);
+         }
+         catch (NotFoundException e)
+         {
+            // Seam 2.2.0
+            replaceGetInstance(pool, componentCls, stringCls, booleanCls, booleanCls, objectCls);
+         }
 
-         methodToReplace = cls.getDeclaredMethod("getInstance", new CtClass[]{stringCls, scopeTypeCls, booleanCls, booleanCls});
-         methodToReplace.setBody(
-               pool.get(AutowireComponent.class.getName()).getDeclaredMethod("getInstance", new CtClass[]{stringCls, scopeTypeCls, booleanCls, booleanCls}),
-               null);
-
-         methodToReplace = cls.getDeclaredMethod("getInstance", new CtClass[]{stringCls, booleanCls, booleanCls, objectCls});
-         methodToReplace.setBody(
-               pool.get(AutowireComponent.class.getName()).getDeclaredMethod("getInstance", new CtClass[]{stringCls, booleanCls, booleanCls, objectCls}),
-               null);
-
-         cls.toClass();
+         componentCls.toClass();
       }
       catch (NotFoundException e)
       {
@@ -310,6 +308,23 @@ public class SeamAutowire
          throw new RuntimeException("Problem rewiring Seam's Component class", e);
       }
 
+   }
+
+   /**
+    * Replace's Component.getInstance(params) method body with that of
+    * AutowireComponent.getInstance(params).
+    * @param pool
+    * @param componentCls
+    * @param params
+    * @throws NotFoundException
+    * @throws CannotCompileException
+    */
+   private void replaceGetInstance(ClassPool pool, CtClass componentCls, CtClass... params) throws NotFoundException, CannotCompileException
+   {
+      CtMethod methodToReplace = componentCls.getDeclaredMethod("getInstance", params);
+      methodToReplace.setBody(
+            pool.get(AutowireComponent.class.getName()).getDeclaredMethod("getInstance", params),
+            null);
    }
 
    private void rewireSeamTransactionClass()
@@ -430,7 +445,7 @@ public class SeamAutowire
 
             try
             {
-               m.invoke(component, null); // there should be no params
+               m.invoke(component); // there should be no params
                postConstructAlreadyFound = true;
             }
             catch (IllegalAccessException e)

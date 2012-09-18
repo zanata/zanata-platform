@@ -19,7 +19,7 @@
 		}
 		
 		.rootContainer {
-			min-width:550px;
+			min-width:580px;
 			width:100%;
 		}
 		

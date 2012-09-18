@@ -175,7 +175,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.isUseCodeMirrorEditor() != useCodeMirrorChkValue)
       {
          configHolder.setUseCodeMirrorEditor(useCodeMirrorChkValue);
-         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
          eventBus.fireEvent(ReloadPageEvent.EVENT);
       }
    }

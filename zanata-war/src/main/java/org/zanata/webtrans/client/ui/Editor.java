@@ -8,6 +8,7 @@ import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,11 +26,11 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleEditor
 {
-   private String findMessage;
    private TargetContentsDisplay.Listener listener;
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
@@ -38,15 +39,14 @@ public class Editor extends Composite implements ToggleEditor
 
    interface Styles extends CssResource
    {
-      String userLabel();
 
       String rootContainer();
-
-      String translatorList();
 
       String hasValidationError();
 
       String copyButton();
+
+      String targetWrapper();
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
@@ -69,7 +69,7 @@ public class Editor extends Composite implements ToggleEditor
    HorizontalPanel topContainer;
 
    @UiField
-   HorizontalPanel translatorList;
+   TranslatorListWidget translatorList;
 
    NavigationMessages messages = GWT.create(NavigationMessages.class);
 
@@ -111,9 +111,8 @@ public class Editor extends Composite implements ToggleEditor
       }
    };
 
-   public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
+   public Editor(String displayString, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
    {
-      this.findMessage = findMessage;
       this.listener = listener;
       this.index = index;
       this.id = id;
@@ -287,49 +286,25 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void addTranslator(String name, String color)
    {
-      Label nameLabel = new Label(name);
-      nameLabel.setStyleName(style.userLabel());
-
-      nameLabel.getElement().getStyle().setProperty("backgroundColor", color);
-      nameLabel.getElement().getStyle().setProperty("borderColor", color);
-      nameLabel.getElement().getStyle().setProperty("borderWidth", "1px");
-      nameLabel.getElement().getStyle().setProperty("borderStyle", "solid");
-
-      translatorList.add(nameLabel);
+      translatorList.addTranslator(name, color);
    }
 
    @Override
    public void clearTranslatorList()
    {
-      translatorList.clear();
+      translatorList.clearTranslatorList();
+   }
+
+   @Override
+   public void highlightSearch(String findMessage)
+   {
+      textArea.highlight(findMessage);
    }
 
    @Override
    public void removeTranslator(String name, String color)
    {
-      for (int i = 0; i < translatorList.getWidgetCount(); i++)
-      {
-         Label translatorLabel = (Label) translatorList.getWidget(i);
-
-         if (translatorLabel.getText().equals(name) && removeFormat(translatorLabel.getElement().getStyle().getProperty("backgroundColor")).equals(removeFormat(color)))
-         {
-            translatorList.remove(i);
-         }
-      }
-   }
-   
-
-   /**
-    * Color string return from userSessionService rgb(xx,xx,xx), Color string
-    * return from browser is formatted rgb(xx, xx, xx). Method needed to
-    * unformat all color
-    * 
-    * @param color
-    * @return
-    */
-   private String removeFormat(String color)
-   {
-      return color.replace(" ", "");
+      translatorList.removeTranslator(name, color);
    }
 
    @Override

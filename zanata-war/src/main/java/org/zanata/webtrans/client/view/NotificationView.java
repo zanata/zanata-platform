@@ -154,7 +154,7 @@ public class NotificationView extends Composite implements NotificationPresenter
       panel.add(msgLabel);
       if (inlineLink != null)
       {
-         inlineLink.setLinkStyle(style.inlineLink() + " icon-undo");
+         inlineLink.setLinkStyle(style.inlineLink());
          inlineLink.setDisabledStyle(style.disabledInlineLink());
          panel.add(inlineLink);
          panel.setCellWidth(inlineLink, "16px");

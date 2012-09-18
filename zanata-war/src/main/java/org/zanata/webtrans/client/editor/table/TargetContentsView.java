@@ -83,7 +83,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    SimplePanel undoContainer;
 
    private HorizontalPanel rootPanel;
-   private String findMessage;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
 
@@ -165,7 +164,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       int rowIndex = 0;
       for (String target : cachedTargets)
       {
-         Editor editor = new Editor(target, findMessage, rowIndex, listener, transUnit.getId());
+         Editor editor = new Editor(target, rowIndex, listener, transUnit.getId());
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);
          rowIndex++;
@@ -222,9 +221,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void setFindMessage(String findMessage)
+   public void highlightSearch(String findMessage)
    {
-      this.findMessage = findMessage;
+      for (ToggleEditor editor : editors)
+      {
+         editor.highlightSearch(findMessage);
+      }
    }
 
    @Override

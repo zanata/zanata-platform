@@ -115,6 +115,11 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 
       }
       applyRowStyle();
+
+      for (SourceContentsDisplay sourceDisplay : sourceDisplays)
+      {
+         sourceDisplay.refresh();
+      }
    }
 
    private void showEmptyContentIfNoData(int dataSize)

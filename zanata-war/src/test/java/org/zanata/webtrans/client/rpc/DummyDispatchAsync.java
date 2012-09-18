@@ -19,6 +19,8 @@ import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
+import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
+import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -130,6 +132,13 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final EventServiceConnectedAction _action = (EventServiceConnectedAction) action;
          AsyncCallback<NoOpResult> _callback = (AsyncCallback<NoOpResult>) callback;
          Scheduler.get().scheduleDeferred(new DummyEventServiceConnectedCommand(_action, _callback));
+      }
+
+      else if (action instanceof GetTransUnitsNavigation)
+      {
+         final GetTransUnitsNavigation _action = (GetTransUnitsNavigation) action;
+         AsyncCallback<GetTransUnitsNavigationResult> _callback = (AsyncCallback<GetTransUnitsNavigationResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyGetTransUnitsNavigationCommand(_action, _callback));
       }
       else
       {

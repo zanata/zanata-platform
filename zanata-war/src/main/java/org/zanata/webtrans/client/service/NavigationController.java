@@ -24,6 +24,8 @@ package org.zanata.webtrans.client.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -57,15 +59,15 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -170,6 +172,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
             eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
             isLoadingTU = false;
             finishLoading();
+            highlightSearch();
          }
       });
    }
@@ -191,6 +194,14 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       }
    }
 
+   private void highlightSearch()
+   {
+      if (!Strings.isNullOrEmpty(context.getFindMessage()))
+      {
+         pageDataChangeListener.highlightSearch(context.getFindMessage());
+      }
+   }
+
    private void requestNavigationIndex(GetTransUnitActionContext context)
    {
       Log.info("requesting navigation index: " + context);
@@ -204,6 +215,16 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          {
             navigationService.init(result.getTransIdStateList(), result.getIdIndexList(), itemPerPage);
             eventBus.fireEvent(new PageCountChangeEvent(navigationService.getPageCount()));
+            isLoadingIndex = false;
+            finishLoading();
+         }
+
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("GetTransUnitsNavigation failure " + caught, caught);
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, caught.getMessage()));
+
             isLoadingIndex = false;
             finishLoading();
          }
@@ -327,6 +348,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
       isLoadingTU = false;
       finishLoading();
+      highlightSearch();
    }
 
    public void execute(UpdateContextCommand command)
@@ -409,5 +431,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       void showDataForCurrentPage(List<TransUnit> transUnits);
 
       void refreshView(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
+
+      void highlightSearch(String findMessage);
    }
 }

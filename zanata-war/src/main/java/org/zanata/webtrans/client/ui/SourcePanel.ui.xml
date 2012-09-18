@@ -7,23 +7,38 @@
 
 	<ui:style type="org.zanata.webtrans.client.ui.SourcePanel.Styles">
 		.selectedRow {
-			border: 1px solid #E0E8EE;
-			padding-top: 3px;
-			padding-bottom: 3px;
+            background-color: #add8e6;
+			padding: 3px;
+            table-layout: fixed;
 		}
 		
 		.nonSelectedRow {
-			border: 0px;
-			padding-top: 3px;
-			padding-bottom: 3px;
+			background-color: inherit;
+			padding: 3px;
+            table-layout: fixed;
+		}
+		
+		.selectedRow .CodeMirror-lines
+		{
+			cursor:default;
+
+		}
+		
+		.nonSelectedRow .CodeMirror-lines
+		{
+			cursor:default;
+
 		}
 	</ui:style>
 
 
 	<g:HorizontalPanel width="100%" height="100%" styleName="{style.nonSelectedRow}" ui:field="container">
-		<g:cell horizontalAlignment="ALIGN_LEFT">
-			<fui:HighlightingLabel ui:field="highlightingLabel"
-				stylePrimaryName="TableEditorContent" />
+		<g:cell horizontalAlignment="ALIGN_LEFT" width="98%">
+            <g:HTMLPanel>
+                <!--<fui:HighlightingLabel ui:field="highlightingLabel" stylePrimaryName="TableEditorContent"/>-->
+
+                <fui:CodeMirrorReadOnlyWidget ui:field="sourceContent"  />
+            </g:HTMLPanel>
 		</g:cell>
 		<g:cell horizontalAlignment="ALIGN_RIGHT">
 			<g:RadioButton ui:field="selectButton" name="selectSourceButton" />

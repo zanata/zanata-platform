@@ -533,7 +533,7 @@ public class TargetContentsPresenter implements
    @Override
    public boolean isUsingCodeMirror()
    {
-      return configuration.isUseCodeMirrorEditor();
+      return configHolder.isUseCodeMirrorEditor();
    }
 
    @Override
@@ -541,7 +541,7 @@ public class TargetContentsPresenter implements
    {
       ensureRowSelection(transUnitId);
       display.updateCachedAndInEditorTargets(display.getCachedTargets());
-      display.setFindMessage(findMessage);
+      display.highlightSearch(findMessage);
       setFocus();
    }
 
@@ -743,7 +743,7 @@ public class TargetContentsPresenter implements
       findMessage = message;
       for (TargetContentsDisplay targetContentsDisplay : displayList)
       {
-         targetContentsDisplay.setFindMessage(message);
+         targetContentsDisplay.highlightSearch(message);
       }
    }
 
@@ -807,7 +807,7 @@ public class TargetContentsPresenter implements
       if (display != null)
       {
          display.updateCachedAndInEditorTargets(targets);
-         display.setFindMessage(findMessage);
+         display.highlightSearch(findMessage);
       }
    }
 }

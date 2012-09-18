@@ -23,4 +23,5 @@ public interface SourceContentsDisplay extends IsWidget, HasTransUnitId
    void setSourceSelectionHandler(ClickHandler clickHandler);
 
 
+   void refresh();
 }

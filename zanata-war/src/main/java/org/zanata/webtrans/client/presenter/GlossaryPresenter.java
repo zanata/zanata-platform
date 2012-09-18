@@ -204,7 +204,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          sources.append(" ");
       }
       SearchType searchType = GetGlossary.SearchType.FUZZY;
-      display.getGlossaryTextBox().setText("");
       createGlossaryRequest(sources.toString(), searchType);
    }
 
