@@ -42,6 +42,12 @@
             padding: 3px;
             border: 1px solid #808080;
             cursor: pointer;
+            display: block;
+            height: 15px;
+            width: 15px;
+            text-align: center;
+            float: left;
+            margin-right: 3px;
         }
 
     </ui:style>
@@ -75,6 +81,7 @@
                     <g:VerticalPanel width="100%">
                         <g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
                         <g:HTMLPanel styleName="{style.pageSizeContainer}">
+                            <g:InlineLabel ui:field="five" >5</g:InlineLabel>
                             <g:InlineLabel ui:field="ten" >10</g:InlineLabel>
                             <g:InlineLabel ui:field="twentyFive" >25</g:InlineLabel>
                             <g:InlineLabel ui:field="fifty" >50</g:InlineLabel>
