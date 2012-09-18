@@ -361,19 +361,6 @@ tr.TableEditorRow.selected {
 	
 }
 
-tr.TableEditorRow.selected td.TableEditorCell {
-	/* border-top: 3px solid #666666;
-	border-bottom: 3px solid #666666; */
-}
-
-tr.TableEditorRow.selected td.TableEditorCell-Source {
-	/* border-left: 3px solid #666666; */
-}
-
-tr.TableEditorRow.selected td.TableEditorCell-Target {
-	/* border-right: 3px solid #666666; */
-}
-
 .TableEditorContent,.TableEditorContent-Edit,.TableEditorContent-Empty {
 	font-size: 14px;
 	font-family: sans-serif;
