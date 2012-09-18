@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -58,10 +59,13 @@ import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
@@ -73,6 +77,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 
 @Name("fileService")
@@ -83,7 +88,8 @@ public class FileService implements FileResource
 {
    public static final String SOURCE_DOWNLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}/{fileType}";
 
-   public static final String TEST_UPLOAD = "/source/{projectSlug}/{iterationSlug}";
+   public static final String SOURCE_UPLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}";
+   public static final String TRANSLATION_UPLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}";
 
    private static final String RAW_DOCUMENT = "raw";
    private static final String SUBSTITUTE_APPROVED_AND_FUZZY = "half-baked";
@@ -96,6 +102,9 @@ public class FileService implements FileResource
    private ZanataIdentity identity;
 
    @In
+   private LocaleDAO localeDAO;
+
+   @In
    private DocumentDAO documentDAO;
 
    @In
@@ -106,9 +115,12 @@ public class FileService implements FileResource
 
    @In(create=true)
    private TranslatedDocResourceService translatedDocResourceService;
-   
+
    @In
    private FileSystemService fileSystemServiceImpl;
+
+   @In
+   private TranslationService translationServiceImpl;
 
    @In
    private TranslationFileService translationFileServiceImpl;
@@ -119,7 +131,7 @@ public class FileService implements FileResource
 
 
    @POST
-   @Path(TEST_UPLOAD)
+   @Path(SOURCE_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
    public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
                                      @PathParam("iterationSlug") String iterationSlug,
@@ -127,52 +139,25 @@ public class FileService implements FileResource
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
       // TODO extract method for checks common to source and translation upload
-      if (!identity.isLoggedIn())
+      Response errorResponse = checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+      if (errorResponse != null)
       {
-         return Response.status(Status.UNAUTHORIZED)
-               .entity("Valid combination of username and api-key for this server were not included in the request\n")
-               .build();
+         return errorResponse;
       }
+
       if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
       {
          return Response.status(Status.FORBIDDEN)
                .entity("You do not have permission to upload source documents for this project-version\n")
                .build();
       }
-      if (docId == null || docId.length() == 0)
-      {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Required query string parameter 'docId' was not found.\n")
-               .build();
-      }
-
-      InputStream uploadStream = uploadForm.getFileStream();
-      if (uploadStream == null)
-      {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Required form parameter 'file' containing file content was not found.\n")
-               .build();
-      }
-
-      if (uploadForm.getFirst() == null || uploadForm.getLast() == null)
-      {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Form parameters 'first' and 'last' must both be provided.\n")
-               .build();
-      }
 
       String fileType = uploadForm.getFileType();
-      if (fileType == null || fileType.length() == 0)
-      {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Required form parameter 'type' was not found.\n")
-               .build();
-      }
       boolean isPotFile = fileType.equals(".pot");
       if (!isPotFile && !translationFileServiceImpl.hasAdapterFor(fileType))
       {
          return Response.status(Status.BAD_REQUEST)
-               .entity("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for this server.\n")
+               .entity("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a source file on this server.\n")
                .build();
       }
 
@@ -182,7 +167,7 @@ public class FileService implements FileResource
 
       if (isSinglePart && isPotFile)
       {
-         parsePotFile(uploadStream, docId, fileType, projectSlug, iterationSlug);
+         parsePotFile(uploadForm.getFileStream(), docId, fileType, projectSlug, iterationSlug);
          return sourceUploadSuccessResponse(isNewDocument);
       }
 
@@ -192,7 +177,7 @@ public class FileService implements FileResource
       {
          try
          {
-            tempFile = translationFileServiceImpl.persistToTempFile(uploadStream);
+            tempFile = translationFileServiceImpl.persistToTempFile(uploadForm.getFileStream());
          }
          catch (ZanataServiceException e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR)
@@ -273,10 +258,57 @@ public class FileService implements FileResource
       return sourceUploadSuccessResponse(isNewDocument);
    }
 
+   private Response checkUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   {
+      if (!identity.isLoggedIn())
+      {
+         return Response.status(Status.UNAUTHORIZED)
+               .entity("Valid combination of username and api-key for this server were not included in the request\n")
+               .build();
+      }
+      if (docId == null || docId.length() == 0)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Required query string parameter 'docId' was not found.\n")
+               .build();
+      }
+
+      if (uploadForm.getFileStream() == null)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Required form parameter 'file' containing file content was not found.\n")
+               .build();
+      }
+
+      if (uploadForm.getFirst() == null || uploadForm.getLast() == null)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Form parameters 'first' and 'last' must both be provided.\n")
+               .build();
+      }
+
+      String fileType = uploadForm.getFileType();
+      if (fileType == null || fileType.length() == 0)
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Required form parameter 'type' was not found.\n")
+               .build();
+      }
+
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      if (projectIteration == null)
+      {
+         return Response.status(Status.NOT_FOUND)
+               .entity("The specified project-version does not exist on this server.")
+               .build();
+      }
+      return null;
+   }
+
    private boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      return projectIteration.getStatus() == EntityStatus.ACTIVE
+      return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
@@ -322,6 +354,108 @@ public class FileService implements FileResource
                .build();
       }
       return response;
+   }
+
+
+   @POST
+   @Path(TRANSLATION_UPLOAD_TEMPLATE)
+   @Consumes( MediaType.MULTIPART_FORM_DATA)
+   public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
+                                          @PathParam("iterationSlug") String iterationSlug,
+                                          @PathParam("locale") String locale,
+                                          @QueryParam("docId") String docId,
+                                          @QueryParam("merge") String merge,
+                                          @MultipartForm DocumentFileUploadForm uploadForm )
+   {
+      Response errorResponse = checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+      if (errorResponse != null)
+      {
+         return errorResponse;
+      }
+
+      HLocale localeId = localeDAO.findByLocaleId(new LocaleId(locale));
+      if (localeId == null)
+      {
+         return Response.status(Status.NOT_FOUND)
+               .entity("The specified locale does not exist on this server\n")
+               .build();
+      }
+
+      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, localeId))
+      {
+         return Response.status(Status.FORBIDDEN)
+               .entity("You do not have permission to upload translations for the specified locale to this project-version\n")
+               .build();
+      }
+
+      if (documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null)
+      {
+         return Response.status(Status.NOT_FOUND)
+               .entity("No document with the specified id exists in this project-version\n")
+               .build();
+      }
+
+
+      String fileType = uploadForm.getFileType();
+      boolean isPoFile = fileType.equals(".po");
+      if (!isPoFile && !translationFileServiceImpl.hasAdapterFor(fileType))
+      {
+         return Response.status(Status.BAD_REQUEST)
+               .entity("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a translation file on this server.\n")
+               .build();
+      }
+
+      // TODO useful error messages for failed parsing
+      TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(uploadForm.getFileStream(),
+            uploadForm.getFileType(), locale);
+
+      MergeType mergeType;
+      if ("import".equals(merge))
+      {
+         log.info("merge type import");
+         mergeType = MergeType.IMPORT;
+      }
+      else
+      {
+         log.info("merge type: " + merge);
+         mergeType = MergeType.AUTO;
+      }
+
+      Set<String> extensions;
+      if (isPoFile)
+      {
+         extensions = new StringSet(ExtensionType.GetText.toString());
+      }
+      else
+      {
+         extensions = Collections.<String>emptySet();
+      }
+
+      // TODO useful error message for failed saving?
+      List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
+            docId, localeId.getLocaleId(), transRes, extensions, mergeType);
+
+      if (warnings != null && !warnings.isEmpty())
+      {
+         StringBuilder entity = new StringBuilder("Upload succeeded but had the following warnings:");
+         for (String warning : warnings)
+         {
+            entity.append("\n\t");
+            entity.append(warning);
+         }
+         entity.append("\n");
+         return Response.status(Status.OK).entity(entity.toString()).build();
+      }
+      return Response.status(Status.OK).entity("Translations uploaded successfully\n").build();
+   }
+
+   private boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId)
+   {
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      // TODO should this check be "add-translation" or "modify-translation"?
+      // They appear to be granted identically at the moment.
+      return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
+            && identity != null && identity.hasPermission("add-translation", projectIteration.getProject(), localeId);
    }
 
    /**
