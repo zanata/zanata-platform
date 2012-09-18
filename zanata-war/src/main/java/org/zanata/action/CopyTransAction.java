@@ -63,6 +63,8 @@ public class CopyTransAction
 
    private String documentIdMismatchAction = ConditionRuleAction.DOWNGRADE_TO_FUZZY.toString();
 
+   private String projectMismatchAction = ConditionRuleAction.DOWNGRADE_TO_FUZZY.toString();
+
    private HProjectIteration projectIteration;
 
 
@@ -106,6 +108,16 @@ public class CopyTransAction
       this.documentIdMismatchAction = documentIdMismatchAction;
    }
 
+   public String getProjectMismatchAction()
+   {
+      return projectMismatchAction;
+   }
+
+   public void setProjectMismatchAction(String projectMismatchAction)
+   {
+      this.projectMismatchAction = projectMismatchAction;
+   }
+
    public HProjectIteration getProjectIteration()
    {
       if( this.projectIteration == null )
@@ -136,6 +148,7 @@ public class CopyTransAction
 
       // Options
       CopyTransOptions options = new CopyTransOptions();
+      options.setProjectMismatchAction( ConditionRuleAction.valueOf( this.projectMismatchAction ) );
       options.setContextMismatchAction( ConditionRuleAction.valueOf( this.contextMismatchAction ) );
       options.setDocIdMismatchAction( ConditionRuleAction.valueOf( this.documentIdMismatchAction ) );
 
