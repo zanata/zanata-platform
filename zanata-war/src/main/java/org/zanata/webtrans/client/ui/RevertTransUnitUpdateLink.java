@@ -96,7 +96,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    @Override
    public void setLinkStyle(String styleName)
    {
-      linkStyleName = styleName;
+      linkStyleName = styleName + " icon-undo";
       setStyleName(linkStyleName);
    }
    
