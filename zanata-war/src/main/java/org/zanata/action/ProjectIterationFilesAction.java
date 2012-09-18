@@ -158,9 +158,18 @@ public class ProjectIterationFilesAction
                translationFileUpload.getFileName(), localeId);
 
          // translate it
+         Set<String> extensions;
+         if( translationFileUpload.getFileName().endsWith(".po") )
+         {
+            extensions = new StringSet(ExtensionType.GetText.toString());
+         }
+         else
+         {
+            extensions = Collections.<String>emptySet();
+         }
          List<String> warnings =
             translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, translationFileUpload.getDocId(),
-               new LocaleId(localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
+               new LocaleId(localeId), transRes, extensions,
                translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
 
          StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
