@@ -20,11 +20,12 @@
  */
 package org.zanata.process;
 
+import org.zanata.model.HCopyTransOptions;
+import org.zanata.model.HProjectIteration;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.zanata.common.CopyTransOptions;
-import org.zanata.model.HProjectIteration;
 
 /**
  * Process Handle for a background copy trans.
@@ -42,7 +43,7 @@ public class CopyTransProcessHandle extends ProcessHandle
    private final String triggeredBy;
 
    @Getter
-   private final CopyTransOptions options;
+   private final HCopyTransOptions options;
 
    @Getter
    @Setter

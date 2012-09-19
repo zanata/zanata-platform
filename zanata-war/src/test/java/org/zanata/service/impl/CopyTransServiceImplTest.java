@@ -28,7 +28,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
-import org.zanata.common.CopyTransOptions;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.DocumentDAO;
@@ -36,6 +35,7 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
@@ -250,8 +250,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( CopyTransOptions.ConditionRuleAction.REJECT ); // Reject doc ids that don't match
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.REJECT ); // Reject doc ids that don't match
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -299,8 +299,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // doc ids that don't match will be fuzzy
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // doc ids that don't match will be fuzzy
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -357,8 +357,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setContextMismatchAction( CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // resIds that don't match will be fuzzy
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // resIds that don't match will be fuzzy
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -416,9 +416,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( CopyTransOptions.ConditionRuleAction.REJECT ); // Reject doc ids that don't match
-      copyTransOptions.setContextMismatchAction( CopyTransOptions.ConditionRuleAction.REJECT ); // Reject resIds that don't match
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.REJECT ); // Reject doc ids that don't match
+      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.REJECT ); // Reject resIds that don't match
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -467,9 +467,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( CopyTransOptions.ConditionRuleAction.IGNORE ); // ignore mismathcing doc ids
-      copyTransOptions.setContextMismatchAction( CopyTransOptions.ConditionRuleAction.IGNORE ); // ignore mismathcing context
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // ignore mismathcing doc ids
+      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // ignore mismathcing context
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -542,9 +542,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( CopyTransOptions.ConditionRuleAction.IGNORE ); // Ignore doc ids that don't match
-      copyTransOptions.setContextMismatchAction( CopyTransOptions.ConditionRuleAction.IGNORE ); // Ignore resIds that don't match
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // Ignore doc ids that don't match
+      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // Ignore resIds that don't match
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -607,8 +607,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setProjectMismatchAction( CopyTransOptions.ConditionRuleAction.IGNORE ); // Use translations from other projects as fuzzy
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setProjectMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // Use translations from other projects as fuzzy
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -671,8 +671,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setProjectMismatchAction( CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // Use translations from other projects as fuzzy
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setProjectMismatchAction( HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // Use translations from other projects as fuzzy
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 
@@ -735,8 +735,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
 
       // Custom copy Trans options
-      CopyTransOptions copyTransOptions = new CopyTransOptions();
-      copyTransOptions.setProjectMismatchAction(CopyTransOptions.ConditionRuleAction.REJECT); // Reject translations from other projects
+      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
+      copyTransOptions.setProjectMismatchAction(HCopyTransOptions.ConditionRuleAction.REJECT); // Reject translations from other projects
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
 

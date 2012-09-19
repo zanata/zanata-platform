@@ -27,7 +27,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.security.Identity;
-import org.zanata.common.CopyTransOptions;
+import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProjectIteration;
 import org.zanata.process.BackgroundProcessListener;
 import org.zanata.process.CopyTransProcess;
@@ -88,13 +88,13 @@ public class CopyTransManager
     */
    public void startCopyTrans( HProjectIteration iteration )
    {
-      this.startCopyTrans( iteration, new CopyTransOptions() );
+      this.startCopyTrans( iteration, new HCopyTransOptions() );
    }
 
    /**
     * Start a Translation copy with the given custom options.
     */
-   public void startCopyTrans( HProjectIteration iteration, CopyTransOptions options )
+   public void startCopyTrans( HProjectIteration iteration, HCopyTransOptions options )
    {
       // double check
       if( isCopyTransRunning(iteration) )

@@ -588,6 +588,17 @@
     </navigation>
   </page>
 
+  <page view-id="/project/copy_trans_options.xhtml">
+    <param name="projectSlug" value="#{projectCopyTransOptionsAction.projectSlug}"/>
+    <action execute="#{projectCopyTransOptionsAction.initialize}"/>
+
+    <navigation from-action="#{projectCopyTransOptionsAction.saveOptions}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectCopyTransOptionsAction.projectSlug}" />
+      </redirect>
+    </navigation>
+  </page>
+
   <!-- Project Iteration -->
     
   <page view-id="/iteration/view.xhtml" >

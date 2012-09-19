@@ -22,17 +22,18 @@ package org.zanata.action;
 
 import java.util.Map;
 
-import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.CopyTransOptions;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.HCopyTransOptions;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.FlashScopeBean;
 
-import static org.zanata.common.CopyTransOptions.ConditionRuleAction;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 
 /**
  * Copy Trans page action bean.
@@ -127,6 +128,18 @@ public class CopyTransAction
       return this.projectIteration;
    }
 
+   @Create
+   public void initialize()
+   {
+      HProject project = this.getProjectIteration().getProject();
+      if( project.getDefaultCopyTransOpts() != null )
+      {
+         this.contextMismatchAction = project.getDefaultCopyTransOpts().getContextMismatchAction().toString();
+         this.documentIdMismatchAction = project.getDefaultCopyTransOpts().getDocIdMismatchAction().toString();
+         this.projectMismatchAction = project.getDefaultCopyTransOpts().getProjectMismatchAction().toString();
+      }
+   }
+
    public boolean isCopyTransRunning()
    {
       return copyTransManager.isCopyTransRunning( getProjectIteration() );
@@ -147,7 +160,7 @@ public class CopyTransAction
       }
 
       // Options
-      CopyTransOptions options = new CopyTransOptions();
+      HCopyTransOptions options = new HCopyTransOptions();
       options.setProjectMismatchAction( ConditionRuleAction.valueOf( this.projectMismatchAction ) );
       options.setContextMismatchAction( ConditionRuleAction.valueOf( this.contextMismatchAction ) );
       options.setDocIdMismatchAction( ConditionRuleAction.valueOf( this.documentIdMismatchAction ) );
