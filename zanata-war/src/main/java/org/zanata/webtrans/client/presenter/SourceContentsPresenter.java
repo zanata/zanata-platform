@@ -95,7 +95,7 @@ public class SourceContentsPresenter implements ClickHandler
 
    public String getSelectedSource()
    {
-      return selectedSource.getSource();
+      return selectedSource == null ? null : selectedSource.getSource();
    }
 
    public void showData(List<TransUnit> transUnits)
