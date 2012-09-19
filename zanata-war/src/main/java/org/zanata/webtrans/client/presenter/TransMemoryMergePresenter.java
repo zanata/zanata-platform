@@ -35,7 +35,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -62,22 +62,20 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    private TransMemoryMergePopupPanelDisplay display;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
-   private final NavigationController navigationController;
+   private final NavigationService navigationService;
    private final UiMessages messages;
    private final Provider<UndoLink> undoLinkProvider;
-   private final WebTransMessages webTransMessages;
 
    @Inject
-   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, NavigationController navigationController, UiMessages messages, Provider<UndoLink> undoLinkProvider, WebTransMessages webTransMessages)
+   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, NavigationService navigationService, UiMessages messages, Provider<UndoLink> undoLinkProvider)
    {
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
-      this.navigationController = navigationController;
+      this.navigationService = navigationService;
       this.messages = messages;
       this.undoLinkProvider = undoLinkProvider;
-      this.webTransMessages = webTransMessages;
       display.setListener(this);
    }
 
@@ -138,7 +136,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
 
    private Collection<TransUnit> getNotApprovedItems()
    {
-      List<TransUnit> currentItems = navigationController.getCurrentPageValues();
+      List<TransUnit> currentItems = navigationService.getCurrentPageValues();
       return Collections2.filter(currentItems, new Predicate<TransUnit>()
       {
          @Override

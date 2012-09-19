@@ -22,7 +22,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
-import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Warning;
 
 import java.util.List;
 
@@ -33,8 +32,6 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
-import org.zanata.webtrans.client.events.FindMessageEvent;
-import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.LoadingEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -44,7 +41,7 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
@@ -56,18 +53,17 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 // @formatter:off
-public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
+public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitEditDisplay> implements
       TransUnitSelectionHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
-      NavigationController.PageDataChangeListener,
+      NavigationService.PageDataChangeListener,
       TransUnitEditDisplay.Listener,
       TableRowSelectedEventHandler,
       LoadingEventHandler
@@ -77,7 +73,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TransUnitEditDisplay display;
    private final WebTransMessages messages;
    private final EventBus eventBus;
-   private final NavigationController navigationController;
+   private final NavigationService navigationService;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
    private final TranslatorInteractionService translatorService;
@@ -88,11 +84,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    @Inject
    // @formatter:off
-   public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationController navigationController,
-                                 SourceContentsPresenter sourceContentsPresenter,
-                                 TargetContentsPresenter targetContentsPresenter,
-                                 TranslatorInteractionService translatorService,
-                                 TransUnitSaveService transUnitSaveService, WebTransMessages messages)
+   public TransUnitsTablePresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationService navigationService,
+                                   SourceContentsPresenter sourceContentsPresenter,
+                                   TargetContentsPresenter targetContentsPresenter,
+                                   TranslatorInteractionService translatorService,
+                                   TransUnitSaveService transUnitSaveService, WebTransMessages messages)
    // @formatter:on
    {
       super(display, eventBus);
@@ -102,8 +98,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
       this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
-      this.navigationController = navigationController;
-      navigationController.addPageDataChangeListener(this);
+      this.navigationService = navigationService;
+      navigationService.addPageDataChangeListener(this);
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
@@ -145,7 +141,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void goToPage(int pageNumber)
    {
       targetContentsPresenter.savePendingChangesIfApplicable();
-      navigationController.gotoPage(pageNumber - 1);
+      navigationService.gotoPage(pageNumber - 1);
    }
 
    @Override
@@ -168,7 +164,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private void hideFilterConfirmationAndDoFiltering()
    {
       display.hideFilterConfirmation();
-      navigationController.execute(filterOptions);
+      navigationService.execute(filterOptions);
    }
 
    @Override
@@ -250,11 +246,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onRowSelected(int rowIndexOnPage)
    {
-      if (navigationController.getCurrentRowIndexOnPage() != rowIndexOnPage)
+      if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage)
       {
-         Log.info("current row:" + navigationController.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
+         Log.info("current row:" + navigationService.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
          targetContentsPresenter.savePendingChangesIfApplicable();
-         navigationController.selectByRowIndex(rowIndexOnPage);
+         navigationService.selectByRowIndex(rowIndexOnPage);
          display.applySelectedStyle(rowIndexOnPage);
       }
    }
@@ -276,8 +272,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onTableRowSelected(TableRowSelectedEvent event)
    {
       TransUnitId selectedId = event.getSelectedId();
-      int rowIndex = navigationController.findRowIndexById(selectedId);
-      if (rowIndex != NavigationController.UNSELECTED)
+      int rowIndex = navigationService.findRowIndexById(selectedId);
+      if (rowIndex != NavigationService.UNSELECTED)
       {
          onRowSelected(rowIndex);
       }

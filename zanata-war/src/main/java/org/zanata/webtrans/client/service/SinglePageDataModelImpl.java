@@ -2,17 +2,10 @@ package org.zanata.webtrans.client.service;
 
 import java.util.List;
 
-import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
-import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -20,7 +13,7 @@ import net.customware.gwt.presenter.client.EventBus;
 class SinglePageDataModelImpl
 {
    private List<TransUnit> data = Lists.newArrayList();
-   private int currentRow = NavigationController.UNSELECTED;
+   private int currentRow = NavigationService.UNSELECTED;
 
    protected void setSelected(int rowIndex)
    {
@@ -41,7 +34,7 @@ class SinglePageDataModelImpl
    protected void setData(List<TransUnit> data)
    {
       this.data = Lists.newArrayList(data);
-      currentRow = NavigationController.UNSELECTED;
+      currentRow = NavigationService.UNSELECTED;
    }
 
    protected List<TransUnit> getData()
@@ -94,6 +87,6 @@ class SinglePageDataModelImpl
             return rowNum;
          }
       }
-      return NavigationController.UNSELECTED;
+      return NavigationService.UNSELECTED;
    }
 }

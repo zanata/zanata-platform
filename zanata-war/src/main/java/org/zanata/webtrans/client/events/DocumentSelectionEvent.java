@@ -1,12 +1,12 @@
 package org.zanata.webtrans.client.events;
 
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> implements NavigationController.UpdateContextCommand
+public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> implements NavigationService.UpdateContextCommand
 {
 
    /**

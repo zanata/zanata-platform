@@ -1,12 +1,12 @@
 package org.zanata.webtrans.client.events;
 
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements NavigationController.UpdateContextCommand
+public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements NavigationService.UpdateContextCommand
 {
    /**
     * Handler type.
