@@ -29,12 +29,14 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.LoadingEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.ReloadPageEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
@@ -53,6 +55,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.gwt.user.client.Timer;
 import com.google.inject.Inject;
 
 /**
@@ -81,6 +84,19 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    //state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
    private TransUnitId selectedId;
+
+   // below timer is a hacky fix for firefox (on first load codemirror instance won't show correctly and needs refresh
+   // we only need to do this once on first load (WEIRD!!)
+   private static boolean firstTimeLoading = true;
+   private Timer timer = new Timer()
+   {
+
+      @Override
+      public void run()
+      {
+         eventBus.fireEvent(ReloadPageEvent.EVENT);
+      }
+   };
 
    @Inject
    // @formatter:off
@@ -244,6 +260,15 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    }
 
    @Override
+   public void refreshView()
+   {
+      for (TargetContentsDisplay targetContentsDisplay : targetContentsPresenter.getDisplays())
+      {
+         targetContentsDisplay.refresh();
+      }
+   }
+
+   @Override
    public void onRowSelected(int rowIndexOnPage)
    {
       if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage)
@@ -289,6 +314,11 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       else if (event == LoadingEvent.FINISH_EVENT)
       {
          display.hideLoading();
+         if (firstTimeLoading)
+         {
+            timer.schedule(100);
+            firstTimeLoading = false;
+         }
       }
    }
 }

@@ -344,7 +344,8 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       Log.info("refreshing page");
       isLoadingTU = true;
       startLoading();
-      pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
+//      pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
+      pageDataChangeListener.refreshView();
       isLoadingTU = false;
       finishLoading();
       highlightSearch();
@@ -441,5 +442,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       void refreshView(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
 
       void highlightSearch(String findMessage);
+
+      void refreshView();
    }
 }
