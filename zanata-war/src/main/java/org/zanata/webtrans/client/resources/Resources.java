@@ -35,9 +35,6 @@ public interface Resources extends ClientBundle
    @Source("images/crystal_project/_16x16/filesystems/file_doc.png")
    ImageResource documentImage();
 
-   @Source("images/crystal_project/_16x16/actions/info.png")
-   ImageResource informationImage();
-
    @Source("images/next_entry.png")
    ImageResource nextEntry();
 
@@ -56,66 +53,9 @@ public interface Resources extends ClientBundle
    @Source("images/last_entry.png")
    ImageResource lastEntry();
 
-   @Source("images/first_page.png")
-   ImageResource firstPageImage();
-
-   @Source("images/prev_page.png")
-   ImageResource prevPageImage();
-
-   @Source("images/next_page.png")
-   ImageResource nextPageImage();
-
-   @Source("images/last_page.png")
-   ImageResource lastPageImage();
-
-   @Source("images/undo.png")
-   ImageResource undo();
-
-   @Source("images/redo.png")
-   ImageResource redo();
-
-   @Source("images/undo_disabled.png")
-   ImageResource undoDisabled();
-
-   @Source("images/redo_disabled.png")
-   ImageResource redoDisabled();
-   
    @Source("images/loader.gif")
    ImageResource loader();
 
    @Source("images/loading.gif")
    ImageResource spinner();
-
-   @Source("images/msgerror.png")
-   ImageResource errorMsg();
-
-   @Source("images/msginfo.png")
-   ImageResource infoMsg();
-
-   @Source("images/msgwarn.png")
-   ImageResource warnMsg();
-
-   @Source("images/crystal_project/_16x16/actions/view_choose.png")
-   ImageResource viewChoose();
-   
-   @Source("images/crystal_project/_16x16/actions/help.png")
-   ImageResource help();
-
-   @Source("images/crystal_project/_16x16/actions/logout.png")
-   ImageResource logout();
-
-   @Source("images/crystal_project/_16x16/apps/kllckety.png")
-   ImageResource projects();
-
-   @Source("images/crystal_project/_16x16/apps/kdf.png")
-   ImageResource groups();
-
-   @Source("images/crystal_project/_16x16/apps/locale.png")
-   ImageResource languages();
-
-   @Source("images/crystal_project/_16x16/apps/error.png")
-   ImageResource error();
-
-   @Source("images/crystal_project/_16x16/apps/bug.png")
-   ImageResource bug();
 }

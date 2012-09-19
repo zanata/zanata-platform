@@ -19,11 +19,12 @@
                          valueChangeListener="#{projectHome.verifySlugAvailable}">
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="slugHelp" value="/images/msginfo.png" styleClass="input_help">
-	        <rich:toolTip>
-	          <em><code>#{messages['jsf.ProjectIdExample']}</code></em>
-	        </rich:toolTip>
-	     </h:graphicImage>
+            
+            <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
+            	<rich:toolTip>
+	          		<em><code>#{messages['jsf.ProjectIdExample']}</code></em>
+	        	</rich:toolTip>
+           	</s:span>
        </s:decorate>
 
         <s:decorate id="nameField" template="edit.xhtml">

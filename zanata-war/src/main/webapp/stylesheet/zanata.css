@@ -267,10 +267,10 @@ a.breadcrumbs_link:hover
 }
 
 .input_help {
-	vertical-align: middle;
 	padding-left: 2px;
-	/* error img takes up 16px */
 	padding-right: 2px;
+	font-size:16px;
+	color:#004BA9;
 }
 
 .message {
@@ -296,7 +296,7 @@ a.breadcrumbs_link:hover
 }
 
 .message li.infomsg {
-	color:#003CC2;
+	color:#004BA9;
 	font-size:1.2em;
 }
 
@@ -355,7 +355,7 @@ img.selected_login_option {
 
 .errors {
 	color: #F00000;
-	vertical-align: middle;
+	font-size:16px;
 }
 
 img.errors {

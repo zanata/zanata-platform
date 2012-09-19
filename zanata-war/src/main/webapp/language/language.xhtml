@@ -78,7 +78,7 @@
         <f:facet name="header">
           #{messages['jsf.Actions']}
         </f:facet>
-        <a4j:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv,memberPanel">
+        <a4j:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,memberPanel">
           <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.isUserInTeam() and s:hasRole('admin')}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>

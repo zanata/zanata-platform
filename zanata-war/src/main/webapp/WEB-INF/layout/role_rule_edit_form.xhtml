@@ -17,32 +17,33 @@
                 <s:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}" var="policy" label="#{policy}"
                         noSelectionLabel=""/>
             </h:selectOneMenu>
-            <h:graphicImage id="policyNameHelp" value="/images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+            
+            <s:span styleClass="icon-info-circle-2 input_help" id="policyNameHelp">
+            	 <rich:toolTip>
                     <em>#{messages['jsf.rolerules.PolicyName.tooltip']}</em>
                 </rich:toolTip>
-            </h:graphicImage>
+           	</s:span>
         </s:decorate>
         <s:decorate id="identityPatternField" template="/WEB-INF/layout/edit.xhtml" >
             <ui:define name="label">#{messages['jsf.rolerules.IdentityPattern']}</ui:define>
             <h:inputText id="identityPattern"
                          value="#{roleAssignmentRuleAction.instance.identityRegExp}"/>
-            <h:graphicImage id="identityPatternHelp" value="/images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+            <s:span styleClass="icon-info-circle-2 input_help" id="identityPatternHelp">
+            	 <rich:toolTip>
                     <em>#{messages['jsf.rolerules.IdentityPattern.tooltip']}</em>
                 </rich:toolTip>
-            </h:graphicImage>
+           	</s:span>           
         </s:decorate>
         <s:decorate id="roleField" template="/WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.rolerules.RoleToAssign']}</ui:define>
             <h:selectOneMenu id="roles" value="#{roleAssignmentRuleAction.roleToAssign}">
                 <s:selectItems value="#{identityManager.listGrantableRoles()}" var="role" label="#{role}"/>
             </h:selectOneMenu>
-            <h:graphicImage id="roleToAssignHelp" value="/images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+            <s:span styleClass="icon-info-circle-2 input_help" id="roleToAssignHelp">
+            	  <rich:toolTip>
                     <em>#{messages['jsf.rolerules.RoleToAssign.tooltip']}</em>
                 </rich:toolTip>
-            </h:graphicImage>
+           	</s:span>  
         </s:decorate>
 
         <div style="clear:both"/>

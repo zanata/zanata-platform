@@ -36,11 +36,13 @@
             
             <s:decorate id="messageField" template="../WEB-INF/layout/edit.xhtml">
                <ui:define name="label">#{messages['jsf.AdditionalInfo']}</ui:define>
-               <h:graphicImage id="slugHelp" value="/images/msginfo.png" styleClass="input_help">
-	             <rich:toolTip>
+               
+               <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
+            	 <rich:toolTip>
 	               #{messages['jsf.email.joinrequest.AdditionalInfoMessage']}
 	             </rich:toolTip>
-	           </h:graphicImage>
+           	  </s:span>
+              
 	           <br/><br/>
                <rich:editor id="message" width="400" height="300"
                             style="width:400px;" required="false"

@@ -22,11 +22,11 @@
                       value="#{register.person.name}">
                <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="nameHelp" value="../images/msginfo.png" styleClass="input_help">
-              <rich:toolTip>
-                #{messages['jsf.NameToolTip']}
-              </rich:toolTip>
-            </h:graphicImage>
+            <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
+            	<rich:toolTip>
+                	#{messages['jsf.NameToolTip']}
+                </rich:toolTip>
+            </s:span>
         </s:decorate>
 
         <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
@@ -35,11 +35,11 @@
                       value="#{register.email}">
                <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="emailHelp" value="../images/msginfo.png" styleClass="input_help">
-              <rich:toolTip>
-                #{messages['jsf.EmailToolTip']}
-              </rich:toolTip>
-            </h:graphicImage>
+            <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
+            	<rich:toolTip>
+                	#{messages['jsf.EmailToolTip']}
+                </rich:toolTip>
+            </s:span>
         </s:decorate>
 
         <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml">
@@ -48,11 +48,11 @@
                       value="#{register.username}">
                <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="usernameHelp" value="../images/msginfo.png" styleClass="input_help">
-              <rich:toolTip>
-                #{messages['jsf.UsernameToolTip']}
-              </rich:toolTip>
-            </h:graphicImage>
+            <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
+            	<rich:toolTip>
+                	#{messages['jsf.UsernameToolTip']}
+                </rich:toolTip>
+            </s:span>
         </s:decorate>
         <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Password']}</ui:define>

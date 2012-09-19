@@ -15,7 +15,8 @@
             <s:validateAll>
                 <ui:insert/>
             </s:validateAll>
-            <h:graphicImage value="/images/crystal_project/_16x16/actions/messagebox_critical.png" rendered="#{invalid}" styleClass="errors"/>
+            
+            <s:span styleClass="icon-cancel-circle-2 errors" rendered="#{invalid}"/>
             <s:message styleClass="errors"/>
         </span>
 

@@ -21,12 +21,12 @@
               <h:inputText id="url" value="#{serverConfigurationBean.serverUrl}">
                 <a4j:support event="onblur" reRender="urlField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="urlHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              <s:span styleClass="icon-info-circle-2 input_help" id="serverUrlHelp">
+            	<rich:toolTip>
                   #{messages['jsf.UrlToolTip']}<br/>
                   <em><code>#{messages['jsf.UrlExample']}</code></em>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
                 
             <s:decorate id="registerField" template="../WEB-INF/layout/edit.xhtml">
@@ -34,12 +34,13 @@
               <h:inputText id="url" value="#{serverConfigurationBean.registerUrl}">
                 <a4j:support event="onblur" reRender="registerField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="urlHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              
+              <s:span styleClass="icon-info-circle-2 input_help" id="registerUrlHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.RegisterUrlToolTip']}<br/>
                   <em><code>#{messages['jsf.RegisterUrlExample']}</code></em>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
                 
             <s:decorate id="emailDomainField" template="../WEB-INF/layout/edit.xhtml">
@@ -47,13 +48,14 @@
               <h:inputText id="url" value="#{serverConfigurationBean.emailDomain}">
                 <a4j:support event="onblur" reRender="emailDomainField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="urlHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              
+               <s:span styleClass="icon-info-circle-2 input_help" id="emailDomainHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.EmailDomainNameToolTip']}
                   <br/>
                   <em><code>#{messages['jsf.EmailDomainNameExample']}</code></em>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
 
             <s:decorate id="adminEmailField" template="../WEB-INF/layout/edit.xhtml">
@@ -61,14 +63,15 @@
               <h:inputText id="adminEml" value="#{serverConfigurationBean.adminEmail}">
                 <a4j:support event="onblur" reRender="adminEmailField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="adminEmllHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              
+               <s:span styleClass="icon-info-circle-2 input_help" id="adminEmllHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.config.AdminEmail.tooltip']}<br/>
                   #{messages['jsf.config.AdminEmail.DoesNotChangeUserEmail']}<br/>
                   #{messages['jsf.email.EmailListToolTip']}<br/>
                   #{messages['jsf.EmailToolTip']}<br/>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
 
             <s:decorate id="fromEmailField" template="../WEB-INF/layout/edit.xhtml">
@@ -76,22 +79,24 @@
               <h:inputText id="fromEml" value="#{serverConfigurationBean.fromEmailAddr}">
                 <a4j:support event="onblur" reRender="fromEmailField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="fromEmlHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              
+              <s:span styleClass="icon-info-circle-2 input_help" id="fromEmlHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.config.FromEmailAddr.tooltip']}<br/>
                   #{messages['jsf.EmailToolTip']}<br/>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
 
             <s:decorate id="enableLogEmailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.config.EnableLogEmails']}</ui:define>
               <h:selectBooleanCheckbox value="#{serverConfigurationBean.enableLogEmail}"/>
-              <h:graphicImage id="enableLogEmailHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              
+              <s:span styleClass="icon-info-circle-2 input_help" id="enableLogEmailHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.config.EnableLogEmails.tooltip']}<br/>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
 
             <s:decorate id="logDestEmailField" template="../WEB-INF/layout/edit.xhtml">
@@ -99,13 +104,14 @@
               <h:inputText id="logDestEml" value="#{serverConfigurationBean.logDestinationEmails}">
                 <a4j:support event="onblur" reRender="logDestEmailField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="logDestEmailHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              
+              <s:span styleClass="icon-info-circle-2 input_help" id="logDestEmailHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.config.LogDestEmail.tooltip']}<br/>
                   #{messages['jsf.email.EmailListToolTip']}<br/>
                   #{messages['jsf.EmailToolTip']}<br/>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
 
             <s:decorate id="logEmailLevelField" template="../WEB-INF/layout/edit.xhtml">
@@ -114,13 +120,14 @@
                 <f:selectItem itemLabel="#{messages['jsf.Warning']}" itemValue="WARN"/>
                 <f:selectItem itemLabel="#{messages['jsf.Error']}" itemValue="ERROR"/>
               </h:selectOneMenu>
-              <h:graphicImage id="logEmailLevelHelp" value="../images/msginfo.png" styleClass="input_help">
-                <rich:toolTip>
+              
+              <s:span styleClass="icon-info-circle-2 input_help" id="logEmailLevelHelp">
+            	 <rich:toolTip>
                   <h:outputLabel escape="true">
                     #{messages['jsf.config.LogEmailLevel.tooltip']}
                   </h:outputLabel>
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
             
              <s:decorate id="piwikUrlField" template="../WEB-INF/layout/edit.xhtml">
@@ -128,11 +135,12 @@
               <h:inputText id="piwikUrlEml" value="#{serverConfigurationBean.piwikUrl}">
                 <a4j:support event="onblur" reRender="piwikUrlField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="piwikUrlHelp" value="../images/msginfo.png" styleClass="input_help">
-                 <rich:toolTip>
+              
+              <s:span styleClass="icon-info-circle-2 input_help" id="piwikUrlHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.config.Piwiktooltip']}
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
             
             <s:decorate id="piwikIdSiteField" template="../WEB-INF/layout/edit.xhtml">
@@ -140,11 +148,12 @@
               <h:inputText id="piwikIdSiteEml" value="#{serverConfigurationBean.piwikIdSite}">
                 <a4j:support event="onblur" reRender="piwikIdSiteField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="piwikIdSiteHelp" value="../images/msginfo.png" styleClass="input_help">
-                 <rich:toolTip>
+              
+               <s:span styleClass="icon-info-circle-2 input_help" id="piwikIdSiteHelp">
+            	 <rich:toolTip>
                   #{messages['jsf.config.PiwikIdSitetooltip']}
                 </rich:toolTip>
-              </h:graphicImage>
+           	  </s:span>
             </s:decorate>
 
             <div style="clear:both"/>
