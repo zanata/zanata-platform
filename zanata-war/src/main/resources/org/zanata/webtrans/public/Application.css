@@ -592,6 +592,7 @@ td.ApprovedStateDecoration div div div
 	padding:2px;
 	font-weight:bold;
 	box-shadow:3px 3px 2px #D1D1D1;
+	z-index:100;
 }
 
 .transUnitCountTooltipTable {
