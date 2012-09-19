@@ -45,7 +45,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
-import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
+import org.zanata.webtrans.client.presenter.TransUnitsTablePresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -77,15 +77,16 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @Test
-public class NavigationControllerTest
+public class NavigationServiceTest
 {
-   private static final Logger log = LoggerFactory.getLogger(NavigationControllerTest.class);
+   private static final Logger log = LoggerFactory.getLogger(NavigationServiceTest.class);
    private HLocale hLocale = new HLocale(new LocaleId("en"));
    private WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("project", "master"), hLocale.getLocaleId());
 
@@ -99,12 +100,14 @@ public class NavigationControllerTest
          TestFixture.makeHTextFlow(5, hLocale, ContentState.New)
    );
 
-   private NavigationController controller;
+   private NavigationService service;
    @Mock
    private CachingDispatchAsync dispatcher;
    @Mock
    private EventBus eventBus;
-   private TransUnitNavigationService navigationService;
+
+   private ModalNavigationStateHolder navigationStateHolder;
+
    private DocumentId documentId = new DocumentId(1L);
 
    @Captor
@@ -137,7 +140,7 @@ public class NavigationControllerTest
 
    private GetTransUnitActionContext context;
    @Mock private TableEditorMessages messages;
-   @Mock private TransUnitEditPresenter transUnitEditPresenter;
+   @Mock private TransUnitsTablePresenter transUnitsTablePresenter;
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
 
@@ -147,11 +150,11 @@ public class NavigationControllerTest
       MockitoAnnotations.initMocks(this);
       setupGetTransUnitListHandler();
       setupGetTransUnitNavigationHandler();
-      navigationService = new TransUnitNavigationService();
       UserConfigHolder configHolder = new UserConfigHolder();
 
-      controller = new NavigationController(eventBus, dispatcher, navigationService, configHolder, messages);
-      controller.addPageDataChangeListener(transUnitEditPresenter);
+      service = new NavigationService(eventBus, dispatcher, configHolder, messages);
+      service.addPageDataChangeListener(transUnitsTablePresenter);
+      navigationStateHolder = service.getNavigationStateHolder();
 
       context = new GetTransUnitActionContext(documentId);
    }
@@ -237,7 +240,7 @@ public class NavigationControllerTest
    @Test
    public void canMockHandler()
    {
-      controller.init(context.changeCount(6));
+      service.init(context.changeCount(6));
       verifyDispatcherAndCaptureArguments();
 
       GetTransUnitListResult getTransUnitListResult = callHandler(getTransUnitListHandler, getTransUnitList);
@@ -258,162 +261,162 @@ public class NavigationControllerTest
    @Test
    public void canGoToFirstPage()
    {
-      controller.init(context.changeCount(3));
+      service.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(0);
+      service.gotoPage(0);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
       //go again won't cause another call to server
-      controller.gotoPage(0);
+      service.gotoPage(0);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
    private List<Integer> getPageDataModelAsIds()
    {
-      return asIds(controller.getCurrentPageValues());
+      return asIds(service.getCurrentPageValues());
    }
 
    @Test
    public void canGoToLastPageWithNotPerfectDivide()
    {
-      controller.init(context.changeCount(4));
+      service.init(context.changeCount(4));
       simulateRPCCallback();
-      controller.gotoPage(1);
+      service.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
-      controller.gotoPage(1);
+      service.gotoPage(1);
       verifyNoMoreInteractions(dispatcher);
    }
 
    @Test
    public void canGoToLastPageWithPerfectDivide() {
-      controller.init(context.changeCount(3));
+      service.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(1);
+      service.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
-      controller.gotoPage(1);
+      service.gotoPage(1);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
    }
 
    @Test
    public void canHavePageCountGreaterThanActualSize() {
-      controller.init(context.changeCount(10));
+      service.init(context.changeCount(10));
       simulateRPCCallback();
-      controller.gotoPage(100);
+      service.gotoPage(100);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
-      controller.gotoPage(0);
+      service.gotoPage(0);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
    @Test
    public void canGoToNextPage()
    {
-      controller.init(context.changeCount(2));
+      service.init(context.changeCount(2));
       simulateRPCCallback();
-      controller.gotoPage(1);
+      service.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(2, 3));
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
-      controller.gotoPage(2);
+      service.gotoPage(2);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
-      assertThat(navigationService.getCurrentPage(), is(2));
+      assertThat(navigationStateHolder.getCurrentPage(), is(2));
 
       //can't go any further
-      controller.gotoPage(2);
+      service.gotoPage(2);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(4, 5));
-      assertThat(navigationService.getCurrentPage(), is(2));
+      assertThat(navigationStateHolder.getCurrentPage(), is(2));
    }
 
    @Test
    public void canGoToPreviousPage()
    {
-      controller.init(context.changeCount(2));
+      service.init(context.changeCount(2));
       simulateRPCCallback();
       //should be on first page already
-      controller.gotoPage(0);
+      service.gotoPage(0);
       verifyNoMoreInteractions(dispatcher);
       assertThat(getPageDataModelAsIds(), contains(0, 1));
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
-      controller.gotoPage(2);
+      service.gotoPage(2);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
-      assertThat(navigationService.getCurrentPage(), is(2));
+      assertThat(navigationStateHolder.getCurrentPage(), is(2));
 
-      controller.gotoPage(1);
+      service.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(2, 3));
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
-      controller.gotoPage(0);
+      service.gotoPage(0);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1));
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
       //can't go any further
-      controller.gotoPage(0);
+      service.gotoPage(0);
       verifyNoMoreInteractions(dispatcher);
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
    @Test
    public void canGoToPage()
    {
-      controller.init(context.changeCount(3));
+      service.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(1);
+      service.gotoPage(1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
       //page out of bound
-      controller.gotoPage(7);
+      service.gotoPage(7);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
       //page is negative
-      controller.gotoPage(-1);
+      service.gotoPage(-1);
       simulateRPCCallback();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
-      assertThat(navigationService.getCurrentPage(), is(0));
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
    @Test
    public void canForceReload()
    {
-      controller.init(context.changeCount(3));
+      service.init(context.changeCount(3));
       simulateRPCCallback();
-      controller.gotoPage(1);
+      service.gotoPage(1);
       simulateRPCCallback();
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
-      controller.gotoPage(1);
+      service.gotoPage(1);
       verifyNoMoreInteractions(dispatcher);
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
-      controller.gotoPage(1);
+      service.gotoPage(1);
       simulateRPCCallback();
-      assertThat(navigationService.getCurrentPage(), is(1));
+      assertThat(navigationStateHolder.getCurrentPage(), is(1));
    }
 
    private static List<Integer> asIds(List<TransUnit> transUnits)

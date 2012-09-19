@@ -55,16 +55,16 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransFilterPresenter transFilterPresenter;
-   private final TransUnitEditPresenter transUnitEditPresenter;
+   private final TransUnitsTablePresenter transUnitsTablePresenter;
 
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitEditPresenter transUnitEditPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter)
    {
       super(display, eventBus);
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.transFilterPresenter = transFilterPresenter;
-      this.transUnitEditPresenter = transUnitEditPresenter;
+      this.transUnitsTablePresenter = transUnitsTablePresenter;
    }
 
    @Override
@@ -73,8 +73,8 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transFilterPresenter.bind();
       display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
-      transUnitEditPresenter.bind();
-      display.setEditorView(transUnitEditPresenter.getDisplay().asWidget());
+      transUnitsTablePresenter.bind();
+      display.setEditorView(transUnitsTablePresenter.getDisplay().asWidget());
 
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
@@ -85,7 +85,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          @Override
          public void onValueChange(ValueChangeEvent<Integer> event)
          {
-            transUnitEditPresenter.goToPage(event.getValue());
+            transUnitsTablePresenter.goToPage(event.getValue());
          }
       }));
       registerHandler(eventBus.addHandler(PageChangeEvent.TYPE, this));
@@ -108,7 +108,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    protected void onUnbind()
    {
       transFilterPresenter.unbind();
-      transUnitEditPresenter.unbind();
+      transUnitsTablePresenter.unbind();
       transUnitNavigationPresenter.unbind();
    }
 
@@ -124,6 +124,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
    public void openEditorOnSelectedRow()
    {
-      transUnitEditPresenter.startEditing();
+      transUnitsTablePresenter.startEditing();
    }
 }

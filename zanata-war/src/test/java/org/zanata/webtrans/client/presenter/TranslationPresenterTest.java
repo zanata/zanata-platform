@@ -18,7 +18,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.TranslationPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
@@ -43,7 +43,7 @@ public class TranslationPresenterTest extends PresenterTest
    private UserWorkspaceContext mockUserWorkspaceContext;
    private TargetContentsPresenter mockTargetContentsPresenter;
    private KeyShortcutPresenter mockKeyShortcutPresenter;
-   private NavigationController navigationController;
+   private NavigationService navigationService;
 
    // mock view components
    private Capture<ExitWorkspaceEventHandler> capturedExitWorkspaceEventHandler;
@@ -64,7 +64,7 @@ public class TranslationPresenterTest extends PresenterTest
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockTargetContentsPresenter = createAndAddMock(TargetContentsPresenter.class);
       mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
-      navigationController = createAndAddMock(NavigationController.class);
+      navigationService = createAndAddMock(NavigationService.class);
 
       capturedExitWorkspaceEventHandler = addCapture(new Capture<ExitWorkspaceEventHandler>());
       capturedWorkspaceContextUpdateEventHandler = addCapture(new Capture<WorkspaceContextUpdateEventHandler>());
@@ -75,7 +75,7 @@ public class TranslationPresenterTest extends PresenterTest
    public void resetEverything()
    {
       resetAll();
-      translationPresenter = new TranslationPresenter(mockDisplay, mockEventBus, mockTargetContentsPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockUserWorkspaceContext, mockKeyShortcutPresenter, navigationController);
+      translationPresenter = new TranslationPresenter(mockDisplay, mockEventBus, mockTargetContentsPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockUserWorkspaceContext, mockKeyShortcutPresenter, navigationService);
    }
 
    @Test
@@ -242,7 +242,7 @@ public class TranslationPresenterTest extends PresenterTest
       mockGlossaryPresenter.bind();
 
       // When shown, TM will try to fire a search for currently selected TU.
-      expect(navigationController.getSelectedOrNull()).andReturn(selectedTransUnit);
+      expect(navigationService.getSelectedOrNull()).andReturn(selectedTransUnit);
    }
 
    private void expectHideSouthPanel()

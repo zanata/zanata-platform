@@ -57,18 +57,18 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
    private final CachingDispatchAsync dispatcher;
    private final Provider<UndoLink> undoLinkProvider;
    private final TargetContentsPresenter targetContentsPresenter;
-   private final NavigationController navigationController;
+   private final NavigationService navigationService;
    private final Provider<GoToRowLink> goToRowLinkProvider;
 
    @Inject
-   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationController navigationController, Provider<GoToRowLink> goToRowLinkProvider)
+   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationService navigationService, Provider<GoToRowLink> goToRowLinkProvider)
    {
       this.messages = messages;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.undoLinkProvider = undoLinkProvider;
       this.targetContentsPresenter = targetContentsPresenter;
-      this.navigationController = navigationController;
+      this.navigationService = navigationService;
       this.goToRowLinkProvider = goToRowLinkProvider;
    }
 
@@ -91,7 +91,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
 
    private boolean stateHasNotChanged(TransUnitSaveEvent event)
    {
-      TransUnit transUnit = navigationController.getByIdOrNull(event.getTransUnitId());
+      TransUnit transUnit = navigationService.getByIdOrNull(event.getTransUnitId());
       if (transUnit == null)
       {
          return false;
@@ -142,8 +142,8 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          if (result.isSingleSuccess())
          {
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString())));
-            int rowIndexOnPage = navigationController.findRowIndexById(updatedTU.getId());
-            if (rowIndexOnPage != NavigationController.UNSELECTED)
+            int rowIndexOnPage = navigationService.findRowIndexById(updatedTU.getId());
+            if (rowIndexOnPage != NavigationService.UNSELECTED)
             {
                UndoLink undoLink = undoLinkProvider.get();
                undoLink.prepareUndoFor(result);

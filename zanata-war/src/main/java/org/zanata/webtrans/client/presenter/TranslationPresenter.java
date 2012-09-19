@@ -37,7 +37,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
@@ -65,14 +65,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final KeyShortcutPresenter keyShortcutPresenter;
 
    private UserWorkspaceContext userWorkspaceContext;
-   private final NavigationController navigationController;
+   private final NavigationService navigationService;
 
    private final WebTransMessages messages;
 
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, final TargetContentsPresenter targetContentsPresenter, final TranslationEditorPresenter translationEditorPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, NavigationController navigationController)
+   public TranslationPresenter(Display display, EventBus eventBus, final TargetContentsPresenter targetContentsPresenter, final TranslationEditorPresenter translationEditorPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, NavigationService navigationService)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -82,7 +82,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.targetContentsPresenter = targetContentsPresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.userWorkspaceContext = userWorkspaceContext;
-      this.navigationController = navigationController;
+      this.navigationService = navigationService;
    }
 
    @Override
@@ -221,7 +221,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       {
          bindSouthPanelPresenters();
 
-         TransUnit tu = navigationController.getSelectedOrNull();
+         TransUnit tu = navigationService.getSelectedOrNull();
          if (tu != null)
          {
             transMemoryPresenter.createTMRequestForTransUnit(tu);

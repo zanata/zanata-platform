@@ -1,11 +1,11 @@
 package org.zanata.webtrans.client.events;
 
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class PageSizeChangeEvent extends GwtEvent<PageSizeChangeEventHandler> implements NavigationController.UpdateContextCommand
+public class PageSizeChangeEvent extends GwtEvent<PageSizeChangeEventHandler> implements NavigationService.UpdateContextCommand
 {
    public static Type<PageSizeChangeEventHandler> TYPE = new Type<PageSizeChangeEventHandler>();
 

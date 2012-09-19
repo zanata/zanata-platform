@@ -36,7 +36,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -86,7 +86,7 @@ public class TransMemoryMergePresenterTest
    @Captor
    private ArgumentCaptor<AsyncCallback<UpdateTransUnitResult>> callbackCaptor;
    @Mock
-   private NavigationController navigationController;
+   private NavigationService navigationService;
    @Mock
    private WebTransMessages webTranMessages;
 
@@ -94,7 +94,7 @@ public class TransMemoryMergePresenterTest
    public void setUp()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransMemoryMergePresenter(display, eventBus, dispatcher, navigationController, messages, undoLinkProvider, webTranMessages);
+      presenter = new TransMemoryMergePresenter(display, eventBus, dispatcher, navigationService, messages, undoLinkProvider);
 
       verify(display).setListener(presenter);
    }
@@ -140,7 +140,7 @@ public class TransMemoryMergePresenterTest
 
    private void mockCurrentPageToReturn(List<TransUnit> allRowValues)
    {
-      when(navigationController.getCurrentPageValues()).thenReturn(allRowValues);
+      when(navigationService.getCurrentPageValues()).thenReturn(allRowValues);
    }
 
    @Test

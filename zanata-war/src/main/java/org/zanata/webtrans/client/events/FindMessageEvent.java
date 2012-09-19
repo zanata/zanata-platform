@@ -21,11 +21,11 @@
 package org.zanata.webtrans.client.events;
 
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
-import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.NavigationService;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class FindMessageEvent extends GwtEvent<FindMessageHandler> implements NavigationController.UpdateContextCommand
+public class FindMessageEvent extends GwtEvent<FindMessageHandler> implements NavigationService.UpdateContextCommand
 {
    private String message;
    public static final FindMessageEvent DEFAULT = new FindMessageEvent(null);

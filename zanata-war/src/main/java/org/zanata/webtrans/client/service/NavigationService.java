@@ -73,17 +73,17 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationController implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler, ReloadPageEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler, ReloadPageEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNSELECTED = -1;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
-   private final TransUnitNavigationService navigationService;
+   private final ModalNavigationStateHolder navigationStateHolder;
    private final UserConfigHolder configHolder;
    private final TableEditorMessages messages;
    private final SinglePageDataModelImpl pageModel;
-   private NavigationController.PageDataChangeListener pageDataChangeListener;
+   private NavigationService.PageDataChangeListener pageDataChangeListener;
 
    //tracking variables
    private GetTransUnitActionContext context;
@@ -91,14 +91,14 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    private boolean isLoadingIndex =false;
 
    @Inject
-   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, UserConfigHolder configHolder, TableEditorMessages messages)
+   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.configHolder = configHolder;
       this.messages = messages;
       this.pageModel = new SinglePageDataModelImpl();
-      this.navigationService = navigationService;
+      this.navigationStateHolder = new ModalNavigationStateHolder();
       bindHandlers();
    }
 
@@ -135,8 +135,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
             if (caught instanceof AuthenticationError)
             {
                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyNotLoggedIn()));
-            }
-            else
+            } else
             {
                Log.error("GetTransUnits failure " + caught, caught);
                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyLoadFailed()));
@@ -163,13 +162,13 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
                currentPageIndex = result.getGotoRow() / itemPerPage;
                gotoRow = result.getGotoRow() % itemPerPage;
             }
-            navigationService.updateCurrentPage(currentPageIndex);
+            navigationStateHolder.updateCurrentPage(currentPageIndex);
 
             if (!units.isEmpty())
             {
                eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
             }
-            eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
+            eventBus.fireEvent(new PageChangeEvent(navigationStateHolder.getCurrentPage()));
             isLoadingTU = false;
             finishLoading();
             highlightSearch();
@@ -213,8 +212,8 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
          {
-            navigationService.init(result.getTransIdStateList(), result.getIdIndexList(), itemPerPage);
-            eventBus.fireEvent(new PageCountChangeEvent(navigationService.getPageCount()));
+            navigationStateHolder.init(result.getTransIdStateList(), result.getIdIndexList(), itemPerPage);
+            eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
             isLoadingIndex = false;
             finishLoading();
          }
@@ -234,11 +233,65 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    public void gotoPage(int pageIndex)
    {
       int page = normalizePageIndex(pageIndex);
-      if (page != navigationService.getCurrentPage())
+      if (page != navigationStateHolder.getCurrentPage())
       {
          GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
          Log.info("page index: " + page + " page context: " + newContext);
          requestTransUnitsAndUpdatePageIndex(newContext);
+      }
+   }
+
+   private int normalizePageIndex(int pageIndex)
+   {
+      if (pageIndex <= 0)
+      {
+         return FIRST_PAGE;
+      }
+      else
+      {
+         return Math.min(navigationStateHolder.lastPage(), pageIndex);
+      }
+   }
+
+   @Override
+   public void onNavTransUnit(NavTransUnitEvent event)
+   {
+      int rowIndex;
+      switch (event.getRowType())
+      {
+         case PrevEntry:
+            rowIndex = navigationStateHolder.getPrevRowIndex();
+            break;
+         case NextEntry:
+            rowIndex = navigationStateHolder.getNextRowIndex();
+            break;
+         case PrevState:
+            rowIndex = navigationStateHolder.getPreviousStateRowIndex(configHolder.getContentStatePredicate());
+            break;
+         case NextState:
+            rowIndex = navigationStateHolder.getNextStateRowIndex(configHolder.getContentStatePredicate());
+            break;
+         case FirstEntry:
+            rowIndex = 0;
+            break;
+         case LastEntry:
+            rowIndex = navigationStateHolder.maxRowIndex();
+            break;
+         default:
+            Log.warn("ignore unknown navigation type:" + event.getRowType());
+            return;
+      }
+      int targetPage = navigationStateHolder.getTargetPage(rowIndex);
+      TransUnitId targetTransUnitId = navigationStateHolder.getTargetTransUnitId(rowIndex);
+      Log.info("target page : [" + targetPage + "] target TU id: " + targetTransUnitId + " rowIndex: " + rowIndex);
+
+      if (navigationStateHolder.getCurrentPage() == targetPage)
+      {
+         eventBus.fireEvent(new TableRowSelectedEvent(targetTransUnitId));
+      }
+      else
+      {
+         loadPageAndGoToRow(targetPage, targetTransUnitId);
       }
    }
 
@@ -250,67 +303,13 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       requestTransUnitsAndUpdatePageIndex(newContext);
    }
 
-   private int normalizePageIndex(int pageIndex)
-   {
-      if (pageIndex <= 0)
-      {
-         return FIRST_PAGE;
-      }
-      else
-      {
-         return Math.min(navigationService.lastPage(), pageIndex);
-      }
-   }
-
-   @Override
-   public void onNavTransUnit(NavTransUnitEvent event)
-   {
-      int rowIndex;
-      switch (event.getRowType())
-      {
-         case PrevEntry:
-            rowIndex = navigationService.getPrevRowIndex();
-            break;
-         case NextEntry:
-            rowIndex = navigationService.getNextRowIndex();
-            break;
-         case PrevState:
-            rowIndex = navigationService.getPreviousStateRowIndex(configHolder.getContentStatePredicate());
-            break;
-         case NextState:
-            rowIndex = navigationService.getNextStateRowIndex(configHolder.getContentStatePredicate());
-            break;
-         case FirstEntry:
-            rowIndex = 0;
-            break;
-         case LastEntry:
-            rowIndex = navigationService.maxRowIndex();
-            break;
-         default:
-            Log.warn("ignore unknown navigation type:" + event.getRowType());
-            return;
-      }
-      int targetPage = navigationService.getTargetPage(rowIndex);
-      TransUnitId targetTransUnitId = navigationService.getTargetTransUnitId(rowIndex);
-      Log.info("target page : [" + targetPage + "] target TU id: " + targetTransUnitId + " rowIndex: " + rowIndex);
-
-      if (navigationService.getCurrentPage() == targetPage)
-      {
-         eventBus.fireEvent(new TableRowSelectedEvent(targetTransUnitId));
-      }
-      else
-      {
-         loadPageAndGoToRow(targetPage, targetTransUnitId);
-      }
-   }
-
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
       if (Objects.equal(event.getUpdateInfo().getDocumentId(), context.getDocumentId()))
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
-         navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
+         navigationStateHolder.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
          boolean updated = pageModel.updateIfInCurrentPage(updatedTU);
          if (updated)
          {
@@ -335,8 +334,8 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    public void onPageSizeChange(PageSizeChangeEvent pageSizeChangeEvent)
    {
       execute(pageSizeChangeEvent);
-      navigationService.updatePageSize(pageSizeChangeEvent.getPageSize());
-      eventBus.fireEvent(new PageCountChangeEvent(navigationService.getPageCount()));
+      navigationStateHolder.updatePageSize(pageSizeChangeEvent.getPageSize());
+      eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
    }
 
    @Override
@@ -387,7 +386,7 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
       {
          pageModel.setSelected(rowIndexOnPage);
          eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
-         navigationService.updateRowIndexInDocument(rowIndexOnPage);
+         navigationStateHolder.updateRowIndexInDocument(rowIndexOnPage);
       }
    }
 
@@ -419,6 +418,15 @@ public class NavigationController implements TransUnitUpdatedEventHandler, FindM
    public TransUnit getByIdOrNull(TransUnitId transUnitId)
    {
       return pageModel.getByIdOrNull(transUnitId);
+   }
+
+   /**
+    * for testing only.
+    * @return navigation state holder
+    */
+   protected ModalNavigationStateHolder getNavigationStateHolder()
+   {
+      return navigationStateHolder;
    }
 
    public static interface UpdateContextCommand
