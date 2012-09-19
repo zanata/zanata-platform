@@ -65,6 +65,7 @@ public class TransUnitTransformer
             .setSources(sourceContents)
             .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
             .setTargets(targetContents)
+            .setTargetContent(target == null ? null : CommentsUtil.toString(target.getComment()))
             .setMsgContext(msgContext)
             .setRowIndex(hTextFlow.getPos())
             .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
@@ -102,6 +103,7 @@ public class TransUnitTransformer
             .setSources(sourceContents)
             .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
             .setTargets(targetContents)
+            .setTargetContent(target == null ? null : CommentsUtil.toString(target.getComment()))
             .setMsgContext(msgContext)
             .setRowIndex(index)
             .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());

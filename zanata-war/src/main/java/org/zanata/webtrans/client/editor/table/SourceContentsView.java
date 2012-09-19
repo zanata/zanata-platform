@@ -79,7 +79,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void setValue(TransUnit value)
    {
-      setValue(value, true);
+      setValue(value, false);
    }
 
    @Override

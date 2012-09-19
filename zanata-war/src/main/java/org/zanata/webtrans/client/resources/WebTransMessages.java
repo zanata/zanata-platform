@@ -255,12 +255,6 @@ public interface WebTransMessages extends Messages
    @AlternateMessage({ "one", "1 text flow selected" })
    String numTextFlowsSelected(@PluralCount int selectedFlows);
 
-   @DefaultMessage("Search & replace")
-   String searchAndReplace();
-
-   @DefaultMessage("Layout Selection")
-   String layoutSelection();
-
    @DefaultMessage("Notification")
    String notification();
 
@@ -454,4 +448,8 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Color legend")
    String colorLegend();
+
+   @DefaultMessage("Concurrent edit detected. Reset value for current row. Your change will be lost.")
+   String concurrentEdit();
+
 }

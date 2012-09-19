@@ -115,6 +115,12 @@
 				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
 				<f:param name="slug" value="#{viewAllStatusAction.iterationSlug}" />
 			</s:link>
+            <s:link styleClass="action_link"
+                value="#{messages['jsf.SourceDocuments']}" view="/iteration/source_files.xhtml"
+                propagation="none">
+                <f:param name="project" value="#{viewAllStatusAction.projectSlug}"/>
+                <f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
+            </s:link>
 			<s:link styleClass="action_link" 
 				value="#{messages['jsf.ConfigFile']}"
 				title="#{messages['jsf.GenerateProjectConfig']}"

@@ -606,7 +606,19 @@
       <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
     </navigation>
   </page>
-  
+
+  <page view-id="/iteration/source_files.xhtml">
+    <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
+    <param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
+
+    <action execute="#{projectIterationFilesAction.initialize()}" />
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.SourceDocuments'])}"/>
+  </page>
+
   <page view-id="/iteration/files.xhtml">
     <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
     <param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
@@ -621,10 +633,9 @@
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Documents'].concat(' [').concat(projectIterationFilesAction.localeId).concat( ']'))}"/>
-    
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Documents'].concat(' (').concat(projectIterationFilesAction.localeId).concat(')'))}"/>
   </page>
-  
+
   <page view-id="/iteration/edit.xhtml">
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />

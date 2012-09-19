@@ -1,0 +1,234 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function openUploadDocPanel() {
+                #{rich:component('uploadDocPanel')}.show();
+                return false;
+            }
+
+            function openUploadPanel(docId) {
+                #{rich:element('uploadPanelHeader')}.innerHTML = '#{messages['jsf.iteration.files.UploadDocument']}: ' + docId;
+                #{rich:element('uploadDocId')}.value = docId;
+                #{rich:component('uploadPanel')}.show();
+            }
+
+            function hideUploadPanel() {
+                #{rich:component('uploadPanel')}.hide();
+                return false;
+            }
+
+            function hideDocUploadPanel() {
+                #{rich:component('uploadDocPanel')}.hide();
+                return false;
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
+    <ui:define name="center_content">
+        <h:form>
+            <s:token allowMultiplePosts="true"/>
+            <rich:datascroller id="data_table_scroller" align="center" for="data_table"
+                               rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
+                <f:facet name="next">
+                    <h:outputText value="next" style="font-size: 0.8em"/>
+                </f:facet>
+                <f:facet name="previous">
+                    <h:outputText value="prev" style="font-size: 0.8em"/>
+                </f:facet>
+            </rich:datascroller>
+            <rich:spacer height="20"/>
+            <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
+                          rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
+            <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}"
+                            var="doc"
+                            styleClass="iteration_inline_tribes"
+                            rows="20"
+                            rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
+                <rich:column sortOrder="ASCENDING"
+                             styleClass="wrapped">
+                    <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
+                    #{doc.path}
+                </rich:column>
+                <rich:column filterMethod="#{projectIterationFilesAction.filterDocumentByName}"
+                             styleClass="wrapped">
+                    <f:facet name="header">
+                        <h:panelGroup>
+                            <h:outputText value="#{messages['jsf.Name']}"/>
+                            <br/>
+                            <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
+                                         id="name_filter_input">
+                                <a4j:support event="onkeyup" reRender="data_table,data_table_scroller"
+                                             ignoreDupResponses="true" requestDelay="700"
+                                             focus="name_filter_input"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                    </f:facet>
+                    <h:outputText>
+                        #{doc.name}
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages['jsf.iteration.files.Download']}
+                    </f:facet>
+                    <s:link styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{messages['jsf.iteration.files.dotpot']}"/>
+                    </s:link>
+                    <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/raw">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.name)}"/>
+                    </s:link>
+                </rich:column>
+
+                <rich:column rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+                    <f:facet name="header">
+                        #{messages['jsf.Upload']}
+                    </f:facet>
+                    <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link">
+                        #{messages['jsf.Upload']}
+                    </a>
+                </rich:column>
+
+                <!-- TODO show stats for document across locales -->
+
+            </rich:dataTable>
+        </h:form>
+
+        <rich:modalPanel id="downloadProgressPanel"
+                         moveable="#{false}"
+                         resizeable="#{false}"
+                         autosized="#{true}">
+
+            <f:facet name="header">
+                <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
+            </f:facet>
+            <a4j:form>
+                <rich:progressBar id="downloadProgressBar"
+                                  value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
+                                  interval="500"
+                                  label="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress} of #{projectIterationZipFileAction.zipFilePrepHandle.maxProgress}"
+                                  minValue="-1"
+                                  maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
+                                  enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
+                                  ignoreDupResponses="true"
+                                  reRenderAfterComplete="downloadProgressBar">
+                    <f:facet name="complete">
+                        <script type="text/javascript">
+                            #{rich:component('downloadProgressPanel')}.hide();
+                            window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
+                        </script>
+                    </f:facet>
+                </rich:progressBar>
+
+                <div align="right">
+                    <a4j:commandButton id="closeProgressPanelButton"
+                                       action="#{projectIterationZipFileAction.cancelFileDownload}"
+                                       value="#{messages['jsf.Cancel']}"
+                                       reRender="downloadProgressBar">
+                        <rich:componentControl for="downloadProgressPanel"
+                                               attachTo="closeProgressPanelButton" operation="hide" event="onclick"/>
+                    </a4j:commandButton>
+                </div>
+            </a4j:form>
+        </rich:modalPanel>
+
+
+    </ui:define>
+
+    <ui:define name="right_content">
+
+        <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+            <a4j:form>
+
+                <a4j:commandLink styleClass="action_link"
+                                 rendered="#{projectIterationFilesAction.documentUploadAllowed}"
+                                 value="#{messages['jsf.iteration.files.UploadDocument']}"
+                                 title="#{messages['jsf.SupportedUploadFormats']}"
+                                 onclick="openUploadDocPanel()"/>
+            </a4j:form>
+        </rich:panel>
+
+        <!-- uploads a new version of an existing source document -->
+        <rich:modalPanel id="uploadPanel"
+                         moveable="#{false}"
+                         resizeable="#{false}"
+                         autosized="#{true}"
+                         rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+            <f:facet name="header">
+                <h:outputText id="uploadPanelHeader"/>
+            </f:facet>
+            <h:form id="uploadForm" enctype="multipart/form-data">
+                <s:fileUpload accept="*"
+                              data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
+                              fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
+                <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.documentFileUpload.docId}"/>
+                <br/>
+                <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
+                    <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
+                                   var="locale"
+                                   label="#{locale.retrieveNativeName()}"
+                                   itemValue="#{locale.localeId.toString()}"
+                                   escape="true"/>
+                    <h:outputLabel value="Source Language"/>
+                </h:selectOneMenu>
+                <div align="right">
+                    <h:commandButton value="#{messages['jsf.Upload']}"
+                                     action="#{projectIterationFilesAction.uploadDocumentFile}"/>
+                    <h:commandButton value="#{messages['jsf.Cancel']}"
+                                     onclick="return hideUploadPanel();"/>
+                </div>
+            </h:form>
+        </rich:modalPanel>
+
+        <!-- upload a new or existing source document (overwrites document with same name and path) -->
+        <rich:modalPanel id="uploadDocPanel"
+                         moveable="#{false}"
+                         resizeable="#{false}"
+                         autosized="#{true}"
+                         rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+            <f:facet name="header">
+                <h:outputText value="#{messages['jsf.iteration.files.UploadDocument']}"/>
+            </f:facet>
+            <h:form id="uploadDocForm" enctype="multipart/form-data">
+                <s:fileUpload accept="*"
+                              data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
+                              fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
+                <h:inputText id="docPath"
+                             value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
+                    <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
+                </h:inputText>
+                <br/>
+                <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
+                    <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
+                                   var="locale"
+                                   label="#{locale.retrieveNativeName()}"
+                                   itemValue="#{locale.localeId.toString()}"
+                                   escape="true"/>
+                    <h:outputLabel value="Source Language"/>
+                </h:selectOneMenu>
+                <div align="right">
+                    <h:commandButton value="#{messages['jsf.Upload']}"
+                                     action="#{projectIterationFilesAction.uploadDocumentFile}"/>
+                    <h:commandButton value="#{messages['jsf.Cancel']}"
+                                     onclick="return hideDocUploadPanel();"/>
+                </div>
+            </h:form>
+        </rich:modalPanel>
+
+    </ui:define>
+
+</ui:composition>

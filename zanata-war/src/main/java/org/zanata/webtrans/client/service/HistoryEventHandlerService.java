@@ -73,7 +73,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
    private void processForAppPresenter(HistoryToken token)
    {
       DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
-      if (!equal(appPresenter.getSelectedDocIdOrNull(), docId))
+      if (docId != null && !equal(appPresenter.getSelectedDocIdOrNull(), docId))
       {
          appPresenter.selectDocument(docId);
       }

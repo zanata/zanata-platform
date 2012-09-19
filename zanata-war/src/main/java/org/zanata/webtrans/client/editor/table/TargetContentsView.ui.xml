@@ -6,7 +6,7 @@
         >
 
 
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 
     <ui:style field="style" type="org.zanata.webtrans.client.editor.table.TargetContentsView.Styles">
         .targetContentsCell
@@ -45,7 +45,7 @@
         <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="30px">
             <g:HTMLPanel ui:field="buttons" height="120px" styleName="fadeElement">
                 <g:InlineLabel ui:field="saveIcon" title="{messages.editSaveShortcut}" styleName="icon-install {style.button}"/>
-                <g:InlineLabel ui:field="fuzzyIcon" title="{messages.saveAsFuzzy}" styleName="icon-flag-1 {style.button}" />
+                <g:InlineLabel ui:field="fuzzyIcon" title="{messages.editSaveAsFuzzyShortcut}" styleName="icon-flag-1 {style.button}" />
                 <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}" styleName="icon-cancel-circle {style.button}" />
                 <g:InlineLabel ui:field="historyIcon" title="{messages.history}" styleName="icon-back-in-time {style.button}" />
                 <g:SimplePanel ui:field="undoContainer" />

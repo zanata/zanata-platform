@@ -279,6 +279,15 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
+   public void refresh()
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.refresh();
+      }
+   }
+
+   @Override
    public Integer getVerNum()
    {
       return verNum;

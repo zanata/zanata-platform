@@ -112,14 +112,11 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
          cellFormatter.setVerticalAlignment(i, 1, HasVerticalAlignment.ALIGN_TOP);
          cellFormatter.setStyleName(i, 0, style.cellFormat());
          cellFormatter.setStyleName(i, 1, style.cellFormat());
-
+         sourceDisplay.refresh();
+         targetDisplay.refresh();
       }
       applyRowStyle();
 
-      for (SourceContentsDisplay sourceDisplay : sourceDisplays)
-      {
-         sourceDisplay.refresh();
-      }
    }
 
    private void showEmptyContentIfNoData(int dataSize)

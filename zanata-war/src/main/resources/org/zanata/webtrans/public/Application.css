@@ -220,84 +220,10 @@ Removes some of the styling on the page-level splitters
 }
 
 
-.TableEditor tr td {
-	vertical-align: top;
-}
-
-.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
-	border-right: none;
-	border-left: 3px solid #cccccc;
-}
-
-.TableEditor tr.NewStateDecoration td.TableEditorCell-Source {
-	border-right: none;
-	border-left: 3px solid #cccccc;
-}
-
-.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source {
-	border-right: none;
-	border-left: 3px solid #cccccc;
-}
-
-.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source {
-	border-right: none;
-	border-left: 3px solid #cccccc;
-}
-
-.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target {
-	font-style: italic;
-	border-right: 3px solid #cccccc;
-}
-
-.TableEditor tr.NewStateDecoration td.TableEditorCell-Target {
-	border-right: 3px solid #cccccc;
-	border-left: none;
-}
-
-.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target {
-	border-right: 3px solid #cccccc;
-	border-left: none;
-}
-
-.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target {
-	border-right: 3px solid #cccccc;
-	border-left: none;
-}
-
 td.TableEditorCell {
 	border-top: 1px solid #e0e0e0;
 	padding-top: 10px;
 	padding-bottom: 10px;
-}
-
-td.TableEditorCell-Source {
-	vertical-align: top;
-	word-break: break-all;
-}
-
-td.TableEditorCell-Middle {
-	
-}
-
-td.TableEditorCell-Target {
-	vertical-align: top;
-	word-break: break-all;
-}
-
-/* below is a hack to allow firefox display extra long word properly */
-@-moz-document url-prefix() {
-{}
-    table.TableEditor {
-        table-layout : fixed;
-    }
-	table.TableEditorCell-Source-Table {
-		overflow-x:auto;
-		display: block;
-	}
-	
-	div.TransUnitDetail-Wrapper {
-	    width: 450px;
-    }
 }
 
 .TableEditorCell-Source-Table {
@@ -308,85 +234,10 @@ td.TableEditorCell-Target {
     width: 100%;
 }
 
-.TransUnitDetail-Wrapper {
-	width: 90%;
-}
-
-tr.TableEditorRow.highlighted td.TableEditorCell {
-	/* This appears behind the background image, and looks like
-	a variable-sized grey square (ugly). Should not be enabled if
-	there is a background gradient image for editor cells.
-	
-	background-color: #f1f2f6; */
-	border-color: #AAA;
-	border-bottom: 1px solid #AAA;
-}
-
-tr.TableEditorRow.highlighted td.TableEditorCell-Source {
-	
-}
-
-tr.TableEditorRow.highlighted td.TableEditorCell-Middle {
-	
-}
-
-tr.TableEditorRow.highlighted .gwt-Button-display-onhover {
-	display: inline;
-	cursor: pointer;
-}
-
-tr.TableEditorRow .gwt-Button-display-onhover {
-	display: none;
-}
-
-tr.TableEditorRow.highlighted td.TableEditorCell-Target {
-	cursor: hand;
-}
-
-tr.TableEditorRow.content-filter {
-	
-}
-
-tr.TableEditorRow.content-filter-match {
-	
-}
-
 tr.TableEditorRow.content-filter-nomatch {
 	filter: alpha(opacity =     25);
 	-moz-opacity: 0.25;
 	opacity: 0.25;
-}
-
-tr.TableEditorRow.selected {
-	
-}
-
-.TableEditorContent,.TableEditorContent-Edit,.TableEditorContent-Empty {
-	font-size: 14px;
-	font-family: sans-serif;
-	padding: 0px;
-	margin: 0px;
-}
-
-.TableEditorContent pre,.TableEditorContent-Empty pre {
-	padding: 0px;
-	margin: 0px;
-}
-
-.TableEditorContent font {
-	background-color: #ffa;
-	color: blue !important;
-}
-
-.TableEditorContent font span {
-	background-color: #ffa;
-	color: blue !important;
-}
-
-.TableEditorContent-Edit {
-	border-top: 1px solid #BFBFBF;
-	border-bottom: 1px solid #BFBFBF;
-	width: 98%;
 }
 
 tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent {
@@ -428,16 +279,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	padding-right: 5px;
 }
 
-.TableEditorContent-Empty {
-	font-size: 12px;
-	font-family: sans-serif;
-	font-style: italic;
-	padding: 3px;
-	margin: 2px;
-	opacity: 0.5;
-	width: 99%;
-}
-
 /* Search-replace page
  * TODO arrange for these to share styles with editor table
  */
@@ -446,7 +287,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 {
 	color: #555555;
 	background-color: #f3f2f2;
-	border-bottom: 1px solid lightgrey;
+	border-bottom: 1px solid #d3d3d3;
 	padding: 0px 20px;
 	white-space: nowrap;
 }
@@ -597,6 +438,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	cursor:pointer;
 	margin-left: 8px;
 	margin-right: 8px;
+	font-size:16px;
 }
 
 .linkLabel
@@ -829,9 +671,15 @@ td.ApprovedStateDecoration div div div
 	white-space: pre-wrap;
 }
 
+/* TM and Glossary result*/
 .resultTable
 {
 	width:100%;
+    table-layout: fixed;
+}
+.resultTable tbody td
+{
+    vertical-align: top;
 }
 
 .resultTable .oddRow
@@ -856,22 +704,22 @@ td.ApprovedStateDecoration div div div
 	background:#DFE3E7;
 }
 
-.resultTable td.numTransCol
+.resultTable .numTransCol
 {
 	width:60px;
 }
 
-.resultTable td.detailCol
+.resultTable .detailCol
 {
 	width:60px;
 }
 
-.resultTable td.similarityCol
+.resultTable .similarityCol
 {
 	width:60px;
 }
 
-.resultTable td.actionCol
+.resultTable .actionCol
 {
 	width:60px;
 }

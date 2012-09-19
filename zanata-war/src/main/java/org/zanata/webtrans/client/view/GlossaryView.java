@@ -46,6 +46,13 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    interface Styles extends CssResource
    {
+      String rootContainer();
+
+      String searchBox();
+
+      String topBar();
+
+      String headerLabel();
    }
 
    @UiField
@@ -91,12 +98,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
       formatter.setStyleName(0, SOURCE_COL, "th");
       formatter.setStyleName(0, TARGET_COL, "th");
-      formatter.setStyleName(0, ACTION_COL, "th");
-      formatter.addStyleName(0, ACTION_COL, "centered");
-      formatter.addStyleName(0, ACTION_COL, "actionCol");
-      formatter.setStyleName(0, DETAILS_COL, "th");
-      formatter.addStyleName(0, DETAILS_COL, "centered");
-      formatter.addStyleName(0, DETAILS_COL, "detailCol");
+      formatter.setStyleName(0, ACTION_COL, "th centered actionCol");
+      formatter.setStyleName(0, DETAILS_COL, "th centered detailCol");
 
       resultTable.setWidget(0, SOURCE_COL, new Label(messages.srcTermLabel()));
       resultTable.setWidget(0, TARGET_COL, new Label(messages.targetTermLabel()));
@@ -220,8 +223,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
          });
 
          resultTable.setWidget(i + 1, ACTION_COL, copyButton);
-         resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered");
-         resultTable.getFlexCellFormatter().addStyleName(i + 1, ACTION_COL, "actionCol");
+         resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL, "centered actionCol");
 
          InlineLabel infoCell = new InlineLabel();
          infoCell.setStyleName("icon-info-circle-2 details");
@@ -235,8 +237,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
          });
 
          resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
-         resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
-         resultTable.getFlexCellFormatter().addStyleName(i + 1, DETAILS_COL, "detailCol");
+         resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered detailCol");
       }
    }
 

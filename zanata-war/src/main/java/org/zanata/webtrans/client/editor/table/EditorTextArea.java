@@ -245,4 +245,21 @@ public class EditorTextArea extends TextArea
          editor.markText(searchCursor.from(), searchCursor.to(), "CodeMirror-searching");
       }
    }-*/;
+
+   public void refresh()
+   {
+      if (useCodeMirrorFlag)
+      {
+         refreshCodeMirror();
+      }
+   }
+
+   private native void refreshCodeMirror() /*-{
+      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+
+      if (editor)
+      {
+         editor.refresh();
+      }
+   }-*/;
 }

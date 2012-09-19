@@ -63,6 +63,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    @UiField
    Label pageSizeHeader;
    @UiField
+   InlineLabel five;
+   @UiField
    InlineLabel ten;
    @UiField
    InlineLabel fifty;
@@ -72,9 +74,9 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    Styles style;
    @UiField
    Label otherConfigHeader;
+
    @UiField
    CheckBox showErrorChk;
-
    @UiField
    CheckBox useCodeMirrorChk; // TODO this is disabled and invisible to user. If codemirror works fine then remove this option.
 
@@ -121,6 +123,21 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       return untranslatedChk;
    }
 
+   @UiHandler("five")
+   public void onPageSizeFiveClicked(ClickEvent event)
+   {
+      selectFive();
+      listener.onPageSizeClick(5);
+   }
+
+   private void selectFive()
+   {
+      five.setStyleName(style.selectedPageSize());
+      ten.removeStyleName(style.selectedPageSize());
+      twentyFive.removeStyleName(style.selectedPageSize());
+      fifty.removeStyleName(style.selectedPageSize());
+   }
+
    @UiHandler("ten")
    public void onPageSizeTenClicked(ClickEvent event)
    {
@@ -130,6 +147,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
    private void selectTen()
    {
+      five.removeStyleName(style.selectedPageSize());
       ten.setStyleName(style.selectedPageSize());
       twentyFive.removeStyleName(style.selectedPageSize());
       fifty.removeStyleName(style.selectedPageSize());
@@ -144,6 +162,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
    private void selectTwentyFive()
    {
+      five.removeStyleName(style.selectedPageSize());
       ten.removeStyleName(style.selectedPageSize());
       twentyFive.setStyleName(style.selectedPageSize());
       fifty.removeStyleName(style.selectedPageSize());
@@ -158,6 +177,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
    private void selectFifty()
    {
+      five.removeStyleName(style.selectedPageSize());
       ten.removeStyleName(style.selectedPageSize());
       twentyFive.removeStyleName(style.selectedPageSize());
       fifty.setStyleName(style.selectedPageSize());
@@ -215,7 +235,11 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
    private void selectPageSize(int pageSize)
    {
-      if (pageSize == 10)
+      if (pageSize == 5)
+      {
+         selectFive();
+      }
+      else if (pageSize == 10)
       {
          selectTen();
       }

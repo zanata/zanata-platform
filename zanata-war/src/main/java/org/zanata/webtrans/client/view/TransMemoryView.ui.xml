@@ -5,29 +5,27 @@
 	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
     <ui:style type = "org.zanata.webtrans.client.view.TransMemoryView.Styles">
         .headerLabel {
-            padding-right:5px;
-            padding-top:5px;	
-            font-weight:bold;
-            color:#C35817;
+            padding-right: 5px;
+            padding-top: 5px;
+            font-weight: bold;
+            color: #C35817;
         }
-       
-        .searchBox
-		{
-			border:1px solid #A7A7A7;
-			border-radius:3px;
-			padding:2px;
-		}
-		
-		.rootContainer {
-			min-width:580px;
-			width:100%;
-		}
-		
-		.topBar
-		{
-			padding-left:10px;
-		}
-		
+
+        .searchBox {
+            border: 1px solid #A7A7A7;
+            border-radius: 3px;
+            padding: 2px;
+        }
+
+        .rootContainer {
+            min-width: 580px;
+            width: 100%;
+        }
+
+        .topBar {
+            padding-left: 10px;
+        }
+
     </ui:style>
         
 	<g:ScrollPanel>

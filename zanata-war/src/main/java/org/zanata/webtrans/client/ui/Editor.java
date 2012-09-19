@@ -302,6 +302,12 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
+   public void refresh()
+   {
+      textArea.refresh();
+   }
+
+   @Override
    public void removeTranslator(String name, String color)
    {
       translatorList.removeTranslator(name, color);

@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
 import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Warning;
 
 import java.util.List;
@@ -42,6 +43,7 @@ import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
@@ -60,6 +62,7 @@ import com.google.inject.Inject;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+// @formatter:off
 public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
       TransUnitSelectionHandler,
       FilterViewEventHandler,
@@ -68,9 +71,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       TransUnitEditDisplay.Listener,
       TableRowSelectedEventHandler,
       LoadingEventHandler
+// @formatter:on
 {
 
    private final TransUnitEditDisplay display;
+   private final WebTransMessages messages;
    private final EventBus eventBus;
    private final NavigationController navigationController;
    private final SourceContentsPresenter sourceContentsPresenter;
@@ -82,14 +87,17 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private TransUnitId selectedId;
 
    @Inject
+   // @formatter:off
    public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationController navigationController,
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
                                  TranslatorInteractionService translatorService,
-                                 TransUnitSaveService transUnitSaveService)
+                                 TransUnitSaveService transUnitSaveService, WebTransMessages messages)
+   // @formatter:on
    {
       super(display, eventBus);
       this.display = display;
+      this.messages = messages;
       this.display.setRowSelectionListener(this);
 
       this.display.addFilterConfirmationHandler(this);
@@ -107,10 +115,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    protected void onBind()
    {
-      eventBus.addHandler(FilterViewEvent.getType(), this);
-      eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
-      eventBus.addHandler(TableRowSelectedEvent.TYPE, this);
-      eventBus.addHandler(LoadingEvent.TYPE, this);
+      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
+      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
+      registerHandler(eventBus.addHandler(TableRowSelectedEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(LoadingEvent.TYPE, this));
    }
 
    @Override
@@ -216,10 +224,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          if (!Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
          {
             //updatedTU is our active row but done by another user
-            //TODO current edit has happened. What's the best way to show it to user? May need to put current editing value in some place
-            Log.info("detect concurrent edit. Closing editor");
-            // TODO localise
-            eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
+            Log.info("detect concurrent edit. reset editor value");
+            eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
          }
          else if (updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy)
          {

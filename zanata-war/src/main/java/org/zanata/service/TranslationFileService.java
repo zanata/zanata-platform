@@ -20,10 +20,15 @@
  */
 package org.zanata.service;
 
+import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Set;
 
 /**
  * Provides basic services to transform and process translation files.
@@ -32,7 +37,127 @@ import java.io.InputStream;
  */
 public interface TranslationFileService
 {
-   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName);
+   /**
+    * Extract the translated strings from a document file to a usable form.
+    * 
+    * @param fileContents the document to parse
+    * @param fileName the name including extension for the file (used to determine how to parse file)
+    * @return a representation of the translations
+    * @throws ZanataServiceException if there is no adapter available for the
+    *            document format, or there is an error during parsing
+    */
+   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException;
 
+   /**
+    * Extract the translatable strings from a document file to a usable form.
+    * May be used for new or existing documents.
+    * 
+    * @param fileContents
+    * @param path to use within the Zanata project-iteration
+    * @param fileName to use within the Zanata project-iteration
+    * @return a usable representation of the document
+    */
    Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
+
+   /**
+    * Extract the translatable strings from a new version of an existing document file to a usable form.
+    * 
+    * @param fileContents
+    * @param docId the id of an existing document
+    * @param uploadFileName name of the new file being parsed, used only to identify format
+    * @return a usable representation of the document
+    */
+   Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String uploadFileName);
+
+   /**
+    * Extracts the translatable strings from a document file to a usable form.
+    * 
+    * @param documentFile location of the document to parse
+    * @param path to use within the Zanata project-iteration
+    * @param fileName to use within the Zanata project-iteration
+    * @return a usable representation of the document
+    * @throws ZanataServiceException if there is no adapter available for the
+    *            document format, or there is an error during parsing
+    */
+   Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
+
+   /**
+    * Extract the translatable strings from a new version of an existing document file to a usable form.
+    * 
+    * @param documentFile location of the document to parse
+    * @param docId the id of an existing document
+    * @param uploadFileName name of the new file being parsed, used only to identify format
+    * @return a usable representation of the document
+    * @throws ZanataServiceException
+    */
+   Resource parseUpdatedDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
+
+   /**
+    * Check whether a handler for the given file type is available.
+    * 
+    * @param fileNameOrExtension full filename with extension, or just extension
+    * @return
+    */
+   boolean hasAdapterFor(String fileNameOrExtension);
+
+   Set<String> getSupportedExtensions();
+
+   public URI getDocumentURI(String projectSlug, String iterationSlug, String docPath, String docName);
+
+   FileFormatAdapter getAdapterFor(String fileNameOrExtension);
+
+   /**
+    * Persist an input stream to a temporary file.
+    * 
+    * The created file should be removed using {@link #removeTempFile(File)} when it is no longer required.
+    * 
+    * @param fileContents stream of bytes to persist
+    * @return reference to the created file
+    */
+   File persistToTempFile(InputStream fileContents);
+
+   /**
+    * Attempts to remove a temporary file from disk.
+    * 
+    * If the file cannot be removed, it is marked for removal on application exit.
+    * 
+    * @param tempFile file to remove
+    */
+   void removeTempFile(File tempFile);
+
+   /**
+    * Add a document to persistent storage, overwriting any equivalent existing document.
+    * 
+    * A document is equivalent if it has the same project and version slug, docPath and docName.
+    * 
+    * @param docContents contents of the document, will be in a closed state when this method completes.
+    * @param projectSlug
+    * @param iterationSlug
+    * @param docPath
+    * @param docNameAndExt
+    * @throws ZanataServiceException if the document cannot be persisted
+    */
+   void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName) throws ZanataServiceException;
+
+   boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName);
+
+   /**
+    * Stream the contents of a document from persistence.
+    * 
+    * @param projectSlug
+    * @param iterationSlug
+    * @param docPath
+    * @param docNameAndExt
+    * @return the document as an InputStream, or null if no document is in persistence with the given credentials.
+    */
+   InputStream streamDocument(String projectSlug, String iterationSlug, String docPath, String docName);
+
+   /**
+    * 
+    * @param fileNameOrExtension
+    * @return the extension for a given filename, or the extension that was passed in
+    */
+   String extractExtension(String fileNameOrExtension);
+
+
 }

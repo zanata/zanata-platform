@@ -154,12 +154,6 @@
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-annotations</artifactId>
-				<version>${hibernate.annotations.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
 				<version>${hibernate.entitymanager.version}</version>
 				<exclusions>

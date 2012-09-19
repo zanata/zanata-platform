@@ -68,6 +68,7 @@ public class DocumentServiceImpl implements DocumentService
    private ApplicationConfiguration applicationConfiguration;
 
 
+   // TODO check permissions
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
                                   Set<String> extensions, boolean copyTrans )
    {
