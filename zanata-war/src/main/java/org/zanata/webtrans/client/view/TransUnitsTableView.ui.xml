@@ -2,7 +2,7 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-    <ui:style field="style" type="org.zanata.webtrans.client.view.TransUnitEditView.Styles">
+    <ui:style field="style" type="org.zanata.webtrans.client.view.TransUnitsTableView.Styles">
         .oddRow {
 
         }

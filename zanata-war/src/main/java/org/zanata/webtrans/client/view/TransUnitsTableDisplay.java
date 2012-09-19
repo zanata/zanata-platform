@@ -31,8 +31,8 @@ import com.google.inject.ImplementedBy;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-@ImplementedBy(TransUnitEditView.class)
-public interface TransUnitEditDisplay extends WidgetDisplay
+@ImplementedBy(TransUnitsTableView.class)
+public interface TransUnitsTableDisplay extends WidgetDisplay
 {
    void addFilterConfirmationHandler(FilterViewConfirmationDisplay.Listener listener);
 

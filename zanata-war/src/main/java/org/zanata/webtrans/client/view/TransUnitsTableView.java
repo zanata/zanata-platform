@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TransUnitEditView extends Composite implements TransUnitEditDisplay
+public class TransUnitsTableView extends Composite implements TransUnitsTableDisplay
 {
    private static TransUnitEditViewUiBinder uiBinder = GWT.create(TransUnitEditViewUiBinder.class);
 
@@ -47,7 +47,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    private Listener listener;
 
    @Inject
-   public TransUnitEditView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel)
+   public TransUnitsTableView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel)
    {
       this.filterViewConfirmationDisplay = filterViewConfirmationDisplay;
       this.loadingPanel = loadingPanel;
@@ -101,22 +101,32 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       showEmptyContentIfNoData(sourceDisplays.size());
 
       transUnitTable.resizeRows(sourceDisplays.size());
+      HTMLTable.RowFormatter rowFormatter = transUnitTable.getRowFormatter();
+      HTMLTable.CellFormatter cellFormatter = transUnitTable.getCellFormatter();
+
       for (int i = 0; i < sourceDisplays.size(); i++)
       {
          SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
          TargetContentsDisplay targetDisplay = targetDisplays.get(i);
+
          transUnitTable.setWidget(i, 0, sourceDisplay);
          transUnitTable.setWidget(i, 1, targetDisplay);
-         HTMLTable.CellFormatter cellFormatter = transUnitTable.getCellFormatter();
+
          cellFormatter.setVerticalAlignment(i, 0, HasVerticalAlignment.ALIGN_TOP);
          cellFormatter.setVerticalAlignment(i, 1, HasVerticalAlignment.ALIGN_TOP);
          cellFormatter.setStyleName(i, 0, style.cellFormat());
          cellFormatter.setStyleName(i, 1, style.cellFormat());
+
          sourceDisplay.refresh();
          targetDisplay.refresh();
-      }
-      applyRowStyle();
 
+         rowFormatter.setStyleName(i, getRowStyle(i));
+      }
+   }
+
+   private String getRowStyle(int row)
+   {
+      return row % 2 == 0 ? style.evenRow() : style.oddRow();
    }
 
    private void showEmptyContentIfNoData(int dataSize)
@@ -128,22 +138,6 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       else
       {
          root.setWidget(transUnitTable);
-      }
-   }
-
-   private void applyRowStyle()
-   {
-      HTMLTable.RowFormatter rowFormatter = transUnitTable.getRowFormatter();
-      for (int i = 0; i < transUnitTable.getRowCount(); i++)
-      {
-         if ((i % 2) == 0)
-         {
-            rowFormatter.setStyleName(i, style.evenRow());
-         }
-         else
-         {
-            rowFormatter.setStyleName(i, style.oddRow());
-         }
       }
    }
 
@@ -195,7 +189,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       String noContent();
    }
 
-   interface TransUnitEditViewUiBinder extends UiBinder<Widget, TransUnitEditView>
+   interface TransUnitEditViewUiBinder extends UiBinder<Widget, TransUnitsTableView>
    {
    }
 }

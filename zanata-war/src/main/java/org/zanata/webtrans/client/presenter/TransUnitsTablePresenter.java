@@ -45,7 +45,7 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
-import org.zanata.webtrans.client.view.TransUnitEditDisplay;
+import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -59,18 +59,18 @@ import com.google.inject.Inject;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 // @formatter:off
-public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitEditDisplay> implements
+public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDisplay> implements
       TransUnitSelectionHandler,
       FilterViewEventHandler,
       FilterViewConfirmationDisplay.Listener,
       NavigationService.PageDataChangeListener,
-      TransUnitEditDisplay.Listener,
+      TransUnitsTableDisplay.Listener,
       TableRowSelectedEventHandler,
       LoadingEventHandler
 // @formatter:on
 {
 
-   private final TransUnitEditDisplay display;
+   private final TransUnitsTableDisplay display;
    private final WebTransMessages messages;
    private final EventBus eventBus;
    private final NavigationService navigationService;
@@ -84,7 +84,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitEditDispl
 
    @Inject
    // @formatter:off
-   public TransUnitsTablePresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationService navigationService,
+   public TransUnitsTablePresenter(TransUnitsTableDisplay display, EventBus eventBus, NavigationService navigationService,
                                    SourceContentsPresenter sourceContentsPresenter,
                                    TargetContentsPresenter targetContentsPresenter,
                                    TranslatorInteractionService translatorService,
