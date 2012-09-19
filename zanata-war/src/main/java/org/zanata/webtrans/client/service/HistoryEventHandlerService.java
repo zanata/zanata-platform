@@ -1,22 +1,21 @@
 package org.zanata.webtrans.client.service;
 
+import static com.google.common.base.Objects.equal;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
-import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.shared.model.DocumentId;
+
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Objects;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static com.google.common.base.Objects.equal;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -78,14 +77,6 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
          appPresenter.selectDocument(docId);
       }
       Log.info("[gwt-history] document id: " + docId);
-
-      // if there is no valid document, don't show the editor
-      // default to document list instead
-      if (docId == null && token.getView() == MainView.Editor)
-      {
-         Log.warn("[gwt-history] access editor view with invalid document id. Showing document list view instead");
-         token.setView(MainView.Documents);
-      }
 
       if (docId != null)
       {

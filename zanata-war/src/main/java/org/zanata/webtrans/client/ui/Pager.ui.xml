@@ -6,7 +6,7 @@
 	
 	<ui:style>
 		 .nav-button {
-           padding:0 6px 1px 6px;
+           padding:0 6px;
            font-size:14px;
            margin:0;
         }

@@ -5,11 +5,11 @@
 	<ui:style type="org.zanata.webtrans.client.editor.filter.TransFilterView.Styles">
 		.transFilterTextBox {
 			margin: 0px;
-			font-size: 12px;
+			font-size: 16px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
 			outline: none;
-			width:388px;
+			width:440px;
 		}
 		
 		.transFilterTextBoxEmpty {

@@ -211,6 +211,10 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             {
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
+         else
+         {
+            display.setDocumentLabel("", messages.noDocumentSelected());
+         }
             currentDisplayStats = selectedDocumentStats;
             translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
@@ -230,14 +234,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             break;
          case Documents:
          default:
-            if (selectedDocument != null)
-            {
-               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
-            }
-            else
-            {
-               display.setDocumentLabel("", messages.noDocumentSelected());
-            }
+         display.setDocumentLabel("", messages.documentListTitle());
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
@@ -356,23 +353,26 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    }
 
    @Override
-   public void onDocumentListClicked()
+   public void onEditorClicked()
    {
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-
-      if (token.getView().equals(MainView.Documents))
+      if (!token.getView().equals(MainView.Editor))
       {
-         if (selectedDocument == null)
-         {
-            return; // abort if no doc to edit
-         }
          token.setView(MainView.Editor);
+         history.newItem(token.toTokenString());
       }
-      else
+   }
+
+   @Override
+   public void onDocumentListClicked()
+   {
+
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      if (!token.getView().equals(MainView.Documents))
       {
          token.setView(MainView.Documents);
+         history.newItem(token.toTokenString());
       }
-      history.newItem(token.toTokenString());
    }
 
    @Override

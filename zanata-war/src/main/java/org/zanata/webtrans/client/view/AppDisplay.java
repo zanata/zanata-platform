@@ -1,10 +1,9 @@
 package org.zanata.webtrans.client.view;
 
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.presenter.MainView;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 /**
 * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -45,5 +44,7 @@ public interface AppDisplay extends WidgetDisplay
       void onKeyShortcutsClicked();
 
       void onResizeClicked();
+
+      void onEditorClicked();
    }
 }

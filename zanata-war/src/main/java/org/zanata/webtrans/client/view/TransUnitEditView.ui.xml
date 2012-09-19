@@ -20,7 +20,7 @@
             border-collapse: collapse;
             /* setting width to 99% to leave some space from the scroll bar */
             width: 99%;
-            margin: 5px;
+            margin: 0 5px;
             table-layout: fixed;
         }
 
@@ -30,6 +30,7 @@
             color: grey;
             font-size: 1.5em;
         }
+       
     </ui:style>
 
         <g:ScrollPanel ui:field="root">
