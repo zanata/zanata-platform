@@ -63,7 +63,6 @@ import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -147,6 +146,7 @@ public class SearchResultsPresenterTest extends PresenterTest
    // arguments to Display.addDocument method
    Capture<ClickHandler> capturedViewDocClickHandlers;
    Capture<ClickHandler> capturedSearchDocClickHandlers;
+   Capture<ClickHandler> capturedInfoClickHandlers;
    Capture<MultiSelectionModel<TransUnitReplaceInfo>> capturedSelectionModels;
    Capture<ValueChangeHandler<Boolean>> capturedSelectDocChangeHandlers;
 
@@ -210,6 +210,7 @@ public class SearchResultsPresenterTest extends PresenterTest
 
       capturedViewDocClickHandlers = addCapture(new Capture<ClickHandler>());
       capturedSearchDocClickHandlers = addCapture(new Capture<ClickHandler>());
+      capturedInfoClickHandlers = addCapture(new Capture<ClickHandler>());
       capturedSelectionModels = addCapture(new Capture<MultiSelectionModel<TransUnitReplaceInfo>>());
       capturedSelectDocChangeHandlers = addCapture(new Capture<ValueChangeHandler<Boolean>>());
 
@@ -383,7 +384,7 @@ public class SearchResultsPresenterTest extends PresenterTest
       expect(mockSelectionModelDoc1.addSelectionChangeHandler(capture(capturedSelectionChangeHandlerDoc1))).andReturn(mockHandlerRegistration());
       expect(mockSelectionModelDoc1.addSelectionChangeHandler(capture(capturedSelectionChangeDeselectHandlerDoc1))).andReturn(mockHandlerRegistration());
       
-      expect(mockDisplay.addDocument(eq(TEST_DOC_PATH_1), capture(capturedViewDocClickHandlers), capture(capturedSearchDocClickHandlers), capture(capturedSelectionModels), capture(capturedSelectDocChangeHandlers))).andReturn(mockDataProviderDoc1).once();
+      expect(mockDisplay.addDocument(eq(TEST_DOC_PATH_1), capture(capturedViewDocClickHandlers), capture(capturedSearchDocClickHandlers), capture(capturedInfoClickHandlers), capture(capturedSelectionModels), capture(capturedSelectDocChangeHandlers))).andReturn(mockDataProviderDoc1).once();
 
       expect(mockDisplay.getSelectAllCheckbox()).andReturn(mockSelectAllHeader).once();
    }

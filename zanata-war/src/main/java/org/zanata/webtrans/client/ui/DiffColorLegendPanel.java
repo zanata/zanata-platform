@@ -20,36 +20,75 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Singleton
+
 public class DiffColorLegendPanel extends PopupPanel
 {
+
+   interface DiffColorLegendPanelUiBinder extends UiBinder<HTMLPanel, DiffColorLegendPanel>
+   {
+   }
+
+   interface Styles extends CssResource
+   {
+      String diffLegendPanel();
+   }
+
+   @UiField
+   Label insDescription, delDescription, containDescription;
+
+   @UiField
+   Styles style;
+
+   private final WebTransMessages messages;
+
+   private static DiffColorLegendPanelUiBinder uiBinder = GWT.create(DiffColorLegendPanelUiBinder.class);
 
    @Inject
    public DiffColorLegendPanel(final WebTransMessages messages)
    {
       super(true, true);
+      this.messages = messages;
 
-      HorizontalPanel hp = new HorizontalPanel();
-      hp.setSpacing(5);
-      hp.setSize("100%", "100%");
-      // Label loadingLabel = new Label(text);
-      // loadingLabel.setStyleName("loadingLabel");
-      // hp.add(loadingLabel);
-      // hp.add(new Image(resources.loader()));
-      setStyleName("loadingPanel");
-      add(hp);
+      HTMLPanel container = uiBinder.createAndBindUi(this);
+      setStyleName(style.diffLegendPanel());
+      setWidget(container);
+   }
+
+   public void show(ShortcutContext context)
+   {
+      switch (context)
+      {
+      case TM:
+         insDescription.setText(messages.tmInsertTagDesc());
+         delDescription.setText(messages.tmDelTagDesc());
+         containDescription.setText(messages.tmPlainTextDesc());
+         break;
+      case ProjectWideSearch:
+         insDescription.setText(messages.searchReplaceInsertTagDesc());
+         delDescription.setText(messages.searchReplaceDelTagDesc());
+         containDescription.setText(messages.searchReplacePlainTextDesc());
+         break;
+      default:
+         break;
+      }
+      this.center();
    }
 }
 

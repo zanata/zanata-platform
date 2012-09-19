@@ -60,6 +60,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       
       HasClickHandlers getClearButton();
 
+      HasClickHandlers getDiffLegendInfo();
+
       void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries);
 
       void setListener(HasTMEvent listener);
@@ -67,6 +69,10 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       void stopProcessing(boolean showResult);
 
       void clearTableContent();
+
+      void showDiffLegend();
+
+      void hideDiffLegend();
    }
 
    private final UserWorkspaceContext userWorkspaceContext;
@@ -77,7 +83,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private TransMemoryDetailsPresenter tmInfoPresenter;
    private TransMemoryMergePresenter transMemoryMergePresenter;
    private KeyShortcutPresenter keyShortcutPresenter;
-   // private LoadingListDataProvider<TransMemoryResultItem> dataProvider;
 
    private final WebTransMessages messages;
 
@@ -149,6 +154,15 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
             keyShortcutPresenter.setContextActive(ShortcutContext.TM, false);
             keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
             isFocused = false;
+         }
+      });
+
+      display.getDiffLegendInfo().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.showDiffLegend();
          }
       });
 

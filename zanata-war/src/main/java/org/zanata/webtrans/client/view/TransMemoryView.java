@@ -3,10 +3,12 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.HasTMEvent;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
 import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
@@ -73,7 +75,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private final FlexTable resultTable;
    private final Label loadingLabel, noResultFoundLabel;
    private final UiMessages messages;
+   private final DiffColorLegendPanel diffLegendPanel;
 
+   private final InlineLabel diffLegendInfo;
+   
    private HasTMEvent listener;
 
    private final static int SOURCE_COL = 0;
@@ -84,9 +89,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private final static int DETAILS_COL = 5;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, final DiffColorLegendPanel diffLegendPanel)
    {
       this.messages = messages;
+      this.diffLegendPanel = diffLegendPanel;
 
       resultTable = new FlexTable();
       resultTable.setStyleName("resultTable");
@@ -107,7 +113,15 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       formatter.addStyleName(0, DETAILS_COL, "centered");
       formatter.addStyleName(0, DETAILS_COL, "detailCol");
 
-      resultTable.setWidget(0, SOURCE_COL, new Label(messages.sourceLabel()));
+      diffLegendInfo = new InlineLabel();
+      diffLegendInfo.setStyleName("icon-info-circle-2 details");
+      diffLegendInfo.setTitle(messages.colorLegend());
+
+      FlowPanel sourceHeader = new FlowPanel();
+      sourceHeader.add(new InlineLabel(messages.sourceLabel()));
+      sourceHeader.add(diffLegendInfo);
+
+      resultTable.setWidget(0, SOURCE_COL, sourceHeader);
       resultTable.setWidget(0, TARGET_COL, new Label(messages.targetLabel()));
 
       Label numTrans = new Label(messages.hash());
@@ -327,5 +341,24 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public HasClickHandlers getClearButton()
    {
       return clearButton;
+   }
+
+   @Override
+   public HasClickHandlers getDiffLegendInfo()
+   {
+      return diffLegendInfo;
+   }
+
+   @Override
+   public void showDiffLegend()
+   {
+      diffLegendPanel.show(ShortcutContext.TM);
+
+   }
+
+   @Override
+   public void hideDiffLegend()
+   {
+      diffLegendPanel.hide(true);
    }
 }

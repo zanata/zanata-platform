@@ -22,21 +22,16 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.view.client.ListDataProvider;
 
 @Test(groups = { "unit-tests" })
 public class TransMemoryPresenterTest extends PresenterTest
@@ -136,6 +131,8 @@ public class TransMemoryPresenterTest extends PresenterTest
 
       expect(mockDisplay.getMergeButton()).andReturn(createMock(HasClickHandlers.class)).once();
       
+      expect(mockDisplay.getDiffLegendInfo()).andReturn(createMock(HasClickHandlers.class)).once();
+
       mockDisplay.setListener(isA(HasTMEvent.class));
       expectLastCall().once();
    }

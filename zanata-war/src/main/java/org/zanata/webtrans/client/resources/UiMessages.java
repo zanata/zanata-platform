@@ -169,5 +169,8 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("#")
    String hash();
+
+   @DefaultMessage("Color legend")
+   String colorLegend();
    
 }

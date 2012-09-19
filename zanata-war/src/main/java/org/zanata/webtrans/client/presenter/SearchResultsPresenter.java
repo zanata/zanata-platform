@@ -155,7 +155,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel,
        *      ValueChangeHandler, WebTransMessages)
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
 
       /**
        * Add a document header and table to the display, with action buttons per
@@ -171,7 +171,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        *      Delegate, Delegate, SelectionModel, ValueChangeHandler,
        *      WebTransMessages, org.zanata.webtrans.client.resources.Resources)
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate);
 
       /**
        * Required to avoid instantiating a component that calls client-only code
@@ -184,6 +184,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       HasValue<Boolean> getSelectAllCheckbox();
 
       void addSearchFieldsSelect(String item, String value);
+
+      void showDiffLegend();
    }
 
    private final WebTransMessages messages;
@@ -1064,15 +1066,24 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels.put(docId, selectionModel);
       ClickHandler showDocHandler = showDocClickHandler(docPathName, false);
       ClickHandler searchDocHandler = showDocClickHandler(docPathName, true);
+      ClickHandler infoClickHandler = new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.showDiffLegend();
+         }
+      };
+
       ValueChangeHandler<Boolean> selectDocHandler = selectAllHandler(docId, selectionModel);
 
       if (showRowActionButtons)
       {
-         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler, ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, infoClickHandler, selectionModel, selectDocHandler, ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
       }
       else
       {
-         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler);
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, infoClickHandler, selectionModel, selectDocHandler);
       }
 
       selectAllDocList.put(docId, display.getSelectAllCheckbox());

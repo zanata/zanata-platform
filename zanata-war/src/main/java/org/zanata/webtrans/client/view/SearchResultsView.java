@@ -20,10 +20,12 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 
@@ -97,11 +99,14 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    private HasValue<Boolean> selectAllCheckbox;
 
+   private final DiffColorLegendPanel diffLegendPanel;
+
    @Inject
-   public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
+   public SearchResultsView(Resources resources, final WebTransMessages webTransMessages, final DiffColorLegendPanel diffLegendPanel)
    {
       messages = webTransMessages;
       this.resources = resources;
+      this.diffLegendPanel = diffLegendPanel;
       initWidget(uiBinder.createAndBindUi(this));
       searchingIndicator = new LoadingPanel(messages.searching(), resources);
       searchingIndicator.setModal(false);
@@ -245,17 +250,17 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler)
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler)
    {
       SearchResultsDocumentTable table = new SearchResultsDocumentTable(selectionModel, selectAllHandler, messages);
-      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
+      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, infoClickHandler, table);
    }
 
    @Override
-   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
    {
       SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
-      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
+      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, infoClickHandler, table);
    }
 
    /**
@@ -265,11 +270,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
     * @param table
     * @return
     */
-   private ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, SearchResultsDocumentTable table)
+   private ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, SearchResultsDocumentTable table)
    {
       // ensure 'no results' message is no longer visible
       noResultsLabel.removeFromParent();
-      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
+      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler, infoClickHandler);
       searchResultsPanel.add(table);
       table.addStyleName("projectWideSearchResultsDocumentBody");
 
@@ -285,7 +290,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       return selectAllCheckbox;
    }
 
-   private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler)
+   private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler)
    {
       FlowPanel docHeading = new FlowPanel();
       docHeading.addStyleName("projectWideSearchResultsDocumentHeader");
@@ -309,6 +314,15 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       showDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
       showDocLabel.addClickHandler(viewDocClickHandler);
       docHeading.add(showDocLabel);
+
+      InlineLabel infoLabel = new InlineLabel();
+      infoLabel.setStyleName("icon-info-circle-2");
+      infoLabel.setTitle(messages.colorLegend());
+      infoLabel.addClickHandler(infoClickHandler);
+      infoLabel.addStyleName("projectWideSearchResultsInfo");
+      infoLabel.addStyleName("linkLabelNormalColor");
+      infoLabel.addStyleName("projectWideSearchResultsDocumentLink");
+      docHeading.add(infoLabel);
 
       searchResultsPanel.add(docHeading);
    }
@@ -336,5 +350,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public void addSearchFieldsSelect(String item, String value)
    {
       searchFieldsSelect.addItem(item, value);
+   }
+
+   @Override
+   public void showDiffLegend()
+   {
+      diffLegendPanel.show(ShortcutContext.ProjectWideSearch);
    }
 }

@@ -592,12 +592,19 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	overflow: visible !important;
 }
 
+.projectWideSearchResultsInfo
+{
+	cursor:pointer;
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
 .linkLabel
 {
 	cursor:pointer;
 	text-decoration: underline;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin-left: 8px;
+	margin-right: 8px;
 	white-space: nowrap;
 }
 

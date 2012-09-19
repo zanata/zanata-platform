@@ -418,4 +418,40 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Go to row if on current page")
    String goToRowOnCurrentPage();
+
+   @DefaultMessage("Style")
+   String style();
+
+   @DefaultMessage("Description")
+   String description();
+
+   @DefaultMessage("Blue color")
+   String blueColor();
+
+   @DefaultMessage("Red color + crossed out")
+   String redColorCrossedOut();
+
+   @DefaultMessage("Plain text")
+   String plainText();
+
+   @DefaultMessage("Text contain in result but not in search term")
+   String tmInsertTagDesc();
+
+   @DefaultMessage("Text contain in search term but not in result")
+   String tmDelTagDesc();
+
+   @DefaultMessage("Text contain in both search term and result")
+   String tmPlainTextDesc();
+
+   @DefaultMessage("New replacement text ")
+   String searchReplaceInsertTagDesc();
+
+   @DefaultMessage("Old text to be replaced")
+   String searchReplaceDelTagDesc();
+
+   @DefaultMessage("No changes")
+   String searchReplacePlainTextDesc();
+
+   @DefaultMessage("Color legend")
+   String colorLegend();
 }
