@@ -590,6 +590,11 @@
 
   <page view-id="/project/copy_trans_options.xhtml">
     <param name="projectSlug" value="#{projectCopyTransOptionsAction.projectSlug}"/>
+
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectCopyTransOptionsAction.projectSlug), projectCopyTransOptionsAction.projectSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.project.CopyTransOpts.title'])}"/>
     <action execute="#{projectCopyTransOptionsAction.initialize}"/>
 
     <navigation from-action="#{projectCopyTransOptionsAction.saveOptions}">
@@ -716,6 +721,7 @@
       <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
       <!-- can't use <restrict> here either -->
       <action execute="#{identity.checkPermission(copyTransAction.projectIteration, 'copy-trans')}" />
+      <action execute="#{copyTransAction.initialize}"/>
       <action execute="#{breadcrumbs.clear}"/>
       <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
       <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(copyTransAction.projectSlug), copyTransAction.projectSlug)}"/>

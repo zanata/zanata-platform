@@ -37,7 +37,6 @@ import lombok.Setter;
  * Persistent representation of Copy Trans options.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
- * @see org.zanata.common.CopyTransOptions
  */
 @Entity
 @TypeDef(name = "conditionRuleAction", typeClass = ConditionRuleActionType.class)

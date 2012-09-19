@@ -339,7 +339,14 @@ public class CopyTransServiceImpl implements CopyTransService
    @Override
    public void copyTransForDocument(HDocument document)
    {
-      this.copyTransForDocument(document, new HCopyTransOptions(), null);
+      HCopyTransOptions copyTransOpts =
+            document.getProjectIteration().getProject().getDefaultCopyTransOpts();
+      if( copyTransOpts == null )
+      {
+         copyTransOpts = new HCopyTransOptions();
+      }
+
+      this.copyTransForDocument(document, copyTransOpts, null);
    }
 
    /**
@@ -364,6 +371,7 @@ public class CopyTransServiceImpl implements CopyTransService
          procHandle.setCurrentProgress(0);
       }
 
+      // TODO Process handle may not be null
       for( HDocument doc : iteration.getDocuments().values() )
       {
          if( procHandle.shouldStop() )
@@ -375,6 +383,8 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    /**
+    * NB: The handle's options will be ignored. This is a convenience method to have the logic
+    * in a single place.
     * @see CopyTransServiceImpl#copyTransForDocument(org.zanata.model.HDocument)
     */
    private void copyTransForDocument(HDocument document, HCopyTransOptions options, CopyTransProcessHandle processHandle)

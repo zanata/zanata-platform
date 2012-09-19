@@ -23,13 +23,12 @@ package org.zanata.model.type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.type.ImmutableType;
 import org.hibernate.type.LiteralType;
-import org.hibernate.type.StringType;
-import org.zanata.common.CopyTransOptions;
 import org.zanata.model.HCopyTransOptions;
 
 /**
@@ -40,7 +39,7 @@ public class ConditionRuleActionType extends ImmutableType implements LiteralTyp
    @Override
    public String objectToSQLString(Object value, Dialect dialect) throws Exception
    {
-      return new StringType().objectToSQLString( value.toString(), dialect );
+      return "'" + ((HCopyTransOptions.ConditionRuleAction) value).getInitial() + "'";
    }
 
    @Override
@@ -66,7 +65,7 @@ public class ConditionRuleActionType extends ImmutableType implements LiteralTyp
    @Override
    public int sqlType()
    {
-      return new StringType().sqlType();
+      return Types.CHAR;
    }
 
    @Override
@@ -82,9 +81,9 @@ public class ConditionRuleActionType extends ImmutableType implements LiteralTyp
    }
 
    @Override
-   public Class getReturnedClass()
+   public Class<HCopyTransOptions.ConditionRuleAction> getReturnedClass()
    {
-      return CopyTransOptions.ConditionRuleAction.class;
+      return HCopyTransOptions.ConditionRuleAction.class;
    }
 
    @Override

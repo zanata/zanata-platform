@@ -20,10 +20,7 @@
  */
 package org.zanata.action;
 
-import javax.persistence.EntityManager;
-
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -43,9 +40,6 @@ public class ProjectCopyTransOptionsAction
    private String projectSlug;
 
    private HProject project;
-
-   @In
-   private EntityManager entityManager;
 
    @In
    private ProjectDAO projectDAO;

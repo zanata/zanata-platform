@@ -26,7 +26,6 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.zanata.common.CopyTransOptions;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProject;
@@ -128,7 +127,6 @@ public class CopyTransAction
       return this.projectIteration;
    }
 
-   @Create
    public void initialize()
    {
       HProject project = this.getProjectIteration().getProject();

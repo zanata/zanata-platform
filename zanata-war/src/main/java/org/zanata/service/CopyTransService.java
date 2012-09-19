@@ -47,6 +47,9 @@ public interface CopyTransService
     * 
     * The text flow revision for copied targets is set to the current text flow
     * revision.
+    *
+    * This method will use the default Copy Trans options for the document's project.
+    * If not set, it will use the default global options.
     * 
     * @param document the document to copy translations into
     */
