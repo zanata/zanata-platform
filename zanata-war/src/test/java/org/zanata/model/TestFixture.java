@@ -35,15 +35,21 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 
 public class TestFixture
 {
-   public static TransUnit makeTransUnit(int id)
+   public static TransUnit makeTransUnit(long id)
    {
       return makeTransUnit(id, ContentState.New);
    }
 
-   public static TransUnit makeTransUnit(int id, ContentState contentState)
+   public static TransUnit makeTransUnit(long id, ContentState contentState, String targetContent)
    {
       return TransUnit.Builder.newTransUnitBuilder().setId(id).setResId("resId" + id).setVerNum(0)
-            .setLocaleId("en").addSource("source").addTargets("target").setStatus(contentState).setRowIndex(id).build();
+            .setLocaleId("en").addSource("source").addTargets(targetContent).setStatus(contentState).setRowIndex((int) id).build();
+   }
+
+   public static TransUnit makeTransUnit(long id, ContentState contentState)
+   {
+      return TransUnit.Builder.newTransUnitBuilder().setId(id).setResId("resId" + id).setVerNum(0)
+            .setLocaleId("en").addSource("source").addTargets("target").setStatus(contentState).setRowIndex((int) id).build();
    }
 
    public static HTextFlow makeHTextFlow(long id, HLocale hLocale, ContentState contentState)
