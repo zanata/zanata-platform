@@ -83,7 +83,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@Test
+@Test(groups = { "unit-tests" })
 public class NavigationServiceTest
 {
    private static final Logger log = LoggerFactory.getLogger(NavigationServiceTest.class);
