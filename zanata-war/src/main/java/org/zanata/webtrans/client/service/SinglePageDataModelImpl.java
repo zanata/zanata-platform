@@ -15,22 +15,6 @@ class SinglePageDataModelImpl
    private List<TransUnit> data = Lists.newArrayList();
    private int currentRow = NavigationService.UNSELECTED;
 
-   protected void setSelected(int rowIndex)
-   {
-      Log.info("current row:" + currentRow + " about to select row:" + rowIndex);
-      currentRow = rowIndex;
-   }
-
-   protected TransUnit getByIdOrNull(TransUnitId transUnitId)
-   {
-      int indexById = findIndexById(transUnitId);
-      if (validIndex(indexById))
-      {
-         return data.get(indexById);
-      }
-      return null;
-   }
-
    protected void setData(List<TransUnit> data)
    {
       this.data = Lists.newArrayList(data);
@@ -40,6 +24,26 @@ class SinglePageDataModelImpl
    protected List<TransUnit> getData()
    {
       return data;
+   }
+
+   protected void setSelected(int rowIndex)
+   {
+      Log.info("current row:" + currentRow + " about to select row:" + rowIndex);
+      currentRow = rowIndex;
+   }
+
+   protected TransUnit getSelectedOrNull()
+   {
+      if (validIndex(currentRow))
+      {
+         return data.get(currentRow);
+      }
+      return null;
+   }
+
+   protected int getCurrentRow()
+   {
+      return currentRow;
    }
 
    /**
@@ -59,23 +63,19 @@ class SinglePageDataModelImpl
       return false;
    }
 
-   protected TransUnit getSelectedOrNull()
-   {
-      if (validIndex(currentRow))
-      {
-         return data.get(currentRow);
-      }
-      return null;
-   }
-
-   protected int getCurrentRow()
-   {
-      return currentRow;
-   }
-
    private boolean validIndex(int rowIndex)
    {
       return rowIndex >= 0 && rowIndex < data.size();
+   }
+
+   protected TransUnit getByIdOrNull(TransUnitId transUnitId)
+   {
+      int indexById = findIndexById(transUnitId);
+      if (validIndex(indexById))
+      {
+         return data.get(indexById);
+      }
+      return null;
    }
 
    protected int findIndexById(TransUnitId id)
