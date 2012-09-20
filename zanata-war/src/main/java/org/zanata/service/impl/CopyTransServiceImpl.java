@@ -37,6 +37,7 @@ import org.jboss.seam.util.Work;
 import org.zanata.common.ContentState;
 import org.zanata.dao.DatabaseConstants;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
@@ -69,6 +70,9 @@ public class CopyTransServiceImpl implements CopyTransService
 
    @In
    private DocumentDAO documentDAO;
+
+   @In
+   private ProjectDAO projectDAO;
    
    @Logger
    Log log;
@@ -347,6 +351,36 @@ public class CopyTransServiceImpl implements CopyTransService
       }
 
       this.copyTransForDocument(document, copyTransOpts, null);
+   }
+
+   @Override
+   public void copyTransForDocument(HDocument document, CopyTransProcessHandle processHandle)
+   {
+      // Set the max progress only if it hasn't been set yet
+      if( processHandle != null && !processHandle.isMaxProgressSet() )
+      {
+         List<HLocale> localeList =
+               localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
+                     document.getProjectIteration().getSlug());
+
+         processHandle.setMaxProgress(localeList.size());
+      }
+
+      HCopyTransOptions copyTransOpts = processHandle.getOptions();
+      // use project level options
+      if( copyTransOpts == null )
+      {
+         // NB: Need to reload the options from the db
+         copyTransOpts = projectDAO.findById( document.getProjectIteration().getProject().getId(), false )
+                                   .getDefaultCopyTransOpts();
+      }
+      // use the global default options
+      if( copyTransOpts == null )
+      {
+         copyTransOpts = new HCopyTransOptions();
+      }
+
+      this.copyTransForDocument(document, copyTransOpts, processHandle);
    }
 
    /**
