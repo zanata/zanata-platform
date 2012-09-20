@@ -22,6 +22,7 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -29,12 +30,20 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -90,7 +99,13 @@ public class AppPresenterTest
    {
       when(location.getParameter("title")).thenReturn("blah");
       when(messages.windowTitle2(userWorkspace.getWorkspaceContext().getWorkspaceName(), userWorkspace.getWorkspaceContext().getLocaleName(), "blah")).thenReturn("new title");
-
+      
+      HasSelectionHandlers<Integer> contentBodySelection = mock(HasSelectionHandlers.class);
+      HasBeforeSelectionHandlers<Integer> contentBodyBeforeSelection = mock(HasBeforeSelectionHandlers.class);
+      
+      when(display.getContentBodySelection()).thenReturn(contentBodySelection);
+      when(display.getContentBodyBeforeSelection()).thenReturn(contentBodyBeforeSelection);
+      
       presenter.onBind();
 
       verify(keyShortcutPresenter).bind();
@@ -107,6 +122,10 @@ public class AppPresenterTest
 
       WorkspaceId workspaceId = userWorkspace.getWorkspaceContext().getWorkspaceId();
       String localeId = workspaceId.getLocaleId().getId();
+      
+      verify(contentBodySelection).addSelectionHandler(isA(SelectionHandler.class));
+      verify(contentBodyBeforeSelection).addBeforeSelectionHandler(isA(BeforeSelectionHandler.class));
+      
       verify(display).setProjectLinkLabel(workspaceId.getProjectIterationId().getProjectSlug());
       verify(display).setIterationFilesLabel(workspaceId.getProjectIterationId().getIterationSlug() + " [" + localeId + "]");
       verify(display).setReadOnlyVisible(userWorkspace.hasReadOnlyAccess());
@@ -201,14 +220,14 @@ public class AppPresenterTest
    {
       // Given: current selected document is null
       assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(Matchers.nullValue()));
-      when(messages.noDocumentSelected()).thenReturn("no document selected");
+      when(messages.documentListTitle()).thenReturn("Documents");
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null);
 
       // When:
       presenter.showView(MainView.Documents);
 
       // Then:
-      verify(display).setDocumentLabel("", "no document selected");
+      verify(display).setDocumentLabel("", "Documents");
       verify(translationPresenter).concealDisplay();
       verify(searchResultPresenter).concealDisplay();
       verify(sideMenuPresenter).showEditorMenu(false);
@@ -258,6 +277,8 @@ public class AppPresenterTest
       presenter.selectDocument(docId);
 
       // Then:
+      verify(display).enableTab(MainView.Editor, true);
+      
       verifyNoMoreInteractions(display);
       assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(docId));
    }
@@ -282,6 +303,7 @@ public class AppPresenterTest
       // When:
       presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L), new TranslationStats()));
 
+      
       // Then:
       verifyZeroInteractions(display);
    }
@@ -358,25 +380,6 @@ public class AppPresenterTest
       // Then:
       verify(history).getToken();
       verify(history).newItem("doc:pot/a.po");
-      verifyNoMoreInteractions(history);
-   }
-
-   @Test
-   public void onDocumentsClickWillFireNewHistoryItemAndSwitchToEditorView()
-   {
-      // Given: current token is document view and has selected doc
-      DocumentId docId = new DocumentId(1L);
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats);
-      when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
-      when(history.getToken()).thenReturn("doc:pot/a.po");
-      presenter.selectDocument(docId);
-
-      // When:
-      presenter.onDocumentListClicked();
-
-      // Then:
-      verify(history).getToken();
-      verify(history).newItem("view:doc;doc:pot/a.po");
       verifyNoMoreInteractions(history);
    }
 

@@ -10,7 +10,6 @@
 		.editor {
 			background-color: #ffffff;
 			border-bottom: 1px solid #E5E5E5;
-			border-top: 1px solid #E5E5E5;
 		}
 		
 		.unitStatus {
@@ -24,18 +23,31 @@
 		}
 
 		.centerText{
-			text-align: center;
+			margin-left:120px;
+		}
+		
+		.topBar
+		{
+			border-bottom:1px solid lightGrey;
+			background:#F3F2F2;
 		}
 				
 	</ui:style>
+	
 			<g:LayoutPanel>
-	            <g:layer left="1px" width="400px" top="0px" height="24px">
-		            <g:LayoutPanel ui:field="filterPanelContainer"/>			    
-	            </g:layer>
-				<g:layer width="50%" right="30px" top="0px" height="24px">
-						<g:FlowPanel ui:field="transUnitNavigationContainer"  styleName="{style.centerText}"/>
+				<g:layer top="0" height="40px">
+					<g:LayoutPanel styleName="{style.topBar}">
+						 <g:layer left="15px" width="450px" top="7px" bottom="5px">
+				            <g:LayoutPanel ui:field="filterPanelContainer"/>			    
+			            </g:layer>
+						<g:layer width="44%" right="40px" top="9px" height="20px">
+							<g:HTMLPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
+						</g:layer>
+					</g:LayoutPanel>
 				</g:layer>
-				<g:layer top="25px" bottom="2em">
+	            
+	           
+				<g:layer top="40px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
 				</g:layer>
 				<g:layer bottom="0px" height="2em" left="0" right="0">

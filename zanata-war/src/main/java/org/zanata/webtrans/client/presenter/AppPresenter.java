@@ -54,6 +54,10 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.inject.Inject;
 
 // @formatter:off
@@ -120,6 +124,47 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
 
+      display.getContentBodyBeforeSelection().addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>()
+      {
+         @Override
+         public void onBeforeSelection(BeforeSelectionEvent<Integer> event)
+         {
+            // Cancel editor tab selection is no document is selected
+            if (event.getItem() == AppDisplay.EDITOR_VIEW)
+            {
+               if (selectedDocument == null)
+               {
+                  event.cancel();
+               }
+            }
+         }
+      });
+
+      if (selectedDocument == null)
+      {
+         display.enableTab(MainView.Editor, false);
+      }
+      
+      display.getContentBodySelection().addSelectionHandler(new SelectionHandler<Integer>()
+      {
+         @Override
+         public void onSelection(SelectionEvent<Integer> event)
+         {
+            switch (event.getSelectedItem())
+            {
+            case AppDisplay.SEARCH_AND_REPLACE_VIEW:
+               onSearchAndReplaceClicked();
+               break;
+            case AppDisplay.DOCUMENT_VIEW:
+               onDocumentListClicked();
+               break;
+            case AppDisplay.EDITOR_VIEW:
+               onEditorClicked();
+               break;
+            }
+         }
+      });
+
       registerKeyShortcuts();
 
       display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
@@ -134,6 +179,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       {
          window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
       }
+
 
       display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
    }
@@ -205,45 +251,42 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       Log.info("view to show is:" + viewToShow);
       switch (viewToShow)
       {
-         // TODO use revealDisplay/concealDisplay for editor and document views
-         case Editor:
-            if (selectedDocument != null)
-            {
-               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
-            }
-            currentDisplayStats = selectedDocumentStats;
-            translationPresenter.revealDisplay();
-            searchResultsPresenter.concealDisplay();
-            sideMenuPresenter.showEditorMenu(true);
-            display.setResizeVisible(true);
-            break;
-         case Search:
-            // these two lines temporarily here until PresenterRevealedHandler
-            // is
-            // fully functional
-            display.setDocumentLabel("", messages.projectWideSearchAndReplace());
-            currentDisplayStats = projectStats;
-            translationPresenter.concealDisplay();
-            searchResultsPresenter.revealDisplay();
-            sideMenuPresenter.showEditorMenu(false);
-            display.setResizeVisible(false);
-            break;
-         case Documents:
-         default:
-            if (selectedDocument != null)
-            {
-               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
-            }
-            else
-            {
-               display.setDocumentLabel("", messages.noDocumentSelected());
-            }
-            currentDisplayStats = projectStats;
-            translationPresenter.concealDisplay();
-            searchResultsPresenter.concealDisplay();
-            sideMenuPresenter.showEditorMenu(false);
-            display.setResizeVisible(false);
-            break;
+      // TODO use revealDisplay/concealDisplay for editor and document views
+      case Editor:
+         if (selectedDocument != null)
+         {
+            display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+         }
+         else
+         {
+            display.setDocumentLabel("", messages.noDocumentSelected());
+         }
+         currentDisplayStats = selectedDocumentStats;
+         translationPresenter.revealDisplay();
+         searchResultsPresenter.concealDisplay();
+         sideMenuPresenter.showEditorMenu(true);
+         display.setResizeVisible(true);
+         break;
+      case Search:
+         // these two lines temporarily here until PresenterRevealedHandler
+         // is
+         // fully functional
+         display.setDocumentLabel("", messages.projectWideSearchAndReplace());
+         currentDisplayStats = projectStats;
+         translationPresenter.concealDisplay();
+         searchResultsPresenter.revealDisplay();
+         sideMenuPresenter.showEditorMenu(false);
+         display.setResizeVisible(false);
+         break;
+      case Documents:
+      default:
+         display.setDocumentLabel("", messages.documentListTitle());
+         currentDisplayStats = projectStats;
+         translationPresenter.concealDisplay();
+         searchResultsPresenter.concealDisplay();
+         sideMenuPresenter.showEditorMenu(false);
+         display.setResizeVisible(false);
+         break;
       }
       display.showInMainView(viewToShow);
       currentView = viewToShow;
@@ -253,17 +296,17 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    /**
     * Set selected document to the given document, update name and stats to
     * match the newly selected document.
-    *
+    * 
     * @param docId id of the document to select
     */
    public void selectDocument(DocumentId docId)
    {
-
       if (selectedDocument == null || !docId.equals(selectedDocument.getId()))
       {
          DocumentInfo docInfo = documentListPresenter.getDocumentInfo(docId);
          if (docInfo != null)
          {
+            display.enableTab(MainView.Editor, true);
             selectedDocument = docInfo;
             selectedDocumentStats.set(selectedDocument.getStats());
             if (currentView == MainView.Editor)
@@ -356,23 +399,28 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    }
 
    @Override
+   public void onEditorClicked()
+   {
+      if (selectedDocument != null)
+      {
+         HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+         if (!token.getView().equals(MainView.Editor))
+         {
+            token.setView(MainView.Editor);
+            history.newItem(token.toTokenString());
+         }
+      }
+   }
+
+   @Override
    public void onDocumentListClicked()
    {
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-
-      if (token.getView().equals(MainView.Documents))
-      {
-         if (selectedDocument == null)
-         {
-            return; // abort if no doc to edit
-         }
-         token.setView(MainView.Editor);
-      }
-      else
+      if (!token.getView().equals(MainView.Documents))
       {
          token.setView(MainView.Documents);
+         history.newItem(token.toTokenString());
       }
-      history.newItem(token.toTokenString());
    }
 
    @Override
@@ -402,7 +450,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
    /**
     * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
-    *
+    * 
     * @param projectStats project stats
     * @param selectedDocumentStats selected document stats
     * @param currentView current view
