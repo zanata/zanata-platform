@@ -95,7 +95,7 @@
 			cursor:pointer;
 		}
 		
-		.viewMenuSelection:hover
+		.selectedTab
 		{
 			background:#7E91A9;
 			color:#FFFFFF;

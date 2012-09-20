@@ -62,6 +62,8 @@ public class AppView extends Composite implements AppDisplay
    interface Styles extends CssResource
    {
       String disableTab();
+
+      String selectedTab();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -151,14 +153,26 @@ public class AppView extends Composite implements AppDisplay
       {
       case Documents:
          contentBody.selectTab(DOCUMENT_VIEW);
+         setSelectedTab(documentListTab);
          break;
       case Search:
          contentBody.selectTab(SEARCH_AND_REPLACE_VIEW);
+         setSelectedTab(searchAndReplaceTab);
          break;
       case Editor:
          contentBody.selectTab(EDITOR_VIEW);
+         setSelectedTab(editorTab);
          break;
       }
+   }
+   
+   private void setSelectedTab(Widget tab)
+   {
+      editorTab.removeStyleName(style.selectedTab());
+      searchAndReplaceTab.removeStyleName(style.selectedTab());
+      documentListTab.removeStyleName(style.selectedTab());
+      
+      tab.addStyleName(style.selectedTab());
    }
 
    @Override
