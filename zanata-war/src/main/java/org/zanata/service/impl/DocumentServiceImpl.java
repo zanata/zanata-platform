@@ -114,7 +114,7 @@ public class DocumentServiceImpl implements DocumentService
 
       if (copyTrans && nextDocRev == 1)
       {
-         copyClosestEquivalentTranslation(document);
+         copyTranslations(document);
       }
 
       return document;
@@ -125,7 +125,7 @@ public class DocumentServiceImpl implements DocumentService
     *
     * @param document The document to copy translations into.
     */
-   private void copyClosestEquivalentTranslation(HDocument document)
+   private void copyTranslations(HDocument document)
    {
       if (applicationConfiguration.getEnableCopyTrans())
       {

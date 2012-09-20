@@ -24,6 +24,7 @@
 		<class>org.zanata.model.HAccountRole</class>
 		<class>org.zanata.model.HApplicationConfiguration</class>
 		<class>org.zanata.model.HasSimpleComment</class>
+        <class>org.zanata.model.HCopyTransOptions</class>
 		<class>org.zanata.model.HDocumentHistory</class>
 		<class>org.zanata.model.HDocument</class>
 		<class>org.zanata.model.HIterationProject</class>

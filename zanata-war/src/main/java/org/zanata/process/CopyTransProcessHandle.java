@@ -20,29 +20,47 @@
  */
 package org.zanata.process;
 
+import org.zanata.model.HCopyTransOptions;
+import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.zanata.common.CopyTransOptions;
-import org.zanata.model.HProjectIteration;
 
 /**
  * Process Handle for a background copy trans.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@RequiredArgsConstructor
 public class CopyTransProcessHandle extends ProcessHandle
 {
 
-   @Getter
-   private final HProjectIteration projectIteration;
+   public CopyTransProcessHandle(HProjectIteration projectIteration, String triggeredBy, HCopyTransOptions options)
+   {
+      this.projectIteration = projectIteration;
+      this.triggeredBy = triggeredBy;
+      this.options = options;
+   }
+
+   public CopyTransProcessHandle(HDocument document, String triggeredBy, HCopyTransOptions options)
+   {
+      this.document = document;
+      this.triggeredBy = triggeredBy;
+      this.options = options;
+   }
 
    @Getter
-   private final String triggeredBy;
+   private HProjectIteration projectIteration;
 
    @Getter
-   private final CopyTransOptions options;
+   private HDocument document;
+
+   @Getter
+   private String triggeredBy;
+
+   @Getter
+   private HCopyTransOptions options;
 
    @Getter
    @Setter
@@ -55,4 +73,19 @@ public class CopyTransProcessHandle extends ProcessHandle
    @Getter
    @Setter
    private long cancelledTime;
+
+   // Flag to ensure max progress is only set one
+   private boolean maxProgressSet = false;
+
+   public boolean isMaxProgressSet()
+   {
+      return maxProgressSet;
+   }
+
+   @Override
+   public void setMaxProgress(int maxProgress)
+   {
+      super.setMaxProgress(maxProgress);
+      maxProgressSet = true;
+   }
 }

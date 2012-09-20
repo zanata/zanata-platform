@@ -27,16 +27,24 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.security.Identity;
-import org.zanata.common.CopyTransOptions;
+import org.zanata.model.HCopyTransOptions;
+import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.process.BackgroundProcessListener;
 import org.zanata.process.CopyTransProcess;
 import org.zanata.process.CopyTransProcessHandle;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Manager Bean that keeps track of manual copy trans being run on all iterations
@@ -47,24 +55,25 @@ import java.util.concurrent.TimeUnit;
 @Name("copyTransManager")
 @Scope(ScopeType.APPLICATION)
 @Startup
+// TODO This class should be merged with the copy trans service (?)
 public class CopyTransManager
 {
    // Single instance of the process listener
    private final CopyTransProcessListener listenerInstance = new CopyTransProcessListener();
 
    // Collection of currently running copy trans processes
-   private Map<Long, CopyTransProcessHandle> currentlyRunning =
-         Collections.synchronizedMap( new HashMap<Long, CopyTransProcessHandle>() );
+   private Map<CopyTransProcessKey, CopyTransProcessHandle> currentlyRunning =
+         Collections.synchronizedMap( new HashMap<CopyTransProcessKey, CopyTransProcessHandle>() );
 
    // Collection of recently cancelled copy trans processes (discards the oldest ones)
-   private Map<Long, CopyTransProcessHandle> recentlyCancelled =
+   private Map<CopyTransProcessKey, CopyTransProcessHandle> recentlyCancelled =
          new MapMaker()
                .softValues()
                .expiration(1, TimeUnit.HOURS) // keep them for an hour
                .makeMap();
 
    // Collection of recently completed copy trans processes (discards the olders ones)
-   private Map<Long, CopyTransProcessHandle> recentlyFinished =
+   private Map<CopyTransProcessKey, CopyTransProcessHandle> recentlyFinished =
          new MapMaker()
                .softValues()
                .expiration(1, TimeUnit.HOURS) // keep them for an hour
@@ -77,10 +86,23 @@ public class CopyTransManager
    private Identity identity;
 
 
-   public boolean isCopyTransRunning( HProjectIteration iteration )
+   public boolean isCopyTransRunning( Object target )
    {
-      return currentlyRunning.containsKey( iteration.getId() )
-            && !currentlyRunning.get( iteration.getId() ).isFinished();
+      CopyTransProcessKey key;
+
+      if( target instanceof HProjectIteration )
+      {
+         key = CopyTransProcessKey.getKey((HProjectIteration)target);
+      }
+      else if( target instanceof HDocument )
+      {
+         key = CopyTransProcessKey.getKey((HDocument)target);
+      }
+      else
+      {
+         throw new IllegalArgumentException("Copy Trans can only run for HProjectIteration and HDocument");
+      }
+      return currentlyRunning.containsKey( key ) && !currentlyRunning.get( key ).isFinished();
    }
 
    /**
@@ -88,13 +110,33 @@ public class CopyTransManager
     */
    public void startCopyTrans( HProjectIteration iteration )
    {
-      this.startCopyTrans( iteration, new CopyTransOptions() );
+      this.startCopyTrans( iteration, new HCopyTransOptions() );
+   }
+
+   /**
+    * Start a Translation copy for a document with the given options.
+    *
+    * @param document The document for which to start copy trans.
+    * @param options The options to run copy trans with.
+    */
+   public void startCopyTrans( HDocument document, HCopyTransOptions options )
+   {
+      if( isCopyTransRunning(document) )
+      {
+         throw new RuntimeException("Copy Trans is already running for document '" + document.getDocId() + "'");
+      }
+
+      CopyTransProcessHandle handle = new CopyTransProcessHandle( document, identity.getCredentials().getUsername(), options );
+      handle.addListener(listenerInstance);
+      currentlyRunning.put(CopyTransProcessKey.getKey(document), handle);
+
+      copyTransProcess.startProcess(handle);
    }
 
    /**
     * Start a Translation copy with the given custom options.
     */
-   public void startCopyTrans( HProjectIteration iteration, CopyTransOptions options )
+   public void startCopyTrans( HProjectIteration iteration, HCopyTransOptions options )
    {
       // double check
       if( isCopyTransRunning(iteration) )
@@ -103,45 +145,74 @@ public class CopyTransManager
       }
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle( iteration, identity.getCredentials().getUsername(), options );
-      handle.setMaxProgress( iteration.getDocuments().size() );
       handle.addListener(listenerInstance);
-      currentlyRunning.put(iteration.getId(), handle);
+      currentlyRunning.put(CopyTransProcessKey.getKey(iteration), handle);
 
       copyTransProcess.startProcess(handle);
    }
 
-   public CopyTransProcessHandle getCopyTransProcessHandle(HProjectIteration iteration)
+   public CopyTransProcessHandle getCopyTransProcessHandle(Object target)
    {
-      return currentlyRunning.get( iteration.getId() );
+      CopyTransProcessKey key;
+
+      if( target instanceof HProjectIteration )
+      {
+         key = CopyTransProcessKey.getKey((HProjectIteration)target);
+      }
+      else if( target instanceof HDocument )
+      {
+         key = CopyTransProcessKey.getKey((HDocument)target);
+      }
+      else
+      {
+         throw new IllegalArgumentException("Copy Trans can only run for HProjectIteration and HDocument");
+      }
+      return currentlyRunning.get( key );
    }
 
    public void cancelCopyTrans( HProjectIteration iteration )
    {
       if( isCopyTransRunning(iteration) )
       {
+         CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
          CopyTransProcessHandle handle = this.getCopyTransProcessHandle(iteration);
          handle.stop();
          handle.setCancelledTime( System.currentTimeMillis() );
          handle.setCancelledBy( identity.getCredentials().getUsername() );
-         this.recentlyCancelled.put( iteration.getId(), this.currentlyRunning.remove( iteration.getId() ) );
+         this.recentlyCancelled.put( key, this.currentlyRunning.remove( key ) );
       }
    }
 
    /**
-    * Obtains the most recently finished (cancelled or otherwise) process handle for a copy trans on a given iteration.
+    * Obtains the most recently finished (cancelled or otherwise) process handle for a copy trans on a given target.
     * If a long time has passed since the last cancelled process, or if there has not been a recent cancellation, this
     * method may return null.
     *
-    * @param iteration The Project iteration for which to retrieve the most recently finished process handle.
+    * @param target The target for which to retrieve the most recently finished process handle.
     * @return Most recently finished process handle for the project iteration, or null if there isn't one.
     */
-   public CopyTransProcessHandle getMostRecentlyFinished( HProjectIteration iteration )
+   public CopyTransProcessHandle getMostRecentlyFinished( Object target )
    {
-      // Only if copy trans is not running
-      if( !this.isCopyTransRunning(iteration) )
+      CopyTransProcessKey key;
+
+      if( target instanceof HProjectIteration )
       {
-         CopyTransProcessHandle mostRecent = this.recentlyCancelled.get( iteration.getId() );
-         CopyTransProcessHandle recentlyRan = this.recentlyFinished.get( iteration.getId() );
+         key = CopyTransProcessKey.getKey((HProjectIteration)target);
+      }
+      else if( target instanceof HDocument )
+      {
+         key = CopyTransProcessKey.getKey((HDocument)target);
+      }
+      else
+      {
+         throw new IllegalArgumentException("Copy Trans can only run for HProjectIteration and HDocument");
+      }
+
+      // Only if copy trans is not running
+      if( !this.isCopyTransRunning(target) )
+      {
+         CopyTransProcessHandle mostRecent = this.recentlyCancelled.get( key );
+         CopyTransProcessHandle recentlyRan = this.recentlyFinished.get( key );
 
          if( mostRecent == null )
          {
@@ -172,9 +243,48 @@ public class CopyTransManager
          // move the entry to the recently finished, if not already done (i.e. it was cancelled)
          if( currentlyRunning.containsValue( handle ) )
          {
-            recentlyFinished.put( handle.getProjectIteration().getId(),
-                  currentlyRunning.remove( handle.getProjectIteration().getId() ) );
+            CopyTransProcessKey key;
+            if( handle.getProjectIteration() != null )
+            {
+               key = CopyTransProcessKey.getKey(handle.getProjectIteration());
+            }
+            else
+            {
+               key = CopyTransProcessKey.getKey(handle.getDocument());
+            }
+            recentlyFinished.put( key, currentlyRunning.remove( key ) );
          }
+      }
+   }
+
+   /**
+    * Internal class to index Copy Trans processes.
+    */
+   @EqualsAndHashCode
+   @Getter
+   @Setter
+   @NoArgsConstructor(access = AccessLevel.PRIVATE)
+   private static final class CopyTransProcessKey implements Serializable
+   {
+      private String projectSlug;
+      private String iterationSlug;
+      private String docId;
+
+      public static CopyTransProcessKey getKey(HProjectIteration iteration)
+      {
+         CopyTransProcessKey newKey = new CopyTransProcessKey();
+         newKey.setProjectSlug(iteration.getProject().getSlug());
+         newKey.setIterationSlug(iteration.getSlug());
+         return newKey;
+      }
+
+      public static CopyTransProcessKey getKey(HDocument document)
+      {
+         CopyTransProcessKey newKey = new CopyTransProcessKey();
+         newKey.setDocId(document.getDocId());
+         newKey.setProjectSlug(document.getProjectIteration().getProject().getSlug());
+         newKey.setIterationSlug(document.getProjectIteration().getSlug());
+         return newKey;
       }
    }
 

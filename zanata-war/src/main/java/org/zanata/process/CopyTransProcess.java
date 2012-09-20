@@ -40,6 +40,13 @@ public class CopyTransProcess extends BackgroundProcess<CopyTransProcessHandle>
    @Override
    protected void runProcess(CopyTransProcessHandle handle) throws Exception
    {
-      copyTransServiceImpl.copyTransForIteration( handle.getProjectIteration(), handle );
+      if( handle.getProjectIteration() != null )
+      {
+         copyTransServiceImpl.copyTransForIteration( handle.getProjectIteration(), handle );
+      }
+      else
+      {
+         copyTransServiceImpl.copyTransForDocument( handle.getDocument(), handle );
+      }
    }
 }

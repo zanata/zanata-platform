@@ -29,13 +29,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
@@ -48,7 +45,6 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
@@ -117,13 +113,7 @@ public class SourceDocResourceService implements SourceDocResource
    private LocaleService localeServiceImpl;
 
    @In
-   private CopyTransService copyTransServiceImpl;
-
-   @In
    private DocumentService documentServiceImpl;
-
-   @In
-   private ApplicationConfiguration applicationConfiguration;
 
    @In
    private ResourceUtils resourceUtils;
@@ -548,14 +538,6 @@ public class SourceDocResourceService implements SourceDocResource
       {
          log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
          throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
-
-   public void copyClosestEquivalentTranslation(HDocument document)
-   {
-      if (applicationConfiguration.getEnableCopyTrans())
-      {
-         copyTransServiceImpl.copyTransForDocument(document);
       }
    }
 

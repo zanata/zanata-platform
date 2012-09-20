@@ -165,4 +165,40 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="9" author="camunoz@redhat.com">
+        <comment>Add Copy Trans Options table and project column.</comment>
+        <createTable tableName="HCopyTransOptions">
+            <column name="contextMismatchAction" type="char(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="docIdMismatchAction" type="char(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="projectMismatchAction" type="char(1)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addColumn tableName="HProject">
+            <column name="default_copy_trans_opts_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="FK_HProject_HCopyTransOpts"
+                                 baseTableName="HProject" baseColumnNames="default_copy_trans_opts_id"
+                                 referencedTableName="HCopyTransOptions" referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

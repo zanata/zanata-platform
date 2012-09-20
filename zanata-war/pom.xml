@@ -213,6 +213,7 @@
 
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7.2</version>
 				<configuration>
 					<suiteXmlFiles>
 						<suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
@@ -237,6 +238,7 @@
                             <exclude>**/client/gin/**</exclude>
                             <exclude>**/client/ui/**</exclude>
                             <exclude>**/client/view/**</exclude>
+                            <exclude>**/*OkapiUtil*</exclude>
                             <!--below are some trivial classes(java bean) at the moment-->
                             <exclude>**/shared/auth/**</exclude>
                             <exclude>**/shared/model/**</exclude>
@@ -248,9 +250,9 @@
                         <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
                         <haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
                     </check>
-                </configuration>
-            </plugin>
-			
+				</configuration>
+			</plugin>
+
 			<!-- Configure Failsafe to run in integration-test phase -->
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>

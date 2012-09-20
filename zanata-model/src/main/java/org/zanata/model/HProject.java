@@ -27,11 +27,13 @@ import java.util.Set;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -74,6 +76,7 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    private String homeContent;
    private boolean overrideLocales = false;
    private boolean restrictedByRoles = false;
+   private HCopyTransOptions defaultCopyTransOpts;
    private Set<HLocale> customizedLocales;
 
    private Set<HPerson> maintainers;
@@ -109,6 +112,13 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public String getHomeContent()
    {
       return homeContent;
+   }
+
+   @OneToOne(fetch = FetchType.LAZY, optional = true)
+   @JoinColumn(name = "default_copy_trans_opts_id")
+   public HCopyTransOptions getDefaultCopyTransOpts()
+   {
+      return defaultCopyTransOpts;
    }
 
    /**

@@ -35,10 +35,11 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.util.Work;
 import org.zanata.common.ContentState;
-import org.zanata.common.CopyTransOptions;
 import org.zanata.dao.DatabaseConstants;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -69,6 +70,9 @@ public class CopyTransServiceImpl implements CopyTransService
 
    @In
    private DocumentDAO documentDAO;
+
+   @In
+   private ProjectDAO projectDAO;
    
    @Logger
    Log log;
@@ -127,7 +131,7 @@ public class CopyTransServiceImpl implements CopyTransService
    @Override
    public void copyTransForLocale(HDocument document, HLocale locale)
    {
-      this.copyTransForLocale(document, locale, new CopyTransOptions());
+      this.copyTransForLocale(document, locale, new HCopyTransOptions());
    }
 
 
@@ -140,7 +144,7 @@ public class CopyTransServiceImpl implements CopyTransService
     * @param options Options to configure the copy trans process.
     */
    // TODO unit testing for this method. Reduce complexity(pass cyclomatic complexity analysis)
-   public void copyTransForLocale(final HDocument document, final HLocale locale, final CopyTransOptions options)
+   public void copyTransForLocale(final HDocument document, final HLocale locale, final HCopyTransOptions options)
    {
       try
       {
@@ -244,7 +248,7 @@ public class CopyTransServiceImpl implements CopyTransService
     * @param options
     * @return The best match for copy trans against the provided original text flow.
     */
-   private CopyTransMatch findBestMatch( ScrollableResults results, HTextFlow originalTf, CopyTransOptions options )
+   private CopyTransMatch findBestMatch( ScrollableResults results, HTextFlow originalTf, HCopyTransOptions options )
    {
       CopyTransMatch bestMatch = null;
 
@@ -270,14 +274,14 @@ public class CopyTransServiceImpl implements CopyTransService
 
             // Context
             boolean contextMatch = currentTft.getTextFlow().getResId().equals( originalTf.getResId() );
-            if( options.getContextMismatchAction() == CopyTransOptions.ConditionRuleAction.REJECT )
+            if( options.getContextMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT )
             {
                if( !contextMatch )
                {
                   continue;// rejected, continue
                }
             }
-            else if( options.getContextMismatchAction() == CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            else if( options.getContextMismatchAction() == HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
             {
                if( !contextMatch )
                {
@@ -288,14 +292,14 @@ public class CopyTransServiceImpl implements CopyTransService
 
             // Doc Id
             boolean docIdMatch = currentTft.getTextFlow().getDocument().getDocId().equals( originalTf.getDocument().getDocId() );
-            if( options.getDocIdMismatchAction() == CopyTransOptions.ConditionRuleAction.REJECT )
+            if( options.getDocIdMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT )
             {
                if( !docIdMatch )
                {
                   continue;// rejected, continue
                }
             }
-            else if( options.getDocIdMismatchAction() == CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            else if( options.getDocIdMismatchAction() == HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
             {
                if( !docIdMatch )
                {
@@ -306,14 +310,14 @@ public class CopyTransServiceImpl implements CopyTransService
 
             // Project
             boolean projectMatch = currentProj.getId().equals(originalTf.getDocument().getProjectIteration().getProject().getId());
-            if( options.getProjectMismatchAction() == CopyTransOptions.ConditionRuleAction.REJECT )
+            if( options.getProjectMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT )
             {
                if( !projectMatch )
                {
                   continue; // rejected, continue
                }
             }
-            else if( options.getProjectMismatchAction() == CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            else if( options.getProjectMismatchAction() == HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
             {
                if( !projectMatch )
                {
@@ -339,7 +343,44 @@ public class CopyTransServiceImpl implements CopyTransService
    @Override
    public void copyTransForDocument(HDocument document)
    {
-      this.copyTransForDocument(document, new CopyTransOptions(), null);
+      HCopyTransOptions copyTransOpts =
+            document.getProjectIteration().getProject().getDefaultCopyTransOpts();
+      if( copyTransOpts == null )
+      {
+         copyTransOpts = new HCopyTransOptions();
+      }
+
+      this.copyTransForDocument(document, copyTransOpts, null);
+   }
+
+   @Override
+   public void copyTransForDocument(HDocument document, CopyTransProcessHandle processHandle)
+   {
+      // Set the max progress only if it hasn't been set yet
+      if( processHandle != null && !processHandle.isMaxProgressSet() )
+      {
+         List<HLocale> localeList =
+               localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
+                     document.getProjectIteration().getSlug());
+
+         processHandle.setMaxProgress(localeList.size());
+      }
+
+      HCopyTransOptions copyTransOpts = processHandle.getOptions();
+      // use project level options
+      if( copyTransOpts == null )
+      {
+         // NB: Need to reload the options from the db
+         copyTransOpts = projectDAO.findById( document.getProjectIteration().getProject().getId(), false )
+                                   .getDefaultCopyTransOpts();
+      }
+      // use the global default options
+      if( copyTransOpts == null )
+      {
+         copyTransOpts = new HCopyTransOptions();
+      }
+
+      this.copyTransForDocument(document, copyTransOpts, processHandle);
    }
 
    /**
@@ -364,6 +405,7 @@ public class CopyTransServiceImpl implements CopyTransService
          procHandle.setCurrentProgress(0);
       }
 
+      // TODO Process handle may not be null
       for( HDocument doc : iteration.getDocuments().values() )
       {
          if( procHandle.shouldStop() )
@@ -375,9 +417,11 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    /**
+    * NB: The handle's options will be ignored. This is a convenience method to have the logic
+    * in a single place.
     * @see CopyTransServiceImpl#copyTransForDocument(org.zanata.model.HDocument)
     */
-   private void copyTransForDocument(HDocument document, CopyTransOptions options, CopyTransProcessHandle processHandle)
+   private void copyTransForDocument(HDocument document, HCopyTransOptions options, CopyTransProcessHandle processHandle)
    {
       log.info("copyTrans start: document \"{0}\"", document.getDocId());
       List<HLocale> localeList =
@@ -401,9 +445,9 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    /**
-    * @see CopyTransServiceImpl#copyTransForLocale(org.zanata.model.HDocument, org.zanata.model.HLocale, org.zanata.common.CopyTransOptions, org.zanata.process.CopyTransProcessHandle)
+    * @see CopyTransServiceImpl#copyTransForLocale(org.zanata.model.HDocument, org.zanata.model.HLocale, HCopyTransOptions, org.zanata.process.CopyTransProcessHandle)
     */
-   private void copyTransForLocale(HDocument document, HLocale locale, CopyTransOptions options, CopyTransProcessHandle procHandle)
+   private void copyTransForLocale(HDocument document, HLocale locale, HCopyTransOptions options, CopyTransProcessHandle procHandle)
    {
       this.copyTransForLocale(document, locale, options);
 

@@ -47,10 +47,32 @@ public interface CopyTransService
     * 
     * The text flow revision for copied targets is set to the current text flow
     * revision.
+    *
+    * This method will use the default Copy Trans options for the document's project.
+    * If not set, it will use the default global options.
     * 
     * @param document the document to copy translations into
     */
    void copyTransForDocument(HDocument document);
+
+   /**
+    * Copies previous matching translations for all available locales into a
+    * document. Translations are matching if their document id, textflow id and
+    * source content are identical, and their state is approved.
+    *
+    * The text flow revision for copied targets is set to the current text flow
+    * revision.
+    *
+    * This method will use the Copy Trans options in the given process handle. If not
+    * set, it will use the ones set in the project, and finally will default to the
+    * default global options. It will also keep updating the provided process handle.
+    *
+    * @param document The document to copy translations into
+    * @param processHandle The process handle to track updates and provide copy trans
+    *                      options.
+    *
+    */
+   void copyTransForDocument(HDocument document, CopyTransProcessHandle processHandle);
 
    /**
     * Copies previous matching translations for all available locales and documents
