@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.service;
 
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -33,18 +34,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowDAO;
-import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
-import org.zanata.rest.service.ResourceUtils;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.LocaleService;
-import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
+import org.zanata.webtrans.client.events.LoadingEvent;
+import org.zanata.webtrans.client.events.PageCountChangeEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.presenter.TransUnitsTablePresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -54,6 +51,7 @@ import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -61,8 +59,11 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
@@ -76,17 +77,16 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
-@Test(groups = { "unit-tests" })
-public class NavigationServiceTest
+@Test(groups = { "unit-tests" }, description = "This test uses SeamAutowire with mockito to simulate a RPC call environment")
+public class NavigationServiceIntegrationTest
 {
-   private static final Logger log = LoggerFactory.getLogger(NavigationServiceTest.class);
+   private static final Logger log = LoggerFactory.getLogger(NavigationServiceIntegrationTest.class);
    private HLocale hLocale = new HLocale(new LocaleId("en"));
    private WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("project", "master"), hLocale.getLocaleId());
 
@@ -122,25 +122,14 @@ public class NavigationServiceTest
    private AsyncCallback<GetTransUnitListResult> getTransUnitListCallback;
    private AsyncCallback<GetTransUnitsNavigationResult> getTransUnitsNavigationCallback;
    
-   
-   //used by GetTransUnitListHandler and GetTransUnitsNavigationHandler
-   @Mock
-   private TextFlowDAO textFlowDAO;
-   @Mock 
-   private LocaleService localeServiceImpl;
-   @Mock
-   private ResourceUtils resourceUtils;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private TextFlowSearchService textFlowSearchServiceImpl;
-
    private GetTransUnitListHandler getTransUnitListHandler;
    private GetTransUnitsNavigationHandler getTransUnitsNavigationHandler;
 
    private GetTransUnitActionContext context;
-   @Mock private TableEditorMessages messages;
-   @Mock private TransUnitsTablePresenter transUnitsTablePresenter;
+   @Mock
+   private TableEditorMessages messages;
+   @Mock
+   private TransUnitsTablePresenter transUnitsTablePresenter;
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
 
@@ -148,9 +137,11 @@ public class NavigationServiceTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      setupGetTransUnitListHandler();
-      setupGetTransUnitNavigationHandler();
       UserConfigHolder configHolder = new UserConfigHolder();
+
+      MockHandlerFactory handlerFactory = new MockHandlerFactory();
+      getTransUnitListHandler = handlerFactory.createGetTransUnitListHandlerWithBehavior(documentId, hTextFlows, hLocale);
+      getTransUnitsNavigationHandler = handlerFactory.createGetTransUnitsNavigationHandlerWithBehavior(documentId, hTextFlows, hLocale);
 
       service = new NavigationService(eventBus, dispatcher, configHolder, messages);
       service.addPageDataChangeListener(transUnitsTablePresenter);
@@ -184,35 +175,6 @@ public class NavigationServiceTest
       }
    }
 
-   private void setupGetTransUnitListHandler()
-   {
-      // @formatter:off
-      getTransUnitListHandler = SeamAutowire.instance()
-            .use("identity", identity)
-            .use("textFlowDAO", textFlowDAO)
-            .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
-            .use("localeServiceImpl", localeServiceImpl)
-            .use("resourceUtils", resourceUtils)
-            .autowire(GetTransUnitListHandler.class);
-      // @formatter:on
-      when(textFlowDAO.getTextFlows(documentId.getId())).thenReturn(hTextFlows);
-      when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
-      when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
-   }
-
-   private void setupGetTransUnitNavigationHandler()
-   {
-      // @formatter:off
-      getTransUnitsNavigationHandler = SeamAutowire.instance()
-            .use("identity", identity)
-            .use("textFlowDAO", textFlowDAO)
-            .use("localeServiceImpl", localeServiceImpl)
-            .autowire(GetTransUnitsNavigationHandler.class);
-      // @formatter:on
-      when(textFlowDAO.getNavigationByDocumentId(documentId.getId())).thenReturn(hTextFlows);
-      when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
-   }
-
    //look at this AWESOME generic work ;)
    private static <A extends Action<R>, R extends Result, H extends ActionHandler<A, R>> R callHandler(H handler, A action)
    {
@@ -230,7 +192,7 @@ public class NavigationServiceTest
       return result;
    }
 
-   private void simulateRPCCallback()
+   private void simulateRPCCallbackOnSuccess()
    {
       verifyDispatcherAndCaptureArguments();
       getTransUnitListCallback.onSuccess(callHandler(getTransUnitListHandler, getTransUnitList));
@@ -262,9 +224,9 @@ public class NavigationServiceTest
    public void canGoToFirstPage()
    {
       service.init(context.changeCount(3));
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       service.gotoPage(0);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
@@ -284,9 +246,9 @@ public class NavigationServiceTest
    public void canGoToLastPageWithNotPerfectDivide()
    {
       service.init(context.changeCount(4));
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       service.gotoPage(1);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
@@ -297,9 +259,9 @@ public class NavigationServiceTest
    @Test
    public void canGoToLastPageWithPerfectDivide() {
       service.init(context.changeCount(3));
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       service.gotoPage(1);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
@@ -312,14 +274,14 @@ public class NavigationServiceTest
    @Test
    public void canHavePageCountGreaterThanActualSize() {
       service.init(context.changeCount(10));
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       service.gotoPage(100);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
       service.gotoPage(0);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
@@ -328,14 +290,14 @@ public class NavigationServiceTest
    public void canGoToNextPage()
    {
       service.init(context.changeCount(2));
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       service.gotoPage(1);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(2, 3));
       assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
       service.gotoPage(2);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(2));
 
@@ -350,7 +312,7 @@ public class NavigationServiceTest
    public void canGoToPreviousPage()
    {
       service.init(context.changeCount(2));
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       //should be on first page already
       service.gotoPage(0);
       verifyNoMoreInteractions(dispatcher);
@@ -358,17 +320,17 @@ public class NavigationServiceTest
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
       service.gotoPage(2);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(2));
 
       service.gotoPage(1);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(2, 3));
       assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
       service.gotoPage(0);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(0, 1));
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
 
@@ -382,41 +344,58 @@ public class NavigationServiceTest
    public void canGoToPage()
    {
       service.init(context.changeCount(3));
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       service.gotoPage(1);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
       //page out of bound
       service.gotoPage(7);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(3, 4, 5));
       assertThat(navigationStateHolder.getCurrentPage(), is(1));
 
       //page is negative
       service.gotoPage(-1);
-      simulateRPCCallback();
+      simulateRPCCallbackOnSuccess();
       assertThat(getPageDataModelAsIds(), contains(0, 1, 2));
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
    @Test
-   public void canForceReload()
+   public void onRPCSuccess()
    {
       service.init(context.changeCount(3));
-      simulateRPCCallback();
-      service.gotoPage(1);
-      simulateRPCCallback();
-      assertThat(navigationStateHolder.getCurrentPage(), is(1));
+      verify(eventBus, times(2)).fireEvent(LoadingEvent.START_EVENT);
+      simulateRPCCallbackOnSuccess();
+      verify(eventBus).fireEvent(LoadingEvent.FINISH_EVENT);
 
-      service.gotoPage(1);
-      verifyNoMoreInteractions(dispatcher);
-      assertThat(navigationStateHolder.getCurrentPage(), is(1));
+      // behaviour on GetTransUnitList success
+      verify(transUnitsTablePresenter).showDataForCurrentPage(service.getCurrentPageValues());
+      ArgumentCaptor<GwtEvent> eventCaptor = ArgumentCaptor.forClass(GwtEvent.class);
+      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
 
-      service.gotoPage(1);
-      simulateRPCCallback();
-      assertThat(navigationStateHolder.getCurrentPage(), is(1));
+      TableRowSelectedEvent tableRowSelectedEvent = extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
+      TransUnitId firstItem = new TransUnitId(hTextFlows.get(0).getId());
+      assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(firstItem));
+
+      // behaviour on GetTransUnitNavigation success
+      PageCountChangeEvent pageCountChangeEvent = extractFromEvents(eventCaptor.getAllValues(), PageCountChangeEvent.class);
+      assertThat(pageCountChangeEvent.getPageCount(), Matchers.is(2));
+   }
+
+   private <E extends GwtEvent<?>> E extractFromEvents(List<GwtEvent> events, final Class<E> eventType)
+   {
+      GwtEvent gwtEvent = Iterables.find(events, new Predicate<GwtEvent>()
+      {
+         @Override
+         public boolean apply(GwtEvent input)
+         {
+            return eventType.isAssignableFrom(input.getClass());
+         }
+      });
+      return (E) gwtEvent;
    }
 
    private static List<Integer> asIds(List<TransUnit> transUnits)
