@@ -301,12 +301,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     */
    public void selectDocument(DocumentId docId)
    {
-      display.enableTab(MainView.Editor, true);
       if (selectedDocument == null || !docId.equals(selectedDocument.getId()))
       {
          DocumentInfo docInfo = documentListPresenter.getDocumentInfo(docId);
          if (docInfo != null)
          {
+            display.enableTab(MainView.Editor, true);
             selectedDocument = docInfo;
             selectedDocumentStats.set(selectedDocument.getStats());
             if (currentView == MainView.Editor)
@@ -415,7 +415,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    @Override
    public void onDocumentListClicked()
    {
-
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());
       if (!token.getView().equals(MainView.Documents))
       {
