@@ -36,6 +36,8 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -44,6 +46,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -56,6 +59,7 @@ public class AppView extends Composite implements AppDisplay
 
    interface Styles extends CssResource
    {
+      String disableTab();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -64,34 +68,33 @@ public class AppView extends Composite implements AppDisplay
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel projectLink, iterationFilesLink, resize, keyShortcuts;
+   InlineLabel projectLink, iterationFilesLink, readOnlyLabel, resize, keyShortcuts;
    
-   @UiField
-   InlineLabel readOnlyLabel, searchAndReplace, documentList;
-
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel editorContainer, sideMenuContainer, rootContainer;
+   LayoutPanel sideMenuContainer, rootContainer;
    
    @UiField(provided = true)
    final Resources resources;
+
+   @UiField
+   TabLayoutPanel contentBody;
 
    @UiField
    Styles style;
 
    private Listener listener;
 
-   // TODO may be able to make these provided=true widgets
-   private Widget documentListView;
-   private Widget translationView;
-   private Widget searchResultsView;
-
    private final WebTransMessages messages;
    
    private final static String STYLE_MAXIMIZE = "icon-resize-full-3";
    private final static String STYLE_MINIMIZE = "icon-resize-small-2";
+
+   private final InlineLabel documentListTab;
+   private final InlineLabel editorTab;
+   private final InlineLabel searchAndReplaceTab;
 
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuPresenter.Display sideMenuView, final Identity identity)
@@ -111,26 +114,27 @@ public class AppView extends Composite implements AppDisplay
       readOnlyLabel.setText("[" + messages.readOnly() + "]");
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
-      searchAndReplace.setTitle(messages.projectWideSearchAndReplace());
-      documentList.setTitle(messages.documentListTitle());
 
       resize.setTitle(messages.maximize());
       resize.addStyleName(STYLE_MAXIMIZE);
 
-      this.searchResultsView = searchResultsView.asWidget();
-      this.editorContainer.add(this.searchResultsView);
-
-      this.translationView = translationView.asWidget();
-      this.editorContainer.add(this.translationView);
-
-      this.documentListView = documentListView.asWidget();
-      this.editorContainer.add(this.documentListView);
-
       sideMenuContainer.add(sideMenuView.asWidget());
 
-      setWidgetVisible(this.documentListView, false);
-      setWidgetVisible(this.searchResultsView, false);
-      setWidgetVisible(this.translationView, false);
+      searchAndReplaceTab = new InlineLabel();
+      searchAndReplaceTab.addStyleName("icon-search");
+      searchAndReplaceTab.setText(messages.projectWideSearchAndReplace());
+
+      documentListTab = new InlineLabel();
+      documentListTab.addStyleName("icon-list");
+      documentListTab.setText(messages.documentListTitle());
+
+      editorTab = new InlineLabel();
+      editorTab.addStyleName("icon-edit");
+      editorTab.setText(messages.editor());
+
+      contentBody.add(documentListView.asWidget(), documentListTab);
+      contentBody.add(translationView.asWidget(), editorTab);
+      contentBody.add(searchResultsView.asWidget(), searchAndReplaceTab);
       
       Window.enableScrolling(false);
    }
@@ -141,38 +145,21 @@ public class AppView extends Composite implements AppDisplay
       return this;
    }
 
+
    @Override
    public void showInMainView(MainView view)
    {
       switch (view)
       {
       case Documents:
-         setWidgetVisible(documentListView, true);
-         setWidgetVisible(searchResultsView, false);
-         setWidgetVisible(translationView, false);
+         contentBody.selectTab(DOCUMENT_VIEW);
          break;
       case Search:
-         setWidgetVisible(documentListView, false);
-         setWidgetVisible(searchResultsView, true);
-         setWidgetVisible(translationView, false);
+         contentBody.selectTab(SEARCH_AND_REPLACE_VIEW);
          break;
       case Editor:
-         setWidgetVisible(documentListView, false);
-         setWidgetVisible(searchResultsView, false);
-         setWidgetVisible(translationView, true);
+         contentBody.selectTab(EDITOR_VIEW);
          break;
-      }
-   }
-
-   private void setWidgetVisible(Widget widget, boolean visible)
-   {
-      if (visible)
-      {
-         editorContainer.setWidgetTopBottom(widget, 0, Unit.PX, 0, Unit.PX);
-      }
-      else
-      {
-         editorContainer.setWidgetTopHeight(widget, 0, Unit.PX, 0, Unit.PX);
       }
    }
 
@@ -255,12 +242,12 @@ public class AppView extends Composite implements AppDisplay
       rootContainer.forceLayout();
       if (isShowing)
       {
-         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
+         rootContainer.setWidgetLeftRight(contentBody, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
          rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
       }
       else
       {
-         rootContainer.setWidgetLeftRight(editorContainer, 0.0, Unit.PX, 0.0, Unit.PX);
+         rootContainer.setWidgetLeftRight(contentBody, 0.0, Unit.PX, 0.0, Unit.PX);
          rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
       }
       rootContainer.animate(ANIMATE_DURATION);
@@ -278,18 +265,6 @@ public class AppView extends Composite implements AppDisplay
       listener.onIterationFilesLinkClicked();
    }
 
-   @UiHandler("searchAndReplace")
-   public void onSearchAndReplaceClick(ClickEvent event)
-   {
-      listener.onSearchAndReplaceClicked();
-   }
-
-   @UiHandler("documentList")
-   public void onDocumentListIconClick(ClickEvent event)
-   {
-      listener.onDocumentListClicked();
-   }
-
    @UiHandler("keyShortcuts")
    public void onKeyShortcutsIconClick(ClickEvent event)
    {
@@ -300,6 +275,49 @@ public class AppView extends Composite implements AppDisplay
    public void onResizeIconClick(ClickEvent event)
    {
       listener.onResizeClicked();
+   }
+
+   @Override
+   public HasBeforeSelectionHandlers<Integer> getContentBodyBeforeSelection()
+   {
+      return contentBody;
+   }
+
+   @Override
+   public HasSelectionHandlers<Integer> getContentBodySelection()
+   {
+      return contentBody;
+   }
+
+   @Override
+   public void enableTab(MainView view, boolean enable)
+   {
+      switch (view)
+      {
+      case Search:
+         enableTab(searchAndReplaceTab, enable);
+         break;
+      case Documents:
+         enableTab(documentListTab, enable);
+         break;
+      case Editor:
+         enableTab(editorTab, enable);
+         break;
+      }
+   }
+
+   private void enableTab(Widget view, boolean enable)
+   {
+      if (enable)
+      {
+         contentBody.getTabWidget(1).getParent().removeStyleName(style.disableTab());
+         // view.removeStyleName(style.disableTab());
+      }
+      else
+      {
+         contentBody.getTabWidget(1).getParent().addStyleName(style.disableTab());
+         // view.addStyleName(style.disableTab());
+      }
    }
 
 }

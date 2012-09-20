@@ -1,17 +1,24 @@
 package org.zanata.webtrans.client.view;
 
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.presenter.MainView;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 
 /**
 * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
 */
 public interface AppDisplay extends WidgetDisplay
 {
-   void showInMainView(MainView editor);
+   // Order of the tab
+   final static int DOCUMENT_VIEW = 0;
+   final static int EDITOR_VIEW = 1;
+   final static int SEARCH_AND_REPLACE_VIEW = 2;
+   
+   void showInMainView(MainView view);
 
    void setProjectLinkLabel(String workspaceNameLabel);
 
@@ -33,7 +40,6 @@ public interface AppDisplay extends WidgetDisplay
 
    interface Listener
    {
-
       void onProjectLinkClicked();
 
       void onIterationFilesLinkClicked();
@@ -45,5 +51,13 @@ public interface AppDisplay extends WidgetDisplay
       void onKeyShortcutsClicked();
 
       void onResizeClicked();
+
+      void onEditorClicked();
    }
+
+   HasBeforeSelectionHandlers<Integer> getContentBodyBeforeSelection();
+
+   HasSelectionHandlers<Integer> getContentBodySelection();
+
+   void enableTab(MainView view, boolean enable);
 }

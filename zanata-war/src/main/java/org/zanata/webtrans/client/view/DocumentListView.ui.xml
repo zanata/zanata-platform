@@ -23,12 +23,12 @@
 		
 		.filterTextBox
 		{
-			font-size:18px;
-			padding: 3px;
+			font-size:16px;
+			padding: 2px;
 			margin: 0px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
-			width:98%;
+			width:440px;
 		}
 		
 		.topBar
@@ -39,27 +39,27 @@
 		
 		.listContainer
 		{
-			padding:15px;
+			padding:10px;
 		}
         
     </ui:style>
     <g:LayoutPanel>
         <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
-                <g:layer top='0' height='50px' left="0px" right="0px">
+                <g:layer top='0' height='40px' left="0px" right="0px">
                     <g:LayoutPanel styleName="{style.topBar}">
-                        <g:layer top="9px" bottom="9px" left="15px" width="500px">
+                        <g:layer top="7px" bottom="5px" left="15px" width="450px">
                             <g:TextBox ui:field='filterTextBox' styleName="{style.filterTextBox}"/>
                         </g:layer>
-                        <g:layer top="14px" height="34px" left="520px" width="120px">
+                        <g:layer top="10px" height="34px" left="470px" width="120px">
                             <g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.checkbox}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                         </g:layer>
-                        <g:layer top="14px" height="34px" left="635px" width="140px">
+                        <g:layer top="10px" height="34px" left="585px" width="140px">
                             <g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.checkbox}"><ui:msg>Exact match only</ui:msg></g:CheckBox>
                         </g:layer>
                     </g:LayoutPanel>
                 </g:layer>
-                <g:layer top='50px' bottom="0px">
+                <g:layer top='40px' bottom="0px">
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:VerticalPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>

@@ -95,10 +95,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("No document selected")
    String noDocumentSelected();
 
-   @DefaultMessage("Project-wide Search and Replace")
+   @DefaultMessage("Project-wide Search & Replace")
    String projectWideSearchAndReplace();
    
-   @DefaultMessage("Document list")
+   @DefaultMessage("Documents")
    String documentListTitle();
 
    @DefaultMessage("{0} has quit workspace")
@@ -451,5 +451,8 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Concurrent edit detected. Reset value for current row. Your change will be lost.")
    String concurrentEdit();
+
+   @DefaultMessage("Editor")
+   String editor();
 
 }
