@@ -36,7 +36,8 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -58,6 +59,7 @@ public class AppView extends Composite implements AppDisplay
 
    interface Styles extends CssResource
    {
+      String disableTab();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -90,10 +92,9 @@ public class AppView extends Composite implements AppDisplay
    private final static String STYLE_MAXIMIZE = "icon-resize-full-3";
    private final static String STYLE_MINIMIZE = "icon-resize-small-2";
 
-   // Order of the tab
-   private final static int DOCUMENT_VIEW = 0;
-   private final static int EDITOR_VIEW = 1;
-   private final static int SEARCH_AND_REPLACE_VIEW = 2;
+   private final InlineLabel documentListTab;
+   private final InlineLabel editorTab;
+   private final InlineLabel searchAndReplaceTab;
 
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuPresenter.Display sideMenuView, final Identity identity)
@@ -119,15 +120,15 @@ public class AppView extends Composite implements AppDisplay
 
       sideMenuContainer.add(sideMenuView.asWidget());
 
-      InlineLabel searchAndReplaceTab = new InlineLabel();
+      searchAndReplaceTab = new InlineLabel();
       searchAndReplaceTab.addStyleName("icon-search");
       searchAndReplaceTab.setText(messages.projectWideSearchAndReplace());
 
-      InlineLabel documentListTab = new InlineLabel();
+      documentListTab = new InlineLabel();
       documentListTab.addStyleName("icon-list");
       documentListTab.setText(messages.documentListTitle());
 
-      InlineLabel editorTab = new InlineLabel();
+      editorTab = new InlineLabel();
       editorTab.addStyleName("icon-edit");
       editorTab.setText(messages.editor());
 
@@ -276,25 +277,47 @@ public class AppView extends Composite implements AppDisplay
       listener.onResizeClicked();
    }
 
-   @UiHandler("contentBody")
-   public void onSelectionChanged(SelectionEvent<Integer> event)
+   @Override
+   public HasBeforeSelectionHandlers<Integer> getContentBodyBeforeSelection()
    {
-      if (listener != null)
-      {
-         switch (event.getSelectedItem())
-         {
-         case SEARCH_AND_REPLACE_VIEW:
-            listener.onSearchAndReplaceClicked();
-            break;
-         case DOCUMENT_VIEW:
-            listener.onDocumentListClicked();
-            break;
-         case EDITOR_VIEW:
-            listener.onEditorClicked();
-            break;
-         }
-      }
+      return contentBody;
+   }
 
+   @Override
+   public HasSelectionHandlers<Integer> getContentBodySelection()
+   {
+      return contentBody;
+   }
+
+   @Override
+   public void enableTab(MainView view, boolean enable)
+   {
+      switch (view)
+      {
+      case Search:
+         enableTab(searchAndReplaceTab, enable);
+         break;
+      case Documents:
+         enableTab(documentListTab, enable);
+         break;
+      case Editor:
+         enableTab(editorTab, enable);
+         break;
+      }
+   }
+
+   private void enableTab(Widget view, boolean enable)
+   {
+      if (enable)
+      {
+         contentBody.getTabWidget(1).getParent().removeStyleName(style.disableTab());
+         // view.removeStyleName(style.disableTab());
+      }
+      else
+      {
+         contentBody.getTabWidget(1).getParent().addStyleName(style.disableTab());
+         // view.addStyleName(style.disableTab());
+      }
    }
 
 }
