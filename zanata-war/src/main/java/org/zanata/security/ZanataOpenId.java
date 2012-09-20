@@ -242,18 +242,13 @@ public class ZanataOpenId implements OpenIdAuthCallback
       applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
    }
    
-   public void loginImmediate()
+   private void loginImmediate()
    {
-      if (loginImmediately())
+      if (loginImmediately() && Events.exists())
       {
-         if (Events.exists())
-         {
-            Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
-         }
-         if (Events.exists())
-         {
-            Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
-         }
+         Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
+         Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL, AuthenticationType.OPENID);
+         Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
       }
    }
 
@@ -325,14 +320,9 @@ public class ZanataOpenId implements OpenIdAuthCallback
          {
             credentials.setUsername( authenticatedAccount.getUsername() );
             Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(result.getAuthenticatedId())));
-
-            if( Events.exists() )
-            {
-               Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
-               Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
-               Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL, AuthenticationType.OPENID);
-            }
          }
+
+         this.loginImmediate();
       }
    }
 

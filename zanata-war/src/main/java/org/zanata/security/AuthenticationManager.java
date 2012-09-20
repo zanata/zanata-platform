@@ -155,6 +155,7 @@ public class AuthenticationManager
 
    /**
     * Performs operations after a successful login is completed.
+    * Currently runs the role assignment rules on the logged in account.
     *
     * @param authType Authentication type that was used to login.
     */
@@ -162,15 +163,19 @@ public class AuthenticationManager
    public void onLoginCompleted(AuthenticationType authType)
    {
       // Get the authenticated account and credentials
-      HAccount authenticatedAccount;
-      HCredentials authenticatedCredentials;
+      HAccount authenticatedAccount = null;
+      HCredentials authenticatedCredentials = null;
 
       String username = credentials.getUsername();
 
       if( authType == AuthenticationType.OPENID )
       {
          authenticatedCredentials = credentialsDAO.findByUser( zanataOpenId.getAuthResult().getAuthenticatedId() );
-         authenticatedAccount = authenticatedCredentials.getAccount();
+         // on first Open Id login, there might not be any stored credentials
+         if( authenticatedCredentials != null )
+         {
+            authenticatedAccount = authenticatedCredentials.getAccount();
+         }
       }
       else
       {
@@ -178,7 +183,10 @@ public class AuthenticationManager
          authenticatedAccount = accountDAO.getByUsername( username );
       }
 
-      userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount, authenticatedCredentials, authType.name());
+      if( authenticatedAccount != null )
+      {
+         userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount, authenticatedCredentials, authType.name());
+      }
    }
 
 }
