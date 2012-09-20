@@ -905,30 +905,3 @@ td.ApprovedStateDecoration div div div
 	margin:1px;
 	padding:2px;
 }
-
-.gwt-TabLayoutPanelTab
-{
-	padding:3px 5px;
-	background:darkgray;
-	color:#595959;
-	border-top-left-radius:3px;
-	border-top-right-radius:3px;
-	margin:0 1px;
-	border:1px solid #C9C9C9;
-	cursor:pointer;
-	
-	font-weight:bold;
-	background:-webkit-linear-gradient(top, #F1F1F1 0%, lightGrey 100%);
-	background:-moz-linear-gradient(top, #F1F1F1 0%, lightGrey 100%);
-	background: -o-linear-gradient(top, #F1F1F1 0%, #lightGrey 100%);
-	background: -ms-linear-gradient(top, #F1F1F1 0%, #lightGrey 100%);
-	background: linear-gradient(top, #F1F1F1 0%, #lightGrey 100%);
-	
-}
-
-.gwt-TabLayoutPanelTab-selected
-{
-	background:#7E91A9;
-	color:#FFFFFF;
-}
-

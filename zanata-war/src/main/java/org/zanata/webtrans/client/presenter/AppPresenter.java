@@ -54,6 +54,8 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -124,46 +126,40 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
 
-      display.getContentBodyBeforeSelection().addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>()
+      display.getDocumentListTab().addClickHandler(new ClickHandler()
       {
          @Override
-         public void onBeforeSelection(BeforeSelectionEvent<Integer> event)
+         public void onClick(ClickEvent event)
          {
-            // Cancel editor tab selection is no document is selected
-            if (event.getItem() == AppDisplay.EDITOR_VIEW)
+            onDocumentListClicked();
+         }
+      });
+      
+      display.getEditorTab().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (selectedDocument != null)
             {
-               if (selectedDocument == null)
-               {
-                  event.cancel();
-               }
+               onEditorClicked();
             }
          }
       });
-
+      
+      display.getSearchReplaceTab().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            onSearchAndReplaceClicked();
+         }
+      });
+     
       if (selectedDocument == null)
       {
          display.enableTab(MainView.Editor, false);
       }
-      
-      display.getContentBodySelection().addSelectionHandler(new SelectionHandler<Integer>()
-      {
-         @Override
-         public void onSelection(SelectionEvent<Integer> event)
-         {
-            switch (event.getSelectedItem())
-            {
-            case AppDisplay.SEARCH_AND_REPLACE_VIEW:
-               onSearchAndReplaceClicked();
-               break;
-            case AppDisplay.DOCUMENT_VIEW:
-               onDocumentListClicked();
-               break;
-            case AppDisplay.EDITOR_VIEW:
-               onEditorClicked();
-               break;
-            }
-         }
-      });
 
       registerKeyShortcuts();
 
