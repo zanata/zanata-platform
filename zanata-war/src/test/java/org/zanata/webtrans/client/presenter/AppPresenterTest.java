@@ -30,6 +30,8 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
@@ -100,11 +102,13 @@ public class AppPresenterTest
       when(location.getParameter("title")).thenReturn("blah");
       when(messages.windowTitle2(userWorkspace.getWorkspaceContext().getWorkspaceName(), userWorkspace.getWorkspaceContext().getLocaleName(), "blah")).thenReturn("new title");
       
-      HasSelectionHandlers<Integer> contentBodySelection = mock(HasSelectionHandlers.class);
-      HasBeforeSelectionHandlers<Integer> contentBodyBeforeSelection = mock(HasBeforeSelectionHandlers.class);
+      HasClickHandlers documentListTabHandler = mock(HasClickHandlers.class);
+      HasClickHandlers editorTabHandler = mock(HasClickHandlers.class);
+      HasClickHandlers searchAndReplaceTabHandler = mock(HasClickHandlers.class);
       
-      when(display.getContentBodySelection()).thenReturn(contentBodySelection);
-      when(display.getContentBodyBeforeSelection()).thenReturn(contentBodyBeforeSelection);
+      when(display.getDocumentListTab()).thenReturn(documentListTabHandler);
+      when(display.getEditorTab()).thenReturn(editorTabHandler);
+      when(display.getSearchReplaceTab()).thenReturn(searchAndReplaceTabHandler);
       
       presenter.onBind();
 
@@ -123,8 +127,9 @@ public class AppPresenterTest
       WorkspaceId workspaceId = userWorkspace.getWorkspaceContext().getWorkspaceId();
       String localeId = workspaceId.getLocaleId().getId();
       
-      verify(contentBodySelection).addSelectionHandler(isA(SelectionHandler.class));
-      verify(contentBodyBeforeSelection).addBeforeSelectionHandler(isA(BeforeSelectionHandler.class));
+      verify(documentListTabHandler).addClickHandler(isA(ClickHandler.class));
+      verify(editorTabHandler).addClickHandler(isA(ClickHandler.class));
+      verify(searchAndReplaceTabHandler).addClickHandler(isA(ClickHandler.class));
       
       verify(display).setProjectLinkLabel(workspaceId.getProjectIterationId().getProjectSlug());
       verify(display).setIterationFilesLabel(workspaceId.getProjectIterationId().getIterationSlug() + " [" + localeId + "]");

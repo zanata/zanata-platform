@@ -283,14 +283,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
  * TODO arrange for these to share styles with editor table
  */
 
-.projectWideSearchPanel
-{
-	color: #555555;
-	background-color: #f3f2f2;
-	border-bottom: 1px solid #d3d3d3;
-	padding: 0px 20px;
-	white-space: nowrap;
-}
+
 
 .gwt-ListBox
 {
@@ -301,36 +294,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 {
 	font-size: 1.2em;
 	margin-left: 30px;
-}
-
-.projectWideSearchBox
-{
-	padding: 3px;
-	font-size: 20px;
-	border: 2px solid #C5C5C5;
-	border-radius: 3px;
-	width:300px;
-	height:30px;
-	margin-right:3px;
-}
-
-.projectWideSearchButton
-{
-	color: #444444;
-	font-size: 1.4em;
-	margin-right: 15px;
-	padding: 3px 10px;
-}
-
-.projectWideReplacementBox
-{
-	padding: 3px;
-	font-size: 20px;
-	border: 2px solid #C5C5C5;
-	border-radius: 3px;
-	width:300px;
-	height:30px;
-	margin-right:3px;
 }
 
 .projectWideSearchReportLabel
@@ -357,13 +320,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 {
 	font-size: 1.3em;
 	white-space: nowrap;
-}
-
-.projectWideReplacementButton
-{
-	color: #444444;
-	padding: 3px 10px;
-	font-size: 1.4em;
 }
 
 .projectWideReplacButton-Disabled
@@ -905,30 +861,3 @@ td.ApprovedStateDecoration div div div
 	margin:1px;
 	padding:2px;
 }
-
-.gwt-TabLayoutPanelTab
-{
-	padding:3px 5px;
-	background:darkgray;
-	color:#595959;
-	border-top-left-radius:3px;
-	border-top-right-radius:3px;
-	margin:0 1px;
-	border:1px solid #C9C9C9;
-	cursor:pointer;
-	
-	font-weight:bold;
-	background:-webkit-linear-gradient(top, #F1F1F1 0%, lightGrey 100%);
-	background:-moz-linear-gradient(top, #F1F1F1 0%, lightGrey 100%);
-	background: -o-linear-gradient(top, #F1F1F1 0%, #lightGrey 100%);
-	background: -ms-linear-gradient(top, #F1F1F1 0%, #lightGrey 100%);
-	background: linear-gradient(top, #F1F1F1 0%, #lightGrey 100%);
-	
-}
-
-.gwt-TabLayoutPanelTab-selected
-{
-	background:#7E91A9;
-	color:#FFFFFF;
-}
-
