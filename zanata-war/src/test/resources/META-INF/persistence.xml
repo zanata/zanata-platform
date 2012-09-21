@@ -31,6 +31,7 @@
 		<class>org.zanata.model.HPerson</class>
 		<class>org.zanata.model.HProjectIteration</class>
 		<class>org.zanata.model.HProject</class>
+        <class>org.zanata.model.HRawDocument</class>
         <class>org.zanata.model.HRoleAssignmentRule</class>
 		<class>org.zanata.model.HSimpleComment</class>
 		<class>org.zanata.model.HTextFlowHistory</class>

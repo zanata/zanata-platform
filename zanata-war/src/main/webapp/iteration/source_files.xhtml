@@ -89,7 +89,7 @@
                     </s:link>
                     <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/raw">
                         <f:param name="docId" value="#{doc.docId}"/>
-                        <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.name)}"/>
+                        <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
                     </s:link>
                 </rich:column>
 

@@ -21,6 +21,7 @@ import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.StatusCount;
 
@@ -348,4 +349,46 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       return documents;
    }
 
+   /**
+    * Do not use this method when adding a new raw document,
+    * instead use {@link #addRawDocument(HDocument, HRawDocument)}
+    * 
+    * @see AbstractDAOImpl#makePersistent(Object)
+    */
+   @Override
+   public HDocument makePersistent(HDocument entity) {
+      // TODO consider how to deal with old rawDocument.
+      if (entity.getRawDocument() != null)
+      {
+         getSession().saveOrUpdate(entity.getRawDocument());
+      }
+      return super.makePersistent(entity);
+   }
+
+   /**
+    * Add a raw document to a document, cleanly removing any
+    * existing raw document associated with the document.
+    * 
+    * @param doc
+    * @param rawDoc
+    * @return
+    */
+   public HRawDocument addRawDocument(HDocument doc, HRawDocument rawDoc)
+   {
+      HRawDocument oldRawDoc = doc.getRawDocument();
+
+      if (oldRawDoc != null && !oldRawDoc.equals(rawDoc))
+      {
+         getSession().delete(oldRawDoc);
+      }
+
+      if (rawDoc != null)
+      {
+         getSession().saveOrUpdate(rawDoc);
+      }
+
+      doc.setRawDocument(rawDoc);
+      makePersistent(doc);
+      return rawDoc;
+   }
 }

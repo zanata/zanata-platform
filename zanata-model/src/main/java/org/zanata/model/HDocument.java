@@ -30,6 +30,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
@@ -102,6 +103,8 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
    private boolean obsolete = false;
    private HPoHeader poHeader;
    private Map<HLocale, HPoTargetHeader> poTargetHeaders;
+
+   private HRawDocument rawDocument;
 
    public HDocument(String fullPath, ContentType contentType, HLocale locale)
    {
@@ -281,6 +284,15 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
       return poTargetHeaders;
    }
 
+   @OneToOne(fetch = FetchType.LAZY, optional = true)
+   @JoinTable(name = "HDocument_RawDocument",
+      joinColumns = @JoinColumn(name="documentId"),
+      inverseJoinColumns = @JoinColumn(name="rawDocumentId")
+   )
+   public HRawDocument getRawDocument()
+   {
+      return rawDocument;
+   }
 
    @PreUpdate
    public void onUpdate()
