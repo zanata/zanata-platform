@@ -22,6 +22,7 @@
 package org.zanata.model;
 
 import java.util.Date;
+import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -32,6 +33,12 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.gwt.event.shared.GwtEvent;
 
 public class TestFixture
 {
@@ -84,5 +91,30 @@ public class TestFixture
       LocaleId localeId = new LocaleId("en-US");
       ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug);
       return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()), projectActive, hasWriteAccess, true);
+   }
+
+   public static  <E extends GwtEvent<?>> E extractFromEvents(List<GwtEvent> events, final Class<E> eventType)
+   {
+      GwtEvent gwtEvent = Iterables.find(events, new Predicate<GwtEvent>()
+      {
+         @Override
+         public boolean apply(GwtEvent input)
+         {
+            return eventType.isAssignableFrom(input.getClass());
+         }
+      });
+      return (E) gwtEvent;
+   }
+
+   public static List<Integer> asIds(List<TransUnit> transUnits)
+   {
+      return Lists.newArrayList(Collections2.transform(transUnits, new Function<TransUnit, Integer>()
+      {
+         @Override
+         public Integer apply(TransUnit from)
+         {
+            return (int) from.getId().getId();
+         }
+      }));
    }
 }

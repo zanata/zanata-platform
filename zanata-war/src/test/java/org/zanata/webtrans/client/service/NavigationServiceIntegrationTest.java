@@ -49,7 +49,6 @@ import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
@@ -57,10 +56,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -206,7 +201,7 @@ public class NavigationServiceIntegrationTest
 
       GetTransUnitListResult getTransUnitListResult = callHandler(getTransUnitListHandler, getTransUnitList);
       assertThat(getTransUnitListResult.getDocumentId(), equalTo(documentId));
-      assertThat(asIds(getTransUnitListResult.getUnits()), contains(0, 1, 2, 3, 4, 5));
+      assertThat(TestFixture.asIds(getTransUnitListResult.getUnits()), contains(0, 1, 2, 3, 4, 5));
 
       GetTransUnitsNavigationResult navigationResult = callHandler(getTransUnitsNavigationHandler, getTransUnitsNavigation);
       assertThat(navigationResult.getDocumentId(), equalTo(documentId));
@@ -238,7 +233,7 @@ public class NavigationServiceIntegrationTest
 
    private List<Integer> getPageDataModelAsIds()
    {
-      return asIds(service.getCurrentPageValues());
+      return TestFixture.asIds(service.getCurrentPageValues());
    }
 
    @Test
@@ -375,37 +370,13 @@ public class NavigationServiceIntegrationTest
       ArgumentCaptor<GwtEvent> eventCaptor = ArgumentCaptor.forClass(GwtEvent.class);
       verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
 
-      TableRowSelectedEvent tableRowSelectedEvent = extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
+      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
       TransUnitId firstItem = new TransUnitId(hTextFlows.get(0).getId());
       assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(firstItem));
 
       // behaviour on GetTransUnitNavigation success
-      PageCountChangeEvent pageCountChangeEvent = extractFromEvents(eventCaptor.getAllValues(), PageCountChangeEvent.class);
+      PageCountChangeEvent pageCountChangeEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), PageCountChangeEvent.class);
       assertThat(pageCountChangeEvent.getPageCount(), Matchers.is(2));
    }
 
-   private <E extends GwtEvent<?>> E extractFromEvents(List<GwtEvent> events, final Class<E> eventType)
-   {
-      GwtEvent gwtEvent = Iterables.find(events, new Predicate<GwtEvent>()
-      {
-         @Override
-         public boolean apply(GwtEvent input)
-         {
-            return eventType.isAssignableFrom(input.getClass());
-         }
-      });
-      return (E) gwtEvent;
-   }
-
-   private static List<Integer> asIds(List<TransUnit> transUnits)
-   {
-      return Lists.newArrayList(Collections2.transform(transUnits, new Function<TransUnit, Integer>()
-      {
-         @Override
-         public Integer apply(TransUnit from)
-         {
-            return (int) from.getId().getId();
-         }
-      }));
-   }
 }

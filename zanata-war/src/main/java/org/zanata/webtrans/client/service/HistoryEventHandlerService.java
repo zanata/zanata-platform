@@ -56,7 +56,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       appPresenter.showView(newHistoryToken.getView());
    }
 
-   private void processForDocumentListPresenter(HistoryToken token)
+   protected void processForDocumentListPresenter(HistoryToken token)
    {
       // @formatter:off
       if (!equal(token.getDocFilterExact(), currentHistoryState.getDocFilterExact())
@@ -69,7 +69,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
-   private void processForAppPresenter(HistoryToken token)
+   protected void processForAppPresenter(HistoryToken token)
    {
       DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
       if (docId != null && !equal(appPresenter.getSelectedDocIdOrNull(), docId))
@@ -84,7 +84,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
-   private void processForTransFilter(HistoryToken newHistoryToken)
+   protected void processForTransFilter(HistoryToken newHistoryToken)
    {
       boolean findMessageChanged = !newHistoryToken.getSearchText().equals(currentHistoryState.getSearchText());
       if (findMessageChanged)
@@ -94,7 +94,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
-   private void processForProjectWideSearch(HistoryToken token)
+   protected void processForProjectWideSearch(HistoryToken token)
    {
       // @formatter:off
       if (!equal(token.getProjectSearchCaseSensitive(), currentHistoryState.getProjectSearchCaseSensitive())
