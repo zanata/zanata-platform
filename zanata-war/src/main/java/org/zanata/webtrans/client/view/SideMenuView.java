@@ -3,7 +3,6 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.presenter.SideMenuPresenter;
-import org.zanata.webtrans.client.presenter.SideMenuPresenter.Tab;
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -16,7 +15,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -42,7 +41,7 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    InlineLabel notificationTab, editorOptionsTab, validationOptionsTab, chatTab, notificationLabel;
    
    @UiField
-   LayoutPanel container;
+   TabLayoutPanel container;
    
    private final Widget editorOptionView, validationOptionView, workspaceUsersView, notificationView;
 
@@ -59,6 +58,11 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       this.validationOptionView = validationOptionView.asWidget();
       this.workspaceUsersView = workspaceUsersView.asWidget();
       this.notificationView = notificationView.asWidget();
+      
+      container.add(notificationView.asWidget());
+      container.add(workspaceUsersView.asWidget());
+      container.add(editorOptionView.asWidget());
+      container.add(validationOptionView.asWidget());
    }
 
    @Override
@@ -92,33 +96,31 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    }
 
    @Override
-   public void setSelectedTab(Tab tab)
+   public void setSelectedTab(int view)
    {
       editorOptionsTab.removeStyleName(style.selectedButton());
       validationOptionsTab.removeStyleName(style.selectedButton());
       chatTab.removeStyleName(style.selectedButton());
       notificationTab.removeStyleName(style.selectedButton());
       
-      container.clear();
-      
-      switch (tab)
+      switch (view)
       {
-         case EDITOR_OPTION: 
-            container.add(editorOptionView);
+         case EDITOR_OPTION_VIEW: 
+            container.selectTab(EDITOR_OPTION_VIEW);
             editorOptionsTab.addStyleName(style.selectedButton());
             break;
-         case VALIDATION_OPTION: 
-            container.add(validationOptionView);
+         case VALIDATION_OPTION_VIEW: 
+            container.selectTab(VALIDATION_OPTION_VIEW);
             validationOptionsTab.addStyleName(style.selectedButton());
             break;
-         case CHAT: 
-            container.add(workspaceUsersView);
+         case WORKSPACEUSER_VIEW: 
+            container.selectTab(WORKSPACEUSER_VIEW);
             chatTab.addStyleName(style.selectedButton());
             setChatTabAlert(false);
             break;
-      case NOTIFICATION:
-         container.add(notificationView);
-         notificationTab.addStyleName(style.selectedButton());
+         case NOTIFICATION_VIEW:
+            container.selectTab(NOTIFICATION_VIEW);
+            notificationTab.addStyleName(style.selectedButton());
          break;
          default:
             break;
@@ -142,12 +144,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    {
       return chatTab;
    }
-   
-   @Override
-   public HasVisibility getContainer()
-   {
-      return container;
-   }
 
    @Override
    public void setChatTabAlert(boolean alert)
@@ -163,25 +159,9 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    }
 
    @Override
-   public Tab getCurrentTab()
+   public int getCurrentTab()
    {
-      if (notificationTab.getStyleName().contains(style.selectedButton()))
-      {
-         return Tab.NOTIFICATION;
-      }
-      else if (chatTab.getStyleName().contains(style.selectedButton()))
-      {
-         return Tab.CHAT;
-      }
-      else if (editorOptionsTab.getStyleName().contains(style.selectedButton()))
-      {
-         return Tab.EDITOR_OPTION;
-      }
-      else if (validationOptionsTab.getStyleName().contains(style.selectedButton()))
-      {
-         return Tab.VALIDATION_OPTION;
-      }
-      return null;
+      return container.getSelectedIndex();
    }
 
    @Override

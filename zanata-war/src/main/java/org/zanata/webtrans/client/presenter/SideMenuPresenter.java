@@ -79,7 +79,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
 
       HasClickHandlers getNotificationButton();
 
-      void setSelectedTab(Tab tab);
+      void setSelectedTab(int view);
 
       HasVisibility getEditorOptionsTab();
 
@@ -87,19 +87,18 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
 
       HasVisibility getChatTab();
 
-      HasVisibility getContainer();
-
       void setChatTabAlert(boolean alert);
 
-      Tab getCurrentTab();
+      int getCurrentTab();
 
       void setNotificationText(int count, Severity severity);
-
-   }
-
-   public static enum Tab
-   {
-      EDITOR_OPTION, VALIDATION_OPTION, CHAT, NOTIFICATION, NONE,
+      
+      //Order of the tab
+      public static final int EMPTY_VIEW = -1;
+      public static final int NOTIFICATION_VIEW = 0;
+      public static final int WORKSPACEUSER_VIEW = 1;
+      public static final int EDITOR_OPTION_VIEW = 2;
+      public static final int VALIDATION_OPTION_VIEW = 3;
    }
 
    @Inject
@@ -120,10 +119,18 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
    {
       isExpended = isExpend;
       eventBus.fireEvent(new ShowSideMenuEvent(isExpended));
-      if(!isExpended)
+      if (!isExpended)
       {
-         display.setSelectedTab(Tab.NONE);
+         display.setSelectedTab(Display.EMPTY_VIEW);
       }
+   }
+
+   // Disable Chat, Editor options, and validaion options if readonly
+   private void setReadOnly(boolean isReadOnly)
+   {
+      display.getChatTab().setVisible(!isReadOnly);
+      display.getEditorOptionsTab().setVisible(!isReadOnly);
+      display.getValidationOptionsTab().setVisible(!isReadOnly);
    }
 
    @Override
@@ -140,13 +147,11 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
             userWorkspaceContext.setProjectActive(event.isProjectActive());
-
-            display.getContainer().setVisible(!userWorkspaceContext.hasReadOnlyAccess());
-            display.getChatTab().setVisible(!userWorkspaceContext.hasReadOnlyAccess());
-            display.getEditorOptionsTab().setVisible(!userWorkspaceContext.hasReadOnlyAccess());
-            display.getValidationOptionsTab().setVisible(!userWorkspaceContext.hasReadOnlyAccess());
+            setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
          }
       }));
+
+      setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
       display.getEditorOptionsButton().addClickHandler(new ClickHandler()
       {
@@ -158,11 +163,11 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
                if (!isExpended)
                {
                   expendSideMenu(true);
-                  display.setSelectedTab(Tab.EDITOR_OPTION);
+                  display.setSelectedTab(Display.EDITOR_OPTION_VIEW);
                }
-               else if (display.getCurrentTab() != Tab.EDITOR_OPTION)
+               else if (display.getCurrentTab() != Display.EDITOR_OPTION_VIEW)
                {
-                  display.setSelectedTab(Tab.EDITOR_OPTION);
+                  display.setSelectedTab(Display.EDITOR_OPTION_VIEW);
                }
                else
                {
@@ -182,11 +187,11 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
                if (!isExpended)
                {
                   expendSideMenu(true);
-                  display.setSelectedTab(Tab.VALIDATION_OPTION);
+                  display.setSelectedTab(Display.VALIDATION_OPTION_VIEW);
                }
-               else if (display.getCurrentTab() != Tab.VALIDATION_OPTION)
+               else if (display.getCurrentTab() != Display.VALIDATION_OPTION_VIEW)
                {
-                  display.setSelectedTab(Tab.VALIDATION_OPTION);
+                  display.setSelectedTab(Display.VALIDATION_OPTION_VIEW);
                }
                else
                {
@@ -206,11 +211,11 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
                if (!isExpended)
                {
                   expendSideMenu(true);
-                  display.setSelectedTab(Tab.CHAT);
+                  display.setSelectedTab(Display.WORKSPACEUSER_VIEW);
                }
-               else if (display.getCurrentTab() != Tab.CHAT)
+               else if (display.getCurrentTab() != Display.WORKSPACEUSER_VIEW)
                {
-                  display.setSelectedTab(Tab.CHAT);
+                  display.setSelectedTab(Display.WORKSPACEUSER_VIEW);
                }
                else
                {
@@ -225,21 +230,18 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
          @Override
          public void onClick(ClickEvent event)
          {
-            if (!userWorkspaceContext.hasReadOnlyAccess())
+            if (!isExpended)
             {
-               if (!isExpended)
-               {
-                  expendSideMenu(true);
-                  display.setSelectedTab(Tab.NOTIFICATION);
-               }
-               else if (display.getCurrentTab() != Tab.NOTIFICATION)
-               {
-                  display.setSelectedTab(Tab.NOTIFICATION);
-               }
-               else
-               {
-                  expendSideMenu(false);
-               }
+               expendSideMenu(true);
+               display.setSelectedTab(Display.NOTIFICATION_VIEW);
+            }
+            else if (display.getCurrentTab() != Display.NOTIFICATION_VIEW)
+            {
+               display.setSelectedTab(Display.NOTIFICATION_VIEW);
+            }
+            else
+            {
+               expendSideMenu(false);
             }
          }
       });
@@ -294,7 +296,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
          @Override
          public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event)
          {
-            if (display.getCurrentTab() != Tab.CHAT)
+            if (display.getCurrentTab() != Display.WORKSPACEUSER_VIEW)
             {
                display.setChatTabAlert(true);
             }
@@ -320,16 +322,19 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
 
    public void showEditorMenu(boolean showEditorMenu)
    {
-      display.getEditorOptionsTab().setVisible(showEditorMenu);
-      display.getValidationOptionsTab().setVisible(showEditorMenu);
+      if (!userWorkspaceContext.hasReadOnlyAccess())
+      {
+         display.getEditorOptionsTab().setVisible(showEditorMenu);
+         display.getValidationOptionsTab().setVisible(showEditorMenu);
 
-      if (showEditorMenu && isExpended)
-      {
-         display.setSelectedTab(Tab.CHAT);
-      }
-      else
-      {
-         display.setSelectedTab(Tab.NONE);
+         if (showEditorMenu && isExpended)
+         {
+            display.setSelectedTab(Display.NOTIFICATION_VIEW);
+         }
+         else
+         {
+            display.setSelectedTab(Display.EMPTY_VIEW);
+         }
       }
    }
 
@@ -342,17 +347,14 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuPresenter.Display
    @Override
    public void showNotification()
    {
-      if (!userWorkspaceContext.hasReadOnlyAccess())
+      if (!isExpended)
       {
-         if (!isExpended)
-         {
-            expendSideMenu(true);
-            display.setSelectedTab(Tab.NOTIFICATION);
-         }
-         else if (display.getCurrentTab() != Tab.NOTIFICATION)
-         {
-            display.setSelectedTab(Tab.NOTIFICATION);
-         }
+         expendSideMenu(true);
+         display.setSelectedTab(Display.NOTIFICATION_VIEW);
+      }
+      else if (display.getCurrentTab() != Display.NOTIFICATION_VIEW)
+      {
+         display.setSelectedTab(Display.NOTIFICATION_VIEW);
       }
    }
 }

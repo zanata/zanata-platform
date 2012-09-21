@@ -78,13 +78,13 @@ public class AppView extends Composite implements AppDisplay
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel sideMenuContainer, rootContainer;
+   LayoutPanel sideMenuContainer, rootContainer, contentContainer;
    
    @UiField(provided = true)
    final Resources resources;
 
    @UiField
-   TabLayoutPanel contentBody;
+   TabLayoutPanel content;
 
    @UiField
    Styles style;
@@ -127,9 +127,9 @@ public class AppView extends Composite implements AppDisplay
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
 
-      contentBody.add(documentListView.asWidget());
-      contentBody.add(translationView.asWidget());
-      contentBody.add(searchResultsView.asWidget());
+      content.add(documentListView.asWidget());
+      content.add(translationView.asWidget());
+      content.add(searchResultsView.asWidget());
       
       Window.enableScrolling(false);
    }
@@ -152,15 +152,15 @@ public class AppView extends Composite implements AppDisplay
       switch (view)
       {
       case Documents:
-         contentBody.selectTab(DOCUMENT_VIEW);
+         content.selectTab(DOCUMENT_VIEW);
          setSelectedTab(documentListTab);
          break;
       case Search:
-         contentBody.selectTab(SEARCH_AND_REPLACE_VIEW);
+         content.selectTab(SEARCH_AND_REPLACE_VIEW);
          setSelectedTab(searchAndReplaceTab);
          break;
       case Editor:
-         contentBody.selectTab(EDITOR_VIEW);
+         content.selectTab(EDITOR_VIEW);
          setSelectedTab(editorTab);
          break;
       }
@@ -254,12 +254,12 @@ public class AppView extends Composite implements AppDisplay
       rootContainer.forceLayout();
       if (isShowing)
       {
-         rootContainer.setWidgetLeftRight(contentBody, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
+         rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
          rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
       }
       else
       {
-         rootContainer.setWidgetLeftRight(contentBody, 0.0, Unit.PX, 0.0, Unit.PX);
+         rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX, 0.0, Unit.PX);
          rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
       }
       rootContainer.animate(ANIMATE_DURATION);

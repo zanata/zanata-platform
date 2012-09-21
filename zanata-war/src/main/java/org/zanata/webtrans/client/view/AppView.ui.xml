@@ -153,9 +153,9 @@
 		</g:layer>
 		
 		<g:layer top="25px" bottom="0px" left='0px' right='0px' >
-				<g:LayoutPanel>
+				<g:LayoutPanel ui:field="contentContainer">
 					<g:layer top="5px" bottom="3px" left="25px" right="25px">
-						<g:TabLayoutPanel ui:field="contentBody" barHeight="0" barUnit='PX' />
+						<g:TabLayoutPanel ui:field="content" barHeight="0" barUnit='PX' />
 					</g:layer>
 					
 					<g:layer left="0" width="24px" top="3px" height="82px">

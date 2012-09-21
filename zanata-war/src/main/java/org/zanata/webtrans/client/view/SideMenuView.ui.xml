@@ -47,7 +47,7 @@
 		    min-width:10px;
 		    z-index:1;
 		    right:13px;
-		    top:25px;
+		    top:0px;
 		}
 		
 	</ui:style>
@@ -55,9 +55,9 @@
 	<g:LayoutPanel>
 		<g:layer top="24px" bottom="0" left="0" width="24px">
 			<g:FlowPanel>
-	    		<g:InlineLabel ui:field="chatTab" styleName="icon-chat-1 {style.menuButton}"/>
 	    		<g:InlineLabel ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
 	    		<g:InlineLabel ui:field="notificationTab" styleName="icon-bell {style.menuButton}"/>
+	    		<g:InlineLabel ui:field="chatTab" styleName="icon-chat-1 {style.menuButton}"/>
 	    		<g:InlineLabel ui:field="editorOptionsTab" styleName="icon-cog {style.menuButton}"/>
 	    		<g:InlineLabel ui:field="validationOptionsTab" styleName="icon-check {style.menuButton}"/>
 			</g:FlowPanel>
@@ -65,7 +65,7 @@
     	
     	
     	<g:layer top="0px" bottom="0" left="24px" right="0">
-    		<g:LayoutPanel ui:field="container" styleName="{style.mainPanel}"/>
+    		<g:TabLayoutPanel ui:field="container" styleName="{style.mainPanel}" barHeight="0"/>
     	</g:layer>
 	</g:LayoutPanel>
 </ui:UiBinder> 
