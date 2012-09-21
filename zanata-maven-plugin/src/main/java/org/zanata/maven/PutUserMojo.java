@@ -7,7 +7,6 @@ import org.zanata.client.commands.PutUserOptions;
  * Creates or updates a Zanata user.
  * 
  * @goal putuser
- * @requiresProject false
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */

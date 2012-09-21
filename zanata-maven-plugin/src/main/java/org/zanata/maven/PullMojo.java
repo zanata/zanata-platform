@@ -11,8 +11,6 @@ import org.zanata.client.exceptions.ConfigException;
  * Pulls translated text from Zanata.
  * 
  * @goal pull
- * @requiresProject true
- * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions

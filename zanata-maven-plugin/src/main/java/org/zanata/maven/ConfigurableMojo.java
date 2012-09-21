@@ -16,7 +16,7 @@ import com.pyx4j.log4j.MavenLogAppender;
 /**
  * Base class for mojos which support configuration by the user's
  * zanata.ini
- * 
+ * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */

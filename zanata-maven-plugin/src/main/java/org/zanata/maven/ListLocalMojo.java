@@ -9,7 +9,6 @@ import org.zanata.client.commands.ListLocalCommand;
  * Zanata when using the 'push' goal.
  * 
  * @goal list-local
- * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public class ListLocalMojo extends ConfigurableProjectMojo<ConfigurableProjectOptions>

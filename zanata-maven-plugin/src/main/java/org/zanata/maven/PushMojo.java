@@ -18,8 +18,6 @@ import org.zanata.client.exceptions.ConfigException;
  * If deleteObsoleteModules is true, documents belonging to unknown/obsolete modules will be deleted as well.
  * 
  * @goal push
- * @requiresProject true
- * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
