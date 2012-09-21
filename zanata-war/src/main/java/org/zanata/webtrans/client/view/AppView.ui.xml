@@ -82,7 +82,7 @@
 			font-style:normal;
 		}
 		
-		.viewMenuSelection
+		.viewMenuTab
 		{
 			color:#595959;
 			border:1px solid #C9C9C9;
@@ -93,12 +93,20 @@
 			font-size:18px;
 			background:#ffffff;
 			cursor:pointer;
+			opacity:0.6;
 		}
 		
-		.selectedTab
+		.viewMenuTab:hover
+		{
+			opacity:1;
+			color:#3B3B3B;
+		}
+		
+		.selectedTab, .selectedTab:hover
 		{
 			background:#7E91A9;
 			color:#FFFFFF;
+			opacity:1;
 		}
 		
 		.disableTab, .disableTab:hover
@@ -106,6 +114,7 @@
 			color:#777;
 			background:#bbb;
 			cursor:default;
+			opacity:1;
 		}
 	</ui:style>
 	<g:LayoutPanel stylePrimaryName="{style.rootContainer}" ui:field="rootContainer">
@@ -151,9 +160,9 @@
 					
 					<g:layer left="0" width="24px" top="3px" height="82px">
 						<g:HTMLPanel>
-							<g:Label styleName="icon-list {style.viewMenuSelection}" ui:field="documentListTab"/>
-							<g:Label styleName="icon-edit {style.viewMenuSelection}" ui:field="editorTab"/>
-							<g:Label styleName="icon-search {style.viewMenuSelection}" ui:field="searchAndReplaceTab"/>
+							<g:Label styleName="icon-list {style.viewMenuTab}" ui:field="documentListTab"/>
+							<g:Label styleName="icon-edit {style.viewMenuTab}" ui:field="editorTab"/>
+							<g:Label styleName="icon-search {style.viewMenuTab}" ui:field="searchAndReplaceTab"/>
 						</g:HTMLPanel>
 					</g:layer>
 				</g:LayoutPanel>

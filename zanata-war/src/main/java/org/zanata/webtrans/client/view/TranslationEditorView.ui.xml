@@ -40,7 +40,7 @@
 						 <g:layer left="15px" width="450px" top="7px" bottom="5px">
 				            <g:LayoutPanel ui:field="filterPanelContainer"/>			    
 			            </g:layer>
-						<g:layer width="44%" right="40px" top="9px" height="20px">
+						<g:layer width="45%" right="40px" top="9px" height="20px">
 							<g:HTMLPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
 						</g:layer>
 					</g:LayoutPanel>
