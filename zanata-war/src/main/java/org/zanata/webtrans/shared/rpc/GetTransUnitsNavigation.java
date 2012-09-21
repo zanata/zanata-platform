@@ -21,7 +21,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 
-import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 
 public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUnitsNavigationResult>
 {

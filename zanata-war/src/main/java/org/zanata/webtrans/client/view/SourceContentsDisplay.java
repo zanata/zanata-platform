@@ -1,4 +1,4 @@
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.view;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;

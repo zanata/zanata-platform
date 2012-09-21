@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;

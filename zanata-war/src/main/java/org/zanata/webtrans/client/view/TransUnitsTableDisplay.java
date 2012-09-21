@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.view;
 
 import java.util.List;
 
-import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 
 import com.google.inject.ImplementedBy;

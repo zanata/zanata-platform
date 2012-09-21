@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.common.base.Preconditions;

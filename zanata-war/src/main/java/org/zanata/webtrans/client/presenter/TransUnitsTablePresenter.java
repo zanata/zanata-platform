@@ -29,8 +29,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
@@ -46,6 +44,7 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;

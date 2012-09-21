@@ -27,7 +27,7 @@ import javax.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
+import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;

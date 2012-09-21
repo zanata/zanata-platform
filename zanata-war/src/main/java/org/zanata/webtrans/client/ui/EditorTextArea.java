@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.ui;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
@@ -52,13 +52,13 @@ public class EditorTextArea extends TextArea
          mode: "htmlmixed",
          value: element.value,
          onFocus: function() {
-            self.@org.zanata.webtrans.client.editor.table.EditorTextArea::onFocus()();
+            self.@org.zanata.webtrans.client.ui.EditorTextArea::onFocus()();
          },
          onBlur: function() {
-            self.@org.zanata.webtrans.client.editor.table.EditorTextArea::onBlur()();
+            self.@org.zanata.webtrans.client.ui.EditorTextArea::onBlur()();
          },
          onChange: function() {
-            self.@org.zanata.webtrans.client.editor.table.EditorTextArea::onChange()();
+            self.@org.zanata.webtrans.client.ui.EditorTextArea::onChange()();
          }
 
       });
@@ -131,12 +131,12 @@ public class EditorTextArea extends TextArea
    }
 
    private native String getCodeMirrorContent() /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       return editor.getValue();
    }-*/;
 
    private native void setCodeMirrorContent(String text) /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       if (editor)
       {
          editor.setValue(text);
@@ -157,7 +157,7 @@ public class EditorTextArea extends TextArea
    }
 
    private native void focusEditor() /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       editor.focus();
    }-*/;
 
@@ -179,7 +179,7 @@ public class EditorTextArea extends TextArea
    }
 
    private native void setEditorOption(String option, String value) /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       if (editor)
       {
          editor.setOption(option, value);
@@ -187,7 +187,7 @@ public class EditorTextArea extends TextArea
    }-*/;
 
    private native String getEditorOption(String option, String defaultValue) /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       if (editor)
       {
          return '' + editor.getOption(option);
@@ -208,7 +208,7 @@ public class EditorTextArea extends TextArea
    }
 
    private native int getCodeMirrorCursorPos() /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       var pos = editor.getCursor();
       return editor.indexFromPos(pos);
    }-*/;
@@ -224,7 +224,7 @@ public class EditorTextArea extends TextArea
    }
 
    private native void setCodeMirrorCursorPos(int cursorIndex) /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       var pos = editor.posFromIndex(cursorIndex);
       editor.setCursor(pos);
    }-*/;
@@ -238,7 +238,7 @@ public class EditorTextArea extends TextArea
    }
 
    private native void codeMirrorHighlight(String term) /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
       var searchCursor = editor.getSearchCursor(term, {line: 0, ch: 0}, true);
       while(searchCursor.findNext())
       {
@@ -255,7 +255,7 @@ public class EditorTextArea extends TextArea
    }
 
    private native void refreshCodeMirror() /*-{
-      var editor = this.@org.zanata.webtrans.client.editor.table.EditorTextArea::codeMirrorEditor;
+      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
 
       if (editor)
       {

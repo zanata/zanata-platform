@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.service;
 
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;

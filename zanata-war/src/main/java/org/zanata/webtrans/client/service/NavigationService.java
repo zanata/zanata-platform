@@ -26,7 +26,6 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;

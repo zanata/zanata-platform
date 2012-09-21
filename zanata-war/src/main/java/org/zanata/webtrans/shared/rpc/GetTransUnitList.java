@@ -1,6 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;

@@ -2,13 +2,12 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
-             xmlns:tui="urn:import:org.zanata.webtrans.client.editor.table"
         >
 
 
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 
-    <ui:style field="style" type="org.zanata.webtrans.client.editor.table.TargetContentsView.Styles">
+    <ui:style field="style" type="org.zanata.webtrans.client.view.TargetContentsView.Styles">
         .targetContentsCell
         {
             table-layout: fixed;

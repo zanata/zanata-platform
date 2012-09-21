@@ -1,4 +1,4 @@
-package org.zanata.webtrans.client.editor;
+package org.zanata.webtrans.client.ui;
 
 import org.zanata.common.TranslationStats;
 

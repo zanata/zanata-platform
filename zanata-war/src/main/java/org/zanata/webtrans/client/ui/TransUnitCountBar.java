@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;

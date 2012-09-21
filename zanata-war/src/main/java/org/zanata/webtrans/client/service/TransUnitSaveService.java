@@ -24,7 +24,7 @@ package org.zanata.webtrans.client.service;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
+import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;

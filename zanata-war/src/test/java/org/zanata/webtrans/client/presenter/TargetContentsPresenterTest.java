@@ -18,24 +18,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.editor.table;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zanata.model.TestFixture.makeTransUnit;
+package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -57,25 +44,33 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
-import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
-import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Provider;
+
+import net.customware.gwt.presenter.client.EventBus;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zanata.model.TestFixture.makeTransUnit;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest

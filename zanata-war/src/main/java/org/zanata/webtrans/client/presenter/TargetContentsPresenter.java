@@ -18,15 +18,13 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.presenter;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
@@ -54,15 +52,12 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
-import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
-import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
@@ -71,7 +66,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -82,6 +76,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import net.customware.gwt.presenter.client.EventBus;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;

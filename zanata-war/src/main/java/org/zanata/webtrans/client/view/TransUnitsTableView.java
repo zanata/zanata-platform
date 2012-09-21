@@ -2,8 +2,6 @@ package org.zanata.webtrans.client.view;
 
 import java.util.List;
 
-import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.LoadingPanel;
