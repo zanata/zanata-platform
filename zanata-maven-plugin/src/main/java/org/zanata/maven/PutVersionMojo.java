@@ -7,7 +7,6 @@ import org.zanata.client.commands.PutVersionOptions;
  * Creates or updates a Zanata project version.
  * 
  * @goal putversion
- * @requiresProject false
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */

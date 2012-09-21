@@ -10,7 +10,6 @@ import org.zanata.client.commands.PublicanPushOptions;
  * translated. DEPRECATED: please use generic "push" goal.
  * 
  * @goal publican-push
- * @requiresProject false
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  * @deprecated

@@ -9,6 +9,7 @@ import org.apache.maven.project.MavenProject;
 import org.zanata.client.commands.PushPullOptions;
 
 /**
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public abstract class PushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
