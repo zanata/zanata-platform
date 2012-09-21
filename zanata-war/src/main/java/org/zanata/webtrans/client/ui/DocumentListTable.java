@@ -30,15 +30,34 @@ import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
 import org.zanata.webtrans.client.ui.table.column.TranslatedColumn;
 import org.zanata.webtrans.client.ui.table.column.UntranslatedColumn;
 
+import com.google.gwt.cell.client.IconCellDecorator;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 public class DocumentListTable extends CellTable<DocumentNode>
 {
+   private class DocumentHeader extends Header<String>
+   {
+      private final WebTransMessages messages;
+      public DocumentHeader(org.zanata.webtrans.client.resources.Resources images, WebTransMessages messages)
+      {
+         super(new IconCellDecorator<String>(images.documentImage(), new TextCell()));
+         this.messages = messages;
+      }
+
+      @Override
+      public String getValue()
+      {
+         return messages.columnHeaderDocument();
+      }
+   }
+   
    public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final SingleSelectionModel<DocumentNode> selectionModel)
    {
       super(15, (CellTableResources) GWT.create(CellTableResources.class));
@@ -47,7 +66,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
       setSelectionModel(selectionModel);
 
       final Column<DocumentNode, String> directoryColumn = new DirectoryColumn();
-      final Column<DocumentNode, String> documentColumn = new DocumentColumn(images);
+      final Column<DocumentNode, String> documentColumn = new DocumentColumn();
       final Column<DocumentNode, TransUnitCountGraph> statisticColumn = new StatisticColumn(messages);
       final Column<DocumentNode, String> translatedColumn = new TranslatedColumn();
       final Column<DocumentNode, String> untranslatedColumn = new UntranslatedColumn();
@@ -60,9 +79,13 @@ public class DocumentListTable extends CellTable<DocumentNode>
       untranslatedColumn.setSortable(true);
       remainingColumn.setSortable(true);
 
+      
+      DocumentHeader documentColumnHeader = new DocumentHeader(images, messages);
+      
       addColumn(directoryColumn, messages.columnHeaderDirectory());
       directoryColumn.setCellStyleNames("directoryCol");
-      addColumn(documentColumn, messages.columnHeaderDocument());
+//      addColumn(documentColumn, messages.columnHeaderDocument());
+      addColumn(documentColumn, documentColumnHeader);
       documentColumn.setCellStyleNames("documentCol");
       addColumn(statisticColumn, messages.columnHeaderStatistic());
       statisticColumn.setCellStyleNames("statisticCol");

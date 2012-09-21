@@ -20,28 +20,19 @@
  */
 package org.zanata.webtrans.client.ui.table.column;
 
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.DocumentNode;
 
-import com.google.gwt.cell.client.IconCellDecorator;
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public class DocumentColumn extends Column<DocumentNode, String>
+public class DocumentColumn extends TextColumn<DocumentNode>
 {
-   public DocumentColumn(Resources images)
-   {
-      super(new IconCellDecorator<String>(images.documentImage(), new TextCell()));
-   }
-
    @Override
    public String getValue(DocumentNode object)
    {
       return object.getDocInfo().getName();
    }
-
 }

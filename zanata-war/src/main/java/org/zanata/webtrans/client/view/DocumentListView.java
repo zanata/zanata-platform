@@ -41,6 +41,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
@@ -60,6 +62,9 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
+   
+   @UiField
+   ListBox statsOptions;
 
    @UiField
    SimplePager pager;
@@ -84,6 +89,9 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
+      
+      statsOptions.addItem("Words count", "word");
+      statsOptions.addItem("Messages count", "msg");
    }
 
    @Override
