@@ -53,5 +53,7 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
    interface Listener
    {
       void onRowSelected(int rowIndex);
+
+      void refreshView();
    }
 }

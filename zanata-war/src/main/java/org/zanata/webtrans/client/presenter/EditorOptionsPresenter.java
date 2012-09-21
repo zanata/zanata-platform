@@ -26,7 +26,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
-import org.zanata.webtrans.client.events.ReloadPageEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
@@ -34,7 +34,6 @@ import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
@@ -175,14 +174,14 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.isUseCodeMirrorEditor() != useCodeMirrorChkValue)
       {
          configHolder.setUseCodeMirrorEditor(useCodeMirrorChkValue);
-         eventBus.fireEvent(ReloadPageEvent.EVENT);
+         eventBus.fireEvent(RefreshPageEvent.EVENT);
       }
    }
 
    @Override
    public void refreshCurrentPage()
    {
-      eventBus.fireEvent(ReloadPageEvent.EVENT);
+      eventBus.fireEvent(RefreshPageEvent.EVENT);
    }
 
    @Override

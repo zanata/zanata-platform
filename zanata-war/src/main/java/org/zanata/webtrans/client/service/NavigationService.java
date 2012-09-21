@@ -39,8 +39,8 @@ import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEventHandler;
-import org.zanata.webtrans.client.events.ReloadPageEvent;
-import org.zanata.webtrans.client.events.ReloadPageEventHandler;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.RefreshPageEventHandler;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -73,7 +73,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler, ReloadPageEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler, RefreshPageEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNSELECTED = -1;
@@ -109,7 +109,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(PageSizeChangeEvent.TYPE, this);
-      eventBus.addHandler(ReloadPageEvent.TYPE, this);
+      eventBus.addHandler(RefreshPageEvent.TYPE, this);
    }
 
    protected void init(GetTransUnitActionContext context)
@@ -313,7 +313,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          boolean updated = pageModel.updateIfInCurrentPage(updatedTU);
          if (updated)
          {
-            pageDataChangeListener.refreshView(updatedTU, event.getEditorClientId(), event.getUpdateType());
+            pageDataChangeListener.refreshRow(updatedTU, event.getEditorClientId(), event.getUpdateType());
          }
       }
    }
@@ -339,7 +339,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    }
 
    @Override
-   public void onReloadPage(ReloadPageEvent event)
+   public void onRefreshPage(RefreshPageEvent event)
    {
       Log.info("refreshing page");
       isLoadingTU = true;
@@ -439,7 +439,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    {
       void showDataForCurrentPage(List<TransUnit> transUnits);
 
-      void refreshView(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
+      void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
 
       void highlightSearch(String findMessage);
 

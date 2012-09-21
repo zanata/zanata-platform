@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLTable;
@@ -45,6 +46,19 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    private final LoadingPanel loadingPanel;
    private final Label noContentLabel = new Label();
    private Listener listener;
+
+   // below timer is a hacky fix for firefox (on first load codemirror instance won't show correctly and needs refresh
+   // we only need to do this once on first load (WEIRD!!)
+   private static boolean firstTimeLoading = true;
+   private Timer timer = new Timer()
+   {
+
+      @Override
+      public void run()
+      {
+         listener.refreshView();
+      }
+   };
 
    @Inject
    public TransUnitsTableView(FilterViewConfirmationDisplay filterViewConfirmationDisplay, LoadingPanel loadingPanel)
@@ -174,6 +188,11 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    public void hideLoading()
    {
       loadingPanel.hide();
+      if (firstTimeLoading)
+      {
+         timer.schedule(100);
+         firstTimeLoading = false;
+      }
    }
 
    interface Styles extends CssResource
