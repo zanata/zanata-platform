@@ -76,6 +76,7 @@ public class TransUnitSaveServiceTest
    {
       MockitoAnnotations.initMocks(this);
       service = new TransUnitSaveService(eventBus, dispatcher, undoProvider, targetContentsPresenter, messages, navigationService, goToRowProvider);
+      when(goToRowProvider.get()).thenReturn(goToLink);
    }
 
    private static TransUnitSaveEvent event(String newContent, ContentState status, TransUnitId transUnitId, int verNum, String oldContent)
@@ -158,6 +159,7 @@ public class TransUnitSaveServiceTest
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Info));
       assertThat(event.getMessage(), equalTo("saved row 1, id 1"));
+      assertThat(event.getInlineLink(), Matchers.<InlineLink>is(goToLink));
       verify(undoLink).prepareUndoFor(result);
       verify(targetContentsPresenter).addUndoLink(rowIndex, undoLink);
    }
@@ -178,7 +180,6 @@ public class TransUnitSaveServiceTest
       // on save success
       // Given: result comes back but saving operation failed
       when(messages.notifyUpdateFailed("id " + TRANS_UNIT_ID)).thenReturn("update failed");
-      when(goToRowProvider.get()).thenReturn(goToLink);
 
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
       TransUnit updatedTU = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "new content");
@@ -213,7 +214,6 @@ public class TransUnitSaveServiceTest
       // Then: will reset value back
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
       when(messages.notifyUpdateFailed("doh")).thenReturn("update failed");
-      when(goToRowProvider.get()).thenReturn(goToLink);
       callback.onFailure(new RuntimeException("doh"));
       verify(targetContentsPresenter).updateTargets(saveEvent.getTransUnitId(), saveEvent.getOldContents());
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);

@@ -105,22 +105,18 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       return status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
    }
 
-   private void saveFailure(String message, TransUnitId id)
-   {
-      GoToRowLink goToRowLink = goToRowLinkProvider.get();
-      goToRowLink.prepare("", id);
-      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message), goToRowLink));
-   }
-
    private class UpdateTransUnitCallback implements AsyncCallback<UpdateTransUnitResult>
    {
       private final TransUnitSaveEvent event;
       private final TransUnitId id;
+      private final GoToRowLink goToRowLink;
 
       public UpdateTransUnitCallback(TransUnitSaveEvent event, TransUnitId id)
       {
          this.event = event;
          this.id = id;
+         goToRowLink = goToRowLinkProvider.get();
+         goToRowLink.prepare("", id);
       }
 
       @Override
@@ -130,7 +126,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          targetContentsPresenter.updateTargets(event.getTransUnitId(), event.getOldContents());
          Log.error("UpdateTransUnit failure ", e);
          String message = e.getMessage();
-         saveFailure(message, id);
+         saveFailure(message);
       }
 
       @Override
@@ -141,7 +137,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          Log.debug("save resulted TU: " + updatedTU.debugString());
          if (result.isSingleSuccess())
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString())));
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString()), goToRowLink));
             int rowIndexOnPage = navigationService.findRowIndexById(updatedTU.getId());
             if (rowIndexOnPage != NavigationService.UNSELECTED)
             {
@@ -152,8 +148,13 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          }
          else
          {
-            saveFailure("id " + id, id);
+            saveFailure("id " + id);
          }
+      }
+
+      private void saveFailure(String message)
+      {
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message), goToRowLink));
       }
    }
 }
