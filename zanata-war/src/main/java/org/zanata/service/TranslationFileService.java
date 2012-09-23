@@ -141,6 +141,8 @@ public interface TranslationFileService
 
    boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName);
 
+   String getFileExtension(String projectSlug, String iterationSlug, String docPath, String docName);
+
    /**
     * Stream the contents of a document from persistence.
     * 

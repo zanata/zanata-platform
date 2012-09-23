@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -33,8 +34,10 @@ import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
@@ -77,6 +80,9 @@ public class TranslationFileServiceImpl implements TranslationFileService
 
    @Logger
    Log log;
+
+   @In
+   private DocumentDAO documentDAO;
 
    @Override
    public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException
@@ -338,8 +344,15 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @Override
    public boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName)
    {
-      File file = createFileObject(projectSlug, iterationSlug, docPath, docName);
-      return file.exists();
+      HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docPath+docName);
+      return doc.getRawDocument() != null;
+   }
+
+   @Override
+   public String getFileExtension(String projectSlug, String iterationSlug, String docPath, String docName)
+   {
+      HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docPath+docName);
+      return doc.getRawDocument().getType().getExtension();
    }
 
    @Override

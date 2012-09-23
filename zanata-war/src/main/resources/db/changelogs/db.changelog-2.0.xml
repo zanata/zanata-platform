@@ -201,4 +201,66 @@
                                  referencedTableName="HCopyTransOptions" referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet author="damason@redhat.com" id="1">
+        <comment>Add HRawDocument table.</comment>
+        <createTable tableName="HRawDocument">
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contentHash" type="char(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="content" type="blob">
+                <constraints nullable="false" />
+            </column>
+            <column name="uploadedBy" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="2">
+        <comment>Add HDocument_RawDocument table.</comment>
+        <createTable tableName="HDocument_RawDocument">
+            <column name="documentId" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rawDocumentId" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="HDocument_RawDocument" columnNames="documentId, rawDocumentId"/>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="3">
+        <comment>Add HDocument foreign key for HDocument_RawDocument table.</comment>
+        <addForeignKeyConstraint constraintName="FK_HDocumentRawDocument_Document"
+                                 baseTableName="HDocument_RawDocument"
+                                 baseColumnNames="documentId"
+                                 referencedTableName="HDocument"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="4">
+        <comment>Add HRawDocument foreign key for HDocument_RawDocument table.</comment>
+        <addForeignKeyConstraint constraintName="FK_HDocumentRawDocument_RawDocument"
+                                 baseTableName="HDocument_RawDocument"
+                                 baseColumnNames="rawDocumentId"
+                                 referencedTableName="HRawDocument"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

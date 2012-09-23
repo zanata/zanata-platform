@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +51,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 
+import org.hibernate.Hibernate;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -64,9 +67,11 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.common.DocumentType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HRawDocument;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
@@ -129,7 +134,6 @@ public class FileService implements FileResource
    private ResourceUtils resourceUtils;
 
 
-
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
@@ -172,9 +176,11 @@ public class FileService implements FileResource
       }
 
       // persist bytes to file
+      // TODO generate hash during persist.
       File tempFile = null;
       if (uploadForm.getFirst())
       {
+         // TODO if !getLast() add new document upload and first raw doc part
          try
          {
             tempFile = translationFileServiceImpl.persistToTempFile(uploadForm.getFileStream());
@@ -201,6 +207,9 @@ public class FileService implements FileResource
       }
 
       // have entire file, proceed with parsing
+
+      // TODO reconstitute file from parts if required.
+
       if (isPotFile)
       {
          try
@@ -219,11 +228,12 @@ public class FileService implements FileResource
 
       // must be adapter file
 
+      HDocument document;
       try {
          Resource doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileType);
          doc.setLang( new LocaleId("en-US") );
          // TODO Copy Trans values
-         documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, Collections.<String>emptySet(), false);
+         document = documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, Collections.<String>emptySet(), false);
       }
       catch (SecurityException e)
       {
@@ -234,26 +244,33 @@ public class FileService implements FileResource
          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
       }
 
+      // FIXME check that uploaded document content matches hash
+
+      HRawDocument rawDocument = new HRawDocument();
+      rawDocument.setDocument(document);
+      rawDocument.setContentHash(uploadForm.getHash());
+      rawDocument.setType(DocumentType.typeFor(fileType));
+      rawDocument.setUploadedBy(identity.getCredentials().getUsername());
+
+      FileInputStream tempFileStream;
       try
       {
-         persistSourceDocument(projectSlug, iterationSlug, docId, tempFile);
+         tempFileStream = new FileInputStream(tempFile);
       }
       catch (FileNotFoundException e)
       {
+         log.error("Failed to open stream from temp source file", e);
          return Response.status(Status.INTERNAL_SERVER_ERROR)
                .entity("Error saving uploaded document on server, download in original format may fail.\n")
                .build();
       }
-      catch (ZanataServiceException e)
-      {
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity("Error saving uploaded document on server, download in original format may fail.\n")
-               .build();
-      }
-      finally
-      {
-         translationFileServiceImpl.removeTempFile(tempFile);
-      }
+      Blob fileContents = Hibernate.createBlob(tempFileStream, (int)tempFile.length());
+      rawDocument.setContent(fileContents);
+
+      documentDAO.addRawDocument(document, rawDocument);
+      documentDAO.flush();
+
+      translationFileServiceImpl.removeTempFile(tempFile);
 
       return sourceUploadSuccessResponse(isNewDocument);
    }
@@ -267,7 +284,7 @@ public class FileService implements FileResource
                .build();
       }
 
-      if (docId == null || docId.length() == 0)
+      if (docId == null || docId.isEmpty())
       {
          return Response.status(Status.PRECONDITION_FAILED)
                .entity("Required query string parameter 'docId' was not found.\n")
@@ -289,10 +306,18 @@ public class FileService implements FileResource
       }
 
       String fileType = uploadForm.getFileType();
-      if (fileType == null || fileType.length() == 0)
+      if (fileType == null || fileType.isEmpty())
       {
          return Response.status(Status.PRECONDITION_FAILED)
                .entity("Required form parameter 'type' was not found.\n")
+               .build();
+      }
+
+      String contentHash = uploadForm.getHash();
+      if (contentHash == null || contentHash.isEmpty())
+      {
+         return Response.status(Status.PRECONDITION_FAILED)
+               .entity("Required form parameter 'hash' was not found.\n")
                .build();
       }
 
@@ -336,23 +361,6 @@ public class FileService implements FileResource
       // TODO Copy Trans values
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
    }
-
-   private void persistSourceDocument(String projectSlug, String iterationSlug, String docId, File tempFile) throws FileNotFoundException
-   {
-      String documentPath = "";
-      String docName = docId;
-      if (docId.contains("/"))
-      {
-         documentPath = docId.substring(0, docId.lastIndexOf('/'));
-         if (!docId.endsWith("/"))
-         {
-            docName = docId.substring(docId.lastIndexOf('/') + 1);
-         }
-      }
-
-      translationFileServiceImpl.persistDocument(new FileInputStream(tempFile), projectSlug, iterationSlug, documentPath, docName);
-   }
-
 
    private Response sourceUploadSuccessResponse(boolean isNewDocument)
    {
@@ -493,18 +501,28 @@ public class FileService implements FileResource
                                        @PathParam("fileType") String fileType,
                                        @QueryParam("docId") String docId)
    {
-      final Response response;
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
-
       if( document == null )
       {
-         response = Response.status(Status.NOT_FOUND).build();
+         return Response.status(Status.NOT_FOUND).build();
       }
-      else if (RAW_DOCUMENT.equals(fileType) && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+
+      if (RAW_DOCUMENT.equals(fileType) && document.getRawDocument() != null)
       {
-         InputStream fileContents = translationFileServiceImpl.streamDocument(projectSlug, iterationSlug, document.getPath(), document.getName());
+         InputStream fileContents;
+         try
+         {
+            fileContents = document.getRawDocument().getContent().getBinaryStream();
+         }
+         catch (SQLException e)
+         {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
+                  .entity(e)
+                  .build();
+         }
          StreamingOutput output = new InputStreamStreamingOutput(fileContents);
-         response = Response.ok()
+         return Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
       }
@@ -512,15 +530,14 @@ public class FileService implements FileResource
       {
          Resource res = resourceUtils.buildResource(document);
          StreamingOutput output = new POTStreamingOutput(res);
-         response = Response.ok()
+         return Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".pot\"")
                .entity(output).build();
       }
       else
       {
-         response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
+         return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
       }
-      return response;
    }
 
    /**

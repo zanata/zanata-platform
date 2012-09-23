@@ -401,15 +401,15 @@ public class ProjectIterationFilesAction
    {
       this.localeId = localeId;
    }
-
+// line not found
    public boolean hasOriginal(String docPath, String docName)
    {
       return translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, docPath, docName);
    }
 
-   public String extensionOf(String docName)
+   public String extensionOf(String docPath, String docName)
    {
-      return "." + translationFileServiceImpl.extractExtension(docName);
+      return "." + translationFileServiceImpl.getFileExtension(projectSlug, iterationSlug, docPath, docName);
    }
 
    public String getDocumentNameFilter()
