@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Test(groups = "unit-tests")
 public class HistoryEventHandlerServiceTest
 {
    private HistoryEventHandlerService service;
