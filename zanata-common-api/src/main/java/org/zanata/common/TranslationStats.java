@@ -66,6 +66,11 @@ public class TranslationStats implements Serializable
       return remainingHours(wordCount.getNeedReview(), wordCount.getUntranslated());
    }
 
+   public double getRemainingMsgHours()
+   {
+      return remainingHours(unitCount.getNeedReview(), unitCount.getUntranslated());
+   }
+
    public int getApprovedPercent(boolean byWords)
    {
       if (byWords)
