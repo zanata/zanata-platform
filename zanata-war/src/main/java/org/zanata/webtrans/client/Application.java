@@ -27,29 +27,20 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
-import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -69,20 +60,9 @@ public class Application implements EntryPoint
 
    private final static WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
-   private final DialogBox globalPopup = new DialogBox(false, true);
-   private final Button closeGlobalPopupButton = new Button("Close", new ClickHandler()
-   {
-      @Override
-      public void onClick(ClickEvent event)
-      {
-         globalPopup.hide();
-      }
-   });
-
    public void onModuleLoad()
    {
-      globalPopup.setGlassEnabled(true);
-      registerUncaughtExceptionHandler();
+      GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl(injector.getDispatcher(), injector.getUserConfig()));
 
       injector.getDispatcher().execute(new ActivateWorkspaceAction(getWorkspaceId()), new AsyncCallback<ActivateWorkspaceResult>()
       {
@@ -90,27 +70,23 @@ public class Application implements EntryPoint
          @Override
          public void onFailure(Throwable caught)
          {
-            try
-            {
-               throw caught;
-            }
-            catch (AuthenticationError e)
+            if (caught instanceof AuthenticationError)
             {
                redirectToLogin();
             }
-            catch (NoSuchWorkspaceException e)
+            else if (caught instanceof NoSuchWorkspaceException)
             {
-               Log.error("Invalid workspace", e);
+               Log.error("Invalid workspace", caught);
                String errorMessage, linkText, projectListUrl;
                errorMessage = "Invalid Workspace. Try opening the workspace from the link on the project page.";
                linkText = "Projects";
                projectListUrl = getModuleParentBaseUrl() + "project/list";
                showErrorWithLink(errorMessage, null, linkText, projectListUrl);
             }
-            catch (Throwable e)
+            else
             {
-               Log.error("An unexpected Error occurred", e);
-               showErrorWithLink("An unexpected Error occurred: " + e.getMessage(), e, null, null);
+               Log.error("An unexpected Error occurred", caught);
+               showErrorWithLink("An unexpected Error occurred: " + caught.getMessage(), caught, null, null);
             }
          }
 
@@ -158,7 +134,7 @@ public class Application implements EntryPoint
                @Override
                public void onFailure(Throwable e)
                {
-                  RootPanel.get("contentDiv").add(new HTML("<h1>Server communication failed...</h1>" + "<b>Exception:</b> " + e.getMessage()));
+                  showErrorWithLink("Server communication failed...", e, null, null);
                }
                @Override
                public void onSuccess(NoOpResult result)
@@ -171,7 +147,7 @@ public class Application implements EntryPoint
          @Override
          public void onFailure(Throwable e)
          {
-            RootPanel.get("contentDiv").add(new HTML("<h1>Failed to start Event Service...</h1>" + "<b>Exception:</b> " + e.getMessage()));
+            showErrorWithLink("Failed to start Event Service...", e, null, null);
          }
       });
 
@@ -312,7 +288,7 @@ public class Application implements EntryPoint
       FlowPanel layoutPanel = new FlowPanel();
       layoutPanel.add(messageLabel);
 
-      if (Strings.isNullOrEmpty(linkText) && Strings.isNullOrEmpty(linkUrl))
+      if (!Strings.isNullOrEmpty(linkText) && !Strings.isNullOrEmpty(linkUrl))
       {
          Anchor a = new Anchor(linkText, linkUrl);
          a.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
@@ -337,90 +313,4 @@ public class Application implements EntryPoint
 
       RootPanel.get("contentDiv").add(layoutPanel);
    }
-
-   private void registerUncaughtExceptionHandler()
-   {
-      GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler()
-      {
-         @Override
-         public void onUncaughtException(Throwable exception)
-         {
-            Throwable e = unwrapUmbrellaException(exception);
-            Log.fatal("uncaught exception", e);
-
-            String stackTrace = buildStackTraceMessages(e);
-            injector.getDispatcher().execute(new RemoteLoggingAction(stackTrace), new NoOpAsyncCallback<NoOpResult>());
-
-            if (!injector.getUserConfig().isShowError())
-            {
-               return;
-            }
-            globalPopup.getCaption().setHTML("<div class=\"globalPopupCaption\">ERROR: " + e.getMessage() + "</div>");
-
-            VerticalPanel popupContent = new VerticalPanel();
-
-            // description text
-            SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
-            htmlBuilder
-                  .appendHtmlConstant("<h3>You may close this window and continue with your work</h3>")
-                  .appendHtmlConstant("<div>If you want to let us know the error, Please recall your actions and take one of the following steps:</div>")
-                  .appendHtmlConstant("<ul>")
-                  .appendHtmlConstant("<li>Email administration; Or</li>")
-                  .appendHtmlConstant("<li>Check if it's a <a href=\"https://bugzilla.redhat.com/buglist.cgi?product=Zanata&bug_status=__open__\" target=\"_blank\">known issue</a>; Or</li>")
-                  .appendHtmlConstant("<li><a href=\"https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata\" target=\"_blank\">Report a problem</a>; Or</li>")
-                  .appendHtmlConstant("<li>Email <a href=\"mailto:zanata-users@redhat.com\">Zanata users mailing list</a></li>")
-                  .appendHtmlConstant("</ul>")
-            ;
-
-            // stack trace
-            DisclosurePanel disclosurePanel = buildStackTraceDisclosurePanel(stackTrace);
-
-            // send stack trace log to server
-
-            popupContent.add(new HTMLPanel(htmlBuilder.toSafeHtml()));
-            popupContent.add(disclosurePanel);
-            popupContent.add(closeGlobalPopupButton);
-            globalPopup.setWidget(popupContent);
-            globalPopup.center();
-         }
-      });
-   }
-
-   public static Throwable unwrapUmbrellaException(Throwable e)
-   {
-      if(e instanceof UmbrellaException)
-      {
-         UmbrellaException ue = (UmbrellaException) e;
-         if(ue.getCauses().size() == 1)
-         {
-            return unwrapUmbrellaException(ue.getCauses().iterator().next());
-         }
-      }
-      return e;
-   }
-
-   private static String buildStackTraceMessages(Throwable e)
-   {
-      StringBuilder builder = new StringBuilder();
-      builder.append(e.getMessage()).append("\n");
-      for (StackTraceElement ste : e.getStackTrace())
-      {
-         builder.append("\tat ").append(ste.toString()).append("\n");
-      }
-      return builder.toString();
-   }
-
-   private static DisclosurePanel buildStackTraceDisclosurePanel(String stackTrace)
-   {
-      DisclosurePanel disclosurePanel = new DisclosurePanel("Stack trace of the exception (helpful to us)");
-      disclosurePanel.getHeader().getParent().setStyleName(""); //conflict style from menu.css
-      SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
-      htmlBuilder.appendHtmlConstant("<pre>");
-      htmlBuilder.appendHtmlConstant(stackTrace);
-      htmlBuilder.appendHtmlConstant("</pre>");
-      disclosurePanel.setContent(new HTMLPanel(htmlBuilder.toSafeHtml()));
-      disclosurePanel.setOpen(false);
-      return disclosurePanel;
-   }
-
 }
