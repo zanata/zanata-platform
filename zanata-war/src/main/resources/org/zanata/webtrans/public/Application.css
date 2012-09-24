@@ -742,6 +742,11 @@ td.ApprovedStateDecoration div div div
     word-break: break-all;
 }
 
+/* this is to NOT display cursor in source panel*/
+.sourceTable .CodeMirror-cursor {
+    display: none;
+}
+
 .keyShortcutPanel
 {
 	border:none;

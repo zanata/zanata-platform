@@ -34,7 +34,7 @@ public class CodeMirrorReadOnlyWidget extends Composite implements HasText
          lineNumbers: true,
          lineWrapping: true,
          mode: "htmlmixed",
-         readOnly: "nocursor"
+         readOnly: true
       });
       return codeMirrorEditor;
 
