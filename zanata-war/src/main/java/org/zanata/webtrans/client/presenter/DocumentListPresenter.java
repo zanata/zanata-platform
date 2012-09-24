@@ -48,33 +48,20 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasStatsFilter
+public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasStatsFilter, HasDocumentListListener, DocumentSelectionHandler, TransUnitUpdatedEventHandler
 {
 
    public interface Display extends WidgetDisplay
    {
       void setPageSize(int pageSize);
-
-      HasValue<String> getFilterTextBox();
-
-      HasValue<Boolean> getExactSearchCheckbox();
-
-      HasValue<Boolean> getCaseSensitiveCheckbox();
 
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
@@ -84,13 +71,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       void renderTable(SingleSelectionModel<DocumentNode> selectionModel);
 
-      HasChangeHandlers getStatsOption();
-
       String getSelectedStatsOption();
 
       void addStatsOption(String item, String value);
 
       void setStatsFilter(String option);
+
+      void setListener(HasDocumentListListener documentListPresenter);
+
+      void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText);
    }
 
    private static final int PAGE_SIZE = 20;
@@ -146,6 +135,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
 
+
    @Override
    protected void onBind()
    {
@@ -164,138 +154,78 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          }
       });
 
-      display.getStatsOption().addChangeHandler(new ChangeHandler()
-      {
-         @Override
-         public void onChange(ChangeEvent event)
-         {
-            setStatsFilter(display.getSelectedStatsOption());
-            dataProvider.refresh();
-         }
-      });
-
       display.addStatsOption(messages.byWords(), STATS_OPTION_WORDS);
       display.addStatsOption(messages.byMessages(), STATS_OPTION_MESSAGE);
       setStatsFilter(STATS_OPTION_WORDS);
 
-      registerHandler(display.getDocumentList().addSelectionHandler(new SelectionHandler<DocumentInfo>()
-      {
-         @Override
-         public void onSelection(SelectionEvent<DocumentInfo> event)
-         {
-            // generate history token
-            HistoryToken token = history.getHistoryToken();
+      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
+      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
 
-            // prevent feedback loops between history and selection
-            boolean isNewSelection;
-            DocumentId docId = getDocumentId(token.getDocumentPath());
-            isNewSelection = (docId == null || !docId.equals(event.getSelectedItem().getId()));
-
-            if (isNewSelection)
-            {
-               currentDocument = event.getSelectedItem();
-               token.setDocumentPath(event.getSelectedItem().getPath() + event.getSelectedItem().getName());
-               token.setView(MainView.Editor);
-               // don't carry searches over to the next document
-               token.setSearchText("");
-               history.newItem(token);
-            }
-            userworkspaceContext.setSelectedDoc(event.getSelectedItem());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
-      {
-         @Override
-         public void onDocumentSelected(DocumentSelectionEvent event)
-         {
-            // match bookmarked selection, but prevent selection feedback loop
-            // from history
-            if (event.getDocumentId() != (currentDocument == null ? null : currentDocument.getId()))
-            {
-               setSelection(event.getDocumentId());
-            }
-         }
-      }));
-
-      registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (!event.getValue().equals(token.getDocFilterText()))
-            {
-               token.setDocFilterText(event.getValue());
-               history.newItem(token.toTokenString());
-            }
-         }
-      }));
-
-      registerHandler(display.getExactSearchCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (event.getValue() != token.getDocFilterExact())
-            {
-               token.setDocFilterExact(event.getValue());
-               history.newItem(token.toTokenString());
-            }
-         }
-      }));
-
-      registerHandler(display.getCaseSensitiveCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            HistoryToken token = history.getHistoryToken();
-            if (event.getValue() != token.isDocFilterCaseSensitive())
-            {
-               token.setDocFilterCaseSensitive(event.getValue());
-               history.newItem(token);
-            }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
-      {
-         @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-         {
-            TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
-            // update stats for containing document
-            DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
-            adjustStats(updatedDoc.getStats(), updateInfo);
-            eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
-
-            // refresh document list table
-            dataProvider.refresh();
-
-            // update project stats, forward to AppPresenter
-            adjustStats(projectStats, updateInfo);
-            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
-         }
-
-         /**
-          * @param stats the stats object to update
-          * @param updateInfo info describing the change in translations
-          */
-         private void adjustStats(TranslationStats stats, TransUnitUpdateInfo updateInfo)
-         {
-            TransUnitCount unitCount = stats.getUnitCount();
-            TransUnitWords wordCount = stats.getWordCount();
-            unitCount.decrement(updateInfo.getPreviousState());
-            unitCount.increment(updateInfo.getTransUnit().getStatus());
-            wordCount.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
-            wordCount.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());
-         }
-      }));
-
+      display.setListener(this);
       display.setPageSize(PAGE_SIZE);
+   }
+
+   @Override
+   public void fireDocumentSelection(DocumentInfo doc)
+   {
+      // generate history token
+      HistoryToken token = history.getHistoryToken();
+
+      // prevent feedback loops between history and selection
+      boolean isNewSelection;
+      DocumentId docId = getDocumentId(token.getDocumentPath());
+      isNewSelection = (docId == null || !docId.equals(doc.getId()));
+
+      if (isNewSelection)
+      {
+         currentDocument = doc;
+         token.setDocumentPath(doc.getPath() + doc.getName());
+         token.setView(MainView.Editor);
+         // don't carry searches over to the next document
+         token.setSearchText("");
+         history.newItem(token);
+      }
+      userworkspaceContext.setSelectedDoc(doc);
+   }
+
+   @Override
+   public void fireFilterToken(String value)
+   {
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      if (!value.equals(token.getDocFilterText()))
+      {
+         token.setDocFilterText(value);
+         history.newItem(token.toTokenString());
+      }
+   }
+
+   @Override
+   public void fireExactSearchToken(boolean value)
+   {
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      if (value != token.getDocFilterExact())
+      {
+         token.setDocFilterExact(value);
+         history.newItem(token.toTokenString());
+      }
+   }
+
+   @Override
+   public void fireCaseSensitiveToken(boolean value)
+   {
+      HistoryToken token = history.getHistoryToken();
+      if (value != token.isDocFilterCaseSensitive())
+      {
+         token.setDocFilterCaseSensitive(value);
+         history.newItem(token);
+      }
+   }
+
+   @Override
+   public void statsOptionChange()
+   {
+      setStatsFilter(display.getSelectedStatsOption());
+      dataProvider.refresh();
    }
 
    @Override
@@ -380,9 +310,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    public void updateFilterAndRun(String docFilterText, boolean docFilterExact, boolean docFilterCaseSensitive)
    {
-      display.getCaseSensitiveCheckbox().setValue(docFilterCaseSensitive, false);
-      display.getExactSearchCheckbox().setValue(docFilterExact, false);
-      display.getFilterTextBox().setValue(docFilterText, false);
+      display.updateFilter(docFilterCaseSensitive, docFilterExact, docFilterText);
 
       filter.setCaseSensitive(docFilterCaseSensitive);
       filter.setFullText(docFilterExact);
@@ -493,5 +421,48 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    public void setProjectStats(TranslationStats projectStats)
    {
       this.projectStats = projectStats;
+   }
+
+   @Override
+   public void onDocumentSelected(DocumentSelectionEvent event)
+   {
+      // match bookmarked selection, but prevent selection feedback loop
+      // from history
+      if (event.getDocumentId() != (currentDocument == null ? null : currentDocument.getId()))
+      {
+         setSelection(event.getDocumentId());
+      }
+
+   }
+
+   @Override
+   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+   {
+      TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
+      // update stats for containing document
+      DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
+      adjustStats(updatedDoc.getStats(), updateInfo);
+      eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+
+      // refresh document list table
+      dataProvider.refresh();
+
+      // update project stats, forward to AppPresenter
+      adjustStats(projectStats, updateInfo);
+      eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+   }
+
+   /**
+    * @param stats the stats object to update
+    * @param updateInfo info describing the change in translations
+    */
+   private void adjustStats(TranslationStats stats, TransUnitUpdateInfo updateInfo)
+   {
+      TransUnitCount unitCount = stats.getUnitCount();
+      TransUnitWords wordCount = stats.getWordCount();
+      unitCount.decrement(updateInfo.getPreviousState());
+      unitCount.increment(updateInfo.getTransUnit().getStatus());
+      wordCount.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
+      wordCount.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());
    }
 }

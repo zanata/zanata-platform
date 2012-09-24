@@ -1,14 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.and;
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.captureInt;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.notNull;
-import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -16,16 +7,21 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.easymock.Capture;
-import org.easymock.CaptureType;
-import org.easymock.IAnswer;
-import org.testng.annotations.BeforeClass;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
@@ -33,6 +29,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -43,139 +40,125 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
-@SuppressWarnings("rawtypes")
 @Test(groups = { "unit-tests" })
-public class DocumentListPresenterTest extends PresenterTest
+public class DocumentListPresenterTest
 {
+   // field for document list presenter under test
+   private DocumentListPresenter documentListPresenter;
+
+   // mocks for interacting classes
+   @Mock
+   private ListDataProvider mockDataProvider;
+   @Mock
+   private DocumentListPresenter.Display mockDisplay;
+   @Mock
+   private HasData mockDocListTable;
+   @Mock
+   private EventBus mockEventBus;
+   @Mock
+   private History mockHistory;
+   @Mock
+   private WebTransMessages mockMessages;
+   @Mock
+   private UserWorkspaceContext mockUserWorkspaceContext;
+   @Mock
+   private WorkspaceContext mockWorkspaceContext;
+
+   // this list is updated to update display table
+   private List<DocumentNode> dataProviderList;
+
+   // captured events and handlers used in several tests
+   @Captor
+   private ArgumentCaptor<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
+   @Captor
+   private ArgumentCaptor<GetDocumentList> capturedDocListRequest;
+   @Captor
+   private ArgumentCaptor<AsyncCallback<GetDocumentListResult>> capturedDocListRequestCallback;
+   @Captor
+   private ArgumentCaptor<TransUnitUpdatedEventHandler> capturedTransUnitUpdatedEventHandler;
+   @Captor
+   private ArgumentCaptor<GwtEvent> capturedEventBusEvent;
+   @Captor
+   private ArgumentCaptor<Integer> capturedPageSize;
+   @Captor
+   private ArgumentCaptor<String> capturedHistoryTokenString;
+   @Captor
+   private ArgumentCaptor<HistoryToken> capturedHistoryToken;
+
    private static final String TEST_PROJECT_SLUG = "test-project";
    private static final String TEST_ITERATION_SLUG = "test-iteration";
    private static final String TEST_LOCALE_ID = "es";
    private static final String TEST_DOC_LOAD_FAIL_MESSAGE = "test document load fail message";
    private static final String TEST_BY_WORDS_MESSAGE = "By Words";
    private static final String TEST_BY_MESSAGE_MESSAGE = "By Message";
-
-   // field for document list presenter under test
-   private DocumentListPresenter documentListPresenter;
-
-   // mocks for interacting classes
-   HasValue mockCaseSensitiveCheckbox; // Boolean
-   ListDataProvider mockDataProvider;
-   DocumentListPresenter.Display mockDisplay;
-   HasSelectionHandlers mockDocList;
-   HasData mockDocListTable;
-   HasChangeHandlers mockStatsOption;
-   EventBus mockEventBus;
-   HasValue mockExactSearchCheckbox; // Boolean
-   HasValue mockFilterTextbox; // String
-   History mockHistory;
-   WebTransMessages mockMessages;
-   UserWorkspaceContext mockUserWorkspaceContext;
-   WorkspaceContext mockWorkspaceContext;
-
-   // this list is updated to update display table
-   private List<DocumentNode> dataProviderList;
-
-   // captured events and handlers used in several tests
-   Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
-   Capture<ValueChangeHandler<String>> capturedTextboxChangeHandler;
-   Capture<ValueChangeHandler<Boolean>> capturedCheckboxChangeHandler;
-   Capture<ValueChangeHandler<Boolean>> capturedCaseSensitiveCheckboxChangeHandler;
-   Capture<SelectionHandler<DocumentInfo>> capturedDocumentSelectionHandler;
-   Capture<ChangeHandler> capturedStatsOptionChangeHandler;
-   Capture<GetDocumentList> capturedDocListRequest;
-   Capture<AsyncCallback<GetDocumentListResult>> capturedDocListRequestCallback;
-   Capture<TransUnitUpdatedEventHandler> capturedTransUnitUpdatedEventHandler;
-   Capture<GwtEvent> capturedEventBusEvent;
-
-   Capture<Integer> capturedPageSize;
-   Capture<String> capturedHistoryTokenString;
-   Capture<HistoryToken> capturedHistoryToken;
-
-   Capture<SingleSelectionModel<DocumentNode>> capturedSingleSelectionModel;
-
-   @BeforeClass
-   public void createMocks()
-   {
-      mockCaseSensitiveCheckbox = createAndAddMock(HasValue.class);
-      mockDataProvider = createAndAddMock(ListDataProvider.class);
-      mockDisplay = createAndAddMock(DocumentListPresenter.Display.class);
-      mockDocList = createAndAddMock(HasSelectionHandlers.class);
-      mockStatsOption = createAndAddMock(HasChangeHandlers.class);
-      mockDocListTable = createAndAddMock(HasData.class);
-      mockEventBus = createAndAddMock(EventBus.class);
-      mockExactSearchCheckbox = createAndAddMock(HasValue.class);
-      mockFilterTextbox = createAndAddMock(HasValue.class);
-      mockHistory = createAndAddMock(History.class);
-      mockMessages = createAndAddMock(WebTransMessages.class);
-      mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
-      mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
-
-      capturedTextboxChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
-      capturedCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
-      capturedCaseSensitiveCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
-      capturedDocumentSelectionHandler = addCapture(new Capture<SelectionHandler<DocumentInfo>>());
-      capturedStatsOptionChangeHandler = addCapture(new Capture<ChangeHandler>());
-      capturedDocListRequest = addCapture(new Capture<GetDocumentList>());
-      capturedDocListRequestCallback = addCapture(new Capture<AsyncCallback<GetDocumentListResult>>());
-      capturedTransUnitUpdatedEventHandler = addCapture(new Capture<TransUnitUpdatedEventHandler>());
-      capturedEventBusEvent = addCapture(new Capture<GwtEvent>(CaptureType.ALL));
-      capturedPageSize = addCapture(new Capture<Integer>());
-      capturedHistoryTokenString = addCapture(new Capture<String>());
-      capturedHistoryToken = addCapture(new Capture<HistoryToken>());
-      capturedSingleSelectionModel = addCapture(new Capture<SingleSelectionModel<DocumentNode>>());
-   }
+   private static final int TEST_PAGE_SIZE = 20;
 
    @BeforeMethod
-   public void resetMocks()
+   public void beforeMethod()
    {
-      resetAll();
+      MockitoAnnotations.initMocks(this);
+      dataProviderList = new ArrayList<DocumentNode>();
       documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory);
+   }
+
+   @Test
+   public void onBind()
+   {
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockMessages.byWords()).thenReturn(TEST_BY_WORDS_MESSAGE);
+      when(mockMessages.byMessages()).thenReturn(TEST_BY_MESSAGE_MESSAGE);
+
+      documentListPresenter.onBind();
+
+      verify(mockDisplay).renderTable(isA(SingleSelectionModel.class));
+      verify(mockDisplay).addStatsOption(TEST_BY_WORDS_MESSAGE, "Words");
+      verify(mockDisplay).addStatsOption(TEST_BY_MESSAGE_MESSAGE, "Message");
+      verify(mockDisplay).setStatsFilter("Words");
+      verify(mockDisplay).setPageSize(TEST_PAGE_SIZE);
+      verify(mockDisplay).setListener(documentListPresenter);
+      verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);
+      verify(mockEventBus).addHandler(TransUnitUpdatedEvent.getType(), documentListPresenter);
+
    }
 
    @Test
    public void setsPageSize()
    {
-      setDefaultMockBehaviour();
-      // default test document list has 3 documents
-      replayAllMocks();
-      documentListPresenter.bind();
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
 
-      verifyAllMocks();
+      documentListPresenter.bind();
+      documentListPresenter.setDocuments(buildSampleDocumentArray());
+
+      verify(mockDisplay).setPageSize(capturedPageSize.capture());
+
       assertThat("display page size should be set on bind to a high enough value to show all documents on one page", capturedPageSize.getValue(), greaterThanOrEqualTo(3));
    }
 
    @Test
    public void loadDocsIntoDataProvider()
    {
-      setDefaultMockBehaviour();
-      replayAllMocks();
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
+
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
 
-      verifyAllMocks();
+      verify(mockDataProvider).refresh();
 
       // right amount of docs
       assertThat("the data provider should have the same sized document list returned from the server", dataProviderList.size(), is(3));
@@ -195,24 +178,44 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void generatesDocumentStatsOnTuUpdate()
    {
-      setDefaultMockBehaviour();
-      replayAllMocks();
-      documentListPresenter.bind();
+      ArrayList<String> sources = new ArrayList<String>();
+      sources.add("this is the source");
+      boolean plural = false;
+
+      ArrayList<String> targets = new ArrayList<String>();
+      targets.add("this is the target");
+
+      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder().setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural).setSources(sources).setSourceComment("this is the source comment").setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy").setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1).setVerNum(1).build();
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
+
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
+      when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
+
       ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
       TranslationStats stats = new TranslationStats();
       for (DocumentInfo documentInfo : documentInfos)
       {
          stats.add(documentInfo.getStats());
       }
+
+      documentListPresenter.bind();
       documentListPresenter.setDocuments(documentInfos);
       documentListPresenter.setProjectStats(stats);
+      documentListPresenter.onTransUnitUpdated(mockEvent);
 
-      simulateTransUnitUpdateInDocTwo();
+      verify(mockDataProvider, times(2)).refresh();
+      verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
 
       DocumentStatsUpdatedEvent docStatsEvent = null;
-      for (GwtEvent event : capturedEventBusEvent.getValues())
+      for (GwtEvent event : capturedEventBusEvent.getAllValues())
+      {
          if (event.getAssociatedType().equals(DocumentStatsUpdatedEvent.getType()))
+         {
             docStatsEvent = (DocumentStatsUpdatedEvent) event;
+         }
+      }
 
       assertThat("a document stats event should be fired when a TU update event occurs, not found", docStatsEvent, notNullValue());
 
@@ -236,25 +239,45 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void generatesProjectStatsOnTuUpdate()
    {
-      setDefaultMockBehaviour();
-      replayAllMocks();
-      documentListPresenter.bind();
+      ArrayList<String> sources = new ArrayList<String>();
+      sources.add("this is the source");
+      boolean plural = false;
+
+      ArrayList<String> targets = new ArrayList<String>();
+      targets.add("this is the target");
+
+      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder().setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural).setSources(sources).setSourceComment("this is the source comment").setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy").setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1).setVerNum(1).build();
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
+
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
+      when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
+
       ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
       TranslationStats stats = new TranslationStats();
       for (DocumentInfo documentInfo : documentInfos)
       {
          stats.add(documentInfo.getStats());
       }
+
+      documentListPresenter.bind();
       documentListPresenter.setDocuments(documentInfos);
       documentListPresenter.setProjectStats(stats);
+      documentListPresenter.onTransUnitUpdated(mockEvent);
 
-      simulateTransUnitUpdateInDocTwo();
+      verify(mockDataProvider, times(2)).refresh();
+      verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
 
       ProjectStatsUpdatedEvent projectStatsEvent = null;
 
-      for (GwtEvent event : capturedEventBusEvent.getValues())
+      for (GwtEvent event : capturedEventBusEvent.getAllValues())
+      {
          if (event.getAssociatedType().equals(ProjectStatsUpdatedEvent.getType()))
+         {
             projectStatsEvent = (ProjectStatsUpdatedEvent) event;
+         }
+      }
 
       assertThat("a project stats event should be fired when a TU update event occurs, not found", projectStatsEvent, notNullValue());
 
@@ -271,45 +294,17 @@ public class DocumentListPresenterTest extends PresenterTest
       assertThat("project Untranslated words should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getWordCount().getUntranslated(), is(18));
    }
 
-   private void simulateTransUnitUpdateInDocTwo()
-   {
-      // simulate TU updated in second document
-      TransUnitUpdatedEvent mockEvent = createMock(TransUnitUpdatedEvent.class);
-      ArrayList<String> sources = new ArrayList<String>();
-      sources.add("this is the source");
-      boolean plural = false;
-
-      ArrayList<String> targets = new ArrayList<String>();
-      targets.add("this is the target");
-
-      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder()
-            .setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural)
-            .setSources(sources).setSourceComment("this is the source comment")
-            .setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy")
-            .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
-            .setVerNum(1)
-            .build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
-      expect(mockEvent.getUpdateInfo()).andReturn(updateInfo).anyTimes();
-      replay(mockEvent);
-      capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
-   }
-
    @Test
    public void filterTextUpdateGeneratesHistoryToken()
    {
-      setDefaultMockBehaviour();
       String filterText = "path/doc12";
       // these seem to persist beyond verify, so setting them up here is fine
-      expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
-      expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
 
-      replayAllMocks();
       documentListPresenter.bind();
+      documentListPresenter.fireFilterToken(filterText);
+      documentListPresenter.fireExactSearchToken(false);
 
-      valueChangeEvent(capturedTextboxChangeHandler, filterText);
-
-      verifyAllMocks();
+      verify(mockHistory).newItem(capturedHistoryTokenString.capture());
 
       HistoryToken capturedHistoryToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
       assertThat("generated history token filter text should match the filter textbox", capturedHistoryToken.getDocFilterText(), is(filterText));
@@ -319,14 +314,12 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void checkExactSearchCheckboxGeneratesHistoryToken()
    {
-      setDefaultMockBehaviour();
-      replayAllMocks();
       documentListPresenter.bind();
 
       // simulate checking 'exact search' checkbox
-      valueChangeEvent(capturedCheckboxChangeHandler, true);
+      documentListPresenter.fireExactSearchToken(true);
 
-      verifyAllMocks();
+      verify(mockHistory).newItem(capturedHistoryTokenString.capture());
 
       HistoryToken exactSearchToken = new HistoryToken();
       exactSearchToken.setDocFilterExact(true);
@@ -339,14 +332,13 @@ public class DocumentListPresenterTest extends PresenterTest
       // history reflects checkbox already checked
       HistoryToken exactSearchToken = new HistoryToken();
       exactSearchToken.setDocFilterExact(true);
-      setupMockHistory(exactSearchToken.toTokenString());
 
-      replayAllMocks();
+      when(mockHistory.getToken()).thenReturn(exactSearchToken.toTokenString());
+
       documentListPresenter.bind();
+      documentListPresenter.fireExactSearchToken(false);
 
-      valueChangeEvent(capturedCheckboxChangeHandler, false);
-
-      verifyAllMocks();
+      verify(mockHistory).newItem(capturedHistoryTokenString.capture());
 
       HistoryToken inexactSearchToken = new HistoryToken();
       inexactSearchToken.setDocFilterExact(false);
@@ -358,17 +350,18 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void documentSelectUpdatesHistoryToken()
    {
-      setDefaultMockBehaviour();
-      replayAllMocks();
+      HistoryToken documentPathToken = new HistoryToken();
+      documentPathToken.setDocumentPath(null);
+      when(mockHistory.getHistoryToken()).thenReturn(documentPathToken);
+
       documentListPresenter.bind();
 
       // simulate document click on second document
       DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats());
-      capturedDocumentSelectionHandler.getValue().onSelection(new SelectionEvent<DocumentInfo>(docInfo)
-      {
-      });
+      documentListPresenter.fireDocumentSelection(docInfo);
 
-      verifyAllMocks();
+      verify(mockHistory).newItem(capturedHistoryToken.capture());
+
       HistoryToken newToken = capturedHistoryToken.getValue();
       assertThat("path of selected document should be set in history token", newToken.getDocumentPath(), is("second/path/doc122"));
       assertThat("view in history token should change to individual document view when a new document is selected", newToken.getView(), is(MainView.Editor));
@@ -377,27 +370,23 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void exactSearchMatchesExactOnly()
    {
-      setDefaultMockBehaviour();
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
+
       // should match 1 of the 3 sample documents
       String filterText = "match/exact/filter";
-      mockFilterTextbox.setValue(filterText, false);
-      expectLastCall();
-      mockExactSearchCheckbox.setValue(true, false);
-      expectLastCall();
-      mockCaseSensitiveCheckbox.setValue(false, false);
-      expectLastCall();
 
-      replayAllMocks();
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
       documentListPresenter.updateFilterAndRun(filterText, true, false);
+
+      verify(mockDataProvider, times(2)).refresh();
+      verify(mockDisplay).updateFilter(false, true, filterText);
 
       // simulate firing history change event
       HistoryToken historyTokenWithExactFilter = new HistoryToken();
       historyTokenWithExactFilter.setDocFilterText(filterText);
       historyTokenWithExactFilter.setDocFilterExact(true);
-
-      verifyAllMocks();
 
       ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
       expectedDocs.remove(2); // third doc does not match the filter
@@ -417,19 +406,14 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void commaSeparatedFilter()
    {
-      setDefaultMockBehaviour();
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
+
       // should match first and last of the 3 sample documents
       // multiple matching strings for third to check that there is no
       // duplication, also variable whitespace
       String filterText = " does/not, not/match ,no/filter ";
-      mockFilterTextbox.setValue(filterText, false);
-      expectLastCall();
-      mockExactSearchCheckbox.setValue(false, false);
-      expectLastCall();
-      mockCaseSensitiveCheckbox.setValue(false, false);
-      expectLastCall();
 
-      replayAllMocks();
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
       documentListPresenter.updateFilterAndRun(filterText, false, false);
@@ -438,7 +422,8 @@ public class DocumentListPresenterTest extends PresenterTest
       HistoryToken historyTokenWithFilter = new HistoryToken();
       historyTokenWithFilter.setDocFilterText(filterText);
 
-      verifyAllMocks();
+      verify(mockDataProvider, times(2)).refresh();
+      verify(mockDisplay).updateFilter(false, false, filterText);
 
       ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
       expectedDocs.remove(1); // second doc does not match any of the filter
@@ -461,11 +446,13 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void getDocumentId()
    {
-      setDefaultMockBehaviour();
-      replayAllMocks();
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
+
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
-      verifyAllMocks();
+      
+      verify(mockDataProvider).refresh();
 
       // third document from buildSampleDocumentArray()
       DocumentId docId = documentListPresenter.getDocumentId("does/not/match/exact/filter");
@@ -479,11 +466,13 @@ public class DocumentListPresenterTest extends PresenterTest
    @Test
    public void getDocumentInfo()
    {
-      setDefaultMockBehaviour();
-      replayAllMocks();
+      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
+      when(mockDataProvider.getList()).thenReturn(dataProviderList);
+      
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
-      verifyAllMocks();
+
+      verify(mockDataProvider).refresh();
 
       DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L));
       assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats()))));
@@ -510,125 +499,4 @@ public class DocumentListPresenterTest extends PresenterTest
 
       return docList;
    }
-
-   /**
-    * Default mock behaviour in addition to setDefaultBindExpectations, suitable
-    * for most tests but kept separate for a few requiring different behaviour
-    */
-   private void setDefaultMockBehaviour()
-   {
-      setupMockHistory("");
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   protected void setDefaultBindExpectations()
-   {
-      setupMockDataProvider();
-
-      setupMockDisplay();
-
-      expect(mockMessages.loadDocFailed()).andReturn(TEST_DOC_LOAD_FAIL_MESSAGE).anyTimes();
-      expect(mockMessages.byWords()).andReturn(TEST_BY_WORDS_MESSAGE).anyTimes();
-      expect(mockMessages.byMessages()).andReturn(TEST_BY_MESSAGE_MESSAGE).anyTimes();
-
-      expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler), isA(SelectionHandler.class)))).andReturn(mockHandlerRegistration());
-      expect(mockStatsOption.addChangeHandler(and(capture(capturedStatsOptionChangeHandler), isA(ChangeHandler.class)))).andReturn(mockHandlerRegistration());
-      setupMockEventBus(true);
-      expectValueChangeHandlerRegistration(mockExactSearchCheckbox, capturedCheckboxChangeHandler);
-      expectValueChangeHandlerRegistration(mockCaseSensitiveCheckbox, capturedCaseSensitiveCheckboxChangeHandler);
-      expectValueChangeHandlerRegistration(mockFilterTextbox, capturedTextboxChangeHandler);
-
-      expect(mockUserWorkspaceContext.getWorkspaceContext()).andReturn(mockWorkspaceContext).anyTimes();
-      expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(TEST_PROJECT_SLUG, TEST_ITERATION_SLUG), new LocaleId(TEST_LOCALE_ID))).anyTimes();
-
-      mockUserWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats()));
-      expectLastCall().anyTimes();
-   }
-
-   @SuppressWarnings("unchecked")
-   private void setupMockHistory(String tokenToReturn)
-   {
-      // TODO set up History to properly extend ValueChangeHandler<String>, then use convenience method for handler registration
-      expect(mockHistory.getToken()).andReturn(tokenToReturn).anyTimes();
-      expect(mockHistory.getHistoryToken()).andReturn(HistoryToken.fromTokenString(tokenToReturn)).anyTimes();
-      mockHistory.fireCurrentHistoryState();
-      expectLastCall().anyTimes();
-
-      mockHistory.newItem(capture(capturedHistoryTokenString));
-      expectLastCall().anyTimes();
-
-      mockHistory.newItem(capture(capturedHistoryToken));
-      expectLastCall().anyTimes();
-   }
-
-   private void setupMockDataProvider()
-   {
-      dataProviderList = new ArrayList<DocumentNode>();
-      mockDataProvider.refresh();
-      expectLastCall().anyTimes();
-      expect(mockDataProvider.getList()).andReturn(dataProviderList).anyTimes();
-   }
-
-   @SuppressWarnings("unchecked")
-   private void setupMockEventBus(boolean expectAllEvents)
-   {
-      expectEventHandlerRegistration(mockEventBus, TransUnitUpdatedEvent.getType(), TransUnitUpdatedEventHandler.class, capturedTransUnitUpdatedEventHandler);
-      expect(mockEventBus.addHandler((GwtEvent.Type<EventHandler>) notNull(), (EventHandler) notNull())).andReturn(mockHandlerRegistration()).anyTimes();
-
-      mockEventBus.fireEvent(and(capture(capturedEventBusEvent), isA(GwtEvent.class)));
-      expectLastCall().anyTimes();
-   }
-
-   @SuppressWarnings("unchecked")
-   private void setupMockDisplay()
-   {
-      mockDisplay.setPageSize(captureInt(capturedPageSize));
-      expectLastCall().anyTimes();
-
-      mockDisplay.renderTable(and(capture(capturedSingleSelectionModel), isA(SingleSelectionModel.class)));
-      expectLastCall().anyTimes();
-
-      expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
-      expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();
-      expect(mockDisplay.getFilterTextBox()).andReturn(mockFilterTextbox).anyTimes();
-      expect(mockDisplay.getCaseSensitiveCheckbox()).andReturn(mockCaseSensitiveCheckbox).anyTimes();
-      expect(mockDisplay.getExactSearchCheckbox()).andReturn(mockExactSearchCheckbox).anyTimes();
-      expect(mockDisplay.getDocumentListTable()).andReturn(mockDocListTable).anyTimes();
-      expect(mockDisplay.getStatsOption()).andReturn(mockStatsOption).anyTimes();
-
-      mockDisplay.addStatsOption(TEST_BY_MESSAGE_MESSAGE, "Message");
-      mockDisplay.addStatsOption(TEST_BY_WORDS_MESSAGE, "Words");
-      mockDisplay.setStatsFilter("Words");
-
-   }
-
-   private class DoclistSuccessAnswer implements IAnswer<GetDocumentListResult>
-   {
-      private ArrayList<DocumentInfo> docsToReturn;
-
-      public DoclistSuccessAnswer(ArrayList<DocumentInfo> docsToReturn)
-      {
-         this.docsToReturn = docsToReturn;
-      }
-
-      @Override
-      public GetDocumentListResult answer() throws Throwable
-      {
-         GetDocumentListResult result = new GetDocumentListResult(new ProjectIterationId(TEST_PROJECT_SLUG, TEST_ITERATION_SLUG), docsToReturn);
-         capturedDocListRequestCallback.getValue().onSuccess(result);
-         return null;
-      }
-   }
-
-   private class DocListFailAnswer implements IAnswer<GetDocumentListResult>
-   {
-      @Override
-      public GetDocumentListResult answer() throws Throwable
-      {
-         capturedDocListRequestCallback.getValue().onFailure(new Throwable("test"));
-         return null;
-      }
-   }
-
 }

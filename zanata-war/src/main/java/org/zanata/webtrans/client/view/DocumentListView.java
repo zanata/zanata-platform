@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
+import org.zanata.webtrans.client.presenter.HasDocumentListListener;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
@@ -28,18 +29,19 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -52,6 +54,8 @@ import com.google.inject.Inject;
 public class DocumentListView extends Composite implements DocumentListPresenter.Display, HasSelectionHandlers<DocumentInfo>
 {
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
+
+   private HasDocumentListListener listener;
 
    @UiField
    FlowPanel documentListContainer;
@@ -87,6 +91,15 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
+      
+      this.addSelectionHandler(new SelectionHandler<DocumentInfo>()
+      {
+         @Override
+         public void onSelection(SelectionEvent<DocumentInfo> event)
+         {
+            listener.fireDocumentSelection(event.getSelectedItem());
+         }
+      });
    }
 
 
@@ -114,16 +127,10 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       return documentListTable;
    }
 
-   @Override
-   public HasValue<String> getFilterTextBox()
+   @UiHandler("filterTextBox")
+   public void onFilterTextBox(ValueChangeEvent<String> event)
    {
-      return filterTextBox;
-   }
-
-   @Override
-   public HasSelectionHandlers<DocumentInfo> getDocumentList()
-   {
-      return this;
+      listener.fireFilterToken(event.getValue());
    }
 
    @Override
@@ -146,16 +153,16 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       return dataProvider;
    }
 
-   @Override
-   public HasValue<Boolean> getExactSearchCheckbox()
+   @UiHandler("exactSearchCheckBox")
+   public void onExactSearchCheckboxChange(ValueChangeEvent<Boolean> event)
    {
-      return exactSearchCheckBox;
+      listener.fireExactSearchToken(event.getValue());
    }
 
-   @Override
-   public HasValue<Boolean> getCaseSensitiveCheckbox()
+   @UiHandler("caseSensitiveCheckBox")
+   public void onCaseSensitiveCheckboxValueChange(ValueChangeEvent<Boolean> event)
    {
-      return caseSensitiveCheckBox;
+      listener.fireCaseSensitiveToken(event.getValue());
    }
 
    @Override
@@ -168,10 +175,10 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       documentListContainer.add(documentListTable);
    }
 
-   @Override
-   public HasChangeHandlers getStatsOption()
+   @UiHandler("statsOptions")
+   public void onStatsOptionChange(ChangeEvent event)
    {
-      return statsOptions;
+      listener.statsOptionChange();
    }
 
    @Override
@@ -182,5 +189,25 @@ public class DocumentListView extends Composite implements DocumentListPresenter
 
    interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
    {
+   }
+
+   @Override
+   public void setListener(HasDocumentListListener documentListPresenter)
+   {
+      this.listener = documentListPresenter;
+   }
+
+   @Override
+   public void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText)
+   {
+      caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);
+      exactSearchCheckBox.setValue(docFilterExact, false);
+      filterTextBox.setValue(docFilterText, false);
+   }
+
+   @Override
+   public HasSelectionHandlers<DocumentInfo> getDocumentList()
+   {
+      return this;
    }
 }
