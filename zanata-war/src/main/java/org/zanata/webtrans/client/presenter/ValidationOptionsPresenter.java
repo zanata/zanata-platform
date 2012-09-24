@@ -63,23 +63,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       for (final ValidationObject object : validationService.getValidationList())
       {
          HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(object.getId(), object.getDescription(), object.isEnabled());
-         changeHandler.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-         {
-
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event)
-            {
-               validationService.updateStatus(object.getId(), event.getValue());
-               if (event.getValue())
-               {
-                  for (ValidationObject excluded : object.getExclusiveValidations())
-                  {
-                     validationService.updateStatus(excluded.getId(), false);
-                     display.changeValidationSelectorValue(excluded.getId(), false);
-                  }
-               }
-            }
-         });
+         changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(object));
       }
    }
 
@@ -91,6 +75,30 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    protected void onRevealDisplay()
    {
+   }
+
+   class ValidationOptionValueChangeHandler implements ValueChangeHandler<Boolean>
+   {
+      private final ValidationObject object;
+
+      public ValidationOptionValueChangeHandler(ValidationObject object)
+      {
+         this.object = object;
+      }
+
+      @Override
+      public void onValueChange(ValueChangeEvent<Boolean> event)
+      {
+         validationService.updateStatus(object.getId(), event.getValue());
+         if (event.getValue())
+         {
+            for (ValidationObject excluded : object.getExclusiveValidations())
+            {
+               validationService.updateStatus(excluded.getId(), false);
+               display.changeValidationSelectorValue(excluded.getId(), false);
+            }
+         }
+      }
    }
 }
 
