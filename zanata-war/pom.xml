@@ -238,6 +238,8 @@
                             <exclude>**/client/ui/**</exclude>
                             <exclude>**/client/view/**</exclude>
                             <exclude>**/*OkapiUtil*</exclude>
+                            <exclude>**/*DataProvider*</exclude>
+                            <exclude>**/*SelectionModel*</exclude>
                             <!--below are some trivial classes(java bean) at the moment-->
                             <exclude>**/shared/auth/**</exclude>
                             <exclude>**/shared/model/**</exclude>
