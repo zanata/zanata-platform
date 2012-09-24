@@ -106,18 +106,10 @@ public class MigrateDataToHCredentials implements CustomTaskChange
       // Get the zanata.properties file from the classpath
       ResourceBundle zanataProperties = ResourceBundle.getBundle("zanata");
 
-      //# INTERNAL, KERBEROS, OPENID, JAAS
-      if( zanataProperties.getString("zanata.security.auth.type").equals("OPENID") )
+      // Currently only care for Open Id
+      if( zanataProperties.containsKey("zanata.security.auth.policy.openid"))
       {
          dbAuthType = "OPENID";
-      }
-      else if( zanataProperties.getString("zanata.security.auth.type").equals("JAAS") )
-      {
-         dbAuthType = "JAAS";
-      }
-      else if( zanataProperties.getString("zanata.security.auth.type").equals("KERBEROS") )
-      {
-         dbAuthType = "KERBEROS";
       }
       else
       {
