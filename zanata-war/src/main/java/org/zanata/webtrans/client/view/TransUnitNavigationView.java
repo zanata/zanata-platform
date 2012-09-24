@@ -20,29 +20,27 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransUnitNavigationView extends Composite implements TransUnitNavigationPresenter.Display
+public class TransUnitNavigationView extends Composite implements TransUnitNavigationDisplay
 {
 
    private static TransUnitNavigationViewUiBinder uiBinder = GWT.create(TransUnitNavigationViewUiBinder.class);
-
-   interface TransUnitNavigationViewUiBinder extends UiBinder<Widget, TransUnitNavigationView>
-   {
-   }
+   private Listener listener;
 
    @UiField(provided = true)
    PushButton nextEntry, prevEntry, prevState, nextState, firstEntry, lastEntry;
@@ -92,40 +90,40 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       nextState.setTitle(messages.actionToolTip(messages.nextFuzzyOrUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
-   @Override
-   public HasClickHandlers getPrevEntryButton()
+   @UiHandler("firstEntry")
+   public void onFirstEntryClicked(ClickEvent event)
    {
-      return prevEntry;
+      listener.goToFirstEntry();
    }
 
-   @Override
-   public HasClickHandlers getNextEntryButton()
+   @UiHandler("lastEntry")
+   public void onLastEntryClicked(ClickEvent event)
    {
-      return nextEntry;
+      listener.goToLastEntry();
    }
 
-   @Override
-   public HasClickHandlers getPrevStateButton()
+   @UiHandler("prevState")
+   public void onPrevStateClicked(ClickEvent event)
    {
-      return prevState;
+      listener.goToPreviousState();
    }
 
-   @Override
-   public HasClickHandlers getNextStateButton()
+   @UiHandler("nextState")
+   public void onNextStateClicked(ClickEvent event)
    {
-      return nextState;
+      listener.goToNextState();
    }
 
-   @Override
-   public HasClickHandlers getFirstEntryButton()
+   @UiHandler("prevEntry")
+   public void onPreviousEntryClicked(ClickEvent event)
    {
-      return firstEntry;
+      listener.goToPreviousEntry();
    }
 
-   @Override
-   public HasClickHandlers getLastEntryButton()
+   @UiHandler("nextEntry")
+   public void onNextEntryClicked(ClickEvent event)
    {
-      return lastEntry;
+      listener.goToNextEntry();
    }
 
    @Override
@@ -149,5 +147,15 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
             setUntranslatedModeTooltip();
             break;
       }
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
+
+   interface TransUnitNavigationViewUiBinder extends UiBinder<Widget, TransUnitNavigationView>
+   {
    }
 }

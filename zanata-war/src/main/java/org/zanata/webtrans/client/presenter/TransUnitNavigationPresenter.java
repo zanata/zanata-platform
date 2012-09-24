@@ -21,137 +21,37 @@
 package org.zanata.webtrans.client.presenter;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
-import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
-import org.zanata.webtrans.shared.rpc.NavOption;
+import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
 
-public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationPresenter.Display> implements HasNavTransUnitHandlers
+public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationDisplay> implements TransUnitNavigationDisplay.Listener, UserConfigChangeHandler
 {
 
    private UserConfigHolder configHolder;
    private final TargetContentsPresenter targetContentsPresenter;
 
-   public interface Display extends WidgetDisplay
-   {
-      HasClickHandlers getPrevEntryButton();
-
-      HasClickHandlers getNextEntryButton();
-
-      HasClickHandlers getFirstEntryButton();
-
-      HasClickHandlers getLastEntryButton();
-
-      HasClickHandlers getPrevStateButton();
-
-      HasClickHandlers getNextStateButton();
-
-      void setNavModeTooltip(NavOption navOption);
-   }
-
    @Inject
-   public TransUnitNavigationPresenter(Display display, EventBus eventBus, UserConfigHolder configHolder, TargetContentsPresenter targetContentsPresenter)
+   public TransUnitNavigationPresenter(TransUnitNavigationDisplay display, EventBus eventBus, UserConfigHolder configHolder, TargetContentsPresenter targetContentsPresenter)
    {
       super(display, eventBus);
       this.configHolder = configHolder;
       this.targetContentsPresenter = targetContentsPresenter;
+      display.setListener(this);
    }
 
    @Override
    protected void onBind()
    {
-      display.getPrevEntryButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            targetContentsPresenter.savePendingChangesIfApplicable();
-            fireEvent(new NavTransUnitEvent(NavigationType.PrevEntry));
-         }
-      });
-
-      display.getNextEntryButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            targetContentsPresenter.savePendingChangesIfApplicable();
-            fireEvent(new NavTransUnitEvent(NavigationType.NextEntry));
-         }
-      });
-
-      display.getFirstEntryButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            targetContentsPresenter.savePendingChangesIfApplicable();
-            fireEvent(new NavTransUnitEvent(NavigationType.FirstEntry));
-         }
-      });
-
-      display.getLastEntryButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            targetContentsPresenter.savePendingChangesIfApplicable();
-            fireEvent(new NavTransUnitEvent(NavigationType.LastEntry));
-         }
-      });
-
-      display.getPrevStateButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            targetContentsPresenter.savePendingChangesIfApplicable();
-            fireEvent(new NavTransUnitEvent(NavigationType.PrevState));
-         }
-      });
-
-      display.getNextStateButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            targetContentsPresenter.savePendingChangesIfApplicable();
-            fireEvent(new NavTransUnitEvent(NavigationType.NextState));
-         }
-      });
-
-      registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), new UserConfigChangeHandler()
-      {
-         @Override
-         public void onValueChanged(UserConfigChangeEvent event)
-         {
-            display.setNavModeTooltip(configHolder.getNavOption());
-         }
-      }));
-   }
-
-   @Override
-   public HandlerRegistration addNavTransUnitHandler(NavTransUnitHandler handler)
-   {
-      return eventBus.addHandler(NavTransUnitEvent.getType(), handler);
-   }
-
-   @Override
-   public void fireEvent(GwtEvent<?> event)
-   {
-      eventBus.fireEvent(event);
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), this));
    }
 
    @Override
@@ -164,4 +64,51 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    {
    }
 
+   @Override
+   public void goToFirstEntry()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.FirstEntry));
+   }
+
+   @Override
+   public void goToLastEntry()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.LastEntry));
+   }
+
+   @Override
+   public void goToPreviousState()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.PrevState));
+   }
+
+   @Override
+   public void goToNextState()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.NextState));
+   }
+
+   @Override
+   public void goToPreviousEntry()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.PrevEntry));
+   }
+
+   @Override
+   public void goToNextEntry()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.NextEntry));
+   }
+
+   @Override
+   public void onValueChanged(UserConfigChangeEvent event)
+   {
+      display.setNavModeTooltip(configHolder.getNavOption());
+   }
 }
