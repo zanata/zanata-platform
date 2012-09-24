@@ -56,7 +56,7 @@ import com.google.inject.Inject;
  * 
  **/
 
-public class ValidationService
+public class ValidationService implements RunValidationEventHandler, TransUnitSelectionHandler, DocumentSelectionHandler
 {
    private final Map<String, ValidationObject> validationMap = new HashMap<String, ValidationObject>();
    private final EventBus eventBus;
@@ -84,33 +84,27 @@ public class ValidationService
       validationMap.put(javaVariablesValidation.getId(), javaVariablesValidation);
       validationMap.put(xmlEntityValidation.getId(), xmlEntityValidation);
 
-      eventBus.addHandler(RunValidationEvent.getType(), new RunValidationEventHandler()
-      {
-         @Override
-         public void onValidate(RunValidationEvent event)
-         {
-            execute(event.getSourceContent(), event.getTarget(), event.isFireNotification(), event.getWidgetList());
-         }
-      });
+      eventBus.addHandler(RunValidationEvent.getType(), this);
+      eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
+      eventBus.addHandler(DocumentSelectionEvent.getType(), this);
+   }
 
-      eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
-      {
-         @Override
-         public void onTransUnitSelected(TransUnitSelectionEvent event)
-         {
-            clearAllMessage();
-         }
-      });
+   @Override
+   public void onValidate(RunValidationEvent event)
+   {
+      execute(event.getSourceContent(), event.getTarget(), event.isFireNotification(), event.getWidgetList());
+   }
 
-      eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
-      {
-         @Override
-         public void onDocumentSelected(DocumentSelectionEvent event)
-         {
-            clearAllMessage();
-         }
-      });
+   @Override
+   public void onTransUnitSelected(TransUnitSelectionEvent event)
+   {
+      clearAllMessage();
+   }
 
+   @Override
+   public void onDocumentSelected(DocumentSelectionEvent event)
+   {
+      clearAllMessage();
    }
 
    /**
@@ -139,7 +133,7 @@ public class ValidationService
    /**
     * Enable/disable validation action. Causes a {@link RequestValidationEvent}
     * to be fired.
-    * 
+    *
     * @param key
     * @param isEnabled
     */
