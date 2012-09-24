@@ -21,25 +21,17 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
-import org.zanata.webtrans.client.ui.DistinctColor;
-import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gwt.canvas.dom.client.CssColor;
-import com.google.gwt.user.client.Random;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

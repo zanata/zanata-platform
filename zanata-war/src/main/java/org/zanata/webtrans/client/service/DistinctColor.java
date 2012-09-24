@@ -1,4 +1,4 @@
-package org.zanata.webtrans.client.ui;
+package org.zanata.webtrans.client.service;
 
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import com.google.inject.ImplementedBy;

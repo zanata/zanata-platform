@@ -1,13 +1,13 @@
-package org.zanata.webtrans.client.ui;
+package org.zanata.webtrans.client.service;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.zanata.webtrans.shared.auth.EditorClientId;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -20,11 +20,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class DistinctColorListImpl implements DistinctColor
 {
+   private final List<String> colorList;
+   private final HashMap<EditorClientId, String> colorMap = Maps.newHashMap();
    private int index = 0;
-   private List<String> colorList;
-   private final HashMap<EditorClientId, String> colorMap;
 
-
+   @Inject
    public DistinctColorListImpl()
    {
       // @formatter:off
@@ -56,7 +56,15 @@ public class DistinctColorListImpl implements DistinctColor
             .add(distinctColor(255, 80, 5))
             .build();
       // @formatter:on
-      colorMap = Maps.newHashMap();
+   }
+
+   /**
+    * For testing only.
+    * @param colorList color list
+    */
+   protected DistinctColorListImpl(List<String> colorList)
+   {
+      this.colorList = colorList;
    }
 
    private static String distinctColor(int rndRedColor, int rndGreenColor, int rndBlueColor)
@@ -74,7 +82,6 @@ public class DistinctColorListImpl implements DistinctColor
 
       String color = nextColor();
       colorMap.put(editorClientId, color);
-      Log.info("put new color for [" + editorClientId.hashCode() + "]" + color);
       return color;
    }
 
