@@ -102,8 +102,6 @@ public interface TranslationFileService
 
    Set<String> getSupportedExtensions();
 
-   public URI getDocumentURI(String projectSlug, String iterationSlug, String docPath, String docName);
-
    FileFormatAdapter getAdapterFor(String fileNameOrExtension);
 
    /**
@@ -125,34 +123,9 @@ public interface TranslationFileService
     */
    void removeTempFile(File tempFile);
 
-   /**
-    * Add a document to persistent storage, overwriting any equivalent existing document.
-    * 
-    * A document is equivalent if it has the same project and version slug, docPath and docName.
-    * 
-    * @param docContents contents of the document, will be in a closed state when this method completes.
-    * @param projectSlug
-    * @param iterationSlug
-    * @param docPath
-    * @param docNameAndExt
-    * @throws ZanataServiceException if the document cannot be persisted
-    */
-   void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName) throws ZanataServiceException;
-
    boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName);
 
    String getFileExtension(String projectSlug, String iterationSlug, String docPath, String docName);
-
-   /**
-    * Stream the contents of a document from persistence.
-    * 
-    * @param projectSlug
-    * @param iterationSlug
-    * @param docPath
-    * @param docNameAndExt
-    * @return the document as an InputStream, or null if no document is in persistence with the given credentials.
-    */
-   InputStream streamDocument(String projectSlug, String iterationSlug, String docPath, String docName);
 
    /**
     * 

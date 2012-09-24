@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -57,6 +60,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.util.Hex;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
@@ -176,24 +180,53 @@ public class FileService implements FileResource
       }
 
       // persist bytes to file
-      // TODO generate hash during persist.
       File tempFile = null;
       if (uploadForm.getFirst())
       {
-         // TODO if !getLast() add new document upload and first raw doc part
-         try
+         if (uploadForm.getLast())
          {
-            tempFile = translationFileServiceImpl.persistToTempFile(uploadForm.getFileStream());
+            // single part, can go straight to temp file.
+            try
+            {
+               MessageDigest md = MessageDigest.getInstance("MD5");
+               InputStream fileContents = new DigestInputStream(uploadForm.getFileStream(), md);
+               tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
+               String md5hash = new String(Hex.encodeHex(md.digest()));
+               tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
+               if (!md5hash.equals(uploadForm.getHash()))
+               {
+                  return Response.status(Status.CONFLICT)
+                        .entity("MD5 hash " + uploadForm.getHash()
+                              + " sent with request does not match server-generated hash "
+                              + md5hash + ". Aborted upload operation.\n")
+                        .build();
+               }
+            }
+            catch (ZanataServiceException e) {
+               return Response.status(Status.INTERNAL_SERVER_ERROR)
+                     .entity(e)
+                     .build();
+            }
+            catch (NoSuchAlgorithmException e)
+            {
+               log.error("MD5 hash algorithm not available", e);
+               return Response.status(Status.INTERNAL_SERVER_ERROR)
+                     .entity(e)
+                     .build();
+            }
          }
-         catch (ZanataServiceException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e)
+         else
+         {
+            // TODO new document upload and first raw doc part
+            return Response.status(Status.fromStatusCode(501))
+                  .entity("Multiple part file upload is not yet implemented. Send entire file with first=true and last=true.\n")
                   .build();
          }
       }
       else
       {
-         // TODO append to existing temp file
+         // TODO add new DocumentUploadPart to DocumentUpload
+         // Return document upload id in response
          return Response.status(Status.fromStatusCode(501))
                .entity("Multiple part file upload is not yet implemented. Send entire file with first=true and last=true.\n")
                .build();
@@ -206,9 +239,11 @@ public class FileService implements FileResource
                .build();
       }
 
-      // have entire file, proceed with parsing
 
       // TODO reconstitute file from parts if required.
+      // TODO generate and check hash for reconstituted document.
+
+      // have entire file, proceed with parsing
 
       if (isPotFile)
       {
@@ -430,6 +465,8 @@ public class FileService implements FileResource
                .build();
       }
 
+      // TODO check and handle multiple part uploads
+
       // TODO useful error messages for failed parsing
       TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(uploadForm.getFileStream(),
             uploadForm.getFileType(), locale);
@@ -603,7 +640,7 @@ public class FileService implements FileResource
          TranslationsResource transRes = 
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
          // Filter to only provide translated targets. "Preview" downloads include fuzzy.
-         // Using new list is used as transRes list appears not to be a modifiable implementation.
+         // New list is used as transRes list appears not to be a modifiable implementation.
          Map<String, TextFlowTarget> translations = new HashMap<String, TextFlowTarget>();
          boolean useFuzzy = SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileType);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
@@ -614,7 +651,19 @@ public class FileService implements FileResource
             }
          }
 
-         URI uri = translationFileServiceImpl.getDocumentURI(projectSlug, iterationSlug, document.getPath(), document.getName());
+         HDocument hDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
+         URI uri;
+         try
+         {
+            File tempFile = translationFileServiceImpl.persistToTempFile(hDocument.getRawDocument().getContent().getBinaryStream());
+            uri = tempFile.toURI();
+         }
+         catch (SQLException e)
+         {
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
+                  .entity(e)
+                  .build();
+         }
          StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, translationFileServiceImpl.getAdapterFor(docId));
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")

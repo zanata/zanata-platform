@@ -26,6 +26,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Blob;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +38,22 @@ import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
+import org.hibernate.Hibernate;
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
+import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.jboss.seam.util.Hex;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
+import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -59,6 +68,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HRawDocument;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
@@ -91,6 +101,9 @@ public class ProjectIterationFilesAction
    private String iterationSlug;
 
    private String localeId;
+
+   @Logger
+   private Log log;
 
    @In
    private ZanataIdentity identity;
@@ -292,15 +305,27 @@ public class ProjectIterationFilesAction
       }
 
       File tempFile = null;
+      byte[] md5hash;
       try
       {
-         tempFile = translationFileServiceImpl.persistToTempFile(documentFileUpload.getFileContents());
+         MessageDigest md = MessageDigest.getInstance("MD5");
+         InputStream fileContents = new DigestInputStream(documentFileUpload.getFileContents(), md);
+         tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
+         md5hash = md.digest();
       }
       catch (ZanataServiceException e) {
+         log.error("Failed writing temp file for document {0}", e, documentFileUpload.getDocId());
          FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} to server.", fileName);
          return;
       }
+      catch (NoSuchAlgorithmException e)
+      {
+         log.error("MD5 hash algorithm not available", e);
+         FacesMessages.instance().add(Severity.ERROR, "Error generating hash for uploaded document {0}.", fileName);
+         return;
+      }
 
+      HDocument document = null;
       try
       {
          Resource doc;
@@ -315,7 +340,7 @@ public class ProjectIterationFilesAction
          doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
          Set<String> extensions = Collections.<String>emptySet();
          // TODO Copy Trans values
-         documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, extensions, false);
+         document = documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, extensions, false);
          showUploadSuccessMessage();
       }
       catch (SecurityException e)
@@ -326,18 +351,34 @@ public class ProjectIterationFilesAction
          FacesMessages.instance().add(Severity.ERROR, "Invalid document format for {0}.", fileName);
       }
 
-      try
-      {
-         translationFileServiceImpl.persistDocument(new FileInputStream(tempFile), projectSlug, iterationSlug, documentPath, fileName);
+
+      if (document == null) {
+         // error message for failed parse already added.
       }
-      catch (FileNotFoundException e)
+      else
       {
-         FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} on server, download in original format may fail.", documentFileUpload.getFileName());
+         HRawDocument rawDocument = new HRawDocument();
+         rawDocument.setDocument(document);
+         rawDocument.setContentHash(new String(Hex.encodeHex(md5hash)));
+         rawDocument.setType(DocumentType.typeFor(translationFileServiceImpl.extractExtension(fileName)));
+         rawDocument.setUploadedBy(identity.getCredentials().getUsername());
+
+         FileInputStream tempFileStream = null;
+         try
+         {
+            tempFileStream = new FileInputStream(tempFile);
+            Blob fileContents = Hibernate.createBlob(tempFileStream, (int)tempFile.length());
+            rawDocument.setContent(fileContents);
+            documentDAO.addRawDocument(document, rawDocument);
+            documentDAO.flush();
+         }
+         catch (FileNotFoundException e)
+         {
+            log.error("Failed to open stream from temp source file", e);
+            FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} on server, download in original format may fail.", documentFileUpload.getFileName());
+         }
       }
-      catch (ZanataServiceException e)
-      {
-         FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} on server, download in original format may fail.", documentFileUpload.getFileName());
-      }
+
       translationFileServiceImpl.removeTempFile(tempFile);
    }
 

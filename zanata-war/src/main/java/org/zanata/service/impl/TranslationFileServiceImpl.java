@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import org.apache.commons.io.IOUtils;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -43,12 +42,9 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -215,6 +211,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return res;
    }
 
+   // TODO replace these with values from DocumentType
    @Override
    public Set<String> getSupportedExtensions()
    {
@@ -313,34 +310,6 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
    }
 
-   private static final String DOCUMENT_FILE_PERSIST_DIRECTORY = "/tmp/persisted/";
-
-   // TODO check permissions
-   @Override
-   public void persistDocument(InputStream docContents, String projectSlug, String iterationSlug, String docPath, String docName) throws ZanataServiceException
-   {
-      OutputStream persistFile;
-      try
-      {
-         InputStream fileContents = docContents;
-         File file = createFileObject(projectSlug, iterationSlug, docPath, docName);
-         file.getParentFile().mkdirs();
-         file.createNewFile();
-         persistFile = new FileOutputStream(file);
-         IOUtils.copy(fileContents, persistFile);
-         persistFile.close();
-         fileContents.close();
-      }
-      catch (IOException e)
-      {
-         throw new ZanataServiceException("Error persisting document " + docPath + docName, e);
-      }
-      catch (SecurityException e)
-      {
-         throw new ZanataServiceException("Error persisting document " + docPath + docName, e);
-      }
-   }
-
    @Override
    public boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName)
    {
@@ -355,44 +324,4 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return doc.getRawDocument().getType().getExtension();
    }
 
-   @Override
-   public URI getDocumentURI(String projectSlug, String iterationSlug, String docPath, String docName)
-   {
-      File file = createFileObject(projectSlug, iterationSlug, docPath, docName);
-      return file.toURI();
-   }
-
-   @Override
-   public InputStream streamDocument(String projectSlug, String iterationSlug, String docPath, String docName)
-   {
-      File file = createFileObject(projectSlug, iterationSlug, docPath, docName);
-      InputStream fileContents;
-      try
-      {
-         fileContents = new FileInputStream(file);
-      }
-      catch (FileNotFoundException e)
-      {
-         return null;
-      }
-      return fileContents;
-   }
-
-   private File createFileObject(String projectSlug, String iterationSlug, String docPath, String docName)
-   {
-      // make sure docPath is the correct structure (empty OR no slash at beginning, slash at end)
-      docPath = docPath.trim();
-      while( docPath.startsWith("/") )
-      {
-         docPath = docPath.substring(1);
-      }
-      if( docPath.length() > 0 && !docPath.endsWith("/") )
-      {
-         docPath = docPath.concat("/");
-      }
-
-      // TODO use config-specified or platform independent directory (or switch to database storage)
-      String pathname = DOCUMENT_FILE_PERSIST_DIRECTORY + projectSlug + File.separator + iterationSlug + File.separator + docPath + docName;
-      return new File(pathname);
-   }
 }
