@@ -418,14 +418,14 @@ public class TargetContentsPresenter implements
       {
          for (ToggleEditor editor : currentEditors)
          {
-            editor.addTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
+            editor.addTranslator(person.getName(), sessionService.getColor(editorClientId));
          }
       }
       else
       {
          for (ToggleEditor editor : currentEditors)
          {
-            editor.removeTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
+            editor.removeTranslator(person.getName(), sessionService.getColor(editorClientId));
          }
       }
    }

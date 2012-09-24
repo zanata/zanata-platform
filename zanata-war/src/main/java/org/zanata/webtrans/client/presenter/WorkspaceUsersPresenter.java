@@ -187,7 +187,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public void addTranslator(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit)
    {
-      String color = sessionService.getColor(editorClientId.getValue());
+      String color = sessionService.getColor(editorClientId);
 
       UserPanelSessionItem item = sessionService.getUserPanel(editorClientId);
       if (item == null)
@@ -202,11 +202,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       item.getPanel().setColor(color);
 
       sessionService.updateTranslatorStatus(editorClientId, selectedTransUnit);
-   }
-
-   public int getTranslatorsSize()
-   {
-      return sessionService.getTranslatorsSize();
    }
 
 }

@@ -169,9 +169,9 @@ public class WorkspaceUsersPresenterTest extends PresenterTest
       UserPanelSessionItem mockItem2 = new UserPanelSessionItem(mockPanel2, person2);
       UserPanelSessionItem mockItem3 = new UserPanelSessionItem(mockPanel3, person3);
 
-      expect(mockSessionService.getColor(editorClientId1.getValue())).andReturn("color1");
-      expect(mockSessionService.getColor(editorClientId2.getValue())).andReturn("color2");
-      expect(mockSessionService.getColor(editorClientId3.getValue())).andReturn("color3");
+      expect(mockSessionService.getColor(editorClientId1)).andReturn("color1");
+      expect(mockSessionService.getColor(editorClientId2)).andReturn("color2");
+      expect(mockSessionService.getColor(editorClientId3)).andReturn("color3");
 
       expect(mockSessionService.getUserPanel(editorClientId1)).andReturn(mockItem1);
       expect(mockSessionService.getUserPanel(editorClientId2)).andReturn(mockItem2);

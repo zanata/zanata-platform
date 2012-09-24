@@ -21,17 +21,23 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
+import org.zanata.webtrans.client.ui.DistinctColor;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.user.client.Random;
 import com.google.inject.Inject;
@@ -45,18 +51,13 @@ import com.google.inject.Singleton;
 public class UserSessionService implements TransUnitEditEventHandler
 {
    private final HashMap<EditorClientId, UserPanelSessionItem> userSessionMap;
-
-   public final HashMap<String, String> colorListMap;
-
-   private static final int DARK_BOUND = 100;
-   private static final int BRIGHT_BOUND = 400;
+   private final DistinctColor distinctColor;
 
    @Inject
-   public UserSessionService(final EventBus eventBus)
+   public UserSessionService(final EventBus eventBus, DistinctColor distinctColor)
    {
-      userSessionMap = new HashMap<EditorClientId, UserPanelSessionItem>();
-      
-      colorListMap = new HashMap<String, String>();
+      this.distinctColor = distinctColor;
+      userSessionMap = Maps.newHashMap();
 
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
    }
@@ -75,11 +76,6 @@ public class UserSessionService implements TransUnitEditEventHandler
       }
    }
 
-   public int getTranslatorsSize()
-   {
-      return userSessionMap.size();
-   }
-
    public UserPanelSessionItem getUserPanel(EditorClientId editorClientId)
    {
       return userSessionMap.get(editorClientId);
@@ -93,7 +89,7 @@ public class UserSessionService implements TransUnitEditEventHandler
    public void removeUser(EditorClientId editorClientId)
    {
       userSessionMap.remove(editorClientId);
-      // FIXME remove from colorListMap (memory leak)
+      distinctColor.releaseColor(editorClientId);
    }
 
    public Map<EditorClientId, UserPanelSessionItem> getUserSessionMap()
@@ -101,45 +97,8 @@ public class UserSessionService implements TransUnitEditEventHandler
       return userSessionMap;
    }
 
-   // TODO what we pass is really editorClientId
-   // Should we be passing sessionId?  See also memory leak above.
-   public String getColor(String sessionId)
+   public String getColor(EditorClientId editorClientId)
    {
-      if (colorListMap.containsKey(sessionId))
-      {
-         return colorListMap.get(sessionId);
-      }
-
-      String color = null;
-
-      while (colorListMap.containsValue(color) || color == null || color.equals("rgb(0,0,0)") || color.equals("rgb(255,255,255)"))
-      {
-         color = generateNewColor();
-      }
-
-      colorListMap.put(sessionId, color);
-
-      return color;
+      return distinctColor.getOrCreateColor(editorClientId);
    }
-
-   private String generateNewColor()
-   {
-      int total = 0;
-
-      int rndRedColor = 0;
-      int rndGreenColor = 0;
-      int rndBlueColor = 0;
-
-      while (total < DARK_BOUND || total > BRIGHT_BOUND)
-      {
-         rndRedColor = Random.nextInt(255) / 2;
-         rndGreenColor = Random.nextInt(255);
-         rndBlueColor = Random.nextInt(255);
-         total = rndRedColor + rndGreenColor + rndBlueColor;
-      }
-
-      CssColor randomColor = CssColor.make(rndRedColor, rndGreenColor, rndBlueColor);
-      return randomColor.value();
-   }
-
 }

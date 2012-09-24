@@ -37,6 +37,12 @@ public class ValidationServiceTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
+      when(valMessages.printfVariablesValidatorName()).thenReturn("printf");
+      when(valMessages.positionalPrintfVariablesValidatorName()).thenReturn("positional");
+      when(valMessages.javaVariablesValidatorName()).thenReturn("java");
+      when(valMessages.xmlHtmlValidatorName()).thenReturn("xmlhtml");
+      when(valMessages.xmlEntityValidatorName()).thenReturn("entity");
+
       service = new ValidationService(eventBus, messages, valMessages);
 
       when(messages.notifyValidationError()).thenReturn("validation error");
@@ -49,11 +55,13 @@ public class ValidationServiceTest
    @Test
    public void onValidate()
    {
+      when(valMessages.varsAdded(Lists.newArrayList("%s"))).thenReturn("var added %s");
       RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
       event.addWidget(validationMessagePanel);
+
       service.onValidate(event);
 
-      verify(validationMessagePanel).updateValidationWarning(Lists.<String>newArrayList());
+      verify(validationMessagePanel).updateValidationWarning(Lists.newArrayList("var added %s"));
    }
 
 }
