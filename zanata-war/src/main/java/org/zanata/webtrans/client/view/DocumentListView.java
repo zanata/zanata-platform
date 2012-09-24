@@ -72,9 +72,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @UiField
    SimplePager pager;
 
-   @UiField
-   LayoutPanel rootContainer;
-
    private DocumentListTable documentListTable;
 
    private final Resources resources;
@@ -94,6 +91,15 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
+      
+      this.addSelectionHandler(new SelectionHandler<DocumentInfo>()
+      {
+         @Override
+         public void onSelection(SelectionEvent<DocumentInfo> event)
+         {
+            listener.fireDocumentSelection(event.getSelectedItem());
+         }
+      });
    }
 
 
@@ -125,12 +131,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public void onFilterTextBox(ValueChangeEvent<String> event)
    {
       listener.fireFilterToken(event.getValue());
-   }
-
-   @UiHandler("rootContainer")
-   public void onDocumentListSelect(SelectionEvent<DocumentInfo> event)
-   {
-      listener.fireDocumentSelection(event.getSelectedItem());
    }
 
    @Override
@@ -194,7 +194,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @Override
    public void setListener(HasDocumentListListener documentListPresenter)
    {
-      this.listener = listener;
+      this.listener = documentListPresenter;
    }
 
    @Override

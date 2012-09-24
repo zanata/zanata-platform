@@ -43,7 +43,7 @@
 		}
         
     </ui:style>
-    <g:LayoutPanel ui:field="rootContainer">
+    <g:LayoutPanel>
         <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
                 <g:layer top='0' height='40px' left="0px" right="0px">

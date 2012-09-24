@@ -52,11 +52,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -84,7 +80,6 @@ public class DocumentListPresenterTest extends PresenterTest
    HasValue mockCaseSensitiveCheckbox; // Boolean
    ListDataProvider mockDataProvider;
    DocumentListPresenter.Display mockDisplay;
-   HasSelectionHandlers mockDocList;
    HasData mockDocListTable;
    HasChangeHandlers mockStatsOption;
    EventBus mockEventBus;
@@ -100,11 +95,6 @@ public class DocumentListPresenterTest extends PresenterTest
 
    // captured events and handlers used in several tests
    Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
-   Capture<ValueChangeHandler<String>> capturedTextboxChangeHandler;
-   Capture<ValueChangeHandler<Boolean>> capturedCheckboxChangeHandler;
-   Capture<ValueChangeHandler<Boolean>> capturedCaseSensitiveCheckboxChangeHandler;
-   Capture<SelectionHandler<DocumentInfo>> capturedDocumentSelectionHandler;
-   Capture<ChangeHandler> capturedStatsOptionChangeHandler;
    Capture<GetDocumentList> capturedDocListRequest;
    Capture<AsyncCallback<GetDocumentListResult>> capturedDocListRequestCallback;
    Capture<TransUnitUpdatedEventHandler> capturedTransUnitUpdatedEventHandler;
@@ -122,7 +112,6 @@ public class DocumentListPresenterTest extends PresenterTest
       mockCaseSensitiveCheckbox = createAndAddMock(HasValue.class);
       mockDataProvider = createAndAddMock(ListDataProvider.class);
       mockDisplay = createAndAddMock(DocumentListPresenter.Display.class);
-      mockDocList = createAndAddMock(HasSelectionHandlers.class);
       mockStatsOption = createAndAddMock(HasChangeHandlers.class);
       mockDocListTable = createAndAddMock(HasData.class);
       mockEventBus = createAndAddMock(EventBus.class);
@@ -133,11 +122,6 @@ public class DocumentListPresenterTest extends PresenterTest
       mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
 
-      capturedTextboxChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
-      capturedCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
-      capturedCaseSensitiveCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
-      capturedDocumentSelectionHandler = addCapture(new Capture<SelectionHandler<DocumentInfo>>());
-      capturedStatsOptionChangeHandler = addCapture(new Capture<ChangeHandler>());
       capturedDocListRequest = addCapture(new Capture<GetDocumentList>());
       capturedDocListRequestCallback = addCapture(new Capture<AsyncCallback<GetDocumentListResult>>());
       capturedTransUnitUpdatedEventHandler = addCapture(new Capture<TransUnitUpdatedEventHandler>());
@@ -306,8 +290,7 @@ public class DocumentListPresenterTest extends PresenterTest
 
       replayAllMocks();
       documentListPresenter.bind();
-
-      valueChangeEvent(capturedTextboxChangeHandler, filterText);
+      documentListPresenter.fireFilterToken(filterText);
 
       verifyAllMocks();
 
@@ -324,7 +307,7 @@ public class DocumentListPresenterTest extends PresenterTest
       documentListPresenter.bind();
 
       // simulate checking 'exact search' checkbox
-      valueChangeEvent(capturedCheckboxChangeHandler, true);
+      documentListPresenter.fireExactSearchToken(true);
 
       verifyAllMocks();
 
@@ -344,7 +327,7 @@ public class DocumentListPresenterTest extends PresenterTest
       replayAllMocks();
       documentListPresenter.bind();
 
-      valueChangeEvent(capturedCheckboxChangeHandler, false);
+      documentListPresenter.fireExactSearchToken(false);
 
       verifyAllMocks();
 
@@ -364,9 +347,7 @@ public class DocumentListPresenterTest extends PresenterTest
 
       // simulate document click on second document
       DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats());
-      capturedDocumentSelectionHandler.getValue().onSelection(new SelectionEvent<DocumentInfo>(docInfo)
-      {
-      });
+      documentListPresenter.fireDocumentSelection(docInfo);
 
       verifyAllMocks();
       HistoryToken newToken = capturedHistoryToken.getValue();
@@ -380,12 +361,8 @@ public class DocumentListPresenterTest extends PresenterTest
       setDefaultMockBehaviour();
       // should match 1 of the 3 sample documents
       String filterText = "match/exact/filter";
-      mockFilterTextbox.setValue(filterText, false);
-      expectLastCall();
-      mockExactSearchCheckbox.setValue(true, false);
-      expectLastCall();
-      mockCaseSensitiveCheckbox.setValue(false, false);
-      expectLastCall();
+
+      mockDisplay.updateFilter(false, true, filterText);
 
       replayAllMocks();
       documentListPresenter.bind();
@@ -422,12 +399,8 @@ public class DocumentListPresenterTest extends PresenterTest
       // multiple matching strings for third to check that there is no
       // duplication, also variable whitespace
       String filterText = " does/not, not/match ,no/filter ";
-      mockFilterTextbox.setValue(filterText, false);
-      expectLastCall();
-      mockExactSearchCheckbox.setValue(false, false);
-      expectLastCall();
-      mockCaseSensitiveCheckbox.setValue(false, false);
-      expectLastCall();
+      
+      mockDisplay.updateFilter(false, false, filterText);
 
       replayAllMocks();
       documentListPresenter.bind();
@@ -532,12 +505,17 @@ public class DocumentListPresenterTest extends PresenterTest
       expect(mockMessages.byWords()).andReturn(TEST_BY_WORDS_MESSAGE).anyTimes();
       expect(mockMessages.byMessages()).andReturn(TEST_BY_MESSAGE_MESSAGE).anyTimes();
 
-      expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler), isA(SelectionHandler.class)))).andReturn(mockHandlerRegistration());
-      expect(mockStatsOption.addChangeHandler(and(capture(capturedStatsOptionChangeHandler), isA(ChangeHandler.class)))).andReturn(mockHandlerRegistration());
+      // expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler),
+      // isA(SelectionHandler.class)))).andReturn(mockHandlerRegistration());
+      // expect(mockStatsOption.addChangeHandler(and(capture(capturedStatsOptionChangeHandler),
+      // isA(ChangeHandler.class)))).andReturn(mockHandlerRegistration());
       setupMockEventBus(true);
-      expectValueChangeHandlerRegistration(mockExactSearchCheckbox, capturedCheckboxChangeHandler);
-      expectValueChangeHandlerRegistration(mockCaseSensitiveCheckbox, capturedCaseSensitiveCheckboxChangeHandler);
-      expectValueChangeHandlerRegistration(mockFilterTextbox, capturedTextboxChangeHandler);
+      // expectValueChangeHandlerRegistration(mockExactSearchCheckbox,
+      // capturedCheckboxChangeHandler);
+      // expectValueChangeHandlerRegistration(mockCaseSensitiveCheckbox,
+      // capturedCaseSensitiveCheckboxChangeHandler);
+      // expectValueChangeHandlerRegistration(mockFilterTextbox,
+      // capturedTextboxChangeHandler);
 
       expect(mockUserWorkspaceContext.getWorkspaceContext()).andReturn(mockWorkspaceContext).anyTimes();
       expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(TEST_PROJECT_SLUG, TEST_ITERATION_SLUG), new LocaleId(TEST_LOCALE_ID))).anyTimes();
@@ -586,16 +564,18 @@ public class DocumentListPresenterTest extends PresenterTest
       mockDisplay.setPageSize(captureInt(capturedPageSize));
       expectLastCall().anyTimes();
 
+      mockDisplay.setListener(isA(HasDocumentListListener.class));
+
       mockDisplay.renderTable(and(capture(capturedSingleSelectionModel), isA(SingleSelectionModel.class)));
       expectLastCall().anyTimes();
 
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
-      expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();
-      expect(mockDisplay.getFilterTextBox()).andReturn(mockFilterTextbox).anyTimes();
-      expect(mockDisplay.getCaseSensitiveCheckbox()).andReturn(mockCaseSensitiveCheckbox).anyTimes();
-      expect(mockDisplay.getExactSearchCheckbox()).andReturn(mockExactSearchCheckbox).anyTimes();
+      // expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();
+      // expect(mockDisplay.getFilterTextBox()).andReturn(mockFilterTextbox).anyTimes();
+      // expect(mockDisplay.getCaseSensitiveCheckbox()).andReturn(mockCaseSensitiveCheckbox).anyTimes();
+      // expect(mockDisplay.getExactSearchCheckbox()).andReturn(mockExactSearchCheckbox).anyTimes();
       expect(mockDisplay.getDocumentListTable()).andReturn(mockDocListTable).anyTimes();
-      expect(mockDisplay.getStatsOption()).andReturn(mockStatsOption).anyTimes();
+      // expect(mockDisplay.getStatsOption()).andReturn(mockStatsOption).anyTimes();
 
       mockDisplay.addStatsOption(TEST_BY_MESSAGE_MESSAGE, "Message");
       mockDisplay.addStatsOption(TEST_BY_WORDS_MESSAGE, "Words");
