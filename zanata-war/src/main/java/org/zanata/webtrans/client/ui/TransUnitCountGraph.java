@@ -5,7 +5,6 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 
 public class TransUnitCountGraph extends TransUnitCountBar
 {
@@ -15,7 +14,6 @@ public class TransUnitCountGraph extends TransUnitCountBar
    {
    }
 
-   @Inject
    public TransUnitCountGraph(WebTransMessages messages)
    {
       super(messages, true, true);
