@@ -41,12 +41,16 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -59,7 +63,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display>
+public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasStatsFilter
 {
 
    public interface Display extends WidgetDisplay
@@ -79,6 +83,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       ListDataProvider<DocumentNode> getDataProvider();
 
       void renderTable(SingleSelectionModel<DocumentNode> selectionModel);
+
+      HasChangeHandlers getStatsOption();
+
+      String getSelectedStatsOption();
+
+      void addStatsOption(String item, String value);
+
+      void setStatsFilter(String option);
    }
 
    private static final int PAGE_SIZE = 20;
@@ -151,6 +163,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             }
          }
       });
+
+      display.getStatsOption().addChangeHandler(new ChangeHandler()
+      {
+         @Override
+         public void onChange(ChangeEvent event)
+         {
+            setStatsFilter(display.getSelectedStatsOption());
+            dataProvider.refresh();
+         }
+      });
+
+      display.addStatsOption(messages.byWords(), STATS_OPTION_WORDS);
+      display.addStatsOption(messages.byMessages(), STATS_OPTION_MESSAGE);
+      setStatsFilter(STATS_OPTION_WORDS);
 
       registerHandler(display.getDocumentList().addSelectionHandler(new SelectionHandler<DocumentInfo>()
       {
@@ -270,6 +296,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       }));
 
       display.setPageSize(PAGE_SIZE);
+   }
+
+   @Override
+   public void setStatsFilter(String option)
+   {
+      display.setStatsFilter(option);
    }
 
    /**

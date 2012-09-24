@@ -24,6 +24,7 @@ import java.util.HashMap;
 
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.TransUnitCountGraph;
 import org.zanata.webtrans.client.ui.table.cell.TransUnitCountGraphCell;
 
@@ -33,11 +34,12 @@ import com.google.gwt.user.cellview.client.Column;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class StatisticColumn extends Column<DocumentNode, TransUnitCountGraph>
+public class StatisticColumn extends Column<DocumentNode, TransUnitCountGraph> implements HasStatsFilter
 {
    private final HashMap<Long, TransUnitCountGraph> statsWidgets = new HashMap<Long, TransUnitCountGraph>();
 
    private final WebTransMessages messages;
+   private String statsOption = STATS_OPTION_WORDS;
 
    public StatisticColumn(final WebTransMessages messages)
    {
@@ -49,17 +51,31 @@ public class StatisticColumn extends Column<DocumentNode, TransUnitCountGraph>
    public TransUnitCountGraph getValue(DocumentNode docNode)
    {
       long id = docNode.getDocInfo().getId().getId();
+      TransUnitCountGraph graph;
       if (!statsWidgets.containsKey(id))
       {
-         TransUnitCountGraph graph = new TransUnitCountGraph(messages);
-         graph.setStats(docNode.getDocInfo().getStats());
+         graph = new TransUnitCountGraph(messages);
+         graph.setStats(docNode.getDocInfo().getStats(), true);
          statsWidgets.put(id, graph);
       }
       else
       {
-         statsWidgets.get(id).setStats(docNode.getDocInfo().getStats());
+         if (statsOption.equals(STATS_OPTION_MESSAGE))
+         {
+            statsWidgets.get(id).setStats(docNode.getDocInfo().getStats(), true);
+         }
+         else
+         {
+            statsWidgets.get(id).setStats(docNode.getDocInfo().getStats(), false);
+         }
       }
       return statsWidgets.get(id);
+   }
+
+   @Override
+   public void setStatsFilter(String option)
+   {
+      statsOption = option;
    }
 
 }

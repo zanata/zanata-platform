@@ -28,19 +28,20 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
@@ -60,11 +61,14 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
+   
+   @UiField
+   ListBox statsOptions;
 
    @UiField
    SimplePager pager;
 
-   CellTable<DocumentNode> documentListTable;
+   private DocumentListTable documentListTable;
 
    private final Resources resources;
    private final WebTransMessages messages;
@@ -74,7 +78,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @Inject
    public DocumentListView(Resources resources, WebTransMessages messages)
    {
-
       this.resources = resources;
       this.messages = messages;
 
@@ -86,10 +89,23 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
    }
 
+
    @Override
    public Widget asWidget()
    {
       return this;
+   }
+
+   @Override
+   public void addStatsOption(String item, String value)
+   {
+      statsOptions.addItem(item, value);
+   }
+
+   @Override
+   public String getSelectedStatsOption()
+   {
+      return statsOptions.getValue(statsOptions.getSelectedIndex());
    }
 
    @Override
@@ -150,6 +166,18 @@ public class DocumentListView extends Composite implements DocumentListPresenter
 
       documentListContainer.clear();
       documentListContainer.add(documentListTable);
+   }
+
+   @Override
+   public HasChangeHandlers getStatsOption()
+   {
+      return statsOptions;
+   }
+
+   @Override
+   public void setStatsFilter(String option)
+   {
+      documentListTable.setStatsFilter(option);
    }
 
    interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>

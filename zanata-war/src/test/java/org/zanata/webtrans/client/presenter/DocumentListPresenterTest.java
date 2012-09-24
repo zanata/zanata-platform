@@ -18,12 +18,8 @@ import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
@@ -38,15 +34,12 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
-import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -59,13 +52,14 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
@@ -80,6 +74,8 @@ public class DocumentListPresenterTest extends PresenterTest
    private static final String TEST_ITERATION_SLUG = "test-iteration";
    private static final String TEST_LOCALE_ID = "es";
    private static final String TEST_DOC_LOAD_FAIL_MESSAGE = "test document load fail message";
+   private static final String TEST_BY_WORDS_MESSAGE = "By Words";
+   private static final String TEST_BY_MESSAGE_MESSAGE = "By Message";
 
    // field for document list presenter under test
    private DocumentListPresenter documentListPresenter;
@@ -90,6 +86,7 @@ public class DocumentListPresenterTest extends PresenterTest
    DocumentListPresenter.Display mockDisplay;
    HasSelectionHandlers mockDocList;
    HasData mockDocListTable;
+   HasChangeHandlers mockStatsOption;
    EventBus mockEventBus;
    HasValue mockExactSearchCheckbox; // Boolean
    HasValue mockFilterTextbox; // String
@@ -107,6 +104,7 @@ public class DocumentListPresenterTest extends PresenterTest
    Capture<ValueChangeHandler<Boolean>> capturedCheckboxChangeHandler;
    Capture<ValueChangeHandler<Boolean>> capturedCaseSensitiveCheckboxChangeHandler;
    Capture<SelectionHandler<DocumentInfo>> capturedDocumentSelectionHandler;
+   Capture<ChangeHandler> capturedStatsOptionChangeHandler;
    Capture<GetDocumentList> capturedDocListRequest;
    Capture<AsyncCallback<GetDocumentListResult>> capturedDocListRequestCallback;
    Capture<TransUnitUpdatedEventHandler> capturedTransUnitUpdatedEventHandler;
@@ -125,6 +123,7 @@ public class DocumentListPresenterTest extends PresenterTest
       mockDataProvider = createAndAddMock(ListDataProvider.class);
       mockDisplay = createAndAddMock(DocumentListPresenter.Display.class);
       mockDocList = createAndAddMock(HasSelectionHandlers.class);
+      mockStatsOption = createAndAddMock(HasChangeHandlers.class);
       mockDocListTable = createAndAddMock(HasData.class);
       mockEventBus = createAndAddMock(EventBus.class);
       mockExactSearchCheckbox = createAndAddMock(HasValue.class);
@@ -138,6 +137,7 @@ public class DocumentListPresenterTest extends PresenterTest
       capturedCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
       capturedCaseSensitiveCheckboxChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
       capturedDocumentSelectionHandler = addCapture(new Capture<SelectionHandler<DocumentInfo>>());
+      capturedStatsOptionChangeHandler = addCapture(new Capture<ChangeHandler>());
       capturedDocListRequest = addCapture(new Capture<GetDocumentList>());
       capturedDocListRequestCallback = addCapture(new Capture<AsyncCallback<GetDocumentListResult>>());
       capturedTransUnitUpdatedEventHandler = addCapture(new Capture<TransUnitUpdatedEventHandler>());
@@ -529,8 +529,11 @@ public class DocumentListPresenterTest extends PresenterTest
       setupMockDisplay();
 
       expect(mockMessages.loadDocFailed()).andReturn(TEST_DOC_LOAD_FAIL_MESSAGE).anyTimes();
+      expect(mockMessages.byWords()).andReturn(TEST_BY_WORDS_MESSAGE).anyTimes();
+      expect(mockMessages.byMessages()).andReturn(TEST_BY_MESSAGE_MESSAGE).anyTimes();
 
       expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler), isA(SelectionHandler.class)))).andReturn(mockHandlerRegistration());
+      expect(mockStatsOption.addChangeHandler(and(capture(capturedStatsOptionChangeHandler), isA(ChangeHandler.class)))).andReturn(mockHandlerRegistration());
       setupMockEventBus(true);
       expectValueChangeHandlerRegistration(mockExactSearchCheckbox, capturedCheckboxChangeHandler);
       expectValueChangeHandlerRegistration(mockCaseSensitiveCheckbox, capturedCaseSensitiveCheckboxChangeHandler);
@@ -592,6 +595,12 @@ public class DocumentListPresenterTest extends PresenterTest
       expect(mockDisplay.getCaseSensitiveCheckbox()).andReturn(mockCaseSensitiveCheckbox).anyTimes();
       expect(mockDisplay.getExactSearchCheckbox()).andReturn(mockExactSearchCheckbox).anyTimes();
       expect(mockDisplay.getDocumentListTable()).andReturn(mockDocListTable).anyTimes();
+      expect(mockDisplay.getStatsOption()).andReturn(mockStatsOption).anyTimes();
+
+      mockDisplay.addStatsOption(TEST_BY_MESSAGE_MESSAGE, "Message");
+      mockDisplay.addStatsOption(TEST_BY_WORDS_MESSAGE, "Words");
+      mockDisplay.setStatsFilter("Words");
+
    }
 
    private class DoclistSuccessAnswer implements IAnswer<GetDocumentListResult>

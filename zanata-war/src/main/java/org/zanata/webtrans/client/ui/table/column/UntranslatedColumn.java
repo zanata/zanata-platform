@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasStatsFilter;
 
 import com.google.gwt.user.cellview.client.TextColumn;
 
@@ -28,11 +29,26 @@ import com.google.gwt.user.cellview.client.TextColumn;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class UntranslatedColumn extends TextColumn<DocumentNode>
+public class UntranslatedColumn extends TextColumn<DocumentNode> implements HasStatsFilter
 {
+   private String statsOption = STATS_OPTION_WORDS;
+
    @Override
    public String getValue(DocumentNode object)
    {
-      return String.valueOf(object.getDocInfo().getStats().getWordCount().getUntranslated());
+      if (statsOption.equals(STATS_OPTION_MESSAGE))
+      {
+         return String.valueOf(object.getDocInfo().getStats().getUnitCount().getUntranslated());
+      }
+      else
+      {
+         return String.valueOf(object.getDocInfo().getStats().getWordCount().getUntranslated());
+      }
+   }
+
+   @Override
+   public void setStatsFilter(String option)
+   {
+      statsOption = option;
    }
 }

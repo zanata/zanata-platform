@@ -22,18 +22,20 @@ package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasStatsFilter;
 
 import com.google.gwt.user.cellview.client.TextColumn;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  */
-public class RemainingWordsHoursColumn extends TextColumn<DocumentNode>
+public class RemainingHoursColumn extends TextColumn<DocumentNode> implements HasStatsFilter
 {
    private final WebTransMessages messages;
+   private String statsOption = STATS_OPTION_WORDS;
 
-   public RemainingWordsHoursColumn(final WebTransMessages messages)
+   public RemainingHoursColumn(final WebTransMessages messages)
    {
       this.messages = messages;
    }
@@ -41,7 +43,20 @@ public class RemainingWordsHoursColumn extends TextColumn<DocumentNode>
    @Override
    public String getValue(DocumentNode object)
    {
-      return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingWordsHours());
+      if (statsOption.equals(STATS_OPTION_MESSAGE))
+      {
+         return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingMsgHours());
+      }
+      else
+      {
+         return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingWordsHours());
+      }
+   }
+
+   @Override
+   public void setStatsFilter(String option)
+   {
+      statsOption = option;
    }
 
 }

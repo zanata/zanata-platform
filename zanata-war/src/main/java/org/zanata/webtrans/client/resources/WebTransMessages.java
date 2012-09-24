@@ -80,14 +80,14 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Document")
    String columnHeaderDocument();
 
-   @DefaultMessage("Statistic")
-   String columnHeaderStatistic();
+   @DefaultMessage("Statistic ({0})")
+   String columnHeaderStatistic(String option);
 
-   @DefaultMessage("Translated words")
-   String columnHeaderTranslated();
+   @DefaultMessage("Translated ({0})")
+   String columnHeaderTranslated(String option);
 
-   @DefaultMessage("Untranslated words")
-   String columnHeaderUntranslated();
+   @DefaultMessage("Untranslated ({0})")
+   String columnHeaderUntranslated(String option);
 
    @DefaultMessage("Remaining hours")
    String columnHeaderRemaining();
@@ -454,5 +454,11 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Editor")
    String editor();
+
+   @DefaultMessage("By Words")
+   String byWords();
+
+   @DefaultMessage("By Messages")
+   String byMessages();
 
 }

@@ -213,9 +213,10 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    }
 
    @Override
-   public void setStats(TranslationStats stats)
+   public void setStats(TranslationStats stats, boolean statsByWords)
    {
       this.stats.set(stats);
+      this.statsByWords = statsByWords;
       refresh();
    }
 

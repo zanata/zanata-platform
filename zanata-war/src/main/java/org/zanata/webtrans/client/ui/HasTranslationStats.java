@@ -12,5 +12,5 @@ public interface HasTranslationStats
       public static final LabelFormat DEFAULT_FORMAT = PERCENT_COMPLETE_HRS;
    }
 
-   public void setStats(TranslationStats stats);
+   void setStats(TranslationStats stats, boolean statsByWords);
 }

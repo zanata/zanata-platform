@@ -37,8 +37,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -203,7 +201,7 @@ public class AppView extends Composite implements AppDisplay
    @Override
    public void setStats(TranslationStats transStats)
    {
-      translationStatsBar.setStats(transStats);
+      translationStatsBar.setStats(transStats, true);
       translationStatsBar.setVisible(true);
    }
 
