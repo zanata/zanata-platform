@@ -36,7 +36,6 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -304,24 +303,24 @@ public class AppView extends Composite implements AppDisplay
       }
    }
 
-   @Override
-   public HasClickHandlers getDocumentListTab()
+   @UiHandler("documentListTab")
+   public void onDocumentListTabClick(ClickEvent event)
    {
-      return documentListTab;
+      listener.onDocumentListClicked();
+   }
+
+   @UiHandler("editorTab")
+   public void onEditorTabClick(ClickEvent event)
+   {
+      listener.onEditorClicked();
    }
    
-   @Override
-   public HasClickHandlers getEditorTab()
+   @UiHandler("searchAndReplaceTab")
+   public void onSearchAndReplaceTabTabClick(ClickEvent event)
    {
-      return editorTab;
+      listener.onSearchAndReplaceClicked();
    }
-   
-   @Override
-   public HasClickHandlers getSearchReplaceTab()
-   {
-      return searchAndReplaceTab;
-   }
-   
+
    private void enableTab(Widget tab, boolean enable)
    {
       if (enable)

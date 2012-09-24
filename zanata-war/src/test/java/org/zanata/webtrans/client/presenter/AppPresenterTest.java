@@ -1,4 +1,15 @@
 package org.zanata.webtrans.client.presenter;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -18,39 +29,15 @@ import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.history.History;
-import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
-
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.PresenterRevealedEvent;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 @Test(groups = { "unit-tests" })
 public class AppPresenterTest
@@ -102,14 +89,6 @@ public class AppPresenterTest
       when(location.getParameter("title")).thenReturn("blah");
       when(messages.windowTitle2(userWorkspace.getWorkspaceContext().getWorkspaceName(), userWorkspace.getWorkspaceContext().getLocaleName(), "blah")).thenReturn("new title");
       
-      HasClickHandlers documentListTabHandler = mock(HasClickHandlers.class);
-      HasClickHandlers editorTabHandler = mock(HasClickHandlers.class);
-      HasClickHandlers searchAndReplaceTabHandler = mock(HasClickHandlers.class);
-      
-      when(display.getDocumentListTab()).thenReturn(documentListTabHandler);
-      when(display.getEditorTab()).thenReturn(editorTabHandler);
-      when(display.getSearchReplaceTab()).thenReturn(searchAndReplaceTabHandler);
-      
       presenter.onBind();
 
       verify(keyShortcutPresenter).bind();
@@ -126,10 +105,6 @@ public class AppPresenterTest
 
       WorkspaceId workspaceId = userWorkspace.getWorkspaceContext().getWorkspaceId();
       String localeId = workspaceId.getLocaleId().getId();
-      
-      verify(documentListTabHandler).addClickHandler(isA(ClickHandler.class));
-      verify(editorTabHandler).addClickHandler(isA(ClickHandler.class));
-      verify(searchAndReplaceTabHandler).addClickHandler(isA(ClickHandler.class));
       
       verify(display).setProjectLinkLabel(workspaceId.getProjectIterationId().getProjectSlug());
       verify(display).setIterationFilesLabel(workspaceId.getProjectIterationId().getIterationSlug() + " [" + localeId + "]");
