@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.presenter.HasTMEvent;
+import org.zanata.webtrans.client.presenter.HasTranslationMemoryListener;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -17,9 +17,10 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -84,8 +85,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private final DiffColorLegendPanel diffLegendPanel;
 
    private final InlineLabel diffLegendInfo;
-   
-   private HasTMEvent listener;
+
+   private HasTranslationMemoryListener listener;
 
    private final static int SOURCE_COL = 0;
    private final static int TARGET_COL = 1;
@@ -118,6 +119,15 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       diffLegendInfo.setStyleName("icon-info-circle-2 details");
       diffLegendInfo.setTitle(messages.colorLegend());
 
+      diffLegendInfo.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            listener.showDiffLegend(true);
+         }
+      });
+
       FlowPanel sourceHeader = new FlowPanel();
       sourceHeader.add(new InlineLabel(messages.sourceLabel()));
       sourceHeader.add(diffLegendInfo);
@@ -142,7 +152,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       initWidget(uiBinder.createAndBindUi(this));
 
       container.add(loadingLabel);
-      
+
       headerLabel.setText(messages.translationMemoryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
@@ -151,7 +161,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @UiHandler("tmTextBox")
-   void onTmTextBoxKeyUp(KeyUpEvent event)
+   public void onTmTextBoxKeyUp(KeyUpEvent event)
    {
       if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
       {
@@ -159,16 +169,16 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       }
    }
 
-   @Override
-   public HasClickHandlers getMergeButton()
+   @UiHandler("mergeTMButton")
+   public void onMergeButtonClick(ClickEvent event)
    {
-      return mergeTMButton;
+      listener.onTMMergeClick();
    }
 
-   @Override
-   public HasClickHandlers getSearchButton()
+   @UiHandler("searchButton")
+   public void onSearchButtonClick(ClickEvent event)
    {
-      return searchButton;
+      listener.fireSearchEvent();
    }
 
    @Override
@@ -177,6 +187,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       return searchType;
    }
 
+   @Override
    public TextBox getTmTextBox()
    {
       return tmTextBox;
@@ -214,12 +225,9 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @Override
    public void clearTableContent()
    {
-      if(resultTable.getRowCount() > 1)
+      while (resultTable.getRowCount() > 1)
       {
-         for (int i = 1; i < resultTable.getRowCount(); i++)
-         {
-            resultTable.removeRow(i);
-         }
+         resultTable.removeRow(resultTable.getRowCount() - 1);
       }
    }
 
@@ -280,7 +288,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          resultTable.setWidget(i + 1, NUM_TRANS_COL, countLabel);
          resultTable.getFlexCellFormatter().setStyleName(i + 1, NUM_TRANS_COL, "centered");
 
-         if(i % 2 == 1)
+         if (i % 2 == 1)
          {
             resultTable.getRowFormatter().setStyleName(i + 1, "oddRow");
          }
@@ -322,40 +330,41 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       container.add(resultTable);
    }
 
-   @Override
-   public TextBox getFocusTmTextBox()
+   @UiHandler("tmTextBox")
+   public void onTmTextBoxFocus(FocusEvent event)
    {
-      return tmTextBox;
+      listener.onFocus(true);
+   }
+
+   @UiHandler("tmTextBox")
+   public void onTmTextBoxBlur(BlurEvent event)
+   {
+      listener.onFocus(false);
    }
 
    @Override
-   public void setListener(HasTMEvent listener)
+   public void setListener(HasTranslationMemoryListener listener)
    {
       this.listener = listener;
    }
 
-   @Override
-   public HasClickHandlers getClearButton()
+   @UiHandler("clearButton")
+   public void onClearButtonClick(ClickEvent event)
    {
-      return clearButton;
+      listener.clearContent();
    }
 
    @Override
-   public HasClickHandlers getDiffLegendInfo()
+   public void showDiffLegend(boolean show)
    {
-      return diffLegendInfo;
-   }
+      if (show)
+      {
+         diffLegendPanel.show(ShortcutContext.TM);
+      }
+      else
+      {
+         diffLegendPanel.hide(true);
+      }
 
-   @Override
-   public void showDiffLegend()
-   {
-      diffLegendPanel.show(ShortcutContext.TM);
-
-   }
-
-   @Override
-   public void hideDiffLegend()
-   {
-      diffLegendPanel.hide(true);
    }
 }

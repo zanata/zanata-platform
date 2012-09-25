@@ -28,51 +28,31 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> implements HasTMEvent
+public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> implements HasTranslationMemoryListener, TransUnitSelectionHandler, TransMemoryShorcutCopyHandler
 {
    public interface Display extends WidgetDisplay
    {
-      HasClickHandlers getSearchButton();
-
       HasValue<SearchType> getSearchType();
 
       HasText getTmTextBox();
 
-      HasAllFocusHandlers getFocusTmTextBox();
-
       void startProcessing();
-
-      HasClickHandlers getMergeButton();
-      
-      HasClickHandlers getClearButton();
-
-      HasClickHandlers getDiffLegendInfo();
 
       void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries);
 
-      void setListener(HasTMEvent listener);
+      void setListener(HasTranslationMemoryListener listener);
 
       void stopProcessing(boolean showResult);
 
       void clearTableContent();
 
-      void showDiffLegend();
-
-      void hideDiffLegend();
+      void showDiffLegend(boolean show);
    }
 
    private final UserWorkspaceContext userWorkspaceContext;
@@ -117,102 +97,22 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          }
       }));
 
-      display.getSearchButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            fireSearchEvent();
-         }
-      });
-
-      display.getClearButton().addClickHandler(new ClickHandler()
-      {
-         
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.getTmTextBox().setText("");
-            display.clearTableContent();
-         }
-      });
-      
-      display.getFocusTmTextBox().addFocusHandler(new FocusHandler()
-      {
-         @Override
-         public void onFocus(FocusEvent event)
-         {
-            keyShortcutPresenter.setContextActive(ShortcutContext.TM, true);
-            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
-            keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
-            isFocused = true;
-         }
-      });
-
-      display.getFocusTmTextBox().addBlurHandler(new BlurHandler()
-      {
-         @Override
-         public void onBlur(BlurEvent event)
-         {
-            keyShortcutPresenter.setContextActive(ShortcutContext.TM, false);
-            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
-            isFocused = false;
-         }
-      });
-
-      display.getDiffLegendInfo().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.showDiffLegend();
-         }
-      });
-
-      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
-      {
-         @Override
-         public void onTransUnitSelected(TransUnitSelectionEvent event)
-         {
-            createTMRequestForTransUnit(event.getSelection());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(TransMemoryShortcutCopyEvent.getType(), new TransMemoryShorcutCopyHandler()
-      {
-         @Override
-         public void onTransMemoryCopy(TransMemoryShortcutCopyEvent event)
-         {
-            if (!userWorkspaceContext.hasReadOnlyAccess())
-            {
-               TransMemoryResultItem item;
-               try
-               {
-                  item = currentResult.get(event.getIndex());
-               }
-               catch (IndexOutOfBoundsException ex)
-               {
-                  item = null;
-               }
-               if (item != null)
-               {
-                  Log.debug("Copy from translation memory:" + (event.getIndex() + 1));
-                  eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
-               }
-            }
-         }
-      }));
-
-      display.getMergeButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            transMemoryMergePresenter.prepareTMMerge();
-         }
-      });
+      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
+      registerHandler(eventBus.addHandler(TransMemoryShortcutCopyEvent.getType(), this));
 
       display.setListener(this);
+   }
+
+   @Override
+   public void onTMMergeClick()
+   {
+      transMemoryMergePresenter.prepareTMMerge();
+   }
+
+   @Override
+   public void showDiffLegend(boolean show)
+   {
+      display.showDiffLegend(show);
    }
 
    @Override
@@ -227,7 +127,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       eventBus.fireEvent(new CopyDataToEditorEvent(object.getTargetContents()));
    }
 
-   private void fireSearchEvent()
+   @Override
+   public void fireSearchEvent()
    {
       String query = display.getTmTextBox().getText();
       createTMRequest(new TransMemoryQuery(query, display.getSearchType().getValue()));
@@ -336,6 +237,51 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    public boolean isFocused()
    {
       return isFocused;
+   }
+
+   @Override
+   public void onTransUnitSelected(TransUnitSelectionEvent event)
+   {
+      createTMRequestForTransUnit(event.getSelection());
+   }
+
+   @Override
+   public void onTransMemoryCopy(TransMemoryShortcutCopyEvent event)
+   {
+      if (!userWorkspaceContext.hasReadOnlyAccess())
+      {
+         TransMemoryResultItem item;
+         try
+         {
+            item = currentResult.get(event.getIndex());
+         }
+         catch (IndexOutOfBoundsException ex)
+         {
+            item = null;
+         }
+         if (item != null)
+         {
+            Log.debug("Copy from translation memory:" + (event.getIndex() + 1));
+            eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
+         }
+      }
+   }
+
+   @Override
+   public void clearContent()
+   {
+      display.getTmTextBox().setText("");
+      display.clearTableContent();
+      currentResult.clear();
+   }
+
+   @Override
+   public void onFocus(boolean isFocused)
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.TM, isFocused);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, !isFocused);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, !isFocused);
+      this.isFocused = isFocused;
    }
 
 }

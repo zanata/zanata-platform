@@ -179,12 +179,9 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Override
    public void clearTableContent()
    {
-      if(resultTable.getRowCount() > 1)
+      while (resultTable.getRowCount() > 1)
       {
-         for (int i = 1; i < resultTable.getRowCount(); i++)
-         {
-            resultTable.removeRow(i);
-         }
+         resultTable.removeRow(resultTable.getRowCount() - 1);
       }
    }
 

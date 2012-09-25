@@ -33,7 +33,6 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -43,12 +42,8 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.rpc.GetDocumentList;
-import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -76,14 +71,6 @@ public class DocumentListPresenterTest
    private List<DocumentNode> dataProviderList;
 
    // captured events and handlers used in several tests
-   @Captor
-   private ArgumentCaptor<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
-   @Captor
-   private ArgumentCaptor<GetDocumentList> capturedDocListRequest;
-   @Captor
-   private ArgumentCaptor<AsyncCallback<GetDocumentListResult>> capturedDocListRequestCallback;
-   @Captor
-   private ArgumentCaptor<TransUnitUpdatedEventHandler> capturedTransUnitUpdatedEventHandler;
    @Captor
    private ArgumentCaptor<GwtEvent> capturedEventBusEvent;
    @Captor
