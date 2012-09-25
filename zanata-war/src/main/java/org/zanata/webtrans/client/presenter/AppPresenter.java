@@ -283,7 +283,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     */
    private void refreshStatsDisplay()
    {
-      display.setStats(currentDisplayStats);
+      display.setStats(currentDisplayStats, true);
    }
 
    public DocumentId getSelectedDocIdOrNull()

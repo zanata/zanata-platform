@@ -16,7 +16,7 @@ public interface AppDisplay extends WidgetDisplay
 
    void setDocumentLabel(String docPath, String docName);
 
-   void setStats(TranslationStats transStats);
+   void setStats(TranslationStats transStats, boolean statsByWords);
 
    void setReadOnlyVisible(boolean visible);
 

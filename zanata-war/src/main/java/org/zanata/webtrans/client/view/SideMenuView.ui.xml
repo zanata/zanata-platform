@@ -8,7 +8,7 @@
 			width:250px;
 			padding:15px;
 			background-color: #444444;
-			border-radius: 5px 0 0 5px;
+			border-radius: 0 0 0 5px;
 		}
 
 		.menuButton
@@ -20,13 +20,18 @@
 			border-top-left-radius:5px;
 			border-bottom-left-radius:5px;
 			padding:2px 0 3px 3px;
-			margin-top:1px;
+			margin-bottom:1px;
 			display:inline-block;
 		}
-		
-		.menuButton:hover, .selectedButton
+		.menuButton:hover
 		{
-		    color: #96FFFF;
+	 		color: #96FFFF;
+		}
+		
+		
+		.selectedButton
+		{
+		   color: #96FFFF;
 		    background:#444444;
 		}
 		
@@ -53,7 +58,7 @@
 	</ui:style>
 
 	<g:LayoutPanel>
-		<g:layer top="24px" bottom="0" left="0" width="24px">
+		<g:layer top="0" bottom="0" left="0" width="24px">
 			<g:FlowPanel>
 	    		<g:InlineLabel ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
 	    		<g:InlineLabel ui:field="notificationTab" styleName="icon-bell {style.menuButton}"/>

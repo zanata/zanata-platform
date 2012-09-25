@@ -198,7 +198,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
          }
          else
          {
-            display.setSelectedTab(SideMenuDisplay.EMPTY_VIEW);
+            display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
          }
       }
    }

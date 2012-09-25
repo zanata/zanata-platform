@@ -158,7 +158,7 @@
 						<g:TabLayoutPanel ui:field="content" barHeight="0" barUnit='PX' />
 					</g:layer>
 					
-					<g:layer left="0" width="24px" top="3px" height="82px">
+					<g:layer left="0" width="24px" top="5px" height="82px">
 						<g:HTMLPanel>
 							<g:Label styleName="icon-list {style.viewMenuTab}" ui:field="documentListTab"/>
 							<g:Label styleName="icon-edit {style.viewMenuTab}" ui:field="editorTab"/>
@@ -169,7 +169,7 @@
 				
 		</g:layer>
 		
-		<g:layer right="0" width="24px" top="35px" bottom="10px">
+		<g:layer right="0" width="24px" top="30px" bottom="10px">
 			<g:LayoutPanel ui:field="sideMenuContainer"/>
 		</g:layer>
 		

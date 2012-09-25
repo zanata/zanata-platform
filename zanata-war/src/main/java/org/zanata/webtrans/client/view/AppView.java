@@ -197,9 +197,9 @@ public class AppView extends Composite implements AppDisplay
    }
 
    @Override
-   public void setStats(TranslationStats transStats)
+   public void setStats(TranslationStats transStats, boolean statsByWords)
    {
-      translationStatsBar.setStats(transStats, true);
+      translationStatsBar.setStats(transStats, statsByWords);
       translationStatsBar.setVisible(true);
    }
 
