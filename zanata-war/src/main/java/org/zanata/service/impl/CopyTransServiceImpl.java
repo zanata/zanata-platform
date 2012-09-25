@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.hibernate.HibernateException;
 import org.hibernate.ScrollableResults;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -51,6 +52,8 @@ import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
+
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.*;
 
 //TODO unit test suite for this class
 
@@ -134,16 +137,6 @@ public class CopyTransServiceImpl implements CopyTransService
       this.copyTransForLocale(document, locale, new HCopyTransOptions());
    }
 
-
-   /**
-    * Copies matching translations into a document for a given locale.
-    * Note: This method is executed within a single transaction.
-    *
-    * @param document Document to copy translations into.
-    * @param locale The locale for which to find matching translations to copy.
-    * @param options Options to configure the copy trans process.
-    */
-   // TODO unit testing for this method. Reduce complexity(pass cyclomatic complexity analysis)
    public void copyTransForLocale(final HDocument document, final HLocale locale, final HCopyTransOptions options)
    {
       try
@@ -152,79 +145,46 @@ public class CopyTransServiceImpl implements CopyTransService
             @Override
             protected Void work() throws Exception
             {
-               ScrollableResults results = null;
+               int copyCount = 0;
 
-               try
+               // Determine the state of the copies for each pass
+               ContentState copyState = ContentState.Approved;
+               boolean ignoreContext = false,
+                       ignoreDocument = false,
+                       ignoreProject = false;
+
+               // First pass, very conservative
+               copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
+               // Next passes, more relaxed and only needed when the options call for it
+               if( options.getContextMismatchAction() != REJECT )
                {
-                  int copyCount = 0;
-
-                  results = textFlowTargetDAO.findLatestEquivalentTranslations(document, locale);
-                  HTextFlow originalTf = null;
-
-                  while (results.next())
+                  ignoreContext = true;
+                  if( options.getContextMismatchAction() == DOWNGRADE_TO_FUZZY )
                   {
-                     originalTf = (HTextFlow)results.get(1);
-                     HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
-
-                     // Stop looking at this text flow altogether if there is an already approved translation
-                     if (hTarget != null && hTarget.getState() == ContentState.Approved)
-                     {
-                        continue;
-                     }
-
-                     // Get the best match for the original text flow
-                     CopyTransMatch bestMatch = CopyTransServiceImpl.this.findBestMatch(results, originalTf, options);
-
-                     // Create the new translation (or overwrite non-approved ones)
-
-                     if (hTarget == null)
-                     {
-                        hTarget = new HTextFlowTarget(originalTf, locale);
-                        hTarget.setVersionNum(1);
-                        originalTf.getTargets().put(locale.getId(), hTarget);
-                     }
-                     else
-                     {
-                        // increase the versionNum
-                        hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-                     }
-
-                     // if a best match is found
-                     if( bestMatch != null )
-                     {
-                        // NB we don't touch creationDate
-                        hTarget.setTextFlowRevision(originalTf.getRevision());
-                        hTarget.setLastChanged(bestMatch.matchingTarget.getLastChanged());
-                        hTarget.setLastModifiedBy(bestMatch.matchingTarget.getLastModifiedBy());
-                        hTarget.setContents(bestMatch.matchingTarget.getContents());
-                        hTarget.setState(bestMatch.targetState);
-                        HSimpleComment hcomment = hTarget.getComment();
-                        if (hcomment == null)
-                        {
-                           hcomment = new HSimpleComment();
-                           hTarget.setComment(hcomment);
-                        }
-                        hcomment.setComment(createComment(bestMatch.matchingTarget));
-                        ++copyCount;
-
-                        // manually flush
-                        if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
-                        {
-                           entityManager.flush();
-                           entityManager.clear();
-                        }
-                     }
+                     copyState = ContentState.NeedReview;
                   }
-
-                  log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
+                  copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
                }
-               finally
+               if( options.getDocIdMismatchAction() != REJECT )
                {
-                  if( results != null )
+                  ignoreDocument = true;
+                  if( options.getDocIdMismatchAction() == DOWNGRADE_TO_FUZZY )
                   {
-                     results.close();
+                     copyState = ContentState.NeedReview;
                   }
+                  copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
                }
+               if( options.getProjectMismatchAction() != REJECT )
+               {
+                  ignoreProject = true;
+                  if( options.getProjectMismatchAction() == DOWNGRADE_TO_FUZZY )
+                  {
+                     copyState = ContentState.NeedReview;
+                  }
+                  copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
+               }
+
+               log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
 
                return null;
             }
@@ -234,6 +194,81 @@ public class CopyTransServiceImpl implements CopyTransService
       {
          log.warn("exception during copy trans", e);
       }
+   }
+
+   private int copyTransPass( HDocument document, HLocale locale, boolean ignoreContext, boolean ignoreDocument, boolean ignoreProject,
+                              ContentState copyState)
+   {
+      ScrollableResults results = null;
+
+      int copyCount = 0;
+      try
+      {
+         results = textFlowTargetDAO.findMatchingTranslations(document, locale, ignoreContext, ignoreDocument, ignoreProject);
+         copyCount = 0;
+
+         while( results.next() )
+         {
+            HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
+            HTextFlow originalTf = (HTextFlow)results.get(1);
+            HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
+
+            // Create the new translation (or overwrite non-approved ones)
+
+            if (hTarget == null)
+            {
+               hTarget = new HTextFlowTarget(originalTf, locale);
+               hTarget.setVersionNum(1);
+               originalTf.getTargets().put(locale.getId(), hTarget);
+            }
+            else
+            {
+               // increase the versionNum
+               hTarget.setVersionNum(hTarget.getVersionNum() + 1);
+            }
+
+            // NB we don't touch creationDate
+            hTarget.setTextFlowRevision(originalTf.getRevision());
+            hTarget.setLastChanged(matchingTarget.getLastChanged());
+            hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
+            hTarget.setContents(matchingTarget.getContents());
+            hTarget.setState(copyState);
+            HSimpleComment hcomment = hTarget.getComment();
+            if (hcomment == null)
+            {
+               hcomment = new HSimpleComment();
+               hTarget.setComment(hcomment);
+            }
+            hcomment.setComment(createComment(matchingTarget));
+            ++copyCount;
+
+            // manually flush
+            if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
+            {
+               entityManager.flush();
+               entityManager.clear();
+            }
+         }
+
+         // a final flush
+         if( copyCount % DatabaseConstants.BATCH_SIZE != 0 )
+         {
+            entityManager.flush();
+            entityManager.clear();
+         }
+      }
+      catch (HibernateException e)
+      {
+         log.error("Copy trans error", e);
+      }
+      finally
+      {
+         if( results != null )
+         {
+            results.close();
+         }
+      }
+      return copyCount;
    }
 
    /**
@@ -274,14 +309,14 @@ public class CopyTransServiceImpl implements CopyTransService
 
             // Context
             boolean contextMatch = currentTft.getTextFlow().getResId().equals( originalTf.getResId() );
-            if( options.getContextMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT )
+            if( options.getContextMismatchAction() == REJECT )
             {
                if( !contextMatch )
                {
                   continue;// rejected, continue
                }
             }
-            else if( options.getContextMismatchAction() == HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            else if( options.getContextMismatchAction() == DOWNGRADE_TO_FUZZY )
             {
                if( !contextMatch )
                {
@@ -292,14 +327,14 @@ public class CopyTransServiceImpl implements CopyTransService
 
             // Doc Id
             boolean docIdMatch = currentTft.getTextFlow().getDocument().getDocId().equals( originalTf.getDocument().getDocId() );
-            if( options.getDocIdMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT )
+            if( options.getDocIdMismatchAction() == REJECT )
             {
                if( !docIdMatch )
                {
                   continue;// rejected, continue
                }
             }
-            else if( options.getDocIdMismatchAction() == HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            else if( options.getDocIdMismatchAction() == DOWNGRADE_TO_FUZZY )
             {
                if( !docIdMatch )
                {
@@ -310,14 +345,14 @@ public class CopyTransServiceImpl implements CopyTransService
 
             // Project
             boolean projectMatch = currentProj.getId().equals(originalTf.getDocument().getProjectIteration().getProject().getId());
-            if( options.getProjectMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT )
+            if( options.getProjectMismatchAction() == REJECT )
             {
                if( !projectMatch )
                {
                   continue; // rejected, continue
                }
             }
-            else if( options.getProjectMismatchAction() == HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            else if( options.getProjectMismatchAction() == DOWNGRADE_TO_FUZZY )
             {
                if( !projectMatch )
                {

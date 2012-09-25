@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.util.Map;
 
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
@@ -31,8 +30,6 @@ import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.FlashScopeBean;
-
-import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 
 /**
  * Copy Trans page action bean.
@@ -55,15 +52,12 @@ public class CopyTransAction
    @In
    private Map<String, String> messages;
 
+   @In
+   private CopyTransOptionsModel copyTransOptionsModel;
+
    private String iterationSlug;
 
    private String projectSlug;
-
-   private String contextMismatchAction = ConditionRuleAction.DOWNGRADE_TO_FUZZY.toString();
-
-   private String documentIdMismatchAction = ConditionRuleAction.DOWNGRADE_TO_FUZZY.toString();
-
-   private String projectMismatchAction = ConditionRuleAction.DOWNGRADE_TO_FUZZY.toString();
 
    private HProjectIteration projectIteration;
 
@@ -88,36 +82,6 @@ public class CopyTransAction
       this.projectSlug = projectSlug;
    }
 
-   public String getContextMismatchAction()
-   {
-      return contextMismatchAction;
-   }
-
-   public void setContextMismatchAction(String contextMismatchAction)
-   {
-      this.contextMismatchAction = contextMismatchAction;
-   }
-
-   public String getDocumentIdMismatchAction()
-   {
-      return documentIdMismatchAction;
-   }
-
-   public void setDocumentIdMismatchAction(String documentIdMismatchAction)
-   {
-      this.documentIdMismatchAction = documentIdMismatchAction;
-   }
-
-   public String getProjectMismatchAction()
-   {
-      return projectMismatchAction;
-   }
-
-   public void setProjectMismatchAction(String projectMismatchAction)
-   {
-      this.projectMismatchAction = projectMismatchAction;
-   }
-
    public HProjectIteration getProjectIteration()
    {
       if( this.projectIteration == null )
@@ -132,9 +96,7 @@ public class CopyTransAction
       HProject project = this.getProjectIteration().getProject();
       if( project.getDefaultCopyTransOpts() != null )
       {
-         this.contextMismatchAction = project.getDefaultCopyTransOpts().getContextMismatchAction().toString();
-         this.documentIdMismatchAction = project.getDefaultCopyTransOpts().getDocIdMismatchAction().toString();
-         this.projectMismatchAction = project.getDefaultCopyTransOpts().getProjectMismatchAction().toString();
+         copyTransOptionsModel.setInstance(project.getDefaultCopyTransOpts());
       }
    }
 
@@ -158,10 +120,7 @@ public class CopyTransAction
       }
 
       // Options
-      HCopyTransOptions options = new HCopyTransOptions();
-      options.setProjectMismatchAction( ConditionRuleAction.valueOf( this.projectMismatchAction ) );
-      options.setContextMismatchAction( ConditionRuleAction.valueOf( this.contextMismatchAction ) );
-      options.setDocIdMismatchAction( ConditionRuleAction.valueOf( this.documentIdMismatchAction ) );
+      HCopyTransOptions options = copyTransOptionsModel.getInstance();
 
       copyTransManager.startCopyTrans( getProjectIteration(), options );
       flash.setAttribute("message", messages.get("jsf.iteration.CopyTrans.Started"));

@@ -173,26 +173,55 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       return q.list();
       // @formatter:on
    }
-   
+
    /**
-    * Fetches a set of equivalent translations for a given document on a given locale.
-    * 
+    * Finds matching translations for a given document and locale.
+    *
     * @param document The document for which to find equivalent translations.
     * @param locale The locale. Only translations for this locale are fetched.
-    * @return A scrollable result set (in case there is a large result set). Position 0 of the 
+    * @param checkContext Whether to check the text flow's context for matches.
+    * @param checkDocument Whether to check the text flow's document for matches.
+    * @param checkProject Whether to check the text flow's project for matches.
+    * @return A scrollable result set (in case there is a large result set). Position 0 of the
     * result set is the matching translation (HTextFlowTarget), position 1 is the HTextFlow
-    * in the document that it matches against, and position 2 is the HProject instance that the
-    * match belongs to.
+    * in the document that it matches against.
     */
-   public ScrollableResults findLatestEquivalentTranslations(HDocument document, HLocale locale)
+   public ScrollableResults findMatchingTranslations(HDocument document, HLocale locale, boolean checkContext, boolean checkDocument, boolean checkProject)
    {
-      // @formatter:off
-      Query q = getSession().getNamedQuery("HTextFlowTarget.findLatestEquivalentTranslations");
+      StringBuilder queryStr = new StringBuilder(
+            "select match, textFlow, max(match.id) " +
+            "from HTextFlowTarget match, HTextFlow textFlow " +
+            "join fetch match.textFlow " +
+            "where " +
+            "textFlow.document = :document " +
+            "and textFlow.contentHash = match.textFlow.contentHash " +
+            "and match.locale = :locale " +
+            "and match.state = :approvedState " +
+            // Do not fetch results for already approved text flow targets
+            "and (match.locale not in indices(textFlow.targets) " +
+               "or :approvedState != (select t.state from HTextFlowTarget t where t.textFlow = textFlow and t.locale = :locale) ) " +
+            // Do not reuse its own translations
+            "and match.textFlow != textFlow "
+      );
+      if( checkContext )
+      {
+         queryStr.append("and match.textFlow.resId = textFlow.resId ");
+      }
+      if( checkDocument )
+      {
+         queryStr.append("and match.textFlow.document.docId = textFlow.document.docId ");
+      }
+      if( checkProject )
+      {
+         queryStr.append("and match.textFlow.document.projectIteration.project = textFlow.document.projectIteration.project ");
+      }
+      queryStr.append("group by textFlow");
+
+      Query q = getSession().createQuery( queryStr.toString() );
       q.setParameter("document", document)
-      .setParameter("locale", locale)
-      .setParameter("state", ContentState.Approved);
+       .setParameter("locale", locale)
+       .setParameter("approvedState", ContentState.Approved);
       q.setCacheable(false); // TODO does it make sense to cache scrollable results?
-      return q.scroll(ScrollMode.SCROLL_INSENSITIVE); // Scrollable, but insensitive to data changes
-      // @formatter:on
+      return q.scroll();
    }
 }
