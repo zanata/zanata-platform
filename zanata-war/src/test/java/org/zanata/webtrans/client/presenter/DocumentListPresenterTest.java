@@ -43,14 +43,12 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -66,8 +64,6 @@ public class DocumentListPresenterTest
    @Mock
    private DocumentListPresenter.Display mockDisplay;
    @Mock
-   private HasData mockDocListTable;
-   @Mock
    private EventBus mockEventBus;
    @Mock
    private History mockHistory;
@@ -75,8 +71,6 @@ public class DocumentListPresenterTest
    private WebTransMessages mockMessages;
    @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
-   @Mock
-   private WorkspaceContext mockWorkspaceContext;
 
    // this list is updated to update display table
    private List<DocumentNode> dataProviderList;
@@ -99,10 +93,6 @@ public class DocumentListPresenterTest
    @Captor
    private ArgumentCaptor<HistoryToken> capturedHistoryToken;
 
-   private static final String TEST_PROJECT_SLUG = "test-project";
-   private static final String TEST_ITERATION_SLUG = "test-iteration";
-   private static final String TEST_LOCALE_ID = "es";
-   private static final String TEST_DOC_LOAD_FAIL_MESSAGE = "test document load fail message";
    private static final String TEST_BY_WORDS_MESSAGE = "By Words";
    private static final String TEST_BY_MESSAGE_MESSAGE = "By Message";
    private static final int TEST_PAGE_SIZE = 20;
@@ -361,6 +351,7 @@ public class DocumentListPresenterTest
       documentListPresenter.fireDocumentSelection(docInfo);
 
       verify(mockHistory).newItem(capturedHistoryToken.capture());
+      verify(mockUserWorkspaceContext).setSelectedDoc(docInfo);
 
       HistoryToken newToken = capturedHistoryToken.getValue();
       assertThat("path of selected document should be set in history token", newToken.getDocumentPath(), is("second/path/doc122"));
