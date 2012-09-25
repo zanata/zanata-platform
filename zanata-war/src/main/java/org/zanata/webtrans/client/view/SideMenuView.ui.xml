@@ -24,7 +24,7 @@
 			display:inline-block;
 		}
 		
-		.sideMenuButton:hover, .menuButton:hover, .selectedButton
+		.menuButton:hover, .selectedButton
 		{
 		    color: #96FFFF;
 		    background:#444444;
