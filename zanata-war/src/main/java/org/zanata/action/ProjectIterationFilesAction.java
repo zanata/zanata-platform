@@ -30,13 +30,18 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.faces.context.FacesContext;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.hibernate.Hibernate;
 import org.hibernate.validator.InvalidStateException;
@@ -51,7 +56,6 @@ import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.Hex;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -75,20 +79,17 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
-import org.zanata.util.ZanataMessages;
 import org.zanata.util.StringUtil;
+import org.zanata.util.ZanataMessages;
+
 import com.google.common.base.Function;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -97,7 +98,7 @@ public class ProjectIterationFilesAction
 {
 
    private String projectSlug;
-   
+
    private String iterationSlug;
 
    private String localeId;
@@ -113,7 +114,7 @@ public class ProjectIterationFilesAction
 
    @In
    private DocumentDAO documentDAO;
-   
+
    @In
    private LocaleDAO localeDAO;
 
@@ -139,7 +140,7 @@ public class ProjectIterationFilesAction
    private ZanataMessages zanataMessages;
 
    private List<HDocument> iterationDocuments;
-   
+
    private String documentNameFilter;
 
    private TranslationFileUploadHelper translationFileUpload;
@@ -147,40 +148,51 @@ public class ProjectIterationFilesAction
    private DocumentFileUploadHelper documentFileUpload;
 
    private HProjectIteration projectIteration;
-   
+
+   private StatUnit statsOption = WORD;
+
+   private Map<String, TranslationStatistics> statisticMap;
+
    public void initialize()
    {
       this.iterationDocuments = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
       this.translationFileUpload = new TranslationFileUploadHelper();
       this.documentFileUpload = new DocumentFileUploadHelper();
+      this.statisticMap = new HashMap<String, TranslationStatistics>();
    }
-   
+
    public HLocale getLocale()
    {
       return localeDAO.findByLocaleId(new LocaleId(localeId));
    }
 
-   public boolean filterDocumentByName( Object docObject )
+   public boolean filterDocumentByName(Object docObject)
    {
-      final HDocument document = (HDocument)docObject;
-      
-      if( this.documentNameFilter != null && this.documentNameFilter.length() > 0 )
+      final HDocument document = (HDocument) docObject;
+
+      if (this.documentNameFilter != null && this.documentNameFilter.length() > 0)
       {
-         return document.getName().toLowerCase().contains( this.documentNameFilter.toLowerCase() );
+         return document.getName().toLowerCase().contains(this.documentNameFilter.toLowerCase());
       }
       else
       {
          return true;
       }
    }
-   
-   @CachedMethodResult(ScopeType.PAGE)
-   public TranslationStatistics getTransUnitWordsForDocument(HDocument doc)
+
+   public TranslationStatistics getTransUnitForDocument(HDocument doc)
    {
-      ContainerTranslationStatistics docStatistics =
-         this.statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, doc.getDocId(), true, new String[]{this.localeId});
-      TranslationStatistics stats = docStatistics.getStats(this.localeId, WORD);
-      return stats;
+      if (!statisticMap.containsKey(doc.getDocId()))
+      {
+         ContainerTranslationStatistics docStatistics = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, doc.getDocId(), true, new String[] { this.localeId });
+         TranslationStatistics stats = docStatistics.getStats(this.localeId, statsOption);
+         statisticMap.put(doc.getDocId(), stats);
+         return stats;
+      }
+      else
+      {
+         return statisticMap.get(doc.getDocId());
+      }
    }
 
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
@@ -189,23 +201,19 @@ public class ProjectIterationFilesAction
       try
       {
          // process the file
-         TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(),
-               translationFileUpload.getFileName(), localeId);
+         TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(), translationFileUpload.getFileName(), localeId);
 
          // translate it
          Set<String> extensions;
-         if( translationFileUpload.getFileName().endsWith(".po") )
+         if (translationFileUpload.getFileName().endsWith(".po"))
          {
             extensions = new StringSet(ExtensionType.GetText.toString());
          }
          else
          {
-            extensions = Collections.<String>emptySet();
+            extensions = Collections.<String> emptySet();
          }
-         List<String> warnings =
-            translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, translationFileUpload.getDocId(),
-               new LocaleId(localeId), transRes, extensions,
-               translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
+         List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, translationFileUpload.getDocId(), new LocaleId(localeId), transRes, extensions, translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
 
          StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
          if (!warnings.isEmpty())
@@ -224,7 +232,8 @@ public class ProjectIterationFilesAction
          FacesMessages.instance().add(Severity.ERROR, e.getMessage(), translationFileUpload.getFileName());
       }
 
-      // NB This needs to be done as for some reason seam is losing the parameters when redirecting
+      // NB This needs to be done as for some reason seam is losing the
+      // parameters when redirecting
       // This is efectively the same as returning void
       return FacesContext.getCurrentInstance().getViewRoot().getViewId();
    }
@@ -245,7 +254,8 @@ public class ProjectIterationFilesAction
          FacesMessages.instance().add(Severity.ERROR, "Unrecognized file extension for {0}.", documentFileUpload.getFileName());
       }
 
-      // NB This needs to be done as for some reason seam is losing the parameters when redirecting
+      // NB This needs to be done as for some reason seam is losing the
+      // parameters when redirecting
       // This is effectively the same as returning void
       return FacesContext.getCurrentInstance().getViewRoot().getViewId();
    }
@@ -262,20 +272,17 @@ public class ProjectIterationFilesAction
          Resource doc;
          if (documentFileUpload.getDocId() == null)
          {
-            doc = translationFileServiceImpl.parseDocumentFile(documentFileUpload.getFileContents(),
-                  documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
+            doc = translationFileServiceImpl.parseDocumentFile(documentFileUpload.getFileContents(), documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
          }
          else
          {
-            doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentFileUpload.getFileContents(),
-                  documentFileUpload.getDocId(), documentFileUpload.getFileName());
+            doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentFileUpload.getFileContents(), documentFileUpload.getDocId(), documentFileUpload.getFileName());
          }
 
-         doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
+         doc.setLang(new LocaleId(documentFileUpload.getSourceLang()));
 
          // TODO Copy Trans values
-         documentServiceImpl.saveDocument(projectSlug, iterationSlug,
-               doc, new StringSet(ExtensionType.GetText.toString()), false);
+         documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
 
          showUploadSuccessMessage();
       }
@@ -313,7 +320,8 @@ public class ProjectIterationFilesAction
          tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
          md5hash = md.digest();
       }
-      catch (ZanataServiceException e) {
+      catch (ZanataServiceException e)
+      {
          log.error("Failed writing temp file for document {0}", e, documentFileUpload.getDocId());
          FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} to server.", fileName);
          return;
@@ -337,8 +345,8 @@ public class ProjectIterationFilesAction
          {
             doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileName);
          }
-         doc.setLang( new LocaleId(documentFileUpload.getSourceLang()) );
-         Set<String> extensions = Collections.<String>emptySet();
+         doc.setLang(new LocaleId(documentFileUpload.getSourceLang()));
+         Set<String> extensions = Collections.<String> emptySet();
          // TODO Copy Trans values
          document = documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, extensions, false);
          showUploadSuccessMessage();
@@ -347,12 +355,13 @@ public class ProjectIterationFilesAction
       {
          FacesMessages.instance().add(Severity.ERROR, "Error reading uploaded document {0} on server.", fileName);
       }
-      catch (ZanataServiceException e) {
+      catch (ZanataServiceException e)
+      {
          FacesMessages.instance().add(Severity.ERROR, "Invalid document format for {0}.", fileName);
       }
 
-
-      if (document == null) {
+      if (document == null)
+      {
          // error message for failed parse already added.
       }
       else
@@ -367,7 +376,7 @@ public class ProjectIterationFilesAction
          try
          {
             tempFileStream = new FileInputStream(tempFile);
-            Blob fileContents = Hibernate.createBlob(tempFileStream, (int)tempFile.length());
+            Blob fileContents = Hibernate.createBlob(tempFileStream, (int) tempFile.length());
             rawDocument.setContent(fileContents);
             documentDAO.addRawDocument(document, rawDocument);
             documentDAO.flush();
@@ -392,15 +401,13 @@ public class ProjectIterationFilesAction
       HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(localeId));
 
-      return projectIteration.getStatus() == EntityStatus.ACTIVE
-            && identity != null && identity.hasPermission("modify-translation", projectIteration, hLocale);
+      return projectIteration.getStatus() == EntityStatus.ACTIVE && identity != null && identity.hasPermission("modify-translation", projectIteration, hLocale);
    }
 
    public boolean isDocumentUploadAllowed()
    {
       HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      return projectIteration.getStatus() == EntityStatus.ACTIVE
-            && identity != null && identity.hasPermission("import-template", projectIteration);
+      return projectIteration.getStatus() == EntityStatus.ACTIVE && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
    public List<HDocument> getIterationDocuments()
@@ -442,7 +449,8 @@ public class ProjectIterationFilesAction
    {
       this.localeId = localeId;
    }
-// line not found
+
+   // line not found
    public boolean hasOriginal(String docPath, String docName)
    {
       return translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, docPath, docName);
@@ -482,6 +490,16 @@ public class ProjectIterationFilesAction
       return this.projectIteration;
    }
 
+   public StatUnit getStatsOption()
+   {
+      return statsOption;
+   }
+
+   public void setStatsOption(StatUnit statsOption)
+   {
+      this.statsOption = statsOption;
+   }
+
    public boolean isUserAllowedToTranslate()
    {
       return !isIterationReadOnly() && !isIterationObsolete() && identity.hasPermission("add-translation", getProjectIteration().getProject(), getLocale());
@@ -506,45 +524,44 @@ public class ProjectIterationFilesAction
       final String separator = "<br/>";
 
       // Account not logged in
-      if( identity == null )
+      if (identity == null)
       {
          displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.NotLoggedIn"));
          return displayMessages;
       }
 
       // Iteration is read only
-      if( isIterationReadOnly() )
+      if (isIterationReadOnly())
       {
-         displayMessages.add( zanataMessages.getMessage("jsf.iteration.files.translateDenied.VersionIsReadOnly") );
+         displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.VersionIsReadOnly"));
       }
 
       // Iteration is Obsolete
-      if( isIterationObsolete() )
+      if (isIterationObsolete())
       {
-         displayMessages.add( zanataMessages.getMessage("jsf.iteration.files.translateDenied.VersionIsObsolete") );
+         displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.VersionIsObsolete"));
       }
 
       // User not member of language team
-      if( !personDAO.isMemberOfLanguageTeam( authenticatedAccount.getPerson(), getLocale() ) )
+      if (!personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), getLocale()))
       {
          displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotInLanguageTeam", getLocale().retrieveDisplayName()));
       }
 
       // User not part of the allowed roles
       HIterationProject project = getProjectIteration().getProject();
-      if(!SecurityFunctions.isUserAllowedAccess(project))
+      if (!SecurityFunctions.isUserAllowedAccess(project))
       {
-         //jsf.iteration.files.translateDenied.UserNotInProjectRole
-         displayMessages.add( zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotInProjectRole",
-               StringUtil.concat(project.getAllowedRoles(), ',', new Function<HAccountRole, String>()
-               {
-                  @Override
-                  public String apply(@Nullable HAccountRole from)
-                  {
-                     return from.getName();
-                  }
-               })
-         ));
+         // jsf.iteration.files.translateDenied.UserNotInProjectRole
+         displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotInProjectRole", StringUtil.concat(project.getAllowedRoles(), ',', new Function<HAccountRole, String>()
+         {
+            @Override
+            public String apply(@Nullable
+            HAccountRole from)
+            {
+               return from.getName();
+            }
+         })));
       }
 
       return displayMessages;
@@ -562,7 +579,6 @@ public class ProjectIterationFilesAction
       private String fileName;
 
       private boolean mergeTranslations = true; // Merge by default
-
 
       public String getDocId()
       {

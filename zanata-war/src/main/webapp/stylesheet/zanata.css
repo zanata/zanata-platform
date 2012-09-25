@@ -980,6 +980,11 @@ td.actionCol
 	width:65px;
 }
 
+select.headerInput
+{
+	height:auto;
+}
+
 /* -----------------------  End Project Iteration Files CSS  -----------------------------*/
 
 /* -----------------------  Project Iteration Copy Trans CSS  -----------------------------*/

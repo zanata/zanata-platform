@@ -36,7 +36,7 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
     <ui:define name="center_content">
-        <h:form>
+        <a4j:form>
             <s:token allowMultiplePosts="true"/>
             <rich:datascroller id="data_table_scroller" align="center" for="data_table" fastControls="hide"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
@@ -193,16 +193,26 @@
                         <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
                     </s:link>
                 </rich:column>
-                <rich:column>
-                    <f:facet name="header">#{messages['jsf.iteration.files.Statistics']}</f:facet>
+                <rich:column id="statsColumn">
+                    <f:facet name="header">
+                     	<h:panelGroup>
+                            <h:outputText value="#{messages['jsf.iteration.files.Statistics']}"/>
+                            <br/>
+                            <h:selectOneMenu id="statsOption" styleClass="headerInput" value="#{projectIterationFilesAction.statsOption}">
+                            	 <f:selectItem itemLabel="#{messages['jsf.ByWords']}" itemValue="WORD"/>
+                            	 <f:selectItem itemLabel="#{messages['jsf.Message']}" itemValue="MESSAGE"/>
+								<a4j:support event="onchange" reRender="data_table" ajaxSingle="true"/>
+				        	</h:selectOneMenu>
+                        </h:panelGroup>
+                   </f:facet>
                     <ui:param name="tstatus"
-                              value="#{projectIterationFilesAction.getTransUnitWordsForDocument(doc)}"/>
+                              value="#{projectIterationFilesAction.getTransUnitForDocument(doc)}"/>
                     <ui:include src="../WEB-INF/layout/statsbar.xhtml">
                         <ui:param name="status" value="#{tstatus}"/>
                     </ui:include>
                 </rich:column>
             </rich:dataTable>
-        </h:form>
+        </a4j:form>
 
         <rich:modalPanel id="downloadProgressPanel"
                          moveable="#{false}"
