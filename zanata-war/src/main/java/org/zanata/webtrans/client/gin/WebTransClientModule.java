@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.editor.filter.TransFilterDisplay;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
+import org.zanata.webtrans.client.view.SideMenuDisplay;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.SourceContentsView;
 import org.zanata.webtrans.client.events.NativeEvent;
@@ -130,7 +131,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationPresenter.Display.class, NotificationView.class);
       bindPresenter(TransUnitsTablePresenter.class, TransUnitsTableDisplay.class, TransUnitsTableView.class);
-      bindPresenter(SideMenuPresenter.class, SideMenuPresenter.Display.class, SideMenuView.class);
+      bindPresenter(SideMenuPresenter.class, SideMenuDisplay.class, SideMenuView.class);
       
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);

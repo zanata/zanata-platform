@@ -27,6 +27,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -159,7 +160,6 @@ public class TransUnitSaveServiceTest
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Info));
       assertThat(event.getMessage(), equalTo("saved row 1, id 1"));
-      assertThat(event.getInlineLink(), Matchers.<InlineLink>is(goToLink));
       verify(undoLink).prepareUndoFor(result);
       verify(targetContentsPresenter).addUndoLink(rowIndex, undoLink);
    }
@@ -221,6 +221,33 @@ public class TransUnitSaveServiceTest
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
       assertThat(event.getMessage(), equalTo("update failed"));
+      assertThat(event.getInlineLink(), Matchers.<InlineLink>sameInstance(goToLink));
+   }
+
+   @Test
+   public void onPRCFailureOnServerDown()
+   {
+      // Given:
+      TransUnit old = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "old content");
+      when(navigationService.getByIdOrNull(TRANS_UNIT_ID)).thenReturn(old);
+
+      // When: save as fuzzy
+      TransUnitSaveEvent saveEvent = event("new content", ContentState.NeedReview, TRANS_UNIT_ID, VER_NUM, "old content");
+      service.onTransUnitSave(saveEvent);
+      verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
+      // on rpc failure and no server response:
+
+      // Then:
+      AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
+      when(messages.noResponseFromServer()).thenReturn("server down");
+      when(messages.notifyUpdateFailed("server down")).thenReturn("update failed: server down");
+      callback.onFailure(new StatusCodeException(0, ""));
+
+      ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+      verify(eventBus).fireEvent(notificationEventCaptor.capture());
+      NotificationEvent event = notificationEventCaptor.getValue();
+      assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
+      assertThat(event.getMessage(), equalTo("update failed: server down"));
       assertThat(event.getInlineLink(), Matchers.<InlineLink>sameInstance(goToLink));
    }
 

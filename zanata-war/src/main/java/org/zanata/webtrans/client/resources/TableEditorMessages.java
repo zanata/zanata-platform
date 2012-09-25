@@ -91,4 +91,8 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Copy message from source language (Alt+G)")
    String copyFromSource();
+
+
+   @DefaultMessage("No response from server. Please refresh your page and make sure server is still up.")
+   String noResponseFromServer();
 }

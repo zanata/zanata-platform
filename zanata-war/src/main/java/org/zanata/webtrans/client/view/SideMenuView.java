@@ -2,26 +2,26 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
-import org.zanata.webtrans.client.presenter.SideMenuPresenter;
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SideMenuView extends Composite implements SideMenuPresenter.Display
+public class SideMenuView extends Composite implements SideMenuDisplay
 {
    private static SideMenuViewUiBinder uiBinder = GWT.create(SideMenuViewUiBinder.class);
+   private Listener listener;
 
    interface SideMenuViewUiBinder extends UiBinder<Widget, SideMenuView>
    {
@@ -32,6 +32,12 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       String selectedButton();
 
       String alertTab();
+
+      String notificationLabel();
+
+      String menuButton();
+
+      String mainPanel();
    }
 
    @UiField
@@ -42,8 +48,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    
    @UiField
    TabLayoutPanel container;
-   
-   private final Widget editorOptionView, validationOptionView, workspaceUsersView, notificationView;
 
    @Inject
    public SideMenuView(final WebTransMessages messages, final EditorOptionsDisplay editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView, final NotificationPresenter.Display notificationView)
@@ -53,12 +57,7 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       editorOptionsTab.setTitle(messages.editorOptions());
       validationOptionsTab.setTitle(messages.validationOptions());
       chatTab.setTitle(messages.chatRoom());
-      
-      this.editorOptionView = editorOptionView.asWidget();
-      this.validationOptionView = validationOptionView.asWidget();
-      this.workspaceUsersView = workspaceUsersView.asWidget();
-      this.notificationView = notificationView.asWidget();
-      
+
       container.add(notificationView.asWidget());
       container.add(workspaceUsersView.asWidget());
       container.add(editorOptionView.asWidget());
@@ -71,28 +70,28 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
       return this;
    }
 
-   @Override
-   public HasClickHandlers getEditorOptionsButton()
+   @UiHandler("editorOptionsTab")
+   public void onEditorOptionsClick(ClickEvent event)
    {
-      return editorOptionsTab;
+      listener.onEditorOptionsClick();
    }
 
-   @Override
-   public HasClickHandlers getNotificationButton()
+   @UiHandler("notificationTab")
+   public void onNotificationClick(ClickEvent event)
    {
-      return notificationTab;
+      listener.onNotificationClick();
    }
 
-   @Override
-   public HasClickHandlers getValidationOptionsButton()
+   @UiHandler("validationOptionsTab")
+   public void onValidationOptionsClick(ClickEvent event)
    {
-      return validationOptionsTab;
+      listener.onValidationOptionsClick();
    }
 
-   @Override
-   public HasClickHandlers getChatButton()
+   @UiHandler("chatTab")
+   public void onChatClick(ClickEvent event)
    {
-      return chatTab;
+      listener.onChatClick();
    }
 
    @Override
@@ -128,24 +127,6 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    }
 
    @Override
-   public HasVisibility getEditorOptionsTab()
-   {
-      return editorOptionsTab;
-   }
-
-   @Override
-   public HasVisibility getValidationOptionsTab()
-   {
-      return validationOptionsTab;
-   }
-
-   @Override
-   public HasVisibility getChatTab()
-   {
-      return chatTab;
-   }
-
-   @Override
    public void setChatTabAlert(boolean alert)
    {
       if(alert)
@@ -168,5 +149,29 @@ public class SideMenuView extends Composite implements SideMenuPresenter.Display
    public void setNotificationText(int count, Severity severity)
    {
       notificationLabel.setText(String.valueOf(count));
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
+
+   @Override
+   public void setChatTabVisible(boolean visible)
+   {
+      chatTab.setVisible(visible);
+   }
+
+   @Override
+   public void setEditorOptionsTabVisible(boolean visible)
+   {
+      editorOptionsTab.setVisible(visible);
+   }
+
+   @Override
+   public void setValidationOptionsTabVisible(boolean visible)
+   {
+      validationOptionsTab.setVisible(visible);
    }
 }
