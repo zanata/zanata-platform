@@ -88,7 +88,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    private boolean isFocused;
 
-   private final ArrayList<TransMemoryResultItem> currentResult;
+   private ArrayList<TransMemoryResultItem> currentResult;
 
    @Inject
    public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter)
