@@ -1,10 +1,8 @@
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.events.NotificationEvent;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.HasVisibility;
-
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+
+import org.zanata.webtrans.client.events.NotificationEvent;
 
 /**
 * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -12,7 +10,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 public interface SideMenuDisplay extends WidgetDisplay
 {
    //Order of the tab
-   static final int EMPTY_VIEW = -1;
    static final int NOTIFICATION_VIEW = 0;
    static final int WORKSPACEUSER_VIEW = 1;
    static final int EDITOR_OPTION_VIEW = 2;

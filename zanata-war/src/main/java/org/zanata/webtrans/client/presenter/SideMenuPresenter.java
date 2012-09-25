@@ -253,7 +253,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
       eventBus.fireEvent(new ShowSideMenuEvent(isExpended));
       if (!isExpended)
       {
-         display.setSelectedTab(SideMenuDisplay.EMPTY_VIEW);
+         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
       }
    }
 

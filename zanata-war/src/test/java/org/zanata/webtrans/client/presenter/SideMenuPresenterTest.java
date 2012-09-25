@@ -1,5 +1,15 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -9,12 +19,9 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
-import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
-import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
-import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
@@ -30,16 +37,6 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -221,7 +218,7 @@ public class SideMenuPresenterTest
 
       verify(display).setEditorOptionsTabVisible(false);
       verify(display).setValidationOptionsTabVisible(false);
-      verify(display).setSelectedTab(SideMenuDisplay.EMPTY_VIEW);
+      verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
    }
 
    @Test
@@ -272,7 +269,7 @@ public class SideMenuPresenterTest
       verify(display).getCurrentTab();
       verify(eventBus, times(2)).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(false));
-      verify(display).setSelectedTab(SideMenuDisplay.EMPTY_VIEW);
+      verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
       verifyNoMoreInteractions(display);
    }
 

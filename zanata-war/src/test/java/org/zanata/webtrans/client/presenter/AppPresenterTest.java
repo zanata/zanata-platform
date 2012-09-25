@@ -167,7 +167,7 @@ public class AppPresenterTest
       verify(sideMenuPresenter).showEditorMenu(true);
       verify(display).setResizeVisible(true);
       verify(display).showInMainView(MainView.Editor);
-      verify(display).setStats(statsCaptor.capture());
+      verify(display).setStats(statsCaptor.capture(), eq(true));
 
       assertThat(statsCaptor.getValue(), Matchers.sameInstance(selectedDocumentStats));
    }
@@ -190,7 +190,7 @@ public class AppPresenterTest
       verify(sideMenuPresenter).showEditorMenu(false);
       verify(display).setResizeVisible(false);
       verify(display).showInMainView(MainView.Search);
-      verify(display).setStats(statsCaptor.capture());
+      verify(display).setStats(statsCaptor.capture(), eq(true));
 
       assertThat(statsCaptor.getValue(), Matchers.sameInstance(projectStats));
    }
@@ -213,7 +213,7 @@ public class AppPresenterTest
       verify(sideMenuPresenter).showEditorMenu(false);
       verify(display).setResizeVisible(false);
       verify(display).showInMainView(MainView.Documents);
-      verify(display).setStats(statsCaptor.capture());
+      verify(display).setStats(statsCaptor.capture(), eq(true));
 
       assertThat(statsCaptor.getValue(), Matchers.sameInstance(projectStats));
    }
@@ -230,7 +230,7 @@ public class AppPresenterTest
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       // current view is editor
       presenter.showView(MainView.Editor);
-      verify(display).setStats(statsCaptor.capture());
+      verify(display).setStats(statsCaptor.capture(), eq(true));
       assertThat(statsCaptor.getValue(), Matchers.sameInstance(selectedDocumentStats));
 
       // When:
@@ -238,7 +238,7 @@ public class AppPresenterTest
 
       // Then:
       display.setDocumentLabel("pot/", "a.po");
-      verify(display, atLeastOnce()).setStats(newSelectedStats);
+      verify(display, atLeastOnce()).setStats(newSelectedStats, true);
       assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(docId));
    }
 
@@ -298,7 +298,7 @@ public class AppPresenterTest
       DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats);
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       presenter.selectDocument(docId);
-      verify(display, atLeastOnce()).setStats(selectedDocumentStats);
+      verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
 
       // When:
       TranslationStats newStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(8, 8, 8));
@@ -307,7 +307,7 @@ public class AppPresenterTest
       // Then:
       assertThat(selectedDocumentStats.getUnitCount(), Matchers.equalTo(newStats.getUnitCount()));
       assertThat(selectedDocumentStats.getWordCount(), Matchers.equalTo(newStats.getWordCount()));
-      verify(display, atLeastOnce()).setStats(newStats);
+      verify(display, atLeastOnce()).setStats(newStats, true);
    }
 
    @Test
@@ -320,7 +320,7 @@ public class AppPresenterTest
 
       assertThat(projectStats.getUnitCount(), Matchers.equalTo(newProjectStats.getUnitCount()));
       assertThat(projectStats.getWordCount(), Matchers.equalTo(newProjectStats.getWordCount()));
-      verify(display).setStats(eq(newProjectStats));
+      verify(display).setStats(eq(newProjectStats), eq(true));
    }
 
    @Test
