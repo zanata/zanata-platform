@@ -42,6 +42,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -125,8 +126,14 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          // reset back the value
          targetContentsPresenter.updateTargets(event.getTransUnitId(), event.getOldContents());
          Log.error("UpdateTransUnit failure ", e);
-         String message = e.getMessage();
-         saveFailure(message);
+         if (e instanceof com.google.gwt.user.client.rpc.StatusCodeException && ((StatusCodeException) e).getStatusCode() == 0)
+         {
+            saveFailure(messages.noResponseFromServer());
+         }
+         else
+         {
+            saveFailure(e.getMessage());
+         }
       }
 
       @Override
@@ -137,7 +144,8 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          Log.debug("save resulted TU: " + updatedTU.debugString());
          if (result.isSingleSuccess())
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString()), goToRowLink));
+            // we do not include goToLink here is because we haven't had message bookmark working
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString())));
             int rowIndexOnPage = navigationService.findRowIndexById(updatedTU.getId());
             if (rowIndexOnPage != NavigationService.UNSELECTED)
             {
