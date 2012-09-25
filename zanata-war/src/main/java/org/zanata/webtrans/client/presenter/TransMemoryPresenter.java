@@ -88,6 +88,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    private boolean isFocused;
 
+   private final ArrayList<TransMemoryResultItem> currentResult;
+
    @Inject
    public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter)
    {
@@ -98,6 +100,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       this.transMemoryMergePresenter = transMemoryMergePresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.messages = messages;
+      currentResult = new ArrayList<TransMemoryResultItem>();
    }
 
    @Override
@@ -182,22 +185,20 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          {
             if (!userWorkspaceContext.hasReadOnlyAccess())
             {
-               // TransMemoryResultItem item;
-               // try
-               // {
-               // item = dataProvider.getList().get(event.getIndex());
-               // }
-               // catch (IndexOutOfBoundsException ex)
-               // {
-               // item = null;
-               // }
-               // if (item != null)
-               // {
-               // Log.debug("Copy from translation memory:" + (event.getIndex()
-               // + 1));
-               // eventBus.fireEvent(new
-               // CopyDataToEditorEvent(item.getTargetContents()));
-               // }
+               TransMemoryResultItem item;
+               try
+               {
+                  item = currentResult.get(event.getIndex());
+               }
+               catch (IndexOutOfBoundsException ex)
+               {
+                  item = null;
+               }
+               if (item != null)
+               {
+                  Log.debug("Copy from translation memory:" + (event.getIndex() + 1));
+                  eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
+               }
             }
          }
       }));
@@ -313,6 +314,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       if (!result.getMemories().isEmpty())
       {
          display.renderTable(result.getMemories(), queries);
+         currentResult = result.getMemories();
          display.stopProcessing(true);
       }
       else
