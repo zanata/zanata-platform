@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -180,7 +179,7 @@ public class TransMemoryPresenterTest
       transMemoryPresenter.bind();
       transMemoryPresenter.fireSearchEvent();
 
-      verify(mockDisplay, times(2)).startProcessing();
+      verify(mockDisplay).startProcessing();
       verify(mockDispatcher).execute(GetTranslationCaptor.capture(), callbackCaptor.capture());
    }
 
@@ -209,7 +208,7 @@ public class TransMemoryPresenterTest
       transMemoryPresenter.bind();
       transMemoryPresenter.createTMRequestForTransUnit(builder.build());
 
-      verify(mockDisplay, times(2)).startProcessing();
+      verify(mockDisplay).startProcessing();
       verify(mockDispatcher).execute(GetTranslationCaptor.capture(), callbackCaptor.capture());
    }
 

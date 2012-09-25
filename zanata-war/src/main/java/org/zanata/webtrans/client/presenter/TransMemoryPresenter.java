@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> implements HasTranslationMemoryListener, TransUnitSelectionHandler, TransMemoryShorcutCopyHandler
+public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> implements TranslationMemoryListener, TransUnitSelectionHandler, TransMemoryShorcutCopyHandler
 {
    public interface Display extends WidgetDisplay
    {
@@ -46,7 +46,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries);
 
-      void setListener(HasTranslationMemoryListener listener);
+      void setListener(TranslationMemoryListener listener);
 
       void stopProcessing(boolean showResult);
 
@@ -143,7 +143,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    private void createTMRequest(TransMemoryQuery query)
    {
-      display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query, userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId(), userWorkspaceContext.getSelectedDoc().getSourceLocale());
       scheduleTMRequest(action);
    }

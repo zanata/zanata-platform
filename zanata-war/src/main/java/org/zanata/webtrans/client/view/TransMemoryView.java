@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.presenter.HasTranslationMemoryListener;
+import org.zanata.webtrans.client.presenter.TranslationMemoryListener;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -86,7 +86,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    private final InlineLabel diffLegendInfo;
 
-   private HasTranslationMemoryListener listener;
+   private TranslationMemoryListener listener;
 
    private final static int SOURCE_COL = 0;
    private final static int TARGET_COL = 1;
@@ -343,7 +343,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void setListener(HasTranslationMemoryListener listener)
+   public void setListener(TranslationMemoryListener listener)
    {
       this.listener = listener;
    }

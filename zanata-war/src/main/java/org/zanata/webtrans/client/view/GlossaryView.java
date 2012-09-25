@@ -3,7 +3,7 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
-import org.zanata.webtrans.client.presenter.HasGlossaryEvent;
+import org.zanata.webtrans.client.presenter.GlossaryPresenterListener;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
@@ -13,10 +13,10 @@ import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -79,7 +79,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    private final Label loadingLabel, noResultFoundLabel;
 
-   private HasGlossaryEvent listener;
+   private GlossaryPresenterListener listener;
 
    private final static int SOURCE_COL = 0;
    private final static int TARGET_COL = 1;
@@ -130,16 +130,16 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       }
    }
 
-   @Override
-   public HasClickHandlers getClearButton()
+   @UiHandler("clearButton")
+   public void onClearButtonClick(ClickEvent event)
    {
-      return clearButton;
+      listener.clearContent();
    }
 
-   @Override
-   public Button getSearchButton()
+   @UiHandler("searchButton")
+   public void onSearchButtonClick(ClickEvent event)
    {
-      return searchButton;
+      listener.fireSearchEvent();
    }
 
    public TextBox getGlossaryTextBox()
@@ -191,10 +191,16 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       return searchType;
    }
 
-   @Override
-   public HasAllFocusHandlers getFocusGlossaryTextBox()
+   @UiHandler("glossaryTextBox")
+   public void onGlossaryTextBoxFocus(FocusEvent event)
    {
-      return glossaryTextBox;
+      listener.onFocus(true);
+   }
+
+   @UiHandler("glossaryTextBox")
+   public void onGlossaryTextBoxBlur(BlurEvent event)
+   {
+      listener.onFocus(false);
    }
 
    @Override
@@ -239,7 +245,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    }
 
    @Override
-   public void setListener(HasGlossaryEvent listener)
+   public void setListener(GlossaryPresenterListener listener)
    {
       this.listener = listener;
 

@@ -45,14 +45,6 @@ import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
@@ -64,7 +56,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display> implements HasGlossaryEvent
+public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display> implements GlossaryPresenterListener, TransUnitSelectionHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
@@ -78,11 +70,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
    public interface Display extends WidgetDisplay
    {
-      HasClickHandlers getSearchButton();
-
       HasText getGlossaryTextBox();
-
-      HasAllFocusHandlers getFocusGlossaryTextBox();
 
       HasValue<SearchType> getSearchType();
 
@@ -90,13 +78,11 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
       void renderTable(ArrayList<GlossaryResultItem> glossaries);
 
-      void setListener(HasGlossaryEvent listener);
+      void setListener(GlossaryPresenterListener listener);
 
       void stopProcessing(boolean showResult);
 
       void clearTableContent();
-
-      HasClickHandlers getClearButton();
    }
 
    @Inject
@@ -113,25 +99,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    @Override
    protected void onBind()
    {
-      display.getSearchButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            fireSearchEvent();
-         }
-      });
-      
-      display.getClearButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-           display.getGlossaryTextBox().setText("");
-           display.clearTableContent();
-         }
-      });
-
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Glossary, messages.searchGlossary(), new KeyShortcutEventHandler()
       {
          @Override
@@ -141,40 +108,17 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          }
       }));
 
-      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
-      {
-         @Override
-         public void onTransUnitSelected(TransUnitSelectionEvent event)
-         {
-            createGlossaryRequestForTransUnit(event.getSelection());
-         }
-      }));
-
-      display.getFocusGlossaryTextBox().addFocusHandler(new FocusHandler()
-      {
-         @Override
-         public void onFocus(FocusEvent event)
-         {
-            keyShortcutPresenter.setContextActive(ShortcutContext.Glossary, true);
-            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
-            keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
-            isFocused = true;
-         }
-      });
-
-      display.getFocusGlossaryTextBox().addBlurHandler(new BlurHandler()
-      {
-         @Override
-         public void onBlur(BlurEvent event)
-         {
-            keyShortcutPresenter.setContextActive(ShortcutContext.Glossary, false);
-            keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
-            isFocused = false;
-         }
-      });
+      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
 
       display.setListener(this);
       glossaryDetailsPresenter.setGlossaryListener(this);
+   }
+
+   @Override
+   public void clearContent()
+   {
+      display.getGlossaryTextBox().setText("");
+      display.clearTableContent();
    }
 
    @Override
@@ -301,5 +245,21 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    public void showGlossaryDetail(GlossaryResultItem item)
    {
       glossaryDetailsPresenter.show(item);
+   }
+
+   @Override
+   public void onTransUnitSelected(TransUnitSelectionEvent event)
+   {
+      createGlossaryRequestForTransUnit(event.getSelection());
+   }
+
+   @Override
+   public void onFocus(boolean isFocused)
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Glossary, isFocused);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, !isFocused);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, !isFocused);
+      this.isFocused = isFocused;
+
    }
 }

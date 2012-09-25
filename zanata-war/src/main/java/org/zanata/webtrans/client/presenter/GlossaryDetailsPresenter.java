@@ -91,7 +91,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
    private final UserWorkspaceContext userWorkspaceContext;
 
-   private HasGlossaryEvent glossaryListener;
+   private GlossaryPresenterListener glossaryListener;
 
    @Inject
    public GlossaryDetailsPresenter(final Display display, final EventBus eventBus, final UiMessages messages, final CachingDispatchAsync dispatcher, final UserWorkspaceContext userWorkspaceContext)
@@ -240,7 +240,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
    {
    }
 
-   public void setGlossaryListener(HasGlossaryEvent glossaryListener)
+   public void setGlossaryListener(GlossaryPresenterListener glossaryListener)
    {
       this.glossaryListener = glossaryListener;
    }

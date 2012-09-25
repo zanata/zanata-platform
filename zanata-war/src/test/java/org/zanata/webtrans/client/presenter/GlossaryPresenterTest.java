@@ -20,33 +20,46 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.and;
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
-import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.GetGlossary;
+import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
 
 /**
  *
@@ -54,96 +67,178 @@ import com.google.gwt.event.shared.HandlerRegistration;
  *
  */
 @Test(groups = { "unit-tests" })
-public class GlossaryPresenterTest extends PresenterTest
+public class GlossaryPresenterTest
 {
    // object under test
    private GlossaryPresenter glossaryPresenter;
 
+   @Mock
    private Display mockDisplay;
+   @Mock
    private EventBus mockEventBus;
+   @Mock
    private CachingDispatchAsync mockDispatcher;
+   @Mock
    private WebTransMessages mockMessages;
-   
+   @Mock
    private GlossaryDetailsPresenter mockGlossaryDetailsPresenter;
+   @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
+   @Mock
    private KeyShortcutPresenter mockKeyShortcutPresenter;
-   
-   HasAllFocusHandlers mockFocusTextBox;
-   HasClickHandlers mockSearchButton;
-   HasClickHandlers mockClearButton;
+   @Mock
+   private WorkspaceContext mockWorkspaceContext;
+   @Mock
+   private HasText mockGlossaryTextBox;
+   @Mock
+   private HasValue<SearchType> mockSearchType;
 
-   private Capture<ClickHandler> capturedSearchButtonClickHandler;
-   private Capture<ClickHandler> capturedClearButtonClickHandler;
-   private Capture<KeyShortcut> capturedKeyShortcuts;
-   private Capture<TransUnitSelectionHandler> capturedTransUnitSelectionEventHandler;
-   private Capture<FocusHandler> capturedFocusHandler;
-   private Capture<BlurHandler> capturedBlurHandler;
-
-   @BeforeClass
-   public void createMocks()
-   {
-      mockDisplay = createAndAddMock(GlossaryPresenter.Display.class);
-      mockEventBus = createAndAddMock(EventBus.class);
-      mockDispatcher = createAndAddMock(CachingDispatchAsync.class);
-      mockMessages = createAndAddMock(WebTransMessages.class);
-
-      mockGlossaryDetailsPresenter = createAndAddMock(GlossaryDetailsPresenter.class);
-      mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
-      mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
-
-      mockFocusTextBox = createAndAddMock(HasAllFocusHandlers.class);
-      mockSearchButton = createAndAddMock(HasClickHandlers.class);
-      mockClearButton = createAndAddMock(HasClickHandlers.class);
-
-      capturedSearchButtonClickHandler = addCapture(new Capture<ClickHandler>());
-      capturedClearButtonClickHandler = addCapture(new Capture<ClickHandler>());
-      capturedKeyShortcuts = addCapture(new Capture<KeyShortcut>());
-      capturedTransUnitSelectionEventHandler = addCapture(new Capture<TransUnitSelectionHandler>());
-      capturedFocusHandler = addCapture(new Capture<FocusHandler>());
-      capturedBlurHandler = addCapture(new Capture<BlurHandler>());
-
-   }
+   @Captor
+   private ArgumentCaptor<GetGlossary> GetGlossaryCaptor;
+   @Captor
+   private ArgumentCaptor<AsyncCallback<GetGlossaryResult>> callbackCaptor;
 
    @BeforeMethod
    public void beforeMethod()
    {
-      resetAll();
+      MockitoAnnotations.initMocks(this);
+      glossaryPresenter = new GlossaryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockMessages, mockGlossaryDetailsPresenter, mockUserWorkspaceContext, mockKeyShortcutPresenter);
    }
 
    @Test
-   public void canBind()
+   public void onBind()
    {
-      replayAllMocks();
-      glossaryPresenter = new GlossaryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockMessages, mockGlossaryDetailsPresenter, mockUserWorkspaceContext, mockKeyShortcutPresenter);
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+
       glossaryPresenter.bind();
 
-      verifyAllMocks();
+      verify(mockEventBus).addHandler(TransUnitSelectionEvent.getType(), glossaryPresenter);
+      verify(mockKeyShortcutPresenter).register(isA(KeyShortcut.class));
+      verify(mockDisplay).setListener(glossaryPresenter);
+      verify(mockGlossaryDetailsPresenter).setGlossaryListener(glossaryPresenter);
+
    }
 
-   @Override
-   protected void setDefaultBindExpectations()
+   @Test
+   public void clearContent()
    {
-      expect(mockDisplay.getSearchButton()).andReturn(mockSearchButton).anyTimes();
-      expect(mockSearchButton.addClickHandler(capture(capturedSearchButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(mockDisplay.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+
+      glossaryPresenter.bind();
+      glossaryPresenter.clearContent();
+
+      verify(mockDisplay).clearTableContent();
+      verify(mockGlossaryTextBox).setText("");
+   }
+
+   @Test
+   public void onFocus()
+   {
+      boolean isFocused = true;
+
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+
+      glossaryPresenter.bind();
+      glossaryPresenter.onFocus(isFocused);
+
+      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
+      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
+      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
+   }
+
+   @Test
+   public void onBlur()
+   {
+      boolean isFocused = false;
+
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+
+      glossaryPresenter.bind();
+      glossaryPresenter.onFocus(isFocused);
+
+      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
+      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
+      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
+   }
+
+   @Test
+   public void showGlossaryDetail()
+   {
+      GlossaryResultItem object = new GlossaryResultItem("","", 0, 0);
       
-      expect(mockDisplay.getClearButton()).andReturn(mockClearButton).anyTimes();
-      expect(mockClearButton.addClickHandler(capture(capturedClearButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+
+      glossaryPresenter.bind();
+      glossaryPresenter.showGlossaryDetail(object);
+
+      verify(mockGlossaryDetailsPresenter).show(object);
+   }
+
+   @Test
+   public void fireCopyEvent()
+   {
+      GlossaryResultItem object = new GlossaryResultItem("", "", 0, 0);
+      ArgumentCaptor<InsertStringInEditorEvent> eventCaptor = ArgumentCaptor.forClass(InsertStringInEditorEvent.class);
       
-      expect(mockKeyShortcutPresenter.register(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).once();
-      expect(mockMessages.searchGlossary()).andReturn("Search glossary");
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
 
-      expect(mockEventBus.addHandler(eq(TransUnitSelectionEvent.getType()), and(capture(capturedTransUnitSelectionEventHandler), isA(TransUnitSelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      glossaryPresenter.bind();
+      glossaryPresenter.fireCopyEvent(object);
 
-      expect(mockDisplay.getFocusGlossaryTextBox()).andReturn(mockFocusTextBox).times(2);
-      expect(mockFocusTextBox.addFocusHandler(capture(capturedFocusHandler))).andReturn(createMock(HandlerRegistration.class)).once();
-      expect(mockFocusTextBox.addBlurHandler(capture(capturedBlurHandler))).andReturn(createMock(HandlerRegistration.class)).once();
+      verify(mockEventBus).fireEvent(eventCaptor.capture());
+   }
 
-      mockDisplay.setListener(isA(HasGlossaryEvent.class));
-      expectLastCall().once();
+   @Test
+   public void fireSearchEvent()
+   {
+      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
 
-      mockGlossaryDetailsPresenter.setGlossaryListener(isA(HasGlossaryEvent.class));
-      expectLastCall().once();
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(mockDisplay.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(mockGlossaryTextBox.getText()).thenReturn("query");
+      when(mockDisplay.getSearchType()).thenReturn(mockSearchType);
+      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+      when(mockUserWorkspaceContext.getSelectedDoc()).thenReturn(docInfo);
+      when(mockUserWorkspaceContext.getWorkspaceContext()).thenReturn(mockWorkspaceContext);
+      when(mockWorkspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
+      glossaryPresenter.bind();
+      glossaryPresenter.fireSearchEvent();
+
+      verify(mockDisplay).startProcessing();
+      verify(mockDispatcher).execute(GetGlossaryCaptor.capture(), callbackCaptor.capture());
+   }
+   
+   @Test
+   public void createGlossaryRequestForTransUnit()
+   {
+      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+
+      TransUnitId tuid = new TransUnitId(1);
+      ArrayList<String> sources = new ArrayList<String>();
+      sources.add("test source");
+      ArrayList<String> targets = new ArrayList<String>();
+      targets.add("test target");
+      ContentState state = ContentState.values()[2];
+      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder().setId(tuid).setResId(tuid.toString()).setLocaleId(LocaleId.EN_US).setPlural(false).setSources(sources).setSourceComment("source comment").setTargets(targets).setStatus(state).setLastModifiedBy("peter").setMsgContext("msgContext").setRowIndex(0).setVerNum(1);
+
+      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(mockDisplay.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(mockGlossaryTextBox.getText()).thenReturn("query");
+      when(mockDisplay.getSearchType()).thenReturn(mockSearchType);
+      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+      when(mockUserWorkspaceContext.getSelectedDoc()).thenReturn(docInfo);
+      when(mockUserWorkspaceContext.getWorkspaceContext()).thenReturn(mockWorkspaceContext);
+      when(mockWorkspaceContext.getWorkspaceId()).thenReturn(workspaceId);
+
+      glossaryPresenter.bind();
+      glossaryPresenter.createGlossaryRequestForTransUnit(builder.build());
+
+      verify(mockDisplay).startProcessing();
+      verify(mockDispatcher).execute(GetGlossaryCaptor.capture(), callbackCaptor.capture());
    }
 
 }
