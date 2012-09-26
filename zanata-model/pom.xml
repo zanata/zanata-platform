@@ -40,6 +40,30 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <!-- basically we only want to test validators-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>**/test/**/*</exclude>
+                            <exclude>**/hibernate/**/*</exclude>
+                            <exclude>**/util/*</exclude>
+                            <exclude>**/model/po/*</exclude>
+                            <exclude>**/model/security/*</exclude>
+                            <exclude>**/model/type/*</exclude>
+                            <exclude>**/model/*</exclude>
+                        </excludes>
+                    </instrumentation>
+                    <check>
+                        <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
+                        <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
+                        <haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
+                    </check>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

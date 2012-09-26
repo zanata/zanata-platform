@@ -250,7 +250,7 @@
                         <configuration>
                             <instrumentation>
                                 <excludes>
-                                    <exclude>/**/*</exclude>
+                                    <exclude>**/*</exclude>
                                 </excludes>
                             </instrumentation>
                             <check>
