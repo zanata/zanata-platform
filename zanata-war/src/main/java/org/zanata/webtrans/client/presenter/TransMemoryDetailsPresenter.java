@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.presenter;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.TransMemoryDetailsDisplay;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
@@ -12,6 +13,7 @@ import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,14 +48,8 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
    public void show(final TransMemoryResultItem item)
    {
       // request TM details from the server
-      dispatcher.execute(new GetTransMemoryDetailsAction(item.getSourceIdList()), new AsyncCallback<TransMemoryDetailsList>()
+      dispatcher.execute(new GetTransMemoryDetailsAction(item.getSourceIdList()), new AbstractAsyncCallback<TransMemoryDetailsList>()
       {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error(caught.getMessage(), caught);
-         }
-
          @Override
          public void onSuccess(TransMemoryDetailsList result)
          {
@@ -125,6 +121,18 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       else
       {
          display.setLastModified("Last modified on " + lastModifiedDate);
+      }
+   }
+
+   /**
+    * For testing only
+    * @param details transMemoryDetailsList
+    */
+   protected void setStatForTesting(TransMemoryDetailsList details)
+   {
+      if (!GWT.isClient())
+      {
+         tmDetails = details;
       }
    }
 }
