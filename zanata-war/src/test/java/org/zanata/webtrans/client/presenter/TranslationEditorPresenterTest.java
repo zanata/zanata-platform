@@ -6,11 +6,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.editor.filter.TransFilterDisplay;
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.ui.HasPager;
+import org.zanata.webtrans.client.view.TransFilterDisplay;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 

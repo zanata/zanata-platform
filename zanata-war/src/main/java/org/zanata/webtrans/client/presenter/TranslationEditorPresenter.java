@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
