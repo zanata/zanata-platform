@@ -235,6 +235,7 @@
                             <exclude>**/client/auth/**</exclude>
                             <exclude>**/client/events/**</exclude>
                             <exclude>**/client/gin/**</exclude>
+                            <exclude>**/client/rpc/**</exclude>
                             <exclude>**/client/ui/**</exclude>
                             <exclude>**/client/view/**</exclude>
                             <exclude>**/*OkapiUtil*</exclude>
@@ -243,6 +244,7 @@
                             <!--below are some trivial classes(java bean) at the moment-->
                             <exclude>**/shared/auth/**</exclude>
                             <exclude>**/shared/model/**</exclude>
+                            <exclude>**/shared/rpc/**</exclude>
                             <exclude>**/*Exception*</exclude>
                         </excludes>
                     </instrumentation>
