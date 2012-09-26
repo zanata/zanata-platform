@@ -20,27 +20,29 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter.Display;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
+import org.zanata.webtrans.shared.model.GlossaryDetails;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
+import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
+import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 
 /**
@@ -49,176 +51,148 @@ import com.google.gwt.user.client.ui.HasText;
  *
  */
 @Test(groups = { "unit-tests" })
-public class GlossaryDetailsPresenterTest extends PresenterTest
+public class GlossaryDetailsPresenterTest
 {
    // object under test
    private GlossaryDetailsPresenter glossaryDetailsPresenter;
 
-   private Display mockDisplay;
+   @Mock
+   private GlossaryDetailsDisplay mockDisplay;
+   @Mock
    private EventBus mockEventBus;
+   @Mock
    private CachingDispatchAsync mockDispatcher;
+   @Mock
    private UiMessages mockMessages;
+   @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
-   
-   private HasText mockTargetCommentText;
+   @Mock
+   private HasText mockTargetText;
+   @Mock
+   private HasText mockNewCommentText;
 
-   HasClickHandlers mockDismissButton;
-   HasClickHandlers mockSaveButton;
-   HasClickHandlers mockAddNewCommentButton;
+   @Captor
+   private ArgumentCaptor<UpdateGlossaryTermAction> UpdateGlossaryTermCaptor;
 
-   HasChangeHandlers mockEntryListBox;
+   @Captor
+   private ArgumentCaptor<GetGlossaryDetailsAction> GetGlossaryDetailsCaptor;
 
-   private Capture<ClickHandler> capturedDismissButtonClickHandler;
-   private Capture<ClickHandler> capturedSaveButtonClickHandler;
-   private Capture<ClickHandler> capturedAddNewCommentButtonClickHandler;
+   @Captor
+   private ArgumentCaptor<AsyncCallback<UpdateGlossaryTermResult>> updateGlossarycallbackCaptor;
 
-   private Capture<ChangeHandler> capturedEntryListBoxChangeHandler;
+   @Captor
+   private ArgumentCaptor<AsyncCallback<GetGlossaryDetailsResult>> getGlossarycallbackCaptor;
 
-   @BeforeClass
-   public void createMocks()
-   {
-      mockDisplay = createAndAddMock(GlossaryDetailsPresenter.Display.class);
-      mockEventBus = createAndAddMock(EventBus.class);
-      mockDispatcher = createAndAddMock(CachingDispatchAsync.class);
-      mockMessages = createAndAddMock(UiMessages.class);
-      mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
-
-      mockTargetCommentText = createAndAddMock(HasText.class);
-
-      mockDismissButton = createAndAddMock(HasClickHandlers.class);
-      mockSaveButton = createAndAddMock(HasClickHandlers.class);
-      mockAddNewCommentButton = createAndAddMock(HasClickHandlers.class);
-
-      mockEntryListBox = createAndAddMock(HasChangeHandlers.class);
-
-      capturedDismissButtonClickHandler = addCapture(new Capture<ClickHandler>());
-      capturedSaveButtonClickHandler = addCapture(new Capture<ClickHandler>());
-      capturedAddNewCommentButtonClickHandler = addCapture(new Capture<ClickHandler>());
-
-      capturedEntryListBoxChangeHandler = addCapture(new Capture<ChangeHandler>());
-   }
 
    @BeforeMethod
    public void beforeMethod()
    {
-      resetAll();
-   }
-
-   @Test
-   public void canBind()
-   {
-      expect(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).andReturn(true).once();
-
-      mockDisplay.setHasUpdateAccess(true);
-      expectLastCall().once();
-
-      replayAllMocks();
+      MockitoAnnotations.initMocks(this);
       glossaryDetailsPresenter = new GlossaryDetailsPresenter(mockDisplay, mockEventBus, mockMessages, mockDispatcher, mockUserWorkspaceContext);
-      glossaryDetailsPresenter.bind();
-
-      verifyAllMocks();
    }
 
    @Test
-   public void testAddNewCommentWithUpdateAccess()
+   public void onBind()
    {
-      int rowNum = 1;
-      String newComment = "new comment";
+      boolean hasAccess = true;
+
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+
+      glossaryDetailsPresenter.bind();
+      
+      verify(mockDisplay).setListener(glossaryDetailsPresenter);
+      verify(mockDisplay).setHasUpdateAccess(hasAccess);
+   }
+
+   @Test
+   public void onSaveClick()
+   {
+      String targetText = "target Text";
+      String newTargetText = "new target Text";
       boolean hasAccess = true;
       
-      expect(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).andReturn(hasAccess).once();
+      GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
 
-      mockDisplay.setHasUpdateAccess(hasAccess);
-      expectLastCall().once();
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+      when(mockDisplay.getTargetText()).thenReturn(mockTargetText);
+      when(mockTargetText.getText()).thenReturn(targetText);
+      when(glossaryDetails.getTarget()).thenReturn(newTargetText);
 
-      expect(mockDisplay.getNewCommentText()).andReturn(mockTargetCommentText).times(3);
-      expect(mockTargetCommentText.getText()).andReturn(newComment).times(2);
+      glossaryDetailsPresenter.bind();
+      glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
+      glossaryDetailsPresenter.onSaveClick();
 
-      expect(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).andReturn(true).once();
+      verify(mockDisplay).setHasUpdateAccess(hasAccess);
+      verify(mockDisplay).showLoading(true);
+      verify(mockDispatcher).execute(UpdateGlossaryTermCaptor.capture(), updateGlossarycallbackCaptor.capture());
+   }
 
-      expect(mockDisplay.getTargetCommentRowCount()).andReturn(rowNum);
+   @Test
+   public void onSaveClickNoWriteAccess()
+   {
+      String targetText = "target Text";
+      String newTargetText = "new target Text";
+      boolean hasAccess = false;
 
-      mockDisplay.addRowIntoTargetComment(rowNum, newComment);
-      expectLastCall().once();
+      GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
+
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+      when(mockDisplay.getTargetText()).thenReturn(mockTargetText);
+      when(mockTargetText.getText()).thenReturn(targetText);
+      when(glossaryDetails.getTarget()).thenReturn(newTargetText);
+
+      glossaryDetailsPresenter.bind();
+      glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
+      glossaryDetailsPresenter.onSaveClick();
+
+      verify(mockDisplay).setHasUpdateAccess(hasAccess);
+   }
+
+   @Test
+   public void onDismissClick()
+   {
+      boolean hasAccess = true;
+      GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
+
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+
+      glossaryDetailsPresenter.bind();
+      glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
+      glossaryDetailsPresenter.onDismissClick();
+
+      verify(mockDisplay).hide();
+   }
+
+   @Test
+   public void addNewComment()
+   {
+      String comment = "new comment";
+      int index = 0;
+
+      boolean hasAccess = true;
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+      when(mockDisplay.getNewCommentText()).thenReturn(mockNewCommentText);
+      when(mockNewCommentText.getText()).thenReturn(comment);
       
-      mockTargetCommentText.setText("");
-      expectLastCall().once();
-
-      replayAllMocks();
-
-      glossaryDetailsPresenter = new GlossaryDetailsPresenter(mockDisplay, mockEventBus, mockMessages, mockDispatcher, mockUserWorkspaceContext);
       glossaryDetailsPresenter.bind();
+      glossaryDetailsPresenter.addNewComment(index);
 
-      ClickEvent clickEvent = createMock(ClickEvent.class);
-      capturedAddNewCommentButtonClickHandler.getValue().onClick(clickEvent);
-
-      verifyAllMocks();
+      verify(mockDisplay).addRowIntoTargetComment(index, comment);
+      verify(mockNewCommentText).setText("");
    }
 
    @Test
-   public void testAddNewCommentWithNoUpdateAccess()
+   public void show()
    {
-      String newComment = "new comment";
-      boolean hasAccess = false;
+      GlossaryResultItem item = new GlossaryResultItem("", "", 0, 0);
+      
+      boolean hasAccess = true;
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
 
-      expect(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).andReturn(hasAccess).times(2);
-
-      mockDisplay.setHasUpdateAccess(hasAccess);
-      expectLastCall().once();
-
-      expect(mockDisplay.getNewCommentText()).andReturn(mockTargetCommentText).once();
-      expect(mockTargetCommentText.getText()).andReturn(newComment).once();
-
-      replayAllMocks();
-
-      glossaryDetailsPresenter = new GlossaryDetailsPresenter(mockDisplay, mockEventBus, mockMessages, mockDispatcher, mockUserWorkspaceContext);
       glossaryDetailsPresenter.bind();
+      glossaryDetailsPresenter.show(item);
 
-      ClickEvent clickEvent = createMock(ClickEvent.class);
-      capturedAddNewCommentButtonClickHandler.getValue().onClick(clickEvent);
-
-      verifyAllMocks();
-   }
-
-   @Test
-   public void testAddNewCommentWithEmptyString()
-   {
-      String newComment = "";
-      boolean hasAccess = false;
-
-      expect(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).andReturn(hasAccess).once();
-
-      mockDisplay.setHasUpdateAccess(hasAccess);
-      expectLastCall().once();
-
-      expect(mockDisplay.getNewCommentText()).andReturn(mockTargetCommentText).once();
-      expect(mockTargetCommentText.getText()).andReturn(newComment).once();
-
-      replayAllMocks();
-
-      glossaryDetailsPresenter = new GlossaryDetailsPresenter(mockDisplay, mockEventBus, mockMessages, mockDispatcher, mockUserWorkspaceContext);
-      glossaryDetailsPresenter.bind();
-
-      ClickEvent clickEvent = createMock(ClickEvent.class);
-      capturedAddNewCommentButtonClickHandler.getValue().onClick(clickEvent);
-
-      verifyAllMocks();
-   }
-
-   @Override
-   protected void setDefaultBindExpectations()
-   {
-      expect(mockDisplay.getDismissButton()).andReturn(mockDismissButton).once();
-      expect(mockDismissButton.addClickHandler(capture(capturedDismissButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
-
-      expect(mockDisplay.getSaveButton()).andReturn(mockSaveButton).once();
-      expect(mockSaveButton.addClickHandler(capture(capturedSaveButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
-
-      expect(mockDisplay.getAddNewCommentButton()).andReturn(mockAddNewCommentButton).anyTimes();
-      expect(mockAddNewCommentButton.addClickHandler(capture(capturedAddNewCommentButtonClickHandler))).andReturn(createMock(HandlerRegistration.class)).once();
-
-      expect(mockDisplay.getEntryListBox()).andReturn(mockEntryListBox).once();
-      expect(mockEntryListBox.addChangeHandler(capture(capturedEntryListBoxChangeHandler))).andReturn(createMock(HandlerRegistration.class)).once();
+      verify(mockDispatcher).execute(GetGlossaryDetailsCaptor.capture(), getGlossarycallbackCaptor.capture());
    }
 
 }

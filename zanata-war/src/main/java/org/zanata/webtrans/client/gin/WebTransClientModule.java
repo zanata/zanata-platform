@@ -71,6 +71,7 @@ import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.EditorOptionsView;
+import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.client.view.GlossaryView;
@@ -127,7 +128,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
       bindPresenter(TransMemoryPresenter.class, TranslationMemoryDisplay.class, TransMemoryView.class);
       bindPresenter(GlossaryPresenter.class, GlossaryDisplay.class, GlossaryView.class);
-      bindPresenter(GlossaryDetailsPresenter.class, GlossaryDetailsPresenter.Display.class, GlossaryDetailsView.class);
+      bindPresenter(GlossaryDetailsPresenter.class, GlossaryDetailsDisplay.class, GlossaryDetailsView.class);
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsDisplay.class, TransMemoryDetailsView.class);
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationDisplay.class, TransUnitNavigationView.class);
       bindPresenter(EditorOptionsPresenter.class, EditorOptionsDisplay.class, EditorOptionsView.class);

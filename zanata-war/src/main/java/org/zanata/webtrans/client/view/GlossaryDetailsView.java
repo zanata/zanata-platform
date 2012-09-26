@@ -3,19 +3,18 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -29,7 +28,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
+public class GlossaryDetailsView implements GlossaryDetailsDisplay
 {
 
    interface GlossaryDetailsIUiBinder extends UiBinder<DialogBox, GlossaryDetailsView>
@@ -72,6 +71,7 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    Styles style;
    
    private final int VISIBLE_COMMENTS = 4;
+   private Listener listener;
 
    private boolean hasGlossaryUpdateAccess;
 
@@ -216,34 +216,27 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
       return targetText;
    }
 
-   @Override
-   public HasChangeHandlers getEntryListBox()
+   @UiHandler("entryListBox")
+   public void onEntryListBoxChange(ChangeEvent event)
    {
-      return entryListBox;
+      listener.selectEntry(entryListBox.getSelectedIndex());
    }
 
-   @Override
-   public HasClickHandlers getDismissButton()
+   @UiHandler("dismissButton")
+   public void onDismissButtonClick(ClickEvent event)
    {
-      return dismissButton;
+      listener.onDismissClick();
    }
 
-   @Override
-   public HasClickHandlers getSaveButton()
+   public void onSaveButtonClick(ClickEvent event)
    {
-      return saveButton;
+      listener.onSaveClick();
    }
 
-   @Override
-   public HasClickHandlers getAddNewCommentButton()
+   @UiHandler("addNewCommentButton")
+   public void getAddNewCommentButton(ClickEvent event)
    {
-      return addNewCommentButton;
-   }
-
-   @Override
-   public int getSelectedDocumentIndex()
-   {
-      return entryListBox.getSelectedIndex();
+      listener.addNewComment(targetCommentsTable.getRowCount());
    }
 
    @Override
@@ -296,12 +289,6 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    }
 
    @Override
-   public int getTargetCommentRowCount()
-   {
-      return targetCommentsTable.getRowCount();
-   }
-
-   @Override
    public void showLoading(boolean visible)
    {
       loadingIcon.setVisible(visible);
@@ -315,6 +302,12 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
       targetText.setReadOnly(!hasGlossaryUpdateAccess);
       addNewCommentButton.setVisible(hasGlossaryUpdateAccess);
       this.hasGlossaryUpdateAccess = hasGlossaryUpdateAccess;
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
    }
 
 }
