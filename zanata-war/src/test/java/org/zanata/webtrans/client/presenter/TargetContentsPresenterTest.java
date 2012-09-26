@@ -217,7 +217,7 @@ public class TargetContentsPresenterTest
       //given current display is null
       when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(new TransUnitId(1));
 
-      presenter.onRequestValidation(new RequestValidationEvent());
+      presenter.onRequestValidation(RequestValidationEvent.EVENT);
 
       verifyNoMoreInteractions(eventBus);
 
@@ -234,7 +234,7 @@ public class TargetContentsPresenterTest
       when(editor.getText()).thenReturn("target");
       presenter.showEditors(selectedTU.getId());
 
-      presenter.onRequestValidation(new RequestValidationEvent());
+      presenter.onRequestValidation(RequestValidationEvent.EVENT);
 
       verify(eventBus, times(2)).fireEvent(eventCaptor.capture());//one in showEditor() one in onRequestValidation()
       RunValidationEvent event = findEvent(RunValidationEvent.class);

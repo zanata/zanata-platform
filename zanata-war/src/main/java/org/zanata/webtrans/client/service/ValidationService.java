@@ -58,31 +58,16 @@ import com.google.inject.Inject;
 
 public class ValidationService implements RunValidationEventHandler, TransUnitSelectionHandler, DocumentSelectionHandler
 {
-   private final Map<String, ValidationObject> validationMap = new HashMap<String, ValidationObject>();
    private final EventBus eventBus;
    private final TableEditorMessages messages;
+   private Map<String, ValidationObject> validationMap;
 
    @Inject
-   public ValidationService(final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages valMessages)
+   public ValidationService(final EventBus eventBus, final TableEditorMessages messages, Map<String, ValidationObject> validationMap)
    {
       this.eventBus = eventBus;
       this.messages = messages;
-
-      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation(valMessages);
-      NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation(valMessages);
-      JavaVariablesValidation javaVariablesValidation = new JavaVariablesValidation(valMessages);
-      XmlEntityValidation xmlEntityValidation = new XmlEntityValidation(valMessages);
-      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(valMessages);
-      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(valMessages);
-      printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
-      positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);
-
-      validationMap.put(htmlxmlValidation.getId(), htmlxmlValidation);
-      validationMap.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);
-      validationMap.put(printfVariablesValidation.getId(), printfVariablesValidation);
-      validationMap.put(positionalPrintfValidation.getId(), positionalPrintfValidation);
-      validationMap.put(javaVariablesValidation.getId(), javaVariablesValidation);
-      validationMap.put(xmlEntityValidation.getId(), xmlEntityValidation);
+      this.validationMap = validationMap;
 
       eventBus.addHandler(RunValidationEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
@@ -143,7 +128,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       action.setEnabled(isEnabled);
 
       // request re-run validation with new options
-      eventBus.fireEvent(new RequestValidationEvent());
+      eventBus.fireEvent(RequestValidationEvent.EVENT);
    }
 
    public List<ValidationObject> getValidationList()

@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.gin;
 
+import java.util.Map;
+
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
@@ -30,6 +32,10 @@ import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.editor.filter.TransFilterDisplay;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.view.SideMenuDisplay;
+import org.zanata.webtrans.client.view.SourceContentsDisplay;
+import org.zanata.webtrans.client.view.SourceContentsView;
 import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.NativeEventImpl;
 import org.zanata.webtrans.client.history.History;
@@ -77,10 +83,7 @@ import org.zanata.webtrans.client.view.GlossaryView;
 import org.zanata.webtrans.client.view.KeyShortcutView;
 import org.zanata.webtrans.client.view.NotificationView;
 import org.zanata.webtrans.client.view.SearchResultsView;
-import org.zanata.webtrans.client.view.SideMenuDisplay;
 import org.zanata.webtrans.client.view.SideMenuView;
-import org.zanata.webtrans.client.view.SourceContentsDisplay;
-import org.zanata.webtrans.client.view.SourceContentsView;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsView;
 import org.zanata.webtrans.client.view.TransMemoryDetailsDisplay;
@@ -97,7 +100,15 @@ import org.zanata.webtrans.client.view.ValidationOptionsView;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
+import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
+import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -189,4 +200,34 @@ public class WebTransClientModule extends AbstractPresenterModule
       }
    }
 
+   /**
+    * a map contains all validation objects.
+    *
+    * @see org.zanata.webtrans.client.service.ValidationService
+    * @param valMessages Validation messages
+    * @return a map contains all validation objects.
+    */
+   @Provides
+   public Map<String, ValidationObject> allValidationObjects(ValidationMessages valMessages)
+   {
+      ImmutableMap.Builder<String, ValidationObject> builder = ImmutableMap.builder();
+
+      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation(valMessages);
+      NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation(valMessages);
+      JavaVariablesValidation javaVariablesValidation = new JavaVariablesValidation(valMessages);
+      XmlEntityValidation xmlEntityValidation = new XmlEntityValidation(valMessages);
+      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(valMessages);
+      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(valMessages);
+      printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
+      positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);
+
+      builder.put(htmlxmlValidation.getId(), htmlxmlValidation);
+      builder.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);
+      builder.put(printfVariablesValidation.getId(), printfVariablesValidation);
+      builder.put(positionalPrintfValidation.getId(), positionalPrintfValidation);
+      builder.put(javaVariablesValidation.getId(), javaVariablesValidation);
+      builder.put(xmlEntityValidation.getId(), xmlEntityValidation);
+
+      return builder.build();
+   }
 }

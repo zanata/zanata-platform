@@ -33,6 +33,7 @@ import com.google.gwt.event.shared.GwtEvent;
  **/
 public class RequestValidationEvent extends GwtEvent<RequestValidationEventHandler>
 {
+   public static final RequestValidationEvent EVENT = new RequestValidationEvent();
    /**
     * Handler type.
     */
@@ -48,7 +49,7 @@ public class RequestValidationEvent extends GwtEvent<RequestValidationEventHandl
       return TYPE != null ? TYPE : (TYPE = new Type<RequestValidationEventHandler>());
    }
 
-   public RequestValidationEvent()
+   private RequestValidationEvent()
    {
    }
 

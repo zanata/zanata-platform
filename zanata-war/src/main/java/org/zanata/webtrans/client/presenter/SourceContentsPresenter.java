@@ -142,7 +142,7 @@ public class SourceContentsPresenter implements ClickHandler
 
          Log.debug("Selected source: " + selectedSource.getSource());
          //TODO this is firing every time we click.
-         eventBus.fireEvent(new RequestValidationEvent());
+         eventBus.fireEvent(RequestValidationEvent.EVENT);
       }
    }
 
