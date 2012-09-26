@@ -1,10 +1,10 @@
 package org.zanata.webtrans.client.presenter;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.view.TransMemoryDetailsDisplay;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
@@ -16,71 +16,31 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
 
-public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDetailsPresenter.Display>
+public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDetailsDisplay> implements TransMemoryDetailsDisplay.Listener
 {
    private final CachingDispatchAsync dispatcher;
 
-   public interface Display extends WidgetDisplay
-   {
-      void hide();
-
-      void show();
-
-      HasText getSourceText();
-
-      HasText getTargetText();
-
-      HasText getSourceComment();
-
-      HasText getTargetComment();
-
-      HasText getDocumentName();
-
-      HasChangeHandlers getDocumentListBox();
-
-      int getSelectedDocumentIndex();
-
-      HasClickHandlers getDismissButton();
-
-      void clearDocs();
-
-      void addDoc(String text);
-
-      HasText getLastModified();
-
-      HasText getProjectIterationName();
-   }
-
-   TransMemoryDetailsList tmDetails;
+   private TransMemoryDetailsList tmDetails;
 
    @Inject
-   public TransMemoryDetailsPresenter(final Display display, EventBus eventBus, CachingDispatchAsync dispatcher)
+   public TransMemoryDetailsPresenter(TransMemoryDetailsDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
+      display.setListener(this);
+   }
 
-      registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.hide();
-         }
-      }));
-      registerHandler(display.getDocumentListBox().addChangeHandler(new ChangeHandler()
-      {
-         @Override
-         public void onChange(ChangeEvent event)
-         {
-            selectDoc(display.getSelectedDocumentIndex());
-         }
-      }));
+   @Override
+   protected void onBind()
+   {
+   }
+
+   @Override
+   protected void onUnbind()
+   {
    }
 
    public void show(final TransMemoryResultItem item)
@@ -98,9 +58,9 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
          public void onSuccess(TransMemoryDetailsList result)
          {
             tmDetails = result;
-            // FIXME handle plurals
-            display.getSourceText().setText(item.getSource());
-            display.getTargetText().setText(item.getTarget());
+            display.clearSourceAndTarget();
+            display.setSource(item.getSourceContents());
+            display.setTarget(item.getTargetContents());
             display.clearDocs();
             for (TransMemoryDetails detailsItem : tmDetails.getItems())
             {
@@ -114,12 +74,29 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       });
    }
 
+   @Override
+   public void onRevealDisplay()
+   {
+   }
+
+   @Override
+   public void dismissTransMemoryDetails()
+   {
+      display.hide();
+   }
+
+   @Override
+   public void onDocumentListBoxChanged()
+   {
+      selectDoc(display.getSelectedDocumentIndex());
+   }
+
    protected void selectDoc(int selected)
    {
       String sourceComment = "";
       String targetComment = "";
       String project = "";
-      String iter = "";
+      String iteration = "";
       String doc = "";
       String lastModifiedBy = "";
       String lastModifiedDate = "";
@@ -130,37 +107,24 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
          sourceComment = item.getSourceComment();
          targetComment = item.getTargetComment();
          project = item.getProjectName();
-         iter = item.getIterationName();
+         iteration = item.getIterationName();
          doc = item.getDocId();
          lastModifiedBy = item.getLastModifiedBy();
          lastModifiedDate = item.getLastModifiedDate();
       }
-      display.getSourceComment().setText(sourceComment);
-      display.getTargetComment().setText(targetComment);
-      display.getProjectIterationName().setText(project + " / " + iter);
-      display.getDocumentName().setText(doc);
+
+      display.setSourceComment(sourceComment);
+      display.setTargetComment(targetComment);
+      display.setProjectIterationName(project + " / " + iteration);
+      display.setDocumentName(doc);
+
       if (!Strings.isNullOrEmpty(lastModifiedBy))
       {
-         display.getLastModified().setText("Last modified by " + lastModifiedBy + " on " + lastModifiedDate);
+         display.setLastModified("Last modified by " + lastModifiedBy + " on " + lastModifiedDate);
       }
       else
       {
-         display.getLastModified().setText("Last modified on " + lastModifiedDate);
+         display.setLastModified("Last modified on " + lastModifiedDate);
       }
-   }
-
-   @Override
-   protected void onBind()
-   {
-   }
-
-   @Override
-   protected void onUnbind()
-   {
-   }
-
-   @Override
-   public void onRevealDisplay()
-   {
    }
 }

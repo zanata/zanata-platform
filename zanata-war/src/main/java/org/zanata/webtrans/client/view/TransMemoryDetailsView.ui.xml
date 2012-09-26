@@ -7,32 +7,34 @@
     ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
     ui:generateLocales="en">
 	
-	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
-	
 	<ui:style>
-		.buttonDiv
-		{
-			text-align:right;
-		}
-		
-		.textArea
-		{
-			width:280px;
-			height:40px;
-			resize:none;
-		}
-		
-		.textArea[readonly]
-		{
-			background:lightgray;
-		}
-		
-		.button
-		{
-			float:right;
-		}
-		
-	</ui:style>
+        .button {
+            float: right;
+        }
+
+        .content span {
+            display: block;
+            border: thin dotted #808080;
+            margin-top: 5px;
+            padding: 2px;
+        }
+
+        .comment {
+            background: #d3d3d3;
+        }
+
+        .table {
+            table-layout: fixed;
+        }
+
+        .headerCol {
+            vertical-align: top;
+            text-align: right;
+            width: 120px;
+            padding-top: 8px;
+        }
+
+    </ui:style>
 	
 	<g:DialogBox autoHide="true" modal="true" styleName="GWTDialogBox">
 		<g:LayoutPanel>
@@ -53,37 +55,45 @@
 				</g:HTMLPanel>
 			</g:layer>
 			
-			<g:layer top="160px" height="70px" left="0" right="300px">
-				<g:HTMLPanel>
-					<g:Label styleName="headerLabel" text="Source:"/>
-					<g:TextArea ui:field='sourceText' readOnly='true' styleName="{style.textArea}"/>
-				</g:HTMLPanel>
-			</g:layer>
-			
-			<g:layer top="160px" height="70px" left="300px" right="0">
-				<g:HTMLPanel>
-					<g:Label styleName="headerLabel" text="Comment:"/>
-					<g:TextArea ui:field='sourceComment' readOnly='true' styleName="{style.textArea}"/>
-				</g:HTMLPanel>
-			</g:layer>
-			
-			
-			<g:layer top="245px" height="70px" left="0" right="300px">
-				<g:HTMLPanel>
-					<g:Label styleName="headerLabel" text="Target:"/>
-					<g:TextArea ui:field='targetText' readOnly='true' styleName="{style.textArea}"/>
-				</g:HTMLPanel>
-			</g:layer>
-			
-			<g:layer top="245px" height="70px" left="300px" right="0">
-				<g:HTMLPanel>
-					<g:Label styleName="headerLabel" text="Comment:"/>
-					<g:TextArea ui:field='targetComment' readOnly='true' styleName="{style.textArea}"/>
-				</g:HTMLPanel>
-			</g:layer>
-			
-			
-			
+			<g:layer top="160px" height="280px" left="0" right="0px">
+				<g:ScrollPanel height="180px" width="100%">
+                    <g:Grid styleName="{style.table}">
+                        <g:row>
+                            <g:customCell styleName="{style.headerCol}">
+                                <g:Label styleName="headerLabel" text="Source:"/>
+                            </g:customCell>
+                            <g:customCell>
+                                <g:HTMLPanel ui:field="sourceTextContainer" styleName="{style.content}" />
+                            </g:customCell>
+                        </g:row>
+                        <g:row>
+                            <g:customCell styleName="{style.headerCol}">
+                                <g:Label styleName="headerLabel" text="Source Comment:"/>
+                            </g:customCell>
+                            <g:customCell>
+                                <g:Label ui:field='sourceComment' styleName="{style.comment}"/>
+                            </g:customCell>
+                        </g:row>
+                        <g:row>
+                            <g:customCell styleName="{style.headerCol}">
+                                <g:Label styleName="headerLabel" text="Target:"/>
+                            </g:customCell>
+                            <g:customCell>
+                                <g:HTMLPanel ui:field="targetTextContainer" styleName="{style.content}"/>
+                            </g:customCell>
+                        </g:row>
+                        <g:row>
+                            <g:customCell styleName="{style.headerCol}">
+                                <g:Label styleName="headerLabel" text="Target Comment:"/>
+                            </g:customCell>
+                            <g:customCell>
+                                <g:Label ui:field='targetComment' styleName="{style.comment}"/>
+                            </g:customCell>
+                        </g:row>
+                    </g:Grid>
+                </g:ScrollPanel>
+            </g:layer>
+
 			<g:layer top="350px" height="25px">
 				<g:HTMLPanel>
 					<g:InlineLabel ui:field='lastModified' styleName="lastModifiedLabel"/>
