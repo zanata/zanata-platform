@@ -91,10 +91,10 @@ public class TranslationStats implements Serializable
       }
    }
 
-   private double remainingHours(int fuzzyWords, int untranslatedWords)
+   private double remainingHours(int fuzzy, int untranslated)
    {
-      double untransHours = untranslatedWords / 250.0;
-      double fuzzyHours = fuzzyWords / 500.0;
+      double untransHours = untranslated / 250.0;
+      double fuzzyHours = fuzzy / 500.0;
       double remainHours = untransHours + fuzzyHours;
       return remainHours;
    }
