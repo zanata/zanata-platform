@@ -50,7 +50,7 @@ import com.google.inject.Inject;
  * @author aeng
  * 
  */
-public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implements HasNotificationLabel,
+public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implements NotificationLabelListener,
       SideMenuDisplay.Listener, ExitWorkspaceEventHandler, EnterWorkspaceEventHandler, PublishWorkspaceChatEventHandler
 {
    private final EditorOptionsPresenter editorOptionsPresenter;

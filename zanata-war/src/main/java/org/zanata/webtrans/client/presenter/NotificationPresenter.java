@@ -21,48 +21,30 @@
 package org.zanata.webtrans.client.presenter;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.view.NotificationDisplay;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class NotificationPresenter extends WidgetPresenter<NotificationPresenter.Display>
+public class NotificationPresenter extends WidgetPresenter<NotificationDisplay> implements NotificationEventHandler, NotificationDisplay.Listener
 {
    @Inject
-   public NotificationPresenter(Display display, EventBus eventBus)
+   public NotificationPresenter(NotificationDisplay display, EventBus eventBus)
    {
       super(display, eventBus);
    }
 
-   public interface Display extends WidgetDisplay
-   {
-      HasClickHandlers getClearButton();
-
-      void clearMessages();
-
-      void appendMessage(Severity severity, String message, InlineLink inlineLink);
-
-      void setMessagesToKeep(int count);
-
-      int getMessageCount();
-
-      void setMessageOrder(DisplayOrder displayOrder);
-   }
-
-   private HasNotificationLabel listener;
+   private NotificationLabelListener listener;
 
    /**
     * Message count to keep in notification area
@@ -83,30 +65,19 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
    {
       display.setMessagesToKeep(MESSAGE_TO_KEEP);
       display.setMessageOrder(DisplayOrder.ASCENDING);
+      display.setListener(this);
 
-      registerHandler(display.getClearButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.clearMessages();
-            listener.setNotificationLabel(display.getMessageCount(), Severity.Info);
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
-      {
-         @Override
-         public void onNotification(NotificationEvent event)
-         {
-            appendNotification(event.getSeverity(), event.getMessage(), event.getInlineLink());
-            Log.info("Notification:" + event.getMessage());
-            listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
-         }
-      }));
+      registerHandler(eventBus.addHandler(NotificationEvent.getType(), this));
    }
 
-   public void setNotificationListener(HasNotificationLabel listener)
+   @Override
+   public void onClearClick()
+   {
+      display.clearMessages();
+      listener.setNotificationLabel(display.getMessageCount(), Severity.Info);
+   }
+
+   public void setNotificationListener(NotificationLabelListener listener)
    {
       this.listener = listener;
       listener.setNotificationLabel(0, Severity.Info);
@@ -132,5 +103,13 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
    protected void onRevealDisplay()
    {
       // TODO Auto-generated method stub
+   }
+
+   @Override
+   public void onNotification(NotificationEvent event)
+   {
+      appendNotification(event.getSeverity(), event.getMessage(), event.getInlineLink());
+      Log.info("Notification:" + event.getMessage());
+      listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
    }
 }

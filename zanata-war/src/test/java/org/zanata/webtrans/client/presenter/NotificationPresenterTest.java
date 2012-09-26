@@ -1,191 +1,137 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.NotificationEventHandler;
-import org.zanata.webtrans.client.presenter.NotificationPresenter.Display;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
-
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.view.NotificationDisplay;
 
 @Test(groups = { "unit-tests" })
-public class NotificationPresenterTest extends PresenterTest
+public class NotificationPresenterTest
 {
    private NotificationPresenter notificationPresenter;
 
-   HasClickHandlers mockClear;
+   @Mock
+   private NotificationLabelListener mockListener;
+   @Mock
+   private NotificationDisplay mockDisplay;
+   @Mock
+   private EventBus mockEventBus;
 
-   HasNotificationLabel mockListener;
-   
-   Display mockDisplay;
-   EventBus mockEventBus;
-
-   private Capture<ClickHandler> capturedClearClickHandler;
-   private Capture<NotificationEventHandler> capturedNotificationEventHandler;
-   
    private final static int MSG_TO_KEEP = 100;
-
-   @BeforeClass
-   public void createMocks()
-   {
-      mockClear = createAndAddMock(HasClickHandlers.class);
-      mockDisplay = createAndAddMock(NotificationPresenter.Display.class);
-      mockEventBus = createAndAddMock(EventBus.class);
-      mockListener = createAndAddMock(HasNotificationLabel.class);
-
-      capturedClearClickHandler = addCapture(new Capture<ClickHandler>());
-      capturedNotificationEventHandler = addCapture(new Capture<NotificationEventHandler>());
-   }
 
    @BeforeMethod
    void beforeMethod()
    {
-      resetAll();
+      MockitoAnnotations.initMocks(this);
       notificationPresenter = new NotificationPresenter(mockDisplay, mockEventBus);
    }
 
-   public void testOnBind()
+   @Test
+   public void onBind()
    {
-      mockListener.setNotificationLabel(0, Severity.Info);
-      expectLastCall().once();
+      notificationPresenter.bind();
       
-      replayAllMocks();
+      verify(mockDisplay).setMessagesToKeep(MSG_TO_KEEP);
+      verify(mockDisplay).setMessageOrder(DisplayOrder.ASCENDING);
+      verify(mockDisplay).setListener(notificationPresenter);
+   }
+
+   @Test
+   public void onClearClick()
+   {
+      int msgCount = 5;
+      
+      when(mockDisplay.getMessageCount()).thenReturn(msgCount);
+      
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
-      verifyAllMocks();
+      notificationPresenter.onClearClick();
+
+      verify(mockDisplay).clearMessages();
+      verify(mockListener).setNotificationLabel(msgCount, Severity.Info);
    }
 
-   public void testErrorNotificationShows()
+   @Test
+   public void onNotificationInfo()
    {
-      String testMessage = "error testing";
-
-      mockDisplay.appendMessage(Severity.Error, testMessage, null);
-      expectLastCall().once();
-
-      expect(mockDisplay.getMessageCount()).andReturn(1);
+      int msgCount = 5;
+      String msg = "Test message";
+      Severity severity = Severity.Info;
       
-      mockListener.setNotificationLabel(0, Severity.Info);
-      expectLastCall().once();
-      
-      mockListener.setNotificationLabel(1, Severity.Error);
-      expectLastCall().once();
-      
-      mockListener.showNotification();
-      expectLastCall().once();
 
-      replayAllMocks();
+      NotificationEvent mockEvent = mock(NotificationEvent.class);
+      InlineLink mockInlineLink = mock(InlineLink.class);
+
+      when(mockDisplay.getMessageCount()).thenReturn(msgCount);
+      when(mockEvent.getSeverity()).thenReturn(severity);
+      when(mockEvent.getMessage()).thenReturn(msg);
+      when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
+
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
-      NotificationEvent notification = new NotificationEvent(Severity.Error, testMessage);
-      capturedNotificationEventHandler.getValue().onNotification(notification);
-
-      verifyAllMocks();
+      notificationPresenter.onNotification(mockEvent);
+      
+      verify(mockListener).setNotificationLabel(msgCount, severity);
+      verify(mockDisplay).appendMessage(severity, msg, mockInlineLink);
    }
 
-   public void testErrorMessageCount()
+   @Test
+   public void onNotificationError()
    {
-      String[] testMessages = { "test1", "test2", "test3", "test4", "test5" };
+      int msgCount = 5;
+      String msg = "Test message";
+      Severity severity = Severity.Error;
 
-      for (String msg : testMessages)
-      {
-         mockDisplay.appendMessage(Severity.Error, msg, null);
-         expectLastCall().once();
-      }
+      NotificationEvent mockEvent = mock(NotificationEvent.class);
+      InlineLink mockInlineLink = mock(InlineLink.class);
 
-      for (int count = 0;count<testMessages.length;count++)
-      {
-         expect(mockDisplay.getMessageCount()).andReturn(count);
+      when(mockDisplay.getMessageCount()).thenReturn(msgCount);
+      when(mockEvent.getSeverity()).thenReturn(severity);
+      when(mockEvent.getMessage()).thenReturn(msg);
+      when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
-         mockListener.setNotificationLabel(count, Severity.Error);
-         expectLastCall().once();
-
-         mockListener.showNotification();
-         expectLastCall().once();
-      }
-
-      mockListener.setNotificationLabel(0, Severity.Info);
-      expectLastCall().once();
-
-      replayAllMocks();
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
-      for (String msg : testMessages)
-      {
-         NotificationEvent notification = new NotificationEvent(Severity.Error, msg);
-         capturedNotificationEventHandler.getValue().onNotification(notification);
-      }
+      notificationPresenter.onNotification(mockEvent);
 
-      verifyAllMocks();
+      verify(mockDisplay).appendMessage(severity, msg, mockInlineLink);
+      verify(mockListener).showNotification();
+      verify(mockListener).setNotificationLabel(msgCount, severity);
    }
 
-   public void testErrorMessageCountExceedMax()
+   @Test
+   public void onMsgCount()
    {
-      String[] testMessages = { "test1", "test2", "test3", "test4", "test5", "test6", "test7" };
+      int msgCount = 200;
+      String msg = "Test message";
+      Severity severity = Severity.Info;
 
-      for (String msg : testMessages)
-      {
-         mockDisplay.appendMessage(Severity.Error, msg, null);
-         expectLastCall().once();
-      }
-      
-      for (int count = 0;count<testMessages.length;count++)
-      {
-         expect(mockDisplay.getMessageCount()).andReturn(count);
+      NotificationEvent mockEvent = mock(NotificationEvent.class);
+      InlineLink mockInlineLink = mock(InlineLink.class);
 
-         mockListener.setNotificationLabel(count, Severity.Error);
-         expectLastCall().once();
+      // when(mockDisplay.getMessageCount()).thenReturn(msgCount);
+      when(mockEvent.getSeverity()).thenReturn(severity);
+      when(mockEvent.getMessage()).thenReturn(msg);
+      when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
-         mockListener.showNotification();
-         expectLastCall().once();
-      }
-      
-      mockListener.setNotificationLabel(0, Severity.Info);
-      expectLastCall().once();
-      
-      replayAllMocks();
       notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
-      
-      for (String msg : testMessages)
+      for (int i = 0; i < msgCount; i++)
       {
-         NotificationEvent notification = new NotificationEvent(Severity.Error, msg);
-         capturedNotificationEventHandler.getValue().onNotification(notification);
+         notificationPresenter.onNotification(mockEvent);
       }
 
-      verifyAllMocks();
-   }
-
-   @Override
-   protected void setDefaultBindExpectations()
-   {
-      expectHandlerRegistrations();
-      expectPresenterSetupActions();
-      setupMockGetterReturnValues();
-   }
-
-   private void expectHandlerRegistrations()
-   {
-      expectClickHandlerRegistration(mockClear, capturedClearClickHandler);
-      expectEventHandlerRegistration(mockEventBus, NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
-   }
-
-   private void expectPresenterSetupActions()
-   {
-      mockDisplay.setMessagesToKeep(MSG_TO_KEEP);
-      mockDisplay.setMessageOrder(DisplayOrder.ASCENDING);
-   }
-
-   private void setupMockGetterReturnValues()
-   {
-      expect(mockDisplay.getClearButton()).andReturn(mockClear).anyTimes();
+      verify(mockDisplay, times(msgCount)).appendMessage(severity, msg, mockInlineLink);
    }
 }

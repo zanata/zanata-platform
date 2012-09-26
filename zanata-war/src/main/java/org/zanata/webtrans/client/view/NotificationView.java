@@ -23,18 +23,18 @@ package org.zanata.webtrans.client.view;
 import java.util.Date;
 
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.InlineLink;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -52,7 +52,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class NotificationView extends Composite implements NotificationPresenter.Display
+public class NotificationView extends Composite implements NotificationDisplay
 {
 
    private static NotificationPanelUiBinder uiBinder = GWT.create(NotificationPanelUiBinder.class);
@@ -104,6 +104,7 @@ public class NotificationView extends Composite implements NotificationPresenter
    ScrollPanel scrollPanel;
 
    private int messagesToKeep;
+   private Listener listener;
 
    private DisplayOrder displayOrder = DisplayOrder.ASCENDING;
 
@@ -113,9 +114,11 @@ public class NotificationView extends Composite implements NotificationPresenter
       initWidget(uiBinder.createAndBindUi(this));
    }
 
-   public HasClickHandlers getClearButton()
+   @UiHandler("clearLink")
+   public void onClearButtonClick(ClickEvent event)
    {
-      return clearLink;
+      listener.onClearClick();
+
    }
 
    @Override
@@ -221,5 +224,11 @@ public class NotificationView extends Composite implements NotificationPresenter
    public void setMessageOrder(DisplayOrder displayOrder)
    {
       this.displayOrder = displayOrder;
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
    }
 }

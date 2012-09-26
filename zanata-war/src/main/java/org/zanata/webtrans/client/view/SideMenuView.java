@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -50,7 +49,7 @@ public class SideMenuView extends Composite implements SideMenuDisplay
    TabLayoutPanel container;
 
    @Inject
-   public SideMenuView(final WebTransMessages messages, final EditorOptionsDisplay editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView, final NotificationPresenter.Display notificationView)
+   public SideMenuView(final WebTransMessages messages, final EditorOptionsDisplay editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersPresenter.Display workspaceUsersView, final NotificationDisplay notificationView)
    {
       initWidget(uiBinder.createAndBindUi(this));
       notificationTab.setTitle(messages.notification());
