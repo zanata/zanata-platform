@@ -1,16 +1,21 @@
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
+import java.util.List;
+
 import org.zanata.webtrans.client.resources.UiMessages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -18,8 +23,10 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Display
+public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
 {
+
+   private Listener listener;
 
    interface TMIUiBinder extends UiBinder<DialogBox, TransMemoryDetailsView>
    {
@@ -30,10 +37,7 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
    DialogBox dialogBox;
 
    @UiField
-   TextArea sourceText, targetText;
-   
-   @UiField
-   TextArea sourceComment, targetComment;
+   Label sourceComment, targetComment;
    
    @UiField
    InlineLabel projectIterationName, docName;
@@ -46,7 +50,11 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
 
    @UiField
    ListBox documentListBox;
-   
+   @UiField
+   HTMLPanel sourceTextContainer;
+   @UiField
+   HTMLPanel targetTextContainer;
+
    @Inject
    public TransMemoryDetailsView(UiMessages messages)
    {
@@ -72,52 +80,78 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
    }
 
    @Override
-   public HasText getProjectIterationName()
+   public void setListener(Listener listener)
    {
-      return projectIterationName;
-   }
-
-
-   @Override
-   public HasText getDocumentName()
-   {
-      return docName;
+      this.listener = listener;
    }
 
    @Override
-   public HasText getSourceComment()
+   public void setSourceComment(String sourceComment)
    {
-      return sourceComment;
+      this.sourceComment.setText(sourceComment);
    }
 
    @Override
-   public HasText getSourceText()
+   public void setTargetComment(String targetComment)
    {
-      return sourceText;
+      this.targetComment.setText(targetComment);
    }
 
    @Override
-   public HasText getTargetComment()
+   public void setProjectIterationName(String projectIterationName)
    {
-      return targetComment;
+      this.projectIterationName.setText(projectIterationName);
    }
 
    @Override
-   public HasText getTargetText()
+   public void setDocumentName(String documentName)
    {
-      return targetText;
+      docName.setText(documentName);
    }
 
    @Override
-   public HasChangeHandlers getDocumentListBox()
+   public void setLastModified(String lastModified)
    {
-      return documentListBox;
+      this.lastModified.setText(lastModified);
    }
 
    @Override
-   public HasClickHandlers getDismissButton()
+   public void clearSourceAndTarget()
    {
-      return dismissButton;
+      sourceTextContainer.clear();
+      targetTextContainer.clear();
+   }
+
+   @Override
+   public void setSource(List<String> sourceContents)
+   {
+      for (String sourceContent : sourceContents)
+      {
+         InlineHTML source = new InlineHTML(sourceContent);
+         sourceTextContainer.add(source);
+      }
+   }
+
+   @Override
+   public void setTarget(List<String> targetContents)
+   {
+      for (String targetContent : targetContents)
+      {
+         InlineHTML target = new InlineHTML(targetContent);
+         targetTextContainer.add(target);
+      }
+   }
+
+   @UiHandler("dismissButton")
+   public void onDismissButtonClick(ClickEvent event)
+   {
+      listener.dismissTransMemoryDetails();
+   }
+
+   @UiHandler("documentListBox")
+   public void onDocumentListBoxChange(ChangeEvent event)
+   {
+      listener.onDocumentListBoxChanged();
    }
 
    @Override
@@ -136,11 +170,5 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
    public void clearDocs()
    {
       documentListBox.clear();
-   }
-
-   @Override
-   public HasText getLastModified()
-   {
-      return lastModified;
    }
 }
