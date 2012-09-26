@@ -99,6 +99,7 @@ import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationMemoryDisplay;
 import org.zanata.webtrans.client.view.TranslationView;
 import org.zanata.webtrans.client.view.ValidationOptionsView;
+import org.zanata.webtrans.client.view.WorkspaceUsersDisplay;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -137,7 +138,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
       bindPresenter(TransFilterPresenter.class, TransFilterDisplay.class, TransFilterView.class);
-      bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
+      bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersDisplay.class, WorkspaceUsersView.class);
       bindPresenter(TransMemoryPresenter.class, TranslationMemoryDisplay.class, TransMemoryView.class);
       bindPresenter(GlossaryPresenter.class, GlossaryDisplay.class, GlossaryView.class);
       bindPresenter(GlossaryDetailsPresenter.class, GlossaryDetailsDisplay.class, GlossaryDetailsView.class);

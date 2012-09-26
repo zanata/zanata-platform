@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.client.ui.UserPanel;
@@ -9,13 +8,14 @@ import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
@@ -26,27 +26,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class WorkspaceUsersView extends Composite implements WorkspaceUsersPresenter.Display
+public class WorkspaceUsersView extends Composite implements WorkspaceUsersDisplay
 {
-
    private static WorkspaceUsersViewUiBinder uiBinder = GWT.create(WorkspaceUsersViewUiBinder.class);
-
-   interface WorkspaceUsersViewUiBinder extends UiBinder<SplitLayoutPanel, WorkspaceUsersView>
-   {
-   }
-
-   interface Styles extends CssResource
-   {
-      String systemMsg();
-
-      String userName();
-
-      String systemWarn();
-      
-      String msg();
-
-      String timeStamp();
-   }
+   private Listener listener;
 
    @UiField
    VerticalPanel userListPanel;
@@ -105,15 +88,39 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public HasClickHandlers getSendButton()
+   public void setListener(Listener listener)
    {
-      return sendButton;
+      this.listener = listener;
    }
 
    @Override
-   public HasText getInputText()
+   public String getChatInputText()
    {
-      return chatInput;
+      return chatInput.getText();
+   }
+
+   @Override
+   public void setChatInputText(String chatContent)
+   {
+      chatInput.setText(chatContent);
+   }
+
+   @UiHandler("sendButton")
+   public void onSendButtonClick(ClickEvent event)
+   {
+      listener.onSendButtonClicked();
+   }
+
+   @UiHandler("chatInput")
+   public void onChatInputFocused(FocusEvent event)
+   {
+      listener.onChatInputFocused();
+   }
+
+   @UiHandler("chatInput")
+   public void onChatInputBlur(BlurEvent event)
+   {
+      listener.onChatInputBlur();
    }
 
    @Override
@@ -155,9 +162,32 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       chatRoomScrollPanel.scrollToBottom();
    }
 
-   @Override
-   public HasAllFocusHandlers getFocusInputText()
+   interface WorkspaceUsersViewUiBinder extends UiBinder<SplitLayoutPanel, WorkspaceUsersView>
    {
-      return chatInput;
+   }
+
+   interface Styles extends CssResource
+   {
+      String systemMsg();
+
+      String userName();
+
+      String systemWarn();
+
+      String msg();
+
+      String timeStamp();
+
+      String chatInput();
+
+      String chatRoom();
+
+      String userListTable();
+
+      String mainPanel();
+
+      String chatRoomScrollPanel();
+
+      String sendButton();
    }
 }
