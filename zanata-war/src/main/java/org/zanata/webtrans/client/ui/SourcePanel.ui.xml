@@ -18,24 +18,12 @@
             table-layout: fixed;
         }
 
-        .selectedRow .CodeMirror-lines {
-            cursor: default;
-
-        }
-
-        .nonSelectedRow .CodeMirror-lines {
-            cursor: default;
-
-        }
-
     </ui:style>
 
 
 	<g:HorizontalPanel width="100%" height="100%" styleName="{style.nonSelectedRow}" ui:field="container">
 		<g:cell horizontalAlignment="ALIGN_LEFT">
             <g:HTMLPanel>
-                <!--<fui:HighlightingLabel ui:field="highlightingLabel" stylePrimaryName="TableEditorContent"/>-->
-
                 <fui:CodeMirrorReadOnlyWidget ui:field="sourceContent"  />
             </g:HTMLPanel>
 		</g:cell>

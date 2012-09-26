@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:style type="org.zanata.webtrans.client.editor.filter.TransFilterView.Styles">
+	<ui:style type="org.zanata.webtrans.client.view.TransFilterView.Styles">
 		.transFilterTextBox {
 			margin: 0px;
 			font-size: 16px;

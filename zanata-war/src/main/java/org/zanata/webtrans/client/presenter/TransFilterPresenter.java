@@ -18,19 +18,17 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.editor.filter;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+package org.zanata.webtrans.client.presenter;
 
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
-
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import org.zanata.webtrans.client.view.TransFilterDisplay;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> implements TransFilterDisplay.Listener, FindMessageHandler
 {

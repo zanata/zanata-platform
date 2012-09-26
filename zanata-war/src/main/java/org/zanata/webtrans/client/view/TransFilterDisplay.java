@@ -1,6 +1,4 @@
-package org.zanata.webtrans.client.editor.filter;
-
-import com.google.gwt.user.client.ui.HasValue;
+package org.zanata.webtrans.client.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 

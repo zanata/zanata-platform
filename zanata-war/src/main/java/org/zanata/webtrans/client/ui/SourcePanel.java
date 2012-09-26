@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.ui;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -115,6 +116,12 @@ public class SourcePanel extends Composite implements HasSelectableSource
    public void refresh()
    {
       sourceContent.refresh();
+   }
+
+   @Override
+   public void clickSelf()
+   {
+      ClickEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), this);
    }
 
    public void highlightSearch(String searchTerm)

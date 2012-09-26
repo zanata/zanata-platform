@@ -81,42 +81,5 @@ public class TransUnitTransformer
       }
       return builder.build();
    }
-   
-   public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale, int index)
-   {
-      String msgContext = null;
-      if (hTextFlow.getPotEntryData() != null)
-      {
-         msgContext = hTextFlow.getPotEntryData().getContext();
-      }
-      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
 
-      int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
-      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
-
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(hTextFlow.getId())
-            .setResId(hTextFlow.getResId())
-            .setLocaleId(hLocale.getLocaleId())
-            .setPlural(hTextFlow.isPlural())
-            .setSources(sourceContents)
-            .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
-            .setTargets(targetContents)
-            .setTargetContent(target == null ? null : CommentsUtil.toString(target.getComment()))
-            .setMsgContext(msgContext)
-            .setRowIndex(index)
-            .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
-
-      if (target != null)
-      {
-         builder.setStatus(target.getState());
-         if (target.getLastModifiedBy() != null)
-         {
-            builder.setLastModifiedBy(target.getLastModifiedBy().getName());
-         }
-         builder.setLastModifiedTime(new SimpleDateFormat().format(target.getLastChanged()));
-      }
-      return builder.build();
-   }
 }
