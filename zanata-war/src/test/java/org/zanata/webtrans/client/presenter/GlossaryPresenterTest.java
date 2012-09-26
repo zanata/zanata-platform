@@ -115,6 +115,7 @@ public class GlossaryPresenterTest
       verify(mockEventBus).addHandler(TransUnitSelectionEvent.getType(), glossaryPresenter);
       verify(mockKeyShortcutPresenter).register(isA(KeyShortcut.class));
       verify(mockDisplay).setListener(glossaryPresenter);
+      verify(mockGlossaryDetailsPresenter).onBind();
       verify(mockGlossaryDetailsPresenter).setGlossaryListener(glossaryPresenter);
 
    }

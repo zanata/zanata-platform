@@ -78,6 +78,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryDisplay> implemen
    @Override
    protected void onBind()
    {
+      glossaryDetailsPresenter.onBind();
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Glossary, messages.searchGlossary(), new KeyShortcutEventHandler()
       {
          @Override
