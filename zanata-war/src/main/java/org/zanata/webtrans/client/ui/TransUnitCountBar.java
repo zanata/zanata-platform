@@ -71,7 +71,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          @Override
          public void onMouseOut(MouseOutEvent event)
          {
-            // tooltipPanel.hide(true);
+            tooltipPanel.hide(true);
          }
       });
 

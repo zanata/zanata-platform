@@ -27,6 +27,8 @@
 			font-size: 1.1em;
 			color: #595959;
 			padding:2px;
+			overflow:hidden;
+			text-overflow:ellipsis;
 		}
 
 		.topPanel-Workspace a {
@@ -117,24 +119,27 @@
 			cursor:default;
 			opacity:1;
 		}
+		
+		.fixedLayout
+		{
+			table-layout:fixed;
+		}
+		
 	</ui:style>
 	<g:LayoutPanel stylePrimaryName="{style.rootContainer}" ui:field="rootContainer">
 		<g:layer top="0px" height="30px">
 			<g:LayoutPanel styleName="subHeader">
 				<g:layer left="25px" right="25px">
-					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE">
+					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE" styleName="{style.fixedLayout}">
 						<g:cell>
 							<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-								<nobr>
+									<nobr>
 									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.breadcrumbs_display}"/>
 								  	<g:InlineLabel ui:field="projectLink" styleName="{style.breadcrumbs-link}"/>
 									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
 									<g:InlineLabel ui:field="iterationFilesLink" styleName="{style.breadcrumbs-link}"/>
 									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
-									<em>
-										<span ui:field="selectedDocumentPathSpan" class="{style.breadcrumbs_display}"/>
-										<span ui:field="selectedDocumentSpan" class="{style.breadcrumbs_display}"/>
-									</em>
+									<g:InlineLabel ui:field="selectedDocumentSpan" styleName="{style.breadcrumbs_display}"/>
 								</nobr>
 							</g:HTMLPanel>
 						</g:cell>

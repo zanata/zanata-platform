@@ -30,7 +30,6 @@ import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -70,7 +69,7 @@ public class AppView extends Composite implements AppDisplay
    InlineLabel projectLink, iterationFilesLink, readOnlyLabel, resize, keyShortcuts;
    
    @UiField
-   SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
+   InlineLabel selectedDocumentSpan;
 
    @UiField
    LayoutPanel sideMenuContainer, rootContainer, contentContainer;
@@ -191,8 +190,7 @@ public class AppView extends Composite implements AppDisplay
    @Override
    public void setDocumentLabel(String docPath, String docName)
    {
-      selectedDocumentPathSpan.setInnerText(docPath);
-      selectedDocumentSpan.setInnerText(docName);
+      selectedDocumentSpan.setText(docPath + docName);
    }
 
    @Override
