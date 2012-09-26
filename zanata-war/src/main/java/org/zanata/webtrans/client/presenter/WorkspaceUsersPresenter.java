@@ -5,6 +5,10 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
@@ -32,7 +36,9 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersDisplay> implements WorkspaceUsersDisplay.Listener, PublishWorkspaceChatEventHandler
+public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersDisplay> implements
+      WorkspaceUsersDisplay.Listener, PublishWorkspaceChatEventHandler,
+      ExitWorkspaceEventHandler, EnterWorkspaceEventHandler
 {
    private final Identity identity;
    private final CachingDispatchAsync dispatcher;
@@ -65,8 +71,23 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersDispl
       }));
 
       registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), this));
+      registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), this));
+      registerHandler(eventBus.addHandler(EnterWorkspaceEvent.getType(), this));
 
       display.appendChat(null, null, messages.thisIsAPublicChannel(), MESSAGE_TYPE.SYSTEM_WARNING);
+   }
+
+   @Override
+   public void onEnterWorkspace(EnterWorkspaceEvent event)
+   {
+      addTranslator(event.getEditorClientId(), event.getPerson(), null);
+      dispatchChatAction(null, messages.hasJoinedWorkspace(event.getPerson().getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
+   }
+
+   @Override
+   public void onExitWorkspace(ExitWorkspaceEvent event)
+   {
+      removeTranslator(event.getEditorClientId(), event.getPerson());
    }
 
    @Override

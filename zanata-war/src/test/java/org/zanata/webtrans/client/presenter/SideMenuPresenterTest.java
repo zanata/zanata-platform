@@ -70,7 +70,7 @@ public class SideMenuPresenterTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new SideMenuPresenter(display, eventBus, dispatcher, editorOptionsPresenter, validationOptionsPresenter, workspaceUsersPresenter, notificationPresenter, userWorkspaceContext, messages);
+      presenter = new SideMenuPresenter(display, eventBus, dispatcher, editorOptionsPresenter, validationOptionsPresenter, workspaceUsersPresenter, notificationPresenter, userWorkspaceContext);
       verify(display).setListener(presenter);
    }
 
@@ -85,8 +85,6 @@ public class SideMenuPresenterTest
       verify(notificationPresenter).bind();
       verify(notificationPresenter).setNotificationListener(presenter);
 
-      verify(eventBus).addHandler(EnterWorkspaceEvent.getType(), presenter);
-      verify(eventBus).addHandler(ExitWorkspaceEvent.getType(), presenter);
       verify(eventBus).addHandler(PublishWorkspaceChatEvent.getType(), presenter);
 
       // Given: on workspace context update event: project active is true but userWorkspaceContext has read only access
@@ -122,46 +120,6 @@ public class SideMenuPresenterTest
       callback.onSuccess(result);
       verify(result).getTranslatorList();
       verify(workspaceUsersPresenter).initUserList(result.getTranslatorList());
-   }
-
-   @Test
-   public void onEnterWorkspaceEvent()
-   {
-      EnterWorkspaceEvent event = mock(EnterWorkspaceEvent.class);
-      EditorClientId editorClientId = editorClientId();
-      Person person = person();
-      when(event.getEditorClientId()).thenReturn(editorClientId);
-      when(event.getPerson()).thenReturn(person);
-      when(messages.hasJoinedWorkspace(person.getId().toString())).thenReturn("someone entered");
-
-      presenter.onEnterWorkspace(event);
-
-      verify(workspaceUsersPresenter).addTranslator(editorClientId, person, null);
-      verify(workspaceUsersPresenter).dispatchChatAction(null, "someone entered", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
-   }
-
-   private static Person person()
-   {
-      return new Person(new PersonId("pid"), "someone", "url");
-   }
-
-   private static EditorClientId editorClientId()
-   {
-      return new EditorClientId("session", 1);
-   }
-
-   @Test
-   public void onExitWorkspaceEvent()
-   {
-      ExitWorkspaceEvent event = mock(ExitWorkspaceEvent.class);
-      EditorClientId editorClientId = editorClientId();
-      Person person = person();
-      when(event.getEditorClientId()).thenReturn(editorClientId);
-      when(event.getPerson()).thenReturn(person);
-
-      presenter.onExitWorkspace(event);
-
-      verify(workspaceUsersPresenter).removeTranslator(editorClientId, person);
    }
 
    @Test
