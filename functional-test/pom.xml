@@ -243,6 +243,24 @@
                         </executions>
                     </plugin>
 
+                    <!--We don't want cobertura here-->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                        <configuration>
+                            <instrumentation>
+                                <excludes>
+                                    <exclude>/**/*</exclude>
+                                </excludes>
+                            </instrumentation>
+                            <check>
+                                <totalBranchRate>0</totalBranchRate>
+                                <totalLineRate>0</totalLineRate>
+                                <haltOnFailure>false</haltOnFailure>
+                            </check>
+                        </configuration>
+                    </plugin>
+
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>2.11</version>
