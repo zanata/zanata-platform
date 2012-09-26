@@ -258,17 +258,4 @@ public class ZanataIdentity extends Identity
       }
       return result;
    }
-
-   /*
-    * Return trimmed username with length = 30
-    */
-   public String getTrimUsername()
-   {
-      String username = getCredentials().getUsername();
-      if (username != null && username.length() > 30)
-      {
-         return username.substring(0, 27) + "...";
-      }
-      return username;
-   }
 }

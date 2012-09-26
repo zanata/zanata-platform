@@ -1,6 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.logging.Level;
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -10,10 +12,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
-
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -39,7 +37,7 @@ public class RemoteLoggingHandler extends AbstractActionHandler<RemoteLoggingAct
          log.warn("can not authenticate user.");
       }
 
-      log.error("[gwt-log] from user: {} on workspace: {}", identity.getTrimUsername(), action.getWorkspaceId());
+      log.error("[gwt-log] from user: {} on workspace: {}", identity.getCredentials().getUsername(), action.getWorkspaceId());
       log.error("[gwt-log] {}", action.getMessage());
 
       return new NoOpResult();

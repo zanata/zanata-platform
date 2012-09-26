@@ -108,8 +108,16 @@
 }
 
 #userCol {
-	width: auto;
 	white-space:nowrap;
+}
+
+#userCol span.username
+{
+	text-overflow:ellipsis;
+	overflow:hidden;
+	min-width:0;
+	max-width:90px;
+	display:inline-block;
 }
 
 #userCol img.avatar {

@@ -81,7 +81,7 @@
 			<s:fragment rendered="#{identity.loggedIn}">
 				<a href="#"> 
 					<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar" /> 
-					<span><h:outputText value="#{identity.trimUsername} " /></span>
+					<span class="username"><h:outputText value="#{identity.credentials.username} " /></span>
 					<span class="icon-down-open downArrow"/>
 				</a>
 				<div class="submenu">
