@@ -20,11 +20,19 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.resources.WebTransMessages;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -32,66 +40,50 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class TooltipPopupPanel extends PopupPanel
 {
-   private final Grid table;
 
-   public TooltipPopupPanel(boolean autoHide)
+   interface TooltipPopupPanelUiBinder extends UiBinder<HTMLPanel, TooltipPopupPanel>
    {
-      super(autoHide);
-      this.setStyleName("transUnitCountTooltip");
-
-      table = new Grid(3, 5);
-      table.setStyleName("transUnitCountTooltipTable");
-      setTopAndSideHeader();
-      setStyle();
-
-      this.setWidget(table);
    }
+
+   private static TooltipPopupPanelUiBinder uiBinder = GWT.create(TooltipPopupPanelUiBinder.class);
+
+   interface Styles extends CssResource
+   {
+      String transUnitCountTooltip();
+   }
+
+   @UiField
+   Styles style;
+
+   @UiField
+   InlineLabel wordApproved, wordNeedReview, wordUntranslated, wordTotal;
+
+   @UiField
+   InlineLabel msgApproved, msgNeedReview, msgUntranslated, msgTotal;
+
+   @Inject
+   public TooltipPopupPanel(final WebTransMessages messages)
+   {
+      super(true);
+      HTMLPanel container = uiBinder.createAndBindUi(this);
+      setStyleName(style.transUnitCountTooltip());
+      setWidget(container);
+   }
+
 
    public void refreshData(TransUnitCountBar stats)
    {
-      table.setText(1, 1, String.valueOf(stats.getWordsApproved()));
-      table.setText(1, 2, String.valueOf(stats.getWordsNeedReview()));
-      table.setText(1, 3, String.valueOf(stats.getWordsUntranslated()));
-      table.setText(1, 4, String.valueOf(stats.getWordsTotal()));
+      wordApproved.setText(String.valueOf(stats.getWordsApproved()));
+      wordNeedReview.setText(String.valueOf(stats.getWordsNeedReview()));
+      wordUntranslated.setText(String.valueOf(stats.getWordsUntranslated()));
+      wordTotal.setText(String.valueOf(stats.getWordsTotal()));
 
-      table.setText(2, 1, String.valueOf(stats.getUnitApproved()));
-      table.setText(2, 2, String.valueOf(stats.getUnitNeedReview()));
-      table.setText(2, 3, String.valueOf(stats.getUnitUntranslated()));
-      table.setText(2, 4, String.valueOf(stats.getUnitTotal()));
+      msgApproved.setText(String.valueOf(stats.getUnitApproved()));
+      msgNeedReview.setText(String.valueOf(stats.getUnitNeedReview()));
+      msgUntranslated.setText(String.valueOf(stats.getUnitUntranslated()));
+      msgTotal.setText(String.valueOf(stats.getUnitTotal()));
    }
 
-   private void setTopAndSideHeader()
-   {
-      table.setText(0, 0, "");
-      table.setText(0, 1, "Translated");
-      table.setText(0, 2, "Need Review");
-      table.setText(0, 3, "Untranslated");
-      table.setText(0, 4, "Total");
-
-      table.setText(1, 0, "Words");
-      table.setText(2, 0, "Msg");
-   }
-
-   private void setStyle()
-   {
-      table.getCellFormatter().setStyleName(0, 1, "approved-header");
-      table.getCellFormatter().setStyleName(0, 2, "needReview-header");
-      table.getCellFormatter().setStyleName(0, 3, "untranslated-header");
-      table.getCellFormatter().setStyleName(0, 4, "topHeader");
-
-      table.getCellFormatter().setStyleName(0, 0, "sideHeader");
-      table.getCellFormatter().setStyleName(1, 0, "sideHeader");
-      table.getCellFormatter().setStyleName(2, 0, "sideHeader");
-
-      table.getCellFormatter().setStyleName(1, 1, "approved");
-      table.getCellFormatter().setStyleName(2, 1, "approved");
-
-      table.getCellFormatter().setStyleName(1, 2, "needReview");
-      table.getCellFormatter().setStyleName(2, 2, "needReview");
-
-      table.getCellFormatter().setStyleName(1, 3, "untranslated");
-      table.getCellFormatter().setStyleName(2, 3, "untranslated");
-   }
 
    public final void showRelativeTo(final Element target)
    {
@@ -105,11 +97,10 @@ public class TooltipPopupPanel extends PopupPanel
       });
    }
    
+   // Calculate left position for the popup. The computation for
+   // the left position is bidi-sensitive.
    private void position(final Element relativeObject, int offsetWidth, int offsetHeight)
    {
-      // Calculate left position for the popup. The computation for
-      // the left position is bidi-sensitive.
-
       int textBoxOffsetWidth = relativeObject.getOffsetWidth();
 
       // Compute the difference between the popup's width and the

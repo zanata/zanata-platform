@@ -39,6 +39,7 @@
 			width: 140px;
 			height: 1.2em;
 			color: #595959;
+			cursor:default;
 		}
 		
 		.divider {

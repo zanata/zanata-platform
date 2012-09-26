@@ -155,7 +155,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       });
 
       display.addStatsOption(messages.byWords(), STATS_OPTION_WORDS);
-      display.addStatsOption(messages.byMessages(), STATS_OPTION_MESSAGE);
+      display.addStatsOption(messages.byMessage(), STATS_OPTION_MESSAGE);
       setStatsFilter(STATS_OPTION_WORDS);
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));

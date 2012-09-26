@@ -97,7 +97,7 @@ public class DocumentListPresenterTest
    {
       when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
       when(mockMessages.byWords()).thenReturn(TEST_BY_WORDS_MESSAGE);
-      when(mockMessages.byMessages()).thenReturn(TEST_BY_MESSAGE_MESSAGE);
+      when(mockMessages.byMessage()).thenReturn(TEST_BY_MESSAGE_MESSAGE);
 
       documentListPresenter.onBind();
 

@@ -458,7 +458,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("By Words")
    String byWords();
 
-   @DefaultMessage("By Messages")
-   String byMessages();
+   @DefaultMessage("By Message")
+   String byMessage();
 
 }

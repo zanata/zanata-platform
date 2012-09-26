@@ -105,7 +105,7 @@ public class AppView extends Composite implements AppDisplay
 
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(messages, true);
+      translationStatsBar = new TransUnitCountBar(messages);
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
       initWidget(uiBinder.createAndBindUi(this));

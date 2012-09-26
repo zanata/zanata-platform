@@ -5,12 +5,17 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
@@ -21,18 +26,18 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransUnitCountBar extends Composite implements HasTranslationStats
+public class TransUnitCountBar extends Composite implements HasTranslationStats, HasMouseOverHandlers, HasMouseOutHandlers, HasClickHandlers
 {
 
    private static TransUnitCountBarUiBinder uiBinder = GWT.create(TransUnitCountBarUiBinder.class);
 
-   final TooltipPopupPanel tooltipPanel = new TooltipPopupPanel(true);
+   protected final TooltipPopupPanel tooltipPanel;
 
    interface TransUnitCountBarUiBinder extends UiBinder<Widget, TransUnitCountBar>
    {
    }
 
-   LabelFormat labelFormat = LabelFormat.DEFAULT_FORMAT;
+   LabelFormat labelFormat = LabelFormat.PERCENT_COMPLETE_HRS;
 
    @UiField
    LayoutPanel layoutPanel;
@@ -49,50 +54,60 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    private int totalWidth = 100;
 
-   private boolean isGraph = false;
+   private boolean animate = false;
 
-   private boolean statsByWords = false;
+   private boolean statsByWords = true;
 
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages, boolean statsByWords)
+   public TransUnitCountBar(WebTransMessages messages)
    {
       this.messages = messages;
-      this.statsByWords = statsByWords;
+      tooltipPanel = new TooltipPopupPanel(messages);
       initWidget(uiBinder.createAndBindUi(this));
-      initLayoutPanelHandler();
-   }
 
-   private void initLayoutPanelHandler()
-   {
-      layoutPanel.addHandler(new MouseOverHandler()
+      this.addMouseOutHandler(new MouseOutHandler()
       {
+         @Override
+         public void onMouseOut(MouseOutEvent event)
+         {
+            // tooltipPanel.hide(true);
+         }
+      });
+
+      this.addMouseOverHandler(new MouseOverHandler()
+      {
+
          @Override
          public void onMouseOver(MouseOverEvent event)
          {
             tooltipPanel.showRelativeTo(layoutPanel);
          }
-      }, MouseOverEvent.getType());
-
-      layoutPanel.addHandler(new MouseOutHandler()
+      });
+      
+      this.addClickHandler(new ClickHandler()
       {
          @Override
-         public void onMouseOut(MouseOutEvent event)
+         public void onClick(ClickEvent event)
          {
-            tooltipPanel.hide(true);
+            toogleStatOption();
          }
-      }, MouseOutEvent.getType());
+      });
 
-      layoutPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+      sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
    }
 
-   public TransUnitCountBar(WebTransMessages messages, boolean isGraph, boolean statsByWords)
+   private void toogleStatOption()
    {
-      this.isGraph = isGraph;
-      this.messages = messages;
-      this.statsByWords = statsByWords;
+      statsByWords = !statsByWords;
+      refresh();
+   }
 
-      labelFormat = LabelFormat.PERCENT_COMPLETE;
+   public TransUnitCountBar(WebTransMessages messages, boolean animate)
+   {
+      this.animate = animate;
+      this.messages = messages;
+      tooltipPanel = new TooltipPopupPanel(messages);
    }
 
    private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
@@ -139,7 +154,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
          setLabelText();
       }
 
-      int duration = isGraph ? 0 : 1000;
+      int duration = animate ? 1000 : 0;
       refreshDisplay(duration);
    }
 
@@ -148,7 +163,14 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       switch (labelFormat)
       {
       case PERCENT_COMPLETE_HRS:
-         label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingWordsHours()));
+         if (statsByWords)
+         {
+            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingWordsHours()));
+         }
+         else
+         {
+            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingMsgHours()));
+         }
          break;
       case PERCENT_COMPLETE:
          label.setText(messages.statusBarLabelPercentage(stats.getApprovedPercent(statsByWords)));
@@ -220,20 +242,29 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       refresh();
    }
 
-   public void onMouseOver(Element target)
-   {
-      tooltipPanel.showRelativeTo(target);
-   }
-
-   public void onMouseOut()
-   {
-      tooltipPanel.hide(true);
-   }
-
    @Override
    public int getOffsetWidth()
    {
       int offsetWidth = super.getOffsetWidth();
       return offsetWidth == 0 ? 115 : offsetWidth;
    }
+
+   @Override
+   public HandlerRegistration addMouseOutHandler(MouseOutHandler handler)
+   {
+      return addDomHandler(handler, MouseOutEvent.getType());
+   }
+
+   @Override
+   public HandlerRegistration addMouseOverHandler(MouseOverHandler handler)
+   {
+      return addDomHandler(handler, MouseOverEvent.getType());
+   }
+
+   @Override
+   public HandlerRegistration addClickHandler(ClickHandler handler)
+   {
+      return addDomHandler(handler, ClickEvent.getType());
+   }
+
 }
