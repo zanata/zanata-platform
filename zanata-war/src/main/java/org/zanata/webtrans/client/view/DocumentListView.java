@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.DocumentListPresenter;
-import org.zanata.webtrans.client.presenter.HasDocumentListListener;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
@@ -51,11 +49,11 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListView extends Composite implements DocumentListPresenter.Display, HasSelectionHandlers<DocumentInfo>
+public class DocumentListView extends Composite implements DocumentListDisplay, HasSelectionHandlers<DocumentInfo>
 {
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
 
-   private HasDocumentListListener listener;
+   private DocumentListDisplay.Listener listener;
 
    @UiField
    FlowPanel documentListContainer;
@@ -192,12 +190,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    }
 
    @Override
-   public void setListener(HasDocumentListListener documentListPresenter)
-   {
-      this.listener = documentListPresenter;
-   }
-
-   @Override
    public void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText)
    {
       caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);
@@ -209,5 +201,11 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public HasSelectionHandlers<DocumentInfo> getDocumentList()
    {
       return this;
+   }
+
+   @Override
+   public void setListener(Listener documentListPresenter)
+   {
+      this.listener = documentListPresenter;
    }
 }

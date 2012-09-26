@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -57,7 +58,7 @@ public class DocumentListPresenterTest
    @Mock
    private ListDataProvider mockDataProvider;
    @Mock
-   private DocumentListPresenter.Display mockDisplay;
+   private DocumentListDisplay mockDisplay;
    @Mock
    private EventBus mockEventBus;
    @Mock

@@ -22,9 +22,9 @@ import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.presenter.TransMemoryPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.view.TranslationMemoryDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -51,7 +51,7 @@ public class TransMemoryPresenterTest
 
    // injected mocks
    @Mock
-   private Display mockDisplay;
+   private TranslationMemoryDisplay mockDisplay;
    @Mock
    private EventBus mockEventBus;
    @Mock

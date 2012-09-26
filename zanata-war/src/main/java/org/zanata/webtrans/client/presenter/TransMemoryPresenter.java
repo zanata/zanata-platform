@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
@@ -19,6 +18,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.view.TranslationMemoryDisplay;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -30,31 +30,10 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> implements TranslationMemoryListener, TransUnitSelectionHandler, TransMemoryShorcutCopyHandler
+public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDisplay> implements TranslationMemoryDisplay.Listener, TransUnitSelectionHandler, TransMemoryShorcutCopyHandler
 {
-   public interface Display extends WidgetDisplay
-   {
-      HasValue<SearchType> getSearchType();
-
-      HasText getTmTextBox();
-
-      void startProcessing();
-
-      void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries);
-
-      void setListener(TranslationMemoryListener listener);
-
-      void stopProcessing(boolean showResult);
-
-      void clearTableContent();
-
-      void showDiffLegend(boolean show);
-   }
-
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
 
@@ -71,7 +50,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private ArrayList<TransMemoryResultItem> currentResult;
 
    @Inject
-   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter)
+   public TransMemoryPresenter(TranslationMemoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;

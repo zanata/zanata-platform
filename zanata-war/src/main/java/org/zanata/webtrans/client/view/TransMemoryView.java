@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.presenter.TranslationMemoryListener;
-import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
@@ -41,7 +39,7 @@ import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransMemoryView extends Composite implements TransMemoryPresenter.Display
+public class TransMemoryView extends Composite implements TranslationMemoryDisplay
 {
 
    private static TransMemoryViewUiBinder uiBinder = GWT.create(TransMemoryViewUiBinder.class);
@@ -86,7 +84,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    private final InlineLabel diffLegendInfo;
 
-   private TranslationMemoryListener listener;
+   private TranslationMemoryDisplay.Listener listener;
 
    private final static int SOURCE_COL = 0;
    private final static int TARGET_COL = 1;
@@ -342,12 +340,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       listener.onFocus(false);
    }
 
-   @Override
-   public void setListener(TranslationMemoryListener listener)
-   {
-      this.listener = listener;
-   }
-
    @UiHandler("clearButton")
    public void onClearButtonClick(ClickEvent event)
    {
@@ -366,5 +358,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          diffLegendPanel.hide(true);
       }
 
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
    }
 }

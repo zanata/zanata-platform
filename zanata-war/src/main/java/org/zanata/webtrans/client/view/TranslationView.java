@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.GlossaryPresenter;
-import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
@@ -67,7 +65,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    private final static int ANIMATE_DURATION = 200;
 
    @Inject
-   public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, TransMemoryPresenter.Display transMemoryView, GlossaryPresenter.Display glossaryView)
+   public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, TranslationMemoryDisplay transMemoryView, GlossaryDisplay glossaryView)
    {
 
       StyleInjector.inject(resources.style().getText(), true);

@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
@@ -96,7 +95,7 @@ public class AppView extends Composite implements AppDisplay
    private final static String STYLE_MINIMIZE = "icon-resize-small-2";
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity)
    {
       this.resources = resources;
       this.messages = messages;

@@ -10,6 +10,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -91,7 +92,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
    private final UserWorkspaceContext userWorkspaceContext;
 
-   private GlossaryPresenterListener glossaryListener;
+   private GlossaryDisplay.Listener glossaryListener;
 
    @Inject
    public GlossaryDetailsPresenter(final Display display, final EventBus eventBus, final UiMessages messages, final CachingDispatchAsync dispatcher, final UserWorkspaceContext userWorkspaceContext)
@@ -240,7 +241,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
    {
    }
 
-   public void setGlossaryListener(GlossaryPresenterListener glossaryListener)
+   public void setGlossaryListener(GlossaryDisplay.Listener glossaryListener)
    {
       this.glossaryListener = glossaryListener;
    }

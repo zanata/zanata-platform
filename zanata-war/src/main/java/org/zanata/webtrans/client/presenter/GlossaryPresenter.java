@@ -20,10 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.LocaleId;
@@ -37,6 +34,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -47,8 +45,6 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
 /**
@@ -56,7 +52,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display> implements GlossaryPresenterListener, TransUnitSelectionHandler
+public class GlossaryPresenter extends WidgetPresenter<GlossaryDisplay> implements GlossaryDisplay.Listener, TransUnitSelectionHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
@@ -68,25 +64,8 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
    private boolean isFocused;
 
-   public interface Display extends WidgetDisplay
-   {
-      HasText getGlossaryTextBox();
-
-      HasValue<SearchType> getSearchType();
-
-      void startProcessing();
-
-      void renderTable(ArrayList<GlossaryResultItem> glossaries);
-
-      void setListener(GlossaryPresenterListener listener);
-
-      void stopProcessing(boolean showResult);
-
-      void clearTableContent();
-   }
-
    @Inject
-   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, GlossaryDetailsPresenter glossaryDetailsPresenter, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter)
+   public GlossaryPresenter(GlossaryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, GlossaryDetailsPresenter glossaryDetailsPresenter, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;

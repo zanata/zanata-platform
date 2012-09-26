@@ -41,9 +41,9 @@ import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.presenter.GlossaryPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
@@ -73,7 +73,7 @@ public class GlossaryPresenterTest
    private GlossaryPresenter glossaryPresenter;
 
    @Mock
-   private Display mockDisplay;
+   private GlossaryDisplay mockDisplay;
    @Mock
    private EventBus mockEventBus;
    @Mock

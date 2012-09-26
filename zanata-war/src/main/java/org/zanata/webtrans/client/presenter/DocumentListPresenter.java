@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TransUnitCount;
@@ -42,46 +41,21 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
+import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasStatsFilter, HasDocumentListListener, DocumentSelectionHandler, TransUnitUpdatedEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, TransUnitUpdatedEventHandler
 {
-
-   public interface Display extends WidgetDisplay
-   {
-      void setPageSize(int pageSize);
-
-      HasSelectionHandlers<DocumentInfo> getDocumentList();
-
-      HasData<DocumentNode> getDocumentListTable();
-
-      ListDataProvider<DocumentNode> getDataProvider();
-
-      void renderTable(SingleSelectionModel<DocumentNode> selectionModel);
-
-      String getSelectedStatsOption();
-
-      void addStatsOption(String item, String value);
-
-      void setStatsFilter(String option);
-
-      void setListener(HasDocumentListListener documentListPresenter);
-
-      void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText);
-   }
-
    private static final int PAGE_SIZE = 20;
 
    private final UserWorkspaceContext userworkspaceContext;
@@ -125,7 +99,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    };
 
    @Inject
-   public DocumentListPresenter(final Display display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history)
+   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history)
    {
       super(display, eventBus);
       this.userworkspaceContext = userworkspaceContext;

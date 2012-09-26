@@ -2,8 +2,6 @@ package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.client.presenter.GlossaryPresenter;
-import org.zanata.webtrans.client.presenter.GlossaryPresenterListener;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
@@ -36,7 +34,7 @@ import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class GlossaryView extends Composite implements GlossaryPresenter.Display
+public class GlossaryView extends Composite implements GlossaryDisplay
 {
    private static GlossaryViewUiBinder uiBinder = GWT.create(GlossaryViewUiBinder.class);
 
@@ -79,7 +77,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    private final Label loadingLabel, noResultFoundLabel;
 
-   private GlossaryPresenterListener listener;
+   private GlossaryDisplay.Listener listener;
 
    private final static int SOURCE_COL = 0;
    private final static int TARGET_COL = 1;
@@ -245,9 +243,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    }
 
    @Override
-   public void setListener(GlossaryPresenterListener listener)
+   public void setListener(Listener listener)
    {
       this.listener = listener;
-
    }
 }
