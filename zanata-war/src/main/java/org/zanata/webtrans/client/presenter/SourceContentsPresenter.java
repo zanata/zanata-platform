@@ -48,12 +48,14 @@ import com.google.inject.Inject;
  */
 public class SourceContentsPresenter implements ClickHandler
 {
-   private HasSelectableSource selectedSource;
-
    private final EventBus eventBus;
+
    private Provider<SourceContentsDisplay> displayProvider;
    private List<SourceContentsDisplay> displayList = Collections.emptyList();
+
+   // states
    private TransUnitId currentTransUnitId;
+   private HasSelectableSource selectedSource;
 
    @Inject
    public SourceContentsPresenter(final EventBus eventBus, Provider<SourceContentsDisplay> displayProvider)
@@ -72,25 +74,8 @@ public class SourceContentsPresenter implements ClickHandler
       Log.debug("source content selected id:" + id);
 
       SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(id));
-      // after save as fuzzy re-render(will call
-      // SourceContentsView.setValue(TransUnit) which cause re-creation of
-      // SourcePanel list), we want to re-select the radio button
-      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
-      for (HasSelectableSource sourcePanel : sourcePanelList)
-      {
-         if (selectedSource != null && selectedSource.getSource().equals(sourcePanel.getSource()))
-         {
-            fireClickEventToSelectSource(sourcePanel);
-            return;
-         }
-      }
-      //else by default it will select the first one
-      fireClickEventToSelectSource(sourceContentsView.getSourcePanelList().get(0));
-   }
-
-   private static void fireClickEventToSelectSource(HasSelectableSource sourcePanel)
-   {
-      ClickEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), sourcePanel);
+      // by default select the first one
+      sourceContentsView.getSourcePanelList().get(0).clickSelf();
    }
 
    public String getSelectedSource()

@@ -9,4 +9,6 @@ public interface HasSelectableSource extends HasClickHandlers
    void setSelected(boolean selected);
 
    void refresh();
+
+   void clickSelf();
 }
