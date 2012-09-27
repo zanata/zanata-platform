@@ -69,20 +69,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>#{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}</td>
-                            <td id="projectMismatchCell">
-                            </td>
-                            <td>
-                                <h:selectOneRadio id="projectMismatchAction"
-                                                  value="#{copyTransAction.projectMismatchAction}"
-                                                  onchange="actionSelected(this, 'projectMismatchCell');">
-                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
-                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
-                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
-                                </h:selectOneRadio>
-                            </td>
-                        </tr>
-                        <tr>
                             <td>#{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}</td>
                             <td id="contextMismatchCell">
                             </td>
@@ -90,6 +76,20 @@
                                 <h:selectOneRadio id="contextMismatchAction"
                                                   value="#{copyTransAction.contextMismatchAction}"
                                                   onchange="actionSelected(this, 'contextMismatchCell');">
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
+                                </h:selectOneRadio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}</td>
+                            <td id="projectMismatchCell">
+                            </td>
+                            <td>
+                                <h:selectOneRadio id="projectMismatchAction"
+                                                  value="#{copyTransAction.projectMismatchAction}"
+                                                  onchange="actionSelected(this, 'projectMismatchCell');">
                                     <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
                                     <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
                                     <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>

@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<dataset>
+    <!-- Original Project -->
+    <HProject projecttype="iteration"
+              id="100"
+              versionNum="1"
+              creationDate="2009-09-01 20:30:16"
+              lastChanged="2009-09-01 20:30:16"
+              slug="same-project"
+              description="Original Project from which translations will be copied"
+              homeContent=""
+              name="Original Project"
+              overrideLocales="FALSE"
+              status="A"
+            />
+    <HProjectIteration id="100"
+                       versionNum="1"
+                       creationDate="2009-09-01 20:30:46"
+                       lastChanged="2009-09-01 20:30:46"
+                       slug="same-version"
+                       parentId="[NULL]"
+                       project_id="100"
+                       overrideLocales="FALSE"
+                       status="A"
+            />
+    <HDocument
+            id="100"
+            versionNum="1"
+            creationDate="2009-09-01 20:30:16"
+            lastChanged="2009-09-01 20:30:16"
+            contentType="text/plain"
+            docId="/same/document"
+            locale="4"
+            name="document"
+            path="/same"
+            project_iteration_id="100"
+            revision="1"
+            obsolete="0"
+            />
+    <HTextFlow
+            id="100"
+            document_id="100"
+            resId="same-context"
+            revision="1"
+            pos="0"
+            obsolete="0"
+            plural="false"
+            wordCount="2"
+            contentHash="e0a15a5bbf6075a9ef58b8978b7b8634"
+            />
+    <!-- 'Content Hash' and 'content' match, make sure to keep it that way -->
+    <HTextFlowContent
+            pos="0"
+            content="Source Content"
+            text_flow_id="100"
+            />
+    <!-- de Target -->
+    <HTextFlowTarget
+            id="100"
+            versionNum="1"
+            creationDate="2009-09-01 20:30:16"
+            lastChanged="2009-09-01 20:30:16"
+            locale="3"
+            state="2"
+            tf_id="100"
+            tf_revision="1"
+            />
+    <HTextFlowTargetContent
+            pos="0"
+            content="target-content-de"
+            text_flow_target_id="100"
+            />
+    <!-- es Target -->
+    <HTextFlowTarget
+            id="101"
+            versionNum="1"
+            creationDate="2009-09-01 20:30:16"
+            lastChanged="2009-09-01 20:30:16"
+            locale="5"
+            state="2"
+            tf_id="100"
+            tf_revision="1"
+            />
+    <HTextFlowTargetContent
+            pos="0"
+            content="target-content-es"
+            text_flow_target_id="101"
+            />
+    <HProjectIteration id="101"
+                       versionNum="1"
+                       creationDate="2009-09-01 20:30:46"
+                       lastChanged="2009-09-01 20:30:46"
+                       slug="different-version"
+                       parentId="[NULL]"
+                       project_id="100"
+                       overrideLocales="TRUE"
+                       status="A"
+            />
+    <HProjectIteration_Locale projectIterationId="101"
+                              localeId="3"
+            />
+
+
+    <!-- Different Empty Project -->
+    <HProject projecttype="iteration"
+              id="1000"
+              versionNum="1"
+              creationDate="2009-09-01 20:30:16"
+              lastChanged="2009-09-01 20:30:16"
+              slug="different-project"
+              description="New Project for translations to be copied"
+              homeContent=""
+              name="Different Project"
+              overrideLocales="FALSE"
+              status="A"
+            />
+    <HProjectIteration id="1000"
+                       versionNum="1"
+                       creationDate="2009-09-01 20:30:46"
+                       lastChanged="2009-09-01 20:30:46"
+                       slug="different-version"
+                       parentId="[NULL]"
+                       project_id="1000"
+                       overrideLocales="TRUE"
+                       status="A"
+            />
+    <HProjectIteration_Locale projectIterationId="1000"
+                              localeId="3"
+            />
+
+</dataset>

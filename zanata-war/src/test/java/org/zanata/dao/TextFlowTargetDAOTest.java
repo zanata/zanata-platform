@@ -67,7 +67,7 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
       HDocument doc = (HDocument) getSession().get(HDocument.class, 1L);
       HLocale hLocale = (HLocale) getSession().get(HLocale.class, 1L);
       
-      ScrollableResults results = this.textFlowTargetDAO.findLatestEquivalentTranslations(doc, hLocale);
+      ScrollableResults results = this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, false, false, false);
       
       int rows = 0;
       
