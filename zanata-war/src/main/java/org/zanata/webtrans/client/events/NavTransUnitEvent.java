@@ -50,4 +50,22 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
    {
       return rowType;
    }
+
+   @Override
+   public boolean equals(Object o)
+   {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      NavTransUnitEvent that = (NavTransUnitEvent) o;
+
+      return rowType == that.rowType;
+
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return rowType.hashCode();
+   }
 }
