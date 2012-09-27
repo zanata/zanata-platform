@@ -18,19 +18,28 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.adapter;
+package org.zanata.exception;
 
-import net.sf.okapi.filters.plaintext.PlainTextFilter;
+import lombok.Getter;
 
 /**
- * 
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class PlainTextAdapter extends GenericOkapiFilterAdapter
+public class HashMismatchException extends ZanataException
 {
-   public PlainTextAdapter()
+   private static final long serialVersionUID = 1L;
+
+   @Getter
+   private String expectedHash;
+   @Getter
+   private String generatedHash;
+
+   public HashMismatchException(String message, String expectedHash, String generatedHash)
    {
-      super(new PlainTextFilter(), IdSource.textUnitId);
+      super(message);
+      this.expectedHash = expectedHash;
+      this.generatedHash = generatedHash;
    }
+
 }
