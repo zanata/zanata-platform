@@ -227,7 +227,7 @@ public class FileService implements FileResource
       {
          HDocumentUpload upload;
          try {
-            upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, fileType);
+            upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, fileType, null);
          }
          catch (IOException e)
          {
@@ -392,7 +392,7 @@ public class FileService implements FileResource
       return upload;
    }
 
-   private HDocumentUpload saveFirstUploadPart(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, String fileType) throws IOException
+   private HDocumentUpload saveFirstUploadPart(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, String fileType, HLocale locale) throws IOException
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       HDocumentUpload newUpload = new HDocumentUpload();
@@ -400,6 +400,7 @@ public class FileService implements FileResource
       newUpload.setDocId(docId);
       newUpload.setType(DocumentType.typeFor(fileType));
       // locale intentionally left null for source
+      newUpload.setLocale(locale);
       newUpload.setContentHash(uploadForm.getHash());
       saveUploadPart(uploadForm, newUpload);
       return newUpload;
@@ -558,7 +559,7 @@ public class FileService implements FileResource
    @Consumes( MediaType.MULTIPART_FORM_DATA)
    public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
                                           @PathParam("iterationSlug") String iterationSlug,
-                                          @PathParam("locale") String locale,
+                                          @PathParam("locale") String localeId,
                                           @QueryParam("docId") String docId,
                                           @QueryParam("merge") String merge,
                                           @MultipartForm DocumentFileUploadForm uploadForm )
@@ -569,18 +570,18 @@ public class FileService implements FileResource
          return errorResponse;
       }
 
-      HLocale localeId = localeDAO.findByLocaleId(new LocaleId(locale));
+      HLocale locale = localeDAO.findByLocaleId(new LocaleId(localeId));
       if (localeId == null)
       {
          return Response.status(Status.NOT_FOUND)
-               .entity("The specified locale \"" + locale + "\" does not exist on this server.\n")
+               .entity("The specified locale \"" + localeId + "\" does not exist on this server.\n")
                .build();
       }
 
-      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, localeId))
+      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale))
       {
          return Response.status(Status.FORBIDDEN)
-               .entity("You do not have permission to upload translations for locale \"" + locale
+               .entity("You do not have permission to upload translations for locale \"" + localeId
                      + "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\".\n")
                .build();
       }
@@ -602,11 +603,83 @@ public class FileService implements FileResource
                .build();
       }
 
-      // TODO check and handle multiple part uploads
+      InputStream fileContents;
+      if (uploadForm.getFirst() && uploadForm.getLast())
+      {
+         // TODO wrap in hash digester and check hash
+         fileContents = uploadForm.getFileStream();
+      }
+      else if (uploadForm.getFirst())
+      {
+         HDocumentUpload upload;
+         try
+         {
+            upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, fileType, locale);
+         }
+         catch (IOException e)
+         {
+            log.error("failed to create database storage object for part file", e);
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
+                  .entity(e).build();
+         }
+         return Response.status(Status.ACCEPTED)
+               .entity("<uploadId>" + upload.getId() + "</uploadId>\n<acceptedParts>" + upload.getParts().size() + "</acceptedParts>\n")
+               .build();
+      }
+      else
+      {
+         HDocumentUpload upload;
+         try
+         {
+            upload = saveSubsequentUploadPart(uploadForm);
+         }
+         catch (IOException e)
+         {
+            log.error("failed to create database storage object for part file", e);
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
+                  .entity(e).build();
+         }
+
+         if (!uploadForm.getLast())
+         {
+            return Response.status(Status.ACCEPTED)
+                  .entity("<uploadId>" + upload.getId() + "</uploadId>\n<acceptedParts>" + upload.getParts().size() + "</acceptedParts>\n")
+                  .build();
+         }
+
+         try
+         {
+            File tempFile = combineToTempFile(upload);
+            fileContents = new FileInputStream(tempFile);
+         }
+         catch (HashMismatchException e)
+         {
+            return Response.status(Status.CONFLICT)
+                  .entity("MD5 hash " + e.getExpectedHash()
+                        + " sent with initial request does not match server-generated hash of combined parts "
+                        + e.getGeneratedHash() + ". Upload aborted. Retry upload from first part.\n")
+                        .build();
+         }
+         catch (SQLException e)
+         {
+            log.error("Error while retreiving document upload part contents", e);
+            throw new RuntimeException(e);
+         }
+         catch (FileNotFoundException e)
+         {
+            log.error("Error while generating input stream for temp file", e);
+            throw new RuntimeException(e);
+         }
+         finally
+         {
+            // no more need for upload
+            session.delete(upload);
+         }
+      }
 
       // TODO useful error messages for failed parsing
-      TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(uploadForm.getFileStream(),
-            uploadForm.getFileType(), locale);
+      TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(fileContents,
+            uploadForm.getFileType(), localeId);
 
       MergeType mergeType;
       if ("import".equals(merge))
@@ -630,7 +703,7 @@ public class FileService implements FileResource
 
       // TODO useful error message for failed saving?
       List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
-            docId, localeId.getLocaleId(), transRes, extensions, mergeType);
+            docId, locale.getLocaleId(), transRes, extensions, mergeType);
 
       if (warnings != null && !warnings.isEmpty())
       {
