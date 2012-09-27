@@ -398,10 +398,7 @@ public class ProjectIterationFilesAction
 
    public boolean isFileUploadAllowed()
    {
-      HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(localeId));
-
-      return projectIteration.getStatus() == EntityStatus.ACTIVE && identity != null && identity.hasPermission("modify-translation", projectIteration, hLocale);
+      return isIterationActive() && identity != null && identity.hasPermission("modify-translation", getProjectIteration().getProject(), getLocale());
    }
 
    public boolean isDocumentUploadAllowed()
@@ -513,6 +510,11 @@ public class ProjectIterationFilesAction
    public boolean isIterationObsolete()
    {
       return getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
+   }
+   
+   public boolean isIterationActive()
+   {
+      return getProjectIteration().getProject().getStatus() == EntityStatus.ACTIVE || getProjectIteration().getStatus() == EntityStatus.ACTIVE;
    }
 
    /**
