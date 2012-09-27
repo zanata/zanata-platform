@@ -51,6 +51,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.security.ZanataIdentity;
@@ -115,20 +116,24 @@ public class ViewAllStatusAction implements Serializable
    private HProjectIteration projectIteration;
 
    private List<HIterationGroup> searchResults;
+   
+   private StatUnit statsOption = WORD;
+   
+   List<Status> result = new ArrayList<Status>();
 
    public static class Status implements Comparable<Status>
    {
       private String locale;
       private String nativeName;
-      private TranslationStatistics wordStats;
+      private TranslationStatistics stats;
       private int per;
       private boolean userInLanguageTeam;
 
-      public Status(String locale, String nativeName, TranslationStatistics wordStats, int per, boolean userInLanguageTeam)
+      public Status(String locale, String nativeName, TranslationStatistics stats, int per, boolean userInLanguageTeam)
       {
          this.locale = locale;
          this.nativeName = nativeName;
-         this.wordStats = wordStats;
+         this.stats = stats;
          this.per = per;
          this.userInLanguageTeam = userInLanguageTeam;
       }
@@ -143,9 +148,9 @@ public class ViewAllStatusAction implements Serializable
          return nativeName;
       }
 
-      public TranslationStatistics getWordStats()
+      public TranslationStatistics getStats()
       {
-         return wordStats;
+         return stats;
       }
 
       public double getPer()
@@ -193,8 +198,7 @@ public class ViewAllStatusAction implements Serializable
          throw new EntityNotFoundException(this.iterationSlug, HProjectIteration.class);
       }
    }
-
-   @CachedMethodResult
+   
    public List<Status> getAllStatus()
    {
       List<Status> result = new ArrayList<Status>();
@@ -214,12 +218,12 @@ public class ViewAllStatusAction implements Serializable
       Long total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
       for (HLocale var : locale)
       {
-         TranslationStatistics wordStats = iterationStats.getStats(var.getLocaleId().getId(), WORD);
-         if (wordStats == null)
+         TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
+         if (stats == null)
          {
-            wordStats = new TranslationStatistics();
-            wordStats.setUntranslated( total );
-            wordStats.setTotal( total );
+            stats = new TranslationStatistics();
+            stats.setUntranslated( total );
+            stats.setTotal( total );
          }
          int per;
          if (total.intValue() == 0)
@@ -228,12 +232,12 @@ public class ViewAllStatusAction implements Serializable
          }
          else
          {
-            per = (int) Math.ceil(100 * wordStats.getTranslated() / wordStats.getTotal());
+            per = (int) Math.ceil(100 * stats.getTranslated() / stats.getTotal());
 
          }
          boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;
 
-         Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), wordStats, per, isMember);
+         Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), stats, per, isMember);
          result.add(op);
       }
       Collections.sort(result);
@@ -423,5 +427,15 @@ public class ViewAllStatusAction implements Serializable
    public boolean isGroupInVersion(String groupSlug)
    {
       return versionGroupServiceImpl.isGroupInVersion(groupSlug, getProjectIteration().getId());
+   }
+
+   public StatUnit getStatsOption()
+   {
+      return statsOption;
+   }
+
+   public void setStatsOption(StatUnit statsOption)
+   {
+      this.statsOption = statsOption;
    }
 }
