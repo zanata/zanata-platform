@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.gin;
 
+import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.DefaultEventBus;
@@ -111,11 +112,14 @@ import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 public class WebTransClientModule extends AbstractPresenterModule
 {
@@ -232,5 +236,52 @@ public class WebTransClientModule extends AbstractPresenterModule
       builder.put(xmlEntityValidation.getId(), xmlEntityValidation);
 
       return builder.build();
+   }
+
+   /**
+    * Referencing from http://eleanormaclure.files.wordpress.com/2011/03/colour-coding.pdf.
+    * We store 22 visually distinct color and cycle through them.
+    * If we ever get more than 22 concurrent users on one row, we will have two users share same color.
+    *
+    * @see org.zanata.webtrans.client.service.DistinctColorListImpl
+    */
+   @Provides
+   @Named("distinctColor")
+   public List<String> distinctColorList()
+   {
+      // @formatter:off
+      return ImmutableList.<String>builder()
+            .add(distinctColor(240, 163, 255))
+            .add(distinctColor(0, 117, 220))
+            .add(distinctColor(153, 63, 0))
+            .add(distinctColor(76, 0, 92))
+            .add(distinctColor(25, 25, 25))
+            .add(distinctColor(0, 92, 49))
+            .add(distinctColor(43, 206, 72))
+            .add(distinctColor(255, 204, 153))
+            .add(distinctColor(128, 128, 128))
+            .add(distinctColor(148, 255, 181))
+            .add(distinctColor(143, 124, 0))
+            .add(distinctColor(157, 204, 0))
+            .add(distinctColor(194, 0, 136))
+            .add(distinctColor(0, 51, 128))
+            .add(distinctColor(255, 164, 5))
+            .add(distinctColor(66, 102, 0))
+            .add(distinctColor(255, 0, 16))
+            .add(distinctColor(94, 241, 242))
+            .add(distinctColor(0, 153, 143))
+            .add(distinctColor(224, 255, 102))
+            .add(distinctColor(116, 10, 255))
+            .add(distinctColor(153, 0, 0))
+            .add(distinctColor(255, 255, 128))
+            .add(distinctColor(255, 255, 0))
+            .add(distinctColor(255, 80, 5))
+            .build();
+      // @formatter:on
+   }
+
+   private static String distinctColor(int rndRedColor, int rndGreenColor, int rndBlueColor)
+   {
+      return CssColor.make(rndRedColor, rndGreenColor, rndBlueColor).value();
    }
 }
