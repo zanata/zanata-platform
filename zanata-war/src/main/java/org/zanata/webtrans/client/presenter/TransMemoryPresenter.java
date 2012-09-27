@@ -28,6 +28,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -36,18 +37,16 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
-
-   private GetTranslationMemory submittedRequest = null;
-   private GetTranslationMemory lastRequest = null;
-   private TransMemoryDetailsPresenter tmInfoPresenter;
-   private TransMemoryMergePresenter transMemoryMergePresenter;
-   private KeyShortcutPresenter keyShortcutPresenter;
-
+   private final TransMemoryDetailsPresenter tmInfoPresenter;
+   private final TransMemoryMergePresenter transMemoryMergePresenter;
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private final WebTransMessages messages;
 
+   // states
    private boolean isFocused;
-
-   private ArrayList<TransMemoryResultItem> currentResult;
+   private GetTranslationMemory lastRequest = null;
+   private GetTranslationMemory submittedRequest = null;
+   private List<TransMemoryResultItem> currentResult;
 
    @Inject
    public TransMemoryPresenter(TranslationMemoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter)
@@ -228,21 +227,19 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    {
       if (!userWorkspaceContext.hasReadOnlyAccess())
       {
-         TransMemoryResultItem item;
-         try
-         {
-            item = currentResult.get(event.getIndex());
-         }
-         catch (IndexOutOfBoundsException ex)
-         {
-            item = null;
-         }
+         TransMemoryResultItem item = getTMResultOrNull(event);
          if (item != null)
          {
             Log.debug("Copy from translation memory:" + (event.getIndex() + 1));
             eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
          }
       }
+   }
+
+   private TransMemoryResultItem getTMResultOrNull(TransMemoryShortcutCopyEvent event)
+   {
+      int index = event.getIndex();
+      return index >= 0 && index < currentResult.size() ? currentResult.get(index) : null;
    }
 
    @Override
@@ -262,4 +259,16 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
       this.isFocused = isFocused;
    }
 
+   /**
+    * for testing
+    * @param currentResult current TM result
+    */
+   protected void setStatesForTesting(List<TransMemoryResultItem> currentResult, GetTranslationMemory submittedRequest)
+   {
+      if (!GWT.isClient())
+      {
+         this.currentResult = currentResult;
+         this.submittedRequest = submittedRequest;
+      }
+   }
 }
