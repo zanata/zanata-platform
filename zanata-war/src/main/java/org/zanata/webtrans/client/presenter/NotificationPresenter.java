@@ -96,20 +96,18 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay> 
    @Override
    protected void onUnbind()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override
    protected void onRevealDisplay()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override
    public void onNotification(NotificationEvent event)
    {
       appendNotification(event.getSeverity(), event.getMessage(), event.getInlineLink());
-      Log.info("Notification:" + event.getMessage());
+//      Log.info("Notification:" + event.getMessage());
       listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
    }
 }
