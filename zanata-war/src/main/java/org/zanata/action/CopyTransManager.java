@@ -47,8 +47,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Manager Bean that keeps track of manual copy trans being run on all iterations
- * in the system, to avoid duplicates.
+ * Manager Bean that keeps track of manual copy trans being run
+ * in the system, to avoid duplicates and to provide asynchronous feedback.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */

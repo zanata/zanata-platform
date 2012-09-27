@@ -20,40 +20,46 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
+import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
-import org.zanata.model.HIterationProject;
-import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.CopyTransService;
-import org.zanata.service.LocaleService;
 
-import java.util.Collection;
-import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.zanata.common.ContentState.Approved;
+import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -67,10 +73,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/CopyTransTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @BeforeMethod
@@ -84,701 +89,425 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
           .ignoreNonResolvable();
    }
 
-   @Test
-   public void copyTrans()
+   /**
+    * Use this test to individually test copy trans scenarios.
+    */
+   @Test(enabled = false)
+   public void individualTest()
    {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
+      this.testCopyTrans(new CopyTransExecution(IGNORE, IGNORE, DOWNGRADE_TO_FUZZY, true, false, true).expectTransState(Approved));
+   }
 
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
+   @DataProvider(name = "CopyTrans")
+   public Object[][] createCopyTransTestParams()
+   {
+      Set<CopyTransExecution> expandedExecutions = generateAllExecutions();
 
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration
-      for( HDocument d : iter.getDocuments().values() )
+      Object[][] val =  new Object[expandedExecutions.size()][1];
+      int i=0;
+      for( CopyTransExecution exe : expandedExecutions )
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         val[i++][0] = exe;
       }
-      newIter = iterationDAO.makePersistent(newIter);
 
-      // Get one of the newly created docs (with the same docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
-
-      // find equivalent translations
-      copyTransService.copyTransForDocument( newDoc );
-
-      // Reload the new document and make sure translations were copied
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // State should be approved
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.Approved));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.Approved));
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
+      return val;
    }
 
    @Test
-   public void copyTransWithDuplicates()
+   public void testExpectedState()
    {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
+      CopyTransServiceImpl copyTransService = seam.autowire(CopyTransServiceImpl.class);
 
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
+      // When the current context (last argument) is null, it should always return null
+      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, null), nullValue());
 
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
+      assertThat(copyTransService.getExpectedContentState(true, REJECT, Approved), is(Approved));
+      assertThat(copyTransService.getExpectedContentState(false, REJECT, Approved), nullValue());
+      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, Approved), is(Approved));
+      assertThat(copyTransService.getExpectedContentState(false, DOWNGRADE_TO_FUZZY, Approved), is(NeedReview));
+      assertThat(copyTransService.getExpectedContentState(true, IGNORE, Approved), is(Approved));
+      assertThat(copyTransService.getExpectedContentState(false, IGNORE, Approved), is(Approved));
 
-      // Add a duplicate text flow (same content, different resId)
-      HTextFlow newTextFlow = new HTextFlow();
-      newTextFlow.setResId("newresid");
-      newTextFlow.setDocument(doc);
-      newTextFlow.setPlural( false );
-      newTextFlow.setContents("hello world");
-      newTextFlow.setObsolete(false);
-      // Add a translation (as)
-      HTextFlowTarget newTextFlowTrans = new HTextFlowTarget(newTextFlow, asLang);
-      newTextFlowTrans.setContents("yello mondo");
-      newTextFlowTrans.setState(ContentState.Approved);
-      newTextFlow.getTargets().put( newTextFlowTrans.getLocale().getId(), newTextFlowTrans );
-      // Add a translation (de)
-      HTextFlowTarget newTextFlowTrans2 = new HTextFlowTarget(newTextFlow, deLang);
-      newTextFlowTrans2.setContents("hallo welt");
-      newTextFlowTrans2.setState(ContentState.Approved);
-      newTextFlow.getTargets().put( newTextFlowTrans2.getLocale().getId(), newTextFlowTrans2 );
-
-      doc.getTextFlows().add(newTextFlow);
-      documentDAO.makePersistent(doc);
-      documentDAO.flush();
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration
-      for( HDocument d : iter.getDocuments().values() )
-      {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
-      }
-      newIter = iterationDAO.makePersistent(newIter);
-
-      // Get one of the newly created docs (with the same docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
-
-      // find equivalent translations
-      copyTransService.copyTransForDocument( newDoc );
-
-      // Reload the new document and make sure translations were copied
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      // as well as translations for textFlow with resId 'newresid'
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
-
-      // State should be approved
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.Approved));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.Approved));
-
-      // Same checks for the other text flow with same content
-      tf = newDoc .getTextFlows().get(1);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(newTextFlow.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(newTextFlow.getTargets().get(deLang.getId()).getContents()));
-
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.Approved));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.Approved));
+      assertThat(copyTransService.getExpectedContentState(true, REJECT, NeedReview), is(NeedReview));
+      assertThat(copyTransService.getExpectedContentState(false, REJECT, NeedReview), nullValue());
+      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, NeedReview), is(NeedReview));
+      assertThat(copyTransService.getExpectedContentState(false, DOWNGRADE_TO_FUZZY, NeedReview), is(NeedReview));
+      assertThat(copyTransService.getExpectedContentState(true, IGNORE, NeedReview), is(NeedReview));
+      assertThat(copyTransService.getExpectedContentState(false, IGNORE, NeedReview), is(NeedReview));
    }
 
-   @Test
-   public void rejectMovedDocuments()
+   @Test(dataProvider = "CopyTrans", dependsOnMethods = "testExpectedState")
+   public void testCopyTrans(CopyTransExecution execution)
    {
+      // Prepare Execution
       CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
       ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
+      LocaleDAO localeDAO = seam.autowire(LocaleDAO.class);
 
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration, except for a different path
-      for( HDocument d : iter.getDocuments().values() )
+      // Get the project iteration
+      HProjectIteration projectIteration;
+      if( execution.projectMatches )
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newDoc.setFullPath("newdir/" + newDoc.getName()); // change the path
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         projectIteration = iterationDAO.getBySlug("same-project", "different-version");
       }
-      newIter = iterationDAO.makePersistent(newIter);
-
-      // Get one of the newly created docs (with a different docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.REJECT ); // Reject doc ids that don't match
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be no translations for any languages
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), Matchers.<String>empty());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), Matchers.<String>empty());
-   }
-
-   @Test
-   public void fuzzyForMovedDocuments()
-   {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
-
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration, except for a different path
-      for( HDocument d : iter.getDocuments().values() )
+      else
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newDoc.setFullPath("newdir/" + newDoc.getName()); // change the path
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         projectIteration = iterationDAO.getBySlug("different-project", "different-version");
       }
-      newIter = iterationDAO.makePersistent(newIter);
 
-      // Get one of the newly created docs (with a different docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // doc ids that don't match will be fuzzy
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
-      // State should be fuzzy
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.NeedReview));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.NeedReview));
-   }
-
-   @Test
-   public void fuzzyForMismatchedContext()
-   {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
-
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration, except for a different path
-      for( HDocument d : iter.getDocuments().values() )
+      // Create the document
+      HDocument doc = new HDocument();
+      doc.setContentType(ContentType.TextPlain);
+      doc.setLocale(localeDAO.findByLocaleId( new LocaleId("en-US")));
+      doc.setProjectIteration(projectIteration);
+      if( execution.documentMatches )
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         changeContextForAllTextFlowsInDoc( newDoc ); // change the context in all text flows
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         doc.setFullPath("/same/document");
       }
-      newIter = iterationDAO.makePersistent(newIter);
-
-      // Get one of the newly created docs (with the docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // resIds that don't match will be fuzzy
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
-      // State should be fuzzy
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.NeedReview));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.NeedReview));
-   }
-
-   @Test
-   public void rejectMovedDocumentsAndMismatchingContext()
-   {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
-
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration, except for a different path and a different context
-      for( HDocument d : iter.getDocuments().values() )
+      else
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newDoc.setFullPath("newdir/" + newDoc.getName()); // change the path
-         changeContextForAllTextFlowsInDoc(newDoc); // change all resIds
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         doc.setFullPath("/different/document");
       }
-      newIter = iterationDAO.makePersistent(newIter);
+      projectIteration.getDocuments().put(doc.getDocId(), doc);
 
-      // Get one of the newly created docs (with a different docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.REJECT ); // Reject doc ids that don't match
-      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.REJECT ); // Reject resIds that don't match
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be no translations for any languages
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), Matchers.<String>empty());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), Matchers.<String>empty());
-   }
-
-   @Test
-   public void ignoreMovedDocumentsAndMismatchedContext()
-   {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
-
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration, except for a different path
-      for( HDocument d : iter.getDocuments().values() )
+      // Create the text Flow
+      HTextFlow textFlow = new HTextFlow();
+      textFlow.setContents("Source Content"); // Source content matches
+      textFlow.setPlural(false);
+      textFlow.setObsolete(false);
+      textFlow.setDocument(doc);
+      if( execution.contextMatches )
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newDoc.setFullPath("newdir/" + newDoc.getName()); // change the path
-         changeContextForAllTextFlowsInDoc( newDoc ); // change the context in all text flows
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         textFlow.setResId("same-context");
       }
-      newIter = iterationDAO.makePersistent(newIter);
-
-      // Get one of the newly created docs (with a different docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, "newdir/" + doc.getName());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // ignore mismathcing doc ids
-      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // ignore mismathcing context
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
-      // State should be approved
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.Approved));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.Approved));
-   }
-
-   @Test
-   public void overwriteFuzzyWithApproved()
-   {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
-
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(iter.getProject());
-      // add the same documents to the iteration
-      for( HDocument d : iter.getDocuments().values() )
+      else
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         textFlow.setResId("different-context");
+      }
+      doc.getTextFlows().add(textFlow);
 
-         // Add fuzzy translations for all text flows
-         for( HTextFlow tf : newDoc.getTextFlows() )
+      projectIteration = iterationDAO.makePersistent(projectIteration);
+
+      HCopyTransOptions options = new HCopyTransOptions( execution.getContextMismatchAction(),
+            execution.getDocumentMismatchAction(), execution.getProjectMismatchAction() );
+      CopyTransProcessHandle handle = new CopyTransProcessHandle(projectIteration, "admin", options);
+
+      copyTransService.copyTransForIteration(projectIteration, handle);
+
+      // Validate execution
+      HTextFlow targetTextFlow = (HTextFlow)
+         getEm().createQuery("from HTextFlow tf where tf.document.projectIteration = :projectIteration " +
+            "and tf.document.docId = :docId and tf.resId = :resId")
+            .setParameter("projectIteration", projectIteration)
+            .setParameter("docId", doc.getDocId())
+            .setParameter("resId", textFlow.getResId())
+            .getSingleResult();
+      HTextFlowTarget target = targetTextFlow.getTargets().get(3L); // Id: 3 for Locale de
+
+      if( execution.isExpectUntranslated() )
+      {
+         if( target != null && target.getState() != ContentState.New )
          {
-            HTextFlowTarget tft = new HTextFlowTarget(tf, asLang);
-            tft.setContents("Translation to as");
-            tft.setState( ContentState.NeedReview );
-            tf.getTargets().put( asLang.getId(), tft );
-
-            tft = new HTextFlowTarget(tf, deLang);
-            tft.setContents("Translation to de");
-            tft.setState( ContentState.NeedReview );
-            tf.getTargets().put( deLang.getId(), tft );
+            throw new AssertionError("Expected untranslated text flow but got state " + target.getState());
          }
       }
-      newIter = iterationDAO.makePersistent(newIter);
-
-      // Get one of the newly created docs (with the same docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setDocIdMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // Ignore doc ids that don't match
-      copyTransOptions.setContextMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // Ignore resIds that don't match
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
-      // State should be approved
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.Approved));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.Approved));
-   }
-
-   @Test
-   public void copyTranslationsFromDifferentProjects() throws Exception
-   {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      ProjectDAO projectDAO = seam.autowire(ProjectDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
-
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-
-      // Create a new Project
-      HIterationProject newProject = new HIterationProject();
-      newProject.setSlug("new-project");
-      newProject.setName("New Project");
-      projectDAO.makePersistent(newProject);
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(newProject);
-      // add the same documents to the iteration
-      for( HDocument d : iter.getDocuments().values() )
+      else if( execution.getExpectedTranslationState() != null )
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         if( target == null )
+         {
+            throw new AssertionError("Expected state " + execution.getExpectedTranslationState() + ", but got untranslated.");
+         }
+         else if( execution.getExpectedTranslationState() != target.getState() )
+         {
+            throw new AssertionError("Expected state " + execution.getExpectedTranslationState() + ", but got " + target.getState());
+         }
       }
-      newIter = iterationDAO.makePersistent(newIter);
 
-      // Get one of the newly created docs (with the same docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setProjectMismatchAction( HCopyTransOptions.ConditionRuleAction.IGNORE ); // Use translations from other projects as fuzzy
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
-      // State should be fuzzy
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.Approved));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.Approved));
-   }
-
-   @Test
-   public void fuzzyForTranslationsFromDifferentProjects() throws Exception
-   {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      ProjectDAO projectDAO = seam.autowire(ProjectDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
-
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
-
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-
-      // Create a new Project
-      HIterationProject newProject = new HIterationProject();
-      newProject.setSlug("new-project");
-      newProject.setName("New Project");
-      projectDAO.makePersistent(newProject);
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(newProject);
-      // add the same documents to the iteration
-      for( HDocument d : iter.getDocuments().values() )
+      // Contents
+      if( execution.getExpectedContents() != null )
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         if( target == null )
+         {
+            throw new AssertionError("Expected contents " + Arrays.toString( execution.getExpectedContents() ) + ", but got untranslated.");
+         }
+         else if( !Arrays.equals( execution.getExpectedContents(), target.getContents().toArray() ) )
+         {
+            throw new AssertionError("Expected contents " + Arrays.toString( execution.getExpectedContents() ) +
+                  ", but got " + Arrays.toString( target.getContents().toArray() ));
+         }
       }
-      newIter = iterationDAO.makePersistent(newIter);
-
-      // Get one of the newly created docs (with the same docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setProjectMismatchAction( HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY ); // Use translations from other projects as fuzzy
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be a translation for 'as' and one for 'de' for textFlow with resId 'tf1'
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), notNullValue());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), notNullValue());
-
-      // make sure the translation is the same as the translation on the original document
-      HTextFlow originalTf = doc.getTextFlows().get(0);
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), equalTo(originalTf.getTargets().get(asLang.getId()).getContents()));
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), equalTo(originalTf.getTargets().get(deLang.getId()).getContents()));
-      // State should be fuzzy
-      assertThat(tf.getTargets().get(asLang.getId()).getState(), equalTo(ContentState.NeedReview));
-      assertThat(tf.getTargets().get(deLang.getId()).getState(), equalTo(ContentState.NeedReview));
    }
 
-   @Test
-   public void rejectTranslationsFromDifferentProjects() throws Exception
+   private ContentState getExpectedContentState( CopyTransExecution execution )
    {
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
-      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-      ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
-      ProjectDAO projectDAO = seam.autowire(ProjectDAO.class);
-      LocaleService localeService = seam.autowire(LocaleServiceImpl.class);
+      ContentState expectedContentState = Approved;
 
-      HProjectIteration iter = iterationDAO.getBySlug("sample-project", "1.0");
-      HDocument doc = documentDAO.getByDocIdAndIteration(iter, "/my/path/document.txt");
+      expectedContentState = getExpectedContentState(execution.getContextMatches(), execution.getContextMismatchAction(), expectedContentState);
+      expectedContentState = getExpectedContentState(execution.getProjectMatches(), execution.getProjectMismatchAction(), expectedContentState);
+      expectedContentState = getExpectedContentState(execution.getDocumentMatches(), execution.getDocumentMismatchAction(), expectedContentState);
+      return expectedContentState;
+   }
 
-      HLocale asLang = localeService.getByLocaleId("as");
-      HLocale deLang = localeService.getByLocaleId("de");
-
-      // Create a new Project
-      HIterationProject newProject = new HIterationProject();
-      newProject.setSlug("new-project");
-      newProject.setName("New Project");
-      projectDAO.makePersistent(newProject);
-
-      // Create a new iteration for the project
-      HProjectIteration newIter = new HProjectIteration();
-      newIter.setSlug("2.0");
-      newIter.setProject(newProject);
-      // add the same documents to the iteration
-      for( HDocument d : iter.getDocuments().values() )
+   private ContentState getExpectedContentState( boolean match, ConditionRuleAction action, ContentState currentState )
+   {
+      if( currentState == null )
       {
-         HDocument newDoc = cloneDocument(d);
-         newDoc.setProjectIteration(newIter);
-         newIter.getDocuments().put(newDoc.getDocId(), newDoc);
+         return null;
       }
-      newIter = iterationDAO.makePersistent(newIter);
-
-      // Get one of the newly created docs (with the same docId as the old one)
-      HDocument newDoc = documentDAO.getByDocIdAndIteration(newIter, doc.getDocId());
-
-      // Custom copy Trans options
-      HCopyTransOptions copyTransOptions = new HCopyTransOptions();
-      copyTransOptions.setProjectMismatchAction(HCopyTransOptions.ConditionRuleAction.REJECT); // Reject translations from other projects
-
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(newIter, "test", copyTransOptions);
-
-      // find equivalent translations
-      copyTransService.copyTransForIteration(newIter, handle);
-
-      // Reload the new document and make sure translations are correct
-      newDoc = documentDAO.getById( newDoc.getId() );
-
-      // There should be no translations for any languages
-      HTextFlow tf = newDoc.getTextFlows().get(0);
-
-      assertThat(tf.getTargets().get(asLang.getId()).getContents(), Matchers.<String>empty());
-      assertThat(tf.getTargets().get(deLang.getId()).getContents(), Matchers.<String>empty());
-   }
-
-   private static HDocument cloneDocument(HDocument document)
-   {
-      HDocument clone = new HDocument(document.getDocId(), document.getContentType(), document.getLocale() );
-
-      for( HTextFlow tf : document.getTextFlows() )
+      else if( !match )
       {
-         HTextFlow newTf = new HTextFlow();
-         newTf.setResId( tf.getResId() );
-         newTf.setDocument( clone );
-         //newTf.setComment( tf.getComment() );
-         newTf.setPlural(tf.isPlural());
-         newTf.setContents(tf.getContents());
-         //newTf.setPotEntryData( tf.getPotEntryData() );
-         newTf.setObsolete(false);
-
-         clone.getTextFlows().add(newTf);
+         if( action == DOWNGRADE_TO_FUZZY )
+         {
+            return ContentState.NeedReview;
+         }
+         else if( action == REJECT )
+         {
+            return null;
+         }
       }
-      return clone;
+      return currentState;
    }
 
-   private static void changeContextForAllTextFlowsInDoc(HDocument document)
+   private Set<CopyTransExecution> generateAllExecutions()
    {
-      for( HTextFlow tf : document.getTextFlows() )
+      Set<CopyTransExecution> allExecutions = new HashSet<CopyTransExecution>();
+      Set<Object[]> paramsSet = cartesianProduct(Arrays.asList(ConditionRuleAction.values()),
+                                                 Arrays.asList(ConditionRuleAction.values()),
+                                                 Arrays.asList(ConditionRuleAction.values()),
+                                                 Arrays.asList(true, false),
+                                                 Arrays.asList(true, false),
+                                                 Arrays.asList(true, false));
+
+      for( Object[] params : paramsSet )
       {
-         // randomly generate a new res Id: rotate the string by position
-         tf.setResId( tf.getResId().substring(1) + tf.getResId().charAt(0) );
+         CopyTransExecution exec = new CopyTransExecution(
+               (ConditionRuleAction)params[0], (ConditionRuleAction)params[1], (ConditionRuleAction)params[2],
+               (Boolean)params[3], (Boolean)params[4], (Boolean)params[5]);
+
+         ContentState expectedContentState = this.getExpectedContentState(exec);
+         if( expectedContentState == null )
+         {
+            exec.expectUntranslated();
+         }
+         else
+         {
+            exec.expectTransState(expectedContentState).withContents("target-content-de");
+         }
+         allExecutions.add(exec);
+      }
+      return allExecutions;
+   }
+
+   /**
+    * Utility method to generate a cartesian product of all possible scenarios
+    */
+   private Set<Object[]> cartesianProduct( Iterable<?> ... colls )
+   {
+      // Base case
+      if( colls.length == 1 )
+      {
+         Iterable<?> lastSet = colls[0];
+         Set<Object[]> product = new HashSet<Object[]>();
+
+         for( Object elem : lastSet )
+         {
+            product.add(new Object[]{elem});
+         }
+         return product;
+      }
+      // Recursive case
+      else
+      {
+         Iterable<?> lastSet = colls[colls.length-1];
+         Set<Object[]> subProduct = cartesianProduct( Arrays.copyOfRange(colls, 0, colls.length-1) );
+         Set<Object[]> fullProduct = new HashSet<Object[]>();
+
+         for( Object[] subProdElem : subProduct )
+         {
+            for( Object elem : lastSet )
+            {
+               Object[] newSubProd = Arrays.copyOf(subProdElem, subProdElem.length + 1);
+               newSubProd[newSubProd.length-1] = elem;
+               fullProduct.add( newSubProd );
+            }
+         }
+
+         return fullProduct;
+      }
+   }
+
+   @Getter
+   @Setter
+   @EqualsAndHashCode(of = {"contextMismatchAction", "projectMismatchAction", "documentMismatchAction",
+                            "contextMatches", "projectMatches", "documentMatches"})
+   @ToString
+   private static class CopyTransExecution implements Cloneable
+   {
+      private ConditionRuleAction contextMismatchAction;
+      private ConditionRuleAction projectMismatchAction;
+      private ConditionRuleAction documentMismatchAction;
+      private Boolean contextMatches;
+      private Boolean projectMatches;
+      private Boolean documentMatches;
+      private ContentState expectedTranslationState;
+      private boolean expectUntranslated;
+      private String[] expectedContents;
+
+      private CopyTransExecution(ConditionRuleAction contextMismatchAction, ConditionRuleAction projectMismatchAction,
+                                 ConditionRuleAction documentMismatchAction, Boolean contextMatches, Boolean projectMatches,
+                                 Boolean documentMatches)
+      {
+         this.contextMismatchAction = contextMismatchAction;
+         this.projectMismatchAction = projectMismatchAction;
+         this.documentMismatchAction = documentMismatchAction;
+         this.contextMatches = contextMatches;
+         this.projectMatches = projectMatches;
+         this.documentMatches = documentMatches;
+      }
+
+      @Override
+      public Object clone() throws CloneNotSupportedException
+      {
+         return super.clone();
+      }
+
+      public CopyTransExecution expectTransState( ContentState state )
+      {
+         this.expectedTranslationState = state;
+         this.expectUntranslated = false;
+         return this;
+      }
+
+      public CopyTransExecution expectUntranslated()
+      {
+         this.expectedTranslationState = null;
+         this.expectUntranslated = true;
+         return this;
+      }
+
+      public CopyTransExecution withContents( String ... contents )
+      {
+         this.expectedContents = contents;
+         return this;
+      }
+
+      public Collection<CopyTransExecution> expand()
+      {
+         Set<CopyTransExecution> expanded = new HashSet<CopyTransExecution>();
+         Set<CopyTransExecution> toExpand = new HashSet<CopyTransExecution>();
+
+         toExpand.add(this);
+
+         while( !toExpand.isEmpty() )
+         {
+            CopyTransExecution nextExec = toExpand.iterator().next();
+
+            if( nextExec.contextMismatchAction == null )
+            {
+               for( ConditionRuleAction val : ConditionRuleAction.values() )
+               {
+                  try
+                  {
+                     CopyTransExecution expandedEx = (CopyTransExecution)nextExec.clone();
+                     expandedEx.contextMismatchAction = val;
+                     toExpand.add(expandedEx);
+                  }
+                  catch (CloneNotSupportedException e)
+                  {
+                     throw new RuntimeException(e);
+                  }
+               }
+            }
+            else if( nextExec.projectMismatchAction == null )
+            {
+               for( ConditionRuleAction val : ConditionRuleAction.values() )
+               {
+                  try
+                  {
+                     CopyTransExecution expandedEx = (CopyTransExecution)nextExec.clone();
+                     expandedEx.projectMismatchAction = val;
+                     toExpand.add(expandedEx);
+                  }
+                  catch (CloneNotSupportedException e)
+                  {
+                     throw new RuntimeException(e);
+                  }
+               }
+            }
+            else if( nextExec.documentMismatchAction == null )
+            {
+               for( ConditionRuleAction val : ConditionRuleAction.values() )
+               {
+                  try
+                  {
+                     CopyTransExecution expandedEx = (CopyTransExecution)nextExec.clone();
+                     expandedEx.documentMismatchAction = val;
+                     toExpand.add(expandedEx);
+                  }
+                  catch (CloneNotSupportedException e)
+                  {
+                     throw new RuntimeException(e);
+                  }
+               }
+            }
+            else if( nextExec.contextMatches == null )
+            {
+               for( Boolean val : new Boolean[]{Boolean.TRUE, Boolean.FALSE} )
+               {
+                  try
+                  {
+                     CopyTransExecution expandedEx = (CopyTransExecution)nextExec.clone();
+                     expandedEx.contextMatches = val;
+                     toExpand.add(expandedEx);
+                  }
+                  catch (CloneNotSupportedException e)
+                  {
+                     throw new RuntimeException(e);
+                  }
+               }
+            }
+            else if( nextExec.projectMatches == null )
+            {
+               for( Boolean val : new Boolean[]{Boolean.TRUE, Boolean.FALSE} )
+               {
+                  try
+                  {
+                     CopyTransExecution expandedEx = (CopyTransExecution)nextExec.clone();
+                     expandedEx.projectMatches = val;
+                     toExpand.add(expandedEx);
+                  }
+                  catch (CloneNotSupportedException e)
+                  {
+                     throw new RuntimeException(e);
+                  }
+               }
+            }
+            else if( nextExec.documentMatches == null )
+            {
+               for( Boolean val : new Boolean[]{Boolean.TRUE, Boolean.FALSE} )
+               {
+                  try
+                  {
+                     CopyTransExecution expandedEx = (CopyTransExecution)nextExec.clone();
+                     expandedEx.documentMatches = val;
+                     toExpand.add(expandedEx);
+                  }
+                  catch (CloneNotSupportedException e)
+                  {
+                     throw new RuntimeException(e);
+                  }
+               }
+            }
+            else
+            {
+               expanded.add( nextExec );
+            }
+
+            toExpand.remove(nextExec);
+         }
+
+
+         return expanded;
       }
    }
 }

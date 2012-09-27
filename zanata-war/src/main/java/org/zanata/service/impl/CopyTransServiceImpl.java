@@ -43,7 +43,6 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
@@ -53,6 +52,7 @@ import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
+import static org.zanata.common.ContentState.*;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.*;
 
 //TODO unit test suite for this class
@@ -148,40 +148,54 @@ public class CopyTransServiceImpl implements CopyTransService
                int copyCount = 0;
 
                // Determine the state of the copies for each pass
-               ContentState copyState = ContentState.Approved;
-               boolean ignoreContext = false,
-                       ignoreDocument = false,
-                       ignoreProject = false;
+               ContentState copyState = Approved;
+               boolean checkContext = true,
+                       checkProject = true,
+                       checkDocument = true;
 
                // First pass, very conservative
-               copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
+               // Every result will match context, document, and project
+               copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
+
                // Next passes, more relaxed and only needed when the options call for it
-               if( options.getContextMismatchAction() != REJECT )
-               {
-                  ignoreContext = true;
-                  if( options.getContextMismatchAction() == DOWNGRADE_TO_FUZZY )
-                  {
-                     copyState = ContentState.NeedReview;
-                  }
-                  copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
-               }
                if( options.getDocIdMismatchAction() != REJECT )
                {
-                  ignoreDocument = true;
+                  // Relax doc Id restriction
+                  checkDocument = false;
                   if( options.getDocIdMismatchAction() == DOWNGRADE_TO_FUZZY )
                   {
-                     copyState = ContentState.NeedReview;
+                     copyState = NeedReview;
                   }
-                  copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
+                  // Every result will match context, and project
+                  // Assuming Phase 1 ran, results will have non-matching doc Ids
+                  copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
                }
                if( options.getProjectMismatchAction() != REJECT )
                {
-                  ignoreProject = true;
+                  // Relax project restriction
+                  checkProject = false;
                   if( options.getProjectMismatchAction() == DOWNGRADE_TO_FUZZY )
                   {
-                     copyState = ContentState.NeedReview;
+                     copyState = NeedReview;
                   }
-                  copyCount += copyTransPass(document, locale, ignoreContext, ignoreDocument, ignoreProject, copyState);
+                  // Every result will match context
+                  // Assuming above phases, results will have non-matching project
+                  // Assuming above phase: either doc Id didn't match, or the user explicitly rejected non-matching documents
+                  copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
+               }
+               if( options.getContextMismatchAction() != REJECT )
+               {
+                  // Relax context restriction
+                  checkContext = false;
+                  if( options.getContextMismatchAction() == DOWNGRADE_TO_FUZZY )
+                  {
+                     copyState = NeedReview;
+                  }
+                  // Assuming above phases:
+                  // Context does not match
+                  // either doc Id didn't match, or the user explicitly rejected non-matching documents
+                  // and either Project didn't match, or the user explicitly rejected non-matching projects
+                  copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
                }
 
                log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
@@ -196,15 +210,15 @@ public class CopyTransServiceImpl implements CopyTransService
       }
    }
 
-   private int copyTransPass( HDocument document, HLocale locale, boolean ignoreContext, boolean ignoreDocument, boolean ignoreProject,
-                              ContentState copyState)
+   private int copyTransPass( HDocument document, HLocale locale, boolean checkContext, boolean checkProject, boolean checkDocument,
+                              HCopyTransOptions options)
    {
       ScrollableResults results = null;
 
       int copyCount = 0;
       try
       {
-         results = textFlowTargetDAO.findMatchingTranslations(document, locale, ignoreContext, ignoreDocument, ignoreProject);
+         results = textFlowTargetDAO.findMatchingTranslations(document, locale, checkContext, checkDocument, checkProject);
          copyCount = 0;
 
          while( results.next() )
@@ -212,41 +226,48 @@ public class CopyTransServiceImpl implements CopyTransService
             HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
             HTextFlow originalTf = (HTextFlow)results.get(1);
             HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
+            ContentState copyState = determineContentState(
+                  originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
+                  originalTf.getDocument().getProjectIteration().getProject().getId().equals( matchingTarget.getTextFlow().getDocument().getProjectIteration().getProject().getId() ),
+                  originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
+                  options);
 
-            // Create the new translation (or overwrite non-approved ones)
+            if( shouldOverwrite(hTarget, copyState) )
+            {
+               // Create the new translation (or overwrite non-approved ones)
+               if (hTarget == null)
+               {
+                  hTarget = new HTextFlowTarget(originalTf, locale);
+                  hTarget.setVersionNum(1);
+                  originalTf.getTargets().put(locale.getId(), hTarget);
+               }
+               else
+               {
+                  // increase the versionNum
+                  hTarget.setVersionNum(hTarget.getVersionNum() + 1);
+               }
 
-            if (hTarget == null)
-            {
-               hTarget = new HTextFlowTarget(originalTf, locale);
-               hTarget.setVersionNum(1);
-               originalTf.getTargets().put(locale.getId(), hTarget);
-            }
-            else
-            {
-               // increase the versionNum
-               hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-            }
+               // NB we don't touch creationDate
+               hTarget.setTextFlowRevision(originalTf.getRevision());
+               hTarget.setLastChanged(matchingTarget.getLastChanged());
+               hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
+               hTarget.setContents(matchingTarget.getContents());
+               hTarget.setState(copyState);
+               HSimpleComment hcomment = hTarget.getComment();
+               if (hcomment == null)
+               {
+                  hcomment = new HSimpleComment();
+                  hTarget.setComment(hcomment);
+               }
+               hcomment.setComment(createComment(matchingTarget));
+               ++copyCount;
 
-            // NB we don't touch creationDate
-            hTarget.setTextFlowRevision(originalTf.getRevision());
-            hTarget.setLastChanged(matchingTarget.getLastChanged());
-            hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
-            hTarget.setContents(matchingTarget.getContents());
-            hTarget.setState(copyState);
-            HSimpleComment hcomment = hTarget.getComment();
-            if (hcomment == null)
-            {
-               hcomment = new HSimpleComment();
-               hTarget.setComment(hcomment);
-            }
-            hcomment.setComment(createComment(matchingTarget));
-            ++copyCount;
-
-            // manually flush
-            if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
-            {
-               entityManager.flush();
-               entityManager.clear();
+               // manually flush
+               if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
+               {
+                  entityManager.flush();
+                  entityManager.clear();
+               }
             }
          }
 
@@ -271,108 +292,35 @@ public class CopyTransServiceImpl implements CopyTransService
       return copyCount;
    }
 
-   /**
-    * Finds the best match in a result set for the first TextFlow found.
-    * This is just a convenience method to split functionality of the copyTransForLocale
-    * method.
-    *
-    * @param results The results to analyze. The cursor will be left in the position of
-    *                the last analyzed row of the results.
-    *                The cursor should be placed at the first element that will be analyzed.
-    * @param originalTf Text Flow to look for copy trans matches.
-    * @param options
-    * @return The best match for copy trans against the provided original text flow.
-    */
-   private CopyTransMatch findBestMatch( ScrollableResults results, HTextFlow originalTf, HCopyTransOptions options )
+   private ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
+                                              HCopyTransOptions options)
    {
-      CopyTransMatch bestMatch = null;
+      ContentState state = Approved;
+      state = getExpectedContentState(contextMatches, options.getContextMismatchAction(), state);
+      state = getExpectedContentState(projectMatches, options.getProjectMismatchAction(), state);
+      state = getExpectedContentState(docIdMatches, options.getDocIdMismatchAction(), state);
+      return state;
+   }
 
-      // NB: using a do-while loop to process the current result first
-      do
+   public ContentState getExpectedContentState( boolean match, HCopyTransOptions.ConditionRuleAction action,
+                                                 ContentState currentState )
+   {
+      if( currentState == null )
       {
-         HTextFlowTarget currentTft = (HTextFlowTarget)results.get(0);
-         HTextFlow currentTf = (HTextFlow)results.get(1);
-         HProject currentProj = (HProject)results.get(2); // NB: Could also use: currentTft.getTextFlow().getDocument().getProjectIteration().getProject();
-
-         // If there is a change in the text flow, scroll back and return the best match found so far
-         if ( !currentTf.getId().equals(originalTf.getId()) )
+         return null;
+      }
+      else if( !match )
+      {
+         if( action == DOWNGRADE_TO_FUZZY )
          {
-            results.previous();
-            return bestMatch;
+            return NeedReview;
          }
-
-         // Find out if it is a better match than the current one, only if the there is no best match or if
-         // we have found a match that could be improved
-         if( bestMatch == null || bestMatch.targetState != ContentState.Approved )
+         else if( action == REJECT )
          {
-            ContentState currentCandidateTargetState = ContentState.Approved;
-
-            // Context
-            boolean contextMatch = currentTft.getTextFlow().getResId().equals( originalTf.getResId() );
-            if( options.getContextMismatchAction() == REJECT )
-            {
-               if( !contextMatch )
-               {
-                  continue;// rejected, continue
-               }
-            }
-            else if( options.getContextMismatchAction() == DOWNGRADE_TO_FUZZY )
-            {
-               if( !contextMatch )
-               {
-                  currentCandidateTargetState = ContentState.NeedReview;
-               }
-            }
-            // If the action is IGNORE, don't even check
-
-            // Doc Id
-            boolean docIdMatch = currentTft.getTextFlow().getDocument().getDocId().equals( originalTf.getDocument().getDocId() );
-            if( options.getDocIdMismatchAction() == REJECT )
-            {
-               if( !docIdMatch )
-               {
-                  continue;// rejected, continue
-               }
-            }
-            else if( options.getDocIdMismatchAction() == DOWNGRADE_TO_FUZZY )
-            {
-               if( !docIdMatch )
-               {
-                  currentCandidateTargetState = ContentState.NeedReview;
-               }
-            }
-            // If the action is IGNORE, don't even check
-
-            // Project
-            boolean projectMatch = currentProj.getId().equals(originalTf.getDocument().getProjectIteration().getProject().getId());
-            if( options.getProjectMismatchAction() == REJECT )
-            {
-               if( !projectMatch )
-               {
-                  continue; // rejected, continue
-               }
-            }
-            else if( options.getProjectMismatchAction() == DOWNGRADE_TO_FUZZY )
-            {
-               if( !projectMatch )
-               {
-                  currentCandidateTargetState = ContentState.NeedReview;
-               }
-            }
-            // If the action is IGNORE, don't even check
-
-            // See if there is a better match at this point
-            if( bestMatch == null ||
-                (bestMatch.targetState != ContentState.Approved && currentCandidateTargetState == ContentState.Approved) )
-            {
-               bestMatch = new CopyTransMatch(currentTft, currentCandidateTargetState);
-            }
-
+            return null;
          }
       }
-      while( results.next() );
-
-      return bestMatch;
+      return currentState;
    }
    
    @Override
@@ -490,5 +438,28 @@ public class CopyTransServiceImpl implements CopyTransService
       {
          procHandle.incrementProgress(1);
       }
+   }
+
+   /**
+    * Indicates if a Copy Trans found match should overwrite the currently stored one based on their states.
+    */
+   private static boolean shouldOverwrite(HTextFlowTarget currentlyStored, ContentState matchState)
+   {
+      if( currentlyStored != null )
+      {
+         if( currentlyStored.getState() == NeedReview && matchState == Approved )
+         {
+            return true; // If it's fuzzy, replace only with approved ones
+         }
+         else if( currentlyStored.getState() == New )
+         {
+            return true; // If it's new, replace always
+         }
+         else
+         {
+            return false;
+         }
+      }
+      return true;
    }
 }

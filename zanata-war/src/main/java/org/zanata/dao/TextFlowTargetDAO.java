@@ -215,7 +215,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       {
          queryStr.append("and match.textFlow.document.projectIteration.project = textFlow.document.projectIteration.project ");
       }
-      queryStr.append("group by textFlow");
+      queryStr.append("group by textFlow, match");
 
       Query q = getSession().createQuery( queryStr.toString() );
       q.setParameter("document", document)
