@@ -128,4 +128,14 @@ public class TranslationEditorPresenterTest
 
       verify(transUnitsTablePresenter).startEditing();
    }
+
+   @Test
+   public void onUnbind()
+   {
+      presenter.onUnbind();
+
+      verify(transFilterPresenter).unbind();
+      verify(transUnitsTablePresenter).unbind();
+      verify(transUnitNavigationPresenter).unbind();
+   }
 }
