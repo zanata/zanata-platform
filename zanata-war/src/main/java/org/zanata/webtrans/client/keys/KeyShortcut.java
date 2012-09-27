@@ -191,12 +191,15 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public boolean equals(Object obj)
    {
       if (obj == null)
+      {
          return false;
+      }
       if (!(obj instanceof KeyShortcut))
+      {
          return false;
+      }
       KeyShortcut other = (KeyShortcut) obj;
-      boolean equal = keys.equals(other.keys) && context == other.context;
-      return equal;
+      return keys.equals(other.keys) && context == other.context;
    }
 
    /**

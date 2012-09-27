@@ -339,6 +339,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Chat")
    String chatScope();
 
+   @DefaultMessage("Publish chat content")
+   String publishChatContent();
+
    @DefaultMessage("Version")
    String versionNumber();
 

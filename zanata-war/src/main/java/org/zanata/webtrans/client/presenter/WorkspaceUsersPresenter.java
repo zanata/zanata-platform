@@ -18,6 +18,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.client.view.WorkspaceUsersDisplay;
@@ -61,7 +62,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersDispl
    @Override
    protected void onBind()
    {
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Chat, messages.searchGlossary(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Chat, messages.publishChatContent(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -87,7 +88,13 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersDispl
    @Override
    public void onExitWorkspace(ExitWorkspaceEvent event)
    {
-      removeTranslator(event.getEditorClientId(), event.getPerson());
+      EditorClientId editorClientId = event.getEditorClientId();
+      UserPanelSessionItem item = sessionService.getUserPanel(editorClientId);
+      sessionService.removeUser(editorClientId);
+
+      display.removeUser(item.getPanel());
+
+      dispatchChatAction(null, messages.hasQuitWorkspace(event.getPerson().getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
    }
 
    @Override
@@ -108,38 +115,16 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersDispl
       }
    }
 
-   public void removeTranslator(EditorClientId editorClientId, Person person)
-   {
-      UserPanelSessionItem item = sessionService.getUserPanel(editorClientId);
-      sessionService.removeUser(editorClientId);
-
-      display.removeUser(item.getPanel());
-
-      dispatchChatAction(null, messages.hasQuitWorkspace(person.getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
-   }
-
-   public void dispatchChatAction(String person, String msg, MESSAGE_TYPE messageType)
+   protected void dispatchChatAction(String person, String msg, MESSAGE_TYPE messageType)
    {
       if (!Strings.isNullOrEmpty(msg))
       {
-         dispatcher.execute(new PublishWorkspaceChatAction(person, msg, messageType), new AsyncCallback<PublishWorkspaceChatResult>()
-         {
-
-            @Override
-            public void onFailure(Throwable caught)
-            {
-            }
-
-            @Override
-            public void onSuccess(PublishWorkspaceChatResult result)
-            {
-            }
-         });
+         dispatcher.execute(new PublishWorkspaceChatAction(person, msg, messageType), new NoOpAsyncCallback<PublishWorkspaceChatResult>());
          display.setChatInputText("");
       }
    }
 
-   public void addTranslator(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit)
+   private void addTranslator(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit)
    {
       String color = sessionService.getColor(editorClientId);
 
