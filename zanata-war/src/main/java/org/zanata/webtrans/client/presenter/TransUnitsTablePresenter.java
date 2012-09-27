@@ -57,7 +57,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 // @formatter:off
 public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDisplay> implements
@@ -79,7 +80,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    private final TargetContentsPresenter targetContentsPresenter;
    private final TranslatorInteractionService translatorService;
 
-   //state we need to keep track of
+   // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
    private TransUnitId selectedId;
 
@@ -105,7 +106,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
 
-      // we register it here because we can't use eager singleton on it (it references TargetContentsPresenter). And if it's not eagerly created, it won't get created at all!!
+      // we register it here because we can't use eager singleton on it (it
+      // references TargetContentsPresenter). And if it's not eagerly created,
+      // it won't get created at all!!
       eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
    }
 
@@ -220,13 +223,13 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       {
          if (!Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
          {
-            //updatedTU is our active row but done by another user
+            // updatedTU is our active row but done by another user
             Log.info("detect concurrent edit. reset editor value");
             eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
          }
          else if (updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy)
          {
-            //same user and update type is save fuzzy
+            // same user and update type is save fuzzy
             setFocus = true;
          }
       }
@@ -304,7 +307,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    /**
     * For testing only. Will not work in GWT compiled mode.
-    *
+    * 
     * @param selectedId current selected id
     */
    protected void setStateForTesting(TransUnitId selectedId)

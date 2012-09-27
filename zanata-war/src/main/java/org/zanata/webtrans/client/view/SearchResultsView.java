@@ -89,7 +89,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @UiField
    ListBox searchFieldsSelect;
 
-   LoadingPanel searchingIndicator;
+   private final LoadingPanel searchingIndicator;
 
    Label noResultsLabel;
 
@@ -100,17 +100,15 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    private HasValue<Boolean> selectAllCheckbox;
 
    private final DiffColorLegendPanel diffLegendPanel;
-
+   
    @Inject
-   public SearchResultsView(Resources resources, final WebTransMessages webTransMessages, final DiffColorLegendPanel diffLegendPanel)
+   public SearchResultsView(Resources resources, final WebTransMessages webTransMessages, final DiffColorLegendPanel diffLegendPanel, LoadingPanel loadingPanel)
    {
       messages = webTransMessages;
       this.resources = resources;
       this.diffLegendPanel = diffLegendPanel;
       initWidget(uiBinder.createAndBindUi(this));
-      searchingIndicator = new LoadingPanel(messages.searching(), resources);
-      searchingIndicator.setModal(false);
-      searchingIndicator.hide();
+      searchingIndicator = loadingPanel;
       noResultsLabel = new Label(messages.noSearchResults());
       noResultsLabel.addStyleName("projectWideSearchNoResultsLabel");
       searchResultsPanel.add(noResultsLabel);
@@ -332,7 +330,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    {
       if (searching)
       {
-         searchingIndicator.center();
+         searchingIndicator.center(messages.searching());
       }
       else
       {

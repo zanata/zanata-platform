@@ -179,7 +179,7 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    @Override
    public void showLoading()
    {
-      loadingPanel.center();
+      loadingPanel.center(messages.loading());
    }
 
    @Override

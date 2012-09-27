@@ -404,7 +404,7 @@ public class ProjectIterationFilesAction
    public boolean isDocumentUploadAllowed()
    {
       HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      return projectIteration.getStatus() == EntityStatus.ACTIVE && identity != null && identity.hasPermission("import-template", projectIteration);
+      return isIterationActive() && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
    public List<HDocument> getIterationDocuments()
@@ -499,7 +499,7 @@ public class ProjectIterationFilesAction
 
    public boolean isUserAllowedToTranslate()
    {
-      return !isIterationReadOnly() && !isIterationObsolete() && identity.hasPermission("add-translation", getProjectIteration().getProject(), getLocale());
+      return isIterationActive() && identity != null && identity.hasPermission("add-translation", getProjectIteration().getProject(), getLocale());
    }
 
    public boolean isIterationReadOnly()

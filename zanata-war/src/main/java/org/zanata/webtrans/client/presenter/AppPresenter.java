@@ -85,7 +85,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private TranslationStats selectedDocumentStats = new TranslationStats();
    private TranslationStats projectStats = new TranslationStats();
    private TranslationStats currentDisplayStats = new TranslationStats();
-   private MainView currentView = null;
+   public static MainView currentView = null;
 
    @Inject
    public AppPresenter(AppDisplay display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)

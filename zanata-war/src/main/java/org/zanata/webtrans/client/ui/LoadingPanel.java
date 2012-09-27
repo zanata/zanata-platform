@@ -38,25 +38,31 @@ import com.google.inject.Singleton;
 @Singleton
 public class LoadingPanel extends DecoratedPopupPanel
 {
-
+   private final Label loadingLabel;
    @Inject
    public LoadingPanel(final  WebTransMessages messages, final Resources resources)
-   {
-      this(messages.loading(), resources);
-   }
-
-   public LoadingPanel(String text, final Resources resources)
    {
       super(false, true);
       HorizontalPanel hp = new HorizontalPanel();
       hp.setSpacing(5);
       hp.setSize("100%", "100%");
-      Label loadingLabel = new Label(text);
+      loadingLabel = new Label(messages.loading());
       loadingLabel.setStyleName("loadingLabel");
       hp.add(loadingLabel);
       hp.add(new Image(resources.loader()));
       setStyleName("loadingPanel");
       add(hp);
+      
+   }
+   
+   public void center(String text)
+   {
+      if(isShowing())
+      {
+         hide();
+      }
+      loadingLabel.setText(text);
+      center();
    }
 }
 
