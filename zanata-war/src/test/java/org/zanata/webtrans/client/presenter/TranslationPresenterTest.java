@@ -1,280 +1,220 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import net.customware.gwt.presenter.client.EventBus;
+import java.util.List;
 
-import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
+import org.hamcrest.Matchers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
-import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
-import org.zanata.webtrans.client.presenter.TranslationPresenter.Display;
+import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import com.google.gwt.event.dom.client.KeyCodes;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import net.customware.gwt.presenter.client.EventBus;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
+/**
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
 @Test(groups = { "unit-tests" })
-public class TranslationPresenterTest extends PresenterTest
+public class TranslationPresenterTest
 {
-
-   // object under test
-   private TranslationPresenter translationPresenter;
-
-   // mock injected entities
-   private Display mockDisplay;
-   private EventBus mockEventBus;
-   private GlossaryPresenter mockGlossaryPresenter;
-   private WebTransMessages mockMessages;
-
-   // TODO use real presenters
-   private TranslationEditorPresenter mockTranslationEditorPresenter;
-   private TransMemoryPresenter mockTransMemoryPresenter;
-   private UserWorkspaceContext mockUserWorkspaceContext;
-   private TargetContentsPresenter mockTargetContentsPresenter;
-   private KeyShortcutPresenter mockKeyShortcutPresenter;
+   private TranslationPresenter presenter;
+   @Mock
+   private TranslationPresenter.Display display;
+   @Mock
+   private EventBus eventBus;
+   @Mock
+   private TargetContentsPresenter targetContentsPresenter;
+   @Mock
+   private TranslationEditorPresenter translationEditorPresenter;
+   @Mock
+   private TransMemoryPresenter transMemoryPresenter;
+   @Mock
+   private GlossaryPresenter glossaryPresenter;
+   @Mock
+   private WebTransMessages messages;
+   private UserWorkspaceContext userWorkspaceContext;
+   @Mock
+   private KeyShortcutPresenter keyShortcutPresenter;
+   @Mock
    private NavigationService navigationService;
+   @Captor
+   private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
+   @Mock
+   private TranslationEditorPresenter.Display translationEditorDisplay;
 
-   // mock view components
-   private Capture<ExitWorkspaceEventHandler> capturedExitWorkspaceEventHandler;
-   private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler;
-   private Capture<KeyShortcut> capturedKeyShortcuts;
-
-   @SuppressWarnings("unchecked")
-   @BeforeClass
-   public void createMocks()
-   {
-      mockDisplay = createAndAddMock(TranslationPresenter.Display.class);
-      mockEventBus = createAndAddMock(EventBus.class);
-      mockGlossaryPresenter = createAndAddMock(GlossaryPresenter.class);
-      mockMessages = createAndAddMock(WebTransMessages.class);
-
-      mockTranslationEditorPresenter = createAndAddMock(TranslationEditorPresenter.class);
-      mockTransMemoryPresenter = createAndAddMock(TransMemoryPresenter.class);
-      mockUserWorkspaceContext = createAndAddMock(UserWorkspaceContext.class);
-      mockTargetContentsPresenter = createAndAddMock(TargetContentsPresenter.class);
-      mockKeyShortcutPresenter = createAndAddMock(KeyShortcutPresenter.class);
-      navigationService = createAndAddMock(NavigationService.class);
-
-      capturedExitWorkspaceEventHandler = addCapture(new Capture<ExitWorkspaceEventHandler>());
-      capturedWorkspaceContextUpdateEventHandler = addCapture(new Capture<WorkspaceContextUpdateEventHandler>());
-      capturedKeyShortcuts = addCapture(new Capture<KeyShortcut>());
-   }
-   
    @BeforeMethod
-   public void resetEverything()
+   public void beforeMethod()
    {
-      resetAll();
-      translationPresenter = new TranslationPresenter(mockDisplay, mockEventBus, mockTargetContentsPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockUserWorkspaceContext, mockKeyShortcutPresenter, navigationService);
+      MockitoAnnotations.initMocks(this);
+      userWorkspaceContext = TestFixture.userWorkspaceContext(true, true, "project", "master");
+      presenter = new TranslationPresenter(display, eventBus, targetContentsPresenter, translationEditorPresenter, transMemoryPresenter, glossaryPresenter, messages, userWorkspaceContext, keyShortcutPresenter, navigationService);
    }
 
    @Test
-   public void performsRequiredActionsOnBind()
+   public void onRevealDisplay()
    {
-      replayAllMocks();
-      translationPresenter.bind();
-      verifyAllMocks();
+      presenter.onRevealDisplay();
+
+      verify(targetContentsPresenter).concealDisplay();
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, true);
    }
 
    @Test
-   public void hidesOptionsPanel()
+   public void onBind()
    {
-      // simulate options toggle released
-      @SuppressWarnings("unchecked")
-      ValueChangeEvent<Boolean> optionsToggleDeactivated = createMock(ValueChangeEvent.class);
-      expect(optionsToggleDeactivated.getValue()).andReturn(false).anyTimes();
+      TranslationPresenter spyPresenter = spy(presenter);
+      doNothing().when(spyPresenter).setSouthPanelExpanded(anyBoolean());
 
-      replay(optionsToggleDeactivated);
-      replayAllMocks();
+      spyPresenter.onBind();
 
-      translationPresenter.bind();
-
-      verifyAllMocks();
+      verify(transMemoryPresenter).bind();
+      verify(glossaryPresenter).bind();
+      verify(translationEditorPresenter).bind();
+      verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), spyPresenter);
+      verify(spyPresenter).setSouthPanelExpanded(!userWorkspaceContext.hasReadOnlyAccess());
+      verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());
    }
 
    @Test
-   public void hidesSouthPanel()
+   public void testKeyShortcuts()
    {
-      expectHideSouthPanel();
-      replayAllMocks();
-      translationPresenter.bind();
-      translationPresenter.setSouthPanelExpanded(false);
-      verifyAllMocks();
+      when(messages.navigateToNextRow()).thenReturn("next row");
+      when(messages.navigateToPreviousRow()).thenReturn("previous row");
+      when(messages.openEditorInSelectedRow()).thenReturn("open editor");
+      presenter.onBind();
+      verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());
+      List<KeyShortcut> shortcuts = keyShortcutCaptor.getAllValues();
+
+      // test keys
+      KeyShortcut prevKey = shortcuts.get(0);
+      assertThat(prevKey.getAllKeys(), Matchers.equalTo(Keys.setOf(new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J'))));
+      assertThat(prevKey.getDescription(), Matchers.equalTo("previous row"));
+      assertThat(prevKey.getContext(), Matchers.equalTo(ShortcutContext.Navigation));
+      assertThat(prevKey.getKeyEvent(), Matchers.equalTo(KeyShortcut.KeyEvent.KEY_DOWN));
+
+      KeyShortcut nextKey = shortcuts.get(1);
+      assertThat(nextKey.getAllKeys(), Matchers.equalTo(Keys.setOf(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K'))));
+      assertThat(nextKey.getDescription(), Matchers.equalTo("next row"));
+      assertThat(nextKey.getContext(), Matchers.equalTo(ShortcutContext.Navigation));
+      assertThat(nextKey.getKeyEvent(), Matchers.equalTo(KeyShortcut.KeyEvent.KEY_DOWN));
+
+
+      KeyShortcut enterKey = shortcuts.get(2);
+      assertThat(enterKey.getAllKeys(), Matchers.contains(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER)));
+      assertThat(enterKey.getDescription(), Matchers.equalTo("open editor"));
+      assertThat(enterKey.getContext(), Matchers.equalTo(ShortcutContext.Navigation));
+      assertThat(enterKey.getKeyEvent(), Matchers.equalTo(KeyShortcut.KeyEvent.KEY_UP));
+
+      // test key handlers
+      prevKey.getHandler().onKeyShortcut(null);
+      verify(targetContentsPresenter, atLeastOnce()).savePendingChangesIfApplicable();
+      verify(eventBus).fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.PrevEntry));
+
+      nextKey.getHandler().onKeyShortcut(null);
+      verify(targetContentsPresenter, atLeastOnce()).savePendingChangesIfApplicable();
+      verify(eventBus).fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
+
+      // by default all other presenters are not focused
+      when(translationEditorPresenter.getDisplay()).thenReturn(translationEditorDisplay);
+      enterKey.getHandler().onKeyShortcut(null);
+      verify(translationEditorPresenter).openEditorOnSelectedRow();
    }
 
    @Test
-   public void showsSouthPanel()
+   public void onUnbind()
    {
-      expectHideSouthPanel();
-      expectShowSouthPanel(null);
-      replayAllMocks();
-      translationPresenter.bind();
-      translationPresenter.setSouthPanelExpanded(false);
-      translationPresenter.setSouthPanelExpanded(true);
-      verifyAllMocks();
-   }
+      presenter.onUnbind();
 
-
-   /**
-    * similar to showsSouthPanel() but with non-null selected TU
-    */
-   @Test
-   public void fireTMGlossarySearchOnShowSouthPanel()
-   {
-      expectHideSouthPanel();
-      TransUnit mockTU = createMock(TransUnit.class);
-      expectShowSouthPanel(mockTU);
-      // these called for non-null TU
-      mockTransMemoryPresenter.createTMRequestForTransUnit(mockTU);
-      mockGlossaryPresenter.createGlossaryRequestForTransUnit(mockTU);
-      replayAllMocks();
-      translationPresenter.bind();
-      translationPresenter.setSouthPanelExpanded(false);
-      translationPresenter.setSouthPanelExpanded(true);
-      verifyAllMocks();
-   }
-
-//   @Test
-//   public void updateParticipantsOnEnterWorkspace()
-//   {
-//      int numUsersOnline = 5;
-//      expect(mockMessages.nUsersOnline(numUsersOnline)).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
-//      expect(mockMessages.hasJoinedWorkspace("bob")).andReturn(TEST_HAS_JONINED_WORKSPACE_MESSAGE).once();
-//      mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
-//
-//      expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(numUsersOnline);
-//      mockWorkspaceUsersPresenter.dispatchChatAction(null, TEST_HAS_JONINED_WORKSPACE_MESSAGE, MESSAGE_TYPE.SYSTEM_MSG);
-//      mockWorkspaceUsersPresenter.addTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
-//
-//      replayAllMocks();
-//      translationPresenter.bind();
-//      simulateEnterWorkspaceEvent();
-//      verifyAllMocks();
-//   }
-//
-//   @Test
-//   public void updateParticipantsOnExitWorkspace()
-//   {
-//      int numUsersOnline = 2;
-//      expect(mockMessages.nUsersOnline(numUsersOnline)).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
-//      mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
-//      mockWorkspaceUsersPresenter.removeTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-//      expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
-//      mockTargetContentsPresenter.updateTranslators();
-//
-//      replayAllMocks();
-//      translationPresenter.bind();
-//
-//      ExitWorkspaceEvent event = createMock(ExitWorkspaceEvent.class);
-//      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
-//      expect(event.getPerson()).andReturn(new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-//      replay(event);
-//      capturedExitWorkspaceEventHandler.getValue().onExitWorkspace(event);
-//
-//      verifyAllMocks();
-//   }
-
-   @Test
-   public void disablesTmOnReadOnly()
-   {
-      expectSetReadOnly();
-      replayAllMocks();
-      translationPresenter.bind();
-      boolean readOnly = true;
-      simulateReadOnlyEvent(readOnly);
-      verifyAllMocks();
+      verify(transMemoryPresenter).unbind();
+      verify(glossaryPresenter).unbind();
+      verify(translationEditorPresenter).unbind();
    }
 
    @Test
-   public void enablesTmOnNotReadOnly()
+   public void savePendingChange()
    {
-      expectSetReadOnly();
+      presenter.saveEditorPendingChange();
 
-      // re-expansion of south panel depends on toggle state (from before it was
-      // hidden). Simulating contracted in this test, so no re-binding of
-      // presenters is expected.
-      // might be good to have presenter store this rather than keeping state in
-      // view.
-      mockUserWorkspaceContext.setProjectActive(true);
-      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false);
-
-      expectShowSouthPanel(null);
-      
-      replayAllMocks();
-      translationPresenter.bind();
-      simulateReadOnlyEvent(true);
-      simulateReadOnlyEvent(false);
-      verifyAllMocks();
+      verify(targetContentsPresenter).savePendingChangesIfApplicable();
    }
 
-   private void expectSetReadOnly()
+   @Test
+   public void onSouthPanelExpandedIfAlreadyExpanded()
    {
-      mockDisplay.setSouthPanelExpanded(false);
-      mockUserWorkspaceContext.setProjectActive(false);
-      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(true);
-      mockTransMemoryPresenter.unbind();
-      mockGlossaryPresenter.unbind();
+      presenter.setSouthPanelExpanded(true);
+
+      verifyZeroInteractions(display, transMemoryPresenter, glossaryPresenter);
    }
 
-   private void simulateReadOnlyEvent(boolean readOnly)
+   @Test
+   public void onSouthPanelCollapse()
    {
-      WorkspaceContextUpdateEvent readOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
-      expect(readOnlyEvent.isProjectActive()).andReturn(!readOnly).anyTimes();
-      replay(readOnlyEvent);
-      capturedWorkspaceContextUpdateEventHandler.getValue().onWorkspaceContextUpdated(readOnlyEvent);
+      presenter.setSouthPanelExpanded(false);
+
+      verify(display).setSouthPanelExpanded(false);
+      verify(transMemoryPresenter).unbind();
+      verify(glossaryPresenter).unbind();
    }
 
-   private void expectShowSouthPanel(TransUnit selectedTransUnit)
+   @Test
+   public void onSouthPanelExpandedFromCollapsed()
    {
-      // south panel shown
-      mockDisplay.setSouthPanelExpanded(true);
-      mockTransMemoryPresenter.bind();
-      mockGlossaryPresenter.bind();
+      // Given: current selected trans unit and is NOT expanded
+      TransUnit selection = TestFixture.makeTransUnit(1);
+      when(navigationService.getSelectedOrNull()).thenReturn(selection);
+      presenter.setSouthPanelExpanded(false);
 
-      // When shown, TM will try to fire a search for currently selected TU.
-      expect(navigationService.getSelectedOrNull()).andReturn(selectedTransUnit);
+      // When:
+      presenter.setSouthPanelExpanded(true);
+
+      // Then:
+      verify(transMemoryPresenter).bind();
+      verify(glossaryPresenter).bind();
+      verify(transMemoryPresenter).createTMRequestForTransUnit(selection);
+      verify(glossaryPresenter).createGlossaryRequestForTransUnit(selection);
    }
 
-   private void expectHideSouthPanel()
+   @Test
+   public void concealDisplay()
    {
-      mockDisplay.setSouthPanelExpanded(false);
-      mockTransMemoryPresenter.unbind();
-      mockGlossaryPresenter.unbind();
+      presenter.concealDisplay();
+
+      verify(targetContentsPresenter).concealDisplay();
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, false);
    }
 
-   // TODO test for starting in read-only mode
+   @Test
+   public void onWorkspaceContextUpdate()
+   {
+      WorkspaceContextUpdateEvent event = mock(WorkspaceContextUpdateEvent.class);
+      when(event.isProjectActive()).thenReturn(false);
 
-   // TODO test failed participants list request (what behaviour is desired
-   // here? Ignore? Clear list? Display 'unable to retrieve participants list'?)
-
-   // TODO test key shortcuts
-
-   @SuppressWarnings("unchecked")
-   protected void setDefaultBindExpectations() {
-      mockTransMemoryPresenter.bind();
-      mockGlossaryPresenter.bind();
-      mockTranslationEditorPresenter.bind();
-      
-      expect(mockMessages.navigateToNextRow()).andReturn("Next Row").anyTimes();
-      expect(mockMessages.navigateToPreviousRow()).andReturn("Prev Row").anyTimes();
-      expect(mockMessages.openEditorInSelectedRow()).andReturn("Open Editor").anyTimes();
-      
-      
-      expect(mockKeyShortcutPresenter.register(capture(capturedKeyShortcuts))).andReturn(mockHandlerRegistration()).times(3);
-      
-      expectEventHandlerRegistration(mockEventBus, ExitWorkspaceEvent.getType(), ExitWorkspaceEventHandler.class, capturedExitWorkspaceEventHandler);
-      expectEventHandlerRegistration(mockEventBus, WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdateEventHandler);
-
-      expect(mockUserWorkspaceContext.hasReadOnlyAccess()).andReturn(false);
+      presenter.onWorkspaceContextUpdated(event);
+      assertThat(userWorkspaceContext.hasReadOnlyAccess(), Matchers.is(true));
+      verify(transMemoryPresenter).unbind();
+      verify(glossaryPresenter).unbind();
    }
 
 }

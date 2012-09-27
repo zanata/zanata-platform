@@ -410,15 +410,17 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
    /**
     * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
-    * 
+    *
     * @param projectStats project stats
     * @param selectedDocumentStats selected document stats
     * @param currentView current view
+    * @param selectedDocument
     */
-   protected void setStatesForTest(TranslationStats projectStats, TranslationStats selectedDocumentStats, MainView currentView)
+   protected void setStatesForTest(TranslationStats projectStats, TranslationStats selectedDocumentStats, MainView currentView, DocumentInfo selectedDocument)
    {
       if (!GWT.isClient())
       {
+         this.selectedDocument = selectedDocument;
          this.currentView = currentView;
          this.projectStats = projectStats;
          this.selectedDocumentStats = selectedDocumentStats;

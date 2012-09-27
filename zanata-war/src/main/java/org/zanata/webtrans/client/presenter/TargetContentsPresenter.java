@@ -29,6 +29,8 @@ import java.util.NoSuchElementException;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -91,7 +93,8 @@ public class TargetContentsPresenter implements
       RequestValidationEventHandler,
       InsertStringInEditorHandler,
       CopyDataToEditorHandler,
-      WorkspaceContextUpdateEventHandler
+      WorkspaceContextUpdateEventHandler,
+      ExitWorkspaceEventHandler
 // @formatter:on
 {
    private static final int LAST_INDEX = -2;
@@ -319,6 +322,7 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
+      eventBus.addHandler(ExitWorkspaceEvent.getType(), this);
    }
 
    public void savePendingChangesIfApplicable()
@@ -430,7 +434,13 @@ public class TargetContentsPresenter implements
       }
    }
 
-   public void updateTranslators()
+   @Override
+   public void onExitWorkspace(ExitWorkspaceEvent event)
+   {
+      updateTranslators();
+   }
+
+   private void updateTranslators()
    {
       clearTranslatorList(currentEditors);
 
