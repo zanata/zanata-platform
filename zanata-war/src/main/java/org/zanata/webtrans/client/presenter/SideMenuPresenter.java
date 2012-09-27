@@ -20,43 +20,31 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
-import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
-import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
-import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
-import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.SideMenuDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
-import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
  * @author aeng
  * 
  */
-<<<<<<< HEAD
 public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implements NotificationLabelListener,
-      SideMenuDisplay.Listener, ExitWorkspaceEventHandler, EnterWorkspaceEventHandler, PublishWorkspaceChatEventHandler
-=======
-public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implements HasNotificationLabel,
       SideMenuDisplay.Listener, PublishWorkspaceChatEventHandler
->>>>>>> move enter/exit workspace handler methods from SideMenuPresenter to WorkspaceUsersPresenter
 {
    private final EditorOptionsPresenter editorOptionsPresenter;
    private final ValidationOptionsPresenter validationOptionsPresenter;
