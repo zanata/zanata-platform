@@ -20,7 +20,7 @@
     
     <properties>
       <cobertura.total-line-rate>50</cobertura.total-line-rate>
-      <cobertura.total-branch-rate>50</cobertura.total-branch-rate>
+      <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
       <cobertura.halt.failure>false</cobertura.halt.failure>
       <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
       <enunciate.version>1.24</enunciate.version>
