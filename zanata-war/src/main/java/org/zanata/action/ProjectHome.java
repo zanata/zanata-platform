@@ -272,7 +272,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
       if (overrideLocales != null)
       {
          getInstance().setOverrideLocales(overrideLocales);
-         if (!overrideLocales.booleanValue())
+         if (!overrideLocales)
          {
             getInstance().getCustomizedLocales().clear();
          }
@@ -321,6 +321,6 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public boolean checkViewObsolete()
    {
-      return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
+      return identity != null && identity.hasPermission("HProject", "view-obsolete", new Object[] {});
    }
 }
