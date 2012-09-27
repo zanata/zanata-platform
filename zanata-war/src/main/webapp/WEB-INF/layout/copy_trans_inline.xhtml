@@ -53,7 +53,7 @@
                     <th colspan="2">#{messages['jsf.iteration.CopyTrans.Action']}</th>
                 </tr>
                 <tr>
-                    <td>#{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch']}</td>
+                    <td>1. #{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch']}</td>
                     <td class="reject_action" width="75px">
                         #{messages['jsf.iteration.CopyTrans.Action.reject']}
                     </td>
@@ -61,21 +61,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>#{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}</td>
-                    <td id="projectMismatchCell">
-                    </td>
-                    <td>
-                        <h:selectOneRadio id="projectMismatchAction"
-                                          value="#{copyTransOptionsModel.projectMismatchAction}"
-                                          onchange="actionSelected(this, 'projectMismatchCell');">
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
-                        </h:selectOneRadio>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}</td>
+                    <td>2. #{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}</td>
                     <td id="contextMismatchCell">
                     </td>
                     <td>
@@ -89,7 +75,21 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>#{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch']}</td>
+                    <td>3. #{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}</td>
+                    <td id="projectMismatchCell">
+                    </td>
+                    <td>
+                        <h:selectOneRadio id="projectMismatchAction"
+                                          value="#{copyTransOptionsModel.projectMismatchAction}"
+                                          onchange="actionSelected(this, 'projectMismatchCell');">
+                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
+                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
+                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
+                        </h:selectOneRadio>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4. #{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch']}</td>
                     <td id="documentIdMismatchCell">
                     </td>
                     <td>
@@ -103,7 +103,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>#{messages['jsf.iteration.CopyTrans.Condition.final']}</td>
+                    <td>5. #{messages['jsf.iteration.CopyTrans.Condition.final']}</td>
                     <td class="approved_action">
                         #{messages['jsf.Approved']}
                     </td>

@@ -614,13 +614,6 @@
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(viewAllStatusAction.projectSlug), viewAllStatusAction.project.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', viewAllStatusAction.iterationSlug)}"/>
-
-    <navigation from-action="#{viewAllStatusAction.startCopyTrans}">
-      <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
-    </navigation>
-    <navigation from-action="#{viewAllStatusAction.cancelCopyTrans}">
-      <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
-    </navigation>
   </page>
 
   <page view-id="/iteration/source_files.xhtml">

@@ -51,7 +51,7 @@ import org.zanata.service.UserAccountService;
 public class AuthenticationManager
 {
    /* Event used to signal a successful login using the authentication manager.
-    * It is a compliment to the events in the Identity class.*/
+    * It is a complement to the events in the Identity class.*/
    public static final String EVENT_LOGIN_COMPLETED = "org.zanata.security.event.loginCompleted";
 
    @In

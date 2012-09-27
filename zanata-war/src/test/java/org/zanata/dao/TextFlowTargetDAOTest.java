@@ -67,7 +67,7 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
       HDocument doc = (HDocument) getSession().get(HDocument.class, 1L);
       HLocale hLocale = (HLocale) getSession().get(HLocale.class, 1L);
       
-      ScrollableResults results = this.textFlowTargetDAO.findLatestEquivalentTranslations(doc, hLocale);
+      ScrollableResults results = this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, true, true, true);
       
       int rows = 0;
       
@@ -89,5 +89,12 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
       // make sure there where results
       assertThat(rows, greaterThan(0));
    }
-   
+
+   @Test
+   public void testQuery()
+   {
+      HDocument doc = (HDocument) getSession().get(HDocument.class, 1L);
+      HLocale hLocale = (HLocale) getSession().get(HLocale.class, 1L);
+      this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, true, true, true);
+   }
 }

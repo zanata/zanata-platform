@@ -20,6 +20,8 @@
  */
 package org.zanata.testng;
 
+import java.lang.reflect.Method;
+
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
@@ -33,10 +35,11 @@ public class TestMethodListener implements IInvokedMethodListener
    @Override
    public void beforeInvocation(IInvokedMethod method, ITestResult testResult)
    {
-      if( method.getTestMethod().getMethod().isAnnotationPresent(Disabled.class) )
+      Method aMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
+      if( aMethod.isAnnotationPresent(Disabled.class))
       {
          Reporter.setCurrentTestResult(testResult);
-         Reporter.log( "Skip reason: " + method.getTestMethod().getMethod().getAnnotation(Disabled.class).reason(), true );
+         Reporter.log( "Skip reason: " + aMethod.getAnnotation(Disabled.class).reason(), true );
          throw new SkipException("Test method skipped. See report output for reason.");
       }
    }
@@ -44,7 +47,6 @@ public class TestMethodListener implements IInvokedMethodListener
    @Override
    public void afterInvocation(IInvokedMethod method, ITestResult testResult)
    {
-      // TODO Auto-generated method stub
    }
    
 }

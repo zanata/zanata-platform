@@ -25,12 +25,14 @@ import javax.ws.rs.PathParam;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.action.CopyTransManager;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.security.ZanataIdentity;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -39,6 +41,9 @@ import org.zanata.rest.dto.CopyTransStatus;
 @Path("/copytrans")
 public class CopyTransResourceService implements CopyTransResource
 {
+   @In
+   private ZanataIdentity identity;
+
    @In
    private CopyTransManager copyTransManager;
 
@@ -95,11 +100,14 @@ public class CopyTransResourceService implements CopyTransResource
                                              @PathParam("iterationSlug") String iterationSlug,
                                              @PathParam("docId") String docId)
    {
+
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
       if( document == null )
       {
          throw new NoSuchEntityException("Could not find document: " + projectSlug + "/" + iterationSlug + "/" + docId);
       }
+
+      identity.checkPermission("copy-trans", document.getProjectIteration().getProject());
 
       CopyTransProcessHandle processHandle = copyTransManager.getCopyTransProcessHandle(document);
       if( processHandle == null )

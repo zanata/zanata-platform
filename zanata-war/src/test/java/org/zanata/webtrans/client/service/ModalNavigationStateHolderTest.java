@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.service;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -47,6 +48,14 @@ public class ModalNavigationStateHolderTest
    @BeforeClass
    protected void setUpTestData()
    {
+      log.info("TransUnit list size: {}", tuList.size());
+      log.info("transIdStateMap : \n\t{}", transIdStateMap);
+      log.info("idIndexList : \n\t{}", idIndexList);
+   }
+
+   @BeforeMethod
+   protected void setUp() throws Exception
+   {
       transIdStateMap = new HashMap<Long, ContentState>();
       idIndexList = new ArrayList<Long>();
 
@@ -55,14 +64,6 @@ public class ModalNavigationStateHolderTest
          transIdStateMap.put(tu.getId().getId(), tu.getStatus());
          idIndexList.add(tu.getId().getId());
       }
-      ModalNavigationStateHolderTest.log.info("TransUnit list size: {}", tuList.size());
-      ModalNavigationStateHolderTest.log.info("transIdStateMap : \n\t{}", transIdStateMap);
-      ModalNavigationStateHolderTest.log.info("idIndexList : \n\t{}", idIndexList);
-   }
-
-   @BeforeMethod
-   protected void setUp() throws Exception
-   {
       navigationStateHolder = new ModalNavigationStateHolder();
       navigationStateHolder.init(transIdStateMap, idIndexList, 50);
    }
@@ -70,7 +71,7 @@ public class ModalNavigationStateHolderTest
    @Test
    public void testGetInitialPageSize()
    {
-      assertEquals(navigationStateHolder.getCurrentPage(), 0);
+      assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
    @Test
@@ -78,13 +79,13 @@ public class ModalNavigationStateHolderTest
    {
       navigationStateHolder.updateRowIndexInDocument(0);
 
-      assertEquals(navigationStateHolder.getNextRowIndex(), 1);
+      assertThat(navigationStateHolder.getNextRowIndex(), is(1));
 
       navigationStateHolder.updateRowIndexInDocument(3);
-      assertEquals(navigationStateHolder.getNextRowIndex(), 4);
+      assertThat(navigationStateHolder.getNextRowIndex(), is(4));
 
       navigationStateHolder.updateRowIndexInDocument(5);
-      assertEquals(navigationStateHolder.getNextRowIndex(), 6);
+      assertThat(navigationStateHolder.getNextRowIndex(), is(6));
 
    }
 

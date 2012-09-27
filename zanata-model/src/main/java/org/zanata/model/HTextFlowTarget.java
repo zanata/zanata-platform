@@ -30,14 +30,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
@@ -64,7 +60,6 @@ import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
-import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.ContentStateBridge;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
@@ -85,19 +80,6 @@ import lombok.Setter;
  * 
  */
 @Entity
-@NamedQueries({
-   @NamedQuery(name = "HTextFlowTarget.findLatestEquivalentTranslations",
-               query = "select match, textFlow, match.textFlow.document.projectIteration.project " +
-                       "from HTextFlowTarget match, HTextFlow textFlow " +
-                       "left join fetch match.textFlow " +
-                       "where " +
-                       "textFlow.document = :document " +
-                       "and textFlow.contentHash = match.textFlow.contentHash " +
-                       "and match.locale = :locale " +
-                       "and match.state = :state " +
-                       "and match.textFlow != textFlow " +       // Do not reuse its own translations
-                       "order by textFlow.id, match.lastChanged desc")
-})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
