@@ -72,6 +72,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
@@ -156,6 +157,7 @@ public class TargetContentsPresenter implements
 
       bindEventHandlers();
 
+      // TODO extract all key shortcuts to a separate class
       keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1)), ShortcutContext.Edit, messages.copyFromTM(1), new KeyShortcutEventHandler()
       {
          @Override
@@ -416,6 +418,7 @@ public class TargetContentsPresenter implements
       }
    }
 
+   // TODO refactor all these add/remove color/user to separate class
    private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, EditorClientId editorClientId)
    {
       if (!editorClientId.equals(identity.getEditorClientId()) && Objects.equal(currentTransUnitId, selectedTransUnitId))
@@ -813,6 +816,22 @@ public class TargetContentsPresenter implements
       {
          display.updateCachedAndInEditorTargets(targets);
          display.highlightSearch(findMessage);
+      }
+   }
+
+   /**
+    * For testing only
+    * @param currentTransUnitId current trans unit id
+    * @param currentEditorIndex current editor index
+    * @param display current display
+    */
+   protected void setStatesForTesting(TransUnitId currentTransUnitId, int currentEditorIndex, TargetContentsDisplay display)
+   {
+      if (!GWT.isClient())
+      {
+         this.currentTransUnitId = currentTransUnitId;
+         this.currentEditorIndex = currentEditorIndex;
+         this.display = display;
       }
    }
 }
