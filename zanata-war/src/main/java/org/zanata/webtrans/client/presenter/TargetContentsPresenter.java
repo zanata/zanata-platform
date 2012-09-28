@@ -104,18 +104,15 @@ public class TargetContentsPresenter implements
    private final SourceContentsPresenter sourceContentsPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final TranslationHistoryPresenter historyPresenter;
-   private final UserSessionService sessionService;
+   private final Provider<TargetContentsDisplay> displayProvider;
+   private final EditorTranslators editorTranslators;
    private final UserConfigHolder configHolder;
-
+   private final UserWorkspaceContext userWorkspaceContext;
 
    private TargetContentsDisplay display;
-   private Provider<TargetContentsDisplay> displayProvider;
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
    private int currentEditorIndex = 0;
    private List<ToggleEditor> currentEditors = Collections.emptyList();
-
-   private final Identity identity;
-   private final UserWorkspaceContext userWorkspaceContext;
 
    private KeyShortcut enterSavesApprovedShortcut;
    private KeyShortcut escClosesEditorShortcut;
@@ -132,10 +129,9 @@ public class TargetContentsPresenter implements
    @Inject
    //TODO too many constructor dependencies
    // @formatter:off
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, Identity identity, final EventBus eventBus,
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EditorTranslators editorTranslators, final EventBus eventBus,
                                   TableEditorMessages messages,
                                   SourceContentsPresenter sourceContentsPresenter,
-                                  UserSessionService sessionService,
                                   final UserConfigHolder configHolder,
                                   UserWorkspaceContext userWorkspaceContext,
                                   final KeyShortcutPresenter keyShortcutPresenter,
@@ -143,14 +139,13 @@ public class TargetContentsPresenter implements
    // @formatter:on
    {
       this.displayProvider = displayProvider;
+      this.editorTranslators = editorTranslators;
       this.userWorkspaceContext = userWorkspaceContext;
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
       configuration = configHolder.getState();
-      this.sessionService = sessionService;
-      this.identity = identity;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
@@ -355,7 +350,8 @@ public class TargetContentsPresenter implements
    {
       this.currentTransUnitId = currentTransUnitId;
       Log.info("enter show editor with id:" + currentTransUnitId);
-      clearTranslatorList(currentEditors); // clear previous selection's translator list
+
+      editorTranslators.clearTranslatorList(currentEditors); // clear previous selection's translator list
 
       display = findDisplayById(currentTransUnitId);
 
@@ -378,7 +374,7 @@ public class TargetContentsPresenter implements
       else
       {
          display.focusEditor(currentEditorIndex);
-         updateTranslators();
+         editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
          revealDisplay();
       }
    }
@@ -402,7 +398,7 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = currentEditors.size() - 1;
       }
-      else if (currentEditorIndex < 0 || currentEditorIndex >= currentEditors.size())
+      if (currentEditorIndex < 0 || currentEditorIndex >= currentEditors.size())
       {
          Log.warn("editor index is invalid:" + currentEditorIndex + ". Set to 0");
          currentEditorIndex = 0;
@@ -414,54 +410,15 @@ public class TargetContentsPresenter implements
    {
       if (event.getSelectedTransUnit() != null)
       {
-         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson(), event.getEditorClientId());
-      }
-   }
-
-   // TODO refactor all these add/remove color/user to separate class
-   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, EditorClientId editorClientId)
-   {
-      if (!editorClientId.equals(identity.getEditorClientId()) && Objects.equal(currentTransUnitId, selectedTransUnitId))
-      {
-         for (ToggleEditor editor : currentEditors)
-         {
-            editor.addTranslator(person.getName(), sessionService.getColor(editorClientId));
-         }
-      }
-      else
-      {
-         for (ToggleEditor editor : currentEditors)
-         {
-            editor.removeTranslator(person.getName(), sessionService.getColor(editorClientId));
-         }
+         editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
       }
    }
 
    @Override
    public void onExitWorkspace(ExitWorkspaceEvent event)
    {
-      updateTranslators();
-   }
-
-   private void updateTranslators()
-   {
-      clearTranslatorList(currentEditors);
-
-      for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
-      {
-         if (entry.getValue().getSelectedTransUnit() != null)
-         {
-            updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
-         }
-      }
-   }
-
-   private static void clearTranslatorList(List<ToggleEditor> editors)
-   {
-      for (ToggleEditor editor : editors)
-      {
-         editor.clearTranslatorList();
-      }
+      editorTranslators.clearTranslatorList(currentEditors);
+      editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
    }
 
    @Override
@@ -824,14 +781,16 @@ public class TargetContentsPresenter implements
     * @param currentTransUnitId current trans unit id
     * @param currentEditorIndex current editor index
     * @param display current display
+    * @param currentEditors current editors
     */
-   protected void setStatesForTesting(TransUnitId currentTransUnitId, int currentEditorIndex, TargetContentsDisplay display)
+   protected void setStatesForTesting(TransUnitId currentTransUnitId, int currentEditorIndex, TargetContentsDisplay display, List<ToggleEditor> currentEditors)
    {
       if (!GWT.isClient())
       {
          this.currentTransUnitId = currentTransUnitId;
          this.currentEditorIndex = currentEditorIndex;
          this.display = display;
+         this.currentEditors = currentEditors;
       }
    }
 }

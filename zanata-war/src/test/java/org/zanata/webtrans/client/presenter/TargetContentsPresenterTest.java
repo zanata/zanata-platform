@@ -20,7 +20,9 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.hamcrest.MatcherAssert;
@@ -51,7 +53,6 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -114,8 +115,6 @@ public class TargetContentsPresenterTest
    @Captor private ArgumentCaptor<GwtEvent> eventCaptor;
 
    @Mock
-   private UserSessionService sessionService;
-   @Mock
    private Provider<TargetContentsDisplay> displayProvider;
 
    @Mock
@@ -123,6 +122,8 @@ public class TargetContentsPresenterTest
    private UserConfigHolder configHolder;
    @Captor
    private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
+   @Mock
+   private EditorTranslators editorTranslators;
 
    @BeforeMethod
    public void beforeMethod()
@@ -130,7 +131,7 @@ public class TargetContentsPresenterTest
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
       userWorkspaceContext = TestFixture.userWorkspaceContext(true, true, "project", "master");
-      presenter = new TargetContentsPresenter(displayProvider, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, keyShortcutPresenter, historyPresenter);
+      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, keyShortcutPresenter, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -177,7 +178,7 @@ public class TargetContentsPresenterTest
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
 
       // When:
       presenter.saveAsFuzzy(selectedTU.getId());
@@ -215,7 +216,7 @@ public class TargetContentsPresenterTest
    {
       selectedTU = currentPageRows.get(0);
       when(display.getNewTargets()).thenReturn(NEW_TARGETS);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
 
       List<String> result = presenter.getNewTargets();
 
@@ -239,7 +240,7 @@ public class TargetContentsPresenterTest
    {
       //given current display has one editor and current editor has target content
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
       when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedTU.getId());
@@ -259,8 +260,9 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getId()).thenReturn(selectedTU.getId());
-      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
+      when(display.getEditors()).thenReturn(currentEditors);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
 
       // When:
       presenter.onCancel(selectedTU.getId());
@@ -363,7 +365,7 @@ public class TargetContentsPresenterTest
    {
       // Given:
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
 
       // When:
       presenter.showHistory(selectedTU.getId());
@@ -377,7 +379,7 @@ public class TargetContentsPresenterTest
    {
       // Given:
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getNewTargets()).thenReturn(NEW_TARGETS);
       when(display.getId()).thenReturn(selectedTU.getId());
@@ -396,7 +398,7 @@ public class TargetContentsPresenterTest
    {
       // Given: display new targets is equal to cached targets
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getNewTargets()).thenReturn(CACHED_TARGETS);
 
@@ -412,7 +414,7 @@ public class TargetContentsPresenterTest
    public void canGetCurrentTransUnitId()
    {
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
 
       TransUnitId result = presenter.getCurrentTransUnitIdOrNull();
       assertThat(result, Matchers.sameInstance(selectedTU.getId()));
@@ -449,7 +451,7 @@ public class TargetContentsPresenterTest
    {
       selectedTU = currentPageRows.get(0);
       TransUnitId oldSelection = currentPageRows.get(1).getId();
-      presenter.setStatesForTesting(oldSelection, 0, display);
+      presenter.setStatesForTesting(oldSelection, 0, display, null);
 
       presenter.onFocus(selectedTU.getId(), 1);
 
@@ -461,7 +463,7 @@ public class TargetContentsPresenterTest
    @Test
    public void testSetFocus()
    {
-      presenter.setStatesForTesting(selectedTU.getId(), 99, display);
+      presenter.setStatesForTesting(selectedTU.getId(), 99, display, Collections.<ToggleEditor>emptyList());
 
       presenter.setFocus();
 
@@ -589,9 +591,29 @@ public class TargetContentsPresenterTest
    @Test
    public void onExitWorkspaceEvent()
    {
+      // Given: selected display
+      selectedTU = currentPageRows.get(0);
+      ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
+
       presenter.onExitWorkspace(null);
 
-      verify(sessionService).getUserSessionMap();
+      verify(editorTranslators).clearTranslatorList(currentEditors);
+      verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
+   }
+
+   @Test
+   public void onTransUnitEditEvent()
+   {
+      selectedTU = currentPageRows.get(0);
+      TransUnitEditEvent event = mock(TransUnitEditEvent.class);
+      when(event.getSelectedTransUnit()).thenReturn(selectedTU);
+      ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
+
+      presenter.onTransUnitEdit(event);
+
+      verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
    }
 
    @Test
