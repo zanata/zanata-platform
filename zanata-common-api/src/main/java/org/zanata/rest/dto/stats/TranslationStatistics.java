@@ -192,5 +192,14 @@ public class TranslationStatistics implements Serializable
          return (int) Math.ceil(per);
       }
    }
+   
+   @XmlTransient
+   public double getRemainingHours()
+   {
+      double untransHours = getUntranslated() / 250.0;
+      double fuzzyHours = getNeedReview() / 500.0;
+      double remainHours = untransHours + fuzzyHours;
+      return remainHours;
+   }
 
 }
