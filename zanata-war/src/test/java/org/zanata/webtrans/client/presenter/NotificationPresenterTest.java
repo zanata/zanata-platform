@@ -8,6 +8,8 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -15,6 +17,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.view.NotificationDisplay;
+import com.allen_sauer.gwt.log.client.Log;
 
 @Test(groups = { "unit-tests" })
 public class NotificationPresenterTest
@@ -29,6 +32,20 @@ public class NotificationPresenterTest
    private EventBus mockEventBus;
 
    private final static int MSG_TO_KEEP = 100;
+   private int currentLogLevel;
+
+   @BeforeClass
+   void turnLogOff()
+   {
+      currentLogLevel = Log.getCurrentLogLevel();
+      Log.setCurrentLogLevel(Log.LOG_LEVEL_OFF);
+   }
+
+   @AfterClass
+   void turnLogOn()
+   {
+      Log.setCurrentLogLevel(currentLogLevel);
+   }
 
    @BeforeMethod
    void beforeMethod()

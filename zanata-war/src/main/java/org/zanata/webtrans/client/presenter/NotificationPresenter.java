@@ -107,7 +107,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay> 
    public void onNotification(NotificationEvent event)
    {
       appendNotification(event.getSeverity(), event.getMessage(), event.getInlineLink());
-//      Log.info("Notification:" + event.getMessage());
+      Log.info("Notification:" + event.getMessage());
       listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
    }
 }
