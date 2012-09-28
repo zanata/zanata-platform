@@ -54,7 +54,6 @@ public class NotificationPresenterTest
       
       when(mockDisplay.getMessageCount()).thenReturn(msgCount);
       
-      notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
       notificationPresenter.onClearClick();
 
@@ -101,7 +100,6 @@ public class NotificationPresenterTest
       when(mockEvent.getMessage()).thenReturn(msg);
       when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
-      notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
       notificationPresenter.onNotification(mockEvent);
 
@@ -125,7 +123,6 @@ public class NotificationPresenterTest
       when(mockEvent.getMessage()).thenReturn(msg);
       when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
-      notificationPresenter.bind();
       notificationPresenter.setNotificationListener(mockListener);
       for (int i = 0; i < msgCount; i++)
       {
