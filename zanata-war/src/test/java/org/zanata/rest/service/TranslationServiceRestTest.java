@@ -50,6 +50,7 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    {
       seam.reset();
       seam.ignoreNonResolvable()
+            .use("entityManager", getEm())
             .use("session", getSession())
             .use("identity", mockIdentity)
             .useImpl(LocaleServiceImpl.class)
