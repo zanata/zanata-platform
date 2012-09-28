@@ -4,7 +4,6 @@ import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,7 +58,7 @@ public class TransUnitNavigationPresenterTest
    {
       when(userConfigHolder.getNavOption()).thenReturn(NavOption.UNTRANSLATED);
 
-      presenter.onValueChanged(UserConfigChangeEvent.EVENT);
+      presenter.onUserConfigChanged(UserConfigChangeEvent.EVENT);
 
       verify(display).setNavModeTooltip(NavOption.UNTRANSLATED);
    }

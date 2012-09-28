@@ -48,9 +48,6 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.keys.KeyShortcut;
-import org.zanata.webtrans.client.keys.Keys;
-import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -59,17 +56,14 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.rpc.NavOption;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeast;
@@ -101,7 +95,6 @@ public class TargetContentsPresenterTest
    @Mock private EventBus eventBus;
    @Mock private TableEditorMessages tableEditorMessages;
    @Mock private SourceContentsPresenter sourceContentPresenter;
-   @Mock private KeyShortcutPresenter keyShortcutPresenter;
    @Mock private NavigationMessages navMessages;
    private UserWorkspaceContext userWorkspaceContext;
    @Mock private TargetContentsDisplay display;
@@ -120,10 +113,10 @@ public class TargetContentsPresenterTest
    @Mock
    private TranslationHistoryPresenter historyPresenter;
    private UserConfigHolder configHolder;
-   @Captor
-   private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
    @Mock
    private EditorTranslators editorTranslators;
+   @Mock
+   private EditorKeyShortcuts editorKeyShortcuts;
 
    @BeforeMethod
    public void beforeMethod()
@@ -131,7 +124,7 @@ public class TargetContentsPresenterTest
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
       userWorkspaceContext = TestFixture.userWorkspaceContext(true, true, "project", "master");
-      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, keyShortcutPresenter, historyPresenter);
+      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, editorKeyShortcuts, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -145,12 +138,6 @@ public class TargetContentsPresenterTest
       when(displayProvider.get()).thenReturn(display);
       presenter.showData(currentPageRows);
 
-   }
-
-   private void verifyRevealDisplay()
-   {
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Edit, true);
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Navigation, false);
    }
 
    @Test
@@ -476,23 +463,12 @@ public class TargetContentsPresenterTest
    {
       // Given: change default settings in config
       configHolder.setDisplayButtons(false);
-      configHolder.setEnterSavesApproved(true);
-      configHolder.setEscClosesEditor(true);
-      configHolder.setNavOption(NavOption.FUZZY);
 
       // When:
-      presenter.onValueChanged(UserConfigChangeEvent.EVENT);
+      presenter.onUserConfigChanged(UserConfigChangeEvent.EVENT);
 
       // Then:
       verify(display, times(3)).showButtons(false);
-      verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
-      List<KeyShortcut> keyShortcuts = keyShortcutCaptor.getAllValues();
-      // last two new registered keys
-      int size = keyShortcuts.size();
-      KeyShortcut enterKey = keyShortcuts.get(size - 2);
-      KeyShortcut escKey = keyShortcuts.get(size - 1);
-      assertThat(enterKey.getAllKeys(), Matchers.contains(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER)));
-      assertThat(escKey.getAllKeys(), Matchers.contains(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE)));
    }
 
    @Test
@@ -500,8 +476,7 @@ public class TargetContentsPresenterTest
    {
       presenter.revealDisplay();
 
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Edit, true);
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Navigation, false);
+      verify(editorKeyShortcuts).enableEditContext();
    }
 
    @Test
@@ -509,8 +484,7 @@ public class TargetContentsPresenterTest
    {
       presenter.concealDisplay();
 
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Edit, false);
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Navigation, true);
+      verify(editorKeyShortcuts).enableNavigationContext();
    }
 
    @Test
@@ -566,8 +540,7 @@ public class TargetContentsPresenterTest
       // Then:
       verify(display, times(3)).setToMode(ToggleEditor.ViewMode.VIEW);
       verify(display, times(3)).showButtons(false);
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Edit, false);
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Navigation, true);
+      verify(editorKeyShortcuts).enableNavigationContext();
    }
 
    @Test
@@ -584,8 +557,7 @@ public class TargetContentsPresenterTest
       // Then:
       verify(display, times(3)).setToMode(ToggleEditor.ViewMode.EDIT);
       verify(display, atLeast(3)).showButtons(true);
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Edit, true);
-      verify(keyShortcutPresenter, atLeastOnce()).setContextActive(ShortcutContext.Navigation, false);
+      verify(editorKeyShortcuts).enableEditContext();
    }
 
    @Test

@@ -4,5 +4,5 @@ import com.google.gwt.event.shared.EventHandler;
 
 public interface UserConfigChangeHandler extends EventHandler
 {
-   void onValueChanged(UserConfigChangeEvent event);
+   void onUserConfigChanged(UserConfigChangeEvent event);
 }

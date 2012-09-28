@@ -107,7 +107,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    }
 
    @Override
-   public void onValueChanged(UserConfigChangeEvent event)
+   public void onUserConfigChanged(UserConfigChangeEvent event)
    {
       display.setNavModeTooltip(configHolder.getNavOption());
    }

@@ -31,7 +31,7 @@ public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
    @Override
    protected void dispatch(UserConfigChangeHandler handler)
    {
-      handler.onValueChanged(this);
+      handler.onUserConfigChanged(this);
    }
 
    @Override

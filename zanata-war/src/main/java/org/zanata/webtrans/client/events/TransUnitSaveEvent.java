@@ -40,7 +40,6 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
 {
    public static Type<TransUnitSaveEventHandler> TYPE = new Type<TransUnitSaveEventHandler>();
-   public static final TransUnitSaveEvent CANCEL_EDIT_EVENT = new TransUnitSaveEvent(null, null, null, null, null);
 
    private TransUnitId transUnitId;
    private Integer verNum;
