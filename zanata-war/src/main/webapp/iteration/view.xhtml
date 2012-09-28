@@ -100,7 +100,7 @@
 									<h:selectOneMenu id="statsOption" styleClass="headerInput" value="#{viewAllStatusAction.statsOption}">
 		                            	<f:selectItem itemLabel="#{messages['jsf.ByWords']}" itemValue="WORD"/>
 		                            	<f:selectItem itemLabel="#{messages['jsf.Message']}" itemValue="MESSAGE"/>
-										<a4j:support event="onchange" reRender="data_table" ajaxSingle="true"/>
+										<a4j:support event="onchange" reRender="data_table" ajaxSingle="true" action="#{viewAllStatusAction.refreshStatistic}"/>
 				        			</h:selectOneMenu>
 								</h:panelGroup>
 							</f:facet>
