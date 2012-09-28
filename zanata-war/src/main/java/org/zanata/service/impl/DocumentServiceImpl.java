@@ -115,7 +115,7 @@ public class DocumentServiceImpl implements DocumentService
 
       if (copyTrans && nextDocRev == 1)
       {
-         copyClosestEquivalentTranslation(document);
+         //copyClosestEquivalentTranslation(document);
       }
 
       return document;

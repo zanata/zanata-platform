@@ -2,16 +2,21 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
@@ -24,6 +29,9 @@ import org.zanata.model.HTextFlowTarget;
 @Scope(ScopeType.STATELESS)
 public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 {
+
+   @In
+   private EntityManager entityManager;
 
    public TextFlowTargetDAO()
    {
@@ -223,5 +231,44 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             .setParameter("approvedState", ContentState.Approved);
       q.setCacheable(false); // TODO does it make sense to cache scrollable results?
       return q.scroll();
+   }
+
+   /**
+    * Look up the {@link HTextFlowTarget} for the given hLocale in hTextFlow,
+    * creating a new one if none is present.
+    *
+    * @param hTextFlow The parent text flow.
+    * @param hLocale The locale for the text flow target.
+    */
+   public HTextFlowTarget getOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
+   {
+      try
+      {
+         return tryGetOrCreateTarget(hTextFlow, hLocale);
+      }
+      catch (ConstraintViolationException e)
+      {
+         entityManager.refresh(hTextFlow);
+         return tryGetOrCreateTarget(hTextFlow, hLocale);
+      }
+   }
+
+   /**
+    * Throws a constraing Violation exception if for some reason the text flow target has already been created.
+    *
+    * @see TextFlowTargetDAO#getOrCreateTarget(org.zanata.model.HTextFlow, org.zanata.model.HLocale)
+    */
+   private HTextFlowTarget tryGetOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
+   {
+      HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
+
+      if (hTextFlowTarget == null)
+      {
+         hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
+         hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
+         hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
+         entityManager.flush();
+      }
+      return hTextFlowTarget;
    }
 }

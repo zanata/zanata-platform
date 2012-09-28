@@ -116,7 +116,7 @@ public class TranslationServiceImpl implements TranslationService
    {
       HTextFlow hTextFlow = entityManager.find(HTextFlow.class, translateRequest.getTransUnitId().getValue());
       HLocale hLocale = validateLocale(localeId, hTextFlow);
-      HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+      HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
 
       if (translateRequest.getBaseTranslationVersion() != hTextFlowTarget.getVersionNum())
       {
@@ -154,7 +154,7 @@ public class TranslationServiceImpl implements TranslationService
       for (TransUnitUpdateRequest request : translationRequests)
       {
          HTextFlow hTextFlow = entityManager.find(HTextFlow.class, request.getTransUnitId().getValue());
-         HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+         HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
          if (request.hasTargetComment())
          {
             hTextFlowTarget.setComment(new HSimpleComment(request.getTargetComment()));
@@ -205,23 +205,6 @@ public class TranslationServiceImpl implements TranslationService
       HProjectIteration projectIteration = sampleHTextFlow.getDocument().getProjectIteration();
       String projectSlug = projectIteration.getProject().getSlug();
       return localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, projectIteration.getSlug());
-   }
-
-   /**
-    * Look up the {@link HTextFlowTarget} for the given hLocale in hTextFlow,
-    * creating a new one if none is present.
-    */
-   private HTextFlowTarget getOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
-   {
-      HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
-
-      if (hTextFlowTarget == null)
-      {
-         hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
-         hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
-         hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
-      }
-      return hTextFlowTarget;
    }
 
    private boolean translate(@Nonnull HTextFlowTarget hTextFlowTarget, @Nonnull List<String> contentsToSave, ContentState requestedState, int nPlurals)
@@ -400,7 +383,7 @@ public class TranslationServiceImpl implements TranslationService
          }
          else
          {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale.getId());
+            HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(textFlow, hLocale);
             boolean targetChanged = false;
             if (hTarget == null)
             {
@@ -573,7 +556,7 @@ public class TranslationServiceImpl implements TranslationService
 
             TransUnitId tuId = info.getTransUnit().getId();
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class, tuId.getValue());
-            HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+            HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
 
             //check that version has not advanced
             // TODO probably also want to check that source has not been updated

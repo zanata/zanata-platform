@@ -220,7 +220,7 @@ public class CopyTransServiceImpl implements CopyTransService
          {
             HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
             HTextFlow originalTf = (HTextFlow)results.get(1);
-            HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
+            HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
             ContentState copyState = determineContentState(
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
                   originalTf.getDocument().getProjectIteration().getProject().getId().equals( matchingTarget.getTextFlow().getDocument().getProjectIteration().getProject().getId() ),
@@ -229,7 +229,7 @@ public class CopyTransServiceImpl implements CopyTransService
 
             if( shouldOverwrite(hTarget, copyState) )
             {
-               // Create the new translation (or overwrite non-approved ones)
+               /*// Create the new translation (or overwrite non-approved ones)
                if (hTarget == null)
                {
                   hTarget = new HTextFlowTarget(originalTf, locale);
@@ -240,7 +240,7 @@ public class CopyTransServiceImpl implements CopyTransService
                {
                   // increase the versionNum
                   hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-               }
+               }*/
 
                // NB we don't touch creationDate
                hTarget.setTextFlowRevision(originalTf.getRevision());
@@ -256,21 +256,7 @@ public class CopyTransServiceImpl implements CopyTransService
                }
                hcomment.setComment(createComment(matchingTarget));
                ++copyCount;
-
-               // manually flush
-               if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
-               {
-                  entityManager.flush();
-                  entityManager.clear();
-               }
             }
-         }
-
-         // a final flush
-         if( copyCount % DatabaseConstants.BATCH_SIZE != 0 )
-         {
-            entityManager.flush();
-            entityManager.clear();
          }
       }
       catch (HibernateException e)
