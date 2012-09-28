@@ -51,44 +51,23 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
    }
 
-   public void registerKeys(final TargetContentsPresenter targetContentsPresenter)
+   public void registerKeys(TargetContentsPresenter targetContentsPresenter)
    {
-      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1)), ShortcutContext.Edit, messages.copyFromTM(1), new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(0));
-         }
-      }));
+      registerCopyTMKeys();
+      registerNavigationKeys(targetContentsPresenter);
+      registerEditorActionKeys(targetContentsPresenter);
+   }
 
-      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_2), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2)), ShortcutContext.Edit, messages.copyFromTM(2), new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(1));
-         }
-      }));
+   protected void registerCopyTMKeys()
+   {
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1)), ShortcutContext.Edit, messages.copyFromTM(1), new CopyTMKeyShortcutHandler(0)));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_2), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2)), ShortcutContext.Edit, messages.copyFromTM(2), new CopyTMKeyShortcutHandler(1)));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_3), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3)), ShortcutContext.Edit, messages.copyFromTM(3), new CopyTMKeyShortcutHandler(2)));
+      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_4), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4)), ShortcutContext.Edit, messages.copyFromTM(4), new CopyTMKeyShortcutHandler(3)));
+   }
 
-      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_3), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3)), ShortcutContext.Edit, messages.copyFromTM(3), new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(2));
-         }
-      }));
-
-      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_4), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4)), ShortcutContext.Edit, messages.copyFromTM(4), new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(3));
-         }
-      }));
-
+   protected void registerNavigationKeys(final TargetContentsPresenter targetContentsPresenter)
+   {
       keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K')), ShortcutContext.Edit, messages.moveToNextRow(), new KeyShortcutEventHandler()
       {
          @Override
@@ -132,7 +111,10 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
          }
       });
       keyShortcutPresenter.register(prevStateShortcut);
+   }
 
+   protected void registerEditorActionKeys(final TargetContentsPresenter targetContentsPresenter)
+   {
       // Register shortcut CTRL+S to save as fuzzy
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.CTRL_KEY, 'S'), ShortcutContext.Edit, messages.saveAsFuzzy(), KeyShortcut.KeyEvent.KEY_DOWN, true, true, new KeyShortcutEventHandler()
       {
@@ -271,5 +253,21 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
    {
       keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
       keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+   }
+
+   private class CopyTMKeyShortcutHandler implements KeyShortcutEventHandler
+   {
+      private int tmIndex;
+
+      private CopyTMKeyShortcutHandler(int tmIndex)
+      {
+         this.tmIndex = tmIndex;
+      }
+
+      @Override
+      public void onKeyShortcut(KeyShortcutEvent event)
+      {
+         eventBus.fireEvent(new TransMemoryShortcutCopyEvent(tmIndex));
+      }
    }
 }
