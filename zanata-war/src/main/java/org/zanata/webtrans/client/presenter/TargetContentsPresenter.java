@@ -271,7 +271,7 @@ public class TargetContentsPresenter implements
          currentEditorIndex = 0;
          saveCurrent(ContentState.Approved);
          display.updateCachedAndInEditorTargets(getNewTargets());
-         eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
+         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
 
@@ -293,7 +293,7 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = LAST_INDEX;
          savePendingChangesIfApplicable();
-         eventBus.fireEvent(new NavTransUnitEvent(PrevEntry));
+         eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
       }
    }
 
@@ -308,7 +308,7 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = 0;
          savePendingChangesIfApplicable();
-         eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
+         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
 

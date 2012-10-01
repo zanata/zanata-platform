@@ -23,6 +23,8 @@ package org.zanata.webtrans.client.gin;
 import java.util.List;
 import java.util.Map;
 
+import de.novanic.eventservice.client.event.RemoteEventService;
+import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
@@ -283,5 +285,15 @@ public class WebTransClientModule extends AbstractPresenterModule
    private static String distinctColor(int rndRedColor, int rndGreenColor, int rndBlueColor)
    {
       return CssColor.make(rndRedColor, rndGreenColor, rndBlueColor).value();
+   }
+
+   /**
+    * @see EventProcessor
+    * @return RemoteEventService
+    */
+   @Provides
+   public RemoteEventService removeEventService()
+   {
+      return RemoteEventServiceFactory.getInstance().getRemoteEventService();
    }
 }
