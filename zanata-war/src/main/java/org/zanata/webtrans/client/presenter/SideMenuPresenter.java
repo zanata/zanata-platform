@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.view.SideMenuDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -51,6 +52,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final NotificationPresenter notificationPresenter;
 
+   private final UserSessionService sessionService;
    private final UserWorkspaceContext userWorkspaceContext;
 
    private final DispatchAsync dispatcher;
@@ -64,6 +66,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
                             ValidationOptionsPresenter validationOptionsPresenter,
                             WorkspaceUsersPresenter workspaceUsersPresenter,
                             NotificationPresenter notificationPresenter,
+                            UserSessionService sessionService,
                             UserWorkspaceContext userWorkspaceContext)
    // @formatter:on
    {
@@ -72,6 +75,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
       this.validationOptionsPresenter = validationOptionsPresenter;
       this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.notificationPresenter = notificationPresenter;
+      this.sessionService = sessionService;
 
       this.userWorkspaceContext = userWorkspaceContext;
       this.dispatcher = dispatcher;
@@ -122,7 +126,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
          @Override
          public void onSuccess(GetTranslatorListResult result)
          {
-            workspaceUsersPresenter.initUserList(result.getTranslatorList());
+            sessionService.initUserList(result.getTranslatorList());
          }
       });
    }

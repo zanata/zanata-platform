@@ -36,6 +36,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,8 +58,6 @@ public class WorkspaceUsersPresenterTest
    @Mock
    private WebTransMessages messages;
    @Mock
-   private UserSessionService sessionService;
-   @Mock
    private KeyShortcutPresenter keyShortcutPresenter;
    @Captor
    private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
@@ -71,7 +70,7 @@ public class WorkspaceUsersPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new WorkspaceUsersPresenter(display, eventBus, identity, dispatcher, messages, sessionService, keyShortcutPresenter);
+      presenter = new WorkspaceUsersPresenter(display, eventBus, identity, dispatcher, messages, keyShortcutPresenter);
       verify(display).setListener(presenter);
    }
 
@@ -84,8 +83,6 @@ public class WorkspaceUsersPresenterTest
 
       verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
       verify(eventBus).addHandler(PublishWorkspaceChatEvent.getType(), presenter);
-      verify(eventBus).addHandler(ExitWorkspaceEvent.getType(), presenter);
-      verify(eventBus).addHandler(EnterWorkspaceEvent.getType(), presenter);
       verify(display).appendChat(null, null, "Warning! This is a public channel", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_WARNING);
    }
 
@@ -115,50 +112,6 @@ public class WorkspaceUsersPresenterTest
       verify(spyPresenter).dispatchChatAction(person.getId().toString(), "hello", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
    }
 
-   @Test
-   public void onEnterWorkspaceEvent()
-   {
-      // Given:
-      EnterWorkspaceEvent event = mock(EnterWorkspaceEvent.class);
-      EditorClientId editorClientId = editorClientId();
-      Person person = person();
-      when(event.getEditorClientId()).thenReturn(editorClientId);
-      when(event.getPerson()).thenReturn(person);
-      when(messages.hasJoinedWorkspace(person.getId().toString())).thenReturn("someone entered");
-      when(sessionService.getColor(editorClientId)).thenReturn("red");
-      when(sessionService.getUserPanel(editorClientId)).thenReturn(userPanelSessionItem);
-      when(userPanelSessionItem.getPanel()).thenReturn(userSessionPanel);
-
-      // When:
-      presenter.onEnterWorkspace(event);
-
-      // Then:
-      verify(userPanelSessionItem).setSelectedTransUnit(null);
-      verify(userSessionPanel).setColor("red");
-      verify(sessionService).updateTranslatorStatus(editorClientId, null);
-   }
-
-   @Test
-   public void onEnterWorkspaceEventWhenUserIsNotThereYet()
-   {
-      // Given: session service don't have that user yet
-      EnterWorkspaceEvent event = mock(EnterWorkspaceEvent.class);
-      EditorClientId editorClientId = editorClientId();
-      Person person = person();
-      when(event.getEditorClientId()).thenReturn(editorClientId);
-      when(event.getPerson()).thenReturn(person);
-      when(messages.hasJoinedWorkspace(person.getId().toString())).thenReturn("someone entered");
-      when(sessionService.getColor(editorClientId)).thenReturn("red");
-      when(sessionService.getUserPanel(editorClientId)).thenReturn(null); // user is not there
-      when(display.addUser(person)).thenReturn(userSessionPanel);
-
-      // When:
-      presenter.onEnterWorkspace(event);
-
-      // Then:
-      verify(sessionService).addUser(eq(editorClientId), isA(UserPanelSessionItem.class));
-   }
-
    private static Person person()
    {
       return new Person(new PersonId("pid"), "someone", "url");
@@ -167,30 +120,6 @@ public class WorkspaceUsersPresenterTest
    private static EditorClientId editorClientId()
    {
       return new EditorClientId("session", 1);
-   }
-
-   @Test
-   public void onExitWorkspaceEvent()
-   {
-      // Given:
-      EditorClientId editorClientId = editorClientId();
-      Person person = person();
-      when(messages.hasQuitWorkspace(person.getId().toString())).thenReturn("someone has quit");
-      WorkspaceUsersPresenter spyPresenter = Mockito.spy(presenter);
-      doNothing().when(spyPresenter).dispatchChatAction(null, "someone has quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
-      ExitWorkspaceEvent event = mock(ExitWorkspaceEvent.class);
-      when(event.getEditorClientId()).thenReturn(editorClientId);
-      when(event.getPerson()).thenReturn(person);
-      when(sessionService.getUserPanel(editorClientId)).thenReturn(userPanelSessionItem);
-      when(userPanelSessionItem.getPanel()).thenReturn(userSessionPanel);
-
-      // When:
-      spyPresenter.onExitWorkspace(event);
-
-      // Then:
-      verify(sessionService).removeUser(editorClientId);
-      verify(display).removeUser(userSessionPanel);
-      verify(spyPresenter).dispatchChatAction(null, "someone has quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
    }
 
    @Test
@@ -245,5 +174,33 @@ public class WorkspaceUsersPresenterTest
       presenter.onPublishWorkspaceChat(event);
 
       verify(display).appendChat(event.getPersonId(), event.getTimestamp(), event.getMsg(), event.getMessageType());
+   }
+
+   @Test
+   public void onAddNewUser()
+   {
+      Person person = person();
+      when(messages.hasJoinedWorkspace(person.getId().toString())).thenReturn("someone entered");
+      WorkspaceUsersPresenter spyPresenter = spy(presenter);
+      doNothing().when(spyPresenter).dispatchChatAction(null, "someone entered", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+
+      spyPresenter.addNewUser(person);
+
+      verify(spyPresenter).dispatchChatAction(null, "someone entered", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+      verify(display).addUser(person);
+   }
+
+   @Test
+   public void onRemoveUser()
+   {
+      Person person = person();
+      when(messages.hasQuitWorkspace(person.getId().toString())).thenReturn("someone quit");
+      WorkspaceUsersPresenter spyPresenter = spy(presenter);
+      doNothing().when(spyPresenter).dispatchChatAction(null, "someone quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+
+      spyPresenter.removeUser(userSessionPanel, person.getId().toString());
+
+      verify(spyPresenter).dispatchChatAction(null, "someone quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+      verify(display).removeUser(userSessionPanel);
    }
 }

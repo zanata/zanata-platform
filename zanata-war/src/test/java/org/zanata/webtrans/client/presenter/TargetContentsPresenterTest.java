@@ -140,7 +140,6 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
-      verify(eventBus).addHandler(ExitWorkspaceEvent.getType(), presenter);
 
       when(displayProvider.get()).thenReturn(display);
       presenter.showData(currentPageRows);
@@ -565,26 +564,6 @@ public class TargetContentsPresenterTest
       verify(display, times(3)).setToMode(ToggleEditor.ViewMode.EDIT);
       verify(display, atLeast(3)).showButtons(true);
       verify(editorKeyShortcuts).enableEditContext();
-   }
-
-   @Test
-   public void onExitWorkspaceEvent()
-   {
-      // Given: selected display
-      selectedTU = currentPageRows.get(0);
-      ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
-      ExitWorkspaceEvent event = mock(ExitWorkspaceEvent.class);
-      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
-      when(event.getEditorClientId()).thenReturn(editorClientId);
-
-      presenter.onExitWorkspace(event);
-
-      InOrder inOrder = inOrder(editorTranslators);
-//      inOrder.verify(editorTranslators).removeUser(editorClientId);
-      inOrder.verify(editorTranslators).clearTranslatorList(currentEditors);
-      inOrder.verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
-      verifyNoMoreInteractions(editorTranslators);
    }
 
    @Test

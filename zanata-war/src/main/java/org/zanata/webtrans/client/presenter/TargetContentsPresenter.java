@@ -75,8 +75,7 @@ public class TargetContentsPresenter implements
       RequestValidationEventHandler,
       InsertStringInEditorHandler,
       CopyDataToEditorHandler,
-      WorkspaceContextUpdateEventHandler,
-      ExitWorkspaceEventHandler
+      WorkspaceContextUpdateEventHandler
 // @formatter:on
 {
    private static final int LAST_INDEX = -2;
@@ -135,7 +134,6 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
-      eventBus.addHandler(ExitWorkspaceEvent.getType(), this);
    }
 
    public void savePendingChangesIfApplicable()
@@ -190,6 +188,7 @@ public class TargetContentsPresenter implements
       else
       {
          display.focusEditor(currentEditorIndex);
+         editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
          revealDisplay();
       }
    }
@@ -228,15 +227,6 @@ public class TargetContentsPresenter implements
          editorTranslators.clearTranslatorList(currentEditors);
          editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
       }
-   }
-
-   @Override
-   public void onExitWorkspace(ExitWorkspaceEvent event)
-   {
-      // FIXME editorTranslators and workspaceUsersPresenter both share session user map. Remove an entry from the map will cause one of it out of sync with the map.
-//      editorTranslators.removeUser(event.getEditorClientId());
-      editorTranslators.clearTranslatorList(currentEditors);
-      editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
    }
 
    @Override
