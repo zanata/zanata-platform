@@ -289,13 +289,13 @@ public class DocumentListTable extends CellTable<DocumentNode>
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getDocInfo().getStats().getRemainingWordsHours() == o2.getDocInfo().getStats().getRemainingWordsHours())
+            if (o1.getDocInfo().getStats().getRemainingHours() == o2.getDocInfo().getStats().getRemainingHours())
             {
                return 0;
             }
             if (o1 != null && o2 != null)
             {
-               return o1.getDocInfo().getStats().getRemainingWordsHours() > o2.getDocInfo().getStats().getRemainingWordsHours() ? 1 : -1;
+               return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
             }
             return -1;
          }
