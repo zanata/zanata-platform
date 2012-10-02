@@ -8,14 +8,27 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j">
 
+    <script type="text/javascript">
+        function submitSearchOnEnter(e)
+        {
+            if(e.keyCode == 13 )
+            {
+                return false;
+            }
+            else
+            {
+            	#{rich:element('nameLabel')}.innerHTML='';
+            	#{rich:element('emailLabel')}.innerHTML='';
+            }
+        }
+    </script>
+
     <h:panelGrid>
         <s:decorate id="userField"
                     template="../layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-            <h:inputText id="input" value="#{accountSearch.maintainer}" size="40" >
-               
-            </h:inputText>
-            <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input">
+            <h:inputText id="input" value="#{accountSearch.maintainer}" size="40" onkeydown="return submitSearchOnEnter(event)"/>
+            <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input" nothingLabel="No results">
             	<a4j:support event="onselect" action="#{accountSearch.update}" reRender="results"/>
                 <h:column>
                     <h:outputText value="#{account.username}"/>
@@ -28,11 +41,11 @@
             <h:panelGrid id="output" >
                 <s:decorate id="output1" template="../layout/display.xhtml">
                     <ui:define name="label">#{messages['jsf.Name']} </ui:define>
-                    <h:outputText value="#{accountSearch.person.name}" />
+                    <h:outputText value="#{accountSearch.person.name}" id="nameLabel" />
                 </s:decorate>
                 <s:decorate id="output2" template="../layout/display.xhtml">
                     <ui:define name="label">#{messages['jsf.Email']} </ui:define>
-                    <h:outputText value="#{accountSearch.person.email}" />
+                    <h:outputText value="#{accountSearch.person.email}" id="emailLabel" />
                 </s:decorate>
             </h:panelGrid>
         </div>

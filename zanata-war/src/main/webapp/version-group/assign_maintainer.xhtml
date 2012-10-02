@@ -11,7 +11,7 @@
    
     <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupMaintainerManageAction.group.name}:#{messages['jsf.AddGroupMaintainer']}</ui:define>
     <ui:define name="right_content">
-		<rich:panel>
+		<rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddGroupMaintainer']}</a>
     	</rich:panel>

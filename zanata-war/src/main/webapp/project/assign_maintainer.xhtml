@@ -11,7 +11,7 @@
    
     <ui:define name="page_title">#{projectHome.instance.name}:#{messages['jsf.AddProjectMaintainer']}</ui:define>
     <ui:define name="right_content">
-		<rich:panel>
+		<rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
       	    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddProjectMaintainer']}</a>
     	</rich:panel>
