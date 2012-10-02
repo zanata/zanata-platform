@@ -25,9 +25,17 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
+import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
+import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
@@ -52,6 +60,8 @@ public class UserSessionService implements TransUnitEditEventHandler
       userSessionMap = Maps.newHashMap();
 
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
+//      eventBus.addHandler(ExitWorkspaceEvent.getType(), this);
+//      eventBus.addHandler(EnterWorkspaceEvent.getType(), this);
    }
 
    @Override

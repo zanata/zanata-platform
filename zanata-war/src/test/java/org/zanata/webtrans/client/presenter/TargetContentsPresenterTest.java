@@ -29,6 +29,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -53,6 +54,7 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -70,6 +72,7 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -571,11 +574,17 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
       presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
+      ExitWorkspaceEvent event = mock(ExitWorkspaceEvent.class);
+      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+      when(event.getEditorClientId()).thenReturn(editorClientId);
 
-      presenter.onExitWorkspace(null);
+      presenter.onExitWorkspace(event);
 
-      verify(editorTranslators).clearTranslatorList(currentEditors);
-      verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
+      InOrder inOrder = inOrder(editorTranslators);
+//      inOrder.verify(editorTranslators).removeUser(editorClientId);
+      inOrder.verify(editorTranslators).clearTranslatorList(currentEditors);
+      inOrder.verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
+      verifyNoMoreInteractions(editorTranslators);
    }
 
    @Test
@@ -589,7 +598,10 @@ public class TargetContentsPresenterTest
 
       presenter.onTransUnitEdit(event);
 
-      verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
+      InOrder inOrder = inOrder(editorTranslators);
+      inOrder.verify(editorTranslators).clearTranslatorList(currentEditors);
+      inOrder.verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
+      verifyNoMoreInteractions(editorTranslators);
    }
 
    @Test

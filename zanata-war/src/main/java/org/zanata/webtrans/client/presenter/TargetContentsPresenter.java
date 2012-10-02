@@ -56,7 +56,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gwt.core.client.GWT;
@@ -65,8 +64,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
+import static com.google.common.base.Objects.equal;
 
 @Singleton
 // @formatter:off
@@ -156,7 +154,7 @@ public class TargetContentsPresenter implements
 
    public boolean currentEditorContentHasChanged()
    {
-      return display != null && !Objects.equal(display.getCachedTargets(), display.getNewTargets());
+      return display != null && !equal(display.getCachedTargets(), display.getNewTargets());
    }
 
    private ToggleEditor getCurrentEditor()
@@ -192,7 +190,6 @@ public class TargetContentsPresenter implements
       else
       {
          display.focusEditor(currentEditorIndex);
-         editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
          revealDisplay();
       }
    }
@@ -228,6 +225,7 @@ public class TargetContentsPresenter implements
    {
       if (event.getSelectedTransUnit() != null)
       {
+         editorTranslators.clearTranslatorList(currentEditors);
          editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
       }
    }
@@ -235,6 +233,8 @@ public class TargetContentsPresenter implements
    @Override
    public void onExitWorkspace(ExitWorkspaceEvent event)
    {
+      // FIXME editorTranslators and workspaceUsersPresenter both share session user map. Remove an entry from the map will cause one of it out of sync with the map.
+//      editorTranslators.removeUser(event.getEditorClientId());
       editorTranslators.clearTranslatorList(currentEditors);
       editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
    }
@@ -361,7 +361,7 @@ public class TargetContentsPresenter implements
 
    private void ensureRowSelection(TransUnitId transUnitId)
    {
-      if (!Objects.equal(currentTransUnitId, transUnitId))
+      if (!equal(currentTransUnitId, transUnitId))
       {
          //user click on buttons that is not on current selected row
          eventBus.fireEvent(new TableRowSelectedEvent(transUnitId));
@@ -408,7 +408,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (Objects.equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
+      if (equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
       {
          for (ToggleEditor editor : display.getEditors())
          {

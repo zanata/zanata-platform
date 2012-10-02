@@ -68,4 +68,9 @@ public class EditorTranslators
          }
       }
    }
+
+   public void removeUser(EditorClientId editorClientId)
+   {
+      sessionService.removeUser(editorClientId);
+   }
 }
