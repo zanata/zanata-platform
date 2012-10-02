@@ -2,6 +2,7 @@ package org.zanata.webtrans.client;
 
 import java.util.HashMap;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
@@ -153,7 +154,7 @@ public class EventProcessor implements RemoteEventListener
          public void onSuccess(Void result)
          {
             Log.info("EventProcessor is now listening for events in the domain " + domain.getName());
-            String connectionId = ConfigurationTransferableDependentFactory.getConfiguration().getConnectionId();
+            String connectionId = eventServiceConfiguration().getConnectionId();
             callback.onSuccess(connectionId);
          }
 
@@ -164,6 +165,15 @@ public class EventProcessor implements RemoteEventListener
             callback.onFailure(e);
          }
       });
+   }
+
+   /**
+    * mark as protected so that we can mock and test in unit test.
+    * @return EventServiceConfigurationTransferable
+    */
+   protected EventServiceConfigurationTransferable eventServiceConfiguration()
+   {
+      return ConfigurationTransferableDependentFactory.getConfiguration();
    }
 
    @Override

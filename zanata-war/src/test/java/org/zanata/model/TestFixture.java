@@ -86,6 +86,11 @@ public class TestFixture
       return hTextFlow;
    }
 
+   public static UserWorkspaceContext userWorkspaceContext()
+   {
+      return userWorkspaceContext(true, true, "project", "master");
+   }
+
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug)
    {
       return new UserWorkspaceContext(workspaceContext(new LocaleId("en-US")), projectActive, hasWriteAccess, true);
