@@ -56,7 +56,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gwt.core.client.GWT;
@@ -65,8 +64,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
+import static com.google.common.base.Objects.equal;
 
 @Singleton
 // @formatter:off
@@ -77,8 +75,7 @@ public class TargetContentsPresenter implements
       RequestValidationEventHandler,
       InsertStringInEditorHandler,
       CopyDataToEditorHandler,
-      WorkspaceContextUpdateEventHandler,
-      ExitWorkspaceEventHandler
+      WorkspaceContextUpdateEventHandler
 // @formatter:on
 {
    private static final int LAST_INDEX = -2;
@@ -137,7 +134,6 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
-      eventBus.addHandler(ExitWorkspaceEvent.getType(), this);
    }
 
    public void savePendingChangesIfApplicable()
@@ -156,7 +152,7 @@ public class TargetContentsPresenter implements
 
    public boolean currentEditorContentHasChanged()
    {
-      return display != null && !Objects.equal(display.getCachedTargets(), display.getNewTargets());
+      return display != null && !equal(display.getCachedTargets(), display.getNewTargets());
    }
 
    private ToggleEditor getCurrentEditor()
@@ -228,15 +224,9 @@ public class TargetContentsPresenter implements
    {
       if (event.getSelectedTransUnit() != null)
       {
+         editorTranslators.clearTranslatorList(currentEditors);
          editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
       }
-   }
-
-   @Override
-   public void onExitWorkspace(ExitWorkspaceEvent event)
-   {
-      editorTranslators.clearTranslatorList(currentEditors);
-      editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
    }
 
    @Override
@@ -271,7 +261,7 @@ public class TargetContentsPresenter implements
          currentEditorIndex = 0;
          saveCurrent(ContentState.Approved);
          display.updateCachedAndInEditorTargets(getNewTargets());
-         eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
+         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
 
@@ -293,7 +283,7 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = LAST_INDEX;
          savePendingChangesIfApplicable();
-         eventBus.fireEvent(new NavTransUnitEvent(PrevEntry));
+         eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
       }
    }
 
@@ -308,7 +298,7 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = 0;
          savePendingChangesIfApplicable();
-         eventBus.fireEvent(new NavTransUnitEvent(NextEntry));
+         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
 
@@ -361,7 +351,7 @@ public class TargetContentsPresenter implements
 
    private void ensureRowSelection(TransUnitId transUnitId)
    {
-      if (!Objects.equal(currentTransUnitId, transUnitId))
+      if (!equal(currentTransUnitId, transUnitId))
       {
          //user click on buttons that is not on current selected row
          eventBus.fireEvent(new TableRowSelectedEvent(transUnitId));
@@ -408,7 +398,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (Objects.equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
+      if (equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
       {
          for (ToggleEditor editor : display.getEditors())
          {

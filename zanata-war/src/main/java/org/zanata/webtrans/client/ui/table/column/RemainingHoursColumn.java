@@ -43,14 +43,7 @@ public class RemainingHoursColumn extends TextColumn<DocumentNode> implements Ha
    @Override
    public String getValue(DocumentNode object)
    {
-      if (statsOption.equals(STATS_OPTION_MESSAGE))
-      {
-         return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingMsgHours());
-      }
-      else
-      {
-         return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingWordsHours());
-      }
+      return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingHours());
    }
 
    @Override

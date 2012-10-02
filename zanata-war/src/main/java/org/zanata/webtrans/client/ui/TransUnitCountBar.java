@@ -163,14 +163,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       switch (labelFormat)
       {
       case PERCENT_COMPLETE_HRS:
-         if (statsByWords)
-         {
-            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingWordsHours()));
-         }
-         else
-         {
-            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingMsgHours()));
-         }
+         label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingHours()));
          break;
       case PERCENT_COMPLETE:
          label.setText(messages.statusBarLabelPercentage(stats.getApprovedPercent(statsByWords)));

@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.view.SideMenuDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -65,12 +66,14 @@ public class SideMenuPresenterTest
    private WebTransMessages messages;
    @Captor
    private ArgumentCaptor<ShowSideMenuEvent> eventCaptor;
+   @Mock
+   private UserSessionService sessionService;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new SideMenuPresenter(display, eventBus, dispatcher, editorOptionsPresenter, validationOptionsPresenter, workspaceUsersPresenter, notificationPresenter, userWorkspaceContext);
+      presenter = new SideMenuPresenter(display, eventBus, dispatcher, editorOptionsPresenter, validationOptionsPresenter, workspaceUsersPresenter, notificationPresenter, sessionService, userWorkspaceContext);
       verify(display).setListener(presenter);
    }
 
@@ -119,7 +122,7 @@ public class SideMenuPresenterTest
       AsyncCallback callback = callbackCaptor.getValue();
       callback.onSuccess(result);
       verify(result).getTranslatorList();
-      verify(workspaceUsersPresenter).initUserList(result.getTranslatorList());
+      verify(sessionService).initUserList(result.getTranslatorList());
    }
 
    @Test

@@ -101,7 +101,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          {
 //            translationEditorPresenter.gotoPrevRow(false);
             targetContentsPresenter.savePendingChangesIfApplicable();
-            eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.PrevEntry));
+            eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
          }
       };
 
@@ -112,7 +112,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          {
 //            translationEditorPresenter.gotoNextRow(false);
             targetContentsPresenter.savePendingChangesIfApplicable();
-            eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
+            eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
          }
       };
 

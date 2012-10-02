@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
@@ -55,5 +56,13 @@ public class TranslatorInteractionService
    public EditorClientId getCurrentEditorClientId()
    {
       return identity.getEditorClientId();
+   }
+
+   public void personExit(Person person, TransUnit selectedTransUnit)
+   {
+      if (selectedTransUnit != null)
+      {
+         dispatcher.execute(new TransUnitEditAction(person, selectedTransUnit), new NoOpAsyncCallback<TransUnitEditResult>());
+      }
    }
 }

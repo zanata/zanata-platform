@@ -122,7 +122,7 @@ public class EventProcessor implements RemoteEventListener
       public GwtEvent<?> getEvent(SessionEventData sessionEventData)
       {
          EventFactory<?> factory = factories.get(sessionEventData.getClass());
-         if (factories == null)
+         if (factory == null)
          {
             Log.warn("Could not find factory for class " + sessionEventData.getClass());
             return null;
@@ -137,11 +137,11 @@ public class EventProcessor implements RemoteEventListener
    private final EventBus eventBus;
 
    @Inject
-   public EventProcessor(EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userWorkspaceContext)
+   public EventProcessor(EventBus eventBus, UserWorkspaceContext userWorkspaceContext, RemoteEventService remoteEventService)
    {
       this.eventBus = eventBus;
+      this.remoteEventService = remoteEventService;
       this.eventRegistry = new EventRegistry();
-      this.remoteEventService = RemoteEventServiceFactory.getInstance().getRemoteEventService();
       this.domain = DomainFactory.getDomain(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().toString());
    }
 

@@ -5,6 +5,13 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
 {
+   public static final NavTransUnitEvent PREV_ENTRY_EVENT = new NavTransUnitEvent(NavigationType.PrevEntry);
+   public static final NavTransUnitEvent NEXT_ENTRY_EVENT = new NavTransUnitEvent(NavigationType.NextEntry);
+   public static final NavTransUnitEvent PREV_STATE_EVENT = new NavTransUnitEvent(NavigationType.PrevState);
+   public static final NavTransUnitEvent NEXT_STATE_EVENT = new NavTransUnitEvent(NavigationType.NextState);
+   public static final NavTransUnitEvent FIRST_ENTRY_EVENT = new NavTransUnitEvent(NavigationType.FirstEntry);
+   public static final NavTransUnitEvent LAST_ENTRY_EVENT = new NavTransUnitEvent(NavigationType.LastEntry);
+
    public enum NavigationType
    {
       PrevEntry, NextEntry, PrevState, NextState, FirstEntry, LastEntry
