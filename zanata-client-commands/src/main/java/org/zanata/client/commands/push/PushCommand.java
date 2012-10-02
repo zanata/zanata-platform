@@ -13,8 +13,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.ClientResponseFailure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -478,8 +481,21 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.warn("Could not start Copy Trans for above document. Proceeding");
          return;
       }
-      CopyTransStatus copyTransStatus =
-            this.copyTransResource.getCopyTransStatus(getOpts().getProj(), getOpts().getProjectVersion(), docName);
+      CopyTransStatus copyTransStatus = null;
+
+      try
+      {
+         copyTransStatus = this.copyTransResource.getCopyTransStatus(getOpts().getProj(), getOpts().getProjectVersion(), docName);
+      }
+      catch (ClientResponseFailure failure)
+      {
+         // 404 - Probably because of an old server
+         if( failure.getResponse().getResponseStatus() == Response.Status.NOT_FOUND )
+         {
+            log.warn("Copy Trans not started (Probably an old version of the server.)");
+            return;
+         }
+      }
       ConsoleUtils.startProgressFeedback();
 
       while( copyTransStatus.isInProgress() )
