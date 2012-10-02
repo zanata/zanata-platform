@@ -61,14 +61,12 @@ public class TranslationStats implements Serializable
       wordCount.add(other.getWordCount());
    }
 
-   public double getRemainingWordsHours()
+   public double getRemainingHours()
    {
-      return remainingHours(wordCount.getNeedReview(), wordCount.getUntranslated());
-   }
-
-   public double getRemainingMsgHours()
-   {
-      return remainingHours(unitCount.getNeedReview(), unitCount.getUntranslated());
+      double untransHours = wordCount.getUntranslated() / 250.0;
+      double fuzzyHours = wordCount.getNeedReview() / 500.0;
+      double remainHours = untransHours + fuzzyHours;
+      return remainHours;
    }
 
    public int getApprovedPercent(boolean byWords)
@@ -89,14 +87,6 @@ public class TranslationStats implements Serializable
          }
          return unitCount.getApproved() * 100 / unitCount.getTotal();
       }
-   }
-
-   private double remainingHours(int fuzzy, int untranslated)
-   {
-      double untransHours = untranslated / 250.0;
-      double fuzzyHours = fuzzy / 500.0;
-      double remainHours = untransHours + fuzzyHours;
-      return remainHours;
    }
 
    @Override

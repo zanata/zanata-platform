@@ -31,9 +31,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Translation statistics. Contains actual numbers and other information about the state of
  * translation.
@@ -63,6 +60,7 @@ public class TranslationStatistics implements Serializable
    private long total;
    private StatUnit unit;
    private String locale;
+   private double remainingHours;
 
    /**
     * Number of translated elements.
@@ -193,13 +191,15 @@ public class TranslationStatistics implements Serializable
       }
    }
    
+   public void setRemainingHours(double remainingHours)
+   {
+      this.remainingHours = remainingHours;
+   }
+
    @XmlTransient
    public double getRemainingHours()
    {
-      double untransHours = getUntranslated() / 250.0;
-      double fuzzyHours = getNeedReview() / 500.0;
-      double remainHours = untransHours + fuzzyHours;
-      return remainHours;
+      return remainingHours;
    }
 
 }
