@@ -36,7 +36,7 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
     <ui:define name="center_content">
-        <a4j:form>
+        <a4j:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
             <rich:datascroller id="data_table_scroller" align="center" for="data_table" fastControls="hide"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
