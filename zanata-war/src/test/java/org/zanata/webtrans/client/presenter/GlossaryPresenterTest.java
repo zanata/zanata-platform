@@ -20,14 +20,20 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+
+import javax.lang.model.util.Types;
+
+import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -37,9 +43,11 @@ import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
+import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -47,16 +55,14 @@ import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
+import com.google.common.collect.Lists;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -69,32 +75,27 @@ import com.google.gwt.user.client.ui.HasValue;
 @Test(groups = { "unit-tests" })
 public class GlossaryPresenterTest
 {
-   // object under test
-   private GlossaryPresenter glossaryPresenter;
+   private GlossaryPresenter presenter;
 
    @Mock
-   private GlossaryDisplay mockDisplay;
+   private GlossaryDisplay display;
    @Mock
-   private EventBus mockEventBus;
+   private EventBus eventBus;
    @Mock
-   private CachingDispatchAsync mockDispatcher;
+   private CachingDispatchAsync dispatcher;
    @Mock
-   private WebTransMessages mockMessages;
+   private WebTransMessages messages;
    @Mock
-   private GlossaryDetailsPresenter mockGlossaryDetailsPresenter;
+   private GlossaryDetailsPresenter glossaryDetailsPresenter;
+   private UserWorkspaceContext userWorkspaceContext;
    @Mock
-   private UserWorkspaceContext mockUserWorkspaceContext;
-   @Mock
-   private KeyShortcutPresenter mockKeyShortcutPresenter;
-   @Mock
-   private WorkspaceContext mockWorkspaceContext;
+   private KeyShortcutPresenter keyShortcutPresenter;
    @Mock
    private HasText mockGlossaryTextBox;
    @Mock
    private HasValue<SearchType> mockSearchType;
-
    @Captor
-   private ArgumentCaptor<GetGlossary> GetGlossaryCaptor;
+   private ArgumentCaptor<GetGlossary> getGlossaryCaptor;
    @Captor
    private ArgumentCaptor<AsyncCallback<GetGlossaryResult>> callbackCaptor;
 
@@ -102,34 +103,34 @@ public class GlossaryPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      glossaryPresenter = new GlossaryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockMessages, mockGlossaryDetailsPresenter, mockUserWorkspaceContext, mockKeyShortcutPresenter);
+      userWorkspaceContext = TestFixture.userWorkspaceContext();
+      presenter = new GlossaryPresenter(display, eventBus, dispatcher, messages, glossaryDetailsPresenter, userWorkspaceContext, keyShortcutPresenter);
    }
 
    @Test
    public void onBind()
    {
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      glossaryPresenter.bind();
+      presenter.bind();
 
-      verify(mockEventBus).addHandler(TransUnitSelectionEvent.getType(), glossaryPresenter);
-      verify(mockKeyShortcutPresenter).register(isA(KeyShortcut.class));
-      verify(mockDisplay).setListener(glossaryPresenter);
-      verify(mockGlossaryDetailsPresenter).onBind();
-      verify(mockGlossaryDetailsPresenter).setGlossaryListener(glossaryPresenter);
+      verify(eventBus).addHandler(TransUnitSelectionEvent.getType(), presenter);
+      verify(keyShortcutPresenter).register(isA(KeyShortcut.class));
+      verify(display).setListener(presenter);
+      verify(glossaryDetailsPresenter).onBind();
+      verify(glossaryDetailsPresenter).setGlossaryListener(presenter);
 
    }
 
    @Test
    public void clearContent()
    {
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
-      when(mockDisplay.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(messages.searchGlossary()).thenReturn("Search glossary");
+      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
 
-      glossaryPresenter.bind();
-      glossaryPresenter.clearContent();
+      presenter.clearContent();
 
-      verify(mockDisplay).clearTableContent();
+      verify(display).clearTableContent();
       verify(mockGlossaryTextBox).setText("");
    }
 
@@ -138,14 +139,14 @@ public class GlossaryPresenterTest
    {
       boolean isFocused = true;
 
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      glossaryPresenter.bind();
-      glossaryPresenter.onFocus(isFocused);
+      presenter.onFocus(isFocused);
 
-      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
-      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
-      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
+      assertThat(presenter.isFocused(), Matchers.is(isFocused));
    }
 
    @Test
@@ -153,14 +154,13 @@ public class GlossaryPresenterTest
    {
       boolean isFocused = false;
 
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      glossaryPresenter.bind();
-      glossaryPresenter.onFocus(isFocused);
+      presenter.onFocus(isFocused);
 
-      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
-      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
-      verify(mockKeyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
    }
 
    @Test
@@ -168,12 +168,11 @@ public class GlossaryPresenterTest
    {
       GlossaryResultItem object = new GlossaryResultItem("","", 0, 0);
       
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      glossaryPresenter.bind();
-      glossaryPresenter.showGlossaryDetail(object);
+      presenter.showGlossaryDetail(object);
 
-      verify(mockGlossaryDetailsPresenter).show(object);
+      verify(glossaryDetailsPresenter).show(object);
    }
 
    @Test
@@ -182,64 +181,177 @@ public class GlossaryPresenterTest
       GlossaryResultItem object = new GlossaryResultItem("", "", 0, 0);
       ArgumentCaptor<InsertStringInEditorEvent> eventCaptor = ArgumentCaptor.forClass(InsertStringInEditorEvent.class);
       
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
+      when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      glossaryPresenter.bind();
-      glossaryPresenter.fireCopyEvent(object);
+      presenter.fireCopyEvent(object);
 
-      verify(mockEventBus).fireEvent(eventCaptor.capture());
+      verify(eventBus).fireEvent(eventCaptor.capture());
    }
 
    @Test
    public void fireSearchEvent()
    {
-      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
       DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      userWorkspaceContext.setSelectedDoc(docInfo);
 
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
-      when(mockDisplay.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(messages.searchGlossary()).thenReturn("Search glossary");
+      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
       when(mockGlossaryTextBox.getText()).thenReturn("query");
-      when(mockDisplay.getSearchType()).thenReturn(mockSearchType);
+      when(display.getSearchType()).thenReturn(mockSearchType);
       when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
-      when(mockUserWorkspaceContext.getSelectedDoc()).thenReturn(docInfo);
-      when(mockUserWorkspaceContext.getWorkspaceContext()).thenReturn(mockWorkspaceContext);
-      when(mockWorkspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
-      glossaryPresenter.bind();
-      glossaryPresenter.fireSearchEvent();
+      presenter.fireSearchEvent();
 
-      verify(mockDisplay).startProcessing();
-      verify(mockDispatcher).execute(GetGlossaryCaptor.capture(), callbackCaptor.capture());
+      verify(display).startProcessing();
+      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
+      GetGlossary action = getGlossaryCaptor.getValue();
+      assertThat(action.getQuery(), Matchers.equalTo("query"));
+      assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
+      assertThat(action.getSrcLocaleId(), Matchers.equalTo(docInfo.getSourceLocale()));
+   }
+
+   @Test
+   public void fireSearchEventInSequentialWillBlockSecondRequestUntilFirstReturn()
+   {
+      // Given:
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      userWorkspaceContext.setSelectedDoc(docInfo);
+      when(messages.searchGlossary()).thenReturn("Search glossary");
+      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(mockGlossaryTextBox.getText()).thenReturn("query1", "query2");
+      when(display.getSearchType()).thenReturn(mockSearchType);
+      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY, SearchType.FUZZY_PLURAL);
+
+      // When: calling search glossary twice while the first one hasn't return any result
+      presenter.fireSearchEvent();
+      presenter.fireSearchEvent();
+
+      // Then: there is only one RPC call to the server and the second request get ignored
+      verify(display).startProcessing();
+      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
+      GetGlossary action = getGlossaryCaptor.getValue();
+      assertThat(action.getQuery(), Matchers.equalTo("query1"));
+      assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
+      assertThat(action.getSrcLocaleId(), Matchers.equalTo(docInfo.getSourceLocale()));
+   }
+
+   @Test
+   public void fireSearchEventOnSuccessCallbackWithGlossaryResults()
+   {
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      userWorkspaceContext.setSelectedDoc(docInfo);
+
+      when(messages.searchGlossary()).thenReturn("Search glossary");
+      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(mockGlossaryTextBox.getText()).thenReturn("query");
+      when(display.getSearchType()).thenReturn(mockSearchType);
+      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+
+      presenter.fireSearchEvent();
+
+      verify(display).startProcessing();
+      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
+      AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
+      ArrayList<GlossaryResultItem> glossaries = Lists.newArrayList(new GlossaryResultItem("source", "target", 100, 100));
+
+      // on rpc callback success and result contains glossaries
+      callback.onSuccess(new GetGlossaryResult(getGlossaryCaptor.getValue(), glossaries));
+
+      verify(mockGlossaryTextBox).setText("query");
+      verify(mockSearchType).setValue(SearchType.FUZZY);
+      verify(display).renderTable(glossaries);
+      verify(display).stopProcessing(true);
+   }
+
+   @Test
+   public void fireSearchEventOnSuccessCallbackButNoGlossaryFound()
+   {
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      userWorkspaceContext.setSelectedDoc(docInfo);
+
+      when(messages.searchGlossary()).thenReturn("Search glossary");
+      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(mockGlossaryTextBox.getText()).thenReturn("query");
+      when(display.getSearchType()).thenReturn(mockSearchType);
+      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+
+      presenter.fireSearchEvent();
+
+      verify(display).startProcessing();
+      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
+      AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
+
+      // on rpc callback success and result contains glossaries
+      callback.onSuccess(new GetGlossaryResult(getGlossaryCaptor.getValue(), Lists.<GlossaryResultItem>newArrayList()));
+
+      verify(mockGlossaryTextBox).setText("query");
+      verify(mockSearchType).setValue(SearchType.FUZZY);
+      verify(display).stopProcessing(false);
+   }
+
+   @Test
+   public void fireSearchEventOnFailureCallback()
+   {
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      userWorkspaceContext.setSelectedDoc(docInfo);
+
+      when(messages.searchGlossary()).thenReturn("Search glossary");
+      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      when(mockGlossaryTextBox.getText()).thenReturn("query");
+      when(display.getSearchType()).thenReturn(mockSearchType);
+      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+
+      presenter.fireSearchEvent();
+
+      verify(display).startProcessing();
+      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
+      AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
+
+      // on rpc callback failure
+      callback.onFailure(new RuntimeException());
+
+      verify(display).stopProcessing(false);
    }
    
    @Test
    public void createGlossaryRequestForTransUnit()
    {
-      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
       DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
-
-      TransUnitId tuid = new TransUnitId(1);
-      ArrayList<String> sources = new ArrayList<String>();
-      sources.add("test source");
-      ArrayList<String> targets = new ArrayList<String>();
-      targets.add("test target");
-      ContentState state = ContentState.values()[2];
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder().setId(tuid).setResId(tuid.toString()).setLocaleId(LocaleId.EN_US).setPlural(false).setSources(sources).setSourceComment("source comment").setTargets(targets).setStatus(state).setLastModifiedBy("peter").setMsgContext("msgContext").setRowIndex(0).setVerNum(1);
-
-      when(mockMessages.searchGlossary()).thenReturn("Search glossary");
-      when(mockDisplay.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+      userWorkspaceContext.setSelectedDoc(docInfo);
+      when(messages.searchGlossary()).thenReturn("Search glossary");
+      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
       when(mockGlossaryTextBox.getText()).thenReturn("query");
-      when(mockDisplay.getSearchType()).thenReturn(mockSearchType);
+      when(display.getSearchType()).thenReturn(mockSearchType);
       when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
-      when(mockUserWorkspaceContext.getSelectedDoc()).thenReturn(docInfo);
-      when(mockUserWorkspaceContext.getWorkspaceContext()).thenReturn(mockWorkspaceContext);
-      when(mockWorkspaceContext.getWorkspaceId()).thenReturn(workspaceId);
+      TransUnit transUnit = TransUnit.Builder.newTransUnitBuilder().setId(1).setResId("resId").setVerNum(0)
+            .setLocaleId("en").addSource("source1", "source2").setRowIndex(1).build();
 
-      glossaryPresenter.bind();
-      glossaryPresenter.createGlossaryRequestForTransUnit(builder.build());
+      presenter.onTransUnitSelected(new TransUnitSelectionEvent(transUnit));
 
-      verify(mockDisplay).startProcessing();
-      verify(mockDispatcher).execute(GetGlossaryCaptor.capture(), callbackCaptor.capture());
+      verify(display).startProcessing();
+      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
+      GetGlossary action = getGlossaryCaptor.getValue();
+      assertThat(action.getQuery(), Matchers.equalTo("source1 source2 "));
+   }
+
+   @Test
+   public void onKeyShortcut()
+   {
+      ArgumentCaptor<KeyShortcut> keyShortcutCaptor = ArgumentCaptor.forClass(KeyShortcut.class);
+      when(messages.searchGlossary()).thenReturn("search glossary");
+      GlossaryPresenter spyPresenter = spy(presenter);
+      doNothing().when(spyPresenter).fireSearchEvent();
+
+      spyPresenter.onBind();
+
+      verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
+      KeyShortcut keyShortcut = keyShortcutCaptor.getValue();
+      assertThat(keyShortcut.getAllKeys(), Matchers.containsInAnyOrder(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER)));
+      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.Glossary));
+      assertThat(keyShortcut.getDescription(), Matchers.equalTo("search glossary"));
+
+      keyShortcut.getHandler().onKeyShortcut(null);
+      verify(spyPresenter).fireSearchEvent();
    }
 
 }
