@@ -41,6 +41,8 @@ import org.zanata.security.AuthenticationType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -293,7 +295,19 @@ public class ApplicationConfiguration implements Serializable
 
    public String getFromEmailAddr()
    {
-      return configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+      String emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+      if( emailAddr == null )
+      {
+         try
+         {
+            emailAddr = "no-reply@" + InetAddress.getLocalHost().getHostName();
+         }
+         catch (UnknownHostException e)
+         {
+            emailAddr = "no-reply@zanatainstance.org";
+         }
+      }
+      return emailAddr;
    }
 
    public String getHomeContent()
