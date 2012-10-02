@@ -96,13 +96,11 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay> 
    @Override
    protected void onUnbind()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override
    protected void onRevealDisplay()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override

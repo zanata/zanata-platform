@@ -29,7 +29,9 @@ public class SmartEntitySecurityListener extends EntitySecurityListener
       if (Identity.isSecurityEnabled())
       {
          if( isEntityRestricted(entity, EntityAction.READ) )
+         {
             super.postLoad(entity);
+         }
       }
    }
 
@@ -39,7 +41,9 @@ public class SmartEntitySecurityListener extends EntitySecurityListener
       if (Identity.isSecurityEnabled())
       {
          if( isEntityRestricted(entity, EntityAction.INSERT) )
+         {
             super.prePersist(entity);
+         }
       }
    }
 
@@ -49,7 +53,9 @@ public class SmartEntitySecurityListener extends EntitySecurityListener
       if (Identity.isSecurityEnabled())
       {
          if( isEntityRestricted(entity, EntityAction.UPDATE) )
+         {
             super.preUpdate(entity);
+         }
       }
    }
 
@@ -59,7 +65,9 @@ public class SmartEntitySecurityListener extends EntitySecurityListener
       if (Identity.isSecurityEnabled())
       {
          if( isEntityRestricted(entity, EntityAction.DELETE) )
+         {
             super.preRemove(entity);
+         }
       }
    }
 

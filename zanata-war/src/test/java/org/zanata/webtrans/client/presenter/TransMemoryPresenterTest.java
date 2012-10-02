@@ -2,8 +2,12 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -53,10 +57,8 @@ import com.google.gwt.user.client.ui.HasValue;
 @Test(groups = { "unit-tests" })
 public class TransMemoryPresenterTest
 {
-   // object under test
-   TransMemoryPresenter presenter;
+   private TransMemoryPresenter presenter;
 
-   // injected mocks
    @Mock
    private TranslationMemoryDisplay display;
    @Mock
@@ -89,6 +91,8 @@ public class TransMemoryPresenterTest
    private ArgumentCaptor<AsyncCallback<GetTranslationMemoryResult>> callbackCaptor;
    @Mock
    private TransMemoryResultItem transMemoryResultItem;
+   @Captor
+   private ArgumentCaptor<CopyDataToEditorEvent> copyTMEventCaptor;
 
    @BeforeMethod
    public void beforeMethod()
@@ -117,7 +121,6 @@ public class TransMemoryPresenterTest
    {
       when(display.getSearchType()).thenReturn(searchType);
 
-      presenter.bind();
       presenter.onTMMergeClick();
 
       verify(transMemoryMergePresenter).prepareTMMerge();
@@ -128,7 +131,6 @@ public class TransMemoryPresenterTest
    {
       when(display.getSearchType()).thenReturn(searchType);
 
-      presenter.bind();
       presenter.showDiffLegend(true);
 
       verify(display).showDiffLegend(true);
@@ -139,7 +141,6 @@ public class TransMemoryPresenterTest
    {
       when(display.getSearchType()).thenReturn(searchType);
 
-      presenter.bind();
       presenter.showDiffLegend(false);
 
       verify(display).showDiffLegend(false);
@@ -151,7 +152,6 @@ public class TransMemoryPresenterTest
       TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), 0, 0);
       when(display.getSearchType()).thenReturn(searchType);
 
-      presenter.bind();
       presenter.showTMDetails(object);
 
       verify(transMemoryDetailsPresenter).show(object);
@@ -165,31 +165,9 @@ public class TransMemoryPresenterTest
       
       when(display.getSearchType()).thenReturn(searchType);
 
-      presenter.bind();
       presenter.fireCopyEvent(object);
 
       verify(eventBus).fireEvent(eventCaptor.capture());
-   }
-
-   @Test
-   public void fireSearchEvent()
-   {
-      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
-
-      when(display.getTmTextBox()).thenReturn(tMTextBox);
-      when(tMTextBox.getText()).thenReturn("query");
-      when(display.getSearchType()).thenReturn(searchType);
-      when(searchType.getValue()).thenReturn(SearchType.FUZZY);
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(workspaceContext);
-      when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(docInfo);
-
-      presenter.bind();
-      presenter.fireSearchEvent();
-
-      verify(display).startProcessing();
-      verify(dispatcher).execute(getTMActionCaptor.capture(), callbackCaptor.capture());
    }
 
    @Test
@@ -198,14 +176,6 @@ public class TransMemoryPresenterTest
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
       DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
 
-      TransUnitId tuid = new TransUnitId(1);
-      ArrayList<String> sources = new ArrayList<String>();
-      sources.add("test source");
-      ArrayList<String> targets = new ArrayList<String>();
-      targets.add("test target");
-      ContentState state = ContentState.values()[2];
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder().setId(tuid).setResId(tuid.toString()).setLocaleId(LocaleId.EN_US).setPlural(false).setSources(sources).setSourceComment("source comment").setTargets(targets).setStatus(state).setLastModifiedBy("peter").setMsgContext("msgContext").setRowIndex(0).setVerNum(1);
-
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("query");
       when(display.getSearchType()).thenReturn(searchType);
@@ -214,11 +184,26 @@ public class TransMemoryPresenterTest
       when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(docInfo);
 
-      presenter.bind();
-      presenter.createTMRequestForTransUnit(builder.build());
+      presenter.createTMRequestForTransUnit(TestFixture.makeTransUnit(1));
 
       verify(display).startProcessing();
       verify(dispatcher).execute(getTMActionCaptor.capture(), callbackCaptor.capture());
+   }
+
+   @Test
+   public void willDoNothingIfAlreadyHaveSubmittedRequest()
+   {
+      // Given: already have submitted request
+      GetTranslationMemory submittedRequest = mock(GetTranslationMemory.class);
+      presenter.setStatesForTesting(null, submittedRequest);
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
+
+      // When:
+      presenter.createTMRequestForTransUnit(TestFixture.makeTransUnit(1));
+
+      // Then:
+      verifyZeroInteractions(dispatcher);
    }
 
    @Test
@@ -228,7 +213,6 @@ public class TransMemoryPresenterTest
 
       when(display.getSearchType()).thenReturn(searchType);
 
-      presenter.bind();
       presenter.onFocus(isFocused);
 
       verify(keyShortcutPresenter).setContextActive(ShortcutContext.TM, isFocused);
@@ -243,25 +227,11 @@ public class TransMemoryPresenterTest
 
       when(display.getSearchType()).thenReturn(searchType);
 
-      presenter.bind();
       presenter.onFocus(isFocused);
 
       verify(keyShortcutPresenter).setContextActive(ShortcutContext.TM, isFocused);
       verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
       verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
-   }
-
-   @Test
-   public void clearContent()
-   {
-      when(display.getSearchType()).thenReturn(searchType);
-      when(display.getTmTextBox()).thenReturn(tMTextBox);
-
-      presenter.bind();
-      presenter.clearContent();
-
-      verify(tMTextBox).setText("");
-      verify(display).clearTableContent();
    }
 
    @Test
@@ -293,13 +263,34 @@ public class TransMemoryPresenterTest
    }
 
    @Test
+   public void fireSearchEventCallbackOnFailure()
+   {
+      // Given:
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
+      when(display.getTmTextBox()).thenReturn(tMTextBox);
+      when(display.getSearchType()).thenReturn(searchType);
+
+      // When:
+      presenter.fireSearchEvent();
+
+      // Then:
+      InOrder inOrder = inOrder(display, dispatcher);
+      inOrder.verify(display).startProcessing();
+      inOrder.verify(dispatcher).execute(getTMActionCaptor.capture(), callbackCaptor.capture());
+      // verify callback on failure
+      AsyncCallback<GetTranslationMemoryResult> callback = callbackCaptor.getValue();
+      callback.onFailure(new RuntimeException("fail"));
+
+      inOrder.verify(display).stopProcessing(false);
+   }
+
+   @Test
    public void fireSearchEventCallbackOnSuccess()
    {
       // Given:
-      LocaleId targetLocale = new LocaleId("zh");
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(targetLocale));
-      LocaleId sourceLocale = new LocaleId("en-US");
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", sourceLocale, new TranslationStats()));
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("search query");
       when(display.getSearchType()).thenReturn(searchType);
@@ -321,34 +312,68 @@ public class TransMemoryPresenterTest
       inOrder.verify(display).stopProcessing(true);
    }
 
-//   List<String> queries = submittedRequest.getQuery().getQueries();
-//
-//   if (!result.getMemories().isEmpty())
-//   {
-//      display.renderTable(result.getMemories(), queries);
-//      currentResult = result.getMemories();
-//      display.stopProcessing(true);
-//   }
-//   else
-//   {
-//      display.stopProcessing(false);
-//   }
+   @Test
+   public void fireSearchEventCallbackOnSuccessButResultIsEmpty()
+   {
+      // Given:
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
+      when(display.getTmTextBox()).thenReturn(tMTextBox);
+      when(display.getSearchType()).thenReturn(searchType);
+      when(searchType.getValue()).thenReturn(SearchType.FUZZY);
 
-//   if (result.getRequest().equals(lastRequest))
-//   {
-//      Log.debug("received TM result for query");
-//      displayTMResult(result);
-//      lastRequest = null;
-//   }
-//   else
-//   {
-//      Log.debug("ignoring old TM result for query");
-//      display.stopProcessing(false);
-//   }
-//   submittedRequest = null;
-//   if (lastRequest != null)
-//   {
-//      // submit the waiting request
-//      submitTMRequest(lastRequest);
-//   }
+      // When:
+      presenter.fireSearchEvent();
+
+      // Then:
+      InOrder inOrder = inOrder(display, dispatcher);
+      inOrder.verify(display).startProcessing();
+      inOrder.verify(dispatcher).execute(getTMActionCaptor.capture(), callbackCaptor.capture());
+      // verify callback on success
+      AsyncCallback<GetTranslationMemoryResult> callback = callbackCaptor.getValue();
+      ArrayList<TransMemoryResultItem> transMemories = Lists.newArrayList();
+      callback.onSuccess(new GetTranslationMemoryResult(getTMActionCaptor.getValue(), transMemories));
+
+      inOrder.verify(display).stopProcessing(false);
+   }
+
+   @Test
+   public void testOnTransUnitSelected()
+   {
+      TransUnit selection = TestFixture.makeTransUnit(1);
+      TransMemoryPresenter spyPresenter = spy(presenter);
+      doNothing().when(spyPresenter).createTMRequestForTransUnit(selection);
+
+      spyPresenter.onTransUnitSelected(new TransUnitSelectionEvent(selection));
+
+      verify(spyPresenter).createTMRequestForTransUnit(selection);
+   }
+
+   @Test
+   public void testOnTransMemoryCopy()
+   {
+      presenter.setStatesForTesting(Lists.newArrayList(transMemoryResultItem), null);
+      when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
+      List<String> targetContents = Lists.newArrayList("a");
+      when(transMemoryResultItem.getTargetContents()).thenReturn(targetContents);
+
+      presenter.onTransMemoryCopy(new TransMemoryShortcutCopyEvent(0));
+
+      verify(eventBus).fireEvent(copyTMEventCaptor.capture());
+      assertThat(copyTMEventCaptor.getValue().getTargetResult(), Matchers.equalTo(targetContents));
+   }
+
+   @Test
+   public void onClearContent()
+   {
+      List<TransMemoryResultItem> currentResult = Lists.newArrayList(transMemoryResultItem);
+      presenter.setStatesForTesting(currentResult, null);
+      when(display.getTmTextBox()).thenReturn(tMTextBox);
+
+      presenter.clearContent();
+
+      verify(tMTextBox).setText("");
+      verify(display).clearTableContent();
+      assertThat(currentResult, Matchers.<TransMemoryResultItem>empty());
+   }
 }

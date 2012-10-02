@@ -91,10 +91,21 @@
 								<span class="icon-docs"/>
 							</s:link>
 						</rich:column>
-						<rich:column sortBy="#{stats.per}"
+						<rich:column
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">#{messages['jsf.iteration.stats.Percentage']}</f:facet>
-							<ui:param name="tstatus" value="#{stats.wordStats}" />
+							<f:facet name="header">
+								<h:panelGroup>
+									<h:outputText value="#{messages['jsf.Statistics']}"/>
+									<br/>
+									<h:selectOneMenu id="statsOption" styleClass="headerInput" value="#{viewAllStatusAction.statsOption}">
+		                            	<f:selectItem itemLabel="#{messages['jsf.ByWords']}" itemValue="WORD"/>
+		                            	<f:selectItem itemLabel="#{messages['jsf.Message']}" itemValue="MESSAGE"/>
+										<a4j:support event="onchange" reRender="data_table" ajaxSingle="true" action="#{viewAllStatusAction.refreshStatistic}"/>
+				        			</h:selectOneMenu>
+								</h:panelGroup>
+							</f:facet>
+							
+							<ui:param name="tstatus" value="#{stats.stats}" />
 							<ui:include src="../WEB-INF/layout/statsbar.xhtml">
 								<ui:param name="status" value="#{tstatus}" />
 							</ui:include>

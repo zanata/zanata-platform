@@ -71,6 +71,7 @@ public class AccountSearchAction implements Serializable
 
    public List<HAccount> search(Object input)
    {
+      this.person = null;
       String userInput = (String) input;
       return accountDAO.searchQuery(userInput);
    }

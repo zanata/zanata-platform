@@ -263,4 +263,84 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet author="damason@redhat.com" id="5">
+        <comment>Add HDocumentUpload table.</comment>
+        <createTable tableName="HDocumentUpload">
+            <column name="projectIterationId" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="docId" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contentHash" type="char(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="localeId" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="6">
+        <comment>Add HProjectIteration foreign key for HDocumentUpload table.</comment>
+        <addForeignKeyConstraint constraintName="FK_HDocumentUpload_ProjectIteration"
+                                 baseTableName="HDocumentUpload"
+                                 baseColumnNames="projectIterationId"
+                                 referencedTableName="HProjectIteration"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="7">
+        <comment>Add HLocale foreign key for HDocumentUpload table.</comment>
+        <addForeignKeyConstraint constraintName="FK_HDocumentUpload_Locale"
+                                 baseTableName="HDocumentUpload"
+                                 baseColumnNames="localeId"
+                                 referencedTableName="HLocale"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="8">
+        <comment>Add HDocumentUploadPart table.</comment>
+        <createTable tableName="HDocumentUploadPart">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="documentUploadId" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="partIndex" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="blob">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="9">
+        <comment>Add HDocumentUpload foreign key for HDocumentUploadPart table.</comment>
+        <addForeignKeyConstraint constraintName="FK_HDocumentUploadPart_DocumentUpload"
+                                 baseTableName="HDocumentUploadPart"
+                                 baseColumnNames="documentUploadId"
+                                 referencedTableName="HDocumentUpload"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+
 </databaseChangeLog>

@@ -58,9 +58,8 @@ public class ProjectIterationLocaleAction implements Serializable
    @In
    ProjectIterationDAO projectIterationDAO;
 
-   private String projectSlug;
-
-   private String iterationSlug;
+   @In
+   private ProjectIterationHome projectIterationHome;
 
    @In
    LocaleService localeServiceImpl;
@@ -119,44 +118,23 @@ public class ProjectIterationLocaleAction implements Serializable
    public Map<String, String> loadItems()
    {
       log.debug("load iterationCustomizedItems");
+      HProjectIteration iteration = projectIterationHome.getInstance();
       availableItems = new TreeMap<String, String>();
-      iterationCustomizedItems = localeServiceImpl.getIterationCustomizedLocalesItems(projectSlug, iterationSlug);
-      globalItems = localeServiceImpl.getIterationGlobalLocaleItems(projectSlug);
+      iterationCustomizedItems = localeServiceImpl.getIterationCustomizedLocalesItems(iteration.getProject().getSlug(), iteration.getSlug());
+      globalItems = localeServiceImpl.getIterationGlobalLocaleItems(iteration.getProject().getSlug());
       if (iterationCustomizedItems.isEmpty())
       {
-         iterationCustomizedItems = globalItems;
+         iterationCustomizedItems = localeServiceImpl.getDefaultCustomizedLocalesItems();
       }
-      else
+      
+      for (String op : globalItems.keySet())
       {
-         for (String op : globalItems.keySet())
+         if (!iterationCustomizedItems.containsKey(op))
          {
-            if (!iterationCustomizedItems.containsKey(op))
-            {
-               availableItems.put(op, op);
-            }
+            availableItems.put(op, op);
          }
       }
       return availableItems;
-   }
-
-   public String getProjectSlug()
-   {
-      return projectSlug;
-   }
-
-   public void setProjectSlug(String projectSlug)
-   {
-      this.projectSlug = projectSlug;
-   }
-
-   public String getIterationSlug()
-   {
-      return iterationSlug;
-   }
-
-   public void setIterationSlug(String iterationSlug)
-   {
-      this.iterationSlug = iterationSlug;
    }
 
    public void setSetting(boolean var)
@@ -169,14 +147,13 @@ public class ProjectIterationLocaleAction implements Serializable
    {
       if (iterationOverrideLocales == null)
       {
-         if (projectSlug == null || iterationSlug == null)
+         if (projectIterationHome.getInstance() == null)
          {
             setting = false;
          }
          else
          {
-            HProjectIteration project = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-            setting = project.getOverrideLocales();
+            setting = projectIterationHome.getInstance().getOverrideLocales();
          }
          iterationOverrideLocales = new Boolean(setting);
       }

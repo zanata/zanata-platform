@@ -226,6 +226,7 @@
                 <configuration>
                     <instrumentation>
                         <excludes>
+                            <!--WebTran exclusion-->
                             <!--TODO move all gwt wrapper class under specific package. i.e boundary-->
                             <!--<exclude>**/boundary/**/*</exclude>-->
                             <exclude>**/test/**/*</exclude>
@@ -245,6 +246,18 @@
                             <exclude>**/shared/auth/**</exclude>
                             <exclude>**/shared/model/**</exclude>
                             <exclude>**/shared/rpc/**</exclude>
+
+                            <!--Server exclusion-->
+                            <exclude>**/job/**</exclude>
+                            <exclude>**/liquibase/**</exclude>
+                            <exclude>**/log4j/**</exclude>
+                            <exclude>**/seam/**</exclude>
+                            <exclude>**/rest/files/*</exclude>
+                            <exclude>**/rest/*Mapper</exclude>
+                            <exclude>**/openid/*</exclude>
+                            <exclude>**/servlet/*</exclude>
+
+                            <!--General exclusion-->
                             <exclude>**/*Exception*</exclude>
                         </excludes>
                     </instrumentation>

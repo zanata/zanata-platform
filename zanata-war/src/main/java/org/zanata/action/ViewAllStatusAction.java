@@ -25,7 +25,9 @@ import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -41,6 +43,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
@@ -51,6 +54,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.security.ZanataIdentity;
@@ -65,14 +69,8 @@ public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER =
-         new PeriodFormatterBuilder()
-               .appendDays().appendSuffix(" day", " days")
-               .appendSeparator(", ")
-               .appendHours().appendSuffix(" hour", " hours")
-               .appendSeparator(", ")
-               .appendMinutes().appendSuffix(" min", " mins");
-   
+   private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER = new PeriodFormatterBuilder().appendDays().appendSuffix(" day", " days").appendSeparator(", ").appendHours().appendSuffix(" hour", " hours").appendSeparator(", ").appendMinutes().appendSuffix(" min", " mins");
+
    @Logger
    Log log;
 
@@ -116,20 +114,22 @@ public class ViewAllStatusAction implements Serializable
 
    private List<HIterationGroup> searchResults;
 
+   private StatUnit statsOption = WORD;
+
+   private Map<LocaleId, Status> statsMap = new HashMap<LocaleId, Status>();
+
    public static class Status implements Comparable<Status>
    {
       private String locale;
       private String nativeName;
-      private TranslationStatistics wordStats;
-      private int per;
+      private TranslationStatistics stats;
       private boolean userInLanguageTeam;
 
-      public Status(String locale, String nativeName, TranslationStatistics wordStats, int per, boolean userInLanguageTeam)
+      public Status(String locale, String nativeName, TranslationStatistics stats, boolean userInLanguageTeam)
       {
          this.locale = locale;
          this.nativeName = nativeName;
-         this.wordStats = wordStats;
-         this.per = per;
+         this.stats = stats;
          this.userInLanguageTeam = userInLanguageTeam;
       }
 
@@ -143,27 +143,29 @@ public class ViewAllStatusAction implements Serializable
          return nativeName;
       }
 
-      public TranslationStatistics getWordStats()
+      public TranslationStatistics getStats()
       {
-         return wordStats;
+         return stats;
       }
-
-      public double getPer()
+      
+      public void setStats(TranslationStatistics stats)
       {
-         return per;
+         this.stats = stats;
       }
-
+      
       public boolean isUserInLanguageTeam()
       {
          return userInLanguageTeam;
       }
-
+      
       @Override
       public int compareTo(Status o)
       {
-         return ((Double) o.getPer()).compareTo((Double) this.getPer());
+         int per = (int) Math.ceil(100 * getStats().getTranslated() / getStats().getTotal());
+         int comparePer = (int) Math.ceil(100 * o.getStats().getTranslated() / o.getStats().getTotal());
+         
+         return Double.compare(comparePer, per);
       }
-
    }
 
    public void setProjectSlug(String slug)
@@ -193,49 +195,98 @@ public class ViewAllStatusAction implements Serializable
          throw new EntityNotFoundException(this.iterationSlug, HProjectIteration.class);
       }
    }
-
-   @CachedMethodResult
-   public List<Status> getAllStatus()
+   
+   private String[] getLocaleIds(List<HLocale> locale)
    {
-      List<Status> result = new ArrayList<Status>();
-      HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
-
-      List<HLocale> locale = this.getDisplayLocales();
       String[] localeIds = new String[locale.size()];
       for (int i = 0, localeSize = locale.size(); i < localeSize; i++)
       {
          HLocale l = locale.get(i);
          localeIds[i] = l.getLocaleId().getId();
       }
-      
-      ContainerTranslationStatistics iterationStats =
-         statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
+      return localeIds;
+   }
 
-      Long total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
+   public void refreshStatistic()
+   {
+      HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
+      
+      List<HLocale> locale = this.getDisplayLocales();
+      String[] localeIds = getLocaleIds(locale);
+      
+      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
+      
+      Long total;
+      if (statsOption == WORD)
+      {
+         total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
+      }
+      else
+      {
+         total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
+      }
+      
       for (HLocale var : locale)
       {
-         TranslationStatistics wordStats = iterationStats.getStats(var.getLocaleId().getId(), WORD);
-         if (wordStats == null)
+         TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
+         if (stats == null)
          {
-            wordStats = new TranslationStatistics();
-            wordStats.setUntranslated( total );
-            wordStats.setTotal( total );
+            stats = new TranslationStatistics();
+            stats.setUntranslated(total);
+            stats.setTotal(total);
          }
-         int per;
-         if (total.intValue() == 0)
+
+         if (statsMap.containsKey(var.getLocaleId()))
          {
-            per = 0;
+            statsMap.get(var.getLocaleId()).setStats(stats);
+         }
+      }
+   }
+
+   @CachedMethodResult
+   public List<Status> getAllStatus()
+   {
+      HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
+
+      List<HLocale> locale = this.getDisplayLocales();
+      String[] localeIds = getLocaleIds(locale);
+
+      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
+
+      Long total;
+      if (statsOption == WORD)
+      {
+         total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
+      }
+      else
+      {
+         total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
+      }
+
+      for (HLocale var : locale)
+      {
+         TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
+         if (stats == null)
+         {
+            stats = new TranslationStatistics();
+            stats.setUntranslated(total);
+            stats.setTotal(total);
+         }
+         
+         if (!statsMap.containsKey(var.getLocaleId()))
+         {
+            boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;
+
+            Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), stats, isMember);
+            statsMap.put(var.getLocaleId(), op);
          }
          else
          {
-            per = (int) Math.ceil(100 * wordStats.getTranslated() / wordStats.getTotal());
-
+            statsMap.get(var.getLocaleId()).setStats(stats);
          }
-         boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;
-
-         Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), wordStats, per, isMember);
-         result.add(op);
       }
+
+      List<Status> result = new ArrayList<Status>(statsMap.values());
       Collections.sort(result);
       return result;
    }
@@ -256,35 +307,36 @@ public class ViewAllStatusAction implements Serializable
 
    public boolean isCopyTransRunning()
    {
-      return copyTransManager.isCopyTransRunning( getProjectIteration() );
+      return copyTransManager.isCopyTransRunning(getProjectIteration());
    }
 
    @Restrict("#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}")
    public void cancelCopyTrans()
    {
-      if( isCopyTransRunning() )
+      if (isCopyTransRunning())
       {
-         copyTransManager.cancelCopyTrans( getProjectIteration() );
+         copyTransManager.cancelCopyTrans(getProjectIteration());
       }
    }
 
    public int getCopyTransProgress()
    {
       CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      if( handle != null )
+      if (handle != null)
       {
          return handle.getCurrentProgress();
       }
       else
       {
-         return Integer.MAX_VALUE; // Return the maximum so that the progress bar stops polling
+         return Integer.MAX_VALUE; // Return the maximum so that the progress
+                                   // bar stops polling
       }
    }
 
    public int getCopyTransMaxProgress()
    {
       CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      if( handle != null )
+      if (handle != null)
       {
          return handle.getMaxProgress();
       }
@@ -298,7 +350,7 @@ public class ViewAllStatusAction implements Serializable
    {
       CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
       long durationSinceStart = 0;
-      if( handle.isStarted() )
+      if (handle.isStarted())
       {
          durationSinceStart = (System.currentTimeMillis() - handle.getStartTime());
       }
@@ -314,35 +366,34 @@ public class ViewAllStatusAction implements Serializable
 
    public String getCopyTransStatusMessage()
    {
-      if( !isCopyTransRunning() )
+      if (!isCopyTransRunning())
       {
-         CopyTransProcessHandle recentProcessHandle = copyTransManager.getMostRecentlyFinished( getProjectIteration() );
+         CopyTransProcessHandle recentProcessHandle = copyTransManager.getMostRecentlyFinished(getProjectIteration());
          StringBuilder message = new StringBuilder("Last Translation copy ");
 
-         if( recentProcessHandle == null )
+         if (recentProcessHandle == null)
          {
             return null;
          }
 
          // cancelled
-         if( recentProcessHandle.getCancelledBy() != null )
+         if (recentProcessHandle.getCancelledBy() != null)
          {
             message.append("cancelled by ");
 
             // ... by the same user
-            if( recentProcessHandle.getCancelledBy().equals( identity.getCredentials().getUsername() ) )
+            if (recentProcessHandle.getCancelledBy().equals(identity.getCredentials().getUsername()))
             {
                message.append("you ");
             }
             // .. by another user
             else
             {
-               message.append( recentProcessHandle.getCancelledBy() ).append(" ");
+               message.append(recentProcessHandle.getCancelledBy()).append(" ");
             }
 
             // when was it done
-            message.append(formatTimePeriod( System.currentTimeMillis() - recentProcessHandle.getCancelledTime() ))
-                  .append(" ago.");
+            message.append(formatTimePeriod(System.currentTimeMillis() - recentProcessHandle.getCancelledTime())).append(" ago.");
          }
          // completed
          else
@@ -350,19 +401,18 @@ public class ViewAllStatusAction implements Serializable
             message.append("completed by ");
 
             // ... by the same user
-            if( recentProcessHandle.getTriggeredBy().equals( identity.getCredentials().getUsername() ) )
+            if (recentProcessHandle.getTriggeredBy().equals(identity.getCredentials().getUsername()))
             {
                message.append("you ");
             }
             // .. by another user
             else
             {
-               message.append( recentProcessHandle.getTriggeredBy() ).append(" ");
+               message.append(recentProcessHandle.getTriggeredBy()).append(" ");
             }
 
             // when was it done
-            message.append(formatTimePeriod( System.currentTimeMillis() - recentProcessHandle.getFinishTime() ))
-                  .append(" ago.");
+            message.append(formatTimePeriod(System.currentTimeMillis() - recentProcessHandle.getFinishTime())).append(" ago.");
          }
 
          return message.toString();
@@ -372,25 +422,25 @@ public class ViewAllStatusAction implements Serializable
 
    public CopyTransProcessHandle getCopyTransProcessHandle()
    {
-      return copyTransManager.getCopyTransProcessHandle( getProjectIteration() );
+      return copyTransManager.getCopyTransProcessHandle(getProjectIteration());
    }
 
-   private String formatTimePeriod( long durationInMillis )
+   private String formatTimePeriod(long durationInMillis)
    {
       PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
       CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      Period period = new Period( durationInMillis );
+      Period period = new Period(durationInMillis);
 
-      if( period.toStandardMinutes().getMinutes() <= 0 )
+      if (period.toStandardMinutes().getMinutes() <= 0)
       {
          return "less than a minute"; // TODO Localize
       }
       else
       {
-         return formatter.print( period.normalizedStandard() );
+         return formatter.print(period.normalizedStandard());
       }
    }
-   
+
    private List<HLocale> getDisplayLocales()
    {
       return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
@@ -423,5 +473,15 @@ public class ViewAllStatusAction implements Serializable
    public boolean isGroupInVersion(String groupSlug)
    {
       return versionGroupServiceImpl.isGroupInVersion(groupSlug, getProjectIteration().getId());
+   }
+
+   public StatUnit getStatsOption()
+   {
+      return statsOption;
+   }
+
+   public void setStatsOption(StatUnit statsOption)
+   {
+      this.statsOption = statsOption;
    }
 }

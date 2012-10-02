@@ -44,16 +44,10 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
 
 
-public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display>
+public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements WorkspaceContextUpdateEventHandler
 {
    public interface Display extends WidgetDisplay
    {
-      /**
-       * expand to previous size or collapse to show just tabs on the south
-       * panel
-       * 
-       * @param expanded
-       */
       void setSouthPanelExpanded(boolean expanded);
    }
 
@@ -63,7 +57,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final TargetContentsPresenter targetContentsPresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
 
-   private UserWorkspaceContext userWorkspaceContext;
+   private final UserWorkspaceContext userWorkspaceContext;
    private final NavigationService navigationService;
 
    private final WebTransMessages messages;
@@ -71,7 +65,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, final TargetContentsPresenter targetContentsPresenter, final TranslationEditorPresenter translationEditorPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, NavigationService navigationService)
+   public TranslationPresenter(Display display, EventBus eventBus, TargetContentsPresenter targetContentsPresenter, TranslationEditorPresenter translationEditorPresenter, TransMemoryPresenter transMemoryPresenter, GlossaryPresenter glossaryPresenter, WebTransMessages messages, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter, NavigationService navigationService)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -97,25 +91,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       bindSouthPanelPresenters();
       translationEditorPresenter.bind();
 
-      registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
-      {
-         @Override
-         public void onExitWorkspace(ExitWorkspaceEvent event)
-         {
-            targetContentsPresenter.updateTranslators();
-         }
-      }));
-     
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
-      {
-         @Override
-         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-         {
-            userWorkspaceContext.setProjectActive(event.isProjectActive());
-            setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-         }
-      }));
-
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
       KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
@@ -142,11 +118,11 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
             new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J')),
-            ShortcutContext.Navigation, messages.navigateToNextRow(), KeyEvent.KEY_DOWN, true, true, gotoPreRowHandler));
+            ShortcutContext.Navigation, messages.navigateToPreviousRow(), KeyEvent.KEY_DOWN, true, true, gotoPreRowHandler));
 
       keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
             new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K')),
-            ShortcutContext.Navigation, messages.navigateToPreviousRow(), KeyEvent.KEY_DOWN, true, true, gotoNextRowHandler));
+            ShortcutContext.Navigation, messages.navigateToNextRow(), KeyEvent.KEY_DOWN, true, true, gotoNextRowHandler));
 
       // Register shortcut Enter to open editor in selected row - if no other input field is in focus
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Navigation, messages.openEditorInSelectedRow(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
@@ -186,7 +162,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
     * Handle all changes required to completely hide and unbind the south panel
     * for read-only mode, or to undo said changes.
     * 
-    * @param readOnly
+    * @param readOnly read only
     */
    private void setSouthPanelReadOnly(boolean readOnly)
    {
@@ -206,7 +182,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
     * appropriate. Will have no effect if the panel is already in the state of
     * expansion or contraction that is specified.
     * 
-    * @param expanded
+    * @param expanded expand
     */
    public void setSouthPanelExpanded(boolean expanded)
    {
@@ -251,4 +227,10 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
    }
 
+   @Override
+   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+   {
+      userWorkspaceContext.setProjectActive(event.isProjectActive());
+      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+   }
 }

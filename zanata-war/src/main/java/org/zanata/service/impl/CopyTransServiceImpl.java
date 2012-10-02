@@ -148,7 +148,6 @@ public class CopyTransServiceImpl implements CopyTransService
                int copyCount = 0;
 
                // Determine the state of the copies for each pass
-               ContentState copyState = Approved;
                boolean checkContext = true,
                        checkProject = true,
                        checkDocument = true;
@@ -162,10 +161,6 @@ public class CopyTransServiceImpl implements CopyTransService
                {
                   // Relax doc Id restriction
                   checkDocument = false;
-                  if( options.getDocIdMismatchAction() == DOWNGRADE_TO_FUZZY )
-                  {
-                     copyState = NeedReview;
-                  }
                   // Every result will match context, and project
                   // Assuming Phase 1 ran, results will have non-matching doc Ids
                   copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
@@ -174,10 +169,6 @@ public class CopyTransServiceImpl implements CopyTransService
                {
                   // Relax project restriction
                   checkProject = false;
-                  if( options.getProjectMismatchAction() == DOWNGRADE_TO_FUZZY )
-                  {
-                     copyState = NeedReview;
-                  }
                   // Every result will match context
                   // Assuming above phases, results will have non-matching project
                   // Assuming above phase: either doc Id didn't match, or the user explicitly rejected non-matching documents
@@ -187,16 +178,24 @@ public class CopyTransServiceImpl implements CopyTransService
                {
                   // Relax context restriction
                   checkContext = false;
-                  if( options.getContextMismatchAction() == DOWNGRADE_TO_FUZZY )
-                  {
-                     copyState = NeedReview;
-                  }
                   // Assuming above phases:
                   // Context does not match
                   // either doc Id didn't match, or the user explicitly rejected non-matching documents
                   // and either Project didn't match, or the user explicitly rejected non-matching projects
                   copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
                }
+               if( options.getContextMismatchAction() != REJECT )
+               {
+                  // Relax context restriction
+                  checkContext = false;
+                  // Assuming above phases:
+                  // Context does not match
+                  // either doc Id didn't match, or the user explicitly rejected non-matching documents
+                  // and either Project didn't match, or the user explicitly rejected non-matching projects
+                  copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
+               }
+
+               log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
 
                log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
 
@@ -225,7 +224,7 @@ public class CopyTransServiceImpl implements CopyTransService
          {
             HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
             HTextFlow originalTf = (HTextFlow)results.get(1);
-            HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
+            HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
             ContentState copyState = determineContentState(
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
                   originalTf.getDocument().getProjectIteration().getProject().getId().equals( matchingTarget.getTextFlow().getDocument().getProjectIteration().getProject().getId() ),
@@ -234,18 +233,6 @@ public class CopyTransServiceImpl implements CopyTransService
 
             if( shouldOverwrite(hTarget, copyState) )
             {
-               // Create the new translation (or overwrite non-approved ones)
-               if (hTarget == null)
-               {
-                  hTarget = new HTextFlowTarget(originalTf, locale);
-                  hTarget.setVersionNum(1);
-                  originalTf.getTargets().put(locale.getId(), hTarget);
-               }
-               else
-               {
-                  // increase the versionNum
-                  hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-               }
 
                // NB we don't touch creationDate
                hTarget.setTextFlowRevision(originalTf.getRevision());

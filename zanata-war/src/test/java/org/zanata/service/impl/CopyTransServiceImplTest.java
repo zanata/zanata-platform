@@ -82,11 +82,11 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    public void initializeSeam()
    {
       seam.reset()
-          .use("entityManager", getEm())
-          .use("session", getSession())
-          .use(JpaIdentityStore.AUTHENTICATED_USER, seam.autowire(AccountDAO.class).getByUsername("demo"))
-          .useImpl(LocaleServiceImpl.class)
-          .ignoreNonResolvable();
+            .use("entityManager", getEm())
+            .use("session", getSession())
+            .use(JpaIdentityStore.AUTHENTICATED_USER, seam.autowire(AccountDAO.class).getByUsername("demo"))
+            .useImpl(LocaleServiceImpl.class)
+            .ignoreNonResolvable();
    }
 
    /**

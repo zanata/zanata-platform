@@ -60,7 +60,12 @@ public interface LocaleService
    Map<String, String> getGlobalLocaleItems();
 
    Map<String, String> getCustomizedLocalesItems(String project);
-   
+
+   /**
+    * @return The default selected locale items.
+    */
+   Map<String, String> getDefaultCustomizedLocalesItems();
+
    Set<HLocale> convertCustomizedLocale(Map<String, String> var);
    
    Map<String, String> getIterationCustomizedLocalesItems(String projectSlug, String iterationSlug);

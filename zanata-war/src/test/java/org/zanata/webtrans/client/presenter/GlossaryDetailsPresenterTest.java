@@ -20,20 +20,30 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.LocaleId;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
+import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -42,6 +52,7 @@ import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 
@@ -53,42 +64,54 @@ import com.google.gwt.user.client.ui.HasText;
 @Test(groups = { "unit-tests" })
 public class GlossaryDetailsPresenterTest
 {
-   // object under test
    private GlossaryDetailsPresenter glossaryDetailsPresenter;
 
    @Mock
-   private GlossaryDetailsDisplay mockDisplay;
+   private GlossaryDetailsDisplay display;
    @Mock
    private EventBus mockEventBus;
    @Mock
    private CachingDispatchAsync mockDispatcher;
    @Mock
-   private UiMessages mockMessages;
+   private UiMessages messages;
    @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
    @Mock
-   private HasText mockTargetText;
+   private HasText targetText;
    @Mock
    private HasText mockNewCommentText;
 
    @Captor
-   private ArgumentCaptor<UpdateGlossaryTermAction> UpdateGlossaryTermCaptor;
+   private ArgumentCaptor<UpdateGlossaryTermAction> updateGlossaryTermCaptor;
 
    @Captor
-   private ArgumentCaptor<GetGlossaryDetailsAction> GetGlossaryDetailsCaptor;
+   private ArgumentCaptor<GetGlossaryDetailsAction> getGlossaryDetailsCaptor;
 
    @Captor
    private ArgumentCaptor<AsyncCallback<UpdateGlossaryTermResult>> updateGlossarycallbackCaptor;
 
    @Captor
    private ArgumentCaptor<AsyncCallback<GetGlossaryDetailsResult>> getGlossarycallbackCaptor;
+   @Mock
+   private GlossaryDisplay.Listener glossaryListener;
+   @Mock
+   private HasText srcRef;
+   @Mock
+   private HasText lastModified;
+   @Mock
+   private HasText sourceText;
+   @Mock
+   private HasText sourceLabel;
+   @Mock
+   private HasText targetLabel;
 
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      glossaryDetailsPresenter = new GlossaryDetailsPresenter(mockDisplay, mockEventBus, mockMessages, mockDispatcher, mockUserWorkspaceContext);
+      glossaryDetailsPresenter = new GlossaryDetailsPresenter(display, mockEventBus, messages, mockDispatcher, mockUserWorkspaceContext);
+      glossaryDetailsPresenter.setGlossaryListener(glossaryListener);
    }
 
    @Test
@@ -100,8 +123,8 @@ public class GlossaryDetailsPresenterTest
 
       glossaryDetailsPresenter.bind();
       
-      verify(mockDisplay).setListener(glossaryDetailsPresenter);
-      verify(mockDisplay).setHasUpdateAccess(hasAccess);
+      verify(display).setListener(glossaryDetailsPresenter);
+      verify(display).setHasUpdateAccess(hasAccess);
    }
 
    @Test
@@ -109,43 +132,88 @@ public class GlossaryDetailsPresenterTest
    {
       String targetText = "target Text";
       String newTargetText = "new target Text";
-      boolean hasAccess = true;
-      
+      List<String> targetComments = Lists.newArrayList("new comment");
+
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
-
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
-      when(mockDisplay.getTargetText()).thenReturn(mockTargetText);
-      when(mockTargetText.getText()).thenReturn(targetText);
-      when(glossaryDetails.getTarget()).thenReturn(newTargetText);
-
-      glossaryDetailsPresenter.bind();
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
+      when(display.getTargetText()).thenReturn(this.targetText);
+      when(this.targetText.getText()).thenReturn(newTargetText);
+      when(glossaryDetails.getTarget()).thenReturn(targetText);
+      when(display.getCurrentTargetComments()).thenReturn(targetComments);
       glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
+
       glossaryDetailsPresenter.onSaveClick();
 
-      verify(mockDisplay).setHasUpdateAccess(hasAccess);
-      verify(mockDisplay).showLoading(true);
-      verify(mockDispatcher).execute(UpdateGlossaryTermCaptor.capture(), updateGlossarycallbackCaptor.capture());
+      verify(display).showLoading(true);
+      verify(mockDispatcher).execute(updateGlossaryTermCaptor.capture(), updateGlossarycallbackCaptor.capture());
+      UpdateGlossaryTermAction glossaryTermAction = updateGlossaryTermCaptor.getValue();
+      assertThat(glossaryTermAction.getNewTargetComment(), Matchers.equalTo(targetComments));
+      assertThat(glossaryTermAction.getNewTargetTerm(), Matchers.equalTo(newTargetText));
+      assertThat(glossaryTermAction.getSelectedDetailEntry(), Matchers.equalTo(glossaryDetails));
+   }
+
+   @Test
+   public void onSaveClickAndCallbackSuccess()
+   {
+      GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
+      when(display.getTargetText()).thenReturn(targetText);
+      when(targetText.getText()).thenReturn("new target Text");
+      when(glossaryDetails.getTarget()).thenReturn("target Text");
+      glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
+
+      glossaryDetailsPresenter.onSaveClick();
+
+      verify(display).showLoading(true);
+      verify(mockDispatcher).execute(updateGlossaryTermCaptor.capture(), updateGlossarycallbackCaptor.capture());
+      AsyncCallback<UpdateGlossaryTermResult> callback = updateGlossarycallbackCaptor.getValue();
+      GlossaryDetails newDetails = mock(GlossaryDetails.class);
+      when(display.getSrcRef()).thenReturn(srcRef);
+      when(display.getLastModified()).thenReturn(lastModified);
+      callback.onSuccess(new UpdateGlossaryTermResult(newDetails));
+
+      verify(glossaryListener).fireSearchEvent();
+      verify(srcRef).setText(newDetails.getSourceRef());
+      verify(display).setSourceComment(newDetails.getSourceComment());
+      verify(display).setTargetComment(newDetails.getTargetComment());
+      verify(lastModified).setText(anyString());
+      verify(display).showLoading(false);
+   }
+
+   @Test
+   public void onSaveClickAndCallbackFailure()
+   {
+      GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
+      when(display.getTargetText()).thenReturn(targetText);
+      when(targetText.getText()).thenReturn("new target Text");
+      when(glossaryDetails.getTarget()).thenReturn("target Text");
+      glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
+
+      glossaryDetailsPresenter.onSaveClick();
+
+      verify(display).showLoading(true);
+      verify(mockDispatcher).execute(updateGlossaryTermCaptor.capture(), updateGlossarycallbackCaptor.capture());
+      AsyncCallback<UpdateGlossaryTermResult> callback = updateGlossarycallbackCaptor.getValue();
+      callback.onFailure(new RuntimeException());
+
+      verify(mockEventBus).fireEvent(isA(NotificationEvent.class));
+      verify(display).showLoading(false);
    }
 
    @Test
    public void onSaveClickNoWriteAccess()
    {
-      String targetText = "target Text";
-      String newTargetText = "new target Text";
-      boolean hasAccess = false;
-
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
-
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
-      when(mockDisplay.getTargetText()).thenReturn(mockTargetText);
-      when(mockTargetText.getText()).thenReturn(targetText);
-      when(glossaryDetails.getTarget()).thenReturn(newTargetText);
-
-      glossaryDetailsPresenter.bind();
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(false);
+      when(display.getTargetText()).thenReturn(targetText);
+      when(targetText.getText()).thenReturn("new target Text");
+      when(glossaryDetails.getTarget()).thenReturn("target Text");
       glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
+
       glossaryDetailsPresenter.onSaveClick();
 
-      verify(mockDisplay).setHasUpdateAccess(hasAccess);
+      verifyZeroInteractions(mockDispatcher);
    }
 
    @Test
@@ -160,7 +228,7 @@ public class GlossaryDetailsPresenterTest
       glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
       glossaryDetailsPresenter.onDismissClick();
 
-      verify(mockDisplay).hide();
+      verify(display).hide();
    }
 
    @Test
@@ -171,13 +239,12 @@ public class GlossaryDetailsPresenterTest
 
       boolean hasAccess = true;
       when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
-      when(mockDisplay.getNewCommentText()).thenReturn(mockNewCommentText);
+      when(display.getNewCommentText()).thenReturn(mockNewCommentText);
       when(mockNewCommentText.getText()).thenReturn(comment);
       
-      glossaryDetailsPresenter.bind();
       glossaryDetailsPresenter.addNewComment(index);
 
-      verify(mockDisplay).addRowIntoTargetComment(index, comment);
+      verify(display).addRowIntoTargetComment(index, comment);
       verify(mockNewCommentText).setText("");
    }
 
@@ -185,14 +252,37 @@ public class GlossaryDetailsPresenterTest
    public void show()
    {
       GlossaryResultItem item = new GlossaryResultItem("", "", 0, 0);
-      
-      boolean hasAccess = true;
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
 
-      glossaryDetailsPresenter.bind();
       glossaryDetailsPresenter.show(item);
 
-      verify(mockDispatcher).execute(GetGlossaryDetailsCaptor.capture(), getGlossarycallbackCaptor.capture());
-   }
+      verify(mockDispatcher).execute(getGlossaryDetailsCaptor.capture(), getGlossarycallbackCaptor.capture());
+      assertThat(getGlossaryDetailsCaptor.getValue().getSourceIdList(), Matchers.equalTo(item.getSourceIdList()));
+      AsyncCallback<GetGlossaryDetailsResult> callback = getGlossarycallbackCaptor.getValue();
 
+      // testing success callback
+      GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
+      when(glossaryDetails.getSource()).thenReturn("source text");
+      when(glossaryDetails.getTarget()).thenReturn("target text");
+      when(glossaryDetails.getSrcLocale()).thenReturn(new LocaleId("en-US"));
+      when(glossaryDetails.getTargetLocale()).thenReturn(new LocaleId("zh"));
+      when(glossaryDetails.getTarget()).thenReturn("source text");
+      when(display.getSrcRef()).thenReturn(srcRef);
+      when(display.getSourceText()).thenReturn(sourceText);
+      when(display.getTargetText()).thenReturn(targetText);
+      when(display.getSourceLabel()).thenReturn(sourceLabel);
+      when(display.getTargetLabel()).thenReturn(targetLabel);
+      when(display.getLastModified()).thenReturn(lastModified);
+      when(messages.entriesLabel(1)).thenReturn("1");
+
+      callback.onSuccess(new GetGlossaryDetailsResult(Lists.newArrayList(glossaryDetails)));
+
+      verify(sourceText).setText(item.getSource());
+      verify(targetText).setText(item.getSource());
+      verify(display).clearEntries();
+      verify(sourceLabel).setText(anyString());
+      verify(targetLabel).setText(anyString());
+      verify(display).addEntry("1");
+      verify(display).show();
+   }
 }

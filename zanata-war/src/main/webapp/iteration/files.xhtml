@@ -36,7 +36,7 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
     <ui:define name="center_content">
-        <a4j:form>
+        <a4j:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
             <rich:datascroller id="data_table_scroller" align="center" for="data_table" fastControls="hide"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
@@ -193,10 +193,10 @@
                         <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
                     </s:link>
                 </rich:column>
-                <rich:column id="statsColumn">
+                <rich:column>
                     <f:facet name="header">
                      	<h:panelGroup>
-                            <h:outputText value="#{messages['jsf.iteration.files.Statistics']}"/>
+                            <h:outputText value="#{messages['jsf.Statistics']}"/>
                             <br/>
                             <h:selectOneMenu id="statsOption" styleClass="headerInput" value="#{projectIterationFilesAction.statsOption}">
                             	 <f:selectItem itemLabel="#{messages['jsf.ByWords']}" itemValue="WORD"/>

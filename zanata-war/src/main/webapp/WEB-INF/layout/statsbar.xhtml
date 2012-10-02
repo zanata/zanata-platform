@@ -20,9 +20,15 @@
         <div class="translationStatusBar statusBar_approved" style="width:#{wTranslated}px;"></div>
         <div class="translationStatusBar statusBar_needReview" style="width:#{wFuzzy}px;"></div>
         <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
-        <h:outputText value="#{status.percentTranslated/100}" rendered="#{status.total > 0}" class="statusBar_percentage">
-            <f:convertNumber type="percent" />
-        </h:outputText>   
+        
+        <span class="statusBar_percentage">
+	        <h:outputText value="#{status.percentTranslated/100}" rendered="#{status.total > 0}">
+	            <f:convertNumber type="percent" />
+	        </h:outputText> 
+	        (<h:outputText value="#{status.remainingHours}">
+	        	<f:convertNumber maxFractionDigits="1"/>
+	        </h:outputText>hrs)
+        </span>
     </div>
     </s:fragment>
     

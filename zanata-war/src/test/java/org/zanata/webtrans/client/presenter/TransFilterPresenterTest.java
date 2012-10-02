@@ -73,4 +73,16 @@ public class TransFilterPresenterTest
 
       verify(display).setSearchTerm("search");
    }
+
+   @Test
+   public void onUnbind()
+   {
+      presenter.onUnbind();
+   }
+
+   @Test
+   public void onRevealDisplay()
+   {
+      presenter.onRevealDisplay();
+   }
 }

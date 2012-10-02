@@ -796,19 +796,16 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 
 /* -----------------------  Stats bar CSS  -------------------------*/
 .translationStatusDiv {
-	float: left;
-	display: block;
-	padding: 3px;
-	padding-right: 6px;
-	margin-right: 5px;
-	width: 144px;
+	padding: 2px;
 	height: 14px;
+	min-width:180px;
+	width:100%;
 }
 
 .statusBar_percentage {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: bold;
-	padding-left: 2px;
+	padding-left: 1px;
 }
 
 .statusBar_noContent {

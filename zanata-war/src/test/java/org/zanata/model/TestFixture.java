@@ -97,7 +97,7 @@ public class TestFixture
       return new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId());
    }
 
-   public static  <E extends GwtEvent<?>> E extractFromEvents(List<GwtEvent> events, final Class<E> eventType)
+   public static  <E extends GwtEvent<?>> E extractFromEvents(List<? extends GwtEvent> events, final Class<E> eventType)
    {
       GwtEvent gwtEvent = Iterables.find(events, new Predicate<GwtEvent>()
       {

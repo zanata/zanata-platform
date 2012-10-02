@@ -37,11 +37,6 @@ public class FindByTransUnitIdPredicate implements Predicate<HasTransUnitId>
       this.id = id;
    }
 
-   public FindByTransUnitIdPredicate(long id)
-   {
-      this.id = new TransUnitId(id);
-   }
-
    @Override
    public boolean apply(@Nullable HasTransUnitId input)
    {
