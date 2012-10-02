@@ -6,9 +6,9 @@ import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
@@ -46,6 +46,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.StringUtil;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -75,7 +76,6 @@ import java.util.regex.Pattern;
 @Name("resourceUtils")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-@BypassInterceptors
 public class ResourceUtils
 {
    /**
@@ -108,6 +108,9 @@ public class ResourceUtils
    //   private static int MAX_TARGET_CONTENTS = 6;
 
    private static Properties pluralForms;
+
+   @In
+   private EntityManager entityManager;
 
    @PostConstruct
    public void create()
@@ -331,14 +334,14 @@ public class ResourceUtils
     * a single locale
     * 
     * @param from
-    * @param to
+    * @param doc
     * @param enabledExtensions
     * @param locale
     * @param mergeType
     * @return
     * @see #transferToTranslationsResourceExtensions
     */
-   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResourceExtension> from, HDocument to, Set<String> enabledExtensions, HLocale locale, MergeType mergeType)
+   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResourceExtension> from, HDocument doc, Set<String> enabledExtensions, HLocale locale, MergeType mergeType)
    {
       boolean changed = false;
       if (enabledExtensions.contains(PoTargetHeader.ID))
@@ -347,28 +350,43 @@ public class ResourceUtils
          if (fromTargetHeader != null)
          {
             log.debug("found PO header for locale: {0}", locale);
-            HPoTargetHeader toTargetHeader = to.getPoTargetHeaders().get(locale);
-            if (toTargetHeader == null)
+            try
             {
-               changed = true;
-               toTargetHeader = new HPoTargetHeader();
-               toTargetHeader.setTargetLanguage(locale);
-               toTargetHeader.setDocument(to);
-               transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, MergeType.IMPORT); // return
-                                                                                               // value
-                                                                                               // not
-                                                                                               // needed
-               to.getPoTargetHeaders().put(locale, toTargetHeader);
+               changed = tryGetOrCreateTargetHeader(doc, locale, mergeType, changed, fromTargetHeader);
             }
-            else
+            catch (org.hibernate.exception.ConstraintViolationException e)
             {
-               changed |= transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, mergeType);
+               entityManager.refresh(doc);
+               changed = tryGetOrCreateTargetHeader(doc, locale, mergeType, changed, fromTargetHeader);
             }
          }
          else
          {
-            changed |= to.getPoTargetHeaders().remove(locale) != null;
+            changed |= doc.getPoTargetHeaders().remove(locale) != null;
          }
+      }
+      return changed;
+   }
+
+   private boolean tryGetOrCreateTargetHeader(HDocument doc, HLocale locale, MergeType mergeType, boolean changed, PoTargetHeader fromTargetHeader)
+   {
+      HPoTargetHeader toTargetHeader = doc.getPoTargetHeaders().get(locale);
+      if (toTargetHeader == null)
+      {
+         changed = true;
+         toTargetHeader = new HPoTargetHeader();
+         toTargetHeader.setTargetLanguage(locale);
+         toTargetHeader.setDocument(doc);
+         transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, MergeType.IMPORT); // return
+                                                                                         // value
+                                                                                         // not
+                                                                                         // needed
+         doc.getPoTargetHeaders().put(locale, toTargetHeader);
+         entityManager.flush();
+      }
+      else
+      {
+         changed |= transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, mergeType);
       }
       return changed;
    }
