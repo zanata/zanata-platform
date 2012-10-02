@@ -57,7 +57,7 @@ public class LoadingPanel extends DecoratedPopupPanel
    
    public void center(String text)
    {
-      if (!isShowing())
+      if (isShowing())
       {
          hide();
       }
