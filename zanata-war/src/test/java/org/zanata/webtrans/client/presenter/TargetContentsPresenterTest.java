@@ -29,6 +29,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -51,7 +52,9 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -68,14 +71,18 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeTransUnit;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
@@ -133,7 +140,6 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
-      verify(eventBus).addHandler(ExitWorkspaceEvent.getType(), presenter);
 
       when(displayProvider.get()).thenReturn(display);
       presenter.showData(currentPageRows);
@@ -561,20 +567,6 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void onExitWorkspaceEvent()
-   {
-      // Given: selected display
-      selectedTU = currentPageRows.get(0);
-      ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
-
-      presenter.onExitWorkspace(null);
-
-      verify(editorTranslators).clearTranslatorList(currentEditors);
-      verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
-   }
-
-   @Test
    public void onTransUnitEditEvent()
    {
       selectedTU = currentPageRows.get(0);
@@ -585,12 +577,131 @@ public class TargetContentsPresenterTest
 
       presenter.onTransUnitEdit(event);
 
-      verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
+      InOrder inOrder = inOrder(editorTranslators);
+      inOrder.verify(editorTranslators).clearTranslatorList(currentEditors);
+      inOrder.verify(editorTranslators).updateTranslator(currentEditors, selectedTU.getId());
+      verifyNoMoreInteractions(editorTranslators);
    }
 
    @Test
-   public void testShowEditors()
+   public void canMoveToPreviousEditorInPluralForm()
    {
+      // Given: current editor index is 1
+      presenter.setStatesForTesting(selectedTU.getId(), 1, display, Lists.newArrayList(editor, editor2));
 
+      // When:
+      presenter.moveToPreviousEntry();
+
+      // Then:
+      verify(display).focusEditor(0);
+      verifyZeroInteractions(eventBus);
+   }
+
+   @Test
+   public void canMoveToPreviousEntry()
+   {
+      // Given: default current editor index is 0
+      TargetContentsPresenter spyPresenter = spy(presenter);
+      doNothing().when(spyPresenter).savePendingChangesIfApplicable();
+
+      // When:
+      spyPresenter.moveToPreviousEntry();
+
+      // Then:
+      verify(spyPresenter).savePendingChangesIfApplicable();
+      verify(eventBus).fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
+   }
+
+   @Test
+   public void canMoveToNextEditorInPluralForm()
+   {
+      // Given: current editor index is 0
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, Lists.newArrayList(editor, editor2));
+
+      // When:
+      presenter.moveToNextEntry();
+
+      // Then:
+      verify(display).focusEditor(1);
+      verifyZeroInteractions(eventBus);
+   }
+
+   @Test
+   public void canMoveToNextEntry()
+   {
+      // Given: current editor index is 1
+      TargetContentsPresenter spyPresenter = spy(presenter);
+      spyPresenter.setStatesForTesting(selectedTU.getId(), 1, display, Lists.newArrayList(editor, editor2));
+      doNothing().when(spyPresenter).savePendingChangesIfApplicable();
+
+      // When:
+      spyPresenter.moveToNextEntry();
+
+      // Then:
+      verify(spyPresenter).savePendingChangesIfApplicable();
+      verify(eventBus).fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+   }
+
+   @Test
+   public void canCopySourceForActiveRow()
+   {
+      // Given: current editor is focused
+      TargetContentsPresenter spyPresenter = spy(presenter);
+      selectedTU = currentPageRows.get(0);
+      spyPresenter.setStatesForTesting(selectedTU.getId(), 0, display, Lists.newArrayList(editor, editor2));
+      doNothing().when(spyPresenter).copySource(editor, selectedTU.getId());
+      when(editor.isFocused()).thenReturn(true);
+
+      // When:
+      spyPresenter.copySourceForActiveRow();
+
+      // Then:
+      verify(spyPresenter).copySource(editor, selectedTU.getId());
+   }
+
+   @Test
+   public void canAddUndoLink()
+   {
+      UndoLink undoLink = mock(UndoLink.class);
+
+      presenter.addUndoLink(0, undoLink);
+
+      verify(display).addUndo(undoLink);
+   }
+
+   @Test
+   public void canUpdateTargets()
+   {
+      List<String> targets = Lists.newArrayList("a");
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+
+      presenter.updateTargets(selectedTU.getId(), targets);
+
+      verify(display).updateCachedAndInEditorTargets(targets);
+      verify(display).highlightSearch(null);
+   }
+
+   @Test
+   public void testShowEditorsInReadOnlyMode()
+   {
+      // Given:
+      userWorkspaceContext.setProjectActive(false);
+      selectedTU = currentPageRows.get(0);
+      ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
+      ArrayList<ToggleEditor> previousEditors = Lists.newArrayList(editor2);
+      presenter.setStatesForTesting(null, 0, display, previousEditors);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(currentEditors);
+
+      // When:
+      presenter.showEditors(selectedTU.getId());
+
+      // Then:
+      verify(editorTranslators).clearTranslatorList(previousEditors);
+      verify(editor).clearTranslatorList();
+      verify(display).showButtons(false);
+      verify(display).setToMode(ToggleEditor.ViewMode.VIEW);
+      verify(editorKeyShortcuts).enableNavigationContext();
    }
 }

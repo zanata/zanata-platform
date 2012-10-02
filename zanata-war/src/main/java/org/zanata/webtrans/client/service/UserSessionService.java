@@ -23,35 +23,47 @@ package org.zanata.webtrans.client.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
+import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
+import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
-
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
 @Singleton
-public class UserSessionService implements TransUnitEditEventHandler
+public class UserSessionService implements TransUnitEditEventHandler, ExitWorkspaceEventHandler, EnterWorkspaceEventHandler
 {
-   private final HashMap<EditorClientId, UserPanelSessionItem> userSessionMap;
+   private final HashMap<EditorClientId, UserPanelSessionItem> userSessionMap = Maps.newHashMap();
    private final DistinctColor distinctColor;
+   private final WorkspaceUsersPresenter workspaceUsersPresenter;
+   private final TranslatorInteractionService interactionService;
 
    @Inject
-   public UserSessionService(final EventBus eventBus, DistinctColor distinctColor)
+   public UserSessionService(final EventBus eventBus, DistinctColor distinctColor, WorkspaceUsersPresenter workspaceUsersPresenter, TranslatorInteractionService interactionService)
    {
       this.distinctColor = distinctColor;
-      userSessionMap = Maps.newHashMap();
+      this.workspaceUsersPresenter = workspaceUsersPresenter;
+      this.interactionService = interactionService;
 
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
+      eventBus.addHandler(ExitWorkspaceEvent.getType(), this);
+      eventBus.addHandler(EnterWorkspaceEvent.getType(), this);
    }
 
    @Override
@@ -60,7 +72,7 @@ public class UserSessionService implements TransUnitEditEventHandler
       updateTranslatorStatus(event.getEditorClientId(), event.getSelectedTransUnit());
    }
 
-   public void updateTranslatorStatus(EditorClientId editorClientId, TransUnit selectedTransUnit)
+   private void updateTranslatorStatus(EditorClientId editorClientId, TransUnit selectedTransUnit)
    {
       if (userSessionMap.containsKey(editorClientId) && selectedTransUnit != null)
       {
@@ -68,17 +80,17 @@ public class UserSessionService implements TransUnitEditEventHandler
       }
    }
 
-   public UserPanelSessionItem getUserPanel(EditorClientId editorClientId)
+   private UserPanelSessionItem getUserPanel(EditorClientId editorClientId)
    {
       return userSessionMap.get(editorClientId);
    }
 
-   public void addUser(EditorClientId editorClientId, UserPanelSessionItem item)
+   private void addUser(EditorClientId editorClientId, UserPanelSessionItem item)
    {
       userSessionMap.put(editorClientId, item);
    }
 
-   public void removeUser(EditorClientId editorClientId)
+   private void removeUser(EditorClientId editorClientId)
    {
       userSessionMap.remove(editorClientId);
       distinctColor.releaseColor(editorClientId);
@@ -92,5 +104,52 @@ public class UserSessionService implements TransUnitEditEventHandler
    public String getColor(EditorClientId editorClientId)
    {
       return distinctColor.getOrCreateColor(editorClientId);
+   }
+
+   @Override
+   public void onEnterWorkspace(EnterWorkspaceEvent event)
+   {
+      HasManageUserPanel panel = workspaceUsersPresenter.addNewUser(event.getPerson());
+      addTranslator(event.getEditorClientId(), event.getPerson(), null, panel);
+   }
+
+   @Override
+   public void onExitWorkspace(ExitWorkspaceEvent event)
+   {
+      EditorClientId editorClientId = event.getEditorClientId();
+      UserPanelSessionItem item = getUserPanel(editorClientId);
+      removeUser(editorClientId);
+
+      workspaceUsersPresenter.removeUser(item.getPanel(), event.getPerson().getId().toString());
+      interactionService.personExit(event.getPerson(), item.getSelectedTransUnit());
+   }
+
+   public void initUserList(Map<EditorClientId, PersonSessionDetails> translatorList)
+   {
+      for (Map.Entry<EditorClientId, PersonSessionDetails> entry : translatorList.entrySet())
+      {
+         EditorClientId editorClientId = entry.getKey();
+         PersonSessionDetails personSessionDetails = entry.getValue();
+         HasManageUserPanel panel = workspaceUsersPresenter.addNewUser(personSessionDetails.getPerson());
+         addTranslator(editorClientId, personSessionDetails.getPerson(), personSessionDetails.getSelectedTransUnit(), panel);
+      }
+   }
+
+   private void addTranslator(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit, HasManageUserPanel panel)
+   {
+      String color = getColor(editorClientId);
+
+      UserPanelSessionItem item = getUserPanel(editorClientId);
+      if (item == null)
+      {
+         item = new UserPanelSessionItem(panel, person);
+         addUser(editorClientId, item);
+      }
+
+      item.setSelectedTransUnit(selectedTransUnit);
+
+      item.getPanel().setColor(color);
+
+      updateTranslatorStatus(editorClientId, selectedTransUnit);
    }
 }

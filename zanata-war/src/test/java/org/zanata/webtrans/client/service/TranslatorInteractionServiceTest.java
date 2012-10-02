@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.service;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -19,6 +20,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -30,6 +33,8 @@ public class TranslatorInteractionServiceTest
    @Mock
    private CachingDispatchAsync dispatcher;
    private Identity identity;
+   @Captor
+   private ArgumentCaptor<TransUnitEditAction> actionCaptor;
 
    @BeforeMethod
    public void beforeMethod()
@@ -53,10 +58,23 @@ public class TranslatorInteractionServiceTest
       TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
       service.transUnitSelected(selectedTransUnit);
 
-      ArgumentCaptor<TransUnitEditAction> actionCaptor = ArgumentCaptor.forClass(TransUnitEditAction.class);
-      Mockito.verify(dispatcher).execute(actionCaptor.capture(), Mockito.isA(NoOpAsyncCallback.class));
+      verify(dispatcher).execute(actionCaptor.capture(), Mockito.isA(NoOpAsyncCallback.class));
       TransUnitEditAction action = actionCaptor.getValue();
       assertThat(action.getPerson(), Matchers.sameInstance(identity.getPerson()));
+      assertThat(action.getSelectedTransUnit(), Matchers.sameInstance(selectedTransUnit));
+   }
+
+   @Test
+   public void onPersonExit()
+   {
+      TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
+      Person person = new Person(new PersonId("pid"), "admin", null);
+
+      service.personExit(person, selectedTransUnit);
+
+      verify(dispatcher).execute(actionCaptor.capture(), Mockito.isA(NoOpAsyncCallback.class));
+      TransUnitEditAction action = actionCaptor.getValue();
+      assertThat(action.getPerson(), Matchers.sameInstance(person));
       assertThat(action.getSelectedTransUnit(), Matchers.sameInstance(selectedTransUnit));
    }
 }

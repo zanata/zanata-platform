@@ -6,7 +6,10 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -17,6 +20,8 @@ import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,12 +40,16 @@ public class UserSessionServiceTest
    private HasManageUserPanel panel;
    @Mock
    private HasTransUnitEditData hasTransUnitData;
+   @Mock
+   private WorkspaceUsersPresenter workspaceUsersPresenter;
+   @Mock
+   private TranslatorInteractionService translatorInteractionService;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      service = new UserSessionService(eventBus, distinctColor);
+      service = new UserSessionService(eventBus, distinctColor, workspaceUsersPresenter, translatorInteractionService);
 
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), service);
    }
@@ -56,24 +65,13 @@ public class UserSessionServiceTest
    }
 
    @Test
-   public void canAddUser()
-   {
-      EditorClientId editorClientId = editorClientId();
-      UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, person());
-
-      service.addUser(editorClientId, sessionItem);
-
-      assertThat(service.getUserSessionMap(), Matchers.hasEntry(editorClientId, sessionItem));
-   }
-
-   @Test
    public void onTransUnitEditEvent()
    {
       // Given:
       EditorClientId editorClientId = editorClientId();
       UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, person());
       TransUnit transUnit = TestFixture.makeTransUnit(2);
-      service.addUser(editorClientId, sessionItem);
+      service.getUserSessionMap().put(editorClientId, sessionItem);
       when(hasTransUnitData.getEditorClientId()).thenReturn(editorClientId);
       when(hasTransUnitData.getSelectedTransUnit()).thenReturn(transUnit);
 
@@ -81,28 +79,48 @@ public class UserSessionServiceTest
       service.onTransUnitEdit(new TransUnitEditEvent(hasTransUnitData));
 
       // Then:
-      assertThat(service.getUserPanel(editorClientId).getSelectedTransUnit(), Matchers.sameInstance(transUnit));
+      assertThat(service.getUserSessionMap().get(editorClientId).getSelectedTransUnit(), Matchers.sameInstance(transUnit));
       assertThat(service.getUserSessionMap().get(editorClientId).getSelectedTransUnit(), Matchers.sameInstance(transUnit));
    }
 
    @Test
-   public void canRemoveUser()
+   public void onEnterWorkspace()
    {
+      EnterWorkspaceEvent event = mock(EnterWorkspaceEvent.class);
       EditorClientId editorClientId = editorClientId();
-      UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, person());
-      service.addUser(editorClientId, sessionItem);
-      service.removeUser(editorClientId);
+      Person person = person();
+      when(event.getEditorClientId()).thenReturn(editorClientId);
+      when(event.getPerson()).thenReturn(person);
+      when(workspaceUsersPresenter.addNewUser(person)).thenReturn(panel);
+      when(distinctColor.getOrCreateColor(editorClientId)).thenReturn("red");
 
-      assertThat(service.getUserSessionMap().size(), Matchers.is(0));
-      verify(distinctColor).releaseColor(editorClientId);
+      service.onEnterWorkspace(event);
+
+      assertThat(service.getUserSessionMap(), Matchers.hasKey(editorClientId));
+      UserPanelSessionItem userPanel = service.getUserSessionMap().get(editorClientId);
+      assertThat(userPanel.getPanel(), Matchers.sameInstance(panel));
+      verify(panel).setColor("red");
+      assertThat(userPanel.getSelectedTransUnit(), Matchers.nullValue());
    }
 
    @Test
-   public void canGetColor()
+   public void onExitWorkspace()
    {
+      ExitWorkspaceEvent event = mock(ExitWorkspaceEvent.class);
       EditorClientId editorClientId = editorClientId();
-      service.getColor(editorClientId);
-      verify(distinctColor).getOrCreateColor(editorClientId);
+      Person person = person();
+      when(event.getEditorClientId()).thenReturn(editorClientId);
+      when(event.getPerson()).thenReturn(person);
+      UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, person);
+      TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
+      sessionItem.setSelectedTransUnit(selectedTransUnit);
+      service.getUserSessionMap().put(editorClientId, sessionItem);
+
+      service.onExitWorkspace(event);
+
+      verify(workspaceUsersPresenter).removeUser(panel, person.getId().toString());
+      verify(translatorInteractionService).personExit(person, selectedTransUnit);
+      assertThat(service.getUserSessionMap().size(), Matchers.is(0));
    }
 
 }
