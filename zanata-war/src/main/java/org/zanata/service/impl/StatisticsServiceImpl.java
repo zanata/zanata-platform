@@ -120,7 +120,6 @@ public class StatisticsServiceImpl implements StatisticsResource
       ContainerTranslationStatistics iterationStats = new ContainerTranslationStatistics();
       iterationStats.setId(iterationSlug);
       iterationStats.addRef(new Link(URI.create(zPathService.generatePathForProjectIteration(iteration)), "statSource", "PROJ_ITER"));
-
       long iterationTotalMssgs = projectIterationDAO.getTotalCountForIteration(iteration.getId());
       long iterationTotalWords = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
 
