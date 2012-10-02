@@ -20,7 +20,15 @@
  */
 package org.zanata.rest.service.raw;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+
 import java.util.Arrays;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
@@ -29,18 +37,9 @@ import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
 import org.testng.annotations.Test;
-import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.ZanataRawRestTest;
-import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -81,10 +80,10 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertThat(stats.getDetailedStats(), nullValue()); // No detailed stats
             assertThat(stats.getStats().size(), greaterThan(0));
 
-            // No word level stats
+            assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.WORD));
+            assertThat(stats.getStats().get(1).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
             for( TranslationStatistics transStat : stats.getStats() )
             {
-               assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
                assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
@@ -161,10 +160,11 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertThat(stats.getDetailedStats(), nullValue()); // No detailed stats
             assertThat(stats.getStats().size(), greaterThan(0));
 
-            // No word level stats
+            assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.WORD));
+            assertThat(stats.getStats().get(1).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
+
             for( TranslationStatistics transStat : stats.getStats() )
             {
-               assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
                assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
@@ -241,10 +241,11 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertThat(stats.getDetailedStats(), nullValue()); // No detailed stats
             assertThat(stats.getStats().size(), greaterThan(0));
 
-            // No word level stats
+            assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.WORD));
+            assertThat(stats.getStats().get(1).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
+
             for( TranslationStatistics transStat : stats.getStats() )
             {
-               assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
                assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
@@ -321,10 +322,11 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertThat(stats.getDetailedStats(), nullValue()); // No detailed stats
             assertThat(stats.getStats().size(), greaterThan(0));
 
-            // No word level stats
+            assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.WORD));
+            assertThat(stats.getStats().get(1).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
+
             for( TranslationStatistics transStat : stats.getStats() )
             {
-               assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
                assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
