@@ -148,7 +148,6 @@ public class CopyTransServiceImpl implements CopyTransService
                int copyCount = 0;
 
                // Determine the state of the copies for each pass
-               ContentState copyState = Approved;
                boolean checkContext = true,
                        checkProject = true,
                        checkDocument = true;
@@ -189,10 +188,6 @@ public class CopyTransServiceImpl implements CopyTransService
                {
                   // Relax context restriction
                   checkContext = false;
-                  if( options.getContextMismatchAction() == DOWNGRADE_TO_FUZZY )
-                  {
-                     copyState = NeedReview;
-                  }
                   // Assuming above phases:
                   // Context does not match
                   // either doc Id didn't match, or the user explicitly rejected non-matching documents
