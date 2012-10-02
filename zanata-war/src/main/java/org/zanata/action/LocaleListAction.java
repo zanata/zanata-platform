@@ -121,16 +121,14 @@ public class LocaleListAction implements Serializable
       customizedItems = localeServiceImpl.getCustomizedLocalesItems(slug);
       if (customizedItems.isEmpty())
       {
-         customizedItems = globalItems;
+         customizedItems = localeServiceImpl.getDefaultCustomizedLocalesItems();
       }
-      else
+
+      for (String op : globalItems.keySet())
       {
-         for (String op : globalItems.keySet())
+         if (!customizedItems.containsKey(op))
          {
-            if (!customizedItems.containsKey(op))
-            {
-               availableItems.put(op, op);
-            }
+            availableItems.put(op, op);
          }
       }
       return availableItems;

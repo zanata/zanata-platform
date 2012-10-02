@@ -291,6 +291,23 @@ public class LocaleServiceImpl implements LocaleService
    }
 
    @Override
+   public Map<String, String> getDefaultCustomizedLocalesItems()
+   {
+      Map<String, String> defaultItems = new TreeMap<String, String>();
+      List<HLocale> allLocales = getSupportedLocales();
+
+      for( HLocale locale : allLocales )
+      {
+         if( locale.isEnabledByDefault() )
+         {
+            String desc = getDescript(locale);
+            defaultItems.put(desc, desc);
+         }
+      }
+      return defaultItems;
+   }
+
+   @Override
    public Map<String, String> getIterationCustomizedLocalesItems(String projectSlug, String iterationSlug)
    {
       Map<String, String> customizedItems = new TreeMap<String, String>();
