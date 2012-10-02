@@ -110,7 +110,7 @@
                     <div>
 	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload']}"/> 
+		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>
@@ -132,7 +132,7 @@
                     <div>
 	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload']}"/> 
+		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>
@@ -152,7 +152,7 @@
                     <div>
 	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload']}"/> 
+		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>
@@ -174,7 +174,7 @@
                     <div>
 	                    <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload']}"/> 
+		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>
@@ -263,7 +263,8 @@
                 <s:fileUpload accept="*"
                               data="#{projectIterationFilesAction.translationFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.translationFileUpload.fileName}"/>
-                <h:outputText value="#{messages['jsf.iteration.files.Merge']}?"/>
+                <br/>
+                <h:outputText value="#{messages['jsf.iteration.files.Merge']}?" title="#{messages['jsf.iteration.files.Merge.title']}"/>
                 <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.translationFileUpload.docId}"/>
                 <h:selectBooleanCheckbox value="#{projectIterationFilesAction.translationFileUpload.mergeTranslations}"
                                          title="#{messages['jsf.iteration.files.MergeCheckbox.Title']}"/>
