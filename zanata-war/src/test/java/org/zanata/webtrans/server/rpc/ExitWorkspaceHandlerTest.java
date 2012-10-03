@@ -66,4 +66,10 @@ public class ExitWorkspaceHandlerTest
       verify(translationWorkspace).removeEditorClient(action.getEditorClientId());
       assertThat(result.getuserName(), Matchers.equalTo(person.getId().toString()));
    }
+
+   @Test
+   public void testRollback() throws Exception
+   {
+      handler.rollback(null, null, null);
+   }
 }

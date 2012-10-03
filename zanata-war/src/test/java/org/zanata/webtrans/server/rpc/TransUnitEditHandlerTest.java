@@ -75,4 +75,10 @@ public class TransUnitEditHandlerTest
       assertThat(transUnitEdit.getPerson(), Matchers.sameInstance(person));
       assertThat(transUnitEdit.getSelectedTransUnit(), Matchers.sameInstance(selectedTransUnit));
    }
+
+   @Test
+   public void testRollback() throws Exception
+   {
+      handler.rollback(null, null, null);
+   }
 }

@@ -31,20 +31,19 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 @ActionHandlerFor(GetDocumentList.class)
 public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentList, GetDocumentListResult>
 {
-
-   @Logger
-   Log log;
+   @In
+   private ZanataIdentity identity;
 
    @In
-   ProjectIterationDAO projectIterationDAO;
+   private ProjectIterationDAO projectIterationDAO;
 
    @In
-   DocumentDAO documentDAO;
+   private DocumentDAO documentDAO;
 
    @Override
    public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
       ProjectIterationId iterationId = action.getProjectIterationId();
