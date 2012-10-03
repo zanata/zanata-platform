@@ -52,21 +52,18 @@ import com.ibm.icu.util.ULocale;
 
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import lombok.extern.slf4j.Slf4j;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
+@Slf4j
 public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceManager
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(TranslationWorkspaceManagerImpl.class);
-
    @In
    private AccountDAO accountDAO;
 
    @In
    private GravatarService gravatarServiceImpl;
-
-   @In
-   private ProjectDAO projectDAO;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -91,7 +88,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Observer(ZanataInit.EVENT_Zanata_Startup)
    public void start()
    {
-      LOGGER.info("starting...");
+      log.info("starting...");
 
       Runtime.getRuntime().addShutdownHook(new Thread()
       {
@@ -109,10 +106,10 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String httpSessionId = getSessionId();
       if (httpSessionId == null)
       {
-         LOGGER.debug("Logout: null session");
+         log.debug("Logout: null session");
          return;
       }
-      LOGGER.info("Logout: Removing user {} from all workspaces, session: {}", username, httpSessionId);
+      log.info("Logout: Removing user {} from all workspaces, session: {}", username, httpSessionId);
       String personName = "<unknown>";
       String personEmail = "<unknown>";
       HAccount account = accountDAO.getByUsername(username);
@@ -131,7 +128,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
          Collection<EditorClientId> editorClients = workspace.removeEditorClients(httpSessionId);
          for (EditorClientId editorClientId : editorClients)
          {
-            LOGGER.info("Publishing ExitWorkspace event for user {} with editorClientId {} from workspace {}", new Object[] { username, editorClientId, workspace.getWorkspaceContext() });
+            log.info("Publishing ExitWorkspace event for user {} with editorClientId {} from workspace {}", new Object[]{username, editorClientId, workspace.getWorkspaceContext()});
             // Send GWT Event to client to update the userlist
             ExitWorkspace event = new ExitWorkspace(editorClientId, new Person(new PersonId(username), personName, gravatarServiceImpl.getUserImageUrl(16, personEmail)));
             workspace.publish(event);
@@ -153,7 +150,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    public void projectUpdate(HIterationProject project)
    {
       String projectSlug = project.getSlug();
-      LOGGER.info("Project {} updated, status={}", projectSlug, project.getStatus());
+      log.info("Project {} updated, status={}", projectSlug, project.getStatus());
 
       for (HProjectIteration iter : project.getProjectIterations())
       {
@@ -168,7 +165,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
       Boolean isProjectActive = projectIterationIsActive(project.getStatus(), projectIteration.getStatus());
-      LOGGER.info("Project {} iteration {} updated, status={}, isProjectActive={}", new Object[] { projectSlug, iterSlug, projectIteration.getStatus(), isProjectActive });
+      log.info("Project {} iteration {} updated, status={}, isProjectActive={}", new Object[]{projectSlug, iterSlug, projectIteration.getStatus(), isProjectActive});
 
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);
       for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId))
@@ -186,8 +183,8 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Destroy
    public void stop()
    {
-      LOGGER.info("stopping...");
-      LOGGER.info("closing down {} workspaces: ", workspaceMap.size());
+      log.info("stopping...");
+      log.info("closing down {} workspaces: ", workspaceMap.size());
    }
 
    private void stopListeners()
@@ -198,13 +195,13 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       // configured in eventservice.properties.
       Set<String> registeredUserIds = eventRegistry.getRegisteredUserIds();
       int clientCount = registeredUserIds.size();
-      LOGGER.info("Removing {} client(s)", clientCount);
+      log.info("Removing {} client(s)", clientCount);
       for (String userId : registeredUserIds)
       {
-         LOGGER.debug("Removing client {}", userId);
+         log.debug("Removing client {}", userId);
          eventRegistry.unlisten(userId);
       }
-      LOGGER.info("Removed {} client(s).  Waiting for outstanding polls to time out...", clientCount);
+      log.info("Removed {} client(s).  Waiting for outstanding polls to time out...", clientCount);
    }
 
    public int getWorkspaceCount()
