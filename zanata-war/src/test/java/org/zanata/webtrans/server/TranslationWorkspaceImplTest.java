@@ -20,18 +20,25 @@
  */
 package org.zanata.webtrans.server;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
+import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.common.collect.MapMaker;
+
+import static org.hamcrest.MatcherAssert.*;
 
 @Test(groups = { "unit-tests" })
 public class TranslationWorkspaceImplTest
@@ -46,6 +53,81 @@ public class TranslationWorkspaceImplTest
       WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "workspaceName", "en-US");
       translationWorkspace = new TranslationWorkspaceImpl(workspaceContext);
    }
+
+   @Test(expectedExceptions = NullPointerException.class)
+   public void willNotCreateTranslationWorkspaceWithNullContext()
+   {
+      translationWorkspace = new TranslationWorkspaceImpl(null);
+   }
+
+   @Test
+   public void canGetWorkspaceContext()
+   {
+      WorkspaceContext workspaceContext = translationWorkspace.getWorkspaceContext();
+
+      assertThat(workspaceContext.getWorkspaceId(), Matchers.equalTo(workspaceId));
+   }
+
+   @Test
+   public void canGetUsers()
+   {
+      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+      PersonId personId = new PersonId("personId");
+      translationWorkspace.addEditorClient("sessionId", editorClientId, personId);
+
+      Map<EditorClientId, PersonSessionDetails> users = translationWorkspace.getUsers();
+
+      assertThat(users, Matchers.hasKey(editorClientId));
+      PersonSessionDetails personSessionDetails = users.get(editorClientId);
+      assertThat(personSessionDetails.getPerson().getId(), Matchers.equalTo(personId));
+   }
+
+   @Test
+   public void canRemoveClient()
+   {
+      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+      PersonId personId = new PersonId("personId");
+      translationWorkspace.addEditorClient("sessionId", editorClientId, personId);
+      assertThat(translationWorkspace.getUsers(), Matchers.hasKey(editorClientId));
+
+      translationWorkspace.removeEditorClient(editorClientId);
+
+      assertThat(translationWorkspace.getUsers().size(), Matchers.is(0));
+   }
+
+   @Test
+   public void canRemoveClientsWithSameSessionId()
+   {
+      // Given: 2 client share same http session id
+      String httpSessionId = "sessionId";
+      EditorClientId editorClientId1 = new EditorClientId(httpSessionId, 1);
+      EditorClientId editorClientId2 = new EditorClientId(httpSessionId, 2);
+      PersonId personId = new PersonId("personId");
+      translationWorkspace.addEditorClient(httpSessionId, editorClientId1, personId);
+      translationWorkspace.addEditorClient(httpSessionId, editorClientId2, personId);
+      assertThat(translationWorkspace.getUsers().keySet(), Matchers.containsInAnyOrder(editorClientId1, editorClientId2));
+
+      // When:
+      translationWorkspace.removeEditorClients(httpSessionId);
+
+      // Then:
+      assertThat(translationWorkspace.getUsers().size(), Matchers.is(0));
+   }
+
+   @Test
+   public void canUpdateUserSelection()
+   {
+      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+      translationWorkspace.addEditorClient("sessionId", editorClientId, new PersonId("personId"));
+      TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
+
+      translationWorkspace.updateUserSelection(editorClientId, selectedTransUnit);
+
+      PersonSessionDetails personSessionDetails = translationWorkspace.getUsers().get(editorClientId);
+      assertThat(personSessionDetails.getSelectedTransUnit(), Matchers.equalTo(selectedTransUnit));
+      assertThat(translationWorkspace.getUserSelection(editorClientId), Matchers.equalTo(selectedTransUnit));
+   }
+
 
    @Test
    public void onTimeoutRemove()
