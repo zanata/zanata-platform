@@ -492,8 +492,25 @@ public class PushCommand extends PushPullCommand<PushOptions>
          // 404 - Probably because of an old server
          if( failure.getResponse().getResponseStatus() == Response.Status.NOT_FOUND )
          {
-            log.warn("Copy Trans not started (Probably an old version of the server.)");
-            return;
+            if( getRequestFactory().compareToServerVersion("1.8.0-SNAPSHOT") < 0 )
+            {
+               log.warn("Copy Trans not started (Incompatible server version.)");
+               return;
+            }
+            else
+            {
+               throw new RuntimeException("Could not invoke copy trans. The service was not available (404)");
+            }
+         }
+         else if( failure.getCause() != null )
+         {
+            throw new RuntimeException("Problem invoking copy trans.", failure.getCause());
+         }
+         else
+         {
+            throw new RuntimeException(
+                  "Problem invoking copy trans: [Server response code:"
+                        + failure.getResponse().getResponseStatus().getStatusCode() + "]");
          }
       }
       ConsoleUtils.startProgressFeedback();
