@@ -6,24 +6,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.web.ServletContexts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.ZanataInit;
 import org.zanata.action.ProjectHome;
 import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
@@ -52,7 +50,6 @@ import com.ibm.icu.util.ULocale;
 
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
-import lombok.extern.slf4j.Slf4j;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
@@ -253,6 +250,10 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       if (locale == null)
       {
          throw new NoSuchWorkspaceException("Invalid Workspace Locale");
+      }
+      if (!locale.isActive())
+      {
+         throw new NoSuchWorkspaceException("Locale '" + locale.retrieveDisplayName() + "' disabled in server");
       }
 
       String workspaceName = project.getName() + " (" + projectIteration.getSlug() + ")";

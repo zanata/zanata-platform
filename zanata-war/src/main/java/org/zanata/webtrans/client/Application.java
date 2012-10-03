@@ -2,6 +2,8 @@ package org.zanata.webtrans.client;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
@@ -27,22 +29,18 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
+
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Strings;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -77,16 +75,14 @@ public class Application implements EntryPoint
             else if (caught instanceof NoSuchWorkspaceException)
             {
                Log.error("Invalid workspace", caught);
-               String errorMessage, linkText, projectListUrl;
-               errorMessage = "Invalid Workspace. Try opening the workspace from the link on the project page.";
-               linkText = "Projects";
-               projectListUrl = getModuleParentBaseUrl() + "project/list";
-               showErrorWithLink(errorMessage, null, linkText, projectListUrl);
+               String errorMessage;
+               errorMessage = "Invalid Workspace. " + caught.getLocalizedMessage() + ". Try opening the workspace from the link on the project page.";
+               showErrorWithLink(errorMessage, caught);
             }
             else
             {
                Log.error("An unexpected Error occurred", caught);
-               showErrorWithLink("An unexpected Error occurred: " + caught.getMessage(), caught, null, null);
+               showErrorWithLink("An unexpected Error occurred: " + caught.getMessage(), caught);
             }
          }
 
@@ -134,7 +130,7 @@ public class Application implements EntryPoint
                @Override
                public void onFailure(Throwable e)
                {
-                  showErrorWithLink("Server communication failed...", e, null, null);
+                  showErrorWithLink("Server communication failed...", e);
                }
                @Override
                public void onSuccess(NoOpResult result)
@@ -147,7 +143,7 @@ public class Application implements EntryPoint
          @Override
          public void onFailure(Throwable e)
          {
-            showErrorWithLink("Failed to start Event Service...", e, null, null);
+            showErrorWithLink("Failed to start Event Service...", e);
          }
       });
 
@@ -281,19 +277,12 @@ public class Application implements EntryPoint
     * @param linkText text to display for link
     * @param linkUrl href for link
     */
-   private static void showErrorWithLink(String message, Throwable e, String linkText, String linkUrl)
+   private static void showErrorWithLink(String message, Throwable e)
    {
       Label messageLabel = new Label(message);
       messageLabel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
       FlowPanel layoutPanel = new FlowPanel();
       layoutPanel.add(messageLabel);
-
-      if (!Strings.isNullOrEmpty(linkText) && !Strings.isNullOrEmpty(linkUrl))
-      {
-         Anchor a = new Anchor(linkText, linkUrl);
-         a.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
-         layoutPanel.add(a);
-      }
 
       if (IS_DEBUG && e != null)
       {
