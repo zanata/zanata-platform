@@ -23,7 +23,7 @@ import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 public class RemoteLoggingHandler extends AbstractActionHandler<RemoteLoggingAction, NoOpResult>
 {
    @In
-   ZanataIdentity identity;
+   private ZanataIdentity identity;
 
    @Override
    public NoOpResult execute(RemoteLoggingAction action, ExecutionContext context) throws ActionException
@@ -31,14 +31,13 @@ public class RemoteLoggingHandler extends AbstractActionHandler<RemoteLoggingAct
       try
       {
          identity.checkLoggedIn();
+         log.error("[gwt-log] from user: {} on workspace: {}", identity.getCredentials().getUsername(), action.getWorkspaceId());
+         log.error("[gwt-log] {}", action.getMessage());
       }
       catch (Exception e)
       {
          log.warn("can not authenticate user.");
       }
-
-      log.error("[gwt-log] from user: {} on workspace: {}", identity.getCredentials().getUsername(), action.getWorkspaceId());
-      log.error("[gwt-log] {}", action.getMessage());
 
       return new NoOpResult();
    }
