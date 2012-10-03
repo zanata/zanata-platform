@@ -1,5 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
+import org.hamcrest.Matchers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -12,8 +15,10 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +35,8 @@ public class PublishWorkspaceChatHandlerTest
    private TranslationWorkspaceManager translationWorkspaceManager;
    @Mock
    private TranslationWorkspace translationWorkspace;
+   @Captor
+   private ArgumentCaptor<PublishWorkspaceChat> eventCaptor;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -55,5 +62,10 @@ public class PublishWorkspaceChatHandlerTest
       handler.execute(action, null);
 
       verify(identity).checkLoggedIn();
+      verify(translationWorkspace).publish(eventCaptor.capture());
+      PublishWorkspaceChat chat = eventCaptor.getValue();
+      assertThat(chat.getPersonId(), Matchers.equalTo("admin"));
+      assertThat(chat.getMsg(), Matchers.equalTo("hi"));
+      assertThat(chat.getMessageType(), Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
    }
 }
