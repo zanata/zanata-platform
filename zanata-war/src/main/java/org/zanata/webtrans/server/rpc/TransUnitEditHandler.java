@@ -32,22 +32,25 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransUnitEdit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
-import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 @Name("webtrans.gwt.TransUnitEditHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(TransUnitEditAction.class)
-public class TransUnitEditHandler extends AbstractActionHandler<TransUnitEditAction, TransUnitEditResult>
+public class TransUnitEditHandler extends AbstractActionHandler<TransUnitEditAction, NoOpResult>
 {
+   @In
+   private ZanataIdentity identity;
+
    @In
    private TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
-   public TransUnitEditResult execute(TransUnitEditAction action, ExecutionContext context) throws ActionException
+   public NoOpResult execute(TransUnitEditAction action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       // Send TranslatorStatusUpdate event to client
@@ -57,11 +60,11 @@ public class TransUnitEditHandler extends AbstractActionHandler<TransUnitEditAct
 
       workspace.publish(event);
 
-      return new TransUnitEditResult();
+      return new NoOpResult();
    }
 
    @Override
-   public void rollback(TransUnitEditAction action, TransUnitEditResult result, ExecutionContext context) throws ActionException
+   public void rollback(TransUnitEditAction action, NoOpResult result, ExecutionContext context) throws ActionException
    {
    }
 

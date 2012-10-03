@@ -4,7 +4,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 
-public class TransUnitEditAction extends AbstractWorkspaceAction<TransUnitEditResult>
+public class TransUnitEditAction extends AbstractWorkspaceAction<NoOpResult>
 {
    private static final long serialVersionUID = -9165857458963498055L;
 
