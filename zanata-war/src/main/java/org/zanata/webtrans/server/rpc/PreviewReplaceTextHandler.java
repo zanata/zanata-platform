@@ -50,7 +50,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 public class PreviewReplaceTextHandler extends AbstractActionHandler<PreviewReplaceText, PreviewReplaceTextResult>
 {
    @In
-   ZanataIdentity identity;
+   private ZanataIdentity identity;
 
    @Override
    public PreviewReplaceTextResult execute(PreviewReplaceText previewAction, ExecutionContext context) throws ActionException

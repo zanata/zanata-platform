@@ -24,17 +24,15 @@ import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 @ActionHandlerFor(GetStatusCount.class)
 public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount, GetStatusCountResult>
 {
+   @In
+   private ZanataIdentity identity;
 
    @In
-   ZanataIdentity identity;
-
-   @In
-   DocumentDAO documentDAO;
+   private DocumentDAO documentDAO;
 
    @Override
    public GetStatusCountResult execute(GetStatusCount action, ExecutionContext context) throws ActionException
    {
-
       identity.checkLoggedIn();
 
       Long docId = action.getDocumentId().getValue();

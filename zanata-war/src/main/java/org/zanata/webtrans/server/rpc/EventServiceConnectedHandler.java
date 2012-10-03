@@ -20,10 +20,10 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 public class EventServiceConnectedHandler extends AbstractActionHandler<EventServiceConnectedAction, NoOpResult>
 {
    @In
-   ZanataIdentity identity;
+   private ZanataIdentity identity;
 
    @In
-   TranslationWorkspaceManager translationWorkspaceManager;
+   private TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
    public NoOpResult execute(EventServiceConnectedAction action, ExecutionContext context) throws ActionException

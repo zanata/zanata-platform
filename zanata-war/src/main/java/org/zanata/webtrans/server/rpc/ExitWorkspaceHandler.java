@@ -20,10 +20,10 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, ExitWorkspaceResult>
 {
    @In
-   ZanataIdentity identity;
+   private ZanataIdentity identity;
 
    @In
-   TranslationWorkspaceManager translationWorkspaceManager;
+   private TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
    public ExitWorkspaceResult execute(ExitWorkspaceAction action, ExecutionContext context) throws ActionException

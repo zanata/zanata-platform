@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.rpc;
 
-import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
-import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
@@ -10,13 +9,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class DummyPublishWorkspaceChatCommand implements Command
 {
 
-   private final AsyncCallback<PublishWorkspaceChatResult> callback;
-   private final PublishWorkspaceChatAction action;
+   private final AsyncCallback<NoOpResult> callback;
 
-   DummyPublishWorkspaceChatCommand(PublishWorkspaceChatAction action, AsyncCallback<PublishWorkspaceChatResult> callback)
+   DummyPublishWorkspaceChatCommand(AsyncCallback<NoOpResult> callback)
    {
       this.callback = callback;
-      this.action = action;
    }
 
    @Override
@@ -24,7 +21,7 @@ public class DummyPublishWorkspaceChatCommand implements Command
    {
       Log.info("ENTER DummyPublishWorkspaceChatCommand.execute()");
       
-      callback.onSuccess(new PublishWorkspaceChatResult());
+      callback.onSuccess(new NoOpResult());
       Log.info("EXIT PublishWorkspaceChatResult.execute()");
 
    }

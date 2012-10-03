@@ -117,11 +117,6 @@ public class WorkspaceUsersPresenterTest
       return new Person(new PersonId("pid"), "someone", "url");
    }
 
-   private static EditorClientId editorClientId()
-   {
-      return new EditorClientId("session", 1);
-   }
-
    @Test
    public void onSendButtonClicked()
    {
