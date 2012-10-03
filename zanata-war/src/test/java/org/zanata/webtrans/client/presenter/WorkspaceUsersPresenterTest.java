@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -89,7 +90,7 @@ public class WorkspaceUsersPresenterTest
    @Test
    public void testKeyShortcut()
    {
-      Person person = person();
+      Person person = TestFixture.person();
       WorkspaceUsersPresenter spyPresenter = Mockito.spy(presenter);
       doNothing().when(spyPresenter).dispatchChatAction(person.getId().toString(), "hello", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
       when(messages.publishChatContent()).thenReturn("publish chat");
@@ -112,17 +113,12 @@ public class WorkspaceUsersPresenterTest
       verify(spyPresenter).dispatchChatAction(person.getId().toString(), "hello", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
    }
 
-   private static Person person()
-   {
-      return new Person(new PersonId("pid"), "someone", "url");
-   }
-
    @Test
    public void onSendButtonClicked()
    {
       // Given:
       when(display.getChatInputText()).thenReturn("hello");
-      Person person = person();
+      Person person = TestFixture.person();
       when(identity.getPerson()).thenReturn(person);
 
       // When:
@@ -174,7 +170,7 @@ public class WorkspaceUsersPresenterTest
    @Test
    public void onAddNewUser()
    {
-      Person person = person();
+      Person person = TestFixture.person();
       when(messages.hasJoinedWorkspace(person.getId().toString())).thenReturn("someone entered");
       WorkspaceUsersPresenter spyPresenter = spy(presenter);
       doNothing().when(spyPresenter).dispatchChatAction(null, "someone entered", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
@@ -188,7 +184,7 @@ public class WorkspaceUsersPresenterTest
    @Test
    public void onRemoveUser()
    {
-      Person person = person();
+      Person person = TestFixture.person();
       when(messages.hasQuitWorkspace(person.getId().toString())).thenReturn("someone quit");
       WorkspaceUsersPresenter spyPresenter = spy(presenter);
       doNothing().when(spyPresenter).dispatchChatAction(null, "someone quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);

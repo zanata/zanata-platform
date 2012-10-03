@@ -54,11 +54,6 @@ public class UserSessionServiceTest
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), service);
    }
 
-   private static Person person()
-   {
-      return new Person(new PersonId("pid"), "name", null);
-   }
-
    private static EditorClientId editorClientId()
    {
       return new EditorClientId("session", 1);
@@ -69,7 +64,7 @@ public class UserSessionServiceTest
    {
       // Given:
       EditorClientId editorClientId = editorClientId();
-      UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, person());
+      UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, TestFixture.person());
       TransUnit transUnit = TestFixture.makeTransUnit(2);
       service.getUserSessionMap().put(editorClientId, sessionItem);
       when(hasTransUnitData.getEditorClientId()).thenReturn(editorClientId);
@@ -88,7 +83,7 @@ public class UserSessionServiceTest
    {
       EnterWorkspaceEvent event = mock(EnterWorkspaceEvent.class);
       EditorClientId editorClientId = editorClientId();
-      Person person = person();
+      Person person = TestFixture.person();
       when(event.getEditorClientId()).thenReturn(editorClientId);
       when(event.getPerson()).thenReturn(person);
       when(workspaceUsersPresenter.addNewUser(person)).thenReturn(panel);
@@ -108,7 +103,7 @@ public class UserSessionServiceTest
    {
       ExitWorkspaceEvent event = mock(ExitWorkspaceEvent.class);
       EditorClientId editorClientId = editorClientId();
-      Person person = person();
+      Person person = TestFixture.person();
       when(event.getEditorClientId()).thenReturn(editorClientId);
       when(event.getPerson()).thenReturn(person);
       UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, person);

@@ -28,6 +28,8 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 
+import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -106,6 +108,11 @@ public class TestFixture
    {
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
       return new WorkspaceId(projectIterationId, LocaleId.EN_US);
+   }
+
+   public static Person person()
+   {
+      return new Person(new PersonId("pid"), "admin", null);
    }
 
    public static  <E extends GwtEvent<?>> E extractFromEvents(List<? extends GwtEvent> events, final Class<E> eventType)

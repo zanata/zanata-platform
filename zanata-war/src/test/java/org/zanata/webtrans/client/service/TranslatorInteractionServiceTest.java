@@ -68,7 +68,7 @@ public class TranslatorInteractionServiceTest
    public void onPersonExit()
    {
       TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
-      Person person = new Person(new PersonId("pid"), "admin", null);
+      Person person = TestFixture.person();
 
       service.personExit(person, selectedTransUnit);
 
