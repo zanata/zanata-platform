@@ -227,10 +227,6 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
 
          return prev == null ? workspace : prev;
       }
-      else
-      {
-         validateAndGetWorkspaceContext(workspaceId);
-      }
       return workspace;
    }
 
