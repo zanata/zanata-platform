@@ -461,7 +461,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    public void onRevealDisplay()
    {
       keyShortcutPresenter.setContextActive(ShortcutContext.ProjectWideSearch, true);
-      display.focusReplacementTextBox();
+      display.focusFilterTextBox();
    }
 
    public void concealDisplay()

@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -40,6 +41,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -100,7 +102,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    private HasValue<Boolean> selectAllCheckbox;
 
    private final DiffColorLegendPanel diffLegendPanel;
-   
+
    @Inject
    public SearchResultsView(Resources resources, final WebTransMessages webTransMessages, final DiffColorLegendPanel diffLegendPanel, LoadingPanel loadingPanel)
    {
@@ -137,8 +139,15 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @Override
    public void focusFilterTextBox()
    {
-      filterTextBox.setFocus(true);
-      filterTextBox.setSelectionRange(0, filterTextBox.getText().length());
+      Scheduler.get().scheduleDeferred(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            filterTextBox.setFocus(true);
+            filterTextBox.setSelectionRange(0, filterTextBox.getText().length());
+         }
+      });
    }
 
    @UiHandler("filterTextBox")
@@ -165,8 +174,15 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @Override
    public void focusReplacementTextBox()
    {
-      replacementTextBox.setFocus(true);
-      replacementTextBox.setSelectionRange(0, replacementTextBox.getText().length());
+      Scheduler.get().scheduleDeferred(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            replacementTextBox.setFocus(true);
+            replacementTextBox.setSelectionRange(0, replacementTextBox.getText().length());
+         }
+      });
    }
 
    @Override
