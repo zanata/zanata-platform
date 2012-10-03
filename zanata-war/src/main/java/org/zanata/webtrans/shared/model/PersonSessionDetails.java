@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
+import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PersonSessionDetails implements IsSerializable
@@ -52,19 +53,30 @@ public class PersonSessionDetails implements IsSerializable
    public boolean equals(Object obj)
    {
       if (this == obj)
+      {
          return true;
+      }
       if (obj == null)
+      {
          return false;
+      }
       if (getClass() != obj.getClass())
+      {
          return false;
+      }
       PersonSessionDetails other = (PersonSessionDetails) obj;
+//      return Objects.equal(person, other.person);
       if (person == null)
       {
          if (other.person != null)
+         {
             return false;
+         }
       }
       else if (!person.equals(other.person))
+      {
          return false;
+      }
       return true;
    }
 

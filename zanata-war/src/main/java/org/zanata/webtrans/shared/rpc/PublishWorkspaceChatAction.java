@@ -2,7 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
-public class PublishWorkspaceChatAction extends AbstractWorkspaceAction<PublishWorkspaceChatResult>
+public class PublishWorkspaceChatAction extends AbstractWorkspaceAction<NoOpResult>
 {
    private static final long serialVersionUID = -8145724589597122017L;
    private String person;

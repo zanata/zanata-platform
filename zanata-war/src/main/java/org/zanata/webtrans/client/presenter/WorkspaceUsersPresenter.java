@@ -15,8 +15,8 @@ import org.zanata.webtrans.client.view.WorkspaceUsersDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
-import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
@@ -74,7 +74,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersDispl
    {
       if (!Strings.isNullOrEmpty(msg))
       {
-         dispatcher.execute(new PublishWorkspaceChatAction(person, msg, messageType), new NoOpAsyncCallback<PublishWorkspaceChatResult>());
+         dispatcher.execute(new PublishWorkspaceChatAction(person, msg, messageType), new NoOpAsyncCallback<NoOpResult>());
          display.setChatInputText("");
       }
    }

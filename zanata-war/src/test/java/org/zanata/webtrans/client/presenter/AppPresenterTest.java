@@ -63,7 +63,7 @@ public class AppPresenterTest
    private DocumentListPresenter documentListPresenter;
    @Mock
    private SearchResultsPresenter searchResultPresenter;
-   private UserWorkspaceContext userWorkspace = TestFixture.userWorkspaceContext(true, true, "project", "master");
+   private UserWorkspaceContext userWorkspace = TestFixture.userWorkspaceContext();
    @Mock
    private WebTransMessages messages;
    @Mock

@@ -24,21 +24,16 @@ import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 @ActionHandlerFor(GetStatusCount.class)
 public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount, GetStatusCountResult>
 {
+   @In
+   private ZanataIdentity identity;
 
    @In
-   Session session;
-
-   @In
-   TranslationWorkspaceManager translationWorkspaceManager;
-
-   @In
-   DocumentDAO documentDAO;
+   private DocumentDAO documentDAO;
 
    @Override
    public GetStatusCountResult execute(GetStatusCount action, ExecutionContext context) throws ActionException
    {
-
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       Long docId = action.getDocumentId().getValue();
       LocaleId localeId = action.getWorkspaceId().getLocaleId();

@@ -35,22 +35,25 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
-import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 
 @Name("webtrans.gwt.PublishWorkspaceChatHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(PublishWorkspaceChatAction.class)
-public class PublishWorkspaceChatHandler extends AbstractActionHandler<PublishWorkspaceChatAction, PublishWorkspaceChatResult>
+public class PublishWorkspaceChatHandler extends AbstractActionHandler<PublishWorkspaceChatAction, NoOpResult>
 {
+   @In
+   private ZanataIdentity identity;
+
    @In
    private TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
-   public PublishWorkspaceChatResult execute(PublishWorkspaceChatAction action, ExecutionContext context) throws ActionException
+   public NoOpResult execute(PublishWorkspaceChatAction action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       // Send PublishWorkspaceChat event to client
@@ -61,11 +64,11 @@ public class PublishWorkspaceChatHandler extends AbstractActionHandler<PublishWo
       PublishWorkspaceChat event = new PublishWorkspaceChat(action.getPerson(), formatter.format(currentDate), action.getMsg(), action.getMessageType());
       workspace.publish(event);
 
-      return new PublishWorkspaceChatResult();
+      return new NoOpResult();
    }
 
    @Override
-   public void rollback(PublishWorkspaceChatAction action, PublishWorkspaceChatResult result, ExecutionContext context) throws ActionException
+   public void rollback(PublishWorkspaceChatAction action, NoOpResult result, ExecutionContext context) throws ActionException
    {
    }
 

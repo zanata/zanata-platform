@@ -130,7 +130,7 @@ public class TargetContentsPresenterTest
    {
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
-      userWorkspaceContext = TestFixture.userWorkspaceContext(true, true, "project", "master");
+      userWorkspaceContext = TestFixture.userWorkspaceContext();
       presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, editorKeyShortcuts, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);

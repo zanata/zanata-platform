@@ -68,7 +68,7 @@ public class TranslationPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      userWorkspaceContext = TestFixture.userWorkspaceContext(true, true, "project", "master");
+      userWorkspaceContext = TestFixture.userWorkspaceContext();
       presenter = new TranslationPresenter(display, eventBus, targetContentsPresenter, translationEditorPresenter, transMemoryPresenter, glossaryPresenter, messages, userWorkspaceContext, keyShortcutPresenter, navigationService);
    }
 

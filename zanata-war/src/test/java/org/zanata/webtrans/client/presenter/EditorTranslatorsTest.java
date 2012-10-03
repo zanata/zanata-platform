@@ -70,7 +70,7 @@ public class EditorTranslatorsTest
       when(sessionService.getUserSessionMap()).thenReturn(sessionMap);
       when(sessionService.getColor(editorClientId)).thenReturn("red");
       when(panelSessionItem.getSelectedTransUnit()).thenReturn(TestFixture.makeTransUnit(1));
-      Person person = new Person(new PersonId("pid"), "admin", null);
+      Person person = TestFixture.person();
       when(panelSessionItem.getPerson()).thenReturn(person);
       EditorClientId ourClientId = new EditorClientId("another client id", 2);
       when(identity.getEditorClientId()).thenReturn(ourClientId);
@@ -92,7 +92,7 @@ public class EditorTranslatorsTest
       when(sessionService.getUserSessionMap()).thenReturn(sessionMap);
       when(sessionService.getColor(editorClientId)).thenReturn("red");
       when(panelSessionItem.getSelectedTransUnit()).thenReturn(TestFixture.makeTransUnit(1));
-      Person person = new Person(new PersonId("pid"), "admin", null);
+      Person person = TestFixture.person();
       when(panelSessionItem.getPerson()).thenReturn(person);
       EditorClientId ourClientId = new EditorClientId("another client id", 2);
       when(identity.getEditorClientId()).thenReturn(ourClientId);
