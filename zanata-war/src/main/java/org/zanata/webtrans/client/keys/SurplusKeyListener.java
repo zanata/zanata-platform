@@ -112,9 +112,13 @@ public class SurplusKeyListener
    public boolean equals(Object obj)
    {
       if (obj == null)
+      {
          return false;
+      }
       if (!(obj instanceof SurplusKeyListener))
+      {
          return false;
+      }
       SurplusKeyListener other = (SurplusKeyListener) obj;
       return keyEvent == other.keyEvent && context == other.context;
    }

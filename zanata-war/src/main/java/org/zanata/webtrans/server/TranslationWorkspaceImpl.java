@@ -18,6 +18,7 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
@@ -55,8 +56,8 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
 
    public TranslationWorkspaceImpl(WorkspaceContext workspaceContext)
    {
-      if (workspaceContext == null)
-         throw new IllegalArgumentException("workspaceContext is null");
+      Preconditions.checkNotNull(workspaceContext, "workspaceContext is null");
+
       this.workspaceContext = workspaceContext;
       String workspaceId = workspaceContext.getWorkspaceId().toString();
       this.domain = DomainFactory.getDomain(workspaceId);
@@ -104,7 +105,9 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
          for (TransUnitId transId : transIdSet)
          {
             if (editstatus.get(transId).equals(sessionId))
+            {
                editstatus.remove(transId, sessionId);
+            }
          }
       }
 
@@ -207,9 +210,13 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    public boolean equals(Object obj)
    {
       if (obj == null)
+      {
          return false;
+      }
       if (!(obj instanceof TranslationWorkspaceImpl))
+      {
          return false;
+      }
       TranslationWorkspaceImpl other = (TranslationWorkspaceImpl) obj;
       return other.workspaceContext.getWorkspaceId().equals(workspaceContext.getWorkspaceId());
    }

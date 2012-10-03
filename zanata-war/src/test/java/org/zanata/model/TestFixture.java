@@ -47,7 +47,7 @@ public class TestFixture
       return makeTransUnit(id, ContentState.New);
    }
 
-   public static TransUnit makeTransUnit(long id, ContentState contentState, String targetContent)
+   public static TransUnit makeTransUnit(long id, ContentState contentState, String... targetContent)
    {
       return TransUnit.Builder.newTransUnitBuilder().setId(id).setResId("resId" + id).setVerNum(0)
             .setLocaleId("en").addSource("source").addTargets(targetContent).setStatus(contentState).setRowIndex((int) id).build();
@@ -84,6 +84,11 @@ public class TestFixture
 
       hTextFlow.getTargets().put(hLocale.getId(), target);
       return hTextFlow;
+   }
+
+   public static UserWorkspaceContext userWorkspaceContext()
+   {
+      return userWorkspaceContext(true, true, "project", "master");
    }
 
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug)
