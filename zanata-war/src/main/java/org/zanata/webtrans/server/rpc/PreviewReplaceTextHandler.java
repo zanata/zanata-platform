@@ -27,6 +27,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -37,7 +38,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
- * Show the result of a {@link ReplaceText} action without making any persistent
+ * Show the result of a {@link org.zanata.webtrans.shared.rpc.ReplaceText} action without making any persistent
  * changes.
  * 
  * @author David Mason, damason@redhat.com
@@ -48,13 +49,14 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @ActionHandlerFor(PreviewReplaceText.class)
 public class PreviewReplaceTextHandler extends AbstractActionHandler<PreviewReplaceText, PreviewReplaceTextResult>
 {
-
-   @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
-   UpdateTransUnitHandler updateTransUnitHandler;
+   @In
+   ZanataIdentity identity;
 
    @Override
    public PreviewReplaceTextResult execute(PreviewReplaceText previewAction, ExecutionContext context) throws ActionException
    {
+      identity.checkLoggedIn();
+
       ReplaceTextHandler.replaceTextInUpdateRequests(previewAction.getAction());
       List<TransUnitUpdatePreview> previews = new ArrayList<TransUnitUpdatePreview>();
       for (TransUnitUpdateRequest request : previewAction.getAction().getUpdateRequests())

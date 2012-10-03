@@ -19,6 +19,8 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 @ActionHandlerFor(EventServiceConnectedAction.class)
 public class EventServiceConnectedHandler extends AbstractActionHandler<EventServiceConnectedAction, NoOpResult>
 {
+   @In
+   ZanataIdentity identity;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
@@ -26,7 +28,7 @@ public class EventServiceConnectedHandler extends AbstractActionHandler<EventSer
    @Override
    public NoOpResult execute(EventServiceConnectedAction action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.onEventServiceConnected(action.getEditorClientId(), action.getConnectionId());
       return new NoOpResult();

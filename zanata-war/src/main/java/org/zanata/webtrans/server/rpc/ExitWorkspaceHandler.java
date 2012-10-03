@@ -19,6 +19,8 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 @ActionHandlerFor(ExitWorkspaceAction.class)
 public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, ExitWorkspaceResult>
 {
+   @In
+   ZanataIdentity identity;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
@@ -27,7 +29,7 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
    public ExitWorkspaceResult execute(ExitWorkspaceAction action, ExecutionContext context) throws ActionException
    {
 
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 

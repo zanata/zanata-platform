@@ -23,7 +23,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.TestFixture;
@@ -41,7 +40,6 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -196,7 +194,9 @@ public class TransMemoryPresenterTest
       // Given: already have submitted request
       GetTranslationMemory submittedRequest = mock(GetTranslationMemory.class);
       presenter.setStatesForTesting(null, submittedRequest);
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      LocaleId localeId = new LocaleId("zh");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
 
       // When:
@@ -239,7 +239,8 @@ public class TransMemoryPresenterTest
    {
       // Given:
       LocaleId targetLocale = new LocaleId("zh");
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(targetLocale));
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, targetLocale), "workspaceName", targetLocale.getId()));
       LocaleId sourceLocale = new LocaleId("en-US");
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", sourceLocale, new TranslationStats()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
@@ -266,7 +267,9 @@ public class TransMemoryPresenterTest
    public void fireSearchEventCallbackOnFailure()
    {
       // Given:
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      LocaleId localeId = new LocaleId("zh");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(display.getSearchType()).thenReturn(searchType);
@@ -289,7 +292,9 @@ public class TransMemoryPresenterTest
    public void fireSearchEventCallbackOnSuccess()
    {
       // Given:
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      LocaleId localeId = new LocaleId("zh");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("search query");
@@ -316,7 +321,9 @@ public class TransMemoryPresenterTest
    public void fireSearchEventCallbackOnSuccessButResultIsEmpty()
    {
       // Given:
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(TestFixture.workspaceContext(new LocaleId("zh")));
+      LocaleId localeId = new LocaleId("zh");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(display.getSearchType()).thenReturn(searchType);

@@ -88,18 +88,24 @@ public class TestFixture
 
    public static UserWorkspaceContext userWorkspaceContext()
    {
-      return userWorkspaceContext(true, true, "project", "master");
+      return userWorkspaceContext(true, true);
    }
 
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug)
    {
-      return new UserWorkspaceContext(workspaceContext(new LocaleId("en-US")), projectActive, hasWriteAccess, true);
+      ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug);
+      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true);
    }
 
-   public static WorkspaceContext workspaceContext(LocaleId localeId)
+   public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess)
+   {
+      return new UserWorkspaceContext(new WorkspaceContext(workspaceId(), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true);
+   }
+
+   public static WorkspaceId workspaceId()
    {
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
-      return new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId());
+      return new WorkspaceId(projectIterationId, LocaleId.EN_US);
    }
 
    public static  <E extends GwtEvent<?>> E extractFromEvents(List<? extends GwtEvent> events, final Class<E> eventType)

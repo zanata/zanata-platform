@@ -26,10 +26,7 @@ public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount,
 {
 
    @In
-   Session session;
-
-   @In
-   TranslationWorkspaceManager translationWorkspaceManager;
+   ZanataIdentity identity;
 
    @In
    DocumentDAO documentDAO;
@@ -38,7 +35,7 @@ public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount,
    public GetStatusCountResult execute(GetStatusCount action, ExecutionContext context) throws ActionException
    {
 
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       Long docId = action.getDocumentId().getValue();
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
