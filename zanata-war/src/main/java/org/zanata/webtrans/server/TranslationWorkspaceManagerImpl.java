@@ -55,7 +55,6 @@ import de.novanic.eventservice.service.registry.EventRegistryFactory;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
-@Synchronized(timeout = 5000)
 public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceManager
 {
    private static final Logger LOGGER = LoggerFactory.getLogger(TranslationWorkspaceManagerImpl.class);
