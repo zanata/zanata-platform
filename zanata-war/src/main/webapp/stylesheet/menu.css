@@ -99,12 +99,18 @@
 #projectCol {
 	box-shadow: none;
 }
+
+#systemCol a {
+	cursor:pointer;
+}
+
 #userCol, #userCol:hover {
 	border-right: none;
 }
 
 #userCol a {
 	display:table;
+	cursor:pointer;
 }
 
 #userCol {

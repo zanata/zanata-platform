@@ -29,7 +29,7 @@
 			</s:link>
 		</li>
 		<li id="systemCol">
-			<a href="#"><img src="#{request.contextPath}/images/z-logo-16px.png" /> 
+			<a href=""><img src="#{request.contextPath}/images/z-logo-16px.png" /> 
 				#{messages['jsf.More']}
 				<span class="icon-down-open downArrow"/>
 			</a>
@@ -79,7 +79,7 @@
 		</li>
 		<li id="userCol">
 			<s:fragment rendered="#{identity.loggedIn}">
-				<a href="#"> 
+				<a href=""> 
 					<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar" /> 
 					<span class="username"><h:outputText value="#{identity.credentials.username} " /></span>
 					<span class="icon-down-open downArrow"/>
