@@ -24,10 +24,10 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
@@ -64,8 +64,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
    
+   // @UiField
+   // ListBox statsOptions;
+
    @UiField
-   ListBox statsOptions;
+   RadioButton statsByMsg, statsByWord;
 
    @UiField
    SimplePager pager;
@@ -89,7 +92,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
-      
+      statsByMsg.setText(messages.byMessage());
+      statsByWord.setText(messages.byWords());
       this.addSelectionHandler(new SelectionHandler<DocumentInfo>()
       {
          @Override
@@ -107,16 +111,18 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       return this;
    }
 
-   @Override
-   public void addStatsOption(String item, String value)
-   {
-      statsOptions.addItem(item, value);
-   }
 
    @Override
    public String getSelectedStatsOption()
    {
-      return statsOptions.getValue(statsOptions.getSelectedIndex());
+      if (statsByMsg.getValue())
+      {
+         return HasStatsFilter.STATS_OPTION_MESSAGE;
+      }
+      else
+      {
+         return HasStatsFilter.STATS_OPTION_WORDS;
+      }
    }
 
    @Override
@@ -173,15 +179,35 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       documentListContainer.add(documentListTable);
    }
 
-   @UiHandler("statsOptions")
-   public void onStatsOptionChange(ChangeEvent event)
+   @UiHandler("statsByMsg")
+   public void onStatsByMsgChange(ValueChangeEvent<Boolean> event)
    {
-      listener.statsOptionChange();
+      if (event.getValue())
+      {
+         listener.statsOptionChange(HasStatsFilter.STATS_OPTION_MESSAGE);
+      }
+   }
+
+   @UiHandler("statsByWord")
+   public void onStatsByWordChange(ValueChangeEvent<Boolean> event)
+   {
+      if (event.getValue())
+      {
+         listener.statsOptionChange(HasStatsFilter.STATS_OPTION_WORDS);
+      }
    }
 
    @Override
    public void setStatsFilter(String option)
    {
+      if (option.equals(HasStatsFilter.STATS_OPTION_MESSAGE))
+      {
+         statsByMsg.setValue(true);
+      }
+      else
+      {
+         statsByWord.setValue(true);
+      }
       documentListTable.setStatsFilter(option);
    }
 

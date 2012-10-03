@@ -128,8 +128,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          }
       });
 
-      display.addStatsOption(messages.byWords(), STATS_OPTION_WORDS);
-      display.addStatsOption(messages.byMessage(), STATS_OPTION_MESSAGE);
       setStatsFilter(STATS_OPTION_WORDS);
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
@@ -196,9 +194,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    }
 
    @Override
-   public void statsOptionChange()
+   public void statsOptionChange(String option)
    {
-      setStatsFilter(display.getSelectedStatsOption());
+      setStatsFilter(option);
       dataProvider.refresh();
    }
 

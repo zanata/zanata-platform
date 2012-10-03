@@ -49,8 +49,6 @@ public interface DocumentListDisplay extends WidgetDisplay
 
    String getSelectedStatsOption();
 
-   void addStatsOption(String item, String value);
-
    void setStatsFilter(String option);
 
    void setListener(Listener documentListPresenter);
@@ -59,7 +57,7 @@ public interface DocumentListDisplay extends WidgetDisplay
 
    interface Listener
    {
-      void statsOptionChange();
+      void statsOptionChange(String option);
 
       void fireCaseSensitiveToken(boolean value);
 

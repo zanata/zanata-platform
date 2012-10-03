@@ -57,10 +57,11 @@
                         <g:layer top="10px" height="34px" left="585px" width="140px">
                             <g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.optionStyle}"><ui:msg>Exact match only</ui:msg></g:CheckBox>
                         </g:layer>
-                        <g:layer right="0" width="200px" top="10px" bottom="0">
+                        <g:layer right="0" width="240px" top="10px" bottom="0">
                         	<g:HTMLPanel>
                         		<g:InlineLabel styleName="{style.optionStyle}"><ui:msg>Statistic: </ui:msg></g:InlineLabel>
-                        		<g:ListBox ui:field="statsOptions"/>
+                        		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle}" name="statsOption"/>
+                        		<g:RadioButton ui:field="statsByMsg" styleName="{style.optionStyle}" name="statsOption"/>
                         	</g:HTMLPanel>
                         </g:layer>
                     </g:LayoutPanel>

@@ -103,8 +103,6 @@ public class DocumentListPresenterTest
       documentListPresenter.onBind();
 
       verify(mockDisplay).renderTable(isA(SingleSelectionModel.class));
-      verify(mockDisplay).addStatsOption(TEST_BY_WORDS_MESSAGE, "Words");
-      verify(mockDisplay).addStatsOption(TEST_BY_MESSAGE_MESSAGE, "Message");
       verify(mockDisplay).setStatsFilter("Words");
       verify(mockDisplay).setPageSize(TEST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
