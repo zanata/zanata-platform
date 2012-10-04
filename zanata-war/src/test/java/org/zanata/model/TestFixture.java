@@ -27,7 +27,6 @@ import java.util.List;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
-
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -143,5 +142,11 @@ public class TestFixture
             return (int) from.getId().getId();
          }
       }));
+   }
+
+   public static <T extends ModelEntityBase> T setId(Long id, T object)
+   {
+      object.setId(id);
+      return object;
    }
 }

@@ -27,7 +27,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -103,9 +102,8 @@ public class GetDocumentListHandlerTest
    private HDocument hDocument(long id)
    {
       HDocument hDocument = new HDocument("/dot/a.po", ContentType.PO, new HLocale(LocaleId.EN_US));
-      HDocument spy = spy(hDocument);
-      when(spy.getId()).thenReturn(id);
-      return spy;
+      TestFixture.setId(id, hDocument);
+      return hDocument;
    }
 
    @Test

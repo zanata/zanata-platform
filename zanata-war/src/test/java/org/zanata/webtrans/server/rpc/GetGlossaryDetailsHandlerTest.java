@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
@@ -17,11 +18,13 @@ import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import com.google.common.collect.Lists;
 
+import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,6 +88,18 @@ public class GetGlossaryDetailsHandlerTest
       verify(identity).checkLoggedIn();
       assertThat(result.getGlossaryDetails(), Matchers.hasSize(1));
       assertThat(result.getGlossaryDetails().get(0).getTarget(), Matchers.equalTo("target term"));
+   }
+
+   @Test(expectedExceptions = ActionException.class)
+   public void testExecuteWithInvalidLocale() throws Exception
+   {
+      WorkspaceId workspaceId = TestFixture.workspaceId(targetHLocale.getLocaleId());
+      GetGlossaryDetailsAction action = new GetGlossaryDetailsAction(Lists.newArrayList(1L));
+      action.setWorkspaceId(workspaceId);
+      ProjectIterationId projectIterationId = workspaceId.getProjectIterationId();
+      when(localeServiceImpl.validateLocaleByProjectIteration(workspaceId.getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenThrow(new ZanataServiceException("test"));
+
+      handler.execute(action, null);
    }
 
    @Test
