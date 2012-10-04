@@ -33,19 +33,19 @@ public class ZanataHTMLLayout extends HTMLLayout
    @Override
    public String format(LoggingEvent event)
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder builder = new StringBuilder();
 
       // add a row with the username
-      buffer.append("<tr>");
-      buffer.append("<td>");
-      buffer.append("Username: ");
-      buffer.append("</td>");
-      buffer.append("<td colspan='5'>");
-      buffer.append(event.getMDC("username"));
-      buffer.append("</td>");
-      buffer.append("</tr>");
+      builder.append("<tr>");
+      builder.append("<td>");
+      builder.append("Username: ");
+      builder.append("</td>");
+      builder.append("<td colspan='5'>");
+      builder.append(event.getMDC("username"));
+      builder.append("</td>");
+      builder.append("</tr>");
 
-      buffer.append( super.format(event) );
-      return buffer.toString();
+      builder.append(super.format(event));
+      return builder.toString();
    }
 }
