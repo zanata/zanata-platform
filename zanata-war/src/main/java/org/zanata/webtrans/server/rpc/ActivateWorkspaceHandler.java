@@ -42,6 +42,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -61,6 +62,9 @@ import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 @Slf4j
 public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult>
 {
+   @In
+   private ZanataIdentity identity;
+
    @In
    private TranslationWorkspaceManager translationWorkspaceManager;
 
@@ -87,12 +91,12 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    @Override
    public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
       Person person = retrievePerson();
 
       WorkspaceId workspaceId = action.getWorkspaceId();
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-      String httpSessionId = ServletContexts.instance().getRequest().getSession().getId();
+      String httpSessionId = getHttpSessionId();
       EditorClientId editorClientId = new EditorClientId(httpSessionId, generateEditorClientNum());
       workspace.addEditorClient(httpSessionId, editorClientId, person.getId());
       // Send EnterWorkspace event to clients
@@ -111,31 +115,36 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);
       return new ActivateWorkspaceResult(userWorkspaceContext, identity);
    }
-   
+
+   protected String getHttpSessionId()
+   {
+      return ServletContexts.instance().getRequest().getSession().getId();
+   }
+
    private boolean hasPermission(HProject project, HLocale locale)
    {
-      return ZanataIdentity.instance().hasPermission("modify-translation", project, locale);
+      return identity.hasPermission(SecurityService.TranslationAction.MODIFY.action(), project, locale);
    }
    
    private boolean hasGlossaryUpdatePermission()
    {
-      return ZanataIdentity.instance().hasPermission("glossary-update", "");
+      return identity.hasPermission("glossary-update", "");
    }
 
    private boolean isProjectIterationActive(EntityStatus projectStatus, EntityStatus iterStatus)
    {
       return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
    }
-   
-   @Override
-   public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result, ExecutionContext context) throws ActionException
-   {
-   }
 
-   private Person retrievePerson()
+   protected Person retrievePerson()
    {
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
       return new Person(new PersonId(authenticatedAccount.getUsername()), authenticatedAccount.getPerson().getName(), gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount.getPerson().getEmail()));
+   }
+
+   @Override
+   public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result, ExecutionContext context) throws ActionException
+   {
    }
 
 }
