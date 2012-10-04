@@ -106,8 +106,13 @@ public class TestFixture
 
    public static WorkspaceId workspaceId()
    {
+      return workspaceId(LocaleId.EN_US);
+   }
+
+   public static WorkspaceId workspaceId(LocaleId localeId)
+   {
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
-      return new WorkspaceId(projectIterationId, LocaleId.EN_US);
+      return new WorkspaceId(projectIterationId, localeId);
    }
 
    public static Person person()
