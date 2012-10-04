@@ -136,7 +136,7 @@ public class UserConfigHolder
 
    public void setUseCodeMirrorEditor(boolean useCodeMirrorEditor)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(),  state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError(), useCodeMirrorEditor);
+      state = new ConfigurationState(state.isEnterSavesApproved(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError(), useCodeMirrorEditor);
    }
 
    /**
@@ -156,7 +156,7 @@ public class UserConfigHolder
       {
       }
 
-      private ConfigurationState(boolean enterSavesApproved, boolean escClosesEditor, boolean displayButtons, int pageSize, NavOption navOption, boolean showError, boolean useCodeMirrorEditor)
+      private ConfigurationState(boolean enterSavesApproved, boolean displayButtons, int pageSize, NavOption navOption, boolean showError, boolean useCodeMirrorEditor)
       {
          this.enterSavesApproved = enterSavesApproved;
          this.displayButtons = displayButtons;

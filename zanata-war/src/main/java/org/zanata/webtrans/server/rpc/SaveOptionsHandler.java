@@ -21,8 +21,13 @@
 package org.zanata.webtrans.server.rpc;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.dao.AccountDAO;
+import org.zanata.model.HAccount;
+import org.zanata.model.HEditorOption;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
@@ -38,10 +43,33 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @ActionHandlerFor(SaveOptionsAction.class)
 public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction, SaveOptionsResult>
 {
+   @In(value = JpaIdentityStore.AUTHENTICATED_USER)
+   private HAccount authenticatedAccount;
+
+   @In
+   private AccountDAO accountDAO;
+
    @Override
    public SaveOptionsResult execute(SaveOptionsAction action, ExecutionContext context) throws ActionException
    {
-      // TODO implement Save
+      HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+
+      HEditorOption option = account.getEditorOptions().get( HEditorOption.OptionName.DisplayButtons.getPersistentName() );
+      if( option == null )
+      {
+         option = new HEditorOption(HEditorOption.OptionName.DisplayButtons.getPersistentName(), Boolean.toString( action.getConfiguration().isDisplayButtons() ));
+         option.setAccount(account);
+         account.getEditorOptions().put( option.getName(), option );
+      }
+      else
+      {
+         option.setValue( Boolean.toString(action.getConfiguration().isDisplayButtons()) );
+      }
+
+      // TODO put other options
+      accountDAO.makePersistent(account);
+      accountDAO.flush();
+
       SaveOptionsResult result = new SaveOptionsResult();
       result.setSuccess(true);
 

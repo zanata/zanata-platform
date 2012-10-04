@@ -22,6 +22,7 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -31,6 +32,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -83,6 +85,7 @@ public class HAccount extends ModelEntityBase implements Serializable
    private HAccountResetPasswordKey accountResetPasswordKey;
    private Set<HCredentials> credentials;
    private HAccount mergedInto;
+   private Map<String, HEditorOption> editorOptions;
 
 
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -170,5 +173,13 @@ public class HAccount extends ModelEntityBase implements Serializable
    public HAccount getMergedInto()
    {
       return mergedInto;
+   }
+
+   @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+   @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+   @MapKey(name = "name")
+   public Map<String, HEditorOption> getEditorOptions()
+   {
+      return editorOptions;
    }
 }

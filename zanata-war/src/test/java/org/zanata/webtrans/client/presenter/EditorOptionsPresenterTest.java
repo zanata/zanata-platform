@@ -12,6 +12,7 @@ import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
@@ -46,12 +47,14 @@ public class EditorOptionsPresenterTest
    private HasValue<Boolean> untranslatedChk;
    @Captor
    private ArgumentCaptor<ValueChangeHandler<Boolean>> filterChangeHandlerCaptor;
+   @Mock
+   private CachingDispatchAsync mockDispatcher;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, configHolder);
+      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, configHolder, mockDispatcher);
       verify(display).setListener(presenter);
    }
 
