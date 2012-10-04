@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -35,8 +37,10 @@ import org.zanata.model.HProject;
  */
 @Name("projectCopyTransOptionsAction")
 @Scope(ScopeType.PAGE)
-public class ProjectCopyTransOptionsAction
+public class ProjectCopyTransOptionsAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    private String projectSlug;
 
    private HProject project;

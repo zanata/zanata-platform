@@ -51,6 +51,8 @@ import org.zanata.model.HProject;
 @Scope(ScopeType.PAGE)
 public class ProjectRoleRestrictionAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    @In
    private AccountRoleDAO accountRoleDAO;
 

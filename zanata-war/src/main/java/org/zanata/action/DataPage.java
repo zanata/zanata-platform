@@ -20,10 +20,13 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class DataPage<E>
+public class DataPage<E> implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    private int datasetSize;
 
    private int startRow;

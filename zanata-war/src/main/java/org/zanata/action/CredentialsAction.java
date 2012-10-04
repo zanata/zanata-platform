@@ -60,6 +60,8 @@ import static org.jboss.seam.international.StatusMessage.Severity.INFO;
 @Scope(ScopeType.PAGE)
 public class CredentialsAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
 
@@ -170,8 +172,9 @@ public class CredentialsAction implements Serializable
    /**
     * Callback for credential creation.
     */
-   private class CredentialsCreationCallback implements OpenIdAuthCallback
+   private static class CredentialsCreationCallback implements OpenIdAuthCallback, Serializable
    {
+      private static final long serialVersionUID = 1L;
       private HCredentials newCredentials;
 
       private CredentialsCreationCallback(HCredentials newCredentials)

@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.jboss.seam.Component;
@@ -28,8 +29,9 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 
 
-public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
+public class ProjectPagedListDataModel extends PagedListDataModel<HProject> implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    private boolean filterActive;
    private boolean filterReadOnly;

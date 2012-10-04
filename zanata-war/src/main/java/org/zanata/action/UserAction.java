@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -45,8 +46,10 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @Name("org.jboss.seam.security.management.userAction")
 @Scope(CONVERSATION)
 @Install(precedence = APPLICATION)
-public class UserAction extends org.jboss.seam.security.management.action.UserAction
+public class UserAction extends org.jboss.seam.security.management.action.UserAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    @In
    private IdentityManager identityManager;
 

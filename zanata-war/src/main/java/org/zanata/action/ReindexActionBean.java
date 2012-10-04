@@ -1,5 +1,6 @@
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -16,8 +17,9 @@ import org.joda.time.format.PeriodFormatterBuilder;
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Restrict("#{s:hasRole('admin')}")
-public class ReindexActionBean
+public class ReindexActionBean implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    @In
    ReindexAsyncBean reindexAsync;

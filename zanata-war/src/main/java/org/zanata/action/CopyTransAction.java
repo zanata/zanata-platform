@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jboss.seam.annotations.In;
@@ -37,8 +38,9 @@ import org.zanata.seam.scope.FlashScopeBean;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransAction")
-public class CopyTransAction
+public class CopyTransAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    @In
    private ProjectIterationDAO projectIterationDAO;

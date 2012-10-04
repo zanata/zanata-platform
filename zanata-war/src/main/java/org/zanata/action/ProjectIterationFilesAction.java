@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -94,8 +95,10 @@ import com.google.common.base.Function;
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
-public class ProjectIterationFilesAction
+public class ProjectIterationFilesAction implements Serializable
 {
+
+   private static final long serialVersionUID = 1L;
 
    private String projectSlug;
 
@@ -572,8 +575,10 @@ public class ProjectIterationFilesAction
    /**
     * Helper class to upload translation files.
     */
-   public static class TranslationFileUploadHelper
+   public static class TranslationFileUploadHelper implements Serializable
    {
+      private static final long serialVersionUID = 1L;
+
       private String docId;
 
       private InputStream fileContents;
@@ -626,8 +631,10 @@ public class ProjectIterationFilesAction
    /**
     * Helper class to upload documents.
     */
-   public static class DocumentFileUploadHelper
+   public static class DocumentFileUploadHelper implements Serializable
    {
+      private static final long serialVersionUID = 1L;
+
       @Getter
       @Setter
       private InputStream fileContents;

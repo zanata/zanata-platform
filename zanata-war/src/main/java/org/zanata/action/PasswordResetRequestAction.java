@@ -1,9 +1,7 @@
 package org.zanata.action;
 
-import javax.persistence.EntityManager;
+import java.io.Serializable;
 
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -21,12 +19,12 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.service.UserAccountService;
-import org.zanata.util.HashUtil;
 
 @Name("passwordResetRequest")
 @Scope(ScopeType.EVENT)
-public class PasswordResetRequestAction
+public class PasswordResetRequestAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    @Logger
    Log log;

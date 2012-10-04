@@ -1,12 +1,15 @@
 package org.zanata.action;
 
+import java.io.Serializable;
+
 /**
  * Stores options for the lucene indexing
  * 
  * @author David Mason, damason@redhat.com
  */
-public class ReindexClassOptions
+public class ReindexClassOptions implements Serializable
 {
+   private static final long serialVersionUID = 1L;
    private Class<?> clazz;
    private boolean purge = false;
    private boolean reindex = false;

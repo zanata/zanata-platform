@@ -1,5 +1,7 @@
 package org.zanata.action;
 
+import java.io.Serializable;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -15,9 +17,11 @@ import org.zanata.process.ProcessHandle;
 
 @Name("projectIterationZipFileAction")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectIterationZipFileAction
+public class ProjectIterationZipFileAction implements Serializable
 {
    
+   private static final long serialVersionUID = 1L;
+
    @In
    private IterationZipFileBuildProcess iterationZipFileBuildProcess;
    

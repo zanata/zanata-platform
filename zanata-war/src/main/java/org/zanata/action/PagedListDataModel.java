@@ -21,6 +21,8 @@
 package org.zanata.action;
 
 
+import java.io.Serializable;
+
 import javax.faces.model.DataModel;
 
 import org.jboss.seam.log.LogProvider;
@@ -28,8 +30,9 @@ import org.jboss.seam.log.Logging;
 import org.zanata.exception.ZanataServiceException;
 
 
-public abstract class PagedListDataModel<E> extends DataModel
+public abstract class PagedListDataModel<E> extends DataModel implements Serializable
 {
+   private static final long serialVersionUID = 1L;
    private int DEFAULT_PAGESIZE = 15;
    private int pageSize = DEFAULT_PAGESIZE;
    private int rowIndex;

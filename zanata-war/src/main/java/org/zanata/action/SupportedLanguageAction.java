@@ -1,5 +1,6 @@
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,8 +14,10 @@ import org.zanata.service.LocaleService;
 
 @Name("supportedLanguageAction")
 @Scope(ScopeType.STATELESS)
-public class SupportedLanguageAction
+public class SupportedLanguageAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    @In
    private LocaleService localeServiceImpl;
 

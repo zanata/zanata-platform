@@ -46,6 +46,8 @@ import org.zanata.security.AuthenticationType;
 @Restrict("#{s:hasRole('admin')}")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
 {
+   private static final long serialVersionUID = 1L;
+
    @In
    private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
 
