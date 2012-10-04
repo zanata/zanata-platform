@@ -40,6 +40,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -80,6 +81,9 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    @UiField
    CheckBox useCodeMirrorChk;
 
+   @UiField
+   PushButton saveButton;
+
    private Listener listener;
 
    @Inject
@@ -97,6 +101,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
       showErrorChk.setTitle(messages.showErrorsTooltip());
       useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
+
+      saveButton.setText(messages.save());
    }
 
    @Override
@@ -224,6 +230,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       selectPageSize(state.getPageSize());
       showErrorChk.setValue(state.isShowError());
       useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
+   }
+
+   @UiHandler("saveButton")
+   public void onSaveButtonClick( ClickEvent event )
+   {
+      listener.persistOptionChange();
    }
 
    private void selectPageSize(int pageSize)

@@ -94,6 +94,13 @@
                         <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
                     </g:VerticalPanel>
                 </g:layer>
+                <g:layer bottom="2px" height="24px">
+                    <g:HorizontalPanel width="100%" spacing="3">
+                        <g:cell>
+                            <g:PushButton ui:field="saveButton"/>
+                        </g:cell>
+                    </g:HorizontalPanel>
+                </g:layer>
             </g:LayoutPanel>
     	</g:layer>
     </g:LayoutPanel>

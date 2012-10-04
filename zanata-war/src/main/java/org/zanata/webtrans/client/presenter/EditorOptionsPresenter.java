@@ -25,17 +25,22 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.NavOption;
+import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
+import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler
@@ -43,6 +48,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final UserConfigHolder configHolder;
    private final UserWorkspaceContext userWorkspaceContext;
+   private final CachingDispatchAsync dispatcher;
 
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
    {
@@ -54,12 +60,15 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    };
 
    @Inject
-   public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext, ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder)
+   public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
+                                 ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder,
+                                 CachingDispatchAsync dispatcher)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
       this.configHolder = configHolder;
       this.userWorkspaceContext = userWorkspaceContext;
+      this.dispatcher = dispatcher;
       display.setListener(this);
    }
 
@@ -176,5 +185,26 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onRevealDisplay()
    {
+   }
+
+   @Override
+   public void persistOptionChange()
+   {
+      SaveOptionsAction action = new SaveOptionsAction();
+      action.setConfiguration( this.configHolder.getState() );
+      dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Could not Save"));
+         }
+
+         @Override
+         public void onSuccess(SaveOptionsResult result)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "Saved Options"));
+         }
+      });
    }
 }
