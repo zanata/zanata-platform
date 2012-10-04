@@ -35,6 +35,7 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.dao.ApplicationConfigurationDAO;
+import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.AuthenticationType;
@@ -238,7 +239,7 @@ public class ApplicationConfiguration implements Serializable
          smtpAppenderInstance.setFrom(getFromEmailAddr());
          smtpAppenderInstance.setTo(this.configValues.get(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL));
          smtpAppenderInstance.setSubject("%p log message from Zanata at " + this.getServerPath());
-         smtpAppenderInstance.setLayout(new HTMLLayout());
+         smtpAppenderInstance.setLayout(new ZanataHTMLLayout());
          //smtpAppenderInstance.setLayout(new PatternLayout("%-5p [%c] %m%n"));
          smtpAppenderInstance.setThreshold(Level.toLevel(getEmailLogLevel()));
          smtpAppenderInstance.setTimeout(60); // will aggregate identical messages within 60 sec periods
