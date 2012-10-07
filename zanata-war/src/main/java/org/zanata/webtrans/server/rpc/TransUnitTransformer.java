@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HLocale;
+import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.service.ResourceUtils;
@@ -63,9 +64,9 @@ public class TransUnitTransformer
             .setLocaleId(hLocale.getLocaleId())
             .setPlural(hTextFlow.isPlural())
             .setSources(sourceContents)
-            .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
+            .setSourceComment(commentToString(hTextFlow.getComment()))
             .setTargets(targetContents)
-            .setTargetContent(target == null ? null : CommentsUtil.toString(target.getComment()))
+            .setTargetContent(target == null ? null : commentToString(target.getComment()))
             .setMsgContext(msgContext)
             .setRowIndex(hTextFlow.getPos())
             .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
@@ -80,6 +81,11 @@ public class TransUnitTransformer
          builder.setLastModifiedTime(new SimpleDateFormat().format(target.getLastChanged()));
       }
       return builder.build();
+   }
+
+   private static String commentToString(HSimpleComment comment)
+   {
+      return comment == null ? null : comment.getComment();
    }
 
 }

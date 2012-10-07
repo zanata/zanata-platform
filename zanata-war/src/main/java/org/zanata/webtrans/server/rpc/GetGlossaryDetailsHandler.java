@@ -4,15 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -24,17 +19,22 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
+
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetGlossaryDetailsHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetGlossaryDetailsAction.class)
+@Slf4j
 public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossaryDetailsAction, GetGlossaryDetailsResult>
 {
-
-   @Logger
-   private Log log;
+   @In
+   private ZanataIdentity identity;
 
    @In
    private GlossaryDAO glossaryDAO;
@@ -45,42 +45,45 @@ public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossary
    @Override
    public GetGlossaryDetailsResult execute(GetGlossaryDetailsAction action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       HLocale hLocale;
-      try{
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      try
+      {
+         ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug());
       }
       catch (ZanataServiceException e)
       {
          throw new ActionException(e);
       }
-      ArrayList<Long> sourceIds = action.getSourceIdList();
+      List<Long> sourceIds = action.getSourceIdList();
       
       
-      log.info("Fetching glossary details for entry{0} in locale {1}", sourceIds, hLocale);
+      log.info("Fetching glossary details for entry{} in locale {}", sourceIds, hLocale);
       List<HGlossaryTerm> srcTerms = glossaryDAO.findByIdList(sourceIds);
       ArrayList<GlossaryDetails> items = new ArrayList<GlossaryDetails>(srcTerms.size());
       
       for(HGlossaryTerm srcTerm: srcTerms)
       {
          HGlossaryEntry entry = srcTerm.getGlossaryEntry();
-         ArrayList<String> srcComments = new ArrayList<String>();
-         ArrayList<String> targetComments = new ArrayList<String>();
+         List<String> srcComments = new ArrayList<String>();
+         List<String> targetComments = new ArrayList<String>();
 
+         HGlossaryTerm hGlossaryTerm = entry.getGlossaryTerms().get(hLocale);
          for(HTermComment termComment: srcTerm.getComments())
          {
             srcComments.add(termComment.getComment());
          }
-         
-         for(HTermComment termComment: entry.getGlossaryTerms().get(hLocale).getComments())
+
+         for(HTermComment termComment: hGlossaryTerm.getComments())
          {
             targetComments.add(termComment.getComment());
          }
          
          SimpleDateFormat dateFormat = new SimpleDateFormat();
          
-         items.add(new GlossaryDetails(srcTerm.getContent(), entry.getGlossaryTerms().get(hLocale).getContent(), srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId(), entry.getGlossaryTerms().get(hLocale).getVersionNum(), dateFormat.format(entry.getGlossaryTerms().get(hLocale).getLastChanged())));
+         items.add(new GlossaryDetails(srcTerm.getContent(), hGlossaryTerm.getContent(), srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId(), hGlossaryTerm.getVersionNum(), dateFormat.format(hGlossaryTerm.getLastChanged())));
       }
 
       return new GetGlossaryDetailsResult(items);

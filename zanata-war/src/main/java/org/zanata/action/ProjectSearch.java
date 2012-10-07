@@ -1,5 +1,6 @@
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -18,8 +19,10 @@ import org.zanata.model.HProject;
 @Name("projectSearch")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
-public class ProjectSearch
+public class ProjectSearch implements Serializable
 {
+
+   private static final long serialVersionUID = 1L;
 
    private int pageSize = 30;
 

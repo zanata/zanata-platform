@@ -48,8 +48,9 @@ public class Breadcrumbs implements Serializable
       getLocations().add(index, new Breadcrumb(location, display));
    }
    
-   public class Breadcrumb
+   public static class Breadcrumb implements Serializable
    {
+      private static final long serialVersionUID = 1L;
       private String location;
       private String display;
       

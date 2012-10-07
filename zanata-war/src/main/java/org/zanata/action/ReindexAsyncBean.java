@@ -1,5 +1,6 @@
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -37,8 +38,9 @@ import org.zanata.process.ProcessHandle;
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
 @Startup
-public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.ReindexProcessHandle>
+public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.ReindexProcessHandle> implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    //TODO make this configurable
    private static final int BATCH_SIZE = 5000;
@@ -290,8 +292,9 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
    }
 
 
-   public class ReindexProcessHandle extends ProcessHandle
+   public static class ReindexProcessHandle extends ProcessHandle implements Serializable
    {
+      private static final long serialVersionUID = 1L;
       public boolean isPrepared;
       public boolean hasError;
 

@@ -193,12 +193,14 @@
 		<url-pattern>/seam/resource/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- Facelets development mode (disable in production) -->
+	<!-- Facelets development mode (disable in production)
+	To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :
 
 	<context-param>
 		<param-name>facelets.DEVELOPMENT</param-name>
 		<param-value>true</param-value>
 	</context-param>
+-->
 
 	<!-- JSF -->
 
@@ -206,6 +208,13 @@
 		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
 		<param-value>.xhtml</param-value>
 	</context-param>
+
+<!-- This would eliminate ViewExpiredException when sessions expire, but may hurt performance:
+	<context-param>
+	    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+	    <param-value>client</param-value>
+	</context-param>
+-->
 
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>

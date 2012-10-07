@@ -69,7 +69,9 @@ public class HGlossaryEntry extends ModelEntityBase
    public Map<HLocale, HGlossaryTerm> getGlossaryTerms()
    {
       if (glossaryTerms == null)
+      {
          glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
+      }
       return glossaryTerms;
    }
 

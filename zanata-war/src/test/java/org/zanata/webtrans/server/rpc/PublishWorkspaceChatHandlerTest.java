@@ -4,7 +4,6 @@ import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -18,7 +17,7 @@ import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,5 +66,11 @@ public class PublishWorkspaceChatHandlerTest
       assertThat(chat.getPersonId(), Matchers.equalTo("admin"));
       assertThat(chat.getMsg(), Matchers.equalTo("hi"));
       assertThat(chat.getMessageType(), Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
+   }
+
+   @Test
+   public void testRollback() throws Exception
+   {
+      handler.rollback(null, null, null);
    }
 }

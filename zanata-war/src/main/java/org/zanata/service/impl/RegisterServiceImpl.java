@@ -189,8 +189,9 @@ public class RegisterServiceImpl implements RegisterService
          HPerson activePerson = active.getPerson();
          HPerson obsoletePerson = obsolete.getPerson();
 
-         // Disable obsolete account
+         // Disable obsolete account and change the email address
          obsolete.setEnabled(false);
+         obsolete.getPerson().setEmail( obsolete.getPerson().getEmail() + ".disabled" );
 
          // Merge all Roles
          for( HAccountRole role: obsolete.getRoles() )

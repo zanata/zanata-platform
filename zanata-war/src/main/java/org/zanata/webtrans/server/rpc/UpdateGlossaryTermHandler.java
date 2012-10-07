@@ -17,6 +17,7 @@ import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTermComment;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
@@ -28,9 +29,8 @@ import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 @ActionHandlerFor(UpdateGlossaryTermAction.class)
 public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGlossaryTermAction, UpdateGlossaryTermResult>
 {
-
-   @Logger
-   private Log log;
+   @In
+   private ZanataIdentity identity;
 
    @In
    private GlossaryDAO glossaryDAO;
@@ -38,10 +38,11 @@ public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGloss
    @In
    private LocaleService localeServiceImpl;
 
-
    @Override
    public UpdateGlossaryTermResult execute(UpdateGlossaryTermAction action, ExecutionContext context) throws ActionException
    {
+      identity.checkLoggedIn();
+
       GlossaryDetails selectedDetailEntry = action.getSelectedDetailEntry();
 
       HGlossaryEntry entry = glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource());

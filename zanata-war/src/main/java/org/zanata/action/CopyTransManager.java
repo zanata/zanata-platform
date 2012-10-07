@@ -56,8 +56,10 @@ import lombok.Setter;
 @Scope(ScopeType.APPLICATION)
 @Startup
 // TODO This class should be merged with the copy trans service (?)
-public class CopyTransManager
+public class CopyTransManager implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    // Single instance of the process listener
    private final CopyTransProcessListener listenerInstance = new CopyTransProcessListener();
 
@@ -235,8 +237,10 @@ public class CopyTransManager
    /**
     * Internal class to detect when a copy trans process is complete.
     */
-   private final class CopyTransProcessListener implements BackgroundProcessListener<CopyTransProcessHandle>
+   private final class CopyTransProcessListener implements BackgroundProcessListener<CopyTransProcessHandle>, Serializable
    {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public void onComplete(CopyTransProcessHandle handle)
       {
@@ -266,6 +270,7 @@ public class CopyTransManager
    @NoArgsConstructor(access = AccessLevel.PRIVATE)
    private static final class CopyTransProcessKey implements Serializable
    {
+      private static final long serialVersionUID = -2054359069473618887L;
       private String projectSlug;
       private String iterationSlug;
       private String docId;

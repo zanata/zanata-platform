@@ -31,23 +31,22 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 @ActionHandlerFor(GetTranslatorList.class)
 public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslatorList, GetTranslatorListResult>
 {
+   @In
+   private ZanataIdentity identity;
 
    @In
-   Session session;
+   private TranslationWorkspaceManager translationWorkspaceManager;
 
    @In
-   TranslationWorkspaceManager translationWorkspaceManager;
+   private AccountDAO accountDAO;
 
    @In
-   AccountDAO accountDAO;
-
-   @In
-   GravatarService gravatarServiceImpl;
+   private GravatarService gravatarServiceImpl;
 
    @Override
    public GetTranslatorListResult execute(GetTranslatorList action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       TranslationWorkspace translationWorkspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 

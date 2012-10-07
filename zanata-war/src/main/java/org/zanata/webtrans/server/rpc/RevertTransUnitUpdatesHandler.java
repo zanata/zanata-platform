@@ -58,13 +58,13 @@ import net.customware.gwt.dispatch.shared.ActionException;
 public class RevertTransUnitUpdatesHandler extends AbstractActionHandler<RevertTransUnitUpdates, UpdateTransUnitResult>
 {
    @In
-   TranslationService translationServiceImpl;
+   private TranslationService translationServiceImpl;
 
    @In
-   TransUnitTransformer transUnitTransformer;
+   private TransUnitTransformer transUnitTransformer;
 
    @In
-   SecurityService securityServiceImpl;
+   private SecurityService securityServiceImpl;
 
    @Override
    public UpdateTransUnitResult execute(RevertTransUnitUpdates action, ExecutionContext context) throws ActionException

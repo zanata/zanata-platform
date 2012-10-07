@@ -24,6 +24,9 @@
     <ui:define name="center_content">
         <h:form rendered="#{not accountMergeAction.accountSelected or not accountMergeAction.accountsValid}">
 
+            <div class="content_box">
+                <p><h:outputText value="#{messages['jsf.profile.MergeAccount.info']}"/></p>
+            </div>
             <rich:panel>
                 <ui:include src="../WEB-INF/layout/login_provider.xhtml">
                     <ui:param name="providerField" value="#{accountMergeAction.providerType}"/>
@@ -42,9 +45,9 @@
         </h:form>
 
         <h:form rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
-            <h:outputText escape="false" value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
-            <br/>
-            <br/>
+            <div class="content_box">
+                <p><h:outputText escape="false" value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/></p>
+            </div>
             <h:commandButton value="#{messages['jsf.profile.MergeAccount.confirm']}" action="#{accountMergeAction.mergeAccounts}"/>
             <h:commandButton value="#{messages['jsf.Cancel']}" action="#{accountMergeAction.cancel}" />
         </h:form>

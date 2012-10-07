@@ -42,6 +42,8 @@ import org.zanata.model.HCopyTransOptions;
 @AutoCreate
 public class CopyTransOptionsModel implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    @In
    private EntityManager entityManager;
 

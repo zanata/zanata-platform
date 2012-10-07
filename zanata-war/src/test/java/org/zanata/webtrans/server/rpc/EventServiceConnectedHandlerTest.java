@@ -60,4 +60,10 @@ public class EventServiceConnectedHandlerTest
       verify(identity).checkLoggedIn();
       verify(translationWorkspace).onEventServiceConnected(editorClientId, "connectionId");
    }
+
+   @Test
+   public void testRollback() throws Exception
+   {
+      handler.rollback(null, null, null);
+   }
 }

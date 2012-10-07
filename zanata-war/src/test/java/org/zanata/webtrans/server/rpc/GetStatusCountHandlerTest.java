@@ -62,4 +62,10 @@ public class GetStatusCountHandlerTest
       assertThat(result.getCount(), Matchers.sameInstance(stats));
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
    }
+
+   @Test
+   public void testRollback() throws Exception
+   {
+      handler.rollback(null, null, null);
+   }
 }

@@ -138,8 +138,9 @@ public class GlossaryAction implements Serializable
    /**
     * Helper class to upload glossary files.
     */
-   public static class GlossaryFileUploadHelper
+   public static class GlossaryFileUploadHelper implements Serializable
    {
+      private static final long serialVersionUID = 1L;
       private InputStream fileContents;
       private String fileName;
       private String sourceLang = "en-US";
@@ -243,8 +244,9 @@ public class GlossaryAction implements Serializable
     * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
     * 
     */
-   public static class Status implements Comparable<Status>
+   public static class Status implements Comparable<Status>, Serializable
    {
+      private static final long serialVersionUID = 1L;
       private String localeId;
       private int entryCount;
       private String name;

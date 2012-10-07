@@ -20,6 +20,13 @@
  */
 package org.zanata.action;
 
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+
+import java.io.Serializable;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -37,18 +44,15 @@ import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.RegisterService;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
-
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("accountMergeAction")
 @Scope(ScopeType.PAGE)
-public class AccountMergeAction
+public class AccountMergeAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
 
@@ -139,8 +143,10 @@ public class AccountMergeAction
       obsoleteAccount = null;
    }
 
-   private class AccountMergeAuthCallback implements OpenIdAuthCallback
+   private static class AccountMergeAuthCallback implements OpenIdAuthCallback, Serializable
    {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public void afterOpenIdAuth(OpenIdAuthenticationResult result)
       {
