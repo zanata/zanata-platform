@@ -21,7 +21,6 @@ import javax.ws.rs.core.UriInfo;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
@@ -140,7 +139,6 @@ public class GlossaryService implements GlossaryResource
    @PUT
    @Consumes({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    @Restrict("#{s:hasPermission('', 'glossary-insert')}")
-   @Transactional(value = TransactionPropagationType.NEVER)
    public Response put(Glossary glossary)
    {
       ResponseBuilder response;
