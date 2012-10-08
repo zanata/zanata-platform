@@ -168,7 +168,7 @@
 
         <hamcrest.version>1.2.1</hamcrest.version>
 		<resteasy.version>2.1.0.GA</resteasy.version>
-		<guava.version>13.0.1</guava.version>
+		<guava.version>11.0.2</guava.version>
 		<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
 		<jackson.version>1.5.0</jackson.version>
 
