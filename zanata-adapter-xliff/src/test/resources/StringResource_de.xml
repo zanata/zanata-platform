@@ -15,6 +15,7 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
       </trans-unit>
       <trans-unit id="transunit2">
         <source>Translation Unit 2</source>
+        <target></target>
         <context-group name="ctx">
           <context context-type="sourcefile">/test/file2</context>
         </context-group>
@@ -26,6 +27,10 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
         <trans-unit id="transunit3">
           <source>Translation Unit 3</source>
           <target>Translation 3</target>
+        </trans-unit>
+        <trans-unit id="transunit4">
+          <source>Translation Unit 4 (4 &lt; 5 &amp; 4 &gt; 3)</source>
+          <target>Translation 4 (4 &lt; 5 &amp; 4 &gt; 3)</target>
         </trans-unit>
       </group>
     </body>

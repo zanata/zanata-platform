@@ -51,6 +51,7 @@ public class XliffReader extends XliffCommon
       try
       {
          XMLInputFactory xmlif = XMLInputFactory.newInstance();
+         xmlif.setProperty("javax.xml.stream.isCoalescing", true);  // decode entities into one string
          XMLStreamReader xmlr = xmlif.createXMLStreamReader(inputSource.getByteStream());
          
          while (xmlr.hasNext())

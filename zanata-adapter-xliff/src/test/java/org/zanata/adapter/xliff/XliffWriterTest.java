@@ -38,7 +38,7 @@ public class XliffWriterTest
       TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 1);
 
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation Unit 1")));
-      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 3")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)")));
    }
 
    @Test
@@ -50,7 +50,7 @@ public class XliffWriterTest
       InputSource inputSource = new InputSource(new FileInputStream(generatedFile));
       Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, generatedDocName);
 
-      assertThat(doc.getTextFlows().size(), is(3));
+      assertThat(doc.getTextFlows().size(), is(4));
    }
 
    private void prepareTemplateDoc() throws FileNotFoundException

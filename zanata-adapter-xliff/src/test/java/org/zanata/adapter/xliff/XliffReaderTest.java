@@ -37,7 +37,7 @@ public class XliffReaderTest
       Resource doc = getTemplateDoc();
 
       assertThat(doc.getName(), equalTo(DOC_NAME));
-      assertThat(doc.getTextFlows().size(), is(3));
+      assertThat(doc.getTextFlows().size(), is(4));
    }
 
    @Test
@@ -49,7 +49,7 @@ public class XliffReaderTest
       TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 1);
 
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation Unit 1")));
-      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 3")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)")));
    }
 
    @Test
@@ -58,7 +58,8 @@ public class XliffReaderTest
       File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
-      assertThat(tr.getTextFlowTargets().size(), is(2));
+      // the file contains 4 trans-units, but one has no target element
+      assertThat(tr.getTextFlowTargets().size(), is(3));
    }
 
    @Test
@@ -72,7 +73,7 @@ public class XliffReaderTest
       TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 1);
      
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation 1")));
-      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation 3")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation 4 (4 < 5 & 4 > 3)")));
    }
 
 
