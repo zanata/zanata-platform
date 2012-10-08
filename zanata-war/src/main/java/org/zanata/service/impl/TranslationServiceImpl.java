@@ -20,15 +20,17 @@
  */
 package org.zanata.service.impl;
 
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.HibernateException;
 import org.jboss.seam.ScopeType;
@@ -67,9 +69,8 @@ import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.collect.Lists;
 
 @Name("translationServiceImpl")
 @AutoCreate
@@ -109,7 +110,6 @@ public class TranslationServiceImpl implements TranslationService
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
    private HAccount authenticatedAccount;
 
-
    // TODO delete this?
    @Override
    public TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translateRequest) throws ConcurrentTranslationException
@@ -120,8 +120,7 @@ public class TranslationServiceImpl implements TranslationService
 
       if (translateRequest.getBaseTranslationVersion() != hTextFlowTarget.getVersionNum())
       {
-         log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}",
-               new Object[] { hTextFlow.getId(), translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
+         log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}", new Object[] { hTextFlow.getId(), translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
          throw new ConcurrentTranslationException(MessageFormat.format("base translation version num {0} does not match current version num {1}, aborting", translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum()));
       }
 
@@ -142,13 +141,14 @@ public class TranslationServiceImpl implements TranslationService
    {
       List<TranslationResult> results = new ArrayList<TranslationResult>();
 
-      //avoid locale check if there is nothing to translate
+      // avoid locale check if there is nothing to translate
       if (translationRequests.isEmpty())
       {
          return results;
       }
 
-      //single locale check - assumes update requests are all from the same project-iteration
+      // single locale check - assumes update requests are all from the same
+      // project-iteration
       HTextFlow sampleHTextFlow = entityManager.find(HTextFlow.class, translationRequests.get(0).getTransUnitId().getValue());
       HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
       for (TransUnitUpdateRequest request : translationRequests)
@@ -181,8 +181,7 @@ public class TranslationServiceImpl implements TranslationService
          else
          {
             // concurrent edits not allowed
-            log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}",
-                  new Object[] { hTextFlow.getId(), request.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
+            log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}", new Object[] { hTextFlow.getId(), request.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
             result.isSuccess = false;
          }
          result.translatedTextFlowTarget = hTextFlowTarget;
@@ -193,12 +192,14 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    /**
-    * Generate a {@link HLocale} for the given localeId and check that translations for this locale are permitted.
+    * Generate a {@link HLocale} for the given localeId and check that
+    * translations for this locale are permitted.
     * 
     * @param localeId
     * @param sampleHTextFlow used to determine the project-iteration
     * @return the valid hLocale
-    * @throws ZanataServiceException if the locale is not enabled for the project-iteration or server
+    * @throws ZanataServiceException if the locale is not enabled for the
+    *            project-iteration or server
     */
    private HLocale validateLocale(LocaleId localeId, HTextFlow sampleHTextFlow) throws ZanataServiceException
    {
@@ -207,7 +208,9 @@ public class TranslationServiceImpl implements TranslationService
       return localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, projectIteration.getSlug());
    }
 
-   private boolean translate(@Nonnull HTextFlowTarget hTextFlowTarget, @Nonnull List<String> contentsToSave, ContentState requestedState, int nPlurals)
+   private boolean translate(@Nonnull
+   HTextFlowTarget hTextFlowTarget, @Nonnull
+   List<String> contentsToSave, ContentState requestedState, int nPlurals)
    {
       boolean targetChanged = false;
       targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
@@ -221,7 +224,7 @@ public class TranslationServiceImpl implements TranslationService
          log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
       }
 
-      //save the target histories
+      // save the target histories
       entityManager.flush();
 
       return targetChanged;
@@ -230,7 +233,9 @@ public class TranslationServiceImpl implements TranslationService
    /**
     * @return true if the content was changed, false otherwise
     */
-   private boolean setContentIfChanged(@Nonnull HTextFlowTarget hTextFlowTarget, @Nonnull List<String> contentsToSave)
+   private boolean setContentIfChanged(@Nonnull
+   HTextFlowTarget hTextFlowTarget, @Nonnull
+   List<String> contentsToSave)
    {
       if (!contentsToSave.equals(hTextFlowTarget.getContents()))
       {
@@ -247,10 +252,14 @@ public class TranslationServiceImpl implements TranslationService
     * Check that requestedState is valid for the given content, adjust if
     * necessary and set the new state if it has changed.
     * 
-    * @return true if the content state or contents list were updated, false otherwise
-    * @see #adjustContentsAndState(org.zanata.model.HTextFlowTarget, int, java.util.List)
+    * @return true if the content state or contents list were updated, false
+    *         otherwise
+    * @see #adjustContentsAndState(org.zanata.model.HTextFlowTarget, int,
+    *      java.util.List)
     */
-   private boolean setContentStateIfChanged(@Nonnull ContentState requestedState, @Nonnull HTextFlowTarget target, int nPlurals)
+   private boolean setContentStateIfChanged(@Nonnull
+   ContentState requestedState, @Nonnull
+   HTextFlowTarget target, int nPlurals)
    {
       boolean changed = false;
       ContentState previousState = target.getState();
@@ -269,13 +278,18 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    /**
-    * Checks target state against its contents. If necessary, modifies target state and generates a warning
+    * Checks target state against its contents. If necessary, modifies target
+    * state and generates a warning
+    * 
     * @param target HTextFlowTarget to check/modify
-    * @param nPlurals number of plurals for this locale for this message: use 1 if message does not support plurals
+    * @param nPlurals number of plurals for this locale for this message: use 1
+    *           if message does not support plurals
     * @param warnings a warning string will be added if state is adjusted
     * @return true if and only if some state was changed
     */
-   private static boolean adjustContentsAndState(@Nonnull HTextFlowTarget target, int nPlurals, @Nonnull List<String> warnings)
+   private static boolean adjustContentsAndState(@Nonnull
+   HTextFlowTarget target, int nPlurals, @Nonnull
+   List<String> warnings)
    {
       ContentState oldState = target.getState();
       String resId = target.getTextFlow().getResId();
@@ -289,13 +303,15 @@ public class TranslationServiceImpl implements TranslationService
 
    /**
     * Ensures that target.contents has exactly legalSize elements
+    * 
     * @param target HTextFlowTarget to check/modify
     * @param legalSize required number of contents
     * @param resId ID of target
     * @param warnings if elements were added or removed
     * @return
     */
-   private static boolean ensureContentsSize(HTextFlowTarget target, int legalSize, String resId, @Nonnull List<String> warnings)
+   private static boolean ensureContentsSize(HTextFlowTarget target, int legalSize, String resId, @Nonnull
+   List<String> warnings)
    {
       int contentsSize = target.getContents().size();
       if (contentsSize < legalSize)
@@ -326,11 +342,10 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
-   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
-                                                  TranslationsResource translations, Set<String> extensions, MergeType mergeType)
+   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions, MergeType mergeType)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      if( hProjectIteration == null )
+      if (hProjectIteration == null)
       {
          throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
       }
@@ -344,8 +359,7 @@ public class TranslationServiceImpl implements TranslationService
          throw new ZanataServiceException("A document was not found.", 404);
       }
 
-
-      log.debug("start put translations entity:{}" , translations);
+      log.debug("start put translations entity:{}", translations);
 
       boolean changed = false;
 
@@ -353,7 +367,6 @@ public class TranslationServiceImpl implements TranslationService
       // handle extensions
       changed |= resourceUtils.transferFromTranslationsResourceExtensions(translations.getExtensions(true), document, extensions, hLocale, mergeType);
 
-      List<HPerson> newPeople = new ArrayList<HPerson>();
       // NB: removedTargets only applies for MergeType.IMPORT
       Collection<HTextFlowTarget> removedTargets = new HashSet<HTextFlowTarget>();
       List<String> warnings = new ArrayList<String>();
@@ -370,8 +383,11 @@ public class TranslationServiceImpl implements TranslationService
          }
       }
 
-      for (TextFlowTarget incomingTarget : translations.getTextFlowTargets())
+      int counter = 0;
+      for (int i = 0; i < translations.getTextFlowTargets().size(); i++)
       {
+         TextFlowTarget incomingTarget = translations.getTextFlowTargets().get(i);
+
          String resId = incomingTarget.getResId();
          HTextFlow textFlow = textFlowDAO.getById(document, resId);
          if (textFlow == null)
@@ -398,42 +414,43 @@ public class TranslationServiceImpl implements TranslationService
             {
                switch (mergeType)
                {
-                  case AUTO:
-                     if (incomingTarget.getState() != ContentState.New)
+               case AUTO:
+                  if (incomingTarget.getState() != ContentState.New)
+                  {
+                     if (hTarget.getState() == ContentState.New)
                      {
-                        if (hTarget.getState() == ContentState.New)
+                        targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                     }
+                     else if (incomingTarget.getState() == ContentState.Approved)
+                     {
+                        List<String> incomingContents = incomingTarget.getContents();
+                        boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
+                        if (!oldContent)
                         {
                            targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                            targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                         }
-                        else if (incomingTarget.getState() == ContentState.Approved)
-                        {
-                           List<String> incomingContents = incomingTarget.getContents();
-                           boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
-                           if (!oldContent)
-                           {
-                              targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                              targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                           }
-                        }
-                        else
-                        {
-                           // incomingTarget state = NeedReview
-                           // hTarget state != New
-
-                           // we don't overwrite the server's NeedReview or Approved value (business rule)
-                        }
                      }
-                     break;
+                     else
+                     {
+                        // incomingTarget state = NeedReview
+                        // hTarget state != New
 
-                  case IMPORT:
-                     removedTargets.remove(hTarget);
-                     targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                     targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                     break;
+                        // we don't overwrite the server's NeedReview or
+                        // Approved value (business rule)
+                     }
+                  }
+                  break;
 
-                  default:
-                     throw new ZanataServiceException("unhandled merge type " + mergeType);
+               case IMPORT:
+                  removedTargets.remove(hTarget);
+                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                  break;
+
+               default:
+                  throw new ZanataServiceException("unhandled merge type " + mergeType);
                }
             }
             int nPlurals = getNumPlurals(hLocale, textFlow);
@@ -454,7 +471,7 @@ public class TranslationServiceImpl implements TranslationService
                      hPerson = new HPerson();
                      hPerson.setEmail(email);
                      hPerson.setName(incomingTarget.getTranslator().getName());
-                     newPeople.add(hPerson);
+                     personDAO.makePersistent(hPerson);
                   }
                   hTarget.setLastModifiedBy(hPerson);
                }
@@ -463,17 +480,19 @@ public class TranslationServiceImpl implements TranslationService
                   hTarget.setLastModifiedBy(null);
                }
                textFlowTargetDAO.makePersistent(hTarget);
+               counter++;
+               if (counter == NUM_BATCHES || i == translations.getTextFlowTargets().size() - 1)
+               {
+                  personDAO.flush();
+                  textFlowTargetDAO.flush();
+                  counter = 0;
+               }
             }
          }
       }
+
       if (changed || !removedTargets.isEmpty())
       {
-         for (HPerson person : newPeople)
-         {
-            personDAO.makePersistent(person);
-         }
-         personDAO.flush();
-
          for (HTextFlowTarget target : removedTargets)
          {
             target.clear();
@@ -513,21 +532,25 @@ public class TranslationServiceImpl implements TranslationService
       {
          return isSuccess;
       }
+
       @Override
       public boolean isTargetChanged()
       {
          return targetChanged;
       }
+
       @Override
       public HTextFlowTarget getTranslatedTextFlowTarget()
       {
          return translatedTextFlowTarget;
       }
+
       @Override
       public int getBaseVersionNum()
       {
          return baseVersion;
       }
+
       @Override
       public ContentState getBaseContentState()
       {
@@ -557,21 +580,21 @@ public class TranslationServiceImpl implements TranslationService
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class, tuId.getValue());
             HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
 
-            //check that version has not advanced
+            // check that version has not advanced
             // TODO probably also want to check that source has not been updated
             Integer versionNum = hTextFlowTarget.getVersionNum();
             log.debug("about to revert hTextFlowTarget version {} to TransUnit version {}", versionNum, info.getTransUnit().getVerNum());
             if (versionNum.equals(info.getTransUnit().getVerNum()))
             {
-               //look up replaced version
+               // look up replaced version
                HTextFlowTargetHistory oldTarget = hTextFlowTarget.getHistory().get(info.getPreviousVersionNum());
                if (oldTarget != null)
                {
-                  //generate request
+                  // generate request
                   List<String> oldContents = oldTarget.getContents();
                   ContentState oldState = oldTarget.getState();
                   TransUnitUpdateRequest request = new TransUnitUpdateRequest(tuId, oldContents, oldState, versionNum);
-                  //add to list
+                  // add to list
                   updateRequests.add(request);
                }
                else
@@ -588,8 +611,7 @@ public class TranslationServiceImpl implements TranslationService
             }
             else
             {
-               log.info("attempt to revert target version {} for tu with id {}, but current version is {}. Not reverting.",
-                     new Object[] {info.getTransUnit().getVerNum(), tuId, versionNum});
+               log.info("attempt to revert target version {} for tu with id {}, but current version is {}. Not reverting.", new Object[] { info.getTransUnit().getVerNum(), tuId, versionNum });
                results.add(buildFailResult(hTextFlowTarget));
             }
          }
