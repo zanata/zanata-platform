@@ -44,6 +44,7 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -250,9 +251,12 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void refreshView()
    {
-      for (TargetContentsDisplay targetContentsDisplay : targetContentsPresenter.getDisplays())
+      List<TargetContentsDisplay> targetContentsDisplays = targetContentsPresenter.getDisplays();
+      List<SourceContentsDisplay> sourceContentsDisplays = sourceContentsPresenter.getDisplays();
+      for (int i = 0; i < targetContentsDisplays.size(); i++)
       {
-         targetContentsDisplay.refresh();
+         targetContentsDisplays.get(i).refresh();
+         sourceContentsDisplays.get(i).refresh();
       }
    }
 

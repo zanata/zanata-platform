@@ -168,6 +168,8 @@ public class TargetContentsPresenter implements
       editorTranslators.clearTranslatorList(currentEditors); // clear previous selection's translator list
 
       display = findDisplayById(currentTransUnitId);
+      Log.info("current transunit: " + display.getId() + " - " + display.getVerNum());
+
 
       currentEditors = display.getEditors();
 
@@ -494,6 +496,7 @@ public class TargetContentsPresenter implements
       TargetContentsDisplay contentsDisplay = findDisplayById(updatedTransUnit.getId());
       if (contentsDisplay != null)
       {
+         Log.info("updated transunit: " + updatedTransUnit.debugString());
          contentsDisplay.setValue(updatedTransUnit);
       }
    }
@@ -544,6 +547,7 @@ public class TargetContentsPresenter implements
       TargetContentsDisplay display = findDisplayById(transUnitId);
       if (display != null)
       {
+         Log.info("updated transunit target: " + transUnitId + " - " + display.getVerNum());
          display.updateCachedAndInEditorTargets(targets);
          display.highlightSearch(findMessage);
       }

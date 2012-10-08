@@ -191,6 +191,7 @@ public class TransUnitSaveServiceTest
       // Then:
       verify(goToLink).prepare("", TRANS_UNIT_ID);
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+      verify(targetContentsPresenter).updateTargets(TRANS_UNIT_ID, old.getTargets());
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
@@ -217,6 +218,7 @@ public class TransUnitSaveServiceTest
       callback.onFailure(new RuntimeException("doh"));
       verify(targetContentsPresenter).updateTargets(saveEvent.getTransUnitId(), saveEvent.getOldContents());
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+      verify(targetContentsPresenter).updateTargets(TRANS_UNIT_ID, old.getTargets());
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
@@ -244,6 +246,7 @@ public class TransUnitSaveServiceTest
       callback.onFailure(new StatusCodeException(0, ""));
 
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+      verify(targetContentsPresenter).updateTargets(TRANS_UNIT_ID, old.getTargets());
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));

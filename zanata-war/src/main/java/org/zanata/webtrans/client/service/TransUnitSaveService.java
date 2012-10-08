@@ -123,8 +123,6 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       @Override
       public void onFailure(Throwable e)
       {
-         // reset back the value
-         targetContentsPresenter.updateTargets(event.getTransUnitId(), event.getOldContents());
          Log.error("UpdateTransUnit failure ", e);
          if (e instanceof com.google.gwt.user.client.rpc.StatusCodeException && ((StatusCodeException) e).getStatusCode() == 0)
          {
@@ -162,6 +160,8 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
 
       private void saveFailure(String message)
       {
+         // reset back the value
+         targetContentsPresenter.updateTargets(event.getTransUnitId(), event.getOldContents());
          eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message), goToRowLink));
       }
    }
