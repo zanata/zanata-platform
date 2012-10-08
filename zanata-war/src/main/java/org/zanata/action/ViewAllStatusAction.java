@@ -161,8 +161,10 @@ public class ViewAllStatusAction implements Serializable
       @Override
       public int compareTo(Status o)
       {
-         int per = (int) Math.ceil(100 * getStats().getTranslated() / getStats().getTotal());
-         int comparePer = (int) Math.ceil(100 * o.getStats().getTranslated() / o.getStats().getTotal());
+         int per = getStats().getTotal() == 0 ? 0 :
+               (int) Math.ceil(100 * getStats().getTranslated() / getStats().getTotal());
+         int comparePer = o.getStats().getTotal() == 0 ? 0 :
+               (int) Math.ceil(100 * o.getStats().getTranslated() / o.getStats().getTotal());
          
          return Double.compare(comparePer, per);
       }
@@ -207,6 +209,11 @@ public class ViewAllStatusAction implements Serializable
       return localeIds;
    }
 
+   /*
+    * This method is needed as a non-cached version of ViewAllStatusAction#getAllStatus that performs less queries,
+    * for the Statistic type drop down.
+    * It modifies the statsMap variable, which in turn modifies a cached view of the same map.
+    */
    public void refreshStatistic()
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
@@ -215,7 +222,7 @@ public class ViewAllStatusAction implements Serializable
       String[] localeIds = getLocaleIds(locale);
       
       ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
-      
+
       Long total;
       if (statsOption == WORD)
       {

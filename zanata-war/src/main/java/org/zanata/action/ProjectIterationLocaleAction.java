@@ -34,7 +34,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
 
@@ -55,8 +54,6 @@ public class ProjectIterationLocaleAction implements Serializable
    private boolean setting;
    @Logger
    Log log;
-   @In
-   ProjectIterationDAO projectIterationDAO;
 
    @In
    private ProjectIterationHome projectIterationHome;

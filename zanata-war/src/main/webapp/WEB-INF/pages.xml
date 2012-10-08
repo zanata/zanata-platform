@@ -564,7 +564,6 @@
 
   <page view-id="/project/add_iteration.xhtml">
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-    <param name="projectSlug" value="#{projectIterationLocaleAction.projectSlug}" />
     <action execute="#{projectIterationHome.validateProjectSlug}" />
     <!-- can't use <restrict> here either --> 
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
