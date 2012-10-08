@@ -423,7 +423,6 @@ public class TranslationServiceImpl implements TranslationService
       // handle extensions
       changed |= resourceUtils.transferFromTranslationsResourceExtensions(translations.getExtensions(true), document, extensions, hLocale, mergeType);
 
-      List<HPerson> newPeople = new ArrayList<HPerson>();
       // NB: removedTargets only applies for MergeType.IMPORT
       Collection<HTextFlowTarget> removedTargets = new HashSet<HTextFlowTarget>();
       List<String> warnings = new ArrayList<String>();
@@ -528,7 +527,7 @@ public class TranslationServiceImpl implements TranslationService
                      hPerson = new HPerson();
                      hPerson.setEmail(email);
                      hPerson.setName(incomingTarget.getTranslator().getName());
-                     newPeople.add(hPerson);
+                     personDAO.makePersistent(hPerson);
                   }
                   hTarget.setLastModifiedBy(hPerson);
                }
@@ -540,6 +539,7 @@ public class TranslationServiceImpl implements TranslationService
                counter++;
                if (counter == BATCH_SIZE || i == translations.getTextFlowTargets().size() - 1)
                {
+                  personDAO.flush();
                   textFlowTargetDAO.flush();
                   counter = 0;
                }
@@ -549,12 +549,6 @@ public class TranslationServiceImpl implements TranslationService
 
       if (changed || !removedTargets.isEmpty())
       {
-         for (HPerson person : newPeople)
-         {
-            personDAO.makePersistent(person);
-         }
-         personDAO.flush();
-
          for (HTextFlowTarget target : removedTargets)
          {
             target.clear();
