@@ -342,61 +342,6 @@ public class TranslationServiceImpl implements TranslationService
       return false;
    }
 
-   /**
-    * Split TranslationsResource into List<TranslationsResource> according to
-    * batch size
-    * 
-    * @param doc
-    * @param batchSize
-    * @return list of transaltionsResource
-    */
-   private List<TranslationsResource> splitIntoBatch(TranslationsResource doc)
-   {
-      List<TranslationsResource> targetDocList = new ArrayList<TranslationsResource>();
-      int size = doc.getTextFlowTargets().size();
-
-      if (size > BATCH_SIZE)
-      {
-         int batch = size / BATCH_SIZE;
-
-         if (size % BATCH_SIZE != 0)
-         {
-            batch = batch + 1;
-         }
-
-         int fromIndex = 0;
-         int toIndex = 0;
-
-         for (int i = 1; i <= batch; i++)
-         {
-            TranslationsResource resource = new TranslationsResource();
-            resource.setExtensions(doc.getExtensions());
-            resource.setLinks(doc.getLinks());
-            resource.setRevision(doc.getRevision());
-
-            if ((i * BATCH_SIZE) > size)
-            {
-               toIndex = size;
-            }
-            else
-            {
-               toIndex = i * BATCH_SIZE;
-            }
-
-            resource.getTextFlowTargets().addAll(doc.getTextFlowTargets().subList(fromIndex, toIndex));
-
-            fromIndex = i * BATCH_SIZE;
-
-            targetDocList.add(resource);
-         }
-      }
-      else
-      {
-         targetDocList.add(doc);
-      }
-      return targetDocList;
-   }
-
    @Override
    public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions, MergeType mergeType)
    {
@@ -537,7 +482,7 @@ public class TranslationServiceImpl implements TranslationService
                }
                textFlowTargetDAO.makePersistent(hTarget);
                counter++;
-               if (counter == BATCH_SIZE || i == translations.getTextFlowTargets().size() - 1)
+               if (counter == NUM_BATCHES || i == translations.getTextFlowTargets().size() - 1)
                {
                   personDAO.flush();
                   textFlowTargetDAO.flush();
