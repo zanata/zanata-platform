@@ -31,8 +31,8 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -54,13 +55,8 @@ import com.google.inject.Provider;
 
 public class TargetContentsView extends Composite implements TargetContentsDisplay
 {
-   interface Binder extends UiBinder<HorizontalPanel, TargetContentsView>
-   {
-   }
-
+   private static final int COLUMNS = 1;
    private static Binder binder = GWT.create(Binder.class);
-
-   public static final int COLUMNS = 1;
 
    @UiField
    Grid editorGrid;
@@ -81,6 +77,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    Styles style;
    @UiField
    SimplePanel undoContainer;
+   @UiField
+   Label savingIndicator;
 
    private HorizontalPanel rootPanel;
    private ArrayList<ToggleEditor> editors;
@@ -89,6 +87,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private TransUnitId transUnitId;
    private Integer verNum;
    private List<String> cachedTargets;
+   private EditingState editingState = EditingState.SAVED;
+   private ContentState contentState;
 
    @Inject
    public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
@@ -169,7 +169,9 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          editors.add(editor);
          rowIndex++;
       }
-      editorGrid.setStyleName(resolveStyleName(transUnit.getStatus()));
+      contentState = transUnit.getStatus();
+      editorGrid.setStyleName(resolveStyleName(contentState));
+      editingState = EditingState.SAVED;
    }
 
    private static String resolveStyleName(ContentState status)
@@ -190,6 +192,34 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       }
       styles += state + "StateDecoration";
       return styles;
+   }
+
+   @Override
+   public void setState(EditingState editingState)
+   {
+      this.editingState = editingState;
+      if (editingState == EditingState.UNSAVED)
+      {
+         editorGrid.setStyleName(style.unsaved());
+         savingIndicator.setVisible(false);
+
+      }
+      else if (editingState == EditingState.SAVING)
+      {
+         savingIndicator.setVisible(true);
+      }
+      else
+      {
+         editorGrid.setStyleName(resolveStyleName(contentState));
+         savingIndicator.setVisible(false);
+         refresh();
+      }
+   }
+
+   @Override
+   public EditingState getEditingState()
+   {
+      return editingState;
    }
 
    @UiHandler("saveIcon")
@@ -265,16 +295,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void updateCachedAndInEditorTargets(List<String> targets)
+   public void revertEditorContents()
    {
-      cachedTargets = ImmutableList.copyOf(targets);
-      if (!getNewTargets().equals(cachedTargets))
+      for (int i = 0; i < cachedTargets.size(); i++)
       {
-         for (int i = 0; i < targets.size(); i++)
-         {
-            String target = targets.get(i);
-            editors.get(i).setTextAndValidate(target);
-         }
+         String target = cachedTargets.get(i);
+         editors.get(i).setTextAndValidate(target);
       }
    }
 
@@ -300,10 +326,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       {
          editor.setViewMode(viewMode);
       }
-      if (viewMode == ToggleEditor.ViewMode.VIEW)
-      {
-         validationPanel.setVisible(false);
-      }
+      validationPanel.setVisible(viewMode == ToggleEditor.ViewMode.EDIT);
    }
 
    @Override
@@ -332,5 +355,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       String targetContentsCell();
 
       String editorGridWrapper();
+
+      String unsaved();
+
+      String saving();
+   }
+
+   interface Binder extends UiBinder<HorizontalPanel, TargetContentsView>
+   {
    }
 }

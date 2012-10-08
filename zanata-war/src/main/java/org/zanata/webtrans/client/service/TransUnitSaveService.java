@@ -32,6 +32,7 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.GoToRowLink;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -150,6 +151,9 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
                UndoLink undoLink = undoLinkProvider.get();
                undoLink.prepareUndoFor(result);
                targetContentsPresenter.addUndoLink(rowIndexOnPage, undoLink);
+               // TODO here we should only update version
+               targetContentsPresenter.updateRow(updatedTU);
+               targetContentsPresenter.setFocus();
             }
          }
          else
@@ -160,8 +164,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
 
       private void saveFailure(String message)
       {
-         // reset back the value
-         targetContentsPresenter.updateTargets(event.getTransUnitId(), event.getOldContents());
+         targetContentsPresenter.setEditingState(event.getTransUnitId(), TargetContentsDisplay.EditingState.UNSAVED);
          eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message), goToRowLink));
       }
    }

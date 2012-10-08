@@ -17,6 +17,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.GoToRowLink;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -191,7 +192,7 @@ public class TransUnitSaveServiceTest
       // Then:
       verify(goToLink).prepare("", TRANS_UNIT_ID);
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
-      verify(targetContentsPresenter).updateTargets(TRANS_UNIT_ID, old.getTargets());
+      verify(targetContentsPresenter).setEditingState(TRANS_UNIT_ID, TargetContentsDisplay.EditingState.UNSAVED);
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
@@ -216,9 +217,9 @@ public class TransUnitSaveServiceTest
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
       when(messages.notifyUpdateFailed("doh")).thenReturn("update failed");
       callback.onFailure(new RuntimeException("doh"));
-      verify(targetContentsPresenter).updateTargets(saveEvent.getTransUnitId(), saveEvent.getOldContents());
+      verify(targetContentsPresenter).setEditingState(saveEvent.getTransUnitId(), TargetContentsDisplay.EditingState.UNSAVED);
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
-      verify(targetContentsPresenter).updateTargets(TRANS_UNIT_ID, old.getTargets());
+      verify(targetContentsPresenter).setEditingState(TRANS_UNIT_ID, TargetContentsDisplay.EditingState.UNSAVED);
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
@@ -246,7 +247,7 @@ public class TransUnitSaveServiceTest
       callback.onFailure(new StatusCodeException(0, ""));
 
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
-      verify(targetContentsPresenter).updateTargets(TRANS_UNIT_ID, old.getTargets());
+      verify(targetContentsPresenter).setEditingState(TRANS_UNIT_ID, TargetContentsDisplay.EditingState.UNSAVED);
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));

@@ -95,4 +95,7 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("No response from server. Please refresh your page and make sure server is still up.")
    String noResponseFromServer();
+
+   @DefaultMessage("Saving...")
+   String saving();
 }

@@ -31,14 +31,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -54,7 +52,6 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
-import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -82,7 +79,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeTransUnit;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
@@ -261,8 +257,7 @@ public class TargetContentsPresenterTest
       presenter.onCancel(selectedTU.getId());
 
       // Then:
-      verify(display).getCachedTargets();
-      verify(display).updateCachedAndInEditorTargets(CACHED_TARGETS);
+      verify(display).revertEditorContents();
       verify(display).highlightSearch(anyString());
       verify(display).focusEditor(0);
    }
@@ -383,7 +378,6 @@ public class TargetContentsPresenterTest
 
       // Then:
       verify(eventBus).fireEvent(new TransUnitSaveEvent(NEW_TARGETS, ContentState.Approved, selectedTU.getId(), 99, CACHED_TARGETS));
-      verify(display).updateCachedAndInEditorTargets(NEW_TARGETS);
    }
 
    @Test
@@ -400,7 +394,7 @@ public class TargetContentsPresenterTest
 
       // Then:
       verifyZeroInteractions(eventBus);
-      verify(display, never()).updateCachedAndInEditorTargets(Mockito.<List<String>>any());
+      verify(display, never()).revertEditorContents();
    }
 
    @Test
@@ -670,15 +664,15 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canUpdateTargets()
+   public void canUpdateState()
    {
       List<String> targets = Lists.newArrayList("a");
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
 
-      presenter.updateTargets(selectedTU.getId(), targets);
+      presenter.setEditingState(selectedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
 
-      verify(display).updateCachedAndInEditorTargets(targets);
+      verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
       verify(display).highlightSearch(null);
    }
 
