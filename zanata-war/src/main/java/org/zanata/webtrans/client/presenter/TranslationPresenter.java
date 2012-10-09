@@ -81,8 +81,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    public void onRevealDisplay()
    {
-      targetContentsPresenter.concealDisplay();
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+      if (userWorkspaceContext.hasReadOnlyAccess() || isOtherInputFieldFocused())
+      {
+         targetContentsPresenter.concealDisplay();
+      }
+      else
+      {
+         targetContentsPresenter.revealDisplay();
+      }
    }
 
    @Override
