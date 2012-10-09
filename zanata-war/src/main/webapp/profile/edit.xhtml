@@ -33,9 +33,9 @@
            	  </s:span>
             </s:decorate>
             <ui:remove>
-                <!-- User name field is only shown when there is no user name selected (mainly for external auth) -->
+                <!-- User name field is only shown for new users (otherwise they aren't allowed to edit the user name) -->
             </ui:remove>
-            <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml" rendered="#{profileAction.newUser}">
               <ui:define name="label">#{messages['jsf.Username']}</ui:define>
               <h:inputText id="username" value="#{profileAction.username}" required="true" >
                   <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>

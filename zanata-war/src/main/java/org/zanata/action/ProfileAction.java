@@ -211,7 +211,7 @@ public class ProfileAction implements Serializable
          return null;
       }
 
-      if (!identityStore.isNewUser(username))
+      if (authenticatedAccount != null)
       {
          HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), true);
          person.setName(this.name);
@@ -252,6 +252,11 @@ public class ProfileAction implements Serializable
    public boolean isValid()
    {
       return valid;
+   }
+
+   public boolean isNewUser()
+   {
+      return identityStore.isNewUser(username);
    }
 
 }
