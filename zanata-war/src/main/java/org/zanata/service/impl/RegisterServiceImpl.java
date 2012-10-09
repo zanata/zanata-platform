@@ -130,7 +130,7 @@ public class RegisterServiceImpl implements RegisterService
       {
          public void execute()
          {
-            identityStore.createUser(username, PasswordGenerator.generateRandomPassword()); // randomize the password
+            identityStore.createUser(username, null); // no password initially
             identityStore.disableUser(username);
          }
       }.addRole("admin").run();
