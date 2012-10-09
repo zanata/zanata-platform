@@ -108,20 +108,24 @@ public class XliffReader extends XliffCommon
    private void extractTransUnit(XMLStreamReader xmlr, TextFlow textFlow) throws XMLStreamException
    {
       Boolean endTransUnit = false;
-      textFlow.setId(getAttributeValue(xmlr, ATTRI_ID));
+      String id = getAttributeValue(xmlr, ATTRI_ID);
+      textFlow.setId(id);
 
       while (xmlr.hasNext() && !endTransUnit)
       {
          xmlr.next();
-         if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_TRANS_UNIT))
+         String localName = xmlr.getLocalName();
+         boolean endElement = xmlr.isEndElement();
+         if (endElement && localName.equals(ELE_TRANS_UNIT))
             endTransUnit = true;
          else
          {
-            if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_SOURCE))
+            boolean startElement = xmlr.isStartElement();
+            if (startElement && localName.equals(ELE_SOURCE))
             {
                textFlow.setContents(getElementValue(xmlr));
             }
-            else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_CONTEXT_GROUP))
+            else if (startElement && localName.equals(ELE_CONTEXT_GROUP))
             {
                textFlow.getExtensions(true).addAll(extractContextList(xmlr));
             }
@@ -138,15 +142,17 @@ public class XliffReader extends XliffCommon
       while (xmlr.hasNext() && !endTransUnit)
       {
          xmlr.next();
-         if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_TRANS_UNIT))
+         boolean endElement = xmlr.isEndElement();
+         String localName = xmlr.getLocalName();
+         if (endElement && localName.equals(ELE_TRANS_UNIT))
             endTransUnit = true;
          else
          {
-            if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_TARGET))
+            if (xmlr.isStartElement() && localName.equals(ELE_TARGET))
             {
                textFlowTarget.setContents(asList(getElementValue(xmlr)));
             }
-            else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_CONTEXT_GROUP))
+            else if (xmlr.isStartElement() && localName.equals(ELE_CONTEXT_GROUP))
             {
                textFlowTarget.getExtensions(true).addAll(extractContextList(xmlr));
             }
@@ -170,11 +176,14 @@ public class XliffReader extends XliffCommon
       while (xmlr.hasNext() && !endContextGroup)
       {
          xmlr.next();// move to context tag
-         if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_CONTEXT_GROUP))
+         String localName = xmlr.getLocalName();
+         boolean endElement = xmlr.isEndElement();
+         if (endElement && localName.equals(ELE_CONTEXT_GROUP))
             endContextGroup = true;
          else
          {
-            if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_CONTEXT))
+            boolean startElement = xmlr.isStartElement();
+            if (startElement && localName.equals(ELE_CONTEXT))
             {
                StringBuilder sb = new StringBuilder();
                sb.append(contextGroup);// context-group
@@ -199,8 +208,11 @@ public class XliffReader extends XliffCommon
    private String getElementValue(XMLStreamReader currentCursor) throws XMLStreamException
    {
       currentCursor.next();
-      if (currentCursor.hasText())
-         return currentCursor.getText();
+      for (; !(currentCursor.isEndElement() || currentCursor.isStartElement()); currentCursor.next())
+      {
+         if (currentCursor.hasText())
+            return currentCursor.getText();
+      }
 
       return null;
    }

@@ -37,7 +37,7 @@ public class XliffReaderTest
       Resource doc = getTemplateDoc();
 
       assertThat(doc.getName(), equalTo(DOC_NAME));
-      assertThat(doc.getTextFlows().size(), is(4));
+      assertThat(doc.getTextFlows().size(), is(5));
    }
 
    @Test

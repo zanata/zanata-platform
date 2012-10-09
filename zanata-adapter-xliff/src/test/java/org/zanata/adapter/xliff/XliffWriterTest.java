@@ -50,7 +50,7 @@ public class XliffWriterTest
       InputSource inputSource = new InputSource(new FileInputStream(generatedFile));
       Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, generatedDocName);
 
-      assertThat(doc.getTextFlows().size(), is(4));
+      assertThat(doc.getTextFlows().size(), is(5));
    }
 
    private void prepareTemplateDoc() throws FileNotFoundException
