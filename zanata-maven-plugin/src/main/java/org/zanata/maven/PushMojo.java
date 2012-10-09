@@ -122,7 +122,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private String[] locales;
 
    /**
-    * Batch size for large translation file
+    * Batch size for large translation file. Only apply for merge="auto"
     * 
     * @parameter expression="${zanata.batchSize}" default-value=100
     */
