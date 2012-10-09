@@ -89,7 +89,7 @@ import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.files.DocumentFileUploadForm;
+import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.FileSystemService;
@@ -103,15 +103,6 @@ import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 @Consumes( { MediaType.APPLICATION_OCTET_STREAM })
 public class FileService implements FileResource
 {
-   public static final String SOURCE_DOWNLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}/{fileType}";
-
-   public static final String SOURCE_UPLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}";
-   public static final String TRANSLATION_UPLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}";
-
-   private static final String RAW_DOCUMENT = "raw";
-   private static final String SUBSTITUTE_APPROVED_AND_FUZZY = "half-baked";
-   private static final String SUBSTITUTE_APPROVED = "baked";
-
    @Logger
    private Log log;
 
@@ -149,6 +140,7 @@ public class FileService implements FileResource
    @In
    private Session session;
 
+   @Override
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
@@ -204,9 +196,9 @@ public class FileService implements FileResource
             if (!md5hash.equals(uploadForm.getHash()))
             {
                return Response.status(Status.CONFLICT)
-                     .entity("MD5 hash " + uploadForm.getHash()
-                           + " sent with request does not match server-generated hash "
-                           + md5hash + ". Aborted upload operation.\n")
+                     .entity("MD5 hash \"" + uploadForm.getHash()
+                           + "\" sent with request does not match server-generated hash \""
+                           + md5hash + "\". Aborted upload operation.\n")
                      .build();
             }
          }
@@ -267,9 +259,9 @@ public class FileService implements FileResource
          catch (HashMismatchException e)
          {
             return Response.status(Status.CONFLICT)
-                  .entity("MD5 hash " + e.getExpectedHash()
-                        + " sent with initial request does not match server-generated hash of combined parts "
-                        + e.getGeneratedHash() + ". Upload aborted. Retry upload from first part.\n")
+                  .entity("MD5 hash \"" + e.getExpectedHash()
+                        + "\" sent with initial request does not match server-generated hash of combined parts \""
+                        + e.getGeneratedHash() + "\". Upload aborted. Retry upload from first part.\n")
                         .build();
          }
          catch (SQLException e)
@@ -554,6 +546,7 @@ public class FileService implements FileResource
    }
 
 
+   @Override
    @POST
    @Path(TRANSLATION_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
@@ -655,9 +648,9 @@ public class FileService implements FileResource
          catch (HashMismatchException e)
          {
             return Response.status(Status.CONFLICT)
-                  .entity("MD5 hash " + e.getExpectedHash()
-                        + " sent with initial request does not match server-generated hash of combined parts "
-                        + e.getGeneratedHash() + ". Upload aborted. Retry upload from first part.\n")
+                  .entity("MD5 hash \"" + e.getExpectedHash()
+                        + "\" sent with initial request does not match server-generated hash of combined parts \""
+                        + e.getGeneratedHash() + "\". Upload aborted. Retry upload from first part.\n")
                         .build();
          }
          catch (SQLException e)
@@ -740,6 +733,7 @@ public class FileService implements FileResource
     *         fileType is not valid for the document, otherwise 200 with
     *         attached document.
     */
+   @Override
    @GET
    @Path(SOURCE_DOWNLOAD_TEMPLATE)
    // /file/source/{projectSlug}/{iterationSlug}/{fileType}?docId={docId}
@@ -754,7 +748,7 @@ public class FileService implements FileResource
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      if (RAW_DOCUMENT.equals(fileType) && document.getRawDocument() != null)
+      if (FILETYPE_RAW_SOURCE_DOCUMENT.equals(fileType) && document.getRawDocument() != null)
       {
          InputStream fileContents;
          try
@@ -843,7 +837,7 @@ public class FileService implements FileResource
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
                .entity(output).build();
       }
-      else if ( (SUBSTITUTE_APPROVED.equals(fileType) || SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileType))
+      else if ( (FILETYPE_TRANSLATED_APPROVED.equals(fileType) || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType))
             && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
       {
          final Set<String> extensions = Collections.<String>emptySet();
@@ -852,7 +846,7 @@ public class FileService implements FileResource
          // Filter to only provide translated targets. "Preview" downloads include fuzzy.
          // New list is used as transRes list appears not to be a modifiable implementation.
          Map<String, TextFlowTarget> translations = new HashMap<String, TextFlowTarget>();
-         boolean useFuzzy = SUBSTITUTE_APPROVED_AND_FUZZY.equals(fileType);
+         boolean useFuzzy = FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
             if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
