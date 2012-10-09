@@ -202,7 +202,7 @@ public class TransUnitsTablePresenterTest
    @Test
    public void canRefreshRowIfNotOnCurrentSelection()
    {
-      // Given: coming updated ID is NOT equal to current selected id
+      // Given: coming updated ID is NOT equal to current selected id and is from another user
       EditorClientId editorClientId = new EditorClientId("session", 1);
       when(translatorService.getCurrentEditorClientId()).thenReturn(editorClientId);
       TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
@@ -231,6 +231,24 @@ public class TransUnitsTablePresenterTest
 
       // Then:
       verifyZeroInteractions(eventBus, targetContentsPresenter);
+   }
+
+   @Test
+   public void willRefreshRowFromCurrentUserNotAsEditorSave()
+   {
+      // Given: coming client id is the same as current user
+      EditorClientId editorClientId = new EditorClientId("session", 1);
+      when(translatorService.getCurrentEditorClientId()).thenReturn(editorClientId);
+      TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
+      presenter.setStateForTesting(updatedTransUnit.getId());
+
+      // When: refreshRow from same user but update type is replace
+      presenter.refreshRow(updatedTransUnit, editorClientId, TransUnitUpdated.UpdateType.ReplaceText);
+
+      // Then:
+      verify(targetContentsPresenter).updateRow(updatedTransUnit);
+      verifyZeroInteractions(eventBus);
+      verifyNoMoreInteractions(targetContentsPresenter);
    }
 
    @Test

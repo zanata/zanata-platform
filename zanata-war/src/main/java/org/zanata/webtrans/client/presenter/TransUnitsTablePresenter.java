@@ -219,17 +219,24 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      if (Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
+      if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
-         // the TransUnitUpdatedEvent is from client itself. Ignored.
+         // the TransUnitUpdatedEvent is from current user's save action. Ignored.
          return;
       }
-      if (Objects.equal(selectedId, updatedTransUnit.getId()))
+      if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
       {
          // updatedTU is our active row but done by another user
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
       }
       targetContentsPresenter.updateRow(updatedTransUnit);
+   }
+
+   // update type is web editor save or web editor save fuzzy and coming from current user
+   private boolean updateFromCurrentUsersEditorSave(EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
+   {
+      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) &&
+            (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
    }
 
    @Override
