@@ -45,6 +45,24 @@ public interface FileResource
    public static final String SOURCE_UPLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}";
    public static final String SOURCE_DOWNLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}/{fileType}";
 
+   /**
+    * Specifies to download the original source file that was uploaded, byte-for-byte.
+    */
+   public static final String FILETYPE_RAW_SOURCE_DOCUMENT = "raw";
+
+   /**
+    * Specifies to download a preview of the translated document in the original
+    * source format, showing all non-empty translations (even if not approved).
+    * Where translations are empty, source strings are used.
+    */
+   public static final String FILETYPE_TRANSLATED_APPROVED_AND_FUZZY = "half-baked";
+
+   /**
+    * Specifies to download a completed version of a translated document in the
+    * original source format, showing only approved translations. Where no
+    * approved translation is available, source strings are used.
+    */
+   public static final String FILETYPE_TRANSLATED_APPROVED = "baked";
 
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
