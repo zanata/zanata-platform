@@ -79,6 +79,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeTransUnit;
+import static org.zanata.model.TestFixture.setId;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
@@ -179,7 +180,6 @@ public class TargetContentsPresenterTest
       assertThat(event.getTransUnitId(), equalTo(selectedTU.getId()));
       assertThat(event.getTargets(), Matchers.equalTo(NEW_TARGETS));
       assertThat(event.getStatus(), equalTo(ContentState.NeedReview));
-      assertThat(event.getOldContents(), equalTo(CACHED_TARGETS));
    }
 
    @Test
@@ -342,7 +342,6 @@ public class TargetContentsPresenterTest
       assertThat(saveEvent.getTransUnitId(), equalTo(selectedTU.getId()));
       assertThat(saveEvent.getTargets(), Matchers.equalTo(NEW_TARGETS));
       assertThat(saveEvent.getStatus(), equalTo(ContentState.Approved));
-      assertThat(saveEvent.getOldContents(), equalTo(CACHED_TARGETS));
 
       NavTransUnitEvent navEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), NavTransUnitEvent.class);
       assertThat(navEvent.getRowType(), equalTo(NavTransUnitEvent.NavigationType.NextEntry));
@@ -664,16 +663,55 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canUpdateState()
+   public void canUpdateStateToSavedOnlyIfCachedTargetsAndInEditorTargetsAreEqual()
    {
-      List<String> targets = Lists.newArrayList("a");
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getCachedTargets()).thenReturn(Lists.newArrayList("a"));
+      when(display.getNewTargets()).thenReturn(Lists.newArrayList("a"));
 
       presenter.setEditingState(selectedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
 
       verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
-      verify(display).highlightSearch(null);
+   }
+
+   @Test
+   public void willIgnoreUpdateEditingStateToSavedIfCachedTargetsAndInEditorTargetsAreNotEqual()
+   {
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getCachedTargets()).thenReturn(Lists.newArrayList("a"));
+      when(display.getNewTargets()).thenReturn(Lists.newArrayList("b"));
+
+      presenter.setEditingState(selectedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
+
+      verify(display, never()).setState(TargetContentsDisplay.EditingState.SAVED);
+   }
+
+   @Test
+   public void canUpdateToOtherStateIfCachedTargetsAndInEditorTargetsAreNotEqual()
+   {
+      selectedTU = currentPageRows.get(0);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getCachedTargets()).thenReturn(Lists.newArrayList("a"));
+      when(display.getNewTargets()).thenReturn(Lists.newArrayList("b"));
+
+      presenter.setEditingState(selectedTU.getId(), TargetContentsDisplay.EditingState.SAVING);
+
+      verify(display).setState(TargetContentsDisplay.EditingState.SAVING);
+   }
+
+   @Test
+   public void canConfirmSaved()
+   {
+      selectedTU = currentPageRows.get(1);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+
+      presenter.confirmSaved(selectedTU);
+
+      verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum());
+      verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
    }
 
    @Test

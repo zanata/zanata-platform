@@ -150,11 +150,8 @@ public class TargetContentsPresenter implements
     */
    public void saveCurrent(ContentState status)
    {
-      if (display.getEditingState() != TargetContentsDisplay.EditingState.SAVING)
-      {
-         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status, display.getId(), display.getVerNum(), display.getCachedTargets()));
-         display.setState(TargetContentsDisplay.EditingState.SAVING);
-      }
+      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status, display.getId(), display.getVerNum(), display.getCachedTargets()));
+      display.setState(TargetContentsDisplay.EditingState.SAVING);
    }
 
    public boolean currentEditorContentHasChanged()
@@ -492,7 +489,7 @@ public class TargetContentsPresenter implements
    }
 
    /**
-    * Being called when there is a TransUnitUpdatedEvent or save success
+    * Being called when there is a TransUnitUpdatedEvent.
     * @param updatedTransUnit updated trans unit
     */
    public void updateRow(TransUnit updatedTransUnit)
@@ -502,6 +499,21 @@ public class TargetContentsPresenter implements
       {
          contentsDisplay.setValue(updatedTransUnit);
          contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
+      }
+   }
+
+   /**
+    * Being called when this client saves successful (not relying on TransUnitUpdatedEvent from EventService).
+    * This will only update the version in underlying table cached value.
+    * @param updatedTU updated trans unit from user itself
+    */
+   public void confirmSaved(TransUnit updatedTU)
+   {
+      TargetContentsDisplay contentsDisplay = findDisplayById(updatedTU.getId());
+      if (contentsDisplay != null)
+      {
+         contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum());
+         setEditingState(updatedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
       }
    }
 
@@ -554,15 +566,15 @@ public class TargetContentsPresenter implements
       TargetContentsDisplay display = findDisplayById(transUnitId);
       if (display != null && editingState != display.getEditingState())
       {
-         if (Objects.equal(display.getCachedTargets(), display.getNewTargets()))
+         if (editingState != TargetContentsDisplay.EditingState.SAVED)
          {
+            display.setState(editingState);
+         }
+         else if (Objects.equal(display.getCachedTargets(), display.getNewTargets()))
+         {
+            // we set editing state to SAVED only if cached targets and in editor targets are equal
             display.setState(TargetContentsDisplay.EditingState.SAVED);
          }
-         else
-         {
-            display.setState(TargetContentsDisplay.EditingState.UNSAVED);
-         }
-         display.highlightSearch(findMessage);
       }
    }
 
