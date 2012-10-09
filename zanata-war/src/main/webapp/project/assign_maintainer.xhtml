@@ -13,7 +13,7 @@
     <ui:define name="right_content">
 		<rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
       	    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddProjectMaintainer']}</a>
+            <a href="#" class="action_link" onclick="showAddMaintainer()">#{messages['jsf.AddProjectMaintainer']}</a>
     	</rich:panel>
     </ui:define>
    
@@ -23,6 +23,12 @@
         function confirmDelete()
         {
           return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsProjectMaintainer']}");
+        }
+        
+        function showAddMaintainer()
+        {
+        	#{rich:component('maintainerAddPanel')}.show();
+        	#{rich:element('input')}.focus();
         }
       </script>
       

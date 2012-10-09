@@ -24,6 +24,12 @@
         {
           return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsGroupMaintainer']}");
         }
+        
+        function showAddMaintainer()
+        {
+        	#{rich:component('maintainerAddPanel')}.show();
+        	#{rich:element('input')}.focus();
+        }
       </script>
                       
       <s:fragment rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
