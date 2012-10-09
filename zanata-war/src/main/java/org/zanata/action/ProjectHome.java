@@ -287,12 +287,15 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    private void updateRoleRestrictions()
    {
-      getInstance().setRestrictedByRoles( restrictByRoles );
-      getInstance().getAllowedRoles().clear();
-
-      if(restrictByRoles)
+      if (restrictByRoles != null)
       {
-         getInstance().getAllowedRoles().addAll( customizedProjectRoleRestrictions );
+         getInstance().setRestrictedByRoles(restrictByRoles);
+         getInstance().getAllowedRoles().clear();
+
+         if (restrictByRoles)
+         {
+            getInstance().getAllowedRoles().addAll(customizedProjectRoleRestrictions);
+         }
       }
    }
 
