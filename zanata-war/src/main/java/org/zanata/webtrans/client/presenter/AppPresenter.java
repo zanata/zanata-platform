@@ -35,6 +35,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -249,8 +250,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          break;
       }
       display.showInMainView(viewToShow);
-      currentView = viewToShow;
       refreshStatsDisplay();
+      currentView = viewToShow;
+      if (currentView == MainView.Editor)
+      {
+         eventBus.fireEvent(RefreshPageEvent.EVENT);
+      }
    }
 
    /**

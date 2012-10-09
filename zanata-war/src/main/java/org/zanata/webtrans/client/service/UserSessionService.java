@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
@@ -36,6 +37,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
+import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -50,13 +52,15 @@ import net.customware.gwt.presenter.client.EventBus;
 public class UserSessionService implements TransUnitEditEventHandler, ExitWorkspaceEventHandler, EnterWorkspaceEventHandler
 {
    private final HashMap<EditorClientId, UserPanelSessionItem> userSessionMap = Maps.newHashMap();
+   private final EventBus eventBus;
    private final DistinctColor distinctColor;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final TranslatorInteractionService interactionService;
 
    @Inject
-   public UserSessionService(final EventBus eventBus, DistinctColor distinctColor, WorkspaceUsersPresenter workspaceUsersPresenter, TranslatorInteractionService interactionService)
+   public UserSessionService(EventBus eventBus, DistinctColor distinctColor, WorkspaceUsersPresenter workspaceUsersPresenter, TranslatorInteractionService interactionService)
    {
+      this.eventBus = eventBus;
       this.distinctColor = distinctColor;
       this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.interactionService = interactionService;
@@ -122,6 +126,12 @@ public class UserSessionService implements TransUnitEditEventHandler, ExitWorksp
 
       workspaceUsersPresenter.removeUser(item.getPanel(), event.getPerson().getId().toString());
       interactionService.personExit(event.getPerson(), item.getSelectedTransUnit());
+
+      if (Objects.equal(editorClientId, interactionService.getCurrentEditorClientId()))
+      {
+         // TODO if this works then localize the message
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Session has timed out. Please refresh your browser."));
+      }
    }
 
    public void initUserList(Map<EditorClientId, PersonSessionDetails> translatorList)

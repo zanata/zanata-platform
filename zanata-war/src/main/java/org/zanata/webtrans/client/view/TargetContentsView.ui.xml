@@ -8,36 +8,48 @@
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 
     <ui:style field="style" type="org.zanata.webtrans.client.view.TargetContentsView.Styles">
-        .targetContentsCell
-        {
+        .targetContentsCell {
             table-layout: fixed;
         }
-        
-        .editorGridWrapper
-        {
-			display:block;
-			overflow-x:auto;
-			height:100%;
-		}
 
-        .button
-        {
+        .editorGridWrapper {
+            display: block;
+            overflow-x: auto;
+            height: 100%;
+            position: relative;
+        }
+
+        .button {
             cursor: pointer;
             font-size: 20px;
             padding-left: 3px;
         }
-        
-         .button:hover
-        {
-            color:#0085CC;
+
+        .button:hover {
+            color: #0085CC;
         }
-        
+
+        .unsaved {
+            background-color: #56c0e6;
+        }
+
+        .saving {
+            position: absolute;
+            top: 8px;
+            left: 30px;
+            font-size: smaller;
+            color: #ffffff;
+            z-index: 1;
+            background-color: #ff4500;
+        }
+
     </ui:style>
 
     <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
         <g:cell verticalAlignment="ALIGN_TOP">
         	<g:FlowPanel styleName="{style.editorGridWrapper}">
-            	<g:Grid ui:field="editorGrid" />
+                <g:Label ui:field="savingIndicator" text="{messages.saving}" styleName="icon-progress {style.saving}" visible="false"/>
+                <g:Grid ui:field="editorGrid" />
                 <fui:ValidationMessagePanelView ui:field="validationPanel" addStyleNames="fadeElement"/>
             </g:FlowPanel>
         </g:cell>

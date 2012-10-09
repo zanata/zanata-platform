@@ -11,13 +11,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -25,8 +23,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState.*;
+
 public class Editor extends Composite implements ToggleEditor
 {
+   private final String displayString;
    private TargetContentsDisplay.Listener listener;
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
@@ -43,6 +44,8 @@ public class Editor extends Composite implements ToggleEditor
       String copyButton();
 
       String targetWrapper();
+
+      String targetContainer();
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
@@ -78,37 +81,9 @@ public class Editor extends Composite implements ToggleEditor
    @UiField
    HTMLPanel targetWrapper;
 
-   private boolean keypressed;
-   private boolean typing;
-   private int typingCycles;
-
-   private final Timer typingTimer = new Timer()
-   {
-      @Override
-      public void run()
-      {
-         if (keypressed)
-         {
-            // still typing, validate periodically
-            keypressed = false;
-            typingCycles++;
-            if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
-            {
-               fireValidationEvent();
-            }
-         }
-         else
-         {
-            // finished, validate immediately
-            this.cancel();
-            typing = false;
-            fireValidationEvent();
-         }
-      }
-   };
-
    public Editor(String displayString, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
    {
+      this.displayString = displayString;
       this.listener = listener;
       this.index = index;
       this.id = id;
@@ -137,6 +112,9 @@ public class Editor extends Composite implements ToggleEditor
    public void onValueChange(ValueChangeEvent<String> event)
    {
       fireValidationEvent();
+      boolean contentHasChanged = !Objects.equal(textArea.getText(), displayString);
+      TargetContentsDisplay.EditingState editingState = contentHasChanged ? UNSAVED : SAVED;
+      listener.setEditingState(id, editingState);
    }
 
    @UiHandler("textArea")
@@ -151,24 +129,6 @@ public class Editor extends Composite implements ToggleEditor
    public void onTextAreaBlur(BlurEvent event)
    {
       isFocused = false;
-   }
-
-   @UiHandler("textArea")
-   public void onKeyDownTextArea(KeyDownEvent event)
-   {
-      // used to determine whether user is still typing
-      if (typing)
-      {
-         keypressed = true;
-      }
-      else
-      {
-         // set false so that next keypress is detectable
-         keypressed = false;
-         typing = true;
-         typingCycles = 0;
-         typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
-      }
    }
 
    @UiHandler("copyIcon")

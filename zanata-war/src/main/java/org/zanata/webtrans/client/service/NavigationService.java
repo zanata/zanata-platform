@@ -308,13 +308,18 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       if (Objects.equal(event.getUpdateInfo().getDocumentId(), context.getDocumentId()))
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
-         navigationStateHolder.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
-         boolean updated = pageModel.updateIfInCurrentPage(updatedTU);
+         boolean updated = updateDataModel(updatedTU);
          if (updated)
          {
             pageDataChangeListener.refreshRow(updatedTU, event.getEditorClientId(), event.getUpdateType());
          }
       }
+   }
+
+   public boolean updateDataModel(TransUnit updatedTU)
+   {
+      navigationStateHolder.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
+      return pageModel.updateIfInCurrentPage(updatedTU);
    }
 
    @Override

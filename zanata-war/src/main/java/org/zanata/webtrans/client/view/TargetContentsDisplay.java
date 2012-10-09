@@ -59,14 +59,15 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    void setListener(Listener listener);
 
-   /**
-    * Update cached targets so that any following navigation event won't cause another pending save event.
-    * If the save failed, TransUnitSaveService will revert the value back to what it was.
-    * @param targets targets
-    */
-   void updateCachedAndInEditorTargets(List<String> targets);
+   void revertEditorContents();
 
    void refresh();
+
+   void setState(EditingState editingState);
+
+   EditingState getEditingState();
+
+   void updateCachedTargetsAndVersion(List<String> targets, Integer verNum);
 
    interface Listener
    {
@@ -89,5 +90,12 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
       void onFocus(TransUnitId id, int editorIndex);
 
       boolean isUsingCodeMirror();
+
+      void setEditingState(TransUnitId transUnitId, EditingState editingState);
+   }
+
+   enum EditingState
+   {
+      SAVING, UNSAVED, SAVED
    }
 }

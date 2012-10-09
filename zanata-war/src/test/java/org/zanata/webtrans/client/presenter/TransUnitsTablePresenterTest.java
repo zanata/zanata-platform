@@ -208,8 +208,8 @@ public class TransUnitsTablePresenterTest
       TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
       presenter.setStateForTesting(new TransUnitId(99));
 
-      // When: update type is save
-      presenter.refreshRow(updatedTransUnit, editorClientId, TransUnitUpdated.UpdateType.WebEditorSave);
+      // When: update type is save and done by different user
+      presenter.refreshRow(updatedTransUnit, new EditorClientId("session", 2), TransUnitUpdated.UpdateType.WebEditorSave);
 
       // Then:
       verify(targetContentsPresenter).updateRow(updatedTransUnit);
@@ -218,7 +218,7 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
-   public void canRefreshRowByApprovedSaveFromCurrentUser()
+   public void refreshRowFromCurrentUserWillGetIgnored()
    {
       // Given: coming client id is the same as current user
       EditorClientId editorClientId = new EditorClientId("session", 1);
@@ -226,32 +226,11 @@ public class TransUnitsTablePresenterTest
       TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
       presenter.setStateForTesting(updatedTransUnit.getId());
 
-      // When: update type is save
-      presenter.refreshRow(updatedTransUnit, editorClientId, TransUnitUpdated.UpdateType.WebEditorSave);
-
-      // Then:
-      verify(targetContentsPresenter).updateRow(updatedTransUnit);
-      verifyZeroInteractions(eventBus);
-      verifyNoMoreInteractions(targetContentsPresenter);
-   }
-
-   @Test
-   public void CanRefreshRowByFuzzySaveFromCurrentUser()
-   {
-      // Given: coming client id is the same as current user
-      EditorClientId editorClientId = new EditorClientId("session", 1);
-      when(translatorService.getCurrentEditorClientId()).thenReturn(editorClientId);
-      TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
-      presenter.setStateForTesting(updatedTransUnit.getId());
-
-      // When: update type is save fuzzy
+      // When: refreshRow from same user
       presenter.refreshRow(updatedTransUnit, editorClientId, TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
 
       // Then:
-      verify(targetContentsPresenter).updateRow(updatedTransUnit);
-      verify(targetContentsPresenter).setFocus();
-      verifyZeroInteractions(eventBus);
-      verifyNoMoreInteractions(targetContentsPresenter);
+      verifyZeroInteractions(eventBus, targetContentsPresenter);
    }
 
    @Test

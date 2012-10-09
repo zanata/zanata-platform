@@ -28,8 +28,6 @@ import java.util.NoSuchElementException;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
-import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
-import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -56,6 +54,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gwt.core.client.GWT;
@@ -141,13 +140,18 @@ public class TargetContentsPresenter implements
       if (currentEditorContentHasChanged())
       {
          saveCurrent(ContentState.Approved);
-         display.updateCachedAndInEditorTargets(getNewTargets());
       }
    }
 
+   /**
+    * Will only save if current editing state is not SAVING.
+    *
+    * @param status content state
+    */
    public void saveCurrent(ContentState status)
    {
       eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status, display.getId(), display.getVerNum(), display.getCachedTargets()));
+      display.setState(TargetContentsDisplay.EditingState.SAVING);
    }
 
    public boolean currentEditorContentHasChanged()
@@ -163,11 +167,11 @@ public class TargetContentsPresenter implements
    public void showEditors(final TransUnitId currentTransUnitId)
    {
       this.currentTransUnitId = currentTransUnitId;
-      Log.info("enter show editor with id:" + currentTransUnitId);
 
       editorTranslators.clearTranslatorList(currentEditors); // clear previous selection's translator list
 
       display = findDisplayById(currentTransUnitId);
+      Log.info("enter show editor with id:" + currentTransUnitId + " version: " + display.getVerNum());
 
       currentEditors = display.getEditors();
 
@@ -260,7 +264,6 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = 0;
          saveCurrent(ContentState.Approved);
-         display.updateCachedAndInEditorTargets(getNewTargets());
          eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
@@ -344,7 +347,7 @@ public class TargetContentsPresenter implements
    public void onCancel(TransUnitId transUnitId)
    {
       ensureRowSelection(transUnitId);
-      display.updateCachedAndInEditorTargets(display.getCachedTargets());
+      display.revertEditorContents();
       display.highlightSearch(findMessage);
       setFocus();
    }
@@ -486,7 +489,7 @@ public class TargetContentsPresenter implements
    }
 
    /**
-    * Being called when there is a TransUnitUpdatedEvent
+    * Being called when there is a TransUnitUpdatedEvent.
     * @param updatedTransUnit updated trans unit
     */
    public void updateRow(TransUnit updatedTransUnit)
@@ -495,6 +498,22 @@ public class TargetContentsPresenter implements
       if (contentsDisplay != null)
       {
          contentsDisplay.setValue(updatedTransUnit);
+         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
+      }
+   }
+
+   /**
+    * Being called when this client saves successful (not relying on TransUnitUpdatedEvent from EventService).
+    * This will only update the version in underlying table cached value.
+    * @param updatedTU updated trans unit from user itself
+    */
+   public void confirmSaved(TransUnit updatedTU)
+   {
+      TargetContentsDisplay contentsDisplay = findDisplayById(updatedTU.getId());
+      if (contentsDisplay != null)
+      {
+         contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum());
+         setEditingState(updatedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
       }
    }
 
@@ -510,6 +529,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
+      // FIXME once setting codemirror editor to readonly it won't be editable again
       userWorkspaceContext.setProjectActive(event.isProjectActive());
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
@@ -535,17 +555,26 @@ public class TargetContentsPresenter implements
    }
 
    /**
-    * Being used when cancelling edit and also when saved as approved (to prevent another save event triggered by navigation)
+    * Being used when save failed and when user typing in editor
     * @param transUnitId id
-    * @param targets translation that will be set in editor and cached state in display
+    * @param editingState editing state
+    *
     */
-   public void updateTargets(TransUnitId transUnitId, List<String> targets)
+   @Override
+   public void setEditingState(TransUnitId transUnitId, TargetContentsDisplay.EditingState editingState)
    {
       TargetContentsDisplay display = findDisplayById(transUnitId);
-      if (display != null)
+      if (display != null && editingState != display.getEditingState())
       {
-         display.updateCachedAndInEditorTargets(targets);
-         display.highlightSearch(findMessage);
+         if (editingState != TargetContentsDisplay.EditingState.SAVED)
+         {
+            display.setState(editingState);
+         }
+         else if (Objects.equal(display.getCachedTargets(), display.getNewTargets()))
+         {
+            // we set editing state to SAVED only if cached targets and in editor targets are equal
+            display.setState(TargetContentsDisplay.EditingState.SAVED);
+         }
       }
    }
 

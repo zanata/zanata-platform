@@ -44,6 +44,7 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -218,26 +219,17 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      boolean setFocus = false;
+      if (Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
+      {
+         // the TransUnitUpdatedEvent is from client itself. Ignored.
+         return;
+      }
       if (Objects.equal(selectedId, updatedTransUnit.getId()))
       {
-         if (!Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
-         {
-            // updatedTU is our active row but done by another user
-            Log.info("detect concurrent edit. reset editor value");
-            eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
-         }
-         else if (updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy)
-         {
-            // same user and update type is save fuzzy
-            setFocus = true;
-         }
+         // updatedTU is our active row but done by another user
+         eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
       }
       targetContentsPresenter.updateRow(updatedTransUnit);
-      if (setFocus)
-      {
-         targetContentsPresenter.setFocus();
-      }
    }
 
    @Override
@@ -250,9 +242,12 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void refreshView()
    {
-      for (TargetContentsDisplay targetContentsDisplay : targetContentsPresenter.getDisplays())
+      List<TargetContentsDisplay> targetContentsDisplays = targetContentsPresenter.getDisplays();
+      List<SourceContentsDisplay> sourceContentsDisplays = sourceContentsPresenter.getDisplays();
+      for (int i = 0; i < targetContentsDisplays.size(); i++)
       {
-         targetContentsDisplay.refresh();
+         targetContentsDisplays.get(i).refresh();
+         sourceContentsDisplays.get(i).refresh();
       }
    }
 
