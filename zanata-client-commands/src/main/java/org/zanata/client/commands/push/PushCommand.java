@@ -25,6 +25,7 @@ import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ClientUtility;
@@ -301,6 +302,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                public void visit(LocaleMapping locale, TranslationsResource targetDoc)
                {
                   debug(targetDoc);
+                  
                   pushTargetDocToServer(docUri, locale, srcDoc, targetDoc, extensions);
                }
             });
@@ -369,7 +371,8 @@ public class PushCommand extends PushPullCommand<PushOptions>
    }
 
    /**
-    * Split TranslationsResource into List<TranslationsResource> according to batch size
+    * Split TranslationsResource into List<TranslationsResource> according to
+    * Batch processing only applies when mergeType=AUTO
     * 
     * @param doc
     * @param batchSize
@@ -380,7 +383,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       List<TranslationsResource> targetDocList = new ArrayList<TranslationsResource>();
       int size = doc.getTextFlowTargets().size();
 
-      if (size > batchSize)
+      if (size > batchSize && getOpts().getMergeType().toUpperCase().equals(MergeType.AUTO.name()))
       {
          int batch = size / batchSize;
 
