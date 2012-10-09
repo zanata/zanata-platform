@@ -321,6 +321,6 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public boolean checkViewObsolete()
    {
-      return identity != null && identity.hasPermission("HProject", "view-obsolete", new Object[] {});
+      return identity != null && identity.hasPermission("HProject", "view-obsolete");
    }
 }
