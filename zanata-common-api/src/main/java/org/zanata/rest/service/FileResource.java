@@ -20,19 +20,60 @@
  */
 package org.zanata.rest.service;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.zanata.rest.DocumentFileUploadForm;
+
+/**
+ * Interface for file upload and download REST methods.
+ */
 public interface FileResource
 {
 
    public static final String FILE_RESOURCE = "/file";
    public static final String DOWNLOAD_TEMPLATE = "/download/{downloadId}";
    public static final String FILE_DOWNLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}" ;
-   
+   public static final String TRANSLATION_UPLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}";
+   public static final String SOURCE_UPLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}";
+   public static final String SOURCE_DOWNLOAD_TEMPLATE = "/source/{projectSlug}/{iterationSlug}/{fileType}";
+
+
+   @POST
+   @Path(SOURCE_UPLOAD_TEMPLATE)
+   @Consumes( MediaType.MULTIPART_FORM_DATA)
+   // /file/source/{projectSlug}/{iterationSlug}?docId={docId}
+   public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
+                                     @PathParam("iterationSlug") String iterationSlug,
+                                     @QueryParam("docId") String docId,
+                                     @MultipartForm DocumentFileUploadForm uploadForm );
+
+   @POST
+   @Path(TRANSLATION_UPLOAD_TEMPLATE)
+   @Consumes( MediaType.MULTIPART_FORM_DATA)
+   // /file/translation/{projectSlug}/{iterationSlug}/{locale}?docId={docId}&merge={merge}
+   public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
+                                          @PathParam("iterationSlug") String iterationSlug,
+                                          @PathParam("locale") String localeId,
+                                          @QueryParam("docId") String docId,
+                                          @QueryParam("merge") String merge,
+                                          @MultipartForm DocumentFileUploadForm uploadForm );
+
+   @GET
+   @Path(SOURCE_DOWNLOAD_TEMPLATE)
+   // /file/source/{projectSlug}/{iterationSlug}/{fileType}?docId={docId}
+   public Response downloadSourceFile( @PathParam("projectSlug") String projectSlug,
+                                       @PathParam("iterationSlug") String iterationSlug,
+                                       @PathParam("fileType") String fileType,
+                                       @QueryParam("docId") String docId);
+
    @GET
    @Path(FILE_DOWNLOAD_TEMPLATE)
    // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
@@ -41,7 +82,7 @@ public interface FileResource
                                             @PathParam("locale") String locale,
                                             @PathParam("fileType") String fileExtension,
                                             @QueryParam("docId") String docId );
-   
+
    @GET
    @Path(DOWNLOAD_TEMPLATE)
    // /file/download/{downloadId}
