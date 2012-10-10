@@ -28,7 +28,7 @@ public class Highlighting
 
    public static native void syntaxHighlight(String text, Element elem)/*-{
 		elem.innerHTML = '';
-		$wnd.CodeMirror.runMode(text, "htmlmixed", elem);
+		$wnd.CodeMirror.runMode(text, "visibleSpace", elem);
    }-*/;
 
    // From JavaScript on http://www.nsftools.com/misc/SearchAndHighlight.htm

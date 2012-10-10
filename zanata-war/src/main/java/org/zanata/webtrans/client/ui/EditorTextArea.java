@@ -47,25 +47,6 @@ public class EditorTextArea extends TextArea
    public native JavaScriptObject initCodeMirror(Element element) /*-{
       var self = this;
 
-      $wnd.CodeMirror.defineMode("visibleSpace", function(config, parserConfig) {
-         var visibleSpaceOverlay =
-         {
-            token: function(stream, state)
-            {
-               var ch = stream.next();
-               if (ch == " ")
-               {
-                  return "space";
-               }
-               else
-               {
-                  return null;
-               }
-            }
-         };
-         return $wnd.CodeMirror.overlayMode($wnd.CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), visibleSpaceOverlay);
-      });
-
       var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
          lineNumbers: true,
          lineWrapping: true,
