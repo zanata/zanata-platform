@@ -86,7 +86,7 @@
                             <h:outputText value="#{messages['jsf.Name']}"/>
                             <br/>
                             <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
-                                         id="name_filter_input" styleClass="filter_input">
+                                         id="name_filter_input" styleClass="filter_input" title="#{messages['jsf.iteration.files.Filter.title']}">
                                 <a4j:support event="onkeyup" reRender="data_table,data_table_scroller"
                                              ignoreDupResponses="true" requestDelay="700"
                                              focus="name_filter_input"/>
