@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
@@ -22,6 +23,9 @@ import javax.ws.rs.core.Response;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory
 {
+   private String clientVersion;
+   private String serverVersion;
+
    static
    {
       ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
@@ -54,7 +58,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
       
-      String clientVer = clientApiVersion.getVersionNo();
+      clientVersion = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
       IVersionResource iversion = createIVersionResource();
       ClientResponse<VersionInfo> versionResp = iversion.get();
@@ -68,15 +72,15 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       {
          serverVersionInfo = versionResp.getEntity();
       }
-      String serverVer = serverVersionInfo.getVersionNo();
+      serverVersion = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
 
-      log.info("client API version: {}, server API version: {}", clientVer, serverVer);
-      if (!serverVer.equals(clientVer))
+      log.info("client API version: {}, server API version: {}", clientVersion, serverVersion);
+      if (!serverVersion.equals(clientVersion))
       {
-         log.warn("client API version is {}, but server API version is {}", clientVer, serverVer);
+         log.warn("client API version is {}, but server API version is {}", clientVersion, serverVersion);
       }
-      else if (serverVer.contains(RestConstant.SNAPSHOT_VERSION) && !serverTimestamp.equalsIgnoreCase(clientTimestamp))
+      else if (serverVersion.contains(RestConstant.SNAPSHOT_VERSION) && !serverTimestamp.equalsIgnoreCase(clientTimestamp))
       {
          log.warn("client API timestamp is {}, but server API timestamp is {}", clientTimestamp, serverTimestamp);
       }
@@ -302,6 +306,22 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       {
          throw new RuntimeException(e);
       }
+   }
+
+   /**
+    * Compares a given version identifier with the server version.
+    *
+    * @param version The version to against which to compare the server version.
+    * @return A positive integer if the server version is greater than the given version.
+    * A negative integer if the server version is less than the given version.
+    * 0 if both versions are the same.
+    */
+   public int compareToServerVersion( String version )
+   {
+      DefaultArtifactVersion srvVersion = new DefaultArtifactVersion(serverVersion);
+      DefaultArtifactVersion providedVersion = new DefaultArtifactVersion(version);
+
+      return srvVersion.compareTo( providedVersion );
    }
 
 

@@ -13,8 +13,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.ClientResponseFailure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -426,17 +429,18 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       if (!getOpts().isDryRun())
       {
-         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
+         log.info("Pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
 
          List<TranslationsResource> targetDocList = splitIntoBatch(targetDoc, getOpts().getBatchSize());
 
          int totalDone = 0;
+         ConsoleUtils.startProgressFeedback();
          for (TranslationsResource doc : targetDocList)
          {
-            ConsoleUtils.startProgressFeedback();
-
             ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), doc, extensions, getOpts().getMergeType());
-            ConsoleUtils.endProgressFeedback();
+
+            totalDone = totalDone + doc.getTextFlowTargets().size();
+            ConsoleUtils.setProgressFeedbackMessage(totalDone + "/" + targetDoc.getTextFlowTargets().size());
 
             ClientUtility.checkResult(putTransResponse, uri);
             String entity = putTransResponse.getEntity(String.class);
@@ -444,9 +448,8 @@ public class PushCommand extends PushPullCommand<PushOptions>
             {
                log.warn("{}", entity);
             }
-            totalDone = totalDone + doc.getTextFlowTargets().size();
-            log.info("Pushed " + totalDone + " of " + targetDoc.getTextFlowTargets().size() + " entries");
          }
+         ConsoleUtils.endProgressFeedback();
       }
       else
       {
@@ -481,8 +484,38 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.warn("Could not start Copy Trans for above document. Proceeding");
          return;
       }
-      CopyTransStatus copyTransStatus =
-            this.copyTransResource.getCopyTransStatus(getOpts().getProj(), getOpts().getProjectVersion(), docName);
+      CopyTransStatus copyTransStatus = null;
+
+      try
+      {
+         copyTransStatus = this.copyTransResource.getCopyTransStatus(getOpts().getProj(), getOpts().getProjectVersion(), docName);
+      }
+      catch (ClientResponseFailure failure)
+      {
+         // 404 - Probably because of an old server
+         if( failure.getResponse().getResponseStatus() == Response.Status.NOT_FOUND )
+         {
+            if( getRequestFactory().compareToServerVersion("1.8.0-SNAPSHOT") < 0 )
+            {
+               log.warn("Copy Trans not started (Incompatible server version.)");
+               return;
+            }
+            else
+            {
+               throw new RuntimeException("Could not invoke copy trans. The service was not available (404)");
+            }
+         }
+         else if( failure.getCause() != null )
+         {
+            throw new RuntimeException("Problem invoking copy trans.", failure.getCause());
+         }
+         else
+         {
+            throw new RuntimeException(
+                  "Problem invoking copy trans: [Server response code:"
+                        + failure.getResponse().getResponseStatus().getStatusCode() + "]");
+         }
+      }
       ConsoleUtils.startProgressFeedback();
 
       while( copyTransStatus.isInProgress() )

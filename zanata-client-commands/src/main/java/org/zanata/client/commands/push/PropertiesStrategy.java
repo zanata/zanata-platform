@@ -43,7 +43,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-class PropertiesStrategy extends AbstractPushStrategy
+public class PropertiesStrategy extends AbstractPushStrategy
 {
    // "8859_1" is used in Properties.java...
    private static final String ISO_8859_1 = "ISO-8859-1";
