@@ -186,10 +186,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
     display: -moz-inline-block;
     display: -webkit-inline-block;
     display: inline-block;
-    width: 0px;
+    width: 1em;
     position: relative;
     overflow: visible;
-    left: -1.4em;
     color: #aaa;
 }
 
