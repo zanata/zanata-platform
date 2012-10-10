@@ -73,6 +73,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -214,7 +215,14 @@ public class SourceDocResourceService implements SourceDocResource
 
       resourceUtils.validateExtensions(extensions); //gettext, comment
 
-      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, resource.getName());
+      String resourceName = resource.getName();
+      if (!Pattern.matches(SourceDocResource.RESOURCE_SLUG_REGEX, resourceName))
+      {
+         log.warn("bad resource name in post(): {0}", resourceName);
+         throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("not a legal resource name: " + resourceName).build());
+      }
+
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, resourceName);
 
       // already existing non-obsolete document.
       if (document != null)
@@ -222,7 +230,7 @@ public class SourceDocResourceService implements SourceDocResource
          if (!document.isObsolete())
          {
             // updates must happen through PUT on the actual resource
-            return Response.status(Response.Status.CONFLICT).entity("A document with name " + resource.getName() + " already exists.").build();
+            return Response.status(Response.Status.CONFLICT).entity("A document with name " + resourceName + " already exists.").build();
          }
       }
 

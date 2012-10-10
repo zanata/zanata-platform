@@ -238,6 +238,7 @@ public class ApplicationConfiguration implements Serializable
          smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
          smtpAppenderInstance.setFrom(getFromEmailAddr());
          smtpAppenderInstance.setTo(this.configValues.get(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL));
+         // TODO use hostname, not URL
          smtpAppenderInstance.setSubject("%p log message from Zanata at " + this.getServerPath());
          smtpAppenderInstance.setLayout(new ZanataHTMLLayout());
          //smtpAppenderInstance.setLayout(new PatternLayout("%-5p [%c] %m%n"));
@@ -268,6 +269,7 @@ public class ApplicationConfiguration implements Serializable
       if( configuredValue == null )
       {
          HttpServletRequest request = ServletContexts.instance().getRequest();
+         // TODO what if request is null?
          configuredValue = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
       }
       return configuredValue;
