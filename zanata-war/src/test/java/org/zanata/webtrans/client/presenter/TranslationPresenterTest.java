@@ -78,7 +78,6 @@ public class TranslationPresenterTest
       presenter.onRevealDisplay();
 
       verify(targetContentsPresenter).concealDisplay();
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, true);
    }
 
    @Test
