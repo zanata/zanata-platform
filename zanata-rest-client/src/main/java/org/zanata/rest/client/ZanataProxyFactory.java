@@ -18,7 +18,6 @@ import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.service.CopyTransResource;
 import org.zanata.rest.service.StatisticsResource;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory
@@ -245,6 +244,29 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    public ISourceDocResource getSourceDocResource(String projectSlug, String versionSlug)
    {
       return createProxy(ISourceDocResource.class, getResourceURI(projectSlug, versionSlug));
+   }
+
+   public IFileResource getFileResource()
+   {
+      return createProxy(IFileResource.class, getFileURI() );
+   }
+
+   private URI getFileURI()
+   {
+      String spec = RESOURCE_PREFIX + "/file/";
+      try
+      {
+         return new URL(crf.getBase().toURL(), spec).toURI();
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         log.error("URI Syntax error. Part of url: {}", spec);
+         throw new RuntimeException(e);
+      }
    }
 
    public StatisticsResource getStatisticsResource()

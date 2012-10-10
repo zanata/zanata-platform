@@ -20,16 +20,23 @@
  */
 package org.zanata.client.commands.push;
 
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
+import java.util.List;
+
+import org.zanata.client.commands.PushPullOptions;
 
 /**
- * Push options for documents that are parsed on the client and transmitted as a
- * {@link Resource} or {@link TranslationsResource}.
+ * Options common to all push operations, regardless whether document is parsed client- or server-side.
+ * 
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
  */
-public interface PushOptions extends CommonPushOptions
+public interface CommonPushOptions extends PushPullOptions
 {
-   public boolean getCopyTrans();
-   public int getBatchSize();
+   public String getSourceLang();
+   public PushPullType getPushType();
+   public String getMergeType();
+   public List<String> getIncludes();
+   public List<String> getExcludes();
+   public boolean getDefaultExcludes();
+   public boolean getDeleteObsoleteModules();
 }
-

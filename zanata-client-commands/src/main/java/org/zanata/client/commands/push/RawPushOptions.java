@@ -20,16 +20,7 @@
  */
 package org.zanata.client.commands.push;
 
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
-
-/**
- * Push options for documents that are parsed on the client and transmitted as a
- * {@link Resource} or {@link TranslationsResource}.
- */
-public interface PushOptions extends CommonPushOptions
+public interface RawPushOptions extends CommonPushOptions
 {
-   public boolean getCopyTrans();
-   public int getBatchSize();
+   int getChunkSize();
 }
-

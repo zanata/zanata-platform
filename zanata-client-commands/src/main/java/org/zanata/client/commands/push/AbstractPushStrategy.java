@@ -22,10 +22,10 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tools.ant.DirectoryScanner;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
@@ -36,9 +36,8 @@ import org.zanata.rest.dto.resource.Resource;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public abstract class AbstractPushStrategy
+public abstract class AbstractPushStrategy extends AbstractCommonPushStrategy<PushOptions>
 {
-   private PushOptions opts;
    private StringSet extensions;
    private String fileExtension;
 
@@ -54,42 +53,30 @@ public abstract class AbstractPushStrategy
       this.fileExtension = fileExtension;
    }
 
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocalFileName, boolean includeDefaultExclude)
+   /**
+    * Scan srcDir to return a list of all source files.
+    * 
+    * @param srcDir base directory in which to find source files
+    * @param includes empty to find all source files, non-empty to find only the documents in this list
+    * @param excludes
+    * @param excludeLocaleFileNames adds entries to excludes to ignore any file with a locale id
+    *        suffix before the file extension.
+    * @param includeDefaultExclude true to also exclude a set of default excludes for common temp file
+    *        and source control filenames
+    * @return document paths for source files found in srcDir
+    */
+   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocaleFileNames, boolean includeDefaultExclude)
    {
-      if (includes.isEmpty())
+      if (excludeLocaleFileNames)
       {
-         includes.add("**/*" + fileExtension);
+         excludeLocaleFileNames(excludes);
       }
-
-      if (excludeLocalFileName)
-      {
-         excludeLocaleFileName(excludes);
-      }
-
-      DirectoryScanner dirScanner = new DirectoryScanner();
-
-      if (includeDefaultExclude)
-      {
-         dirScanner.addDefaultExcludes();
-      }
-
-      dirScanner.setBasedir(srcDir);
-      dirScanner.setCaseSensitive(false);
-      dirScanner.setExcludes(excludes.toArray(new String[excludes.size()]));
-      dirScanner.setIncludes(includes.toArray(new String[includes.size()]));
-      dirScanner.scan();
-      String[] includedFiles = dirScanner.getIncludedFiles();
-      for (int i = 0; i < includedFiles.length; i++)
-      {
-         // canonicalise file separator (to handle backslash on Windows)
-         includedFiles[i] = includedFiles[i].replace(File.separator, "/");
-      }
-      return includedFiles;
+      return getSrcFiles(srcDir, includes, excludes, Collections.<String>singletonList(fileExtension), includeDefaultExclude);
    }
 
-   private void excludeLocaleFileName(List<String> excludes)
+   private void excludeLocaleFileNames(List<String> excludes)
    {
-      for (LocaleMapping locMap : opts.getLocaleMapList())
+      for (LocaleMapping locMap : getOpts().getLocaleMapList())
       {
          String loc = locMap.getJavaLocale().toLowerCase();
          excludes.add("**/*_" + loc + fileExtension);
@@ -106,11 +93,6 @@ public abstract class AbstractPushStrategy
       return docName + "_" + locale.getJavaLocale() + fileExtension;
    }
 
-   public void setPushOptions(PushOptions opts)
-   {
-      this.opts = opts;
-   }
-
    public StringSet getExtensions()
    {
       return extensions;
@@ -119,11 +101,6 @@ public abstract class AbstractPushStrategy
    public String getFileExtension()
    {
       return fileExtension;
-   }
-
-   public PushOptions getOpts()
-   {
-      return opts;
    }
 
    public void init()

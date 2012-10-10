@@ -20,16 +20,14 @@
  */
 package org.zanata.client.commands.push;
 
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
-
 /**
- * Push options for documents that are parsed on the client and transmitted as a
- * {@link Resource} or {@link TranslationsResource}.
+ * Strategy for uploading documents using the raw document upload API methods.
+ * 
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
  */
-public interface PushOptions extends CommonPushOptions
+public class RawPushStrategy extends AbstractCommonPushStrategy<RawPushOptions>
 {
-   public boolean getCopyTrans();
-   public int getBatchSize();
-}
 
+
+}
