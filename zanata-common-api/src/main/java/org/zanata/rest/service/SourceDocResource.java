@@ -42,8 +42,8 @@ import java.util.Set;
  */
 public interface SourceDocResource
 {
-   public static final String RESOURCE_SLUG_TEMPLATE = "/{id:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
-
+   public static final String RESOURCE_SLUG_REGEX = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
+   public static final String RESOURCE_SLUG_TEMPLATE = "/{id:" + RESOURCE_SLUG_REGEX + "}";
 
    @HEAD
    public Response head();
