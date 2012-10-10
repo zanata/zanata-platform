@@ -193,6 +193,12 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
     color: #aaa;
 }
 
+/* visible space */
+.cm-space
+{
+    border-bottom: #d3d3d3 solid 2px;
+}
+
 /* attempted to show visible line break but it shows even there is just one line.
 .CodeMirror-lines div div pre:after {
     content: "\00B6";

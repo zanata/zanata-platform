@@ -46,10 +46,30 @@ public class EditorTextArea extends TextArea
    // see http://codemirror.net/doc/manual.html#usage
    public native JavaScriptObject initCodeMirror(Element element) /*-{
       var self = this;
+
+      $wnd.CodeMirror.defineMode("visibleSpace", function(config, parserConfig) {
+         var visibleSpaceOverlay =
+         {
+            token: function(stream, state)
+            {
+               var ch = stream.next();
+               if (ch == " ")
+               {
+                  return "space";
+               }
+               else
+               {
+                  return null;
+               }
+            }
+         };
+         return $wnd.CodeMirror.overlayMode($wnd.CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), visibleSpaceOverlay);
+      });
+
       var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
          lineNumbers: true,
          lineWrapping: true,
-         mode: "htmlmixed",
+         mode: "visibleSpace",
          value: element.value,
          onFocus: function() {
             self.@org.zanata.webtrans.client.ui.EditorTextArea::onFocus()();

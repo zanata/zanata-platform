@@ -36,6 +36,15 @@ public class CodeMirrorReadOnlyWidget extends Composite implements HasText
          mode: "htmlmixed",
          readOnly: true
       });
+
+//      var spaceQuery = /\s/;
+      // below code is to show visible space
+      var searchCursor = codeMirrorEditor.getSearchCursor(" ", {line: 0, ch: 0}, false);
+      while (searchCursor.findNext())
+      {
+         codeMirrorEditor.markText(searchCursor.from(), searchCursor.to(), "cm-space");
+//         searchCursor.replace("newline\n")
+      }
       return codeMirrorEditor;
 
    }-*/;
