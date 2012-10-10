@@ -429,17 +429,18 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       if (!getOpts().isDryRun())
       {
-         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
+         log.info("Pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
 
          List<TranslationsResource> targetDocList = splitIntoBatch(targetDoc, getOpts().getBatchSize());
 
          int totalDone = 0;
+         ConsoleUtils.startProgressFeedback();
          for (TranslationsResource doc : targetDocList)
          {
-            ConsoleUtils.startProgressFeedback();
-
             ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), doc, extensions, getOpts().getMergeType());
-            ConsoleUtils.endProgressFeedback();
+
+            totalDone = totalDone + doc.getTextFlowTargets().size();
+            ConsoleUtils.setProgressFeedbackMessage(totalDone + "/" + targetDoc.getTextFlowTargets().size());
 
             ClientUtility.checkResult(putTransResponse, uri);
             String entity = putTransResponse.getEntity(String.class);
@@ -447,9 +448,8 @@ public class PushCommand extends PushPullCommand<PushOptions>
             {
                log.warn("{}", entity);
             }
-            totalDone = totalDone + doc.getTextFlowTargets().size();
-            log.info("Pushed " + totalDone + " of " + targetDoc.getTextFlowTargets().size() + " entries");
          }
+         ConsoleUtils.endProgressFeedback();
       }
       else
       {
