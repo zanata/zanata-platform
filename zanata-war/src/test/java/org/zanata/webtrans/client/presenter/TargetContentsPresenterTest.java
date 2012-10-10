@@ -709,7 +709,7 @@ public class TargetContentsPresenterTest
 
       presenter.confirmSaved(selectedTU);
 
-      verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum(), updatedTU.getStatus());
+      verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum(), selectedTU.getStatus());
       verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
    }
 
