@@ -512,7 +512,7 @@ public class TargetContentsPresenter implements
       TargetContentsDisplay contentsDisplay = findDisplayById(updatedTU.getId());
       if (contentsDisplay != null)
       {
-         contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum());
+         contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum(), updatedTU.getStatus());
          setEditingState(updatedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
       }
    }

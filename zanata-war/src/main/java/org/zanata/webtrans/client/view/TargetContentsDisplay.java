@@ -25,6 +25,7 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -67,7 +68,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    EditingState getEditingState();
 
-   void updateCachedTargetsAndVersion(List<String> targets, Integer verNum);
+   void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status);
 
    interface Listener
    {

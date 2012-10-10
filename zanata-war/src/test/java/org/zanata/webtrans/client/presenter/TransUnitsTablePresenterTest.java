@@ -313,16 +313,6 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
-   public void canStartEditing()
-   {
-      presenter.setStateForTesting(new TransUnitId(1));
-
-      presenter.startEditing();
-
-      verify(targetContentsPresenter).setFocus();
-   }
-
-   @Test
    public void onTableRowSelectingSameRow()
    {
       // Given: selecting id is on row index 2, and current selected row index is also 2

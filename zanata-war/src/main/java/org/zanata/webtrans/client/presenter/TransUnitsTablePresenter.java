@@ -270,19 +270,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       }
    }
 
-   public void startEditing()
-   {
-      if (selectedId != null)
-      {
-         targetContentsPresenter.setFocus();
-      }
-      else
-      {
-         // select first row
-         onRowSelected(0);
-      }
-   }
-
    @Override
    public void onTableRowSelected(TableRowSelectedEvent event)
    {

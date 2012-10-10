@@ -122,14 +122,6 @@ public class TranslationEditorPresenterTest
    }
 
    @Test
-   public void testOpenEditorOnSelectedRow() throws Exception
-   {
-      presenter.openEditorOnSelectedRow();
-
-      verify(transUnitsTablePresenter).startEditing();
-   }
-
-   @Test
    public void onUnbind()
    {
       presenter.onUnbind();
