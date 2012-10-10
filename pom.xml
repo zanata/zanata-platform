@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>7-SNAPSHOT</version>
+    <version>7</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -20,7 +20,7 @@
 
     <properties>
       <zanata.api.version>1.8.0-SNAPSHOT</zanata.api.version>
-      <zanata.common.version>1.8.0-SNAPSHOT</zanata.common.version>
+      <zanata.common.version>1.8.0</zanata.common.version>
     </properties>
 
    <dependencyManagement>
@@ -30,6 +30,11 @@
             <artifactId>zanata-client-commands</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.zanata</groupId>
+			<artifactId>zanata-common-api</artifactId>
+			<version>${zanata.api.version}</version>
+		</dependency>
         <dependency>
           <groupId>org.zanata</groupId>
           <artifactId>zanata-rest-client</artifactId>
@@ -38,6 +43,16 @@
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-po</artifactId>
+            <version>${zanata.common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-properties</artifactId>
+            <version>${zanata.common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-xliff</artifactId>
             <version>${zanata.common.version}</version>
         </dependency>
         <dependency>
