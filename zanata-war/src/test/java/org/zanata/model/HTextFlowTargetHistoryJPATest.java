@@ -40,7 +40,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   @Test(enabled = true)
+   @Test
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
@@ -80,7 +80,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
    }
 
 
-   @Test(enabled = true)
+   @Test
    public void ensureHistoryIsRecordedPlural()
    {
       Session session = getSession();
@@ -119,8 +119,6 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
    @SuppressWarnings("unchecked")
    private List<HTextFlowTargetHistory> getHistory(HTextFlowTarget tft)
    {
-      //getSession().createSQLQuery("select count(*) from HTextFlowTargetHistory ");
-      //return getSession().createQuery("select distinct h from HTextFlowTargetHistory h where textFlowTarget = ?").setParameter(0, tft).list();
       return getSession().createCriteria(HTextFlowTargetHistory.class).add(Restrictions.eq("textFlowTarget", tft)).list();
    }
 }
