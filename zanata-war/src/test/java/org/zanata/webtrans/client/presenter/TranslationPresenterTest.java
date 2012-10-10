@@ -139,7 +139,8 @@ public class TranslationPresenterTest
       // by default all other presenters are not focused
       when(translationEditorPresenter.getDisplay()).thenReturn(translationEditorDisplay);
       enterKey.getHandler().onKeyShortcut(null);
-      verify(translationEditorPresenter).openEditorOnSelectedRow();
+      verify(targetContentsPresenter).setFocus();
+      verify(targetContentsPresenter).revealDisplay();
    }
 
    @Test

@@ -48,6 +48,8 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
 
    void applySelectedStyle(int rowIndex);
 
+   void delayRefresh();
+
    interface Listener
    {
       void onRowSelected(int rowIndex);

@@ -171,6 +171,12 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    }
 
    @Override
+   public void delayRefresh()
+   {
+      timer.schedule(100);
+   }
+
+   @Override
    public void setRowSelectionListener(Listener listener)
    {
       this.listener = listener;

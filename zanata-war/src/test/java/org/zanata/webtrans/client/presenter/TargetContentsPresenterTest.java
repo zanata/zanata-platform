@@ -79,7 +79,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeTransUnit;
-import static org.zanata.model.TestFixture.setId;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
@@ -710,7 +709,7 @@ public class TargetContentsPresenterTest
 
       presenter.confirmSaved(selectedTU);
 
-      verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum());
+      verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum(), selectedTU.getStatus());
       verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
    }
 

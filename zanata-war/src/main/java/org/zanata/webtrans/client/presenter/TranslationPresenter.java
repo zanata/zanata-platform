@@ -82,7 +82,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    public void onRevealDisplay()
    {
       targetContentsPresenter.concealDisplay();
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
    }
 
    @Override
@@ -99,7 +98,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-//            translationEditorPresenter.gotoPrevRow(false);
             targetContentsPresenter.savePendingChangesIfApplicable();
             eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
          }
@@ -110,7 +108,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-//            translationEditorPresenter.gotoNextRow(false);
             targetContentsPresenter.savePendingChangesIfApplicable();
             eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
          }
@@ -130,9 +127,10 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (!isOtherInputFieldFocused())
+            if (!isOtherInputFieldFocused() && userWorkspaceContext.hasWriteAccess())
             {
-               translationEditorPresenter.openEditorOnSelectedRow();
+               targetContentsPresenter.setFocus();
+               targetContentsPresenter.revealDisplay();
             }
          }
       }));

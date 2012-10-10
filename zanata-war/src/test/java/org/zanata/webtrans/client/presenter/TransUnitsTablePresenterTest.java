@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.LoadingEvent;
@@ -33,6 +34,9 @@ import com.google.common.collect.Lists;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -160,6 +164,18 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
+   public void onSaveAsFuzzyAndFilter()
+   {
+      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(new TransUnitId(1));
+
+      presenter.saveAsFuzzyAndFilter();
+
+      verify(targetContentsPresenter).saveCurrent(ContentState.NeedReview);
+      verify(display).hideFilterConfirmation();
+      verify(navigationService).execute(Mockito.isA(FilterViewEvent.class));
+   }
+
+   @Test
    public void onDiscardChangeAndFilter()
    {
       TransUnitId currentId = new TransUnitId(1);
@@ -202,7 +218,7 @@ public class TransUnitsTablePresenterTest
    @Test
    public void canRefreshRowIfNotOnCurrentSelection()
    {
-      // Given: coming updated ID is NOT equal to current selected id
+      // Given: coming updated ID is NOT equal to current selected id and is from another user
       EditorClientId editorClientId = new EditorClientId("session", 1);
       when(translatorService.getCurrentEditorClientId()).thenReturn(editorClientId);
       TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
@@ -231,6 +247,24 @@ public class TransUnitsTablePresenterTest
 
       // Then:
       verifyZeroInteractions(eventBus, targetContentsPresenter);
+   }
+
+   @Test
+   public void willRefreshRowFromCurrentUserNotAsEditorSave()
+   {
+      // Given: coming client id is the same as current user
+      EditorClientId editorClientId = new EditorClientId("session", 1);
+      when(translatorService.getCurrentEditorClientId()).thenReturn(editorClientId);
+      TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
+      presenter.setStateForTesting(updatedTransUnit.getId());
+
+      // When: refreshRow from same user but update type is replace
+      presenter.refreshRow(updatedTransUnit, editorClientId, TransUnitUpdated.UpdateType.ReplaceText);
+
+      // Then:
+      verify(targetContentsPresenter).updateRow(updatedTransUnit);
+      verifyZeroInteractions(eventBus);
+      verifyNoMoreInteractions(targetContentsPresenter);
    }
 
    @Test
@@ -295,16 +329,6 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
-   public void canStartEditing()
-   {
-      presenter.setStateForTesting(new TransUnitId(1));
-
-      presenter.startEditing();
-
-      verify(targetContentsPresenter).setFocus();
-   }
-
-   @Test
    public void onTableRowSelectingSameRow()
    {
       // Given: selecting id is on row index 2, and current selected row index is also 2
@@ -346,5 +370,58 @@ public class TransUnitsTablePresenterTest
 
       presenter.onLoading(LoadingEvent.FINISH_EVENT);
       verify(display).hideLoading();
+   }
+
+   @Test
+   public void canRefreshViewWithSearch()
+   {
+      // Given: presenter has highlight search term
+      presenter.highlightSearch("blah");
+      TargetContentsDisplay targetDisplay = mock(TargetContentsDisplay.class);
+      SourceContentsDisplay sourceDisplay = mock(SourceContentsDisplay.class);
+      // assuming two displays in the list
+      List<TargetContentsDisplay> targetContentsDisplays = Lists.newArrayList(targetDisplay, targetDisplay);
+      List<SourceContentsDisplay> sourceContentsDisplays = Lists.newArrayList(sourceDisplay, sourceDisplay);
+      when(targetContentsPresenter.getDisplays()).thenReturn(targetContentsDisplays);
+      when(sourceContentsPresenter.getDisplays()).thenReturn(sourceContentsDisplays);
+
+      // When:
+      presenter.refreshView();
+
+      // Then:
+      verify(sourceDisplay, times(2)).refresh();
+      verify(targetDisplay, times(2)).refresh();
+      verify(sourceDisplay, times(2)).highlightSearch("blah");
+      verify(targetDisplay, times(2)).highlightSearch("blah");
+   }
+
+   @Test
+   public void canRefreshViewWithNoSearch()
+   {
+      // Given: presenter has no highlight search term
+      TargetContentsDisplay targetDisplay = mock(TargetContentsDisplay.class);
+      SourceContentsDisplay sourceDisplay = mock(SourceContentsDisplay.class);
+      // assuming two displays in the list
+      List<TargetContentsDisplay> targetContentsDisplays = Lists.newArrayList(targetDisplay, targetDisplay);
+      List<SourceContentsDisplay> sourceContentsDisplays = Lists.newArrayList(sourceDisplay, sourceDisplay);
+      when(targetContentsPresenter.getDisplays()).thenReturn(targetContentsDisplays);
+      when(sourceContentsPresenter.getDisplays()).thenReturn(sourceContentsDisplays);
+
+      // When:
+      presenter.refreshView();
+
+      // Then:
+      verify(sourceDisplay, times(2)).refresh();
+      verify(targetDisplay, times(2)).refresh();
+      verify(sourceDisplay, never()).highlightSearch(anyString());
+      verify(targetDisplay, never()).highlightSearch(anyString());
+   }
+
+   @Test
+   public void onRefreshPageEvent()
+   {
+      presenter.onRefreshPage(RefreshPageEvent.EVENT);
+
+      verify(display).delayRefresh();
    }
 }

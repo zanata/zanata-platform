@@ -72,7 +72,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler, RefreshPageEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNSELECTED = -1;
@@ -108,7 +108,6 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(PageSizeChangeEvent.TYPE, this);
-      eventBus.addHandler(RefreshPageEvent.TYPE, this);
    }
 
    protected void init(GetTransUnitActionContext context)
@@ -342,19 +341,6 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
    }
 
-   @Override
-   public void onRefreshPage(RefreshPageEvent event)
-   {
-      Log.info("refreshing page");
-      isLoadingTU = true;
-      startLoading();
-//      pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
-      pageDataChangeListener.refreshView();
-      isLoadingTU = false;
-      finishLoading();
-      highlightSearch();
-   }
-
    public void execute(UpdateContextCommand command)
    {
       if (context == null)
@@ -447,6 +433,5 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
       void highlightSearch(String findMessage);
 
-      void refreshView();
    }
 }

@@ -121,8 +121,4 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       return transFilterPresenter.isFocused();
    }
 
-   public void openEditorOnSelectedRow()
-   {
-      transUnitsTablePresenter.startEditing();
-   }
 }

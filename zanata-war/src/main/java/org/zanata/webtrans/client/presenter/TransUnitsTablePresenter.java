@@ -34,6 +34,8 @@ import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.LoadingEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.RefreshPageEventHandler;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
@@ -54,6 +56,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 
@@ -69,7 +72,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       NavigationService.PageDataChangeListener,
       TransUnitsTableDisplay.Listener,
       TableRowSelectedEventHandler,
-      LoadingEventHandler
+      LoadingEventHandler,
+      RefreshPageEventHandler
 // @formatter:on
 {
 
@@ -84,6 +88,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
    private TransUnitId selectedId;
+   private String findMessage;
 
    @Inject
    // @formatter:off
@@ -120,6 +125,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TableRowSelectedEvent.TYPE, this));
       registerHandler(eventBus.addHandler(LoadingEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
    }
 
    @Override
@@ -217,14 +223,20 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    }
 
    @Override
+   public void onRefreshPage(RefreshPageEvent event)
+   {
+      display.delayRefresh();
+   }
+
+   @Override
    public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      if (Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
+      if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
-         // the TransUnitUpdatedEvent is from client itself. Ignored.
+         // the TransUnitUpdatedEvent is from current user's save action. Ignored.
          return;
       }
-      if (Objects.equal(selectedId, updatedTransUnit.getId()))
+      if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
       {
          // updatedTU is our active row but done by another user
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
@@ -232,9 +244,17 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       targetContentsPresenter.updateRow(updatedTransUnit);
    }
 
+   // update type is web editor save or web editor save fuzzy and coming from current user
+   private boolean updateFromCurrentUsersEditorSave(EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
+   {
+      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) &&
+            (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+   }
+
    @Override
    public void highlightSearch(String findMessage)
    {
+      this.findMessage = findMessage;
       sourceContentsPresenter.highlightSearch(findMessage);
       targetContentsPresenter.highlightSearch(findMessage);
    }
@@ -246,8 +266,15 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       List<SourceContentsDisplay> sourceContentsDisplays = sourceContentsPresenter.getDisplays();
       for (int i = 0; i < targetContentsDisplays.size(); i++)
       {
-         targetContentsDisplays.get(i).refresh();
-         sourceContentsDisplays.get(i).refresh();
+         TargetContentsDisplay targetDisplay = targetContentsDisplays.get(i);
+         SourceContentsDisplay sourceDisplay = sourceContentsDisplays.get(i);
+         targetDisplay.refresh();
+         sourceDisplay.refresh();
+         if (!Strings.isNullOrEmpty(findMessage))
+         {
+            targetDisplay.highlightSearch(findMessage);
+            sourceDisplay.highlightSearch(findMessage);
+         }
       }
    }
 
@@ -260,19 +287,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          targetContentsPresenter.savePendingChangesIfApplicable();
          navigationService.selectByRowIndex(rowIndexOnPage);
          display.applySelectedStyle(rowIndexOnPage);
-      }
-   }
-
-   public void startEditing()
-   {
-      if (selectedId != null)
-      {
-         targetContentsPresenter.setFocus();
-      }
-      else
-      {
-         // select first row
-         onRowSelected(0);
       }
    }
 
