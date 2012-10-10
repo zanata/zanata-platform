@@ -27,6 +27,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.zanata.dao.ProjectDAO;
@@ -80,6 +81,7 @@ public class ProjectCopyTransOptionsAction implements Serializable
    }
 
    @Transactional
+   @Restrict("#{s:hasPermission(projectCopyTransOptionsAction.project, 'update')}")
    public void saveOptions()
    {
       copyTransOptionsModel.save();

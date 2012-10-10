@@ -588,6 +588,7 @@
   </page>
 
   <page view-id="/project/copy_trans_options.xhtml">
+  	<restrict>#{s:hasPermission(projectHome.instance, 'update')}</restrict>
     <param name="projectSlug" value="#{projectCopyTransOptionsAction.projectSlug}"/>
 
     <action execute="#{breadcrumbs.clear}"/>
@@ -808,7 +809,7 @@
   <!-- Exceptions -->
   <page view-id="/error.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Error'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Error'])}"/>
   </page>
   
   <exception class="org.zanata.exception.KeyNotFoundException"
