@@ -20,7 +20,7 @@
 
     <properties>
       <zanata.api.version>1.8.0-SNAPSHOT</zanata.api.version>
-      <zanata.common.version>1.8.0</zanata.common.version>
+      <zanata.common.version>1.8.1-SNAPSHOT</zanata.common.version>
     </properties>
 
    <dependencyManagement>
@@ -41,6 +41,13 @@
           <version>${project.version}</version>
         </dependency>
         <dependency>
+
+
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-glossary</artifactId>
+            <version>${zanata.common.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-po</artifactId>
             <version>${zanata.common.version}</version>
@@ -54,21 +61,6 @@
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-xliff</artifactId>
             <version>${zanata.common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-adapter-xliff</artifactId>
-            <version>${zanata.common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-adapter-glossary</artifactId>
-            <version>${zanata.common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-api</artifactId>
-            <version>${zanata.api.version}</version>
         </dependency>
       </dependencies>
    </dependencyManagement>
