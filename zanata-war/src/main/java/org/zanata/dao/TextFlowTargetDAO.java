@@ -242,24 +242,6 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
     */
    public HTextFlowTarget getOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
    {
-      try
-      {
-         return tryGetOrCreateTarget(hTextFlow, hLocale);
-      }
-      catch (ConstraintViolationException e)
-      {
-         entityManager.refresh(hTextFlow);
-         return tryGetOrCreateTarget(hTextFlow, hLocale);
-      }
-   }
-
-   /**
-    * Throws a constraing Violation exception if for some reason the text flow target has already been created.
-    *
-    * @see TextFlowTargetDAO#getOrCreateTarget(org.zanata.model.HTextFlow, org.zanata.model.HLocale)
-    */
-   private HTextFlowTarget tryGetOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
-   {
       HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
 
       if (hTextFlowTarget == null)
@@ -267,7 +249,6 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
          hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
          hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
          hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
-         entityManager.flush();
       }
       return hTextFlowTarget;
    }

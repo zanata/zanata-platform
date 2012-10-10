@@ -485,6 +485,8 @@ public class TranslationServiceImpl implements TranslationService
                {
                   personDAO.flush();
                   textFlowTargetDAO.flush();
+                  personDAO.clear();
+                  textFlowTargetDAO.clear();
                   counter = 0;
                }
             }
