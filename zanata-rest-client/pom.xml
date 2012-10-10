@@ -22,7 +22,6 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-api</artifactId>
-			<version>1.6.0-alpha-2</version>
 		</dependency>
 
 		<dependency>
