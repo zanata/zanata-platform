@@ -20,57 +20,23 @@
  */
 package org.zanata.process;
 
-import org.jboss.seam.annotations.async.Asynchronous;
-
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * Contains logic that should be executed asynchronously in the background.
- * 
+ * This class contains some logic to execute.
+ * This class should replace the {@link BackgroundProcess} as a means to separate
+ * logic from process execution infrastructure.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
-public abstract class BackgroundProcess<H extends ProcessHandle>
+public abstract class RunnableProcess<H extends ProcessHandle>
 {
 
    /**
-    * Starts the process.
-    * 
-    * @param handle The handle to be used for the running process.
-    */
-   @Asynchronous
-   public void startProcess(H handle)
-   {
-      // make sure the process handle is not being reused
-      if( handle.isStarted() || handle.isFinished() )
-      {
-         throw new RuntimeException("RunnableProcess handles cannot be reused.");
-      }
-
-      handle.start();
-      
-      try
-      {
-         runProcess(handle);
-      }
-      catch( Throwable t )
-      {
-         log.error("Exception with long running process.", t);
-         this.handleThrowable(handle, t);
-      }
-      finally
-      {
-         handle.finish();
-      }
-   }
-
-   /**
-    * This is the background process' main logic.
+    * This method contains the logic to execute.
     *
-    * @param handle RunnableProcess handle for the running process.
-    * @throws Exception If there is a problem that makes the process stop.
+    * @param handle A RunnableProcess handle to communicate with the process.
+    * @throws Throwable Any kind of error thrown by the process.
     */
-   protected abstract void runProcess(H handle) throws Exception;
+   protected abstract void run( H handle ) throws Throwable;
 
    /**
     * Handles anything thrown while running the process.

@@ -1,9 +1,8 @@
 package org.zanata.process;
 
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Generic background process handle. Provides information about the process.
@@ -12,15 +11,28 @@ import java.util.HashSet;
  */
 public class ProcessHandle
 {
+   private String id;
    private boolean shouldStop = false;
    private int maxProgress = 100;
    private int minProgress = 0;
    private int currentProgress = 0;
    private long startTime = -1;
    private long finishTime = -1;
+   private Throwable error;
 
    // process listeners
    private Collection<BackgroundProcessListener> listeners = new HashSet<BackgroundProcessListener>();
+
+
+   public ProcessHandle()
+   {
+      id = UUID.randomUUID().toString();
+   }
+
+   public String getId()
+   {
+      return id;
+   }
 
    public boolean isInProgress()
    {
@@ -65,6 +77,16 @@ public class ProcessHandle
    public int getCurrentProgress()
    {
       return currentProgress;
+   }
+
+   public Throwable getError()
+   {
+      return error;
+   }
+
+   public void setError(Throwable error)
+   {
+      this.error = error;
    }
 
    void start()
@@ -148,7 +170,7 @@ public class ProcessHandle
    }
 
    /**
-    * @return Process start time, or -1 if the process hasn't been started yet.
+    * @return RunnableProcess start time, or -1 if the process hasn't been started yet.
     */
    public long getStartTime()
    {
@@ -156,7 +178,7 @@ public class ProcessHandle
    }
 
    /**
-    * @return Process finish time (cancelled or otherwise), or -1 if the process hasn't finished yet.
+    * @return RunnableProcess finish time (cancelled or otherwise), or -1 if the process hasn't finished yet.
     */
    public long getFinishTime()
    {

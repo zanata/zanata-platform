@@ -20,43 +20,51 @@
  */
 package org.zanata.process;
 
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.async.Asynchronous;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Contains logic that should be executed asynchronously in the background.
- * 
+ * This component executes {@link RunnableProcess} objects.
+ * This class should be used instead of {@link BackgroundProcess}
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Name("processExecutor")
+@AutoCreate
 @Slf4j
-public abstract class BackgroundProcess<H extends ProcessHandle>
+public class ProcessExecutor
 {
+   // Proxy to self, so that the method can be started asynchronously
+   @In
+   private ProcessExecutor processExecutor;
 
    /**
-    * Starts the process.
-    * 
+    * Executes a process in the background.
+    *
     * @param handle The handle to be used for the running process.
     */
-   @Asynchronous
-   public void startProcess(H handle)
+   public <H extends ProcessHandle> void startProcess(RunnableProcess<H> process, H handle)
    {
       // make sure the process handle is not being reused
       if( handle.isStarted() || handle.isFinished() )
       {
-         throw new RuntimeException("RunnableProcess handles cannot be reused.");
+         throw new RuntimeException("Process handles cannot be reused.");
       }
 
       handle.start();
-      
+
       try
       {
-         runProcess(handle);
+         processExecutor.runAsynchronously(process, handle);
       }
       catch( Throwable t )
       {
-         log.error("Exception with long running process.", t);
-         this.handleThrowable(handle, t);
+         log.error("Exception with long running process: " + t.getMessage());
+         process.handleThrowable(handle, t);
       }
       finally
       {
@@ -65,22 +73,11 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
    }
 
    /**
-    * This is the background process' main logic.
-    *
-    * @param handle RunnableProcess handle for the running process.
-    * @throws Exception If there is a problem that makes the process stop.
+    * Internal delegate method to asynchronously run the process.
     */
-   protected abstract void runProcess(H handle) throws Exception;
-
-   /**
-    * Handles anything thrown while running the process.
-    * This callback will be executed and the process will stop afterwards.
-    *
-    * @param handle The failing process' handle.
-    * @param t The throwable that was detected
-    */
-   protected void handleThrowable( H handle, Throwable t )
+   @Asynchronous
+   private <H extends ProcessHandle> void runAsynchronously(RunnableProcess<H> process, H handle) throws Throwable
    {
-      handle.setError(t);
+      process.run(handle);
    }
 }

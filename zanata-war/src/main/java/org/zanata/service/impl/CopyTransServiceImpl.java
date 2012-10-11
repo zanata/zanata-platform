@@ -375,7 +375,7 @@ public class CopyTransServiceImpl implements CopyTransService
          procHandle.setCurrentProgress(0);
       }
 
-      // TODO Process handle may not be null
+      // TODO RunnableProcess handle may not be null
       for( HDocument doc : iteration.getDocuments().values() )
       {
          if( procHandle.shouldStop() )

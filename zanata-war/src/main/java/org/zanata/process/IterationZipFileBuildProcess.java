@@ -46,7 +46,7 @@ import org.zanata.service.ConfigurationService;
 import org.zanata.service.FileSystemService;
 
 /**
- * Background Process implementation that builds a zip file with all translation file
+ * Background RunnableProcess implementation that builds a zip file with all translation file
  * for a given Project Iteration and a given Locale.
  * 
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

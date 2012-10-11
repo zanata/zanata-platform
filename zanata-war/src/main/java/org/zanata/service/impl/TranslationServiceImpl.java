@@ -52,6 +52,7 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.lock.Lock;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -65,6 +66,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
+import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -106,6 +108,9 @@ public class TranslationServiceImpl implements TranslationService
 
    @In
    private LocaleService localeServiceImpl;
+
+   @In
+   private LockManagerService lockManagerServiceImpl;
 
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
    private HAccount authenticatedAccount;
@@ -339,6 +344,33 @@ public class TranslationServiceImpl implements TranslationService
          return true;
       }
       return false;
+   }
+
+   @Override
+   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions, MergeType mergeType, boolean lock)
+   {
+      // Lock this document for push
+      Lock transLock = null;
+      if( lock )
+      {
+         transLock = new Lock(projectSlug, iterationSlug, docId, locale, "push");
+         if( !lockManagerServiceImpl.attain(transLock) )
+         {
+            throw new RuntimeException("This document is already being translated for locale " + locale.getId());
+         }
+      }
+
+      try
+      {
+         return this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType);
+      }
+      finally
+      {
+         if(lock)
+         {
+            lockManagerServiceImpl.release(transLock);
+         }
+      }
    }
 
    @Override

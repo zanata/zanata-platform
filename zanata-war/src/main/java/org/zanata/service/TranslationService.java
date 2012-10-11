@@ -82,6 +82,25 @@ public interface TranslationService
 
    /**
     * Translates all text flows in a document.
+
+    * @param projectSlug The project to translate
+    * @param iterationSlug The project iteration to translate
+    * @param docId The document identifier to translate
+    * @param locale The locale that the translations belong to
+    * @param translations The translations to save to the document
+    * @param extensions The extensions to use while translating
+    * @param mergeType Indicates how to handle the translations. AUTO will merge the new translations with the provided
+    *                  ones. IMPORT will overwrite all existing translations with the new ones.
+    * @param lock If true, no other caller will be allowed to translate All for the same project, iteration, document
+    *             and locale.
+    * @return A list of warnings about text flow targets that (a) could not be matched to any text flows in the source document
+    * or (b) whose states don't match their contents.
+    * @see TranslationService#translateAllInDoc(String, String, String, org.zanata.common.LocaleId, org.zanata.rest.dto.resource.TranslationsResource, java.util.Set, org.zanata.common.MergeType)
+    */
+   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions, MergeType mergeType, boolean lock);
+
+   /**
+    * Translates all text flows in a document.
     *
     * @param projectSlug The project to translate
     * @param iterationSlug The project iteration to translate

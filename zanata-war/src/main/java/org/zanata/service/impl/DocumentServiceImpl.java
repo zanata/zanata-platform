@@ -25,10 +25,12 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.lock.Lock;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -64,13 +66,47 @@ public class DocumentServiceImpl implements DocumentService
    private CopyTransService copyTransServiceImpl;
 
    @In
+   private LockManagerServiceImpl lockManagerServiceImpl;
+
+   @In
    private ResourceUtils resourceUtils;
 
    @In
    private ApplicationConfiguration applicationConfiguration;
 
 
+   @Override
+   @Transactional
+   public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
+                                  Set<String> extensions, boolean copyTrans, boolean lock )
+   {
+      Lock docLock = null;
+      if( lock )
+      {
+         // Lock this document for push
+         docLock = new Lock(projectSlug, iterationSlug, sourceDoc.getName(), "push");
+         if( !lockManagerServiceImpl.attain(docLock) )
+         {
+            throw new RuntimeException("This document is already being pushed");
+         }
+      }
+
+      try
+      {
+         return this.saveDocument(projectSlug, iterationSlug, sourceDoc, extensions, copyTrans);
+      }
+      finally
+      {
+         if(lock)
+         {
+            lockManagerServiceImpl.release(docLock);
+         }
+      }
+   }
+
    // TODO check permissions
+   @Override
+   @Transactional
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
                                   Set<String> extensions, boolean copyTrans )
    {
