@@ -85,6 +85,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.StringSet;
+import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
@@ -144,6 +145,7 @@ public class FileService implements FileResource
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
+   @Produces( MediaType.APPLICATION_XML)
    public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
                                      @PathParam("iterationSlug") String iterationSlug,
                                      @QueryParam("docId") String docId,
@@ -158,8 +160,8 @@ public class FileService implements FileResource
       if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
       {
          return Response.status(Status.FORBIDDEN)
-               .entity("You do not have permission to upload source documents to project-version \""
-                      + projectSlug + ":" + iterationSlug + "\".\n")
+               .entity(new ChunkUploadResponse("You do not have permission to upload source documents to project-version \""
+                      + projectSlug + ":" + iterationSlug + "\"."))
                .build();
       }
 
@@ -168,7 +170,7 @@ public class FileService implements FileResource
       if (!isPotFile && !translationFileServiceImpl.hasAdapterFor(fileType))
       {
          return Response.status(Status.BAD_REQUEST)
-               .entity("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a source file on this server.\n")
+               .entity(new ChunkUploadResponse("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a source file on this server."))
                .build();
       }
 
@@ -176,10 +178,12 @@ public class FileService implements FileResource
 
       boolean isSinglePart = uploadForm.getFirst() && uploadForm.getLast();
 
+      int uploadChunks = 1;
+
       if (isSinglePart && isPotFile)
       {
          parsePotFile(uploadForm.getFileStream(), docId, fileType, projectSlug, iterationSlug);
-         return sourceUploadSuccessResponse(isNewDocument);
+         return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
       }
 
       // persist bytes to file
@@ -196,9 +200,9 @@ public class FileService implements FileResource
             if (!md5hash.equals(uploadForm.getHash()))
             {
                return Response.status(Status.CONFLICT)
-                     .entity("MD5 hash \"" + uploadForm.getHash()
+                     .entity(new ChunkUploadResponse("MD5 hash \"" + uploadForm.getHash()
                            + "\" sent with request does not match server-generated hash \""
-                           + md5hash + "\". Aborted upload operation.\n")
+                           + md5hash + "\". Aborted upload operation."))
                      .build();
             }
          }
@@ -228,7 +232,7 @@ public class FileService implements FileResource
                   .entity(e).build();
          }
          return Response.status(Status.ACCEPTED)
-               .entity("<uploadId>" + upload.getId() + "</uploadId>\n<acceptedParts>" + upload.getParts().size() + "</acceptedParts>\n")
+               .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "First chunk accepted, awaiting remaining chunks."))
                .build();
       }
       else
@@ -248,9 +252,11 @@ public class FileService implements FileResource
          if (!uploadForm.getLast())
          {
             return Response.status(Status.ACCEPTED)
-                  .entity("<uploadId>" + upload.getId() + "</uploadId>\n<acceptedParts>" + upload.getParts().size() + "</acceptedParts>\n")
+                  .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "Chunk accepted, awaiting remaining chunks."))
                   .build();
          }
+
+         uploadChunks = upload.getParts().size();
 
          try
          {
@@ -259,9 +265,9 @@ public class FileService implements FileResource
          catch (HashMismatchException e)
          {
             return Response.status(Status.CONFLICT)
-                  .entity("MD5 hash \"" + e.getExpectedHash()
+                  .entity(new ChunkUploadResponse("MD5 hash \"" + e.getExpectedHash()
                         + "\" sent with initial request does not match server-generated hash of combined parts \""
-                        + e.getGeneratedHash() + "\". Upload aborted. Retry upload from first part.\n")
+                        + e.getGeneratedHash() + "\". Upload aborted. Retry upload from first part."))
                         .build();
          }
          catch (SQLException e)
@@ -291,7 +297,7 @@ public class FileService implements FileResource
                   .build();
          }
          translationFileServiceImpl.removeTempFile(tempFile);
-         return sourceUploadSuccessResponse(isNewDocument);
+         return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
       }
 
       // is adapter file
@@ -335,7 +341,7 @@ public class FileService implements FileResource
       documentDAO.flush();
 
       translationFileServiceImpl.removeTempFile(tempFile);
-      return sourceUploadSuccessResponse(isNewDocument);
+      return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
    }
 
    private File combineToTempFile(HDocumentUpload upload) throws SQLException
@@ -414,28 +420,29 @@ public class FileService implements FileResource
       if (!identity.isLoggedIn())
       {
          return Response.status(Status.UNAUTHORIZED)
-               .entity("Valid combination of username and api-key for this server were not included in the request\n")
+               .entity(new ChunkUploadResponse("Valid combination of username and api-key for this" +
+                                               " server were not included in the request."))
                .build();
       }
 
       if (docId == null || docId.isEmpty())
       {
          return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Required query string parameter 'docId' was not found.\n")
+               .entity(new ChunkUploadResponse("Required query string parameter 'docId' was not found."))
                .build();
       }
 
       if (uploadForm.getFileStream() == null)
       {
          return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Required form parameter 'file' containing file content was not found.\n")
+               .entity(new ChunkUploadResponse("Required form parameter 'file' containing file content was not found."))
                .build();
       }
 
       if (uploadForm.getFirst() == null || uploadForm.getLast() == null)
       {
          return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Form parameters 'first' and 'last' must both be provided.\n")
+               .entity(new ChunkUploadResponse("Form parameters 'first' and 'last' must both be provided."))
                .build();
       }
 
@@ -444,7 +451,7 @@ public class FileService implements FileResource
          if (uploadForm.getUploadId() == null)
          {
             return Response.status(Status.PRECONDITION_FAILED)
-                  .entity("Form parameter 'uploadId' must be provided when this is not the first part.\n")
+                  .entity(new ChunkUploadResponse("Form parameter 'uploadId' must be provided when this is not the first part."))
                   .build();
          }
 
@@ -452,13 +459,13 @@ public class FileService implements FileResource
          if (upload == null)
          {
             return Response.status(Status.PRECONDITION_FAILED)
-                  .entity("No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'.\n")
+                  .entity(new ChunkUploadResponse("No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'."))
                   .build();
          }
          if (!upload.getDocId().equals(docId))
          {
             return Response.status(Status.PRECONDITION_FAILED)
-                  .entity("Supplied uploadId '" + uploadForm.getUploadId() + "' in request is not valid for document '" + docId + "'.\n")
+                  .entity(new ChunkUploadResponse("Supplied uploadId '" + uploadForm.getUploadId() + "' in request is not valid for document '" + docId + "'."))
                   .build();
          }
       }
@@ -467,14 +474,14 @@ public class FileService implements FileResource
       if (fileType == null || fileType.isEmpty())
       {
          return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Required form parameter 'type' was not found.\n")
+               .entity(new ChunkUploadResponse("Required form parameter 'type' was not found."))
                .build();
       }
 
       if (DocumentType.typeFor(fileType) == null)
       {
          return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Value '" + fileType + "' is not a recognized document type.\n")
+               .entity(new ChunkUploadResponse("Value '" + fileType + "' is not a recognized document type."))
                .build();
       }
 
@@ -482,7 +489,7 @@ public class FileService implements FileResource
       if (contentHash == null || contentHash.isEmpty())
       {
          return Response.status(Status.PRECONDITION_FAILED)
-               .entity("Required form parameter 'hash' was not found.\n")
+               .entity(new ChunkUploadResponse("Required form parameter 'hash' was not found."))
                .build();
       }
 
@@ -490,21 +497,21 @@ public class FileService implements FileResource
       if (projectIteration == null)
       {
          return Response.status(Status.NOT_FOUND)
-               .entity("The specified project-version \"" + projectSlug + ":" + iterationSlug + "\" does not exist on this server.\n")
+               .entity(new ChunkUploadResponse("The specified project-version \"" + projectSlug + ":" + iterationSlug + "\" does not exist on this server."))
                .build();
       }
 
       if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE)
       {
          return Response.status(Status.FORBIDDEN)
-               .entity("The project \"" + projectSlug + "\" is not active. Document upload is not allowed.\n")
+               .entity(new ChunkUploadResponse("The project \"" + projectSlug + "\" is not active. Document upload is not allowed."))
                .build();
       }
 
       if (projectIteration.getStatus() != EntityStatus.ACTIVE)
       {
          return Response.status(Status.FORBIDDEN)
-               .entity("The project-version \"" + projectSlug + ":" + iterationSlug + "\" is not active. Document upload is not allowed.\n")
+               .entity(new ChunkUploadResponse("The project-version \"" + projectSlug + ":" + iterationSlug + "\" is not active. Document upload is not allowed."))
                .build();
       }
 
@@ -527,19 +534,24 @@ public class FileService implements FileResource
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
    }
 
-   private Response sourceUploadSuccessResponse(boolean isNewDocument)
+   private Response sourceUploadSuccessResponse(boolean isNewDocument, int acceptedChunks)
    {
       Response response;
+      ChunkUploadResponse uploadResponse = new ChunkUploadResponse();
+      uploadResponse.setAcceptedChunks(acceptedChunks);
+      uploadResponse.setExpectingMore(false);
       if (isNewDocument)
       {
+         uploadResponse.setSuccessMessage("Upload of new source document successful.");
          response = Response.status(Status.CREATED)
-               .entity("Upload of new source document successful.\n")
+               .entity(uploadResponse)
                .build();
       }
       else
       {
+         uploadResponse.setSuccessMessage("Upload of new version of source document successful.");
          response = Response.status(Status.OK)
-               .entity("Upload of new version of source document successful.\n")
+               .entity(uploadResponse)
                .build();
       }
       return response;
@@ -550,6 +562,7 @@ public class FileService implements FileResource
    @POST
    @Path(TRANSLATION_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
+   @Produces( MediaType.APPLICATION_XML)
    public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
                                           @PathParam("iterationSlug") String iterationSlug,
                                           @PathParam("locale") String localeId,
@@ -567,22 +580,22 @@ public class FileService implements FileResource
       if (localeId == null)
       {
          return Response.status(Status.NOT_FOUND)
-               .entity("The specified locale \"" + localeId + "\" does not exist on this server.\n")
+               .entity(new ChunkUploadResponse("The specified locale \"" + localeId + "\" does not exist on this server."))
                .build();
       }
 
       if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale))
       {
          return Response.status(Status.FORBIDDEN)
-               .entity("You do not have permission to upload translations for locale \"" + localeId
-                     + "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\".\n")
+               .entity(new ChunkUploadResponse("You do not have permission to upload translations for locale \"" + localeId
+                     + "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\"."))
                .build();
       }
 
       if (documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null)
       {
          return Response.status(Status.NOT_FOUND)
-               .entity("No document with id \"" + docId + "\" exists in project-version \"" + projectSlug + ":" + iterationSlug + "\".\n")
+               .entity(new ChunkUploadResponse("No document with id \"" + docId + "\" exists in project-version \"" + projectSlug + ":" + iterationSlug + "\"."))
                .build();
       }
 
@@ -592,15 +605,17 @@ public class FileService implements FileResource
       if (!isPoFile && !translationFileServiceImpl.hasAdapterFor(fileType))
       {
          return Response.status(Status.BAD_REQUEST)
-               .entity("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a translation file on this server.\n")
+               .entity(new ChunkUploadResponse("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a translation file on this server."))
                .build();
       }
 
       InputStream fileContents;
+      int acceptedChunks;
       if (uploadForm.getFirst() && uploadForm.getLast())
       {
          // TODO wrap in hash digester and check hash
          fileContents = uploadForm.getFileStream();
+         acceptedChunks = 1;
       }
       else if (uploadForm.getFirst())
       {
@@ -616,7 +631,7 @@ public class FileService implements FileResource
                   .entity(e).build();
          }
          return Response.status(Status.ACCEPTED)
-               .entity("<uploadId>" + upload.getId() + "</uploadId>\n<acceptedParts>" + upload.getParts().size() + "</acceptedParts>\n")
+               .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "First chunk accepted, awaiting remaining chunks."))
                .build();
       }
       else
@@ -625,6 +640,7 @@ public class FileService implements FileResource
          try
          {
             upload = saveSubsequentUploadPart(uploadForm);
+            acceptedChunks = upload.getParts().size();
          }
          catch (IOException e)
          {
@@ -636,7 +652,7 @@ public class FileService implements FileResource
          if (!uploadForm.getLast())
          {
             return Response.status(Status.ACCEPTED)
-                  .entity("<uploadId>" + upload.getId() + "</uploadId>\n<acceptedParts>" + upload.getParts().size() + "</acceptedParts>\n")
+                  .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "Chunk accepted, awaiting remaining chunks."))
                   .build();
          }
 
@@ -698,6 +714,10 @@ public class FileService implements FileResource
       List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
             docId, locale.getLocaleId(), transRes, extensions, mergeType);
 
+      ChunkUploadResponse response = new ChunkUploadResponse();
+      response.setExpectingMore(false);
+      response.setAcceptedChunks(acceptedChunks);
+
       if (warnings != null && !warnings.isEmpty())
       {
          StringBuilder entity = new StringBuilder("Upload succeeded but had the following warnings:");
@@ -707,9 +727,13 @@ public class FileService implements FileResource
             entity.append(warning);
          }
          entity.append("\n");
-         return Response.status(Status.OK).entity(entity.toString()).build();
+         response.setSuccessMessage(entity.toString());
       }
-      return Response.status(Status.OK).entity("Translations uploaded successfully\n").build();
+      else
+      {
+         response.setSuccessMessage("Translations uploaded successfully");
+      }
+      return Response.status(Status.OK).entity(response).build();
    }
 
    private boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId)
