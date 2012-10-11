@@ -33,9 +33,11 @@ import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 
 /**
@@ -51,6 +53,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
    private static final Map<String, AbstractPushStrategy> strategies = new HashMap<String, AbstractPushStrategy>();
 
    private CopyTransResource copyTransResource;
+   private AsynchronousProcessResource asyncProcessResource;
 
    public static interface TranslationResourcesVisitor
    {
@@ -69,12 +72,14 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       super(opts);
       copyTransResource = getRequestFactory().getCopyTransResource();
+      asyncProcessResource = getRequestFactory().getAsynchronousProcessResource();
    }
 
    public PushCommand(PushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory, sourceDocResource, translationResources, uri);
       copyTransResource = factory.getCopyTransResource();
+      asyncProcessResource = getRequestFactory().getAsynchronousProcessResource();
    }
 
    private AbstractPushStrategy getStrategy(String strategyType)
@@ -382,10 +387,33 @@ public class PushCommand extends PushPullCommand<PushOptions>
          ConsoleUtils.startProgressFeedback();
          // NB: Copy trans is set to false as using copy trans in this manner is deprecated.
          // see PushCommand.copyTransForDocument
-         ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, false);
-         ConsoleUtils.endProgressFeedback();
+         ProcessStatus status =
+               asyncProcessResource.startSourceDocCreationOrUpdate(
+                     docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
 
-         ClientUtility.checkResult(putResponse, uri);
+         boolean waitForCompletion = true;
+
+         while( waitForCompletion )
+         {
+            waitForCompletion = status.isInProgress();
+            if( status.isError() )
+            {
+               throw new RuntimeException("Error while pushing document: " + status.getMessage());
+            }
+
+            try
+            {
+               Thread.sleep(2000);
+            }
+            catch (InterruptedException e)
+            {
+               log.warn("Interrupted while waiting for Source Doc to finish push.");
+            }
+            status =
+               asyncProcessResource.getProcessStatus(status.getUrl());
+         }
+
+         ConsoleUtils.endProgressFeedback();
       }
       else
       {
