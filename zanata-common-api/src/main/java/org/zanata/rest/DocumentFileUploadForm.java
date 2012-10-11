@@ -64,6 +64,7 @@ public class DocumentFileUploadForm implements Serializable
    private String fileType;
 
    @FormParam("uploadId")
+   @PartType("text/plain")
    @Getter
    @Setter
    private Long uploadId;

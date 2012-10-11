@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.dto.ChunkUploadResponse;
 
 /**
  * Interface for file upload and download REST methods.
