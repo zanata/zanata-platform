@@ -3,6 +3,7 @@ package org.zanata.adapter.xliff;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
@@ -37,16 +38,16 @@ public class XliffReaderTest
       Resource doc = getTemplateDoc();
 
       assertThat(doc.getName(), equalTo(DOC_NAME));
-      assertThat(doc.getTextFlows().size(), is(5));
+      assertThat(doc.getTextFlows().size(), is(6));
    }
 
    @Test
-   public void templateFirstAndLastTextFlowTest() throws FileNotFoundException
+   public void templateFirstAndSecondLastTextFlowTest() throws FileNotFoundException
    {
       Resource doc = getTemplateDoc();
 
       TextFlow firstTextFlow = doc.getTextFlows().get(0);
-      TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 1);
+      TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 2);
 
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation Unit 1")));
       assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)")));
@@ -59,7 +60,7 @@ public class XliffReaderTest
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
       // the file contains 4 trans-units, but one has no target element
-      assertThat(tr.getTextFlowTargets().size(), is(3));
+      assertThat(tr.getTextFlowTargets().size(), is(4));
    }
 
    @Test
@@ -70,10 +71,38 @@ public class XliffReaderTest
       TranslationsResource tr = reader.extractTarget(inputSource);
 
       TextFlowTarget firstTextFlow = tr.getTextFlowTargets().get(0);
-      TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 1);
+      TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 2);
      
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation 1")));
       assertThat(lastTextFlow.getContents(), equalTo(asList("Translation 4 (4 < 5 & 4 > 3)")));
+   }
+   
+   @Test
+   public void leadingEndingWhiteSpaceTargetTest() throws FileNotFoundException
+   {
+      File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
+      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
+      TranslationsResource tr = reader.extractTarget(inputSource);
+
+      TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 1);
+      assertThat(lastTextFlow.getContents(), equalTo(asList(" Leading and trailing white space ")));
+      assertThat(lastTextFlow.getContents(), not(equalTo(asList("Leading and trailing white space"))));
+      assertThat(lastTextFlow.getContents(), not(equalTo(asList(" Leading and trailing white space"))));
+      assertThat(lastTextFlow.getContents(), not(equalTo(asList("Leading and trailing white space "))));
+   }
+   
+   @Test
+   public void leadingEndingWhiteSpaceSourceTest() throws FileNotFoundException
+   {
+      File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
+      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
+      Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
+
+      TextFlow tf = resource.getTextFlows().get(resource.getTextFlows().size() - 1);
+      assertThat(tf.getContents(), equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) ")));
+      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3)"))));
+      assertThat(tf.getContents(), not(equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3)"))));
+      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3) "))));
    }
 
 
