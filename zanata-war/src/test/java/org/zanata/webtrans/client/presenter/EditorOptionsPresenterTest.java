@@ -184,17 +184,6 @@ public class EditorOptionsPresenterTest
    }
 
    @Test
-   public void onEscCancelEditOptionChange()
-   {
-      configHolder.setEscClosesEditor(false);
-
-      presenter.onEscCancelEditOptionChanged(true);
-
-      assertThat(configHolder.isEscClosesEditor(), Matchers.is(true));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
-   }
-
-   @Test
    public void onEditorButtonsOptionChange()
    {
       configHolder.setDisplayButtons(false);

@@ -53,7 +53,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    LayoutPanel container;
 
    @UiField
-   CheckBox translatedChk, needReviewChk, untranslatedChk, enterChk, escChk, editorButtonsChk;
+   CheckBox translatedChk, needReviewChk, untranslatedChk, enterChk, editorButtonsChk;
 
    @UiField
    Label navOptionHeader, editorOptionHeader, filterHeader;
@@ -197,12 +197,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onEnterSaveOptionChanged(enterChk.getValue());
    }
 
-   @UiHandler("escChk")
-   public void onEscCancelEditOptionChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onEscCancelEditOptionChanged(escChk.getValue());
-   }
-
    @UiHandler("showErrorChk")
    public void onShowErrorOptionChanged(ValueChangeEvent<Boolean> event)
    {
@@ -232,7 +226,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    public void setOptionsState(UserConfigHolder.ConfigurationState state)
    {
       enterChk.setValue(state.isEnterSavesApproved());
-      escChk.setValue(state.isEscClosesEditor());
       editorButtonsChk.setValue(state.isDisplayButtons());
 
       navOptionGroup.setDefaultSelected(state.getNavOption());

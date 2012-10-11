@@ -192,15 +192,17 @@ public class EditorKeyShortcutsTest
       // by default user config settings
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
+      when(messages.editCancelShortcut()).thenReturn("cancel");
       when(messages.copyFromSource()).thenReturn("copy from source");
-
+      
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
-      verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());
+      verify(keyShortcutPresenter, times(4)).register(keyShortcutCaptor.capture());
       List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(2), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
+      assertKeys(keys.get(2), "cancel", false, false, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE));
+      assertKeys(keys.get(3), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
    }
 
    @Test
@@ -209,10 +211,10 @@ public class EditorKeyShortcutsTest
       // enter and esc now active
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
-      when(messages.closeEditor()).thenReturn("close editor");
       when(messages.copyFromSource()).thenReturn("copy from source");
+      when(messages.editCancelShortcut()).thenReturn("cancel");
+      
       configHolder.setEnterSavesApproved(true);
-      configHolder.setEscClosesEditor(true);
 
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
@@ -221,7 +223,7 @@ public class EditorKeyShortcutsTest
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
       assertKeys(keys.get(2), "save approved", true, true, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(3), "close editor", false, false, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE));
+      assertKeys(keys.get(3), "cancel", false, false, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE));
       assertKeys(keys.get(4), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
    }
 
@@ -254,7 +256,7 @@ public class EditorKeyShortcutsTest
    {
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
-      KeyShortcut keys = keyShortcutCaptor.getAllValues().get(2);
+      KeyShortcut keys = keyShortcutCaptor.getAllValues().get(3);
 
       keys.getHandler().onKeyShortcut(null);
 
@@ -280,7 +282,6 @@ public class EditorKeyShortcutsTest
       when(keyShortcutPresenter.getDisplay()).thenReturn(keyShortcutDisplay);
       TransUnitId transUnitId = new TransUnitId(1);
       when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(transUnitId);
-      configHolder.setEscClosesEditor(true);
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
       KeyShortcut keys = keyShortcutCaptor.getAllValues().get(2);
@@ -318,25 +319,6 @@ public class EditorKeyShortcutsTest
       KeyShortcut shortcut = allKeys.get(allKeys.size() - 1); // last key
 
       assertKeys(shortcut, "enter save as approved", true, true, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
-   }
-
-   @Test
-   public void testOnUserConfigChangedToEscCancelEdit() throws Exception
-   {
-      // Given: change user config esc to close edit
-      when(messages.closeEditor()).thenReturn("cancel edit");
-      keyShortcuts.registerKeys(targetContentsPresenter);
-      configHolder.setEscClosesEditor(true);
-
-      // When:
-      keyShortcuts.onUserConfigChanged(UserConfigChangeEvent.EVENT);
-
-      // Then:
-      verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
-      List<KeyShortcut> allKeys = keyShortcutCaptor.getAllValues();
-      KeyShortcut shortcut = allKeys.get(allKeys.size() - 1); // last key
-
-      assertKeys(shortcut, "cancel edit", false, false, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE));
    }
 
    @Test

@@ -49,7 +49,6 @@ public class UserConfigHolderTest
       Map<String, String> propertiesMap = getPropertiesMap();
 
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("escClosesEditor", "false"));
       MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
    }
 
@@ -66,11 +65,9 @@ public class UserConfigHolderTest
       boolean value = random.nextBoolean();
 
       configHolder.setEnterSavesApproved(value);
-      configHolder.setEscClosesEditor(value);
       configHolder.setDisplayButtons(value);
 
       MatcherAssert.assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(value));
-      MatcherAssert.assertThat(configHolder.isEscClosesEditor(), Matchers.equalTo(value));
       MatcherAssert.assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(value));
    }
 }

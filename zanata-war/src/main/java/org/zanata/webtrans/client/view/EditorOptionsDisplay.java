@@ -28,8 +28,6 @@ public interface EditorOptionsDisplay extends WidgetDisplay
 
       void onEnterSaveOptionChanged(Boolean enterSaveApproved);
 
-      void onEscCancelEditOptionChanged(Boolean escCancelEdit);
-
       void onEditorButtonsOptionChanged(Boolean editorButtons);
 
       void onShowErrorsOptionChanged(Boolean showErrorChkValue);

@@ -69,7 +69,6 @@
 	                    <g:Label ui:field="editorOptionHeader" styleName="sideMenuHeader"/>
 	                    <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
 	                    <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
-	                    <g:CheckBox ui:field="escChk"><ui:msg>'Esc' key closes editor</ui:msg></g:CheckBox>
 	                </g:VerticalPanel>
                 </g:layer>
                 <g:layer top="108px" height="120px" left="5px" right="5px">
