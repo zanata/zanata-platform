@@ -40,6 +40,9 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
+
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -391,24 +394,43 @@ public class PushCommand extends PushPullCommand<PushOptions>
                asyncProcessResource.startSourceDocCreationOrUpdate(
                      docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
 
+         // Wait for the async invocation to be submitted
+         ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients...");
+         while( status.getStatusCode() == ProcessStatusCode.NotAccepted )
+         {
+            wait(2000); // Wait before retrying
+            status =
+                  asyncProcessResource.startSourceDocCreationOrUpdate(
+                        docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
+         }
+         ConsoleUtils.setProgressFeedbackMessage("");
+
          boolean waitForCompletion = true;
 
          while( waitForCompletion )
          {
-            waitForCompletion = status.isInProgress();
-            if( status.isError() )
+            switch (status.getStatusCode())
             {
-               throw new RuntimeException("Error while pushing document: " + status.getMessage());
+               case Failed:
+                  throw new RuntimeException("Failed while pushing document: " + status.getMessage());
+
+               case Finished:
+                  waitForCompletion = false;
+                  break;
+
+               case Running:
+                  break;
+
+               case Waiting:
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting to start ...");
+                  break;
+
+               case NotAccepted:
+                  // This should not happen
+                  throw new RuntimeException("Did not expect 'Not Accepted' state.");
             }
 
-            try
-            {
-               Thread.sleep(2000);
-            }
-            catch (InterruptedException e)
-            {
-               log.warn("Interrupted while waiting for Source Doc to finish push.");
-            }
+            wait(2000); // Wait before retrying
             status =
                asyncProcessResource.getProcessStatus(status.getUrl());
          }
@@ -489,24 +511,43 @@ public class PushCommand extends PushPullCommand<PushOptions>
                asyncProcessResource.startTranslatedDocCreationOrUpdate(docUri, getOpts().getProj(), getOpts().getProjectVersion(),
                   new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
 
+         // Wait for the async invocation to be submitted
+         ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients...");
+         while( status.getStatusCode() == ProcessStatusCode.NotAccepted )
+         {
+            wait(2000); // Wait before retrying
+            status =
+               asyncProcessResource.startTranslatedDocCreationOrUpdate(docUri, getOpts().getProj(), getOpts().getProjectVersion(),
+                  new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
+         }
+         ConsoleUtils.setProgressFeedbackMessage("");
+
          boolean waitForCompletion = true;
 
          while( waitForCompletion )
          {
-            waitForCompletion = status.isInProgress();
-            if( status.isError() )
+            switch (status.getStatusCode())
             {
-               throw new RuntimeException("Error while pushing target document: " + status.getMessage());
+               case Failed:
+                  throw new RuntimeException("Failed while pushing document translations: " + status.getMessage());
+
+               case Finished:
+                  waitForCompletion = false;
+                  break;
+
+               case Running:
+                  break;
+
+               case Waiting:
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting to start ...");
+                  break;
+
+               case NotAccepted:
+                  // This should not happen
+                  throw new RuntimeException("Did not expect 'Not Accepted' state.");
             }
 
-            try
-            {
-               Thread.sleep(2000);
-            }
-            catch (InterruptedException e)
-            {
-               log.warn("Interrupted while waiting for Target Doc to finish push.");
-            }
+            wait(2000); // Wait before retrying
             status =
                   asyncProcessResource.getProcessStatus(status.getUrl());
          }
@@ -598,6 +639,19 @@ public class PushCommand extends PushPullCommand<PushOptions>
       if( copyTransStatus.getPercentageComplete() < 100 )
       {
          log.warn("Copy Trans for the above document stopped unexpectedly.");
+      }
+   }
+
+   // TODO Perhaps move this to ConsoleUtils
+   private static void wait( int millis )
+   {
+      try
+      {
+         Thread.sleep(millis);
+      }
+      catch (InterruptedException e)
+      {
+         log.warn("Interrupted while waiting");
       }
    }
 

@@ -99,7 +99,17 @@ public class ConsoleUtils
    {
       if( activeTasks.containsKey(TimerTaskType.ProgressFeedback) )
       {
-         ((TimeProgressTask)activeTasks.get(TimerTaskType.ProgressFeedback)).suffix = mssg;
+         TimeProgressTask task = (TimeProgressTask) activeTasks.get(TimerTaskType.ProgressFeedback);
+
+         // make provisions to clear the old suffix
+         StringBuilder spaces = new StringBuilder();
+         if( mssg.length() < task.suffix.length() )
+         {
+            for( int i=0; i<task.suffix.length() - mssg.length(); i++ )
+               spaces.append(" ");
+         }
+
+         task.suffix = mssg + spaces.toString();
       }
    }
 
