@@ -594,7 +594,7 @@
          a brand-new HProject instead of loading the existing one
          (at some stages of the JSF lifecycle)
       -->
-    <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
+    <action execute="#{identity.checkPermission(projectCopyTransOptionsAction.project, 'update')}" />
     
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
