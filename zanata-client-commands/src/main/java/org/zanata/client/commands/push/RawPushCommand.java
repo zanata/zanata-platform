@@ -31,6 +31,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jboss.resteasy.client.ClientResponse;
@@ -38,6 +39,9 @@ import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.commands.push.RawPushStrategy.TranslationFilesVisitor;
+import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.client.IFileResource;
@@ -108,11 +112,12 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
       }
 
       RawPushStrategy strat = new RawPushStrategy();
+      strat.setPushOptions(getOpts());
 
       String[] srcFiles = strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), fileExtensions, true);
 
       // TODO handle obsolete document deletion
-      log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.\n");
+      log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.");
 
       if (srcFiles.length == 0)
       {
@@ -122,21 +127,18 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
 
       if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
       {
-       log.warn("pushType set to '" + getOpts().getPushType() + "', but translation push is not yet implemented." +
-                " Only source documents will be pushed.\n");
+         if (getOpts().getLocaleMapList() == null)
+            throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
+         log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
 
-//         if (getOpts().getLocaleMapList() == null)
-//            throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
-//         log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
-
-//         if (getOpts().getPushType() == PushPullType.Both)
-//         {
-//            confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server, and delete obsolete documents.\n");
-//         }
-//         else if (getOpts().getPushType() == PushPullType.Trans)
-//         {
-//            confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
-//         }
+         if (getOpts().getPushType() == PushPullType.Both)
+         {
+            confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server.\n"); //, and delete obsolete documents.\n");
+         }
+         else if (getOpts().getPushType() == PushPullType.Trans)
+         {
+            confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+         }
       }
       else
       {
@@ -146,15 +148,16 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
 
       boolean hasErrors = false;
 
-      for (String localDocName : srcFiles)
+      for (final String localDocName : srcFiles)
       {
-         String qualifiedDocName = qualifiedDocName(localDocName);
+         final String fileType = getExtensionFor(localDocName);
+         final String qualifiedDocName = qualifiedDocName(localDocName);
          boolean sourcePushed = false;
          if (getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both)
          {
             if (!getOpts().isDryRun())
             {
-               sourcePushed = pushSourceDocumentToServer(sourceDir, localDocName, qualifiedDocName);
+               sourcePushed = pushSourceDocumentToServer(sourceDir, localDocName, qualifiedDocName, fileType);
 //               ClientUtility.checkResult(putResponse, uri);
                if (!sourcePushed)
                {
@@ -167,10 +170,18 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
             }
          }
 
-         if (sourcePushed && (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both))
+         if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
          {
-            log.warn("Translated document push not yet implemented. Skipping.\n");
-            // TODO push translations. See PushCommand.pushCurrentModule() and strategy.visitTranslationResources
+            strat.visitTranslationFiles(localDocName, new TranslationFilesVisitor()
+            {
+
+               @Override
+               public void visit(LocaleMapping locale, File translatedDoc)
+               {
+                  log.info("pushing {} translation of {}", locale.getLocale(), qualifiedDocName);
+                  pushDocumentToServer(qualifiedDocName, fileType, locale.getLocale(), translatedDoc);
+               }
+            });
          }
       }
 
@@ -179,6 +190,20 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
          throw new Exception("Push completed with errors, see log for details.");
       }
 
+   }
+
+   /**
+    * @param localDocName
+    * @return extension of document (all characters after final '.'), or null if no characters after
+    *         a final . are found.
+    */
+   private String getExtensionFor(final String localDocName)
+   {
+      if (localDocName == null || localDocName.length() == 0 || localDocName.endsWith(".") || !localDocName.contains("."))
+      {
+         return null;
+      }
+      return localDocName.substring(localDocName.lastIndexOf('.') + 1);
    }
 
    /**
@@ -191,55 +216,80 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
     * @throws NoSuchAlgorithmException
     * @throws IOException
     */
-   private boolean pushSourceDocumentToServer(File sourceDir, String localDocName, String qualifiedDocName) throws FileNotFoundException, NoSuchAlgorithmException, IOException
+   private boolean pushSourceDocumentToServer(File sourceDir, String localDocName, String qualifiedDocName, String fileType) throws FileNotFoundException, NoSuchAlgorithmException, IOException
    {
       log.info("pushing source document [{}] to server", qualifiedDocName);
 
-      // FIXME use real value for document
-      String fileType = "txt";
+      String locale = null;
 
       File srcFile = new File(sourceDir, localDocName);
-      String md5hash = calculateFileHash(srcFile);
 
-      if (srcFile.length() <= getOpts().getChunkSize())
+      pushDocumentToServer(qualifiedDocName, fileType, locale, srcFile);
+      return true;
+   }
+
+   /**
+    * @param docId
+    * @param fileType
+    * @param locale
+    * @param docFile
+    */
+   private void pushDocumentToServer(String docId, String fileType, String locale, File docFile)
+   {
+      String md5hash = calculateFileHash(docFile);
+      if (docFile.length() <= getOpts().getChunkSize())
       {
-         // single chunk
-         log.info("    transmitting file [{}] as single chunk", srcFile.getAbsolutePath());
-         return pushSourceDocumentSingleChunk(qualifiedDocName, fileType, srcFile, md5hash);
+         log.info("    transmitting file [{}] as single chunk", docFile.getAbsolutePath());
+         InputStream fileStream;
+         try
+         {
+            fileStream = new FileInputStream(docFile);
+         }
+         catch (FileNotFoundException e)
+         {
+            throw new RuntimeException(e);
+         }
+         DocumentFileUploadForm uploadForm = generateUploadForm(true, true, fileType, md5hash, fileStream);
+         ClientResponse<ChunkUploadResponse> response = uploadDocumentPart(docId, locale, uploadForm);
+         checkChunkUploadStatus(response);
       }
       else
       {
-         // multiple chunks
-         long remainingLength = srcFile.length();
-         int totalChunks = (int) (srcFile.length() / getOpts().getChunkSize()
-               + (srcFile.length() % getOpts().getChunkSize() == 0 ? 0 : 1));
-         int currentChunk = 1;
-         log.info("    transmitting file [{}] as {} chunks", srcFile.getAbsolutePath(), totalChunks);
-         log.info("        pushing chunk {} of {}", currentChunk, totalChunks);
-         ClientResponse<ChunkUploadResponse> uploadResponse = pushSourceDocumentFirstChunk(qualifiedDocName, fileType, srcFile, md5hash, getOpts().getChunkSize());
-         remainingLength -= getOpts().getChunkSize();
-         int pos = getOpts().getChunkSize();
-         Long uploadId = uploadResponse.getEntity().getUploadId();
-         checkChunkUploadStatus(uploadResponse);
-         if (uploadId == null)
+         StreamChunker chunker;
+         try
          {
-            throw new RuntimeException("server did not return upload id");
+            chunker = new StreamChunker(docFile, getOpts().getChunkSize());
          }
-
-         while (remainingLength > getOpts().getChunkSize())
+         catch (FileNotFoundException e)
          {
-            log.info("        pushing chunk {} of {}", ++currentChunk, totalChunks);
-            uploadResponse = pushSourceDocumentSubsequentChunk(uploadId, qualifiedDocName, fileType, srcFile, md5hash, pos, getOpts().getChunkSize(), false);
+            throw new RuntimeException(e);
+         }
+         log.info("    transmitting file [{}] as {} chunks", docFile.getAbsolutePath(), chunker.totalChunks());
+         ClientResponse<ChunkUploadResponse> uploadResponse;
+         DocumentFileUploadForm uploadForm;
+         Long uploadId = null;
+
+         for (InputStream chunkStream : chunker)
+         {
+            log.info("        pushing chunk {} of {}", chunker.currentChunkNumber(), chunker.totalChunks());
+            boolean isFirst = chunker.currentChunkNumber() == 1;
+            boolean isLast = chunker.getRemainingChunks() == 0;
+            uploadForm = generateUploadForm(isFirst, isLast, fileType, md5hash, chunkStream);
+            if (!isFirst)
+            {
+               uploadForm.setUploadId(uploadId);
+            }
+            uploadResponse = uploadDocumentPart(docId, locale, uploadForm);
             checkChunkUploadStatus(uploadResponse);
-            remainingLength -= getOpts().getChunkSize();
-            pos += getOpts().getChunkSize();
+            if (isFirst)
+            {
+               uploadId = uploadResponse.getEntity().getUploadId();
+               if (uploadId == null)
+               {
+                  throw new RuntimeException("server did not return upload id");
+               }
+            }
          }
-
-         log.info("        pushing chunk {} of {}", ++currentChunk, totalChunks);
-         uploadResponse = pushSourceDocumentSubsequentChunk(uploadId, qualifiedDocName, fileType, srcFile, md5hash, pos, getOpts().getChunkSize(), true);
-         checkChunkUploadStatus(uploadResponse);
-
-         return true;
       }
    }
 
@@ -251,104 +301,154 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
       }
    }
 
-   private boolean pushSourceDocumentSingleChunk(String docName, String fileType, File srcFile, String md5hash) throws FileNotFoundException
+   private DocumentFileUploadForm generateUploadForm(boolean isFirst, boolean isLast, String fileType, String md5hash, InputStream fileStream)
    {
-      ConsoleUtils.startProgressFeedback();
       DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-      uploadForm.setFileType(fileType);
-      uploadForm.setFirst(true);
-      uploadForm.setLast(true);
-      uploadForm.setHash(md5hash);
-      InputStream fileStream = new FileInputStream(srcFile);
-      uploadForm.setFileStream(fileStream);
-      ClientResponse<ChunkUploadResponse> response = fileResource.uploadSourceFile(getOpts().getProj(), getOpts().getProjectVersion(), docName, uploadForm);
-      ConsoleUtils.endProgressFeedback();
-
-      log.debug("response from server: {}", response.getEntity());
-      return response.getStatus() < 300;
-   }
-
-   private ClientResponse<ChunkUploadResponse> pushSourceDocumentFirstChunk(String docName, String fileType, File srcFile, String md5hash, int chunkSize) throws FileNotFoundException
-   {
-      ConsoleUtils.startProgressFeedback();
-      DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-      uploadForm.setFileType(fileType);
-      uploadForm.setFirst(true);
-      uploadForm.setLast(false);
-      uploadForm.setHash(md5hash);
-
-      byte[] chunk = new byte[chunkSize];
-      InputStream fileStream = new FileInputStream(srcFile);
-      int actualChunkSize;
-      try
-      {
-         actualChunkSize = fileStream.read(chunk);
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException(e);
-      }
-      fileStream = new ByteArrayInputStream(chunk, 0, actualChunkSize);
-      uploadForm.setFileStream(fileStream);
-      ClientResponse<ChunkUploadResponse> response = fileResource.uploadSourceFile(getOpts().getProj(), getOpts().getProjectVersion(), docName, uploadForm);
-      ConsoleUtils.endProgressFeedback();
-
-      log.debug("response from server: {}", response.getEntity());
-      return response;
-   }
-
-   private ClientResponse<ChunkUploadResponse> pushSourceDocumentSubsequentChunk(Long uploadId, String docName, String fileType, File srcFile, String md5hash, int startPos, int chunkSize, boolean isLast) throws FileNotFoundException
-   {
-      ConsoleUtils.startProgressFeedback();
-      DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-      uploadForm.setUploadId(uploadId);
-      uploadForm.setFileType(fileType);
-      uploadForm.setFirst(false);
+      uploadForm.setFirst(isFirst);
       uploadForm.setLast(isLast);
+      uploadForm.setFileType(fileType);
       uploadForm.setHash(md5hash);
-
-      byte[] chunk = new byte[chunkSize];
-      InputStream fileStream = new FileInputStream(srcFile);
-      try
-      {
-         fileStream.skip(startPos);
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException(e);
-      }
-      int actualChunkSize;
-      try
-      {
-         actualChunkSize = fileStream.read(chunk, 0, chunkSize);
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException(e);
-      }
-      fileStream = new ByteArrayInputStream(chunk, 0, actualChunkSize);
-
       uploadForm.setFileStream(fileStream);
-      ClientResponse<ChunkUploadResponse> response = fileResource.uploadSourceFile(getOpts().getProj(), getOpts().getProjectVersion(), docName, uploadForm);
-      ConsoleUtils.endProgressFeedback();
+      return uploadForm;
+   }
 
+   private ClientResponse<ChunkUploadResponse> uploadDocumentPart(String docName, String locale, DocumentFileUploadForm uploadForm)
+   {
+      ConsoleUtils.startProgressFeedback();
+      ClientResponse<ChunkUploadResponse> response;
+      if (locale == null)
+      {
+         response = fileResource.uploadSourceFile(getOpts().getProj(), getOpts().getProjectVersion(), docName, uploadForm);
+      }
+      else
+      {
+         response = fileResource.uploadTranslationFile(getOpts().getProj(), getOpts().getProjectVersion(), locale, docName, getOpts().getMergeType(), uploadForm);
+      }
       log.debug("response from server: {}", response.getEntity());
+      ConsoleUtils.endProgressFeedback();
       return response;
    }
 
-   private String calculateFileHash(File srcFile) throws FileNotFoundException, NoSuchAlgorithmException, IOException
+   private String calculateFileHash(File srcFile)
    {
-      InputStream fileStream = new FileInputStream(srcFile);
-      MessageDigest md = MessageDigest.getInstance("MD5");
-      fileStream = new DigestInputStream(fileStream, md);
-      byte[] buffer = new byte[256];
-      while (fileStream.read(buffer) > 0)
+      InputStream fileStream;
+      try
       {
-         // continue
+         fileStream = new FileInputStream(srcFile);
+         MessageDigest md = MessageDigest.getInstance("MD5");
+         fileStream = new DigestInputStream(fileStream, md);
+         byte[] buffer = new byte[256];
+         while (fileStream.read(buffer) > 0)
+         {
+            // continue
+         }
+         fileStream.close();
+         String md5hash = new String(Hex.encodeHex(md.digest()));
+         return md5hash;
       }
-      fileStream.close();
-      String md5hash = new String(Hex.encodeHex(md.digest()));
-      return md5hash;
+      catch (FileNotFoundException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (NoSuchAlgorithmException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
+   private static class StreamChunker implements Iterable<InputStream> {
+
+      private int totalChunkCount;
+      private int chunksRetrieved;
+
+      private File file;
+      private byte[] buffer;
+      private InputStream fileStream;
+
+      public StreamChunker(File file, int chunkSize) throws FileNotFoundException
+      {
+         this.file = file;
+         fileStream = new FileInputStream(file);
+         buffer = new byte[chunkSize];
+         chunksRetrieved = 0;
+         totalChunkCount = (int) (file.length() / chunkSize + (file.length() % chunkSize == 0 ? 0 : 1));
+      }
+
+      public int totalChunks()
+      {
+         return totalChunkCount;
+      }
+
+      public int currentChunkNumber()
+      {
+         return chunksRetrieved;
+      }
+
+      public int getRemainingChunks()
+      {
+         return totalChunkCount - chunksRetrieved;
+      }
+
+      private InputStream getNextChunk()
+      {
+         if (chunksRetrieved == totalChunkCount)
+         {
+            throw new IllegalStateException("getNextChunk() must not be called after all chunks have been retrieved");
+         }
+
+         int actualChunkSize;
+         try
+         {
+            actualChunkSize = fileStream.read(buffer);
+         }
+         catch (IOException e)
+         {
+            throw new RuntimeException(e);
+         }
+
+         chunksRetrieved++;
+         if (chunksRetrieved == totalChunkCount)
+         {
+            try
+            {
+               fileStream.close();
+            }
+            catch (IOException e)
+            {
+               log.error("failed to close input stream for file " + file.getAbsolutePath(), e);
+            }
+            fileStream = null;
+         }
+         return new ByteArrayInputStream(buffer, 0, actualChunkSize);
+      }
+
+      @Override
+      public Iterator<InputStream> iterator()
+      {
+         return new Iterator<InputStream>() {
+
+            @Override
+            public boolean hasNext()
+            {
+               return chunksRetrieved < totalChunkCount;
+            }
+
+            @Override
+            public InputStream next()
+            {
+               return getNextChunk();
+            }
+
+            @Override
+            public void remove()
+            {
+               throw new UnsupportedOperationException();
+            }
+         };
+      }
+   }
 }
