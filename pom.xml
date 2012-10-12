@@ -24,11 +24,16 @@
   
   <dependencyManagement>
       <dependencies>
-       <dependency>
+        <dependency>
+          <groupId>org.fedorahosted.tennera</groupId>
+          <artifactId>jgettext</artifactId>
+          <version>0.9</version>
+        </dependency>
+        <dependency>
           <groupId>org.zanata</groupId>
           <artifactId>zanata-common-util</artifactId>
           <version>1.8.2-SNAPSHOT</version>
-       </dependency>
+        </dependency>
       </dependencies>
    </dependencyManagement>
   
