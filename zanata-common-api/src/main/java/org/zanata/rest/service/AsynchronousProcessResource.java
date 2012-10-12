@@ -31,8 +31,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * Represents a resource for an asynchronous process. Only certain processes are exposed
@@ -47,8 +49,7 @@ public interface AsynchronousProcessResource
 
    @POST
    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r")
-   /* Same as SourceDocResourceService.SERVICE_PATH
-    */
+   /* Same as SourceDocResourceService.SERVICE_PATH */
    public ProcessStatus startSourceDocCreation(@PathParam("id") String idNoSlash,
                                                @PathParam("projectSlug") String projectSlug,
                                                @PathParam("iterationSlug") String iterationSlug,
@@ -58,14 +59,24 @@ public interface AsynchronousProcessResource
 
    @PUT
    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r" + SourceDocResource.RESOURCE_SLUG_TEMPLATE)
-   /* Same as SourceDocResourceService.SERVICE_PATH
-    */
+   /* Same as SourceDocResourceService.SERVICE_PATH */
    public ProcessStatus startSourceDocCreationOrUpdate(@PathParam("id") String idNoSlash,
                                                        @PathParam("projectSlug") String projectSlug,
                                                        @PathParam("iterationSlug") String iterationSlug,
                                                        Resource resource,
                                                        @QueryParam("ext") Set<String> extensions,
                                                        @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
+
+   @PUT
+   @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}")
+   /* Same as TranslatedDocResource.putTranslations */
+   public ProcessStatus startTranslatedDocCreationOrUpdate(@PathParam("id") String idNoSlash,
+                                                           @PathParam("projectSlug") String projectSlug,
+                                                           @PathParam("iterationSlug") String iterationSlug,
+                                                           @PathParam("locale") LocaleId locale,
+                                                           TranslationsResource translatedDoc,
+                                                           @QueryParam("ext") Set<String> extensions,
+                                                           @QueryParam("merge") String merge);
 
    @GET
    @Path("/{processId}")
