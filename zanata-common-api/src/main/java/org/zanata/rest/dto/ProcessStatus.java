@@ -21,6 +21,8 @@
 package org.zanata.rest.dto;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -33,15 +35,32 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "processStatusType")
 public class ProcessStatus
 {
+   @XmlEnum
+   public enum ProcessStatusCode
+   {
+      @XmlEnumValue("NotAccepted")
+      NotAccepted,
+
+      @XmlEnumValue("Waiting")
+      Waiting,
+
+      @XmlEnumValue("Running")
+      Running,
+
+      @XmlEnumValue("Finished")
+      Finished,
+
+      @XmlEnumValue("Failed")
+      Failed,
+   }
+
    private String url;
 
    private int percentageComplete;
 
-   private boolean inProgress;
-
    private String message;
 
-   private boolean error;
+   private ProcessStatusCode statusCode;
 
 
    @XmlElement(required = true)
@@ -66,17 +85,6 @@ public class ProcessStatus
       this.percentageComplete = percentageComplete;
    }
 
-   @XmlElement(required = true)
-   public boolean isInProgress()
-   {
-      return inProgress;
-   }
-
-   public void setInProgress(boolean inProgress)
-   {
-      this.inProgress = inProgress;
-   }
-
    @XmlElement
    public String getMessage()
    {
@@ -89,13 +97,13 @@ public class ProcessStatus
    }
 
    @XmlElement
-   public boolean isError()
+   public ProcessStatusCode getStatusCode()
    {
-      return error;
+      return statusCode;
    }
 
-   public void setError(boolean error)
+   public void setStatusCode(ProcessStatusCode statusCode)
    {
-      this.error = error;
+      this.statusCode = statusCode;
    }
 }
