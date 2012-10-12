@@ -39,6 +39,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -193,5 +194,13 @@ public class WorkspaceUsersPresenterTest
 
       verify(spyPresenter).dispatchChatAction(null, "someone quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
       verify(display).removeUser(userSessionPanel);
+   }
+
+   @Test
+   public void willIgnoreIfMessageIsBlank()
+   {
+      presenter.dispatchChatAction("someone", "", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
+
+      verifyZeroInteractions(dispatcher, eventBus, display);
    }
 }
