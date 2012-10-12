@@ -156,7 +156,7 @@ public class TargetContentsPresenter implements
 
    public boolean currentEditorContentHasChanged()
    {
-      return display != null && !equal(display.getCachedTargets(), display.getNewTargets());
+      return hasSelectedRow() && !equal(display.getCachedTargets(), display.getNewTargets());
    }
 
    private ToggleEditor getCurrentEditor()
@@ -237,7 +237,7 @@ public class TargetContentsPresenter implements
    public void validate(ToggleEditor editor)
    {
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
-      if (display != null)
+      if (hasSelectedRow())
       {
          event.addWidget(display);
       }
@@ -382,7 +382,7 @@ public class TargetContentsPresenter implements
 
    public List<String> getNewTargets()
    {
-      return display == null ? null : display.getNewTargets();
+      return hasSelectedRow() ? display.getNewTargets() : null;
    }
 
    @Override
@@ -519,11 +519,16 @@ public class TargetContentsPresenter implements
 
    public void setFocus()
    {
-      if (display != null)
+      if (hasSelectedRow())
       {
          normaliseCurrentEditorIndex();
          display.focusEditor(currentEditorIndex);
       }
+   }
+
+   public boolean hasSelectedRow()
+   {
+      return display != null && currentTransUnitId != null;
    }
 
    @Override
