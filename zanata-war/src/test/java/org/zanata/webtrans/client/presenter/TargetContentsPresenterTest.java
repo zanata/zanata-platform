@@ -619,6 +619,20 @@ public class TargetContentsPresenterTest
    }
 
    @Test
+   public void canMoveToNextEditorInPluralFormOnFirstRow()
+   {
+      // Given: current editor index is last index (represent last entry from move to previous)
+      presenter.setStatesForTesting(selectedTU.getId(), TargetContentsPresenter.LAST_INDEX, display, Lists.newArrayList(editor, editor2));
+
+      // When:
+      presenter.moveToNextEntry();
+
+      // Then:
+      verify(display).focusEditor(1);
+      verifyZeroInteractions(eventBus);
+   }
+
+   @Test
    public void canMoveToNextEntry()
    {
       // Given: current editor index is 1

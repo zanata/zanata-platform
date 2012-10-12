@@ -77,7 +77,7 @@ public class TargetContentsPresenter implements
       WorkspaceContextUpdateEventHandler
 // @formatter:on
 {
-   private static final int LAST_INDEX = -2;
+   protected static final int LAST_INDEX = -2;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
@@ -292,6 +292,10 @@ public class TargetContentsPresenter implements
 
    protected void moveToNextEntry()
    {
+      if (currentEditorIndex == LAST_INDEX)
+      {
+         currentEditorIndex = 0;
+      }
       if (currentEditorIndex + 1 < currentEditors.size())
       {
          display.focusEditor(currentEditorIndex + 1);
