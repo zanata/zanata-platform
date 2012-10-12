@@ -192,7 +192,7 @@ public class EditorKeyShortcutsTest
       // by default user config settings
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
-      when(messages.editCancelShortcut()).thenReturn("cancel");
+      when(messages.cancelChanges()).thenReturn("cancel");
       when(messages.copyFromSource()).thenReturn("copy from source");
       
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
@@ -212,7 +212,7 @@ public class EditorKeyShortcutsTest
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
       when(messages.copyFromSource()).thenReturn("copy from source");
-      when(messages.editCancelShortcut()).thenReturn("cancel");
+      when(messages.cancelChanges()).thenReturn("cancel");
       
       configHolder.setEnterSavesApproved(true);
 
