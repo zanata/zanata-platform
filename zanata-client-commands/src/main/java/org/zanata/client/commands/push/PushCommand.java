@@ -483,23 +483,32 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          log.info("Pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
 
-         List<TranslationsResource> targetDocList = splitIntoBatch(targetDoc, getOpts().getBatchSize());
-
-         int totalDone = 0;
          ConsoleUtils.startProgressFeedback();
-         for (TranslationsResource doc : targetDocList)
+
+         ProcessStatus status =
+               asyncProcessResource.startTranslatedDocCreationOrUpdate(docUri, getOpts().getProj(), getOpts().getProjectVersion(),
+                  new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
+
+         boolean waitForCompletion = true;
+
+         while( waitForCompletion )
          {
-            ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), doc, extensions, getOpts().getMergeType());
-
-            totalDone = totalDone + doc.getTextFlowTargets().size();
-            ConsoleUtils.setProgressFeedbackMessage(totalDone + "/" + targetDoc.getTextFlowTargets().size());
-
-            ClientUtility.checkResult(putTransResponse, uri);
-            String entity = putTransResponse.getEntity(String.class);
-            if (entity != null && !entity.isEmpty())
+            waitForCompletion = status.isInProgress();
+            if( status.isError() )
             {
-               log.warn("{}", entity);
+               throw new RuntimeException("Error while pushing target document: " + status.getMessage());
             }
+
+            try
+            {
+               Thread.sleep(2000);
+            }
+            catch (InterruptedException e)
+            {
+               log.warn("Interrupted while waiting for Target Doc to finish push.");
+            }
+            status =
+                  asyncProcessResource.getProcessStatus(status.getUrl());
          }
          ConsoleUtils.endProgressFeedback();
       }
