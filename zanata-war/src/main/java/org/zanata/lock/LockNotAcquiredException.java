@@ -18,39 +18,31 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
-
-import lombok.extern.slf4j.Slf4j;
+package org.zanata.lock;
 
 /**
- * This class contains some logic to execute.
- * This class should replace the {@link BackgroundProcess} as a means to separate
- * logic from process execution infrastructure.
+ * Thrown to inform that a lock could not be acquired.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
-public abstract class RunnableProcess<H extends ProcessHandle>
+public class LockNotAcquiredException extends RuntimeException
 {
+   private Lock lock;
 
-   /**
-    * This method contains the logic to execute.
-    *
-    * @param handle A RunnableProcess handle to communicate with the process.
-    * @throws Throwable Any kind of error thrown by the process.
-    */
-   protected abstract void run( H handle ) throws Throwable;
-
-   /**
-    * Handles anything thrown while running the process.
-    * This callback will be executed and the process will stop afterwards.
-    *
-    * @param handle The failing process' handle.
-    * @param t The throwable that was detected
-    */
-   protected void handleThrowable( H handle, Throwable t )
+   public LockNotAcquiredException(Lock l)
    {
-      log.error("Exception with long running process[" + t.getClass().getName() + "]: " + t.getMessage());
-      handle.setError(t);
+      super();
+      lock = l;
+   }
+
+   public LockNotAcquiredException(Lock l, String message)
+   {
+      super(message);
+      lock = l;
+   }
+
+   public Lock getLock()
+   {
+      return lock;
    }
 }

@@ -41,6 +41,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -60,6 +61,8 @@ import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
 /**
  * Default server-side implementation of the Asynchronous RunnableProcess Resource.
@@ -90,9 +93,6 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
    @In
    private ZanataIdentity identity;
-
-   @Context
-   private HttpServletResponse response;
 
 
    @Override
@@ -133,7 +133,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                   DocumentService documentServiceImpl =
                         (DocumentService)Component.getInstance(DocumentServiceImpl.class);
                   documentServiceImpl.saveDocument(
-                        projectSlug, iterationSlug, resource, extensions, copytrans);
+                        projectSlug, iterationSlug, resource, extensions, copytrans, true);
                   handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
                }
             },
@@ -146,7 +146,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       else
       {
          ProcessStatus status = new ProcessStatus();
-         status.setError(true);
+         status.setStatusCode(ProcessStatusCode.Failed);
          status.setMessage( errorMessage );
          return status;
       }
@@ -178,7 +178,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                      DocumentService documentServiceImpl =
                            (DocumentService)Component.getInstance(DocumentServiceImpl.class);
                      documentServiceImpl.saveDocument(
-                           projectSlug, iterationSlug, resource, extensions, copytrans);
+                           projectSlug, iterationSlug, resource, extensions, copytrans, true);
                      handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
                   }
                },
@@ -191,7 +191,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       else
       {
          ProcessStatus status = new ProcessStatus();
-         status.setError(true);
+         status.setStatusCode(ProcessStatusCode.Failed);
          status.setMessage( errorMessage );
          return status;
       }
@@ -251,7 +251,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       else
       {
          ProcessStatus status = new ProcessStatus();
-         status.setError(true);
+         status.setStatusCode(ProcessStatusCode.Failed);
          status.setMessage( errorMessage );
          return status;
       }
@@ -268,13 +268,22 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       }
 
       ProcessStatus status = new ProcessStatus();
-      status.setInProgress(handle.isInProgress());
+      status.setStatusCode(handle.isInProgress() ? ProcessStatusCode.Running : ProcessStatusCode.Finished);
       status.setPercentageComplete((handle.getCurrentProgress() / handle.getMaxProgress()) * 100);
       status.setUrl("" + processId);
       if( handle.getError() != null )
       {
-         status.setError(true);
-         status.setMessage(handle.getError().getMessage());
+         // Lock Exception, tell the client to keep waiting
+         if( handle.getError() instanceof LockNotAcquiredException )
+         {
+            status.setMessage("Waiting to acquire lock.");
+            status.setStatusCode(ProcessStatusCode.NotAccepted);
+         }
+         else
+         {
+            status.setStatusCode(ProcessStatusCode.Failed);
+            status.setMessage(handle.getError().getMessage());
+         }
       }
       return status;
    }
