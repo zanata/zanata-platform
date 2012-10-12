@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
@@ -203,5 +204,24 @@ public class EditorOptionsPresenterTest
 
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+   }
+
+   @Test
+   public void onShowErrorOptionChange()
+   {
+      configHolder.setShowError(false);
+
+      presenter.onShowErrorsOptionChanged(true);
+
+      assertThat(configHolder.isShowError(), Matchers.equalTo(true));
+      verifyZeroInteractions(eventBus);
+   }
+
+   @Test
+   public void onRefreshCurrentPage()
+   {
+      presenter.refreshCurrentPage();
+
+      verify(eventBus).fireEvent(RefreshPageEvent.EVENT);
    }
 }
