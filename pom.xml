@@ -19,8 +19,8 @@
 	</scm>
 
     <properties>
-      <zanata.api.version>1.7.0</zanata.api.version>
-      <zanata.common.version>1.8.1</zanata.common.version>
+      <zanata.api.version>1.7.2</zanata.api.version>
+      <zanata.common.version>1.8.2</zanata.common.version>
     </properties>
 
    <dependencyManagement>
