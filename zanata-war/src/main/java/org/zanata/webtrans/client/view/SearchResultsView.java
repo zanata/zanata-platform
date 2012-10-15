@@ -346,7 +346,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    {
       if (searching)
       {
-         searchingIndicator.center(messages.searching());
+         searchingIndicator.center();
       }
       else
       {

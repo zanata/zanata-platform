@@ -306,11 +306,11 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       if (event == LoadingEvent.START_EVENT)
       {
-         display.showLoading();
+         display.showLoading(true);
       }
       else if (event == LoadingEvent.FINISH_EVENT)
       {
-         display.hideLoading();
+         display.showLoading(false);
       }
    }
 

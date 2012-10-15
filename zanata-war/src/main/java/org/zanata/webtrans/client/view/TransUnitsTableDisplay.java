@@ -23,11 +23,11 @@ package org.zanata.webtrans.client.view;
 
 import java.util.List;
 
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 
 import com.google.inject.ImplementedBy;
-
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 @ImplementedBy(TransUnitsTableView.class)
 public interface TransUnitsTableDisplay extends WidgetDisplay
@@ -42,9 +42,7 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
 
    void setRowSelectionListener(Listener listener);
 
-   void showLoading();
-
-   void hideLoading();
+   void showLoading(boolean isLoading);
 
    void applySelectedStyle(int rowIndex);
 

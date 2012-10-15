@@ -24,7 +24,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
 public class TransUnitsTableView extends Composite implements TransUnitsTableDisplay
@@ -45,7 +46,8 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    private final Label noContentLabel = new Label();
    private Listener listener;
 
-   // below timer is a hacky fix for firefox (on first load codemirror instance won't show correctly and needs refresh
+   // below timer is a hacky fix for firefox (on first load codemirror instance
+   // won't show correctly and needs refresh
    // we only need to do this once on first load (WEIRD!!)
    private static boolean firstTimeLoading = true;
    private Timer timer = new Timer()
@@ -183,19 +185,20 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    }
 
    @Override
-   public void showLoading()
+   public void showLoading(boolean isLoading)
    {
-      loadingPanel.center(messages.loading());
-   }
-
-   @Override
-   public void hideLoading()
-   {
-      loadingPanel.hide();
-      if (firstTimeLoading)
+      if (isLoading)
       {
-         timer.schedule(100);
-         firstTimeLoading = false;
+         loadingPanel.center();
+      }
+      else
+      {
+         loadingPanel.hide();
+         if (firstTimeLoading)
+         {
+            timer.schedule(100);
+            firstTimeLoading = false;
+         }
       }
    }
 

@@ -53,9 +53,9 @@ public interface Resources extends ClientBundle
    @Source("images/last_entry.png")
    ImageResource lastEntry();
 
-   @Source("images/loader.gif")
-   ImageResource loader();
-
    @Source("images/loading.gif")
    ImageResource spinner();
+
+   @Source("images/loading-lg.gif")
+   ImageResource spinnerLarge();
 }
