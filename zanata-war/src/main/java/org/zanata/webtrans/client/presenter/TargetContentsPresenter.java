@@ -143,15 +143,9 @@ public class TargetContentsPresenter implements
       }
    }
 
-   /**
-    * Will only save if current editing state is not SAVING.
-    *
-    * @param status content state
-    */
    public void saveCurrent(ContentState status)
    {
       eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status, display.getId(), display.getVerNum(), display.getCachedTargets()));
-      display.setState(TargetContentsDisplay.EditingState.SAVING);
    }
 
    public boolean currentEditorContentHasChanged()
