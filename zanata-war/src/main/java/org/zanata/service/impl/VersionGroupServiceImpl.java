@@ -96,9 +96,9 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public List<HIterationGroup> searchLikeSlug(String searchTerm)
+   public List<HIterationGroup> searchLikeSlugAndName(String searchTerm)
    {
-      return versionGroupDAO.searchLikeSlug(searchTerm);
+      return versionGroupDAO.searchLikeSlugAndName(searchTerm);
    }
 
    @Override
