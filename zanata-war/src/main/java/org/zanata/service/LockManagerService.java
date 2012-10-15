@@ -21,13 +21,33 @@
 package org.zanata.service;
 
 import org.zanata.lock.Lock;
+import org.zanata.lock.LockNotAcquiredException;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public interface LockManagerService
 {
-   public boolean attain( Lock l );
+   /**
+    * Checks for the availability of a lock and attains it if available.
+    *
+    * @param l The lock to attain.
+    * @return True, if the lock was attained. False if the lock was not available.
+    */
+   public boolean checkAndAttain( Lock l );
 
+   /**
+    * Attains a lock.
+    *
+    * @param l The lock to attain.
+    * @throws LockNotAcquiredException If the lock was not acquired.
+    */
+   public void attain( Lock l ) throws LockNotAcquiredException;
+
+   /**
+    * Releases a lock.
+    *
+    * @param l The lock to release.
+    */
    public void release( Lock l );
 }

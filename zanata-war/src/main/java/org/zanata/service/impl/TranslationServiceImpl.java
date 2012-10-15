@@ -44,6 +44,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.util.ContentStateUtil;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -92,6 +93,9 @@ public class TranslationServiceImpl implements TranslationService
    private DocumentDAO documentDAO;
 
    @In
+   private AccountDAO accountDAO;
+
+   @In
    private PersonDAO personDAO;
 
    @In
@@ -112,7 +116,7 @@ public class TranslationServiceImpl implements TranslationService
    @In
    private LockManagerService lockManagerServiceImpl;
 
-   @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+   @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION, required = false)
    private HAccount authenticatedAccount;
 
    // TODO delete this?
@@ -347,21 +351,21 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
-   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions, MergeType mergeType, boolean lock)
+   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+                                         TranslationsResource translations, Set<String> extensions, MergeType mergeType,
+                                         boolean lock, String userName)
    {
       // Lock this document for push
       Lock transLock = null;
       if( lock )
       {
          transLock = new Lock(projectSlug, iterationSlug, docId, locale, "push");
-         if( !lockManagerServiceImpl.attain(transLock) )
-         {
-            throw new RuntimeException("This document is already being translated for locale " + locale.getId());
-         }
+         lockManagerServiceImpl.attain(transLock);
       }
 
       try
       {
+         this.initAuthenticatedAccountIfNotInSession( userName );
          return this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType);
       }
       finally
@@ -668,4 +672,16 @@ public class TranslationServiceImpl implements TranslationService
       return result;
    }
 
+   /**
+    * Initializes the authenticated account if there is not one in the provided session scope.
+    * This is used when some methods are invoked outside of an authenticated Session context (Such
+    * as when pushing translations asynchronously).
+    */
+   private void initAuthenticatedAccountIfNotInSession( String username )
+   {
+      if( authenticatedAccount == null )
+      {
+         authenticatedAccount = accountDAO.getByUsername(username);
+      }
+   }
 }

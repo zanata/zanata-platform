@@ -31,9 +31,12 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.lock.Lock;
+import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.process.NoProcessHandle;
+import org.zanata.process.ProcessHandle;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.rest.service.TranslatedDocResourceService;
@@ -78,22 +81,20 @@ public class DocumentServiceImpl implements DocumentService
    @Override
    @Transactional
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
-                                  Set<String> extensions, boolean copyTrans, boolean lock )
+                                  Set<String> extensions, boolean copyTrans, boolean lock,
+                                  ProcessHandle handle)
    {
       Lock docLock = null;
       if( lock )
       {
          // Lock this document for push
          docLock = new Lock(projectSlug, iterationSlug, sourceDoc.getName(), "push");
-         if( !lockManagerServiceImpl.attain(docLock) )
-         {
-            throw new RuntimeException("This document is already being pushed");
-         }
+         lockManagerServiceImpl.attain(docLock);
       }
 
       try
       {
-         return this.saveDocument(projectSlug, iterationSlug, sourceDoc, extensions, copyTrans);
+         return this.saveDocument(projectSlug, iterationSlug, sourceDoc, extensions, copyTrans, handle);
       }
       finally
       {
@@ -104,11 +105,18 @@ public class DocumentServiceImpl implements DocumentService
       }
    }
 
+   @Override
+   public HDocument saveDocument(String projectSlug, String iterationSlug, Resource sourceDoc, Set<String> extensions, boolean copyTrans)
+   {
+      return saveDocument(projectSlug, iterationSlug, sourceDoc, extensions, copyTrans, ProcessHandle.NO_HANDLE);
+   }
+
    // TODO check permissions
    @Override
    @Transactional
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
-                                  Set<String> extensions, boolean copyTrans )
+                                  Set<String> extensions, boolean copyTrans,
+                                  ProcessHandle handle)
    {
       // Only active iterations allow the addition of a document
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
@@ -128,6 +136,7 @@ public class DocumentServiceImpl implements DocumentService
          document = new HDocument(sourceDoc.getName(), sourceDoc.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
          hProjectIteration.getDocuments().put(docId, document);
+         document = documentDAO.makePersistent(document);
       }
       else if (document.isObsolete())
       { // must also be a create operation
@@ -143,12 +152,7 @@ public class DocumentServiceImpl implements DocumentService
       }
 
       changed |= resourceUtils.transferFromResource(sourceDoc, document, extensions, hLocale, nextDocRev);
-
-      if (changed)
-      {
-         document = documentDAO.makePersistent(document);
-         documentDAO.flush();
-      }
+      documentDAO.flush();
 
       if (copyTrans && nextDocRev == 1)
       {

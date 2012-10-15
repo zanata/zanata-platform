@@ -148,6 +148,7 @@ public class ResourceUtils
       to.getTextFlows().clear();
       Set<String> incomingIds = new HashSet<String>();
       Set<String> previousIds = new HashSet<String>(to.getAllTextFlows().keySet());
+      int count = 0;
       for (TextFlow tf : from)
       {
          if (!incomingIds.add(tf.getId()))
@@ -161,6 +162,7 @@ public class ResourceUtils
             previousIds.remove(tf.getId());
             textFlow = to.getAllTextFlows().get(tf.getId());
             textFlow.setObsolete(false);
+            to.getTextFlows().add(textFlow);
             // avoid changing revision when resurrecting an unchanged TF
             if (transferFromTextFlow(tf, textFlow, enabledExtensions))
             {// content has changed
@@ -186,10 +188,17 @@ public class ResourceUtils
             textFlow.setRevision(nextDocRev);
             transferFromTextFlow(tf, textFlow, enabledExtensions);
             changed = true;
+            to.getAllTextFlows().put(textFlow.getResId(), textFlow);
+            to.getTextFlows().add(textFlow);
+            entityManager.persist(textFlow);
             log.debug("TextFlow with id {0} is new", tf.getId());
          }
-         to.getTextFlows().add(textFlow);
-         to.getAllTextFlows().put(textFlow.getResId(), textFlow);
+         count++;
+
+         if( count % 100 == 0 )
+         {
+            entityManager.flush();
+         }
       }
 
       // set remaining textflows to obsolete.

@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.zanata.lock.Lock;
+import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.service.LockManagerService;
 
 /**
@@ -45,7 +46,7 @@ public class LockManagerServiceImpl implements LockManagerService
    private final Set<Lock> locks = Collections.newSetFromMap(new ConcurrentHashMap<Lock, Boolean>());
 
    @Override
-   public synchronized boolean attain(Lock l)
+   public synchronized boolean checkAndAttain(Lock l)
    {
       if( locks.contains( l ) )
       {
@@ -55,6 +56,15 @@ public class LockManagerServiceImpl implements LockManagerService
       {
          locks.add(l);
          return true;
+      }
+   }
+
+   @Override
+   public void attain(Lock l) throws LockNotAcquiredException
+   {
+      if( !checkAndAttain(l) )
+      {
+         throw new LockNotAcquiredException(l, "Lock not available");
       }
    }
 

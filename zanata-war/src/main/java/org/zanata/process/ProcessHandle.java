@@ -11,6 +11,8 @@ import java.util.UUID;
  */
 public class ProcessHandle
 {
+   public static final ProcessHandle NO_HANDLE = new NoProcessHandle();
+
    private String id;
    private boolean shouldStop = false;
    private int maxProgress = 100;

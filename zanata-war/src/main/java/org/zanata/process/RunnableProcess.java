@@ -42,6 +42,19 @@ public abstract class RunnableProcess<H extends ProcessHandle>
    protected abstract void run( H handle ) throws Throwable;
 
    /**
+    * Runs any activities to prepare the handle.
+    * Ideally, this method will be executed before this process is executed
+    * asynchronously.
+    *
+    * @param handle The handle to prepare. Should be the same handle as the one
+    *               passed to the run method.
+    */
+   protected void prepare( H handle )
+   {
+      // Nothing by default
+   }
+
+   /**
     * Handles anything thrown while running the process.
     * This callback will be executed and the process will stop afterwards.
     *
@@ -50,7 +63,6 @@ public abstract class RunnableProcess<H extends ProcessHandle>
     */
    protected void handleThrowable( H handle, Throwable t )
    {
-      log.error("Exception with long running process[" + t.getClass().getName() + "]: " + t.getMessage());
       handle.setError(t);
    }
 }

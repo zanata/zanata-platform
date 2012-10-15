@@ -133,7 +133,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                   DocumentService documentServiceImpl =
                         (DocumentService)Component.getInstance(DocumentServiceImpl.class);
                   documentServiceImpl.saveDocument(
-                        projectSlug, iterationSlug, resource, extensions, copytrans, true);
+                        projectSlug, iterationSlug, resource, extensions, copytrans, true, handle);
                   handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
                }
             },
@@ -173,13 +173,26 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                new RunnableProcess<ProcessHandle>()
                {
                   @Override
+                  protected void prepare(ProcessHandle handle)
+                  {
+                     handle.setMaxProgress(resource.getTextFlows().size());
+                  }
+
+                  @Override
                   protected void run(ProcessHandle handle) throws Throwable
                   {
                      DocumentService documentServiceImpl =
                            (DocumentService)Component.getInstance(DocumentServiceImpl.class);
                      documentServiceImpl.saveDocument(
-                           projectSlug, iterationSlug, resource, extensions, copytrans, true);
+                           projectSlug, iterationSlug, resource, extensions, copytrans, true, handle);
                      handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
+                  }
+
+                  @Override
+                  protected void handleThrowable(ProcessHandle handle, Throwable t)
+                  {
+                     AsynchronousProcessResourceService.log.error("Error pushing source document", t);
+                     super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
                   }
                },
                handle
@@ -225,6 +238,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
       final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       final MergeType finalMergeType = mergeType;
+      final String userName = identity.getCredentials().getUsername();
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
       if( errorMessage == null )
@@ -240,7 +254,15 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
                      // Translate
                      List<String> warnings =
-                           translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc, extensions, finalMergeType, true);
+                           translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
+                                 extensions, finalMergeType, true, userName);
+                  }
+
+                  @Override
+                  protected void handleThrowable(ProcessHandle handle, Throwable t)
+                  {
+                     AsynchronousProcessResourceService.log.error("Error pushing translations", t);
+                     super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
                   }
                },
                handle
