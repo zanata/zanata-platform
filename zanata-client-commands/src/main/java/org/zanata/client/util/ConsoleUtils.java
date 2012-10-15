@@ -50,6 +50,20 @@ public class ConsoleUtils
       private String suffix = "";
       private Date start;
       private int currentState = -1;
+      private String lastOutput = null;
+
+      public void setSuffix( String newSuffix )
+      {
+         // make provisions to wipe the old suffix characters
+         StringBuilder spaces = new StringBuilder();
+         if( newSuffix.length() < suffix.length() )
+         {
+            for( int i=0; i < suffix.length() - newSuffix.length(); i++ )
+               spaces.append(" ");
+         }
+
+         suffix = newSuffix + spaces.toString();
+      }
 
       @Override
       public void run()
@@ -63,7 +77,9 @@ public class ConsoleUtils
          {
             currentState = 0;
          }
-         System.out.print("\r" + SEQUENCE[currentState++] + this.suffix);
+         String output = SEQUENCE[currentState++] + this.suffix;
+         System.out.print("\r" + output);
+         lastOutput = output.trim();
       }
 
       @Override
@@ -71,7 +87,12 @@ public class ConsoleUtils
       {
          if( start != null )
          {
-            System.out.print("\rDone in " + formatDuration(start, new Date()));
+            StringBuilder endMssg = new StringBuilder("Done in " + formatDuration(start, new Date()));
+            while( lastOutput.length() > endMssg.length() )
+            {
+               endMssg.append(" ");
+            }
+            System.out.print("\r" + endMssg);
             System.out.println();
          }
          return super.cancel();
@@ -100,16 +121,7 @@ public class ConsoleUtils
       if( activeTasks.containsKey(TimerTaskType.ProgressFeedback) )
       {
          TimeProgressTask task = (TimeProgressTask) activeTasks.get(TimerTaskType.ProgressFeedback);
-
-         // make provisions to clear the old suffix
-         StringBuilder spaces = new StringBuilder();
-         if( mssg.length() < task.suffix.length() )
-         {
-            for( int i=0; i<task.suffix.length() - mssg.length(); i++ )
-               spaces.append(" ");
-         }
-
-         task.suffix = mssg + spaces.toString();
+         task.setSuffix( mssg );
       }
    }
 

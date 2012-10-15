@@ -394,17 +394,6 @@ public class PushCommand extends PushPullCommand<PushOptions>
                asyncProcessResource.startSourceDocCreationOrUpdate(
                      docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
 
-         // Wait for the async invocation to be submitted
-         ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients...");
-         while( status.getStatusCode() == ProcessStatusCode.NotAccepted )
-         {
-            wait(2000); // Wait before retrying
-            status =
-                  asyncProcessResource.startSourceDocCreationOrUpdate(
-                        docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
-         }
-         ConsoleUtils.setProgressFeedbackMessage("");
-
          boolean waitForCompletion = true;
 
          while( waitForCompletion )
@@ -419,6 +408,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   break;
 
                case Running:
+                  ConsoleUtils.setProgressFeedbackMessage("Pushing ...");
                   break;
 
                case Waiting:
@@ -426,8 +416,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   break;
 
                case NotAccepted:
-                  // This should not happen
-                  throw new RuntimeException("Did not expect 'Not Accepted' state.");
+                  // try to submit the process again
+                  status = asyncProcessResource.startSourceDocCreationOrUpdate(
+                              docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients ...");
+                  break;
             }
 
             wait(2000); // Wait before retrying
@@ -511,17 +504,6 @@ public class PushCommand extends PushPullCommand<PushOptions>
                asyncProcessResource.startTranslatedDocCreationOrUpdate(docUri, getOpts().getProj(), getOpts().getProjectVersion(),
                   new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
 
-         // Wait for the async invocation to be submitted
-         ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients...");
-         while( status.getStatusCode() == ProcessStatusCode.NotAccepted )
-         {
-            wait(2000); // Wait before retrying
-            status =
-               asyncProcessResource.startTranslatedDocCreationOrUpdate(docUri, getOpts().getProj(), getOpts().getProjectVersion(),
-                  new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
-         }
-         ConsoleUtils.setProgressFeedbackMessage("");
-
          boolean waitForCompletion = true;
 
          while( waitForCompletion )
@@ -536,6 +518,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   break;
 
                case Running:
+                  ConsoleUtils.setProgressFeedbackMessage("Pushing ...");
                   break;
 
                case Waiting:
@@ -543,8 +526,12 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   break;
 
                case NotAccepted:
-                  // This should not happen
-                  throw new RuntimeException("Did not expect 'Not Accepted' state.");
+                  // try to submit the process again
+                  status = asyncProcessResource.startTranslatedDocCreationOrUpdate(
+                              docUri, getOpts().getProj(), getOpts().getProjectVersion(),
+                              new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients ...");
+                  break;
             }
 
             wait(2000); // Wait before retrying
