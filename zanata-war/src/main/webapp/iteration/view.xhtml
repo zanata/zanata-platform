@@ -224,7 +224,6 @@
                         <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
                         <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
                             <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
-                                <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
 
                                 <rich:column sortBy="#{group.name}">
                                     <f:facet name="header">#{messages['jsf.GroupName']}</f:facet>
