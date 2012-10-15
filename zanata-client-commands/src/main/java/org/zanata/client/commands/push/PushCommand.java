@@ -103,13 +103,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
       log.info("Source language: {}", getOpts().getSourceLang());
       log.info("Copy previous translations: {}", getOpts().getCopyTrans());
       log.info("Merge type: {}", getOpts().getMergeType());
-      log.info("Batch size: {}", getOpts().getBatchSize());
-      log.info("Enable modules: {}", getOpts().getEnableModules());
-
-      if (getOpts().getBatchSize() <= 0)
+      if (pushTrans() && mergeAuto())
       {
-         throw new RuntimeException("Batch size needs to be 1 or more.");
+         log.info("Batch size: {}", getOpts().getBatchSize());
       }
+      log.info("Enable modules: {}", getOpts().getEnableModules());
 
       if (getOpts().getEnableModules())
       {
@@ -152,13 +150,34 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
    }
 
+   private boolean mergeAuto()
+   {
+      return getOpts().getMergeType().toUpperCase().equals(MergeType.AUTO.name());
+   }
+
+   private boolean pushSource()
+   {
+      return getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Source;
+   }
+
+   private boolean pushTrans()
+   {
+      return getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Trans;
+   }
+
    @Override
    public void run() throws Exception
    {
       logOptions();
+
+      if (getOpts().getBatchSize() <= 0)
+      {
+         throw new RuntimeException("Batch size needs to be 1 or more.");
+      }
+
       pushCurrentModule();
 
-      if (getOpts().getEnableModules() && getOpts().isRootModule())
+      if (pushSource() && getOpts().getEnableModules() && getOpts().isRootModule())
       {
          List<String> obsoleteDocs = getObsoleteDocNamesForProjectIterationFromServer();
          log.info("found {} docs in obsolete modules (or no module): {}", obsoleteDocs.size(), obsoleteDocs);
@@ -166,7 +185,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          {
             // offer to delete obsolete documents
             confirmWithUser("Do you want to delete all documents from the server which don't belong to any module in the Maven reactor?\n");
-            deleteDocsFromServer(obsoleteDocs);
+            deleteSourceDocsFromServer(obsoleteDocs);
          }
          else
          {
@@ -243,7 +262,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          log.info("Found source document: {}", docName);
       }
-      List<String> obsoleteDocs = getObsoleteDocsInModuleFromServer(localDocNames);
+      List<String> obsoleteDocs = Collections.emptyList();
+      if (pushSource())
+      {
+         obsoleteDocs = getObsoleteDocsInModuleFromServer(localDocNames);
+      }
       if (obsoleteDocs.isEmpty())
       {
          if (localDocNames.isEmpty())
@@ -262,7 +285,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("Obsolete docs: {}", obsoleteDocs);
       }
 
-      if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
+      if (pushTrans())
       {
          if (getOpts().getLocaleMapList() == null)
             throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
@@ -279,7 +302,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
       else
       {
-         confirmWithUser("This will overwrite existing documents on the server, and delete obsolete documents.\n");
+         confirmWithUser("This will overwrite existing source documents on the server, and delete obsolete documents.\n");
       }
 
       for (String localDocName : localDocNames)
@@ -290,11 +313,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
          srcDoc.setName(qualifiedDocName);
          debug(srcDoc);
 
-         if (getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both)
+         if (pushSource())
          {
             pushSrcDocToServer(docUri, srcDoc, extensions);
          }
-         if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
+         if (pushTrans())
          {
             strat.visitTranslationResources(localDocName, srcDoc, new TranslationResourcesVisitor()
             {
@@ -314,7 +337,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
             this.copyTransForDocument(qualifiedDocName);
          }
       }
-      deleteDocsFromServer(obsoleteDocs);
+      deleteSourceDocsFromServer(obsoleteDocs);
    }
 
    /**
@@ -342,11 +365,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
    /**
     * @param qualifiedDocNames
     */
-   private void deleteDocsFromServer(List<String> qualifiedDocNames)
+   private void deleteSourceDocsFromServer(List<String> qualifiedDocNames)
    {
       for (String qualifiedDocName : qualifiedDocNames)
       {
-         deleteDocFromServer(qualifiedDocName);
+         deleteSourceDocFromServer(qualifiedDocName);
       }
    }
 
@@ -371,49 +394,50 @@ public class PushCommand extends PushPullCommand<PushOptions>
    }
 
    /**
-    * Split TranslationsResource into List<TranslationsResource> according to
-    * Batch processing only applies when mergeType=AUTO
+    * Split TranslationsResource into List&lt;TranslationsResource&gt; according to
+    * maxBatchSize, but only if mergeType=AUTO
     * 
     * @param doc
-    * @param batchSize
-    * @return list of transaltionsResource
+    * @param maxBatchSize
+    * @return list of TranslationsResource, each containing up to maxBatchSize TextFlowTargets
     */
-   public List<TranslationsResource> splitIntoBatch(TranslationsResource doc, int batchSize)
+   public List<TranslationsResource> splitIntoBatch(TranslationsResource doc, int maxBatchSize)
    {
       List<TranslationsResource> targetDocList = new ArrayList<TranslationsResource>();
-      int size = doc.getTextFlowTargets().size();
+      int numTargets = doc.getTextFlowTargets().size();
 
-      if (size > batchSize && getOpts().getMergeType().toUpperCase().equals(MergeType.AUTO.name()))
+      if (numTargets > maxBatchSize && mergeAuto())
       {
-         int batch = size / batchSize;
+         int numBatches = numTargets / maxBatchSize;
 
-         if (size % batchSize != 0)
+         if (numTargets % maxBatchSize != 0)
          {
-            batch = batch + 1;
+            ++numBatches;
          }
 
          int fromIndex = 0;
          int toIndex = 0;
 
-         for (int i = 1; i <= batch; i++)
+         for (int i = 1; i <= numBatches; i++)
          {
+            // make a dummy TranslationsResource to hold just the TextFlowTargets for each batch
             TranslationsResource resource = new TranslationsResource();
             resource.setExtensions(doc.getExtensions());
             resource.setLinks(doc.getLinks());
             resource.setRevision(doc.getRevision());
 
-            if ((i * batchSize) > size)
+            if ((i * maxBatchSize) > numTargets)
             {
-               toIndex = size;
+               toIndex = numTargets;
             }
             else
             {
-               toIndex = i * batchSize;
+               toIndex = i * maxBatchSize;
             }
 
             resource.getTextFlowTargets().addAll(doc.getTextFlowTargets().subList(fromIndex, toIndex));
 
-            fromIndex = i * batchSize;
+            fromIndex = i * maxBatchSize;
 
             targetDocList.add(resource);
          }
@@ -457,7 +481,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
    }
 
-   private void deleteDocFromServer(String qualifiedDocName)
+   private void deleteSourceDocFromServer(String qualifiedDocName)
    {
       if (!getOpts().isDryRun())
       {
