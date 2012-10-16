@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -76,11 +75,6 @@ public class TextContentsDisplay
 
    public SafeHtml toSafeHtml()
    {
-      if (safeHtml == null)
-      {
-         Log.warn("you probably forget to call one of the asSyntaxHighlight or asDiff method?!");
-         safeHtml = new SafeHtmlBuilder().toSafeHtml();
-      }
       return safeHtml;
    }
 }
