@@ -35,7 +35,6 @@ import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.NoProcessHandle;
 import org.zanata.process.ProcessHandle;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.ResourceUtils;

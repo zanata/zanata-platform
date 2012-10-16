@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public class ProcessHandle
 {
-   public static final ProcessHandle NO_HANDLE = new NoProcessHandle();
+   public static final ProcessHandle NO_HANDLE = NoProcessHandle.getNullProcessHandle(ProcessHandle.class);
 
    private String id;
    private boolean shouldStop = false;

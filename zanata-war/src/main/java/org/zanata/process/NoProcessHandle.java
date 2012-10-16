@@ -20,6 +20,15 @@
  */
 package org.zanata.process;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.jboss.seam.util.ProxyFactory;
+
+import com.google.common.base.Defaults;
+
+import javassist.util.proxy.MethodHandler;
+
 /**
  * A process handle that does nothing with the updates provided. It is meant to be used
  * with services that require a process handle yet the execution context does not
@@ -27,127 +36,42 @@ package org.zanata.process;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class NoProcessHandle extends ProcessHandle
+class NoProcessHandle extends ProcessHandle
 {
-   NoProcessHandle()
+   private NoProcessHandle()
    {
       super();
    }
 
-   @Override
-   public boolean isInProgress()
+   public static final <H extends ProcessHandle> H getNullProcessHandle(Class<H> handleType)
    {
-      return false;
-   }
+      ProxyFactory factory = new ProxyFactory();
+      factory.setSuperclass(handleType);
+      factory.setHandler( new MethodHandler()
+      {
+         @Override
+         public Object invoke(Object o, Method method, Method method1, Object[] objects) throws Throwable
+         {
+            // primitive types
+            if( method.getReturnType().isPrimitive() && method.getReturnType() != Void.TYPE )
+            {
+               return Defaults.defaultValue(method.getReturnType());
+            }
+            else
+            {
+               return null;
+            }
+         }
+      });
 
-   @Override
-   public void stop()
-   {
-   }
-
-   @Override
-   public boolean shouldStop()
-   {
-      return false;
-   }
-
-   @Override
-   public int getMaxProgress()
-   {
-      return -1;
-   }
-
-   @Override
-   public void setMaxProgress(int maxProgress)
-   {
-   }
-
-   @Override
-   public int getMinProgress()
-   {
-      return -1;
-   }
-
-   @Override
-   public void setMinProgress(int minProgress)
-   {
-   }
-
-   @Override
-   public int getCurrentProgress()
-   {
-      return -1;
-   }
-
-   @Override
-   public Throwable getError()
-   {
-      return null;
-   }
-
-   @Override
-   public void setError(Throwable error)
-   {
-   }
-
-   @Override
-   void start()
-   {
-   }
-
-   @Override
-   void finish()
-   {
-   }
-
-   @Override
-   public void setCurrentProgress(int currentProgress)
-   {
-   }
-
-   @Override
-   public void incrementProgress(int increment)
-   {
-   }
-
-   @Override
-   public void addListener(BackgroundProcessListener listener)
-   {
-   }
-
-   @Override
-   public boolean isStarted()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isFinished()
-   {
-      return false;
-   }
-
-   @Override
-   public long getEstimatedTimeRemaining()
-   {
-      return -1;
-   }
-
-   @Override
-   public long getElapsedTime()
-   {
-      return -1;
-   }
-
-   @Override
-   public long getStartTime()
-   {
-      return -1;
-   }
-
-   @Override
-   public long getFinishTime()
-   {
-      return -1;
+      try
+      {
+         // NB: Must provide a no-arg constructor
+         return (H)factory.create(new Class[0], new Object[0]);
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 }

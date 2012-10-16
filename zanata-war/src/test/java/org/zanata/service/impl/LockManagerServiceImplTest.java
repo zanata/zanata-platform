@@ -45,12 +45,12 @@ public class LockManagerServiceImplTest
    {
       Lock l1 = new Lock("prop1", "prop2", "prop3");
 
-      boolean lockAquired = lockManagerService.attain(l1);
+      boolean lockAquired = lockManagerService.checkAndAttain(l1);
 
       assertThat(lockAquired, is(true));
 
       lockManagerService.release(l1);
-      lockAquired = lockManagerService.attain(l1);
+      lockAquired = lockManagerService.checkAndAttain(l1);
 
       assertThat(lockAquired, is(true));
    }
@@ -64,19 +64,19 @@ public class LockManagerServiceImplTest
 
       assertThat(l1, equalTo(l1Eq));
 
-      boolean lockAquired = lockManagerService.attain(l1);
+      boolean lockAquired = lockManagerService.checkAndAttain(l1);
       assertThat(lockAquired, is(true));
 
       // Same lock, should not aquire
-      lockAquired = lockManagerService.attain(l1Eq);
+      lockAquired = lockManagerService.checkAndAttain(l1Eq);
       assertThat(lockAquired, is(false));
 
       // different lock
-      lockAquired = lockManagerService.attain(l2);
+      lockAquired = lockManagerService.checkAndAttain(l2);
       assertThat(lockAquired, is(true));
 
       lockManagerService.release(l1Eq);
-      lockAquired = lockManagerService.attain(l1Eq);
+      lockAquired = lockManagerService.checkAndAttain(l1Eq);
       assertThat(lockAquired, is(true));
 
       lockManagerService.release(l1Eq);

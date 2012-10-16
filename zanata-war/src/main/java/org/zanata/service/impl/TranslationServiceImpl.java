@@ -63,6 +63,7 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.process.MessagesProcessHandle;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
@@ -351,9 +352,9 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
-   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+   public void translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                          TranslationsResource translations, Set<String> extensions, MergeType mergeType,
-                                         boolean lock, String userName)
+                                         boolean lock, String userName, MessagesProcessHandle handle)
    {
       // Lock this document for push
       Lock transLock = null;
@@ -366,7 +367,7 @@ public class TranslationServiceImpl implements TranslationService
       try
       {
          this.initAuthenticatedAccountIfNotInSession( userName );
-         return this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType);
+         this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType, handle);
       }
       finally
       {
@@ -379,6 +380,13 @@ public class TranslationServiceImpl implements TranslationService
 
    @Override
    public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions, MergeType mergeType)
+   {
+      return this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType, MessagesProcessHandle.NO_HANDLE);
+   }
+
+   private List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+                                          TranslationsResource translations, Set<String> extensions, MergeType mergeType,
+                                          MessagesProcessHandle handle)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       if (hProjectIteration == null)
@@ -429,7 +437,9 @@ public class TranslationServiceImpl implements TranslationService
          if (textFlow == null)
          {
             // return warning for unknown resId to caller
-            warnings.add("Could not find text flow for message: " + incomingTarget.getContents());
+            String warning = "Could not find text flow for message: " + incomingTarget.getContents();
+            warnings.add(warning);
+            handle.addMessages(warning);
             log.warn("skipping TextFlowTarget with unknown resId: {}", resId);
          }
          else

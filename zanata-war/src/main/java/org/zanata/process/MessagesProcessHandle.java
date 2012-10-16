@@ -20,41 +20,48 @@
  */
 package org.zanata.process;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.async.Asynchronous;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class executes a Runnable Process asynchronously. Do not use this class directly.
- * Use {@link ProcessExecutor} instead.
+ * Generic process handle implementation that has a collection of messages to be
+ * constantly fed by the running process.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asynchronousExecutor")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
-@Slf4j
-public class AsynchronousExecutor
+public class MessagesProcessHandle extends ProcessHandle
 {
-   @Asynchronous
-   public <H extends ProcessHandle> void runAsynchronously(RunnableProcess<H> process, H handle)
+   public static final MessagesProcessHandle NO_HANDLE = NoProcessHandle.getNullProcessHandle(MessagesProcessHandle.class);
+
+   private List<String> messages = new ArrayList<String>();
+
+   public List<String> getMessages()
    {
-      try
+      if( messages == null )
       {
-         process.run(handle);
+         messages = new ArrayList<String>();
       }
-      catch( Throwable t )
+      return messages;
+   }
+
+   public void setMessages(List<String> messages)
+   {
+      this.messages = messages;
+   }
+
+   public void addMessages(String ... messages)
+   {
+      for( String m : messages )
       {
-         log.error("Exception with long running process: " + t.getMessage());
-         process.handleThrowable(handle, t);
+         this.getMessages().add(m);
       }
-      finally
+   }
+
+   public void clearMessages()
+   {
+      if( messages != null && messages.size() > 0 )
       {
-         handle.finish();
+         messages.clear();
       }
    }
 }

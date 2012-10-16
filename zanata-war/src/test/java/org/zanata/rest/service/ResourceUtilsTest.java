@@ -3,6 +3,8 @@ package org.zanata.rest.service;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,9 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+
 import org.junit.BeforeClass;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
@@ -30,13 +36,14 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.seam.SeamAutowire;
 
 @Test(groups = { "unit-tests" })
 public class ResourceUtilsTest
 {
    private static final Logger log = LoggerFactory.getLogger(ResourceUtilsTest.class);
 
-   private static ResourceUtils resourceUtils = new ResourceUtils();
+   private static ResourceUtils resourceUtils;
 
    @BeforeClass
    public static void logMemoryForTests()
@@ -46,6 +53,18 @@ public class ResourceUtilsTest
       log.info("total memory :" + runtime.totalMemory());
       log.info("unit tests free memory :" + runtime.freeMemory());
    }
+
+   @BeforeTest
+   public void initializeResourceUtils()
+   {
+      // Assume persistence
+      EntityManager mockEm = Mockito.mock(EntityManager.class);
+
+      resourceUtils = SeamAutowire.instance()
+                                  .use("entityManager", mockEm)
+                                  .autowire(ResourceUtils.class);
+   }
+
 
    @Test
    public void mergeNoTextFlows()

@@ -45,6 +45,7 @@ import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.process.MessagesProcessHandle;
 import org.zanata.process.ProcessHandle;
 import org.zanata.process.RunnableProcess;
 import org.zanata.rest.NoSuchEntityException;
@@ -147,7 +148,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       {
          ProcessStatus status = new ProcessStatus();
          status.setStatusCode(ProcessStatusCode.Failed);
-         status.setMessage( errorMessage );
+         status.getMessages().add(errorMessage);
          return status;
       }
    }
@@ -205,7 +206,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       {
          ProcessStatus status = new ProcessStatus();
          status.setStatusCode(ProcessStatusCode.Failed);
-         status.setMessage( errorMessage );
+         status.getMessages().add(errorMessage);
          return status;
       }
    }
@@ -224,7 +225,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
             this.getSecuredIteration(projectSlug, iterationSlug).getProject());
 
       String errorMessage = null;
-      ProcessHandle handle = new ProcessHandle();
+      MessagesProcessHandle handle = new MessagesProcessHandle();
 
       MergeType mergeType = null;
       try
@@ -244,22 +245,21 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       if( errorMessage == null )
       {
          processManagerServiceImpl.startProcess(
-               new RunnableProcess<ProcessHandle>()
+               new RunnableProcess<MessagesProcessHandle>()
                {
                   @Override
-                  protected void run(ProcessHandle handle) throws Throwable
+                  protected void run(MessagesProcessHandle handle) throws Throwable
                   {
                      TranslationService translationServiceImpl =
                            (TranslationService)Component.getInstance(TranslationServiceImpl.class);
 
                      // Translate
-                     List<String> warnings =
-                           translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
-                                 extensions, finalMergeType, true, userName);
+                     translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
+                           extensions, finalMergeType, true, userName, handle);
                   }
 
                   @Override
-                  protected void handleThrowable(ProcessHandle handle, Throwable t)
+                  protected void handleThrowable(MessagesProcessHandle handle, Throwable t)
                   {
                      AsynchronousProcessResourceService.log.error("Error pushing translations", t);
                      super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
@@ -274,7 +274,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       {
          ProcessStatus status = new ProcessStatus();
          status.setStatusCode(ProcessStatusCode.Failed);
-         status.setMessage( errorMessage );
+         status.getMessages().add(errorMessage);
          return status;
       }
    }
@@ -298,15 +298,22 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
          // Lock Exception, tell the client to keep waiting
          if( handle.getError() instanceof LockNotAcquiredException )
          {
-            status.setMessage("Waiting to acquire lock.");
+            status.getMessages().add("Waiting to acquire lock.");
             status.setStatusCode(ProcessStatusCode.NotAccepted);
          }
          else
          {
             status.setStatusCode(ProcessStatusCode.Failed);
-            status.setMessage(handle.getError().getMessage());
+            status.getMessages().add(handle.getError().getMessage());
          }
       }
+
+      if( handle instanceof MessagesProcessHandle )
+      {
+         MessagesProcessHandle messagesProcessHandle = (MessagesProcessHandle)handle;
+         status.setMessages( messagesProcessHandle.getMessages() );
+      }
+
       return status;
    }
 

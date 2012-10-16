@@ -28,6 +28,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.process.MessagesProcessHandle;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -82,6 +83,7 @@ public interface TranslationService
 
    /**
     * Translates all text flows in a document.
+    * This method is intended to be called using a {@link org.zanata.process.RunnableProcess}.
 
     * @param projectSlug The project to translate
     * @param iterationSlug The project iteration to translate
@@ -95,13 +97,12 @@ public interface TranslationService
     *             and locale.
     * @param userName User name that initiated this translation. If this method is called within a session context, the
     *                 recorded user will be the session's user. Otherwise, it will be the user specified by this parameter.
-    * @return A list of warnings about text flow targets that (a) could not be matched to any text flows in the source document
-    * or (b) whose states don't match their contents.
+    * @param handle The process handle to constantly communicate progress.
     * @see TranslationService#translateAllInDoc(String, String, String, org.zanata.common.LocaleId, org.zanata.rest.dto.resource.TranslationsResource, java.util.Set, org.zanata.common.MergeType)
     */
-   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+   public void translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                          TranslationsResource translations, Set<String> extensions, MergeType mergeType,
-                                         boolean lock, String userName);
+                                         boolean lock, String userName, MessagesProcessHandle handle);
 
    /**
     * Translates all text flows in a document.

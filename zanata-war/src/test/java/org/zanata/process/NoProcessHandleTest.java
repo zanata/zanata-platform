@@ -20,41 +20,19 @@
  */
 package org.zanata.process;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.async.Asynchronous;
-
-import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Test;
 
 /**
- * This class executes a Runnable Process asynchronously. Do not use this class directly.
- * Use {@link ProcessExecutor} instead.
- *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asynchronousExecutor")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
-@Slf4j
-public class AsynchronousExecutor
+@Test(groups = {"unit-tests"})
+public class NoProcessHandleTest
 {
-   @Asynchronous
-   public <H extends ProcessHandle> void runAsynchronously(RunnableProcess<H> process, H handle)
+   @Test
+   public void primitiveReturnTypes() throws Exception
    {
-      try
-      {
-         process.run(handle);
-      }
-      catch( Throwable t )
-      {
-         log.error("Exception with long running process: " + t.getMessage());
-         process.handleThrowable(handle, t);
-      }
-      finally
-      {
-         handle.finish();
-      }
+      ProcessHandle handle = NoProcessHandle.getNullProcessHandle(ProcessHandle.class);
+
+      handle.getCurrentProgress();
    }
 }
