@@ -14,8 +14,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 
-import javax.lang.model.util.Types;
-
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
@@ -323,6 +321,7 @@ public class TransUnitsTablePresenterTest
 
       ArgumentCaptor<TransHistoryItem> transHistoryCaptor = ArgumentCaptor.forClass(TransHistoryItem.class);
       InOrder inOrder = Mockito.inOrder(targetContentsPresenter, translationHistoryPresenter);
+      inOrder.verify(translationHistoryPresenter).popupAndShowLoading("concurrent edit detected");
       inOrder.verify(translationHistoryPresenter).displayEntries(transHistoryCaptor.capture(), eq(Collections.<TransHistoryItem>emptyList()));
       assertThat(transHistoryCaptor.getValue().getVersionNum(), Matchers.equalTo(updatedTransUnit.getVerNum().toString()));
       assertThat(transHistoryCaptor.getValue().getContents(), Matchers.equalTo(updatedTransUnit.getTargets()));

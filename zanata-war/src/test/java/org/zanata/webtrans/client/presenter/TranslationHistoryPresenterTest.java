@@ -126,11 +126,14 @@ public class TranslationHistoryPresenterTest
    public void willNotifyErrorAndHideTranslationHistoryOnFailure()
    {
       // Given:
+      when(messages.translationHistory()).thenReturn("translation history");
 
       // When: request history for trans unit id 1
       presenter.showTranslationHistory(transUnitId);
 
       // Then:
+      verify(dataProvider).setLoading(true);
+      verify(display).setTitle("translation history");
       verify(display).resetView();
       verify(display).center();
       assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
@@ -157,13 +160,7 @@ public class TranslationHistoryPresenterTest
       // When: request history for trans unit id 1
       presenter.showTranslationHistory(transUnitId);
 
-      // Then:
-      verify(dataProvider).setLoading(true);
-      verify(display).resetView();
-      verify(display).center();
-      assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
-
-      // And on success
+      // Then:on success
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
       MatcherAssert.assertThat(dataProvider.getList(), Matchers.contains(latest, historyItem));
@@ -171,7 +168,7 @@ public class TranslationHistoryPresenterTest
    }
 
    @Test
-   public void willShowTranslationHistoryWithCurrentValueOnSuccess()
+   public void willShowTranslationHistoryWithUnsavedValueOnSuccess()
    {
       // Given: text flow has one history item and one latest translation
       TransHistoryItem historyItem = historyItem("1");
@@ -180,21 +177,16 @@ public class TranslationHistoryPresenterTest
       // latest contents and current contents are NOT equal
       when(targetContentsPresenter.getNewTargets()).thenReturn(Lists.newArrayList("b"));
       when(messages.latestVersion(latestVersion)).thenReturn("2 latest");
-      when(messages.unsaved()).thenReturn("current");
+      when(messages.unsaved()).thenReturn("unsaved");
 
       // When: request history for trans unit id 1
       presenter.showTranslationHistory(transUnitId);
 
-      // Then:
-      verify(display).resetView();
-      verify(display).center();
-      assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
-
-      // And on success
+      // Then: on success
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
       MatcherAssert.assertThat(dataProvider.getList(), Matchers.hasSize(3));
-      MatcherAssert.assertThat(dataProvider.getList().get(0).getVersionNum(), Matchers.equalTo("current"));
+      MatcherAssert.assertThat(dataProvider.getList().get(0).getVersionNum(), Matchers.equalTo("unsaved"));
    }
 
    private static GetTranslationHistoryResult createTranslationHistory(TransHistoryItem latest, TransHistoryItem... historyItems)

@@ -78,8 +78,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       tabLayoutPanel.ensureDebugId("transHistoryTabPanel");
       setGlassEnabled(true);
 
-      getCaption().setText(messages.translationHistory());
-
       historyTable = setUpHistoryTable();
 
       SimplePager simplePager = new SimplePager();
@@ -192,6 +190,12 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider)
    {
       dataProvider.addDataDisplay(historyTable);
+   }
+
+   @Override
+   public void setTitle(String title)
+   {
+      getCaption().setText(title);
    }
 
    @Override

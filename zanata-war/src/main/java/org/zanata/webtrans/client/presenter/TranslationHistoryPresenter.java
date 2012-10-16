@@ -63,7 +63,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    public void showTranslationHistory(final TransUnitId transUnitId)
    {
-      popupAndShowLoading();
+      popupAndShowLoading(messages.translationHistory());
       dispatcher.execute(new GetTranslationHistoryAction(transUnitId), new AsyncCallback<GetTranslationHistoryResult>()
       {
          @Override
@@ -83,9 +83,11 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       });
    }
 
-   protected void popupAndShowLoading()
+   protected void popupAndShowLoading(String title)
    {
+
       listDataProvider.setLoading(true);
+      display.setTitle(title);
       display.resetView();
       display.center();
    }

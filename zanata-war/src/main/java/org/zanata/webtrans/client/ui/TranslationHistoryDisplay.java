@@ -42,4 +42,6 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
    void setSelectionModel(SelectionModel<TransHistoryItem> multiSelectionModel);
 
    void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider);
+
+   void setTitle(String title);
 }
