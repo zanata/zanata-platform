@@ -50,23 +50,11 @@ public class HistoryEntryComparisonPanel extends Composite
 
       grid.setText(ITEM_ONE_ROW, 0, itemOne.getVersionNum());
       List<String> itemOneContents = itemOne.getContents();
-      for (String content : itemOneContents)
-      {
-         HighlightingLabel label = new HighlightingLabel(content);
-         label.addStyleName(style.historyEntry());
-         itemOnePanel.add(label);
-      }
+      itemOnePanel.add(new TranslationWidget().asSyntaxHighlight(itemOneContents));
 
       grid.setText(ITEM_TWO_ROW, 0, itemTwo.getVersionNum());
       List<String> itemTwoContents = itemTwo.getContents();
-      for (int i = 0; i < itemOneContents.size(); i++)
-      {
-         String content1 = itemOneContents.get(i);
-         String content2 = itemTwoContents.get(i);
-         DiffMatchPatchLabel label = new DiffMatchPatchLabel(content1, content2);
-         label.addStyleName(style.historyEntry());
-         itemTwoPanel.add(label);
-      }
+      itemTwoPanel.add(new TranslationWidget().asDiff(itemOneContents, itemTwoContents));
    }
 
    public void clear()
@@ -95,8 +83,6 @@ public class HistoryEntryComparisonPanel extends Composite
    interface Styles extends CssResource
    {
 
-      String historyEntry();
-
       String header();
 
       String grid();
@@ -106,5 +92,7 @@ public class HistoryEntryComparisonPanel extends Composite
       String originRow();
 
       String versionCell();
+
+      String flipButton();
    }
 }

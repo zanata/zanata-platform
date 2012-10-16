@@ -4,12 +4,6 @@
 
     <ui:style field="style" type="org.zanata.webtrans.client.ui.HistoryEntryComparisonPanel.Styles">
 
-        .historyEntry {
-            padding-left: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px dotted grey;
-        }
-
         .versionCell {
             width: 15%;
             padding-left: 10px;

@@ -3,13 +3,6 @@
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
 
     <ui:style field="style" type="org.zanata.webtrans.client.ui.TranslationHistoryView.Styles" >
-        .closeButton {
-            width: 50px;
-            margin: 10px 5px 5px 0;
-            float: right;
-            text-align: center;
-        }
-
         .pasteButton Button {
             font-size: smaller;
         }
@@ -40,6 +33,6 @@
                 <z:HistoryEntryComparisonPanel ui:field="comparisonPanel" visible="false"/>
             </g:tab>
         </g:TabLayoutPanel>
-        <g:PushButton ui:field="closeButton" text="{messages.close}" addStyleNames="{style.closeButton}"/>
+        <z:DialogBoxCloseButton ui:field="closeButton" />
     </g:HTMLPanel>
 </ui:UiBinder>

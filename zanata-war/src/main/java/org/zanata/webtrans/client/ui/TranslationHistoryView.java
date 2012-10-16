@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -58,8 +59,8 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    HistoryEntryComparisonPanel comparisonPanel;
    @UiField
    Styles style;
-   @UiField
-   PushButton closeButton;
+   @UiField(provided = true)
+   DialogBoxCloseButton closeButton;
    @UiField
    TabLayoutPanel tabLayoutPanel;
 
@@ -71,6 +72,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public TranslationHistoryView(EventBus eventBus)
    {
       super(true, true);
+      closeButton = new DialogBoxCloseButton(this);
       HTMLPanel container = uiBinder.createAndBindUi(this);
       this.eventBus = eventBus;
       ensureDebugId("transHistory");
@@ -162,12 +164,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       tabLayoutPanel.selectTab(COMPARISON_TAB_INDEX);
    }
 
-   @UiHandler("closeButton")
-   public void onCloseButtonClick(ClickEvent event)
-   {
-      hide();
-   }
-
    @Override
    public void showDiff(TransHistoryItem one, TransHistoryItem two, String description)
    {
@@ -240,12 +236,8 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
          @Override
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
-
-            for (String content : contents)
-            {
-               HighlightingLabel label = new HighlightingLabel(content);
-               appendContent(sb, label.getElement().getString());
-            }
+            SafeHtml safeHtml = new TranslationWidget().asSyntaxHighlight(contents).toSafeHtml();
+            sb.appendHtmlConstant(safeHtml.asString());
          }
       };
       return new Column<TransHistoryItem, List<String>>(contentCell)
@@ -297,11 +289,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       };
    }
 
-   private static void appendContent(SafeHtmlBuilder sb, String content)
-   {
-      sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
-   }
-
    interface TranslationHistoryViewUiBinder extends UiBinder<HTMLPanel, TranslationHistoryView>
    {
    }
@@ -309,8 +296,8 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    interface Styles extends CssResource
    {
 
-      String closeButton();
-
       String pasteButton();
+
+      String compareButton();
    }
 }

@@ -240,6 +240,10 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       {
          // updatedTU is our active row but done by another user
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
+         if (targetContentsPresenter.currentEditorContentHasChanged())
+         {
+            display.showConcurrentEdit(updatedTransUnit, targetContentsPresenter.getNewTargets());
+         }
       }
       targetContentsPresenter.updateRow(updatedTransUnit);
    }

@@ -26,6 +26,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.inject.ImplementedBy;
 
@@ -47,6 +48,8 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
    void applySelectedStyle(int rowIndex);
 
    void delayRefresh();
+
+   void showConcurrentEdit(TransUnit updatedTransUnit, List<String> newTargets);
 
    interface Listener
    {

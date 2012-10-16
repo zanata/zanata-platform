@@ -309,6 +309,11 @@ public class TargetContentsPresenter implements
       return currentTransUnitId;
    }
 
+   public TransUnit getCachedValue()
+   {
+      return hasSelectedRow() ? display.getCachedValue() : null;
+   }
+
    @Override
    public boolean isDisplayButtons()
    {
