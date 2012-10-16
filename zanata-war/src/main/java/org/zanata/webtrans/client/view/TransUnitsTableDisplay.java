@@ -49,8 +49,6 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
 
    void delayRefresh();
 
-   void showConcurrentEdit(TransUnit updatedTransUnit, List<String> newTargets);
-
    interface Listener
    {
       void onRowSelected(int rowIndex);

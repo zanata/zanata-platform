@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -236,7 +235,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
          @Override
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
-            SafeHtml safeHtml = new TranslationWidget().asSyntaxHighlight(contents).toSafeHtml();
+            SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlight(contents).toSafeHtml();
             sb.appendHtmlConstant(safeHtml.asString());
          }
       };

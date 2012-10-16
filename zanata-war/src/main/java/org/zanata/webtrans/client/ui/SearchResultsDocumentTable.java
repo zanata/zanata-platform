@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -29,9 +28,7 @@ import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.util.StringNotEmptyPredicate;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
@@ -229,7 +226,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
             Iterable<String> notEmptyContents = Iterables.filter(contents, StringNotEmptyPredicate.INSTANCE);
-            SafeHtml safeHtml = new TranslationWidget().asSyntaxHighlightAndSearch(notEmptyContents, highlightString).toSafeHtml();
+            SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlightAndSearch(notEmptyContents, highlightString).toSafeHtml();
             sb.appendHtmlConstant(safeHtml.asString());
          }
       })
@@ -255,12 +252,12 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
             List<String> contents = info.getTransUnit().getTargets();
             if (info.getPreviewState() == PreviewState.Show)
             {
-               SafeHtml safeHtml = new TranslationWidget().asDiff(contents, info.getPreview().getContents()).toSafeHtml();
+               SafeHtml safeHtml = TranslationDisplay.asDiff(contents, info.getPreview().getContents()).toSafeHtml();
                sb.appendHtmlConstant(safeHtml.asString());
             }
             else
             {
-               SafeHtml safeHtml = new TranslationWidget().asSyntaxHighlightAndSearch(contents, highlightString).toSafeHtml();
+               SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlightAndSearch(contents, highlightString).toSafeHtml();
                sb.appendHtmlConstant(safeHtml.asString());
             }
          }

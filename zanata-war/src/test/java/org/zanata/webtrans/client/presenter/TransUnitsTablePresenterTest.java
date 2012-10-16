@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -10,12 +11,16 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
+
+import javax.lang.model.util.Types;
 
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -38,6 +43,7 @@ import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -67,12 +73,14 @@ public class TransUnitsTablePresenterTest
    private TransUnitSaveService saveService;
    @Mock
    private WebTransMessages messages;
+   @Mock
+   private TranslationHistoryPresenter translationHistoryPresenter;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, messages);
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);
@@ -269,7 +277,7 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
-   public void willDetectSaveDoneByAnotherUser()
+   public void willDetectSaveDoneByAnotherUserAndCurrentUserDoNotHaveUnsavedChange()
    {
       // Given: coming client id is NOT current user
       EditorClientId currentUser = new EditorClientId("session1", 1);
@@ -277,6 +285,8 @@ public class TransUnitsTablePresenterTest
       TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
       presenter.setStateForTesting(updatedTransUnit.getId());
       when(messages.concurrentEdit()).thenReturn("concurrent edit detected");
+      // current user does not have unsaved change
+      when(targetContentsPresenter.currentEditorContentHasChanged()).thenReturn(false);
 
       // When: update type is save fuzzy
       presenter.refreshRow(updatedTransUnit, new EditorClientId("session2", 2), TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
@@ -285,8 +295,38 @@ public class TransUnitsTablePresenterTest
       ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().getMessage(), Matchers.equalTo("concurrent edit detected"));
+      verify(targetContentsPresenter).currentEditorContentHasChanged();
       verify(targetContentsPresenter).updateRow(updatedTransUnit);
       verifyNoMoreInteractions(targetContentsPresenter);
+      verifyZeroInteractions(translationHistoryPresenter);
+   }
+
+   @Test
+   public void willDetectSaveDoneByAnotherUserAndCurrentUserHasUnsavedChange()
+   {
+      // Given: coming client id is NOT current user
+      EditorClientId currentUser = new EditorClientId("session1", 1);
+      when(translatorService.getCurrentEditorClientId()).thenReturn(currentUser);
+      TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
+      presenter.setStateForTesting(updatedTransUnit.getId());
+      when(messages.concurrentEdit()).thenReturn("concurrent edit detected");
+      // current user does not have unsaved change
+      when(targetContentsPresenter.currentEditorContentHasChanged()).thenReturn(true);
+
+      // When: update type is save fuzzy
+      presenter.refreshRow(updatedTransUnit, new EditorClientId("session2", 2), TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+
+      // Then:
+      ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      assertThat(eventCaptor.getValue().getMessage(), Matchers.equalTo("concurrent edit detected"));
+
+      ArgumentCaptor<TransHistoryItem> transHistoryCaptor = ArgumentCaptor.forClass(TransHistoryItem.class);
+      InOrder inOrder = Mockito.inOrder(targetContentsPresenter, translationHistoryPresenter);
+      inOrder.verify(translationHistoryPresenter).displayEntries(transHistoryCaptor.capture(), eq(Collections.<TransHistoryItem>emptyList()));
+      assertThat(transHistoryCaptor.getValue().getVersionNum(), Matchers.equalTo(updatedTransUnit.getVerNum().toString()));
+      assertThat(transHistoryCaptor.getValue().getContents(), Matchers.equalTo(updatedTransUnit.getTargets()));
+      inOrder.verify(targetContentsPresenter).updateRow(updatedTransUnit);
    }
 
    @Test

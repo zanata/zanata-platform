@@ -12,9 +12,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 public class HistoryEntryComparisonPanel extends Composite
 {
@@ -27,9 +28,9 @@ public class HistoryEntryComparisonPanel extends Composite
    @UiField
    WebTransMessages messages;
    @UiField
-   VerticalPanel itemTwoPanel;
+   SimplePanel itemTwoPanel;
    @UiField
-   VerticalPanel itemOnePanel;
+   SimplePanel itemOnePanel;
    @UiField
    PushButton flipButton;
    @UiField
@@ -50,11 +51,11 @@ public class HistoryEntryComparisonPanel extends Composite
 
       grid.setText(ITEM_ONE_ROW, 0, itemOne.getVersionNum());
       List<String> itemOneContents = itemOne.getContents();
-      itemOnePanel.add(new TranslationWidget().asSyntaxHighlight(itemOneContents));
+      itemOnePanel.setWidget(new InlineHTML(TranslationDisplay.asSyntaxHighlight(itemOneContents).toSafeHtml()));
 
       grid.setText(ITEM_TWO_ROW, 0, itemTwo.getVersionNum());
       List<String> itemTwoContents = itemTwo.getContents();
-      itemTwoPanel.add(new TranslationWidget().asDiff(itemOneContents, itemTwoContents));
+      itemTwoPanel.setWidget(new InlineHTML(TranslationDisplay.asDiff(itemOneContents, itemTwoContents).toSafeHtml()));
    }
 
    public void clear()

@@ -63,9 +63,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    public void showTranslationHistory(final TransUnitId transUnitId)
    {
-      listDataProvider.setLoading(true);
-      display.resetView();
-      display.center();
+      popupAndShowLoading();
       dispatcher.execute(new GetTranslationHistoryAction(transUnitId), new AsyncCallback<GetTranslationHistoryResult>()
       {
          @Override
@@ -80,26 +78,37 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          public void onSuccess(GetTranslationHistoryResult result)
          {
             Log.info("get back " + result.getHistoryItems().size() + " items for " + transUnitId);
-            //here we CANNOT use listDataProvider.setList() because we need to retain the same list reference which is used by ColumnSortEvent.ListHandler
-            listDataProvider.getList().clear();
-            TransHistoryItem latest = result.getLatest();
-            if (latest != null)
-            {
-               //add indicator for latest version
-               latest.setVersionNum(messages.latestVersion(latest.getVersionNum()));
-               List<String> newTargets = targetContentsPresenter.getNewTargets();
-               if (!Objects.equal(latest.getContents(), newTargets))
-               {
-                  listDataProvider.getList().add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "", ""));
-               }
-               listDataProvider.getList().add(latest);
-            }
-            listDataProvider.getList().addAll(result.getHistoryItems());
-            Comparator<TransHistoryItem> reverseComparator = Collections.reverseOrder(TransHistoryVersionComparator.COMPARATOR);
-            Collections.sort(listDataProvider.getList(), reverseComparator);
-            listDataProvider.setLoading(false);
+            displayEntries(result.getLatest(), result.getHistoryItems());
          }
       });
+   }
+
+   protected void popupAndShowLoading()
+   {
+      listDataProvider.setLoading(true);
+      display.resetView();
+      display.center();
+   }
+
+   protected void displayEntries(TransHistoryItem latest, List<TransHistoryItem> otherEntries)
+   {
+      //here we CANNOT use listDataProvider.setList() because we need to retain the same list reference which is used by ColumnSortEvent.ListHandler
+      listDataProvider.getList().clear();
+      if (latest != null)
+      {
+         //add indicator for latest version
+         latest.setVersionNum(messages.latestVersion(latest.getVersionNum()));
+         List<String> newTargets = targetContentsPresenter.getNewTargets();
+         if (!Objects.equal(latest.getContents(), newTargets))
+         {
+            listDataProvider.getList().add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "", ""));
+         }
+         listDataProvider.getList().add(latest);
+      }
+      listDataProvider.getList().addAll(otherEntries);
+      Comparator<TransHistoryItem> reverseComparator = Collections.reverseOrder(TransHistoryVersionComparator.COMPARATOR);
+      Collections.sort(listDataProvider.getList(), reverseComparator);
+      listDataProvider.setLoading(false);
    }
 
    @Override

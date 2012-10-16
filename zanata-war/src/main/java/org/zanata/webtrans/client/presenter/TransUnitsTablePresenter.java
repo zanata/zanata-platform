@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -50,6 +51,7 @@ import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -78,6 +80,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 {
 
    private final TransUnitsTableDisplay display;
+   private final TranslationHistoryPresenter translationHistoryPresenter;
    private final WebTransMessages messages;
    private final EventBus eventBus;
    private final NavigationService navigationService;
@@ -96,11 +99,14 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    SourceContentsPresenter sourceContentsPresenter,
                                    TargetContentsPresenter targetContentsPresenter,
                                    TranslatorInteractionService translatorService,
-                                   TransUnitSaveService transUnitSaveService, WebTransMessages messages)
+                                   TransUnitSaveService transUnitSaveService,
+                                   TranslationHistoryPresenter translationHistoryPresenter,
+                                   WebTransMessages messages)
    // @formatter:on
    {
       super(display, eventBus);
       this.display = display;
+      this.translationHistoryPresenter = translationHistoryPresenter;
       this.messages = messages;
       this.display.setRowSelectionListener(this);
 
@@ -242,7 +248,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
          if (targetContentsPresenter.currentEditorContentHasChanged())
          {
-            display.showConcurrentEdit(updatedTransUnit, targetContentsPresenter.getNewTargets());
+            translationHistoryPresenter.popupAndShowLoading();
+            TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
+            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem>emptyList());
          }
       }
       targetContentsPresenter.updateRow(updatedTransUnit);

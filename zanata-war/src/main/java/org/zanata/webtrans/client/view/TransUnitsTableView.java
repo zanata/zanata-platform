@@ -3,28 +3,18 @@ package org.zanata.webtrans.client.view;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
-import org.zanata.webtrans.client.ui.Highlighting;
-import org.zanata.webtrans.client.ui.HighlightingLabel;
-import org.zanata.webtrans.client.ui.HistoryEntryComparisonPanel;
 import org.zanata.webtrans.client.ui.LoadingPanel;
-import org.zanata.webtrans.client.ui.TranslationWidget;
-import org.zanata.webtrans.shared.model.TransHistoryItem;
-import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
@@ -186,28 +176,6 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    public void delayRefresh()
    {
       timer.schedule(100);
-   }
-
-   @Override
-   public void showConcurrentEdit(TransUnit updatedTransUnit, List<String> newTargets)
-   {
-      HistoryEntryComparisonPanel comparisonPanel = new HistoryEntryComparisonPanel();
-      TransHistoryItem latest = new TransHistoryItem(messages.latestVersion(updatedTransUnit.getVerNum().toString()), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
-      TransHistoryItem unsaved = new TransHistoryItem(messages.unsaved(), newTargets, null, "", "");
-      comparisonPanel.compare(unsaved, latest);
-
-      final DialogBox dialogBox = new DialogBox(false, true);
-      dialogBox.setGlassEnabled(true);
-      dialogBox.ensureDebugId("concurrentEdit");
-      dialogBox.getCaption().setText(messages.concurrentEdit());
-
-      TranslationWidget unsavedContent = new TranslationWidget().asSyntaxHighlight(newTargets);
-      HTMLPanel content = new HTMLPanel(unsavedContent.toSafeHtml());
-      content.add(comparisonPanel);
-      content.add(new DialogBoxCloseButton(dialogBox));
-      content.setSize("800px", "600px");
-      dialogBox.setWidget(new ScrollPanel(content));
-      dialogBox.center();
    }
 
    @Override

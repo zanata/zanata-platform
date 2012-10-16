@@ -57,13 +57,13 @@
             <g:row styleName="{style.originRow}">
                 <g:cell styleName="{style.versionCell}"/>
                 <g:customCell styleName="{style.contentCell}">
-                    <g:VerticalPanel ui:field="itemOnePanel" width="100%" />
+                    <g:SimplePanel ui:field="itemOnePanel" width="100%" />
                 </g:customCell>
             </g:row>
             <g:row>
                 <g:cell styleName="{style.versionCell}" />
                 <g:customCell styleName="{style.contentCell}">
-                    <g:VerticalPanel ui:field="itemTwoPanel" width="100%" />
+                    <g:SimplePanel ui:field="itemTwoPanel" width="100%" />
                 </g:customCell>
             </g:row>
         </g:Grid>
