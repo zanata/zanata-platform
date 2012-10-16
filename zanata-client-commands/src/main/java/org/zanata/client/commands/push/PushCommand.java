@@ -401,7 +401,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
             switch (status.getStatusCode())
             {
                case Failed:
-                  throw new RuntimeException("Failed while pushing document: " + status.getMessage());
+                  throw new RuntimeException("Failed while pushing document: " + status.getMessages());
 
                case Finished:
                   waitForCompletion = false;
@@ -511,7 +511,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
             switch (status.getStatusCode())
             {
                case Failed:
-                  throw new RuntimeException("Failed while pushing document translations: " + status.getMessage());
+                  throw new RuntimeException("Failed while pushing document translations: " + status.getMessages());
 
                case Finished:
                   waitForCompletion = false;
@@ -539,6 +539,16 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   asyncProcessResource.getProcessStatus(status.getUrl());
          }
          ConsoleUtils.endProgressFeedback();
+
+         // Show warning messages
+         if( status.getMessages().size() > 0 )
+         {
+            log.warn("Pushed translations with warnings:");
+            for( String mssg : status.getMessages() )
+            {
+               log.warn(mssg);
+            }
+         }
       }
       else
       {
