@@ -53,6 +53,7 @@ public class LockManagerServiceImplTest
       lockAquired = lockManagerService.checkAndAttain(l1);
 
       assertThat(lockAquired, is(true));
+      lockManagerService.release(l1);
    }
 
    @Test

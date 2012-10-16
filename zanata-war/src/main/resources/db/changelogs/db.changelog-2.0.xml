@@ -399,4 +399,61 @@
         <dropTable tableName="HTextFlowContent" cascadeConstraints="false"/>
     </changeSet>
 
+    <changeSet id="13" author="camunoz@redhat.com">
+        <comment>Create Content fields on HTextFlowTarget table.</comment>
+        <addColumn tableName="HTextFlowTarget">
+            <column name="content0" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content1" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content2" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content3" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content4" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content5" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="14" author="camunoz@redhat.com">
+        <comment>Migrate HTextFlowTargetContent data to HTextFlowTarget table.</comment>
+        <sql>
+            update HTextFlowTarget tft set content0 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 0 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content1 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 1 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content2 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 2 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content3 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 3 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content4 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 4 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content5 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 5 )
+        </sql>
+    </changeSet>
+
+    <changeSet id="15" author="camunoz@redhat.com">
+        <comment>Remove HTextFlowTargetContent table.</comment>
+        <dropTable tableName="HTextFlowTargetContent" cascadeConstraints="false"/>
+    </changeSet>
+
 </databaseChangeLog>

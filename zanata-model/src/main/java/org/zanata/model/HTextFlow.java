@@ -145,10 +145,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    // Only for internal use (persistence transient)
    @Setter(AccessLevel.PRIVATE)
    private HTextFlowHistory initialState;
-   
-   // Only for internal use (persistence transient)
-   @Setter(AccessLevel.PRIVATE)
-   private boolean lazyRelationsCopied = false;
 
    public HTextFlow(HDocument document, String resId, String content)
    {
@@ -492,7 +488,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    {
       this.oldRevision = this.revision;
       this.initialState = new HTextFlowHistory(this);
-      this.lazyRelationsCopied = false;
    }
 
 }

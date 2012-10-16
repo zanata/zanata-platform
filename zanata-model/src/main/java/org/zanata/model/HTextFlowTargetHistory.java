@@ -99,9 +99,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
       this.textFlowRevision = target.getTextFlowRevision();
       this.textFlowTarget = target;
       this.versionNum = target.getVersionNum();
-      // This cannot be done at this point due to an issue with hibernate in which a listener cannot access
-      // loading collections
-      //this.setContents(target.getContents()); 
+      this.setContents(target.getContents());
    }
 
    @Id

@@ -48,13 +48,10 @@
             plural="false"
             wordCount="2"
             contentHash="e0a15a5bbf6075a9ef58b8978b7b8634"
+            content0="Source Content"
             />
     <!-- 'Content Hash' and 'content' match, make sure to keep it that way -->
-    <HTextFlowContent
-            pos="0"
-            content="Source Content"
-            text_flow_id="100"
-            />
+
     <!-- de Target -->
     <HTextFlowTarget
             id="100"
@@ -65,11 +62,7 @@
             state="2"
             tf_id="100"
             tf_revision="1"
-            />
-    <HTextFlowTargetContent
-            pos="0"
-            content="target-content-de"
-            text_flow_target_id="100"
+            content0="target-content-de"
             />
     <!-- es Target -->
     <HTextFlowTarget
@@ -81,11 +74,7 @@
             state="2"
             tf_id="100"
             tf_revision="1"
-            />
-    <HTextFlowTargetContent
-            pos="0"
-            content="target-content-es"
-            text_flow_target_id="101"
+            content0="target-content-es"
             />
     <HProjectIteration id="101"
                        versionNum="1"
