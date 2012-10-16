@@ -553,13 +553,6 @@ td.ApprovedStateDecoration div div div
 	background:#F3F7FB;
 }
 
-.translationContainer .resultTable pre {
-   border: 1px dotted #C9C9C9;
-   margin-top: 2px;
-   padding: 2px;
-   margin-bottom: 2px;
-}
-
 .resultTable tr:first-child:hover
 {
 	background:none;
