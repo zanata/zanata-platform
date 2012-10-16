@@ -20,7 +20,10 @@
  */
 package org.zanata.rest.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -58,7 +61,7 @@ public class ProcessStatus
 
    private int percentageComplete;
 
-   private String message;
+   private List<String> messages;
 
    private ProcessStatusCode statusCode;
 
@@ -85,15 +88,20 @@ public class ProcessStatus
       this.percentageComplete = percentageComplete;
    }
 
-   @XmlElement
-   public String getMessage()
+   @XmlElement(name = "message")
+   @XmlElementWrapper(name = "messages", required = true)
+   public List<String> getMessages()
    {
-      return message;
+      if( messages == null )
+      {
+         messages = new ArrayList<String>();
+      }
+      return messages;
    }
 
-   public void setMessage(String message)
+   public void setMessages(List<String> messages)
    {
-      this.message = message;
+      this.messages = messages;
    }
 
    @XmlElement
