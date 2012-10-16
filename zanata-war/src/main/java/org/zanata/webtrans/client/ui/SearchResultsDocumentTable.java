@@ -226,7 +226,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
             Iterable<String> notEmptyContents = Iterables.filter(contents, StringNotEmptyPredicate.INSTANCE);
-            SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlightAndSearch(notEmptyContents, highlightString).toSafeHtml();
+            SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlightAndSearch(notEmptyContents, highlightString).toSafeHtml();
             sb.appendHtmlConstant(safeHtml.asString());
          }
       })
@@ -252,12 +252,12 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
             List<String> contents = info.getTransUnit().getTargets();
             if (info.getPreviewState() == PreviewState.Show)
             {
-               SafeHtml safeHtml = TranslationDisplay.asDiff(contents, info.getPreview().getContents()).toSafeHtml();
+               SafeHtml safeHtml = TextContentsDisplay.asDiff(contents, info.getPreview().getContents()).toSafeHtml();
                sb.appendHtmlConstant(safeHtml.asString());
             }
             else
             {
-               SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlightAndSearch(contents, highlightString).toSafeHtml();
+               SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlightAndSearch(contents, highlightString).toSafeHtml();
                sb.appendHtmlConstant(safeHtml.asString());
             }
          }

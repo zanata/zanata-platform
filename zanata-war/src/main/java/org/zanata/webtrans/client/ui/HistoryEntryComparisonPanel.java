@@ -51,11 +51,11 @@ public class HistoryEntryComparisonPanel extends Composite
 
       grid.setText(ITEM_ONE_ROW, 0, itemOne.getVersionNum());
       List<String> itemOneContents = itemOne.getContents();
-      itemOnePanel.setWidget(new InlineHTML(TranslationDisplay.asSyntaxHighlight(itemOneContents).toSafeHtml()));
+      itemOnePanel.setWidget(new InlineHTML(TextContentsDisplay.asSyntaxHighlight(itemOneContents).toSafeHtml()));
 
       grid.setText(ITEM_TWO_ROW, 0, itemTwo.getVersionNum());
       List<String> itemTwoContents = itemTwo.getContents();
-      itemTwoPanel.setWidget(new InlineHTML(TranslationDisplay.asDiff(itemOneContents, itemTwoContents).toSafeHtml()));
+      itemTwoPanel.setWidget(new InlineHTML(TextContentsDisplay.asDiff(itemOneContents, itemTwoContents).toSafeHtml()));
    }
 
    public void clear()
