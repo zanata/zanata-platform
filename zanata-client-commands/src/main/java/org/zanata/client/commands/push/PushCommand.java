@@ -82,7 +82,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       super(opts, factory, sourceDocResource, translationResources, uri);
       copyTransResource = factory.getCopyTransResource();
-      asyncProcessResource = getRequestFactory().getAsynchronousProcessResource();
+      asyncProcessResource = factory.getAsynchronousProcessResource();
    }
 
    private AbstractPushStrategy getStrategy(String strategyType)
