@@ -42,7 +42,6 @@ public class RevertTransUnitUpdatesHandlerTest
    private RevertTransUnitUpdatesHandler handler;
    @Mock
    private TranslationService translationServiceImpl;
-   private TransUnitTransformer transUnitTransformer;
    @Mock
    private SecurityService securityServiceImpl;
    @Mock
@@ -56,7 +55,7 @@ public class RevertTransUnitUpdatesHandlerTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      transUnitTransformer = SeamAutowire.instance().use("resourceUtils", new ResourceUtils()).autowire(TransUnitTransformer.class);
+      TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", new ResourceUtils()).autowire(TransUnitTransformer.class);
       // @formatter:off
       handler = SeamAutowire.instance()
             .use("translationServiceImpl", translationServiceImpl)

@@ -227,7 +227,9 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
    public Map<String, HTextFlow> getAllTextFlows()
    {
       if (allTextFlows == null)
+      {
          allTextFlows = new HashMap<String, HTextFlow>();
+      }
       return allTextFlows;
    }
 
@@ -250,7 +252,9 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
    public List<HTextFlow> getTextFlows()
    {
       if (textFlows == null)
+      {
          textFlows = new ArrayList<HTextFlow>();
+      }
       return textFlows;
       // return ImmutableList.copyOf(textFlows);
    }
@@ -280,7 +284,9 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
    public Map<HLocale, HPoTargetHeader> getPoTargetHeaders()
    {
       if (poTargetHeaders == null)
+      {
          poTargetHeaders = new HashMap<HLocale, HPoTargetHeader>();
+      }
       return poTargetHeaders;
    }
 

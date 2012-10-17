@@ -13,6 +13,7 @@
  			<run>
  				<include name=".*"/>
  				<exclude name="seam-tests"/>
+ 				<exclude name="manual-tests"/>
  			</run>
  		</groups>
  		<packages>
