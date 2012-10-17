@@ -723,7 +723,7 @@
       <action execute="#{breadcrumbs.clear}"/>
       <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
       <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(copyTransAction.projectSlug), copyTransAction.projectSlug)}"/>
-      <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(copyTransAction.projectSlug).concat('&amp;iterationSlug=').concat(copyTransAction.iterationSlug), copyTransAction.iterationSlug)}"/>
+      <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(copyTransAction.projectSlug).concat('/').concat(copyTransAction.iterationSlug), copyTransAction.iterationSlug)}"/>
       <action execute="#{breadcrumbs.addLocation('', messages['jsf.iteration.CopyTrans'])}"/>
 
       <navigation from-action="#{copyTransAction.startCopyTrans}">
