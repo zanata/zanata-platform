@@ -142,6 +142,18 @@ public class FileService implements FileResource
    private Session session;
 
    @Override
+   @GET
+   @Path(ACCEPTED_TYPES_RESOURCE)
+   @Produces( MediaType.TEXT_PLAIN )
+   // /file/accepted_types
+   public Response acceptedFileTypes()
+   {
+      StringSet acceptedTypes = new StringSet("");
+      acceptedTypes.addAll(translationFileServiceImpl.getSupportedExtensions());
+      return Response.ok(acceptedTypes.toString()).build();
+   }
+
+   @Override
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
