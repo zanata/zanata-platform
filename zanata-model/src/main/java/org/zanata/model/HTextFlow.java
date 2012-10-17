@@ -32,7 +32,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
@@ -43,16 +42,14 @@ import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
@@ -115,8 +112,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    private boolean obsolete = false;
 
-   private List<String> contents;
-
    private Map<Long, HTextFlowTarget> targets;
 
    private Map<Integer, HTextFlowHistory> history;
@@ -131,6 +126,18 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    
    private boolean plural;
 
+   private String content0;
+
+   private String content1;
+
+   private String content2;
+
+   private String content3;
+
+   private String content4;
+
+   private String content5;
+
    // Only for internal use (persistence transient)
    @Setter(AccessLevel.PRIVATE)
    private Integer oldRevision;
@@ -138,10 +145,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    // Only for internal use (persistence transient)
    @Setter(AccessLevel.PRIVATE)
    private HTextFlowHistory initialState;
-   
-   // Only for internal use (persistence transient)
-   @Setter(AccessLevel.PRIVATE)
-   private boolean lazyRelationsCopied = false;
 
    public HTextFlow(HDocument document, String resId, String content)
    {
@@ -247,39 +250,128 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    @Override
    @NotEmpty
-   @Type(type = "text")
-   @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
-   @JoinTable(name = "HTextFlowContent", 
-      joinColumns = @JoinColumn(name = "text_flow_id")
-   )
-   @IndexColumn(name = "pos", nullable = false)
-   @Column(name = "content", nullable = false)
+   @Transient
    public List<String> getContents()
    {
-      // Copy lazily loaded relations to the history object as this cannot be done
-      // in the entity callbacks
-      copyLazyLoadedRelationsToHistory();
-      
-      if( contents == null )
+      List<String> contents = new ArrayList<String>();
+      boolean populating = false;
+      for( int i = MAX_PLURALS-1; i >= 0; i-- )
       {
-         contents = new ArrayList<String>();
+         String c = this.getContent(i);
+         if( c != null )
+         {
+            populating = true;
+         }
+
+         if( populating )
+         {
+            contents.add(0, c);
+         }
       }
       return contents;
    }
 
    public void setContents(List<String> contents)
    {
-      // Copy lazily loaded relations to the history object as this cannot be done
-      // in the entity callbacks
-      copyLazyLoadedRelationsToHistory();
-
-      if (!Objects.equal(this.contents, contents))
+      if(!Objects.equal(contents, this.getContents()))
       {
-         this.contents = new ArrayList<String>(contents);
-         updateWordCount();
+         for( int i=0; i<contents.size(); i++ )
+         {
+            this.setContent(i, contents.get(i));
+         }
          updateContentHash();
+         updateWordCount();
       }
+   }
+
+   private String getContent(int idx)
+   {
+      switch (idx)
+      {
+         case 0:
+            return content0;
+
+         case 1:
+            return content1;
+
+         case 2:
+            return content2;
+
+         case 3:
+            return content3;
+
+         case 4:
+            return content4;
+
+         case 5:
+            return content5;
+
+         default:
+            throw new RuntimeException("Invalid Content index: " + idx);
+      }
+   }
+
+   private void setContent(int idx, String content)
+   {
+      switch (idx)
+      {
+         case 0:
+            content0 = content;
+            break;
+
+         case 1:
+            content1 = content;
+            break;
+
+         case 2:
+            content2 = content;
+            break;
+
+         case 3:
+            content3 = content;
+            break;
+
+         case 4:
+            content4 = content;
+            break;
+
+         case 5:
+            content5 = content;
+            break;
+
+         default:
+            throw new RuntimeException("Invalid Content index: " + idx);
+      }
+   }
+
+   protected String getContent0()
+   {
+      return content0;
+   }
+
+   protected String getContent1()
+   {
+      return content1;
+   }
+
+   protected String getContent2()
+   {
+      return content2;
+   }
+
+   protected String getContent3()
+   {
+      return content3;
+   }
+
+   protected String getContent4()
+   {
+      return content4;
+   }
+
+   protected String getContent5()
+   {
+      return content5;
    }
 
    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "textFlow")
@@ -341,7 +433,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    private void updateWordCount()
    {
-      if (document == null || contents == null)
+      if (document == null)
       {
          // come back when the not-null constraints are satisfied!
          return;
@@ -396,19 +488,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    {
       this.oldRevision = this.revision;
       this.initialState = new HTextFlowHistory(this);
-      this.lazyRelationsCopied = false;
-   }
-   
-   /**
-    * Copies all lazy loaded relations to the history object.
-    */
-   private void copyLazyLoadedRelationsToHistory()
-   {
-      if( this.initialState != null && this.initialState.getContents() == null && !this.lazyRelationsCopied )
-      {
-         this.initialState.setContents( this.contents );
-         this.lazyRelationsCopied = true;
-      }
    }
 
 }

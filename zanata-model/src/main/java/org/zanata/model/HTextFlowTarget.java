@@ -57,6 +57,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
@@ -92,7 +93,13 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private HTextFlow textFlow;
    private HLocale locale;
 
-   private List<String> contents;
+   private String content0;
+   private String content1;
+   private String content2;
+   private String content3;
+   private String content4;
+   private String content5;
+
    private ContentState state = ContentState.New;
    private Integer textFlowRevision;
    private HPerson lastModifiedBy;
@@ -108,10 +115,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    // Only for internal use (persistence transient)
    @Setter(AccessLevel.PRIVATE)
    private HTextFlowTargetHistory initialState;
-
-   // Only for internal use (persistence transient)
-   @Setter(AccessLevel.PRIVATE)
-   private boolean lazyRelationsCopied = false;
 
    public HTextFlowTarget(HTextFlow textFlow, HLocale locale)
    {
@@ -192,41 +195,134 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    }
 
    @Override
-   @Type(type = "text")
-   @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
-   @JoinTable(name = "HTextFlowTargetContent", 
-              joinColumns = @JoinColumn(name = "text_flow_target_id")
-   )
-   @IndexColumn(name = "pos", nullable = false)
-   @Column(name = "content", nullable = false)
+   @Transient
+   @NotEmpty
    // TODO extend HTextContainer and remove this
    @Field(name=IndexFieldLabels.CONTENT,
-          index = Index.TOKENIZED,
-          bridge = @FieldBridge(impl = StringListBridge.class,
-                                params = {@Parameter(name="case", value="fold"),
-                                          @Parameter(name="ngrams", value="multisize")}))
+         index = Index.TOKENIZED,
+         bridge = @FieldBridge(impl = StringListBridge.class,
+               params = {@Parameter(name="case", value="fold"),
+                     @Parameter(name="ngrams", value="multisize")}))
    @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
    public List<String> getContents()
    {
-      // Copy lazily loaded relations to the history object as this cannot be
-      // done in the entity callbacks
-      copyLazyLoadedRelationsToHistory();
-
-      if (contents == null)
+      List<String> contents = new ArrayList<String>();
+      boolean populating = false;
+      for( int i = MAX_PLURALS-1; i >= 0; i-- )
       {
-         contents = new ArrayList<String>();
+         String c = this.getContent(i);
+         if( c != null )
+         {
+            populating = true;
+         }
+
+         if( populating )
+         {
+            contents.add(0, c);
+         }
       }
       return contents;
    }
 
    public void setContents(List<String> contents)
    {
-      // Copy lazily loaded relations to the history object as this cannot be
-      // done in the entity callbacks
-      copyLazyLoadedRelationsToHistory();
+      if(!Objects.equal(contents, this.getContents()))
+      {
+         for( int i=0; i<contents.size(); i++ )
+         {
+            this.setContent(i, contents.get(i));
+         }
+      }
+   }
 
-      this.contents = new ArrayList<String>(contents);
+   private String getContent(int idx)
+   {
+      switch (idx)
+      {
+         case 0:
+            return content0;
+
+         case 1:
+            return content1;
+
+         case 2:
+            return content2;
+
+         case 3:
+            return content3;
+
+         case 4:
+            return content4;
+
+         case 5:
+            return content5;
+
+         default:
+            throw new RuntimeException("Invalid Content index: " + idx);
+      }
+   }
+
+   private void setContent(int idx, String content)
+   {
+      switch (idx)
+      {
+         case 0:
+            content0 = content;
+            break;
+
+         case 1:
+            content1 = content;
+            break;
+
+         case 2:
+            content2 = content;
+            break;
+
+         case 3:
+            content3 = content;
+            break;
+
+         case 4:
+            content4 = content;
+            break;
+
+         case 5:
+            content5 = content;
+            break;
+
+         default:
+            throw new RuntimeException("Invalid Content index: " + idx);
+      }
+   }
+
+   protected String getContent0()
+   {
+      return content0;
+   }
+
+   protected String getContent1()
+   {
+      return content1;
+   }
+
+   protected String getContent2()
+   {
+      return content2;
+   }
+
+   protected String getContent3()
+   {
+      return content3;
+   }
+
+   protected String getContent4()
+   {
+      return content4;
+   }
+
+   protected String getContent5()
+   {
+      return content5;
    }
 
    public void setContents(String... contents)
@@ -271,22 +367,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    {
       this.oldVersionNum = this.getVersionNum();
       this.initialState = new HTextFlowTargetHistory(this);
-      this.lazyRelationsCopied = false;
-   }
-
-   /**
-    * Copies all lazy loaded relations to the history object.
-    */
-   private void copyLazyLoadedRelationsToHistory()
-   {
-      if (this.initialState != null && this.initialState.getContents() == null && !this.lazyRelationsCopied)
-      {
-         if( this.contents != null )
-         {
-            this.initialState.setContents(this.contents);
-         }
-         this.lazyRelationsCopied = true;
-      }
    }
 
    @Override

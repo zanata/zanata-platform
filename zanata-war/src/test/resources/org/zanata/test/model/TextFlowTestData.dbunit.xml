@@ -24,14 +24,10 @@
     plural="false"
   	wordCount="11"
   	contentHash="5eb63bbbe01eeed093cb22bb8f5acdc3"
+    content0="hello world"
   />
   <!-- 'Content Hash' and 'content' match, make sure to keep it that way -->
-  <HTextFlowContent
-    pos="0"
-    content="hello world"
-    text_flow_id="1"
-  />
-  <HTextFlowTarget 
+  <HTextFlowTarget
   	id="1"
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
@@ -40,13 +36,9 @@
   	state="2"
   	tf_id="1"
   	tf_revision="1"
+    content0="hei verden"
   />
-  <HTextFlowTargetContent
-    pos="0"
-    content="hei verden"
-    text_flow_target_id="1"
-  />
-  <HTextFlowTarget 
+  <HTextFlowTarget
   	id="2"
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
@@ -55,13 +47,9 @@
   	state="2"
   	tf_id="1"
   	tf_revision="1"
+    content0="hello welt"
   />
-  <HTextFlowTargetContent
-    pos="0"
-    content="hello welt"
-    text_flow_target_id="2"
-  />
-  <HTextFlowTarget 
+  <HTextFlowTarget
   	id="3"
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
@@ -70,13 +58,9 @@
   	state="1"
   	tf_id="1"
   	tf_revision="1"
+    content0="fuzzy hello"
   />
-  <HTextFlowTargetContent
-    pos="0"
-    content="fuzzy hello"
-    text_flow_target_id="3"
-  />
-  <HTextFlowTarget 
+  <HTextFlowTarget
   	id="4"
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
@@ -114,13 +98,9 @@
     plural="false"
   	wordCount="1"
   	contentHash="MD5('mssgId1')"
+    content0="mssgId1"
   />
-  <HTextFlowContent
-    pos="0"
-    content="mssgId1"
-    text_flow_id="2"
-  />
-  <HTextFlow 
+  <HTextFlow
   	id="3"
   	document_id="2"
   	resId="tf3"
@@ -130,13 +110,9 @@
     plural="false"
   	wordCount="1"
   	contentHash="MD5('mssgId2')"
+    content0="mssgId2"
   />
-  <HTextFlowContent
-    pos="0"
-    content="mssgId2"
-    text_flow_id="3"
-  />
-  <HTextFlow 
+  <HTextFlow
   	id="4"
   	document_id="2"
   	resId="tf4"
@@ -146,13 +122,9 @@
     plural="false"
   	wordCount="1"
   	contentHash="MD5('mssgId3')"
+    content0="mssgId3"
   />
-  <HTextFlowContent
-    pos="0"
-    content="mssgId3"
-    text_flow_id="4"
-  />
-  
+
   <!-- Text Flow Target comments -->
   <HSimpleComment 
   	id="1"
@@ -178,13 +150,9 @@
   	tf_revision="1"
   	last_modified_by_id="2"
   	comment_id="1"
+    content0="mssgTrans1"
   />
-  <HTextFlowTargetContent
-    pos="0"
-    content="mssgTrans1"
-    text_flow_target_id="5"
-  />
-  <HTextFlowTarget 
+  <HTextFlowTarget
   	id="6"
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
@@ -195,13 +163,9 @@
   	tf_revision="1"
   	last_modified_by_id="2"
   	comment_id="2"
+    content0="mssgTrans2"
   />
-  <HTextFlowTargetContent
-    pos="0"
-    content="mssgTrans2"
-    text_flow_target_id="6"
-  />
-  <HTextFlowTarget 
+  <HTextFlowTarget
   	id="7"
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
@@ -212,13 +176,9 @@
   	tf_revision="1"
   	last_modified_by_id="2"
   	comment_id="3"
+    content0="mssgTrans3"
   />
-  <HTextFlowTargetContent
-    pos="0"
-    content="mssgTrans3"
-    text_flow_target_id="7"
-  />
-  
+
   <!-- HDocument 
   	   Single Text Flow and Translation -->
   	   
@@ -245,13 +205,9 @@
     obsolete="0"
     plural="false"
   	wordCount="1"
+    content0="mssgId4"
   />
-  <HTextFlowContent
-    pos="0"
-    content="mssgId4"
-    text_flow_id="5"
-  />
-  <HTextFlowTarget 
+  <HTextFlowTarget
   	id="8"
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
@@ -261,11 +217,7 @@
   	tf_id="5"
   	tf_revision="1"
   	last_modified_by_id="2"
-  />
-  <HTextFlowTargetContent
-    pos="0"
-    content="mssgTrans4"
-    text_flow_target_id="8"
+    content0="mssgTrans4"
   />
 
     <!-- HDocument
@@ -294,10 +246,6 @@
             obsolete="0"
             plural="false"
             wordCount="1"
-            />
-    <HTextFlowContent
-            pos="0"
-            content="mssgId6"
-            text_flow_id="6"
+            content0="mssgId6"
             />
 </dataset>
