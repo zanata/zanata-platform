@@ -11,9 +11,12 @@ import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
+import org.zanata.webtrans.client.ui.TranslationDisplay;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,6 +25,7 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -32,8 +36,10 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -82,8 +88,6 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    private final UiMessages messages;
    private final DiffColorLegendPanel diffLegendPanel;
 
-   private final InlineLabel diffLegendInfo;
-
    private TranslationMemoryDisplay.Listener listener;
 
    private final static int SOURCE_COL = 0;
@@ -94,7 +98,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    private final static int DETAILS_COL = 5;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, final DiffColorLegendPanel diffLegendPanel)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final DiffColorLegendPanel diffLegendPanel)
    {
       this.messages = messages;
       this.diffLegendPanel = diffLegendPanel;
@@ -113,7 +117,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       formatter.setStyleName(0, SIMILARITY_COL, "th centered similarityCol");
       formatter.setStyleName(0, DETAILS_COL, "th centered detailCol");
 
-      diffLegendInfo = new InlineLabel();
+      InlineLabel diffLegendInfo = new InlineLabel();
       diffLegendInfo.setStyleName("icon-info-circle-2 details");
       diffLegendInfo.setTitle(messages.colorLegend());
 
@@ -229,44 +233,55 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       }
    }
 
-   private FlowPanel getSourcePanel(TransMemoryResultItem object, List<String> queries)
+   private SimplePanel getSourcePanel(TransMemoryResultItem object, List<String> queries)
    {
-      FlowPanel panel = new FlowPanel();
+      SimplePanel panel = new SimplePanel();
       panel.setSize("100%", "100%");
       ArrayList<String> sourceContents = object.getSourceContents();
 
       // display multiple source strings
+      ArrayList<String> queriesPadded = Lists.newArrayList();
       for (int i = 0; i < sourceContents.size(); i++)
       {
-         String sourceContent = sourceContents.get(i);
-         String query;
          if (queries.size() > i)
          {
-            query = queries.get(i);
+            queriesPadded.add(queries.get(i));
          }
          else
          {
-            query = queries.get(0);
+            queriesPadded.add(queries.get(0));
          }
-         DiffMatchPatchLabel label = new DiffMatchPatchLabel();
-         label.setOriginal(query);
-         label.setText(sourceContent);
-         panel.add(label);
       }
+      SafeHtml safeHtml = TranslationDisplay.asDiff(queriesPadded, sourceContents).toSafeHtml();
+      panel.setWidget(new InlineHTML(safeHtml));
+//
+//      for (int i = 0; i < sourceContents.size(); i++)
+//      {
+//         String sourceContent = sourceContents.get(i);
+//         String query;
+//         if (queries.size() > i)
+//         {
+//            query = queries.get(i);
+//         }
+//         else
+//         {
+//            query = queries.get(0);
+//         }
+//         DiffMatchPatchLabel label = new DiffMatchPatchLabel();
+//         label.setOriginal(query);
+//         label.setText(sourceContent);
+//         panel.add(label);
+//      }
       return panel;
    }
 
-   private FlowPanel getTargetPanel(TransMemoryResultItem object)
+   private SimplePanel getTargetPanel(TransMemoryResultItem object)
    {
-      FlowPanel panel = new FlowPanel();
+      SimplePanel panel = new SimplePanel();
       panel.setSize("100%", "100%");
       // display multiple target strings
-      for (String targetContent : object.getTargetContents())
-      {
-         HighlightingLabel label = new HighlightingLabel();
-         label.setText(targetContent);
-         panel.add(label);
-      }
+      SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlight(object.getTargetContents()).toSafeHtml();
+      panel.setWidget(new InlineHTML(safeHtml));
       return panel;
    }
 

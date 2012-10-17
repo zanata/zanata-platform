@@ -12,9 +12,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 public class HistoryEntryComparisonPanel extends Composite
 {
@@ -27,9 +28,9 @@ public class HistoryEntryComparisonPanel extends Composite
    @UiField
    WebTransMessages messages;
    @UiField
-   VerticalPanel itemTwoPanel;
+   SimplePanel itemTwoPanel;
    @UiField
-   VerticalPanel itemOnePanel;
+   SimplePanel itemOnePanel;
    @UiField
    PushButton flipButton;
    @UiField
@@ -50,23 +51,11 @@ public class HistoryEntryComparisonPanel extends Composite
 
       grid.setText(ITEM_ONE_ROW, 0, itemOne.getVersionNum());
       List<String> itemOneContents = itemOne.getContents();
-      for (String content : itemOneContents)
-      {
-         HighlightingLabel label = new HighlightingLabel(content);
-         label.addStyleName(style.historyEntry());
-         itemOnePanel.add(label);
-      }
+      itemOnePanel.setWidget(new InlineHTML(TranslationDisplay.asSyntaxHighlight(itemOneContents).toSafeHtml()));
 
       grid.setText(ITEM_TWO_ROW, 0, itemTwo.getVersionNum());
       List<String> itemTwoContents = itemTwo.getContents();
-      for (int i = 0; i < itemOneContents.size(); i++)
-      {
-         String content1 = itemOneContents.get(i);
-         String content2 = itemTwoContents.get(i);
-         DiffMatchPatchLabel label = new DiffMatchPatchLabel(content1, content2);
-         label.addStyleName(style.historyEntry());
-         itemTwoPanel.add(label);
-      }
+      itemTwoPanel.setWidget(new InlineHTML(TranslationDisplay.asDiff(itemOneContents, itemTwoContents).toSafeHtml()));
    }
 
    public void clear()
@@ -95,8 +84,6 @@ public class HistoryEntryComparisonPanel extends Composite
    interface Styles extends CssResource
    {
 
-      String historyEntry();
-
       String header();
 
       String grid();
@@ -106,5 +93,7 @@ public class HistoryEntryComparisonPanel extends Composite
       String originRow();
 
       String versionCell();
+
+      String flipButton();
    }
 }

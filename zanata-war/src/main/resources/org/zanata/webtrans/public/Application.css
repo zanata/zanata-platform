@@ -69,12 +69,12 @@ Removes some of the styling on the page-level splitters
 .gwt-HeadingPanel .topLeftInner,.gwt-HeadingPanel .topRightInner {
 	height: 40px;
 	width: 5px;
-	background-color: d0e4f6;
+	background-color: #d0e4f6;
 }
 
 .gwt-HeadingPanel .topCenterInner {
 	height: 40px;
-	background-color: d0e4f6;
+	background-color: #d0e4f6;
 }
 
 .gwt-HeadingPanelTitle {
@@ -553,13 +553,6 @@ td.ApprovedStateDecoration div div div
 	background:#F3F7FB;
 }
 
-.translationContainer .resultTable pre {
-   border: 1px dotted #C9C9C9;
-   margin-top: 2px;
-   padding: 2px;
-   margin-bottom: 2px;
-}
-
 .resultTable tr:first-child:hover
 {
 	background:none;
@@ -702,7 +695,6 @@ td.ApprovedStateDecoration div div div
     background: #FFFFFF;
     border-radius: 5px;
 }
-
 /* end translation history style*/
 
 .indexLabel
@@ -773,6 +765,14 @@ td.ApprovedStateDecoration div div div
 	width:70px;
 	margin:1px;
 	padding:2px;
+}
+
+.dialogBoxCloseButton
+{
+    width: 5em;
+    margin: 10px 5px 5px 0;
+    float: right;
+    text-align: center;
 }
 
 /* custom webkit scroll bar */

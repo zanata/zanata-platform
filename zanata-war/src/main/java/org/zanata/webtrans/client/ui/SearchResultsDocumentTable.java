@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -29,9 +28,8 @@ import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.util.StringNotEmptyPredicate;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
@@ -227,16 +225,9 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          @Override
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
-
-            for (String source : notEmptyContents(contents))
-            {
-               HighlightingLabel label = new HighlightingLabel(source);
-               if (!Strings.isNullOrEmpty(highlightString))
-               {
-                  label.highlightSearch(highlightString);
-               }
-               appendContent(sb, label.getElement().getString());
-            }
+            Iterable<String> notEmptyContents = Iterables.filter(contents, StringNotEmptyPredicate.INSTANCE);
+            SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlightAndSearch(notEmptyContents, highlightString).toSafeHtml();
+            sb.appendHtmlConstant(safeHtml.asString());
          }
       })
       {
@@ -258,30 +249,16 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          @Override
          public void render(Context context, TransUnitReplaceInfo info, SafeHtmlBuilder sb)
          {
-            // TODO for replaced targets, highlight replacement term or show diff
             List<String> contents = info.getTransUnit().getTargets();
             if (info.getPreviewState() == PreviewState.Show)
             {
-               for (int i = 0; i < contents.size(); i++)
-               {
-                  DiffMatchPatchLabel label = new DiffMatchPatchLabel();
-                  label.setOriginal(contents.get(i));
-                  label.setText(info.getPreview().getContents().get(i));
-                  appendContent(sb, label.getElement().getString());
-               }
+               SafeHtml safeHtml = TranslationDisplay.asDiff(contents, info.getPreview().getContents()).toSafeHtml();
+               sb.appendHtmlConstant(safeHtml.asString());
             }
             else
             {
-
-               for (String target : contents)
-               {
-                  HighlightingLabel label = new HighlightingLabel(target);
-                  if (!Strings.isNullOrEmpty(highlightString))
-                  {
-                     label.highlightSearch(highlightString);
-                  }
-                  appendContent(sb, label.getElement().getString());
-               }
+               SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlightAndSearch(contents, highlightString).toSafeHtml();
+               sb.appendHtmlConstant(safeHtml.asString());
             }
          }
       })
@@ -594,16 +571,6 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          cellTableResources = GWT.create(CellTableResources.class);
       }
       return cellTableResources;
-   }
-
-   private static void appendContent(SafeHtmlBuilder sb, String content)
-   {
-      sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
-   }
-
-   private static Collection<String> notEmptyContents(List<String> contents)
-   {
-      return Collections2.filter(contents, StringNotEmptyPredicate.INSTANCE);
    }
 
    public HasValue<Boolean> getCheckbox()

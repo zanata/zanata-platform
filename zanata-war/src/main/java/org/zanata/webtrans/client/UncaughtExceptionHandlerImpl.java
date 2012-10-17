@@ -3,6 +3,7 @@ package org.zanata.webtrans.client;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
+import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 import com.allen_sauer.gwt.log.client.Log;
@@ -24,14 +25,8 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
 {
 
    private final DialogBox globalPopup = new DialogBox(false, true);
-   private final Button closeGlobalPopupButton = new Button("Close", new ClickHandler()
-   {
-      @Override
-      public void onClick(ClickEvent event)
-      {
-         globalPopup.hide();
-      }
-   });
+   private final DialogBoxCloseButton closeButton = new DialogBoxCloseButton(globalPopup);
+
    private final CachingDispatchAsync dispatcher;
    private final UserConfigHolder configHolder;
 
@@ -81,7 +76,7 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
 
       popupContent.add(new HTMLPanel(htmlBuilder.toSafeHtml()));
       popupContent.add(disclosurePanel);
-      popupContent.add(closeGlobalPopupButton);
+      popupContent.add(closeButton);
       globalPopup.setWidget(popupContent);
       globalPopup.center();
    }
