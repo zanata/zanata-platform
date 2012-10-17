@@ -342,6 +342,20 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet author="damason@redhat.com" id="10">
+        <comment>Change HRawDocument content to use larger blob field.</comment>
+        <modifyDataType tableName="HRawDocument" columnName="content" newDataType="longblob"/>
+        <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
+        <addNotNullConstraint tableName="HRawDocument" columnName="content" columnDataType="longblob"/>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="11">
+        <comment>Change HDocumentUploadPart content to use larger blob field.</comment>
+        <modifyDataType tableName="HDocumentUploadPart" columnName="content" newDataType="longblob"/>
+        <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
+        <addNotNullConstraint tableName="HDocumentUploadPart" columnName="content" columnDataType="longblob"/>
+    </changeSet>
+
     <changeSet id="10" author="camunoz@redhat.com">
         <comment>Create Content fields on HTextFlow table.</comment>
         <addColumn tableName="HTextFlow">
