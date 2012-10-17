@@ -772,8 +772,12 @@ public class FileService implements FileResource
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      if (FILETYPE_RAW_SOURCE_DOCUMENT.equals(fileType) && document.getRawDocument() != null)
+      if (FILETYPE_RAW_SOURCE_DOCUMENT.equals(fileType))
       {
+         if (document.getRawDocument() == null)
+         {
+            return Response.status(Status.NOT_FOUND).build();
+         }
          InputStream fileContents;
          try
          {
@@ -861,9 +865,12 @@ public class FileService implements FileResource
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
                .entity(output).build();
       }
-      else if ( (FILETYPE_TRANSLATED_APPROVED.equals(fileType) || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType))
-            && translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+      else if (FILETYPE_TRANSLATED_APPROVED.equals(fileType) || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType) )
       {
+         if (!translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+         {
+            return Response.status(Status.NOT_FOUND).build();
+         }
          final Set<String> extensions = Collections.<String>emptySet();
          TranslationsResource transRes = 
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
