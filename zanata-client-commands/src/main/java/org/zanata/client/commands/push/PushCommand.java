@@ -33,10 +33,15 @@ import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
+
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
 
 /**
  * @author Sean Flanigan <a
@@ -51,6 +56,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
    private static final Map<String, AbstractPushStrategy> strategies = new HashMap<String, AbstractPushStrategy>();
 
    private CopyTransResource copyTransResource;
+   private AsynchronousProcessResource asyncProcessResource;
 
    public static interface TranslationResourcesVisitor
    {
@@ -69,12 +75,14 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       super(opts);
       copyTransResource = getRequestFactory().getCopyTransResource();
+      asyncProcessResource = getRequestFactory().getAsynchronousProcessResource();
    }
 
    public PushCommand(PushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory, sourceDocResource, translationResources, uri);
       copyTransResource = factory.getCopyTransResource();
+      asyncProcessResource = factory.getAsynchronousProcessResource();
    }
 
    private AbstractPushStrategy getStrategy(String strategyType)
@@ -382,10 +390,45 @@ public class PushCommand extends PushPullCommand<PushOptions>
          ConsoleUtils.startProgressFeedback();
          // NB: Copy trans is set to false as using copy trans in this manner is deprecated.
          // see PushCommand.copyTransForDocument
-         ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, false);
-         ConsoleUtils.endProgressFeedback();
+         ProcessStatus status =
+               asyncProcessResource.startSourceDocCreationOrUpdate(
+                     docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
 
-         ClientUtility.checkResult(putResponse, uri);
+         boolean waitForCompletion = true;
+
+         while( waitForCompletion )
+         {
+            switch (status.getStatusCode())
+            {
+               case Failed:
+                  throw new RuntimeException("Failed while pushing document: " + status.getMessages());
+
+               case Finished:
+                  waitForCompletion = false;
+                  break;
+
+               case Running:
+                  ConsoleUtils.setProgressFeedbackMessage("Pushing ...");
+                  break;
+
+               case Waiting:
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting to start ...");
+                  break;
+
+               case NotAccepted:
+                  // try to submit the process again
+                  status = asyncProcessResource.startSourceDocCreationOrUpdate(
+                              docUri, getOpts().getProj(), getOpts().getProjectVersion(), srcDoc, extensions, false);
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients ...");
+                  break;
+            }
+
+            wait(2000); // Wait before retrying
+            status =
+               asyncProcessResource.getProcessStatus(status.getUrl());
+         }
+
+         ConsoleUtils.endProgressFeedback();
       }
       else
       {
@@ -455,25 +498,57 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          log.info("Pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
 
-         List<TranslationsResource> targetDocList = splitIntoBatch(targetDoc, getOpts().getBatchSize());
-
-         int totalDone = 0;
          ConsoleUtils.startProgressFeedback();
-         for (TranslationsResource doc : targetDocList)
+
+         ProcessStatus status =
+               asyncProcessResource.startTranslatedDocCreationOrUpdate(docUri, getOpts().getProj(), getOpts().getProjectVersion(),
+                  new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
+
+         boolean waitForCompletion = true;
+
+         while( waitForCompletion )
          {
-            ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), doc, extensions, getOpts().getMergeType());
-
-            totalDone = totalDone + doc.getTextFlowTargets().size();
-            ConsoleUtils.setProgressFeedbackMessage(totalDone + "/" + targetDoc.getTextFlowTargets().size());
-
-            ClientUtility.checkResult(putTransResponse, uri);
-            String entity = putTransResponse.getEntity(String.class);
-            if (entity != null && !entity.isEmpty())
+            switch (status.getStatusCode())
             {
-               log.warn("{}", entity);
+               case Failed:
+                  throw new RuntimeException("Failed while pushing document translations: " + status.getMessages());
+
+               case Finished:
+                  waitForCompletion = false;
+                  break;
+
+               case Running:
+                  ConsoleUtils.setProgressFeedbackMessage("Pushing ...");
+                  break;
+
+               case Waiting:
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting to start ...");
+                  break;
+
+               case NotAccepted:
+                  // try to submit the process again
+                  status = asyncProcessResource.startTranslatedDocCreationOrUpdate(
+                              docUri, getOpts().getProj(), getOpts().getProjectVersion(),
+                              new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
+                  ConsoleUtils.setProgressFeedbackMessage("Waiting for other clients ...");
+                  break;
             }
+
+            wait(2000); // Wait before retrying
+            status =
+                  asyncProcessResource.getProcessStatus(status.getUrl());
          }
          ConsoleUtils.endProgressFeedback();
+
+         // Show warning messages
+         if( status.getMessages().size() > 0 )
+         {
+            log.warn("Pushed translations with warnings:");
+            for( String mssg : status.getMessages() )
+            {
+               log.warn(mssg);
+            }
+         }
       }
       else
       {
@@ -561,6 +636,19 @@ public class PushCommand extends PushPullCommand<PushOptions>
       if( copyTransStatus.getPercentageComplete() < 100 )
       {
          log.warn("Copy Trans for the above document stopped unexpectedly.");
+      }
+   }
+
+   // TODO Perhaps move this to ConsoleUtils
+   private static void wait( int millis )
+   {
+      try
+      {
+         Thread.sleep(millis);
+      }
+      catch (InterruptedException e)
+      {
+         log.warn("Interrupted while waiting");
       }
    }
 
