@@ -69,8 +69,7 @@ public class TextContentsDisplay
 
    private static void appendContent(SafeHtmlBuilder sb, String content)
    {
-      // TODO hardcoded css - move to Application.css
-      sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
+      sb.appendHtmlConstant("<div class='textFlowEntry'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
    }
 
    public SafeHtml toSafeHtml()
