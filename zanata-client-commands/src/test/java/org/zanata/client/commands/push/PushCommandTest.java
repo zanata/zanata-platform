@@ -1,19 +1,14 @@
 package org.zanata.client.commands.push;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.notNull;
-import static org.testng.Assert.assertEquals;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.ws.rs.core.Response.Status;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.client.commands.DummyResponse;
@@ -26,20 +21,39 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.AsynchronousProcessResource;
+import org.zanata.rest.service.CopyTransResource;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 @Test(groups = "unit-tests")
 public class PushCommandTest
 {
-   IMocksControl control = EasyMock.createControl();
-   ISourceDocResource mockSourceDocResource = createMock("mockSourceDocResource", ISourceDocResource.class);
-   ITranslatedDocResource mockTranslationResources = createMock("mockTranslationResources", ITranslatedDocResource.class);
+   @Mock
+   ZanataProxyFactory mockRequestFactory;
+   @Mock
+   ISourceDocResource mockSourceDocResource;
+   @Mock
+   ITranslatedDocResource mockTranslationResources;
+   @Mock
+   CopyTransResource mockCopyTransResource;
+   @Mock
+   AsynchronousProcessResource mockAsynchronousProcessResource;
 
    public PushCommandTest() throws Exception
    {
+      initMocks(this);
    }
 
    @Test
@@ -147,21 +161,10 @@ public class PushCommandTest
       opts.setLocaleMapList(locales);
       OptionsUtil.applyConfigFiles(opts);
 
-      ZanataProxyFactory mockRequestFactory = EasyMock.createNiceMock(ZanataProxyFactory.class);
+      when( mockRequestFactory.getCopyTransResource() ).thenReturn(mockCopyTransResource);
+      when( mockRequestFactory.getAsynchronousProcessResource() ).thenReturn(mockAsynchronousProcessResource);
 
       return new PushCommand(opts, mockRequestFactory, mockSourceDocResource, mockTranslationResources, new URI("http://example.com/"));
-   }
-
-   @BeforeMethod
-   void beforeMethod()
-   {
-      control.reset();
-   }
-
-   <T> T createMock(String name, Class<T> toMock)
-   {
-      T mock = control.createMock(name, toMock);
-      return mock;
    }
    
 
@@ -170,14 +173,27 @@ public class PushCommandTest
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
       resourceMetaList.add(new ResourceMeta("obsolete"));
       resourceMetaList.add(new ResourceMeta("RPM"));
-      EasyMock.expect(mockSourceDocResource.get(null)).andReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
+      when(mockSourceDocResource.get(null)).thenReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
 
       final ClientResponse<String> okResponse = new DummyResponse<String>(Status.OK, null);
-      EasyMock.expect(mockSourceDocResource.deleteResource("obsolete")).andReturn(okResponse);
+      when(mockSourceDocResource.deleteResource("obsolete")).thenReturn(okResponse);
       StringSet extensionSet = new StringSet("gettext;comment");
       // TODO These calls now use a false copyTrans value (2.0) but they invoke the copy Trans resource. Still need to add Copy Trans resource expectations
-      EasyMock.expect(mockSourceDocResource.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet), eq(false))).andReturn(okResponse);
-      EasyMock.expect(mockSourceDocResource.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet), eq(false))).andReturn(okResponse);
+      //when( mockSourceDocResource.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet), eq(false)) ).thenReturn(okResponse);
+      //when( mockSourceDocResource.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet), eq(false))).thenReturn(okResponse);
+      ProcessStatus mockStatus = new ProcessStatus();
+      mockStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Finished);
+      mockStatus.setMessages(new ArrayList<String>());
+      when(mockAsynchronousProcessResource.startSourceDocCreationOrUpdate(eq("RPM"), anyString(), anyString(), (Resource) notNull(), eq(extensionSet), eq(false)))
+            .thenReturn(mockStatus);
+      when(mockAsynchronousProcessResource.startSourceDocCreationOrUpdate(eq("sub,RPM"), anyString(), anyString(), (Resource) notNull(), eq(extensionSet), eq(false)))
+            .thenReturn(mockStatus);
+      when(mockAsynchronousProcessResource.getProcessStatus(anyString())).thenReturn(mockStatus);
+
+      CopyTransStatus mockCopyTransStatus = new CopyTransStatus();
+      mockCopyTransStatus.setInProgress(false);
+      mockCopyTransStatus.setPercentageComplete(100);
+      when(mockCopyTransResource.getCopyTransStatus(anyString(), anyString(), anyString())).thenReturn(mockCopyTransStatus);
 
       if (pushTrans)
       {
@@ -190,12 +206,14 @@ public class PushCommandTest
          {
             expectedLocale = new LocaleId("ja-JP");
          }
-         EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet), eq("auto"))).andReturn(okResponse);
+         when(mockAsynchronousProcessResource.startTranslatedDocCreationOrUpdate(
+               eq("RPM"), anyString(), anyString(), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet), eq("auto")))
+               .thenReturn(mockStatus);
+         //when(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet), eq("auto")))
+         //      .thenReturn(okResponse);
       }
-      control.replay();
       ZanataCommand cmd = generatePushCommand(pushTrans, mapLocale);
       cmd.run();
-      control.verify();
    }
 
 }

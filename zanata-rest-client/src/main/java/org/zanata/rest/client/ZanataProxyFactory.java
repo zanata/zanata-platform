@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
+import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 import org.zanata.rest.service.StatisticsResource;
 
@@ -279,6 +280,11 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    {
       // NB: No specific client interface (not needed)
       return createProxy(CopyTransResource.class);
+   }
+
+   public AsynchronousProcessResource getAsynchronousProcessResource()
+   {
+      return createProxy(AsynchronousProcessResource.class);
    }
 
 
