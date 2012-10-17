@@ -20,7 +20,10 @@
  */
 package org.zanata.client.commands.push;
 
+import java.util.List;
+
 public interface RawPushOptions extends CommonPushOptions
 {
-   int getChunkSize();
+   public int getChunkSize();
+   public List<String> getFileTypes();
 }

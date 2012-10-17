@@ -44,6 +44,7 @@ import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.StringSet;
 import org.zanata.rest.client.IFileResource;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
@@ -62,26 +63,16 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
 
    protected final IFileResource fileResource;
 
-   private List<String> fileExtensions = new ArrayList<String>();
-
    public RawPushCommand(RawPushOptions opts)
    {
       super(opts);
       this.fileResource = getRequestFactory().getFileResource();
-
-      // FIXME get this list from server
-      // FIXME include command-line parameter for required types
-      fileExtensions.add("txt");
    }
 
    public RawPushCommand(RawPushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory, sourceDocResource, translationResources, uri);
       this.fileResource = factory.getFileResource();
-
-      // FIXME get this list from server
-      // FIXME include command-line parameter for required types
-      fileExtensions.add("txt");
    }
 
    @Override
@@ -114,7 +105,29 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
       RawPushStrategy strat = new RawPushStrategy();
       strat.setPushOptions(getOpts());
 
-      String[] srcFiles = strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), fileExtensions, true);
+      List<String> types = new ArrayList<String>();
+
+      ClientResponse<String> response = fileResource.acceptedFileTypes();
+      StringSet serverAcceptedTypes = new StringSet(response.getEntity());
+      for (String type : getOpts().getFileTypes())
+      {
+         if (serverAcceptedTypes.contains(type))
+         {
+            types.add(type);
+         }
+         else
+         {
+            log.warn("Requested type '{}' is not supported by the target server and will be ignored.", type);
+         }
+      }
+
+      if (types.isEmpty())
+      {
+         log.info("no valid types specified; nothing to do");
+         return;
+      }
+
+      String[] srcFiles = strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), types, true);
 
       // TODO handle obsolete document deletion
       log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.");

@@ -21,6 +21,7 @@
 package org.zanata.maven;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -129,6 +130,13 @@ public class RawPushMojo extends PushPullMojo<RawPushOptions> implements RawPush
     * @parameter expression="${zanata.maxChunkSize}" default-value="1048576"
     */
    private int maxChunkSize = 1024 * 1024;
+
+   /**
+    * File types to locate and transmit to the server.
+    * 
+    * @parameter expression="${zanata.fileTypes}" default-value="txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb"
+    */
+   private String[] fileTypes;
 
    @Override
    public String getSourceLang()
@@ -240,5 +248,11 @@ public class RawPushMojo extends PushPullMojo<RawPushOptions> implements RawPush
    public int getChunkSize()
    {
       return maxChunkSize;
+   }
+
+   @Override
+   public List<String> getFileTypes()
+   {
+      return Arrays.asList(fileTypes);
    }
 }
