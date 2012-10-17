@@ -25,6 +25,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,6 +40,7 @@ public interface FileResource
 {
 
    public static final String FILE_RESOURCE = "/file";
+   public static final String ACCEPTED_TYPES_RESOURCE = "/accepted_types";
    public static final String DOWNLOAD_TEMPLATE = "/download/{downloadId}";
    public static final String FILE_DOWNLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}" ;
    public static final String TRANSLATION_UPLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}";
@@ -63,6 +65,12 @@ public interface FileResource
     * approved translation is available, source strings are used.
     */
    public static final String FILETYPE_TRANSLATED_APPROVED = "baked";
+
+   @GET
+   @Path(ACCEPTED_TYPES_RESOURCE)
+   @Produces( MediaType.TEXT_PLAIN )
+   // /file/accepted_types
+   public Response acceptedFileTypes();
 
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)

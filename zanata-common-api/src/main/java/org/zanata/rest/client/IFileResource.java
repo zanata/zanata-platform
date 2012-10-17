@@ -25,6 +25,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
@@ -43,6 +44,14 @@ import org.zanata.rest.service.FileResource;
  */
 public interface IFileResource extends FileResource
 {
+
+   @Override
+   @GET
+   @Path(ACCEPTED_TYPES_RESOURCE)
+   @Produces( MediaType.TEXT_PLAIN )
+   // /file/accepted_types
+   public ClientResponse<String> acceptedFileTypes();
+
    @Override
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
