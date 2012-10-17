@@ -14,6 +14,5 @@ public interface PushOptions extends PushPullOptions
    public List<String> getExcludes();
    public boolean getDefaultExcludes();
    public boolean getDeleteObsoleteModules();
-   public int getBatchSize();
 }
 

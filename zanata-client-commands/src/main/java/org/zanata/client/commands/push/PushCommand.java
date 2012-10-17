@@ -111,10 +111,6 @@ public class PushCommand extends PushPullCommand<PushOptions>
       log.info("Source language: {}", getOpts().getSourceLang());
       log.info("Copy previous translations: {}", getOpts().getCopyTrans());
       log.info("Merge type: {}", getOpts().getMergeType());
-      if (pushTrans() && mergeAuto())
-      {
-         log.info("Batch size: {}", getOpts().getBatchSize());
-      }
       log.info("Enable modules: {}", getOpts().getEnableModules());
 
       if (getOpts().getEnableModules())
@@ -177,12 +173,6 @@ public class PushCommand extends PushPullCommand<PushOptions>
    public void run() throws Exception
    {
       logOptions();
-
-      if (getOpts().getBatchSize() <= 0)
-      {
-         throw new RuntimeException("Batch size needs to be 1 or more.");
-      }
-
       pushCurrentModule();
 
       if (pushSource() && getOpts().getEnableModules() && getOpts().isRootModule())

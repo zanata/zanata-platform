@@ -46,7 +46,6 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    File transDir;
    File srcDir;
    String sourceLang;
-   int batchSize;
 
    @Override
    public ZanataCommand initCommand()
@@ -186,12 +185,6 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    {
       // modules are currently only supported by Maven Mojos:
       return null;
-   }
-
-   @Override
-   public int getBatchSize()
-   {
-      return batchSize;
    }
 
 }

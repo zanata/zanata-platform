@@ -148,7 +148,6 @@ public class PushCommandTest
       opts.excludes = new ArrayList<String>();
       opts.sourceLang = "en-US";
       opts.mergeType = "auto";
-      opts.batchSize = 100;
       LocaleList locales = new LocaleList();
       if (mapLocale)
       {
