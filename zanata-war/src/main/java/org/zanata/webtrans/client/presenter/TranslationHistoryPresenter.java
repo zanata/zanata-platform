@@ -85,8 +85,10 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    protected void popupAndShowLoading(String title)
    {
-
+      //here we CANNOT use listDataProvider.setList() because we need to retain the same list reference which is used by ColumnSortEvent.ListHandler
+      listDataProvider.getList().clear();
       listDataProvider.setLoading(true);
+      selectionModel.clear();
       display.setTitle(title);
       display.resetView();
       display.center();
@@ -94,8 +96,6 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    protected void displayEntries(TransHistoryItem latest, List<TransHistoryItem> otherEntries)
    {
-      //here we CANNOT use listDataProvider.setList() because we need to retain the same list reference which is used by ColumnSortEvent.ListHandler
-      listDataProvider.getList().clear();
       if (latest != null)
       {
          //add indicator for latest version

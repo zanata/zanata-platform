@@ -348,7 +348,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("User")
    String modifiedBy();
 
-   @DefaultMessage("Modified Date")
+   @DefaultMessage("Date")
    String modifiedDate();
 
    @DefaultMessage("Paste into Editor")
