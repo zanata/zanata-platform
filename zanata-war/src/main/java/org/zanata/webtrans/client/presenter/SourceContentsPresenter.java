@@ -23,10 +23,12 @@ package org.zanata.webtrans.client.presenter;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
@@ -35,6 +37,9 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gwt.dom.client.Document;
@@ -74,8 +79,29 @@ public class SourceContentsPresenter implements ClickHandler
       Log.debug("source content selected id:" + id);
 
       SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(id));
-      // by default select the first one
-      sourceContentsView.getSourcePanelList().get(0).clickSelf();
+      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
+      Optional<HasSelectableSource> selectedSourceOptional = tryFindSelectedSourcePanel(sourcePanelList);
+      if (selectedSourceOptional.isPresent())
+      {
+         selectedSourceOptional.get().clickSelf();
+      }
+      else
+      {
+         // by default select the first one
+         sourcePanelList.get(0).clickSelf();
+      }
+   }
+
+   private Optional<HasSelectableSource> tryFindSelectedSourcePanel(List<HasSelectableSource> sourcePanelList)
+   {
+      return Iterables.tryFind(sourcePanelList, new Predicate<HasSelectableSource>()
+      {
+         @Override
+         public boolean apply(HasSelectableSource input)
+         {
+            return input == selectedSource;
+         }
+      });
    }
 
    public String getSelectedSource()
@@ -117,6 +143,7 @@ public class SourceContentsPresenter implements ClickHandler
          HasSelectableSource previousSource = selectedSource;
 
          selectedSource = (HasSelectableSource) event.getSource();
+         ensureRowSelection(selectedSource.getId());
 
          if (previousSource != null)
          {
@@ -128,6 +155,14 @@ public class SourceContentsPresenter implements ClickHandler
          Log.debug("Selected source: " + selectedSource.getSource());
          //TODO this is firing every time we click.
          eventBus.fireEvent(RequestValidationEvent.EVENT);
+      }
+   }
+
+   private void ensureRowSelection(TransUnitId id)
+   {
+      if (!Objects.equal(id, currentTransUnitId))
+      {
+         eventBus.fireEvent(new TableRowSelectedEvent(id));
       }
    }
 

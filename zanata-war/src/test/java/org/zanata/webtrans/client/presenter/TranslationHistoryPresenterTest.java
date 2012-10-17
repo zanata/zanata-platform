@@ -134,6 +134,7 @@ public class TranslationHistoryPresenterTest
       // Then:
       verify(dataProvider).setLoading(true);
       verify(display).setTitle("translation history");
+      verify(selectionModel).clear();
       verify(display).resetView();
       verify(display).center();
       assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
@@ -150,6 +151,7 @@ public class TranslationHistoryPresenterTest
    public void willShowTranslationHistoryOnSuccess()
    {
       // Given: text flow has one history item and one latest translation
+      when(messages.translationHistory()).thenReturn("translation history");
       TransHistoryItem historyItem = historyItem("1");
       String latestVersion = "2";
       TransHistoryItem latest = historyItem(latestVersion);
@@ -161,6 +163,11 @@ public class TranslationHistoryPresenterTest
       presenter.showTranslationHistory(transUnitId);
 
       // Then:on success
+      verify(dataProvider).setLoading(true);
+      verify(display).setTitle("translation history");
+      verify(selectionModel).clear();
+      verify(display).resetView();
+      verify(display).center();
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
       MatcherAssert.assertThat(dataProvider.getList(), Matchers.contains(latest, historyItem));

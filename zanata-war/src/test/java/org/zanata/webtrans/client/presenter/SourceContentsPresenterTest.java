@@ -1,11 +1,10 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Provider;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -13,6 +12,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -20,6 +20,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.shared.GwtEvent;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
@@ -42,7 +43,9 @@ public class SourceContentsPresenterTest
    @Mock
    private SourceContentsDisplay display2;
    @Mock
-   private HasSelectableSource hasSelectableSource;
+   private HasSelectableSource hasSelectableSource1;
+   @Mock
+   private HasSelectableSource hasSelectableSource2;
    @Mock
    private ClickEvent clickEvent;
 
@@ -83,13 +86,13 @@ public class SourceContentsPresenterTest
       when(display1.getId()).thenReturn(new TransUnitId(1));
       TransUnitId selectedId = new TransUnitId(2);
       when(display2.getId()).thenReturn(selectedId);
-      when(display2.getSourcePanelList()).thenReturn(Lists.newArrayList(hasSelectableSource));
+      when(display2.getSourcePanelList()).thenReturn(Lists.newArrayList(hasSelectableSource1));
 
       // When: select source with id 2
       presenter.setSelectedSource(selectedId);
 
       // Then:
-      verify(hasSelectableSource).clickSelf();
+      verify(hasSelectableSource1).clickSelf();
       assertThat(presenter.getCurrentTransUnitIdOrNull(), Matchers.equalTo(selectedId));
    }
 
@@ -122,12 +125,47 @@ public class SourceContentsPresenterTest
       String noSelectedSource = presenter.getSelectedSource();
       assertThat(noSelectedSource, Matchers.nullValue());
 
-      when(clickEvent.getSource()).thenReturn(hasSelectableSource);
-      when(hasSelectableSource.getSource()).thenReturn("source content");
+      when(clickEvent.getSource()).thenReturn(hasSelectableSource1);
+      when(hasSelectableSource1.getSource()).thenReturn("source content");
       presenter.onClick(clickEvent);
 
       String selectedSource = presenter.getSelectedSource();
       assertThat(selectedSource, Matchers.equalTo("source content"));
+   }
+
+   @Test
+   public void testOnClickOnDifferentRow() throws Exception
+   {
+      // Given:
+      List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1), TestFixture.makeTransUnit(2));
+      when(displayProvider.get()).thenReturn(display1, display2);
+      presenter.showData(transUnits);
+      TransUnitId previousSelectedId = transUnits.get(0).getId();
+      when(display1.getId()).thenReturn(previousSelectedId);
+      when(display1.getSourcePanelList()).thenReturn(Lists.newArrayList(hasSelectableSource1));
+      TransUnitId selectedId = transUnits.get(1).getId();
+      when(display2.getId()).thenReturn(selectedId);
+      when(display2.getSourcePanelList()).thenReturn(Lists.newArrayList(hasSelectableSource1, hasSelectableSource2));
+
+      // When: select source with id 1
+      presenter.setSelectedSource(previousSelectedId);
+      assertThat(presenter.getCurrentTransUnitIdOrNull(), Matchers.equalTo(previousSelectedId));
+
+      // after select source with id 1 click on source panel in display2
+      when(clickEvent.getSource()).thenReturn(hasSelectableSource2);
+      when(hasSelectableSource2.getId()).thenReturn(selectedId);
+      when(hasSelectableSource2.getSource()).thenReturn("source content");
+      presenter.onClick(clickEvent);
+
+      // Then:
+      ArgumentCaptor<GwtEvent> eventCaptor = ArgumentCaptor.forClass(GwtEvent.class);
+      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
+      assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(selectedId));
+
+      // on display2 selected it should select the second source panel
+      presenter.setSelectedSource(selectedId);
+      verify(hasSelectableSource2).clickSelf();
    }
 
    @Test

@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
-import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.EnumListBox;
-import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
-import org.zanata.webtrans.client.ui.TranslationDisplay;
+import org.zanata.webtrans.client.ui.TextContentsDisplay;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -252,26 +248,8 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
             queriesPadded.add(queries.get(0));
          }
       }
-      SafeHtml safeHtml = TranslationDisplay.asDiff(queriesPadded, sourceContents).toSafeHtml();
+      SafeHtml safeHtml = TextContentsDisplay.asDiff(queriesPadded, sourceContents).toSafeHtml();
       panel.setWidget(new InlineHTML(safeHtml));
-//
-//      for (int i = 0; i < sourceContents.size(); i++)
-//      {
-//         String sourceContent = sourceContents.get(i);
-//         String query;
-//         if (queries.size() > i)
-//         {
-//            query = queries.get(i);
-//         }
-//         else
-//         {
-//            query = queries.get(0);
-//         }
-//         DiffMatchPatchLabel label = new DiffMatchPatchLabel();
-//         label.setOriginal(query);
-//         label.setText(sourceContent);
-//         panel.add(label);
-//      }
       return panel;
    }
 
@@ -280,7 +258,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       SimplePanel panel = new SimplePanel();
       panel.setSize("100%", "100%");
       // display multiple target strings
-      SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlight(object.getTargetContents()).toSafeHtml();
+      SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(object.getTargetContents()).toSafeHtml();
       panel.setWidget(new InlineHTML(safeHtml));
       return panel;
    }

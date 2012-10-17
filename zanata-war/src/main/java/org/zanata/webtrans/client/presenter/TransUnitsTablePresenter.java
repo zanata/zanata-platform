@@ -151,7 +151,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       selectedId = selection.getId();
       Log.debug("selected id: " + selectedId);
       sourceContentsPresenter.setSelectedSource(selectedId);
-      targetContentsPresenter.showEditors(selectedId);
+      targetContentsPresenter.setSelected(selectedId);
       translatorService.transUnitSelected(selection);
    }
 

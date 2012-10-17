@@ -239,7 +239,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
          @Override
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
-            SafeHtml safeHtml = TranslationDisplay.asSyntaxHighlight(contents).toSafeHtml();
+            SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(contents).toSafeHtml();
             sb.appendHtmlConstant(safeHtml.asString());
          }
       };

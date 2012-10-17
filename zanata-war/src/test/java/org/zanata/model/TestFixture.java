@@ -24,6 +24,7 @@ package org.zanata.model;
 import java.util.Date;
 import java.util.List;
 
+import org.mockito.ArgumentCaptor;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -119,7 +120,7 @@ public class TestFixture
       return new Person(new PersonId("pid"), "admin", null);
    }
 
-   public static  <E extends GwtEvent<?>> E extractFromEvents(List<? extends GwtEvent> events, final Class<E> eventType)
+   public static <E extends GwtEvent<?>> E extractFromEvents(List<? extends GwtEvent> events, final Class<E> eventType)
    {
       GwtEvent gwtEvent = Iterables.find(events, new Predicate<GwtEvent>()
       {

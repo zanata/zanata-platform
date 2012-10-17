@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -66,9 +67,11 @@ public class SourcePanel extends Composite implements HasSelectableSource
    CodeMirrorReadOnlyWidget sourceContent;
 
    private String source = "";
+   private final TransUnitId transUnitId;
 
-   public SourcePanel()
+   public SourcePanel(TransUnitId transUnitId)
    {
+      this.transUnitId = transUnitId;
       initWidget(uiBinder.createAndBindUi(this));
       sinkEvents(Event.ONCLICK);
    }
@@ -96,6 +99,12 @@ public class SourcePanel extends Composite implements HasSelectableSource
    public String getSource()
    {
       return source;
+   }
+
+   @Override
+   public TransUnitId getId()
+   {
+      return transUnitId;
    }
 
    @Override
