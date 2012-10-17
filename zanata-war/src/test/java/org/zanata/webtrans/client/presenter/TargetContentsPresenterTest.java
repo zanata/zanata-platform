@@ -47,12 +47,10 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
-import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -98,13 +96,10 @@ public class TargetContentsPresenterTest
    @Mock private EventBus eventBus;
    @Mock private TableEditorMessages tableEditorMessages;
    @Mock private SourceContentsPresenter sourceContentPresenter;
-   @Mock private NavigationMessages navMessages;
    private UserWorkspaceContext userWorkspaceContext;
    @Mock private TargetContentsDisplay display;
    @Mock
    private ToggleEditor editor, editor2;
-   @Mock
-   private Identity identity;
    private TransUnit selectedTU;
 
    // all event extends GwtEvent therefore captor will capture them all
@@ -188,7 +183,7 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.showEditors(selectedTU.getId());
+      presenter.setSelected(selectedTU.getId());
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
 
       presenter.copySource(editor, selectedTU.getId());
@@ -271,7 +266,7 @@ public class TargetContentsPresenterTest
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source content");
-      presenter.showEditors(selectedTU.getId());
+      presenter.setSelected(selectedTU.getId());
 
       // When:
       presenter.onInsertString(new InsertStringInEditorEvent("", "suggestion"));
@@ -294,7 +289,7 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.showEditors(selectedTU.getId());
+      presenter.setSelected(selectedTU.getId());
 
       presenter.onDataCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
@@ -311,7 +306,7 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor, editor2));
-      presenter.showEditors(selectedTU.getId());
+      presenter.setSelected(selectedTU.getId());
 
       // When:
       presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
@@ -329,7 +324,7 @@ public class TargetContentsPresenterTest
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.showEditors(selectedTU.getId());
+      presenter.setSelected(selectedTU.getId());
 
       // When:
       presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
@@ -438,7 +433,7 @@ public class TargetContentsPresenterTest
       TransUnitId oldSelection = currentPageRows.get(1).getId();
       presenter.setStatesForTesting(oldSelection, 0, display, null);
 
-      presenter.onFocus(selectedTU.getId(), 1);
+      presenter.onEditorClicked(selectedTU.getId(), 1);
 
       verify(eventBus).fireEvent(eventCaptor.capture());
       TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
@@ -740,7 +735,7 @@ public class TargetContentsPresenterTest
       when(display.getEditors()).thenReturn(currentEditors);
 
       // When:
-      presenter.showEditors(selectedTU.getId());
+      presenter.setSelected(selectedTU.getId());
 
       // Then:
       verify(editorTranslators).clearTranslatorList(previousEditors);

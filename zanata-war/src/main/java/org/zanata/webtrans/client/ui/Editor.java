@@ -10,7 +10,6 @@ import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -49,9 +48,6 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
-
-   private static final int TYPING_TIMER_INTERVAL = 500; // ms
-   private static final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
    private final int index;
    private final TransUnitId id;
@@ -117,12 +113,11 @@ public class Editor extends Composite implements ToggleEditor
       listener.setEditingState(id, editingState);
    }
 
-   @UiHandler("textArea")
-   public void onTextAreaFocus(FocusEvent event)
+   @UiHandler("rootContainer")
+   public void onEditorClick(ClickEvent event)
    {
-      listener.onFocus(id, index);
+      listener.onEditorClicked(id, index);
       fireValidationEvent();
-      isFocused = true;
    }
 
    @UiHandler("textArea")
@@ -186,6 +181,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void setFocus()
    {
+      isFocused = true;
       textArea.setFocus(true);
    }
 
@@ -230,12 +226,10 @@ public class Editor extends Composite implements ToggleEditor
       if (!errors.isEmpty())
       {
          targetWrapper.addStyleName(style.hasValidationError());
-//         addStyleName(style.hasValidationError());
       }
       else
       {
          targetWrapper.removeStyleName(style.hasValidationError());
-//         removeStyleName(style.hasValidationError());
       }
    }
 
