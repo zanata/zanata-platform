@@ -30,6 +30,5 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public interface PushOptions extends CommonPushOptions
 {
    public boolean getCopyTrans();
-   public int getBatchSize();
 }
 
