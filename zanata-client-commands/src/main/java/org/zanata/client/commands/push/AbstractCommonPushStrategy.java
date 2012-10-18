@@ -30,7 +30,7 @@ import org.apache.tools.ant.DirectoryScanner;
  * 
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public abstract class AbstractCommonPushStrategy<O extends CommonPushOptions>
+public abstract class AbstractCommonPushStrategy<O extends PushOptions>
 {
 
    private O opts;

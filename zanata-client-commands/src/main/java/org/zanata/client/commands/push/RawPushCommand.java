@@ -57,19 +57,19 @@ import org.zanata.rest.dto.ChunkUploadResponse;
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class RawPushCommand extends PushPullCommand<RawPushOptions>
+public class RawPushCommand extends PushPullCommand<PushOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
 
    protected final IFileResource fileResource;
 
-   public RawPushCommand(RawPushOptions opts)
+   public RawPushCommand(PushOptions opts)
    {
       super(opts);
       this.fileResource = getRequestFactory().getFileResource();
    }
 
-   public RawPushCommand(RawPushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
+   public RawPushCommand(PushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory, sourceDocResource, translationResources, uri);
       this.fileResource = factory.getFileResource();
@@ -78,6 +78,9 @@ public class RawPushCommand extends PushPullCommand<RawPushOptions>
    @Override
    public void run() throws Exception
    {
+      PushCommand.logOptions(log, getOpts());
+      log.warn("Using experimental project type 'raw'.");
+
       // only supporting single module for now
 
       File sourceDir = getOpts().getSrcDir();

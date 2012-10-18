@@ -1,13 +1,16 @@
 package org.zanata.maven;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushPullType;
+import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -29,9 +32,16 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    }
 
    @Override
-   public PushCommand initCommand()
+   public PushPullCommand<PushOptions> initCommand()
    {
-      return new PushCommand(this);
+      if ("raw".equals(getProjectType()))
+      {
+         return new RawPushCommand(this);
+      }
+      else
+      {
+         return new PushCommand(this);
+      }
    }
 
    /**
@@ -123,6 +133,24 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 
    // Cached copy of the effective locales to avoid calculating it more than once
    private LocaleList effectiveLocales;
+
+   /**
+    * Maximum size, in bytes, of document chunks to transmit. Documents smaller
+    * than this size will be transmitted in a single request, larger documents
+    * will be sent over multiple requests.
+    * 
+    * Usage -Dzanata.maxChunkSize=12345
+    * 
+    * @parameter expression="${zanata.maxChunkSize}" default-value="1048576"
+    */
+   private int maxChunkSize = 1024 * 1024;
+
+   /**
+    * File types to locate and transmit to the server.
+    * 
+    * @parameter expression="${zanata.fileTypes}" default-value="txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb"
+    */
+   private String[] fileTypes;
 
 
    @Override
@@ -238,7 +266,19 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 
       return effectiveLocales;
    }
-   
+
+   @Override
+   public int getChunkSize()
+   {
+      return maxChunkSize;
+   }
+
+   @Override
+   public List<String> getFileTypes()
+   {
+      return Arrays.asList(fileTypes);
+   }
+
    @Override
    public String getCommandName()
    {

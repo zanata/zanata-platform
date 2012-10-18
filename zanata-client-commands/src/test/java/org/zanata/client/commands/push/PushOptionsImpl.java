@@ -38,6 +38,7 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
 
    List<String> includes;
    List<String> excludes;
+   List<String> fileTypes;
    boolean defaultExcludes;
    String mergeType;
    boolean copyTrans;
@@ -185,6 +186,18 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    {
       // modules are currently only supported by Maven Mojos:
       return null;
+   }
+
+   @Override
+   public int getChunkSize()
+   {
+      return 1024 * 1024;
+   }
+
+   @Override
+   public List<String> getFileTypes()
+   {
+      return fileTypes;
    }
 
 }

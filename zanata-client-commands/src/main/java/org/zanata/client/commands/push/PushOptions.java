@@ -20,6 +20,9 @@
  */
 package org.zanata.client.commands.push;
 
+import java.util.List;
+
+import org.zanata.client.commands.PushPullOptions;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -27,8 +30,19 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * Push options for documents that are parsed on the client and transmitted as a
  * {@link Resource} or {@link TranslationsResource}.
  */
-public interface PushOptions extends CommonPushOptions
+public interface PushOptions extends PushPullOptions
 {
+   public String getSourceLang();
+   public PushPullType getPushType();
+   public String getMergeType();
+   public List<String> getIncludes();
+   public List<String> getExcludes();
+   public boolean getDefaultExcludes();
+   public boolean getDeleteObsoleteModules();
    public boolean getCopyTrans();
+
+   // raw push
+   public int getChunkSize();
+   public List<String> getFileTypes();
 }
 

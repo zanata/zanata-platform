@@ -97,60 +97,60 @@ public class PushCommand extends PushPullCommand<PushOptions>
       return strat;
    }
 
-   private void logOptions()
+   public static void logOptions(Logger logger, PushOptions opts)
    {
-      if (!log.isInfoEnabled())
+      if (!logger.isInfoEnabled())
       {
          return;
       }
-      log.info("Server: {}", getOpts().getUrl());
-      log.info("Project: {}", getOpts().getProj());
-      log.info("Version: {}", getOpts().getProjectVersion());
-      log.info("Username: {}", getOpts().getUsername());
-      log.info("Project type: {}", getOpts().getProjectType());
-      log.info("Source language: {}", getOpts().getSourceLang());
-      log.info("Copy previous translations: {}", getOpts().getCopyTrans());
-      log.info("Merge type: {}", getOpts().getMergeType());
-      log.info("Enable modules: {}", getOpts().getEnableModules());
+      logger.info("Server: {}", opts.getUrl());
+      logger.info("Project: {}", opts.getProj());
+      logger.info("Version: {}", opts.getProjectVersion());
+      logger.info("Username: {}", opts.getUsername());
+      logger.info("Project type: {}", opts.getProjectType());
+      logger.info("Source language: {}", opts.getSourceLang());
+      logger.info("Copy previous translations: {}", opts.getCopyTrans());
+      logger.info("Merge type: {}", opts.getMergeType());
+      logger.info("Enable modules: {}", opts.getEnableModules());
 
-      if (getOpts().getEnableModules())
+      if (opts.getEnableModules())
       {
-         log.info("Current module: {}", getOpts().getCurrentModule());
-         if (getOpts().isRootModule())
+         logger.info("Current module: {}", opts.getCurrentModule());
+         if (opts.isRootModule())
          {
-            log.info("Root module: YES");
-            if (log.isDebugEnabled())
+            logger.info("Root module: YES");
+            if (logger.isDebugEnabled())
             {
-               log.debug("Modules: {}", StringUtils.join(getOpts().getAllModules(), ", "));
+               logger.debug("Modules: {}", StringUtils.join(opts.getAllModules(), ", "));
             }
          }
       }
-      log.info("Include patterns: {}", StringUtils.join(getOpts().getIncludes(), " "));
-      log.info("Exclude patterns: {}", StringUtils.join(getOpts().getExcludes(), " "));
-      log.info("Default excludes: {}", getOpts().getDefaultExcludes());
+      logger.info("Include patterns: {}", StringUtils.join(opts.getIncludes(), " "));
+      logger.info("Exclude patterns: {}", StringUtils.join(opts.getExcludes(), " "));
+      logger.info("Default excludes: {}", opts.getDefaultExcludes());
 
-      if (getOpts().getPushType() == PushPullType.Trans)
+      if (opts.getPushType() == PushPullType.Trans)
       {
-         log.info("Pushing target documents only");
-         log.info("Locales to push: {}", getOpts().getLocaleMapList());
+         logger.info("Pushing target documents only");
+         logger.info("Locales to push: {}", opts.getLocaleMapList());
       }
-      else if (getOpts().getPushType() == PushPullType.Source)
+      else if (opts.getPushType() == PushPullType.Source)
       {
-         log.info("Pushing source documents only");
+         logger.info("Pushing source documents only");
       }
       else
       {
-         log.info("Pushing source and target documents");
-         log.info("Locales to push: {}", getOpts().getLocaleMapList());
+         logger.info("Pushing source and target documents");
+         logger.info("Locales to push: {}", opts.getLocaleMapList());
       }
-      log.info("Source directory (originals): {}", getOpts().getSrcDir());
-      if (getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Trans)
+      logger.info("Source directory (originals): {}", opts.getSrcDir());
+      if (opts.getPushType() == PushPullType.Both || opts.getPushType() == PushPullType.Trans)
       {
-         log.info("Target base directory (translations): {}", getOpts().getTransDir());
+         logger.info("Target base directory (translations): {}", opts.getTransDir());
       }
-      if (getOpts().isDryRun())
+      if (opts.isDryRun())
       {
-         log.info("DRY RUN: no permanent changes will be made");
+         logger.info("DRY RUN: no permanent changes will be made");
       }
    }
 
@@ -172,7 +172,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
    @Override
    public void run() throws Exception
    {
-      logOptions();
+      logOptions(log, getOpts());
       pushCurrentModule();
 
       if (pushSource() && getOpts().getEnableModules() && getOpts().isRootModule())

@@ -34,7 +34,7 @@ import org.zanata.client.config.LocaleMapping;
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class RawPushStrategy extends AbstractCommonPushStrategy<RawPushOptions>
+public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions>
 {
 
    private static final Logger log = LoggerFactory.getLogger(RawPushStrategy.class);
