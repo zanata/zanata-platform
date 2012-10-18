@@ -107,7 +107,7 @@ public class CopyTransResourceService implements CopyTransResource
          throw new NoSuchEntityException("Could not find document: " + projectSlug + "/" + iterationSlug + "/" + docId);
       }
 
-      identity.checkPermission("copy-trans", document.getProjectIteration().getProject());
+      identity.checkPermission("copy-trans", document.getProjectIteration());
 
       CopyTransProcessHandle processHandle = copyTransManager.getCopyTransProcessHandle(document);
       if( processHandle == null )
