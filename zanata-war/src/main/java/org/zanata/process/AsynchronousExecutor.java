@@ -25,6 +25,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
+import org.zanata.security.ZanataIdentity;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +46,15 @@ public class AsynchronousExecutor
    {
       try
       {
+         // Authenticate as the provided credentials
+         if( process.getRunAsUsername() != null )
+         {
+            ZanataIdentity identity = ZanataIdentity.instance();
+            identity.getCredentials().setUsername( process.getRunAsUsername() );
+            identity.setApiKey( process.getRunAsApiKey() );
+            identity.login();
+         }
+
          process.run(handle);
       }
       catch( Throwable t )

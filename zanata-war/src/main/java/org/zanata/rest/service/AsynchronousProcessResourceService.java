@@ -125,7 +125,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
       if( errorMessage == null )
       {
-         processManagerServiceImpl.startProcess(
+         RunnableProcess<ProcessHandle> process =
             new RunnableProcess<ProcessHandle>()
             {
                @Override
@@ -137,9 +137,9 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                         projectSlug, iterationSlug, resource, extensions, copytrans, true, handle);
                   handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
                }
-            },
-            handle
-         );
+            }.withIdentity(identity);
+
+         processManagerServiceImpl.startProcess(process,handle);
 
          //response.setStatus(Response.Status.ACCEPTED.getStatusCode());
          return this.getProcessStatus(handle.getId());
@@ -170,7 +170,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
       if( errorMessage == null )
       {
-         processManagerServiceImpl.startProcess(
+         RunnableProcess<ProcessHandle> process =
                new RunnableProcess<ProcessHandle>()
                {
                   @Override
@@ -195,9 +195,9 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                      AsynchronousProcessResourceService.log.error("Error pushing source document", t);
                      super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
                   }
-               },
-               handle
-         );
+               }.withIdentity(identity);
+
+         processManagerServiceImpl.startProcess(process,handle);
 
          //response.setStatus(Response.Status.ACCEPTED.getStatusCode());
          return this.getProcessStatus(handle.getId());
@@ -244,7 +244,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
       if( errorMessage == null )
       {
-         processManagerServiceImpl.startProcess(
+         RunnableProcess<MessagesProcessHandle> process =
                new RunnableProcess<MessagesProcessHandle>()
                {
                   @Override
@@ -264,9 +264,9 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                      AsynchronousProcessResourceService.log.error("Error pushing translations", t);
                      super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
                   }
-               },
-               handle
-         );
+               }.withIdentity(identity);
+
+         processManagerServiceImpl.startProcess(process,handle);
 
          return this.getProcessStatus(handle.getId());
       }

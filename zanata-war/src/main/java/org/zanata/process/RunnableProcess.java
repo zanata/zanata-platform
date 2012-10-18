@@ -20,6 +20,8 @@
  */
 package org.zanata.process;
 
+import org.zanata.security.ZanataIdentity;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -32,6 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class RunnableProcess<H extends ProcessHandle>
 {
+
+   private String runAsUsername;
+
+   private String runAsApiKey;
 
    /**
     * This method contains the logic to execute.
@@ -64,5 +70,29 @@ public abstract class RunnableProcess<H extends ProcessHandle>
    protected void handleThrowable( H handle, Throwable t )
    {
       handle.setError(t);
+   }
+
+   String getRunAsUsername()
+   {
+      return runAsUsername;
+   }
+
+   String getRunAsApiKey()
+   {
+      return runAsApiKey;
+   }
+
+   /**
+    * Tells the process to run with a specific Identity.
+    *
+    * @param identity Identity to execute the process as.
+    * @return The runnable process itself.
+    */
+   public RunnableProcess<H> withIdentity( ZanataIdentity identity )
+   {
+      // TODO Only detects API identities.
+      this.runAsUsername = identity.getCredentials().getUsername();
+      this.runAsApiKey = identity.getApiKey();
+      return this;
    }
 }
