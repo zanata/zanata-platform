@@ -28,12 +28,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
@@ -48,7 +45,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
@@ -60,6 +56,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -78,11 +75,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @Test(groups = { "unit-tests" }, description = "This test uses SeamAutowire with mockito to simulate a RPC call environment")
+@Slf4j
 public class NavigationServiceIntegrationTest
 {
-   private static final Logger log = LoggerFactory.getLogger(NavigationServiceIntegrationTest.class);
-   private HLocale hLocale = new HLocale(new LocaleId("en"));
-   private WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("project", "master"), hLocale.getLocaleId());
+   private WorkspaceId workspaceId = TestFixture.workspaceId();
+   private HLocale hLocale = new HLocale(workspaceId.getLocaleId());
 
    // @formatter:off
    private final List<HTextFlow> hTextFlows = Lists.newArrayList(
@@ -115,9 +112,6 @@ public class NavigationServiceIntegrationTest
    private GetTransUnitsNavigation getTransUnitsNavigation;
    private AsyncCallback<GetTransUnitListResult> getTransUnitListCallback;
    private AsyncCallback<GetTransUnitsNavigationResult> getTransUnitsNavigationCallback;
-   
-   private GetTransUnitListHandler getTransUnitListHandler;
-   private GetTransUnitsNavigationHandler getTransUnitsNavigationHandler;
 
    private GetTransUnitActionContext context;
    @Mock
@@ -126,6 +120,7 @@ public class NavigationServiceIntegrationTest
    private TransUnitsTablePresenter transUnitsTablePresenter;
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
+   private MockHandlerFactory handlerFactory;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -133,9 +128,7 @@ public class NavigationServiceIntegrationTest
       MockitoAnnotations.initMocks(this);
       UserConfigHolder configHolder = new UserConfigHolder();
 
-      MockHandlerFactory handlerFactory = new MockHandlerFactory();
-      getTransUnitListHandler = handlerFactory.createGetTransUnitListHandlerWithBehavior(documentId, hTextFlows, hLocale);
-      getTransUnitsNavigationHandler = handlerFactory.createGetTransUnitsNavigationHandlerWithBehavior(documentId, hTextFlows, hLocale);
+      handlerFactory = new MockHandlerFactory();
 
       service = new NavigationService(eventBus, dispatcher, configHolder, messages);
       service.addPageDataChangeListener(transUnitsTablePresenter);
@@ -189,8 +182,11 @@ public class NavigationServiceIntegrationTest
    private void simulateRPCCallbackOnSuccess()
    {
       verifyDispatcherAndCaptureArguments();
-      getTransUnitListCallback.onSuccess(callHandler(getTransUnitListHandler, getTransUnitList));
-      getTransUnitsNavigationCallback.onSuccess(callHandler(getTransUnitsNavigationHandler, getTransUnitsNavigation));
+      GetTransUnitListHandler handler = handlerFactory.createGetTransUnitListHandlerWithBehavior(documentId, hTextFlows, hLocale, getTransUnitList.getOffset(), getTransUnitList.getCount());
+      GetTransUnitsNavigationHandler indexHandler = handlerFactory.createGetTransUnitsNavigationHandlerWithBehavior(documentId, hTextFlows, hLocale);
+
+      getTransUnitListCallback.onSuccess(callHandler(handler, getTransUnitList));
+      getTransUnitsNavigationCallback.onSuccess(callHandler(indexHandler, getTransUnitsNavigation));
    }
 
    @Test
@@ -199,11 +195,15 @@ public class NavigationServiceIntegrationTest
       service.init(context.changeCount(6));
       verifyDispatcherAndCaptureArguments();
 
-      GetTransUnitListResult getTransUnitListResult = callHandler(getTransUnitListHandler, getTransUnitList);
+      GetTransUnitListHandler handler = handlerFactory.createGetTransUnitListHandlerWithBehavior(documentId, hTextFlows, hLocale, getTransUnitList.getOffset(), getTransUnitList.getCount());
+
+      GetTransUnitListResult getTransUnitListResult = callHandler(handler, getTransUnitList);
       assertThat(getTransUnitListResult.getDocumentId(), equalTo(documentId));
       assertThat(TestFixture.asIds(getTransUnitListResult.getUnits()), contains(0, 1, 2, 3, 4, 5));
 
-      GetTransUnitsNavigationResult navigationResult = callHandler(getTransUnitsNavigationHandler, getTransUnitsNavigation);
+      GetTransUnitsNavigationHandler indexHandler = handlerFactory.createGetTransUnitsNavigationHandlerWithBehavior(documentId, hTextFlows, hLocale);
+
+      GetTransUnitsNavigationResult navigationResult = callHandler(indexHandler, getTransUnitsNavigation);
       assertThat(navigationResult.getDocumentId(), equalTo(documentId));
       assertThat(navigationResult.getIdIndexList(), contains(0L, 1L, 2L, 3L, 4L, 5L));
       assertThat(navigationResult.getTransIdStateList(), hasEntry(0L, ContentState.New));

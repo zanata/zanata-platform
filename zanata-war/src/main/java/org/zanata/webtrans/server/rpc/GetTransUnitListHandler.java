@@ -28,7 +28,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.slf4j.LoggerFactory;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -42,8 +41,12 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
+import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 
+import com.google.common.base.Function;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -77,7 +80,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       log.info("Fetching TransUnits for document {}", action.getDocumentId());
       log.debug("action: {}", action);
 
-      HLocale hLocale;
+      final HLocale hLocale;
       try
       {
          hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
@@ -97,7 +100,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       else if (action.isAcceptAllStatus())
       {
          log.debug("Fetch TransUnits:*");
-         textFlows = textFlowDAO.getTextFlows(action.getDocumentId().getValue());
+         return getTransUnitsWithPage(action, hLocale);
       }
       else
       {
@@ -123,7 +126,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          units.add(tu);
       }
       log.debug("go to index {}", gotoRow);
-      return new GetTransUnitListResult(action.getDocumentId(), units, size, gotoRow);
+      return new GetTransUnitListResult(action.getDocumentId(), units, gotoRow);
    }
 
    private boolean hasSearchPhrase(GetTransUnitList action)
@@ -154,6 +157,26 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       List<HTextFlow> textFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentId(), constraints);
       Collections.sort(textFlows, HTextFlowPosComparator.INSTANCE);
       return textFlows;
+   }
+
+   private GetTransUnitListResult getTransUnitsWithPage(GetTransUnitList action, final HLocale hLocale)
+   {
+      List<HTextFlow> textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), action.getOffset(), action.getCount());
+      List<TransUnit> units = Lists.transform(textFlows, new Function<HTextFlow, TransUnit>()
+      {
+         @Override
+         public TransUnit apply(HTextFlow input)
+         {
+            return transUnitTransformer.transform(input, hLocale);
+         }
+      });
+
+      int goToRow = -1;
+      if (action.getTargetTransUnitId() != null)
+      {
+         goToRow = Iterables.indexOf(units, new FindByTransUnitIdPredicate(action.getTargetTransUnitId()));
+      }
+      return new GetTransUnitListResult(action.getDocumentId(), units, goToRow);
    }
 
    @Override

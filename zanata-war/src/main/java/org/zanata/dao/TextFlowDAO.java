@@ -258,10 +258,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getTextFlows(Long documentId)
+   public List<HTextFlow> getTextFlows(DocumentId documentId, int startIndex, int maxSize)
    {
       Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
-      q.setParameter("id", documentId);
+      q.setParameter("id", documentId.getId());
+      q.setFirstResult(startIndex);
+      q.setMaxResults(maxSize);
       q.setCacheable(true).setComment("TextFlowDAO.getTransUnitList");
       return q.list();
    }

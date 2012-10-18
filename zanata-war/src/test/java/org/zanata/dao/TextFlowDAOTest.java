@@ -9,7 +9,6 @@ import org.hibernate.Session;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -53,7 +52,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       }
 
       //3 text flows with single en-US fuzzy target
-      List<HTextFlow> doc2TextFlows = dao.getTextFlows(2L);
+      List<HTextFlow> doc2TextFlows = dao.getTextFlows(new DocumentId(2L), 0, 9999);
       for (HTextFlow doc2tf : doc2TextFlows)
       {
          log.debug("text flow id {} - targets {}", doc2tf.getId(), doc2tf.getTargets());

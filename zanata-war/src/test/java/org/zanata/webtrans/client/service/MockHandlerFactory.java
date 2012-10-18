@@ -17,14 +17,18 @@ import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 
+import lombok.extern.slf4j.Slf4j;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Slf4j
 public class MockHandlerFactory
 {
 
@@ -45,7 +49,7 @@ public class MockHandlerFactory
       MockitoAnnotations.initMocks(this);
    }
 
-   public GetTransUnitListHandler createGetTransUnitListHandlerWithBehavior(DocumentId documentId, List<HTextFlow> hTextFlows, HLocale hLocale)
+   public GetTransUnitListHandler createGetTransUnitListHandlerWithBehavior(DocumentId documentId, List<HTextFlow> hTextFlows, HLocale hLocale, int startIndex, int count)
    {
       // @formatter:off
       GetTransUnitListHandler handler = SeamAutowire.instance()
@@ -56,7 +60,9 @@ public class MockHandlerFactory
             .use("resourceUtils", resourceUtils)
             .autowire(GetTransUnitListHandler.class);
       // @formatter:on
-      when(textFlowDAO.getTextFlows(documentId.getId())).thenReturn(hTextFlows);
+
+      int maxSize = Math.min(startIndex + count, hTextFlows.size());
+      when(textFlowDAO.getTextFlows(documentId, startIndex, count)).thenReturn(hTextFlows.subList(startIndex, maxSize));
       when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
       when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
       return handler;
@@ -70,6 +76,7 @@ public class MockHandlerFactory
             .use("identity", identity)
             .use("textFlowDAO", textFlowDAO)
             .use("localeServiceImpl", localeServiceImpl)
+            .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .autowire(GetTransUnitsNavigationHandler.class);
       // @formatter:on
       when(textFlowDAO.getNavigationByDocumentId(documentId.getId())).thenReturn(hTextFlows);

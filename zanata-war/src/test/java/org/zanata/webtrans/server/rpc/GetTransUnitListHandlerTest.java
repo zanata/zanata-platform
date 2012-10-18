@@ -82,7 +82,6 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       GetTransUnitListResult result = handler.execute(action, null);
 
       log.info("result: {}", result);
-      assertThat(result.getTotalCount(), Matchers.equalTo(10));
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
       assertThat(result.getGotoRow(), Matchers.equalTo(-1));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
@@ -107,7 +106,6 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       GetTransUnitListResult result = handler.execute(action, null);
 
       log.info("result: {}", result);
-      assertThat(result.getTotalCount(), Matchers.equalTo(3));
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
       assertThat(result.getGotoRow(), Matchers.equalTo(-1));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6));
