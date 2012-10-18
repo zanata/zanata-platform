@@ -73,6 +73,15 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       // @formatter:on
    }
 
+   private void prepareActionAndMockLocaleService(GetTransUnitList action)
+   {
+      action.setEditorClientId(new EditorClientId("sessionId", 1));
+      action.setWorkspaceId(TestFixture.workspaceId(new LocaleId("ja")));
+      HLocale jaLocale = getEm().find(HLocale.class, 3L);
+      ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
+      when(localeService.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(jaLocale);
+   }
+
    @Test
    public void testExecuteToGetAll() throws Exception
    {
@@ -83,17 +92,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
 
       log.info("result: {}", result);
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
-      assertThat(result.getGotoRow(), Matchers.equalTo(-1));
+      assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
-   }
-
-   private void prepareActionAndMockLocaleService(GetTransUnitList action)
-   {
-      action.setEditorClientId(new EditorClientId("sessionId", 1));
-      action.setWorkspaceId(TestFixture.workspaceId(new LocaleId("ja")));
-      HLocale jaLocale = getEm().find(HLocale.class, 3L);
-      ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
-      when(localeService.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(jaLocale);
    }
 
 
@@ -107,7 +107,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
 
       log.info("result: {}", result);
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
-      assertThat(result.getGotoRow(), Matchers.equalTo(-1));
+      assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6));
    }
 

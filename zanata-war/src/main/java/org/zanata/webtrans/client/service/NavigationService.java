@@ -122,8 +122,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       Log.info("requesting transUnits: " + context);
       isLoadingTU = true;
       startLoading();
-      final int itemPerPage = context.getCount();
-      final int offset = context.getOffset();
+      navigationStateHolder.updateCurrentPage(context.getOffset() / context.getCount());
 
       dispatcher.execute(GetTransUnitList.newAction(context), new AsyncCallback<GetTransUnitListResult>()
       {
@@ -150,21 +149,9 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
             pageModel.setData(units);
             pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
 
-            // default values
-            int gotoRow = 0;
-            int currentPageIndex = offset / itemPerPage;
-
-            // if we need to scroll to a particular item
-            if (result.getGotoRow() != -1)
-            {
-               currentPageIndex = result.getGotoRow() / itemPerPage;
-               gotoRow = result.getGotoRow() % itemPerPage;
-            }
-            navigationStateHolder.updateCurrentPage(currentPageIndex);
-
             if (!units.isEmpty())
             {
-               eventBus.fireEvent(new TableRowSelectedEvent(units.get(gotoRow).getId()));
+               eventBus.fireEvent(new TableRowSelectedEvent(units.get(result.getGotoRow()).getId()));
             }
             eventBus.fireEvent(new PageChangeEvent(navigationStateHolder.getCurrentPage()));
             isLoadingTU = false;

@@ -108,7 +108,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          textFlows = textFlowDAO.getTextFlowsByStatus(action.getDocumentId(), hLocale, action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
       }
 
-      int gotoRow = -1;
+      int gotoRow = 0;
       int size = textFlows.size();
       int startIndex = action.getOffset();
       int endIndex = Math.min(action.getOffset() + action.getCount(), size);
@@ -121,7 +121,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          TransUnit tu = transUnitTransformer.transform(textFlow, hLocale);
          if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
          {
-            gotoRow = i;
+            gotoRow = i - startIndex;
          }
          units.add(tu);
       }
@@ -162,21 +162,15 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    private GetTransUnitListResult getTransUnitsWithPage(GetTransUnitList action, final HLocale hLocale)
    {
       List<HTextFlow> textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), action.getOffset(), action.getCount());
-      List<TransUnit> units = Lists.transform(textFlows, new Function<HTextFlow, TransUnit>()
-      {
-         @Override
-         public TransUnit apply(HTextFlow input)
-         {
-            return transUnitTransformer.transform(input, hLocale);
-         }
-      });
+      List<TransUnit> units = Lists.transform(textFlows, new HTextFlowToTransUnitFunction(hLocale, transUnitTransformer));
 
-      int goToRow = -1;
+      int goToRow = 0;
       if (action.getTargetTransUnitId() != null)
       {
          goToRow = Iterables.indexOf(units, new FindByTransUnitIdPredicate(action.getTargetTransUnitId()));
       }
-      return new GetTransUnitListResult(action.getDocumentId(), units, goToRow);
+      // stupid GWT RPC can't handle com.google.common.collect.Lists$TransformingRandomAccessList
+      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), goToRow);
    }
 
    @Override
@@ -184,4 +178,21 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    {
    }
 
+   private static class HTextFlowToTransUnitFunction implements Function<HTextFlow, TransUnit>
+   {
+      private final HLocale hLocale;
+      private final TransUnitTransformer transformer;
+
+      public HTextFlowToTransUnitFunction(HLocale hLocale, TransUnitTransformer transformer)
+      {
+         this.hLocale = hLocale;
+         this.transformer = transformer;
+      }
+
+      @Override
+      public TransUnit apply(HTextFlow input)
+      {
+         return transformer.transform(input, hLocale);
+      }
+   }
 }
