@@ -30,6 +30,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
@@ -44,13 +45,13 @@ import org.zanata.rest.service.FileResource;
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class RawPullCommand extends PushPullCommand<CommonPullOptions>
+public class RawPullCommand extends PushPullCommand<PullOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(RawPullCommand.class);
 
    private IFileResource fileResource;
 
-   public RawPullCommand(CommonPullOptions opts)
+   public RawPullCommand(PullOptions opts)
    {
       super(opts);
       this.fileResource = getRequestFactory().getFileResource();
@@ -59,6 +60,14 @@ public class RawPullCommand extends PushPullCommand<CommonPullOptions>
    @Override
    public void run() throws Exception
    {
+      PullCommand.logOptions(log, getOpts());
+      if (getOpts().isDryRun())
+      {
+         log.info("DRY RUN: no permanent changes will be made");
+      }
+
+      log.warn("Using EXPERIMENTAL project type 'raw'.");
+
       LocaleList locales = getOpts().getLocaleMapList();
       if (locales == null)
          throw new ConfigException("no locales specified");

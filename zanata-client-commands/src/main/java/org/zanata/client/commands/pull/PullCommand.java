@@ -68,46 +68,55 @@ public class PullCommand extends PushPullCommand<PullOptions>
 
    private void logOptions()
    {
-      log.info("Server: {}", getOpts().getUrl());
-      log.info("Project: {}", getOpts().getProj());
-      log.info("Version: {}", getOpts().getProjectVersion());
-      log.info("Username: {}", getOpts().getUsername());
-      log.info("Project type: {}", getOpts().getProjectType());
-      log.info("Enable modules: {}", getOpts().getEnableModules());
-      if (getOpts().getEnableModules())
-      {
-         log.info("Current Module: {}", getOpts().getCurrentModule());
-         if (getOpts().isRootModule())
-         {
-            log.info("Root module: YES");
-            if (log.isDebugEnabled())
-            {
-               log.debug("Modules: {}", StringUtils.join(getOpts().getAllModules(), ", "));
-            }
-         }
-      }
-      log.info("Locales to pull: {}", getOpts().getLocaleMapList());
-      if (getOpts().getPullType() == PushPullType.Source)
-      {
-         log.info("Pulling source documents only");
-         log.info("Source-language directory (originals): {}", getOpts().getSrcDir());
-      }
-      else if( getOpts().getPullType() == PushPullType.Trans )
-      {
-         log.info("Pulling target documents (translations) only");
-         log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
-      }
-      else
-      {
-         log.info("Pulling source and target (translation) documents");
-         log.info("Source-language directory (originals): {}", getOpts().getSrcDir());
-         log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
-      }
+      logOptions(log, getOpts());
       log.info("Create skeletons for untranslated messages/files: {}", getOpts().getCreateSkeletons());
 
       if (getOpts().isDryRun())
       {
          log.info("DRY RUN: no permanent changes will be made");
+      }
+   }
+
+   /**
+    * @param logger
+    * @param opts
+    */
+   public static void logOptions(Logger logger, PullOptions opts)
+   {
+      logger.info("Server: {}", opts.getUrl());
+      logger.info("Project: {}", opts.getProj());
+      logger.info("Version: {}", opts.getProjectVersion());
+      logger.info("Username: {}", opts.getUsername());
+      logger.info("Project type: {}", opts.getProjectType());
+      logger.info("Enable modules: {}", opts.getEnableModules());
+      if (opts.getEnableModules())
+      {
+         logger.info("Current Module: {}", opts.getCurrentModule());
+         if (opts.isRootModule())
+         {
+            logger.info("Root module: YES");
+            if (logger.isDebugEnabled())
+            {
+               logger.debug("Modules: {}", StringUtils.join(opts.getAllModules(), ", "));
+            }
+         }
+      }
+      logger.info("Locales to pull: {}", opts.getLocaleMapList());
+      if (opts.getPullType() == PushPullType.Source)
+      {
+         logger.info("Pulling source documents only");
+         logger.info("Source-language directory (originals): {}", opts.getSrcDir());
+      }
+      else if( opts.getPullType() == PushPullType.Trans )
+      {
+         logger.info("Pulling target documents (translations) only");
+         logger.info("Target-language base directory (translations): {}", opts.getTransDir());
+      }
+      else
+      {
+         logger.info("Pulling source and target (translation) documents");
+         logger.info("Source-language directory (originals): {}", opts.getSrcDir());
+         logger.info("Target-language base directory (translations): {}", opts.getTransDir());
       }
    }
 

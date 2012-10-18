@@ -41,9 +41,9 @@ public class RawPullStrategy
 
    private static final Logger log = LoggerFactory.getLogger(RawPullStrategy.class);
 
-   private CommonPullOptions opts;
+   private PullOptions opts;
 
-   public void setPullOptions(CommonPullOptions opts)
+   public void setPullOptions(PullOptions opts)
    {
       this.opts = opts;
    }

@@ -20,8 +20,10 @@
  */
 package org.zanata.maven;
 
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
+import org.zanata.client.commands.pull.RawPullCommand;
 import org.zanata.client.commands.push.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
@@ -79,9 +81,16 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
       super();
    }
 
-   public PullCommand initCommand()
+   public PushPullCommand<PullOptions> initCommand()
    {
-      return new PullCommand(this);
+      if ("raw".equals(getProjectType()))
+      {
+         return new RawPullCommand(this);
+      }
+      else
+      {
+         return new PullCommand(this);
+      }
    }
 
    @Override
