@@ -15,4 +15,17 @@
     <appender-ref ref="STDOUT" />
   </root>
 
+    <appender name="STDOUT-SQL"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                [%10t] [SQL] - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate.SQL" level="TRACE">
+        <appender-ref ref="STDOUT-SQL" />
+    </logger>
+
 </configuration>

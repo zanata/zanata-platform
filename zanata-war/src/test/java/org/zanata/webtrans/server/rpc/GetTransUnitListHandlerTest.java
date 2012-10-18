@@ -1,24 +1,18 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.database.QueryDataSet;
-import org.dbunit.dataset.xml.FlatDtdDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
+import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
@@ -33,8 +27,9 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 
+import ch.qos.logback.classic.Level;
 import lombok.extern.slf4j.Slf4j;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,6 +46,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    private LocaleService localeService;
    @Mock
    private TextFlowSearchService textFlowSearchServiceImpl;
+   private final DocumentId documentId = new DocumentId(1);
 
    @Override
    protected void prepareDBUnitOperations()
@@ -63,7 +59,9 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    {
       MockitoAnnotations.initMocks(this);
       TextFlowDAO dao = new TextFlowDAO((Session) getEm().getDelegate());
-      TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", new ResourceUtils()).autowire(TransUnitTransformer.class);
+      ResourceUtils resourceUtils = new ResourceUtils();
+      resourceUtils.create(); //postConstruct
+      TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", resourceUtils).autowire(TransUnitTransformer.class);
       // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
@@ -76,17 +74,48 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void testExecute() throws Exception
+   public void testExecuteToGetAll() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(new DocumentId(1)));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId));
+      prepareActionAndMockLocaleService(action);
+
+      GetTransUnitListResult result = handler.execute(action, null);
+
+      log.info("result: {}", result);
+      assertThat(result.getTotalCount(), Matchers.equalTo(10));
+      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getGotoRow(), Matchers.equalTo(-1));
+      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
+   }
+
+   private void prepareActionAndMockLocaleService(GetTransUnitList action)
+   {
       action.setEditorClientId(new EditorClientId("sessionId", 1));
       action.setWorkspaceId(TestFixture.workspaceId(new LocaleId("ja")));
       HLocale jaLocale = getEm().find(HLocale.class, 3L);
       ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
       when(localeService.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(jaLocale);
+   }
+
+
+   @Test
+   public void testExecuteToGetByStatus() throws Exception
+   {
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFilterNeedReview(true));
+      prepareActionAndMockLocaleService(action);
 
       GetTransUnitListResult result = handler.execute(action, null);
 
       log.info("result: {}", result);
+      assertThat(result.getTotalCount(), Matchers.equalTo(3));
+      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getGotoRow(), Matchers.equalTo(-1));
+      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6));
+   }
+
+   @Test
+   public void selectDocument()
+   {
+      HDocument hDocument = getEm().find(HDocument.class, 1L);
    }
 }
