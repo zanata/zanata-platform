@@ -33,13 +33,16 @@ import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.HibernateException;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.jboss.seam.transaction.UserTransaction;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -366,7 +369,6 @@ public class TranslationServiceImpl implements TranslationService
 
       try
       {
-         this.initAuthenticatedAccountIfNotInSession( userName );
          this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType, handle);
       }
       finally
@@ -444,7 +446,7 @@ public class TranslationServiceImpl implements TranslationService
          }
          else
          {
-            HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(textFlow, hLocale);
+            HTextFlowTarget hTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, hLocale);
             boolean targetChanged = false;
             if (hTarget == null)
             {
@@ -452,6 +454,7 @@ public class TranslationServiceImpl implements TranslationService
                log.debug("locale: {}", locale);
                hTarget = new HTextFlowTarget(textFlow, hLocale);
                hTarget.setVersionNum(0); // incremented when content is set
+               textFlowTargetDAO.makePersistent(hTarget);
                textFlow.getTargets().put(hLocale.getId(), hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
@@ -527,7 +530,7 @@ public class TranslationServiceImpl implements TranslationService
                }
                textFlowTargetDAO.makePersistent(hTarget);
                counter++;
-               if (counter == NUM_BATCHES || i == translations.getTextFlowTargets().size() - 1)
+               if (counter == BATCH_SIZE || i == translations.getTextFlowTargets().size() - 1)
                {
                   personDAO.flush();
                   textFlowTargetDAO.flush();
@@ -680,18 +683,5 @@ public class TranslationServiceImpl implements TranslationService
       result.isSuccess = false;
       result.translatedTextFlowTarget = hTextFlowTarget;
       return result;
-   }
-
-   /**
-    * Initializes the authenticated account if there is not one in the provided session scope.
-    * This is used when some methods are invoked outside of an authenticated Session context (Such
-    * as when pushing translations asynchronously).
-    */
-   private void initAuthenticatedAccountIfNotInSession( String username )
-   {
-      if( authenticatedAccount == null )
-      {
-         authenticatedAccount = accountDAO.getByUsername(username);
-      }
    }
 }

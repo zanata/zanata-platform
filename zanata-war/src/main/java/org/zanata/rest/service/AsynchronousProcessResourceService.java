@@ -192,7 +192,11 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                   @Override
                   protected void handleThrowable(ProcessHandle handle, Throwable t)
                   {
-                     AsynchronousProcessResourceService.log.error("Error pushing source document", t);
+                     // Ignore Lock exceptions
+                     if( !(t instanceof LockNotAcquiredException) )
+                     {
+                        AsynchronousProcessResourceService.log.error("Error pushing source document", t);
+                     }
                      super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
                   }
                }.withIdentity(identity);
@@ -261,7 +265,11 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                   @Override
                   protected void handleThrowable(MessagesProcessHandle handle, Throwable t)
                   {
-                     AsynchronousProcessResourceService.log.error("Error pushing translations", t);
+                     // Ignore Lock exceptions
+                     if( !(t instanceof LockNotAcquiredException) )
+                     {
+                        AsynchronousProcessResourceService.log.error("Error pushing translations", t);
+                     }
                      super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
                   }
                }.withIdentity(identity);

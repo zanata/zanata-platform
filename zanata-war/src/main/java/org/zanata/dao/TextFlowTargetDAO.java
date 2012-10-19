@@ -240,7 +240,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
     */
    public HTextFlowTarget getOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
    {
-      HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
+      HTextFlowTarget hTextFlowTarget = getTextFlowTarget(hTextFlow, hLocale);
 
       if (hTextFlowTarget == null)
       {
@@ -248,6 +248,22 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
          hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
          hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
       }
+      return hTextFlowTarget;
+   }
+
+   /**
+    * Look up the {@link HTextFlowTarget} for the given hLocale in hTextFlow.
+    * If none can be found, return null.
+    *
+    * @param hTextFlow The parent text flow.
+    * @param hLocale The locale for the text flow target.
+    */
+   public HTextFlowTarget getTextFlowTarget(HTextFlow hTextFlow, HLocale hLocale)
+   {
+      HTextFlowTarget hTextFlowTarget =
+            (HTextFlowTarget)getSession().createQuery("select tf.targets[:localeId] from HTextFlow tf")
+                  .setParameter("localeId", hLocale.getId())
+                  .uniqueResult();
       return hTextFlowTarget;
    }
 }

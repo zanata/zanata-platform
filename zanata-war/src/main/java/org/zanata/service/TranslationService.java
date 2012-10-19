@@ -38,7 +38,7 @@ public interface TranslationService
    /**
     * Batch size processing for large file upload
     */
-   final static int NUM_BATCHES = 100;
+   final static int BATCH_SIZE = 100;
 
 
    /**
