@@ -291,7 +291,12 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
       ProcessStatus status = new ProcessStatus();
       status.setStatusCode(handle.isInProgress() ? ProcessStatusCode.Running : ProcessStatusCode.Finished);
-      status.setPercentageComplete((handle.getCurrentProgress() / handle.getMaxProgress()) * 100);
+      int perComplete = 100;
+      if(handle.getMaxProgress() > 0)
+      {
+         perComplete = (handle.getCurrentProgress() / handle.getMaxProgress()) * 100;
+      }
+      status.setPercentageComplete(perComplete);
       status.setUrl("" + processId);
       if( handle.getError() != null )
       {
