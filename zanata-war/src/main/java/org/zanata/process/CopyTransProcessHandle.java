@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
- * Process Handle for a background copy trans.
+ * RunnableProcess Handle for a background copy trans.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */

@@ -1,40 +1,8 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.List;
-
-import org.hamcrest.Matchers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.common.ContentState;
-import org.zanata.model.TestFixture;
-import org.zanata.webtrans.client.events.RefreshPageEvent;
-import org.zanata.webtrans.client.view.SourceContentsDisplay;
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.LoadingEvent;
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.TableRowSelectedEvent;
-import org.zanata.webtrans.client.events.TransUnitSaveEvent;
-import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
-import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.service.NavigationService;
-import org.zanata.webtrans.client.service.TransUnitSaveService;
-import org.zanata.webtrans.client.service.TranslatorInteractionService;
-import org.zanata.webtrans.client.view.TargetContentsDisplay;
-import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
-import org.zanata.webtrans.shared.auth.EditorClientId;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-
-import com.google.common.collect.Lists;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -42,6 +10,43 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
+
+import org.hamcrest.Matchers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
+import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.LoadingEvent;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.NavigationService;
+import org.zanata.webtrans.client.service.TransUnitSaveService;
+import org.zanata.webtrans.client.service.TranslatorInteractionService;
+import org.zanata.webtrans.client.view.SourceContentsDisplay;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
+import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.TransHistoryItem;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -66,12 +71,14 @@ public class TransUnitsTablePresenterTest
    private TransUnitSaveService saveService;
    @Mock
    private WebTransMessages messages;
+   @Mock
+   private TranslationHistoryPresenter translationHistoryPresenter;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, messages);
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);
@@ -102,7 +109,7 @@ public class TransUnitsTablePresenterTest
 
       // Then:
       verify(sourceContentsPresenter).setSelectedSource(selection.getId());
-      verify(targetContentsPresenter).showEditors(selection.getId());
+      verify(targetContentsPresenter).setSelected(selection.getId());
       verify(translatorService).transUnitSelected(selection);
    }
 
@@ -268,7 +275,7 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
-   public void willDetectSaveDoneByAnotherUser()
+   public void willDetectSaveDoneByAnotherUserAndCurrentUserDoNotHaveUnsavedChange()
    {
       // Given: coming client id is NOT current user
       EditorClientId currentUser = new EditorClientId("session1", 1);
@@ -276,6 +283,8 @@ public class TransUnitsTablePresenterTest
       TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
       presenter.setStateForTesting(updatedTransUnit.getId());
       when(messages.concurrentEdit()).thenReturn("concurrent edit detected");
+      // current user does not have unsaved change
+      when(targetContentsPresenter.currentEditorContentHasChanged()).thenReturn(false);
 
       // When: update type is save fuzzy
       presenter.refreshRow(updatedTransUnit, new EditorClientId("session2", 2), TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
@@ -284,8 +293,39 @@ public class TransUnitsTablePresenterTest
       ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().getMessage(), Matchers.equalTo("concurrent edit detected"));
+      verify(targetContentsPresenter).currentEditorContentHasChanged();
       verify(targetContentsPresenter).updateRow(updatedTransUnit);
       verifyNoMoreInteractions(targetContentsPresenter);
+      verifyZeroInteractions(translationHistoryPresenter);
+   }
+
+   @Test
+   public void willDetectSaveDoneByAnotherUserAndCurrentUserHasUnsavedChange()
+   {
+      // Given: coming client id is NOT current user
+      EditorClientId currentUser = new EditorClientId("session1", 1);
+      when(translatorService.getCurrentEditorClientId()).thenReturn(currentUser);
+      TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
+      presenter.setStateForTesting(updatedTransUnit.getId());
+      when(messages.concurrentEdit()).thenReturn("concurrent edit detected");
+      // current user does not have unsaved change
+      when(targetContentsPresenter.currentEditorContentHasChanged()).thenReturn(true);
+
+      // When: update type is save fuzzy
+      presenter.refreshRow(updatedTransUnit, new EditorClientId("session2", 2), TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+
+      // Then:
+      ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      assertThat(eventCaptor.getValue().getMessage(), Matchers.equalTo("concurrent edit detected"));
+
+      ArgumentCaptor<TransHistoryItem> transHistoryCaptor = ArgumentCaptor.forClass(TransHistoryItem.class);
+      InOrder inOrder = Mockito.inOrder(targetContentsPresenter, translationHistoryPresenter);
+      inOrder.verify(translationHistoryPresenter).popupAndShowLoading("concurrent edit detected");
+      inOrder.verify(translationHistoryPresenter).displayEntries(transHistoryCaptor.capture(), eq(Collections.<TransHistoryItem>emptyList()));
+      assertThat(transHistoryCaptor.getValue().getVersionNum(), Matchers.equalTo(updatedTransUnit.getVerNum().toString()));
+      assertThat(transHistoryCaptor.getValue().getContents(), Matchers.equalTo(updatedTransUnit.getTargets()));
+      inOrder.verify(targetContentsPresenter).updateRow(updatedTransUnit);
    }
 
    @Test
@@ -366,10 +406,10 @@ public class TransUnitsTablePresenterTest
    public void onLoadingEvent()
    {
       presenter.onLoading(LoadingEvent.START_EVENT);
-      verify(display).showLoading();
+      verify(display).showLoading(true);
 
       presenter.onLoading(LoadingEvent.FINISH_EVENT);
-      verify(display).hideLoading();
+      verify(display).showLoading(false);
    }
 
    @Test

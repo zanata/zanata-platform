@@ -85,10 +85,10 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       return results;
    }
 
-   public List<HIterationGroup> searchLikeSlug(String searchTerm)
+   public List<HIterationGroup> searchLikeSlugAndName(String searchTerm)
    {
-      Query query = getSession().createQuery("from HIterationGroup g where g.slug LIKE :searchTerm AND g.status = :status");
-      query.setParameter("searchTerm", "%" + searchTerm + "%");
+      Query query = getSession().createQuery("from HIterationGroup g where lower(g.slug) LIKE :searchTerm OR lower(g.name) LIKE :searchTerm AND g.status = :status");
+      query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
       query.setParameter("status", EntityStatus.ACTIVE);
       return query.list();
    }

@@ -30,6 +30,7 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest
       seam.reset();
       seam.ignoreNonResolvable()
           .use("session", getSession())
+          .use("entityManager", getEm())
           .useImpl(LocaleServiceImpl.class)
           .useImpl(CopyTransServiceImpl.class)
           .useImpl(DocumentServiceImpl.class);

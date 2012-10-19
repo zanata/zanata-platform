@@ -73,11 +73,24 @@ public class TranslationPresenterTest
    }
 
    @Test
-   public void onRevealDisplay()
+   public void onRevealDisplayIfNoActiveRow()
    {
+      when(targetContentsPresenter.hasSelectedRow()).thenReturn(false);
+
       presenter.onRevealDisplay();
 
       verify(targetContentsPresenter).concealDisplay();
+   }
+
+   @Test
+   public void onRevealDisplayIfItHasActiveRow()
+   {
+      when(targetContentsPresenter.hasSelectedRow()).thenReturn(true);
+
+      presenter.onRevealDisplay();
+
+      verify(targetContentsPresenter).setFocus();
+      verify(targetContentsPresenter).revealDisplay();
    }
 
    @Test

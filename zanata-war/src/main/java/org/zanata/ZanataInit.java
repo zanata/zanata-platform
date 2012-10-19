@@ -70,12 +70,12 @@ public class ZanataInit
    @Observer("org.jboss.seam.postInitialization")
    public void initZanata() throws Exception
    {
-      log.info(">>>>>>>>>>>> Starting Zanata...");
-
       ServletContext servletContext = ServletLifecycle.getCurrentServletContext();
       String appServerHome = servletContext.getRealPath("/");
 
       File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
+      String version = "UNKOWN";
+      String buildTimestamp = "UNKOWN";
 
       if (manifestFile.canRead())
       {
@@ -92,8 +92,8 @@ public class ZanataInit
 
          Attributes atts = mf.getMainAttributes();
 
-         String version = atts.getValue("Implementation-Version");
-         String buildTimestamp = atts.getValue("Implementation-Build");
+         version = atts.getValue("Implementation-Version");
+         buildTimestamp = atts.getValue("Implementation-Build");
          
          if (version == null)
          {
@@ -105,10 +105,11 @@ public class ZanataInit
          }
          this.applicationConfiguration.setVersion( version );
          this.applicationConfiguration.setBuildTimestamp( buildTimestamp );
-         
-         log.info("Server version: {}", version);
-         log.info("Server build: {}", buildTimestamp);
+
       }
+
+      this.logBanner(version, buildTimestamp);
+
       if (this.applicationConfiguration.isDebug())
       {
          log.info("debug: enabled");
@@ -323,5 +324,19 @@ public class ZanataInit
       {
          buffer.append("error while listing context ").append(ctx.toString()).append(": ").append(ne.toString(true));
       }
+   }
+
+   private void logBanner(final String version, final String build)
+   {
+      log.info( "============================================");
+      log.info( "   _____                 _         ");
+      log.info( "  |__  /__ _ _ __   __ _| |_ __ _  ");
+      log.info( "    / // _' | '_ \\ / _' | __/ _' | ");
+      log.info( "   / /| (_| | | | | (_| | || (_| | ");
+      log.info( "  /____\\__,_|_| |_|\\__,_|\\__\\__,_| ");
+      log.info( "                                   ");
+      log.info( "  version " + version + ", build " + build);
+      log.info( "  Red Hat Inc 2012" );
+      log.info( "============================================");
    }
 }

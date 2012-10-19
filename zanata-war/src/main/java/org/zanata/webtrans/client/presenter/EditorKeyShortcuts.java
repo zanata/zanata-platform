@@ -143,22 +143,19 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
          enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
       }
 
-      escClosesEditorShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE), ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
+      escClosesEditorShortcut = new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE), ShortcutContext.Edit, messages.cancelChanges(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (configHolder.isEscClosesEditor() && !keyShortcutPresenter.getDisplay().isShowing())
+            if (!keyShortcutPresenter.getDisplay().isShowing())
             {
                targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
             }
          }
       });
 
-      if (configHolder.isEscClosesEditor())
-      {
-         escClosesEditorHandlerRegistration = keyShortcutPresenter.register(escClosesEditorShortcut);
-      }
+     escClosesEditorHandlerRegistration = keyShortcutPresenter.register(escClosesEditorShortcut);
 
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'G'), ShortcutContext.Edit, messages.copyFromSource(), new KeyShortcutEventHandler()
       {
@@ -179,7 +176,6 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
       // If some config hasn't changed or not relevant in
       // this context, don't bother doing anything
       changeEnterSavesApproved(oldState);
-      changeEscCloseEditor(oldState);
       changeNavShortcutDescription(oldState);
    }
 
@@ -197,25 +193,6 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
             if (enterSavesApprovedHandlerRegistration != null)
             {
                enterSavesApprovedHandlerRegistration.removeHandler();
-            }
-         }
-      }
-   }
-
-   private void changeEscCloseEditor(UserConfigHolder.ConfigurationState oldState)
-   {
-      if (oldState.isEscClosesEditor() != configuration.isEscClosesEditor())
-      {
-         boolean escClosesEditor = configuration.isEscClosesEditor();
-         if (escClosesEditor)
-         {
-            escClosesEditorHandlerRegistration = keyShortcutPresenter.register(escClosesEditorShortcut);
-         }
-         else
-         {
-            if (escClosesEditorHandlerRegistration != null)
-            {
-               escClosesEditorHandlerRegistration.removeHandler();
             }
          }
       }

@@ -28,6 +28,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.process.MessagesProcessHandle;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -79,6 +80,29 @@ public interface TranslationService
     * @return a list of results describing the outcome of each revert
     */
    List<TranslationResult> revertTranslations(LocaleId localeId, List<TransUnitUpdateInfo> translationsToRevert);
+
+   /**
+    * Translates all text flows in a document.
+    * This method is intended to be called using a {@link org.zanata.process.RunnableProcess}.
+
+    * @param projectSlug The project to translate
+    * @param iterationSlug The project iteration to translate
+    * @param docId The document identifier to translate
+    * @param locale The locale that the translations belong to
+    * @param translations The translations to save to the document
+    * @param extensions The extensions to use while translating
+    * @param mergeType Indicates how to handle the translations. AUTO will merge the new translations with the provided
+    *                  ones. IMPORT will overwrite all existing translations with the new ones.
+    * @param lock If true, no other caller will be allowed to translate All for the same project, iteration, document
+    *             and locale.
+    * @param userName User name that initiated this translation. If this method is called within a session context, the
+    *                 recorded user will be the session's user. Otherwise, it will be the user specified by this parameter.
+    * @param handle The process handle to constantly communicate progress.
+    * @see TranslationService#translateAllInDoc(String, String, String, org.zanata.common.LocaleId, org.zanata.rest.dto.resource.TranslationsResource, java.util.Set, org.zanata.common.MergeType)
+    */
+   public void translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+                                         TranslationsResource translations, Set<String> extensions, MergeType mergeType,
+                                         boolean lock, String userName, MessagesProcessHandle handle);
 
    /**
     * Translates all text flows in a document.

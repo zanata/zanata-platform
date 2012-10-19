@@ -25,11 +25,9 @@
     <HSimpleComment/>
     <HTermComment/>
     <HTextFlow/>
-    <HTextFlowContent/>
     <HTextFlowContentHistory/>
     <HTextFlowHistory/>
     <HTextFlowTarget/>
-    <HTextFlowTargetContent/>
     <HTextFlowTargetContentHistory/>
     <HTextFlowTargetHistory/>
 </dataset>

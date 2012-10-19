@@ -3,23 +3,22 @@ package org.zanata.webtrans.client.view;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.TextContentsDisplay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -51,9 +50,9 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
    @UiField
    ListBox documentListBox;
    @UiField
-   HTMLPanel sourceTextContainer;
+   SimplePanel sourceTextContainer;
    @UiField
-   HTMLPanel targetTextContainer;
+   SimplePanel targetTextContainer;
 
    @Inject
    public TransMemoryDetailsView(UiMessages messages)
@@ -125,21 +124,15 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
    @Override
    public void setSource(List<String> sourceContents)
    {
-      for (String sourceContent : sourceContents)
-      {
-         InlineHTML source = new InlineHTML(sourceContent);
-         sourceTextContainer.add(source);
-      }
+      SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(sourceContents).toSafeHtml();
+      sourceTextContainer.setWidget(new InlineHTML(safeHtml));
    }
 
    @Override
    public void setTarget(List<String> targetContents)
    {
-      for (String targetContent : targetContents)
-      {
-         InlineHTML target = new InlineHTML(targetContent);
-         targetTextContainer.add(target);
-      }
+      SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(targetContents).toSafeHtml();
+      targetTextContainer.setWidget(new InlineHTML(safeHtml));
    }
 
    @UiHandler("dismissButton")

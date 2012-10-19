@@ -12,6 +12,9 @@
 <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
 
 <ui:define name="head">
+		<!-- Load jQuery -->
+        <rich:jQuery query="jquery"/>
+        
     <script type="text/javascript">
         function submitSearchOnEnter(e)
         {

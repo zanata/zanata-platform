@@ -6,17 +6,14 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
@@ -199,7 +196,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       StringBuilder queryStr = new StringBuilder(
             "select match, textFlow, max(match.id) " +
             "from HTextFlowTarget match, HTextFlow textFlow " +
-            "join fetch match.textFlow " +
+      // "join fetch match.textFlow " +
             "where " +
             "textFlow.document = :document " +
             "and textFlow.contentHash = match.textFlow.contentHash " +
@@ -226,6 +223,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       queryStr.append("group by textFlow, match");
 
       Query q = getSession().createQuery( queryStr.toString() );
+
       q.setParameter("document", document)
        .setParameter("locale", locale)
        .setParameter("approvedState", ContentState.Approved);

@@ -84,11 +84,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
 
-   private TransUnitId transUnitId;
-   private Integer verNum;
-   private List<String> cachedTargets;
    private EditingState editingState = EditingState.SAVED;
-   private ContentState contentState;
+   private TransUnit cachedValue;
 
    @Inject
    public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
@@ -151,11 +148,10 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void setValue(TransUnit transUnit)
    {
-      verNum = transUnit.getVerNum();
-      cachedTargets = transUnit.getTargets();
-      transUnitId = transUnit.getId();
+      cachedValue = transUnit;
 
       editors.clear();
+      List<String> cachedTargets = cachedValue.getTargets();
       if (cachedTargets == null)
       {
          cachedTargets = Lists.newArrayList("");
@@ -169,8 +165,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          editors.add(editor);
          rowIndex++;
       }
-      contentState = transUnit.getStatus();
-      editorGrid.setStyleName(resolveStyleName(contentState));
+      editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
       editingState = EditingState.SAVED;
    }
 
@@ -210,7 +205,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       }
       else
       {
-         editorGrid.setStyleName(resolveStyleName(contentState));
+         editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
          savingIndicator.setVisible(false);
          refresh();
       }
@@ -225,37 +220,42 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status)
    {
-      cachedTargets = ImmutableList.copyOf(targets);
-      this.verNum = verNum;
-      this.contentState = status;
-      editorGrid.setStyleName(resolveStyleName(contentState));
+      cachedValue = TransUnit.Builder.from(cachedValue).setTargets(targets).setVerNum(verNum).setStatus(status).build();
+
+      editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
+   }
+
+   @Override
+   public TransUnit getCachedValue()
+   {
+      return cachedValue;
    }
 
    @UiHandler("saveIcon")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApprovedAndMoveNext(transUnitId);
+      listener.saveAsApprovedAndMoveNext(cachedValue.getId());
       event.stopPropagation();
    }
 
    @UiHandler("fuzzyIcon")
    public void onSaveAsFuzzy(ClickEvent event)
    {
-      listener.saveAsFuzzy(transUnitId);
+      listener.saveAsFuzzy(cachedValue.getId());
       event.stopPropagation();
    }
 
    @UiHandler("cancelIcon")
    public void onCancel(ClickEvent event)
    {
-      listener.onCancel(transUnitId);
+      listener.onCancel(cachedValue.getId());
       event.stopPropagation();
    }
 
    @UiHandler("historyIcon")
    public void onHistoryClick(ClickEvent event)
    {
-      listener.showHistory(transUnitId);
+      listener.showHistory(cachedValue.getId());
       event.stopPropagation();
    }
 
@@ -282,13 +282,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public List<String> getCachedTargets()
    {
-      return cachedTargets;
+      return cachedValue.getTargets();
    }
 
    @Override
    public TransUnitId getId()
    {
-      return transUnitId;
+      return cachedValue.getId();
    }
 
    @Override
@@ -306,12 +306,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void revertEditorContents()
    {
+      List<String> cachedTargets = cachedValue.getTargets();
       for (int i = 0; i < cachedTargets.size(); i++)
       {
          String target = cachedTargets.get(i);
          editors.get(i).setTextAndValidate(target);
       }
-      editorGrid.setStyleName(resolveStyleName(contentState));
+      editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
    }
 
    @Override
@@ -326,7 +327,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public Integer getVerNum()
    {
-      return verNum;
+      return cachedValue.getVerNum();
    }
 
    @Override

@@ -77,10 +77,7 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Save as approved")
    String saveAsApproved();
 
-   @DefaultMessage("Close editor")
-   String closeEditor();
-
-   @DefaultMessage("Cancel")
+   @DefaultMessage("Cancel (Esc)")
    String editCancelShortcut();
 
    @DefaultMessage("History")
@@ -98,4 +95,7 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Saving...")
    String saving();
+
+   @DefaultMessage("Cancel changes")
+   String cancelChanges();
 }

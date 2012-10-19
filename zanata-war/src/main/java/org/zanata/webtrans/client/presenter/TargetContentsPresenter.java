@@ -55,6 +55,7 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gwt.core.client.GWT;
@@ -77,7 +78,7 @@ public class TargetContentsPresenter implements
       WorkspaceContextUpdateEventHandler
 // @formatter:on
 {
-   private static final int LAST_INDEX = -2;
+   protected static final int LAST_INDEX = -2;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
@@ -143,20 +144,14 @@ public class TargetContentsPresenter implements
       }
    }
 
-   /**
-    * Will only save if current editing state is not SAVING.
-    *
-    * @param status content state
-    */
    public void saveCurrent(ContentState status)
    {
       eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status, display.getId(), display.getVerNum(), display.getCachedTargets()));
-      display.setState(TargetContentsDisplay.EditingState.SAVING);
    }
 
    public boolean currentEditorContentHasChanged()
    {
-      return display != null && !equal(display.getCachedTargets(), display.getNewTargets());
+      return hasSelectedRow() && !equal(display.getCachedTargets(), display.getNewTargets());
    }
 
    private ToggleEditor getCurrentEditor()
@@ -164,14 +159,14 @@ public class TargetContentsPresenter implements
       return currentEditors.get(currentEditorIndex);
    }
 
-   public void showEditors(final TransUnitId currentTransUnitId)
+   public void setSelected(final TransUnitId currentTransUnitId)
    {
       this.currentTransUnitId = currentTransUnitId;
 
       editorTranslators.clearTranslatorList(currentEditors); // clear previous selection's translator list
 
-      display = findDisplayById(currentTransUnitId);
-      Log.info("enter show editor with id:" + currentTransUnitId + " version: " + display.getVerNum());
+      display = findDisplayById(currentTransUnitId).get();
+      Log.info("selecting id:" + currentTransUnitId + " version: " + display.getVerNum());
 
       currentEditors = display.getEditors();
 
@@ -197,17 +192,9 @@ public class TargetContentsPresenter implements
       }
    }
 
-   private TargetContentsDisplay findDisplayById(TransUnitId currentTransUnitId)
+   private Optional<TargetContentsDisplay> findDisplayById(TransUnitId currentTransUnitId)
    {
-      try
-      {
-         return Iterables.find(displayList, new FindByTransUnitIdPredicate(currentTransUnitId));
-      }
-      catch (NoSuchElementException e)
-      {
-         Log.error("cannot find display by id:" + currentTransUnitId + ". Page has changed?! returning null");
-         return null;
-      }
+      return Iterables.tryFind(displayList, new FindByTransUnitIdPredicate(currentTransUnitId));
    }
 
    private void normaliseCurrentEditorIndex()
@@ -224,7 +211,7 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void onTransUnitEdit(final TransUnitEditEvent event)
+   public void onTransUnitEdit(TransUnitEditEvent event)
    {
       if (event.getSelectedTransUnit() != null)
       {
@@ -237,7 +224,7 @@ public class TargetContentsPresenter implements
    public void validate(ToggleEditor editor)
    {
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
-      if (display != null)
+      if (hasSelectedRow())
       {
          event.addWidget(display);
       }
@@ -292,6 +279,10 @@ public class TargetContentsPresenter implements
 
    protected void moveToNextEntry()
    {
+      if (currentEditorIndex == LAST_INDEX)
+      {
+         currentEditorIndex = 0;
+      }
       if (currentEditorIndex + 1 < currentEditors.size())
       {
          display.focusEditor(currentEditorIndex + 1);
@@ -331,10 +322,10 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void onFocus(TransUnitId id, int editorIndex)
+   public void onEditorClicked(TransUnitId id, int editorIndex)
    {
-      ensureRowSelection(id);
       currentEditorIndex = editorIndex;
+      ensureRowSelection(id);
    }
 
    @Override
@@ -356,7 +347,7 @@ public class TargetContentsPresenter implements
    {
       if (!equal(currentTransUnitId, transUnitId))
       {
-         //user click on buttons that is not on current selected row
+         //user click on editor area that is not on current selected row
          eventBus.fireEvent(new TableRowSelectedEvent(transUnitId));
       }
    }
@@ -364,8 +355,8 @@ public class TargetContentsPresenter implements
    @Override
    public void copySource(ToggleEditor editor, TransUnitId id)
    {
-      ensureRowSelection(id);
       currentEditorIndex = editor.getIndex();
+      ensureRowSelection(id);
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
       editor.setFocus();
 
@@ -382,7 +373,7 @@ public class TargetContentsPresenter implements
 
    public List<String> getNewTargets()
    {
-      return display == null ? null : display.getNewTargets();
+      return hasSelectedRow() ? display.getNewTargets() : null;
    }
 
    @Override
@@ -494,9 +485,10 @@ public class TargetContentsPresenter implements
     */
    public void updateRow(TransUnit updatedTransUnit)
    {
-      TargetContentsDisplay contentsDisplay = findDisplayById(updatedTransUnit.getId());
-      if (contentsDisplay != null)
+      Optional<TargetContentsDisplay> contentsDisplayOptional = findDisplayById(updatedTransUnit.getId());
+      if (contentsDisplayOptional.isPresent())
       {
+         TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
          contentsDisplay.setValue(updatedTransUnit);
          contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
       }
@@ -509,9 +501,10 @@ public class TargetContentsPresenter implements
     */
    public void confirmSaved(TransUnit updatedTU)
    {
-      TargetContentsDisplay contentsDisplay = findDisplayById(updatedTU.getId());
-      if (contentsDisplay != null)
+      Optional<TargetContentsDisplay> contentsDisplayOptional = findDisplayById(updatedTU.getId());
+      if (contentsDisplayOptional.isPresent())
       {
+         TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
          contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum(), updatedTU.getStatus());
          setEditingState(updatedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
       }
@@ -519,11 +512,16 @@ public class TargetContentsPresenter implements
 
    public void setFocus()
    {
-      if (display != null)
+      if (hasSelectedRow())
       {
          normaliseCurrentEditorIndex();
          display.focusEditor(currentEditorIndex);
       }
+   }
+
+   public boolean hasSelectedRow()
+   {
+      return display != null && currentTransUnitId != null;
    }
 
    @Override
@@ -563,17 +561,18 @@ public class TargetContentsPresenter implements
    @Override
    public void setEditingState(TransUnitId transUnitId, TargetContentsDisplay.EditingState editingState)
    {
-      TargetContentsDisplay display = findDisplayById(transUnitId);
-      if (display != null && editingState != display.getEditingState())
+      Optional<TargetContentsDisplay> displayOptional = findDisplayById(transUnitId);
+      TargetContentsDisplay contentsDisplay = displayOptional.orNull();
+      if (contentsDisplay != null && editingState != contentsDisplay.getEditingState())
       {
          if (editingState != TargetContentsDisplay.EditingState.SAVED)
          {
-            display.setState(editingState);
+            contentsDisplay.setState(editingState);
          }
-         else if (Objects.equal(display.getCachedTargets(), display.getNewTargets()))
+         else if (Objects.equal(contentsDisplay.getCachedTargets(), contentsDisplay.getNewTargets()))
          {
             // we set editing state to SAVED only if cached targets and in editor targets are equal
-            display.setState(TargetContentsDisplay.EditingState.SAVED);
+            contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
          }
       }
    }

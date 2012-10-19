@@ -43,6 +43,8 @@
 					<s:token allowMultiplePosts="true" />
 					
 					<h:outputText escape="false" value="#{messages['jsf.iteration.ShowAllLocales.title']}" rendered="#{identity.loggedIn}"/>
+					<a4j:commandButton title="Refresh table" action="#{viewAllStatusAction.refreshStatistic}" reRender="data_table" value="Refresh" styleClass="float-right">
+					</a4j:commandButton>
 					<rich:spacer width="10px;"/>
 					<br/>
 					<rich:spacer height="10px;"/>
@@ -163,15 +165,18 @@
                </s:link>
 			</ui:repeat>	
 		</rich:panel>
-
+		
         <a4j:form>
             <ui:param name="pHandle" value="#{viewAllStatusAction.copyTransProcessHandle}"/>
             <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
+            
             <a4j:outputPanel id="copyTransIndicator" layout="block" rendered="#{identity.loggedIn}">
+                
                 <a4j:outputPanel rendered="#{copyTransRunning}">
                     #{messages['jsf.iteration.CopyTrans.inProgress']}
                 </a4j:outputPanel>
                 <!-- minValue is -1 because of a bug when 0 is used -->
+                
                 <rich:progressBar id="copyTransProgressBar"
                                   value="#{viewAllStatusAction.copyTransProgress}"
                                   minValue="-1"
@@ -224,7 +229,6 @@
                         <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
                         <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
                             <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
-                                <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
 
                                 <rich:column sortBy="#{group.name}">
                                     <f:facet name="header">#{messages['jsf.GroupName']}</f:facet>

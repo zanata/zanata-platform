@@ -20,20 +20,18 @@
  */
 package org.zanata.process;
 
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.log.Log;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Contains logic that should be executed asynchronously in the background.
  * 
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public abstract class BackgroundProcess<H extends ProcessHandle>
 {
-
-   @Logger
-   private Log log;
 
    /**
     * Starts the process.
@@ -46,7 +44,7 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
       // make sure the process handle is not being reused
       if( handle.isStarted() || handle.isFinished() )
       {
-         throw new RuntimeException("Process handles cannot be reused.");
+         throw new RuntimeException("RunnableProcess handles cannot be reused.");
       }
 
       handle.start();
@@ -69,7 +67,7 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
    /**
     * This is the background process' main logic.
     *
-    * @param handle Process handle for the running process.
+    * @param handle RunnableProcess handle for the running process.
     * @throws Exception If there is a problem that makes the process stop.
     */
    protected abstract void runProcess(H handle) throws Exception;
@@ -83,5 +81,6 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
     */
    protected void handleThrowable( H handle, Throwable t )
    {
+      handle.setError(t);
    }
 }

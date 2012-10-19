@@ -342,5 +342,132 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet author="damason@redhat.com" id="10">
+        <comment>Change HRawDocument content to use larger blob field.</comment>
+        <modifyDataType tableName="HRawDocument" columnName="content" newDataType="longblob"/>
+        <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
+        <addNotNullConstraint tableName="HRawDocument" columnName="content" columnDataType="longblob"/>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="11">
+        <comment>Change HDocumentUploadPart content to use larger blob field.</comment>
+        <modifyDataType tableName="HDocumentUploadPart" columnName="content" newDataType="longblob"/>
+        <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
+        <addNotNullConstraint tableName="HDocumentUploadPart" columnName="content" columnDataType="longblob"/>
+    </changeSet>
+
+    <changeSet id="10" author="camunoz@redhat.com">
+        <comment>Create Content fields on HTextFlow table.</comment>
+        <addColumn tableName="HTextFlow">
+            <column name="content0" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content1" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content2" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content3" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content4" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content5" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="11" author="camunoz@redhat.com">
+        <comment>Migrate HTextFlowContent data to HTextFlow table.</comment>
+        <sql>
+            update HTextFlow tf set content0 =
+            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 0 )
+        </sql>
+        <sql>
+            update HTextFlow tf set content1 =
+            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 1 )
+        </sql>
+        <sql>
+            update HTextFlow tf set content2 =
+            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 2 )
+        </sql>
+        <sql>
+            update HTextFlow tf set content3 =
+            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 3 )
+        </sql>
+        <sql>
+            update HTextFlow tf set content4 =
+            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 4 )
+        </sql>
+        <sql>
+            update HTextFlow tf set content5 =
+            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 5 )
+        </sql>
+    </changeSet>
+
+    <changeSet id="12" author="camunoz@redhat.com">
+        <comment>Remove HTextFlowContent table.</comment>
+        <dropTable tableName="HTextFlowContent" cascadeConstraints="false"/>
+    </changeSet>
+
+    <changeSet id="13" author="camunoz@redhat.com">
+        <comment>Create Content fields on HTextFlowTarget table.</comment>
+        <addColumn tableName="HTextFlowTarget">
+            <column name="content0" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content1" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content2" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content3" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content4" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content5" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="14" author="camunoz@redhat.com">
+        <comment>Migrate HTextFlowTargetContent data to HTextFlowTarget table.</comment>
+        <sql>
+            update HTextFlowTarget tft set content0 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 0 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content1 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 1 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content2 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 2 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content3 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 3 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content4 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 4 )
+        </sql>
+        <sql>
+            update HTextFlowTarget tft set content5 =
+            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 5 )
+        </sql>
+    </changeSet>
+
+    <changeSet id="15" author="camunoz@redhat.com">
+        <comment>Remove HTextFlowTargetContent table.</comment>
+        <dropTable tableName="HTextFlowTargetContent" cascadeConstraints="false"/>
+    </changeSet>
 
 </databaseChangeLog>

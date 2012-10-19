@@ -300,7 +300,11 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
       if (Contexts.isSessionContextActive())
       {
          HAccount account = (HAccount) Component.getInstance(JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION);
-         setLastModifiedBy(account.getPerson());
+         // TODO In some cases there is no session ( such as when pushing async )
+         if( account != null )
+         {
+            setLastModifiedBy(account.getPerson());
+         }
       }
    }
 

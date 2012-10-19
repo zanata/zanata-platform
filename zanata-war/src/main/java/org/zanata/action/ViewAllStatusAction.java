@@ -474,7 +474,7 @@ public class ViewAllStatusAction implements Serializable
 
    public void searchGroup()
    {
-      searchResults = versionGroupServiceImpl.searchLikeSlug(searchTerm);
+      searchResults = versionGroupServiceImpl.searchLikeSlugAndName(searchTerm);
    }
 
    public boolean isGroupInVersion(String groupSlug)

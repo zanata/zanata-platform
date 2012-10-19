@@ -93,7 +93,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       int rowIndex = 0;
       for (String source : value.getSources())
       {
-         SourcePanel sourcePanel = new SourcePanel();
+         SourcePanel sourcePanel = new SourcePanel(transUnitId);
          sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
          sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
          sourcePanelList.add(sourcePanel);

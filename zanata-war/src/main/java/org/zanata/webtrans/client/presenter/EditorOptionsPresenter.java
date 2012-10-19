@@ -141,16 +141,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    }
 
    @Override
-   public void onEscCancelEditOptionChanged(Boolean escCancelEdit)
-   {
-      if (configHolder.isEscClosesEditor() != escCancelEdit)
-      {
-         configHolder.setEscClosesEditor(escCancelEdit);
-         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
-      }
-   }
-
-   @Override
    public void onEditorButtonsOptionChanged(Boolean editorButtons)
    {
       if (configHolder.isDisplayButtons() != editorButtons)

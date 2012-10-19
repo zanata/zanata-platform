@@ -23,7 +23,7 @@ package org.zanata.process;
 import java.util.concurrent.Semaphore;
 
 /**
- * Extension of the basci Process Handle class to include data pertinent to the 
+ * Extension of the basci RunnableProcess Handle class to include data pertinent to the
  * building of an iteration zip file.
  * 
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

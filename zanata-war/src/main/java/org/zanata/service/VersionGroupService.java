@@ -37,7 +37,7 @@ public interface VersionGroupService
 
    List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm);
 
-   List<HIterationGroup> searchLikeSlug(String searchTerm);
+   List<HIterationGroup> searchLikeSlugAndName(String searchTerm);
 
    List<HPerson> getMaintainerBySlug(String slug);
 

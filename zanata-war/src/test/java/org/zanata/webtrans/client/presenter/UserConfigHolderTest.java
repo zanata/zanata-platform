@@ -29,6 +29,11 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
+import org.zanata.webtrans.shared.rpc.NavOption;
+import com.google.common.base.Predicate;
+
+import static org.hamcrest.MatcherAssert.*;
 
 @Test(groups = {"unit-tests"})
 public class UserConfigHolderTest
@@ -48,9 +53,10 @@ public class UserConfigHolderTest
 
       Map<String, String> propertiesMap = getPropertiesMap();
 
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("escClosesEditor", "false"));
-      MatcherAssert.assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
+      assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
+      assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
+      assertThat(propertiesMap, Matchers.hasEntry("pageSize", "10"));
+      assertThat(propertiesMap, Matchers.hasEntry("showError", "false"));
    }
 
    @SuppressWarnings("unchecked")
@@ -66,11 +72,24 @@ public class UserConfigHolderTest
       boolean value = random.nextBoolean();
 
       configHolder.setEnterSavesApproved(value);
-      configHolder.setEscClosesEditor(value);
       configHolder.setDisplayButtons(value);
+      configHolder.setShowError(value);
 
-      MatcherAssert.assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(value));
-      MatcherAssert.assertThat(configHolder.isEscClosesEditor(), Matchers.equalTo(value));
-      MatcherAssert.assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(value));
+      assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(value));
+      assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(value));
+      assertThat(configHolder.isShowError(), Matchers.equalTo(value));
+   }
+
+   @Test
+   public void canGetPredicateBasedOnNavOption()
+   {
+      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+      assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.FUZZY_OR_NEW_PREDICATE));
+
+      configHolder.setNavOption(NavOption.FUZZY);
+      assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.FUZZY_PREDICATE));
+
+      configHolder.setNavOption(NavOption.UNTRANSLATED);
+      assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.NEW_PREDICATE));
    }
 }

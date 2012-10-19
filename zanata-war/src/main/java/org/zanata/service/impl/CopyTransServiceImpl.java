@@ -20,6 +20,12 @@
  */
 package org.zanata.service.impl;
 
+import static org.zanata.common.ContentState.Approved;
+import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.common.ContentState.New;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -51,9 +57,6 @@ import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
-
-import static org.zanata.common.ContentState.*;
-import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.*;
 
 //TODO unit test suite for this class
 
@@ -194,8 +197,6 @@ public class CopyTransServiceImpl implements CopyTransService
                   // and either Project didn't match, or the user explicitly rejected non-matching projects
                   copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
                }
-
-               log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
 
                log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
 
@@ -375,7 +376,7 @@ public class CopyTransServiceImpl implements CopyTransService
          procHandle.setCurrentProgress(0);
       }
 
-      // TODO Process handle may not be null
+      // TODO RunnableProcess handle may not be null
       for( HDocument doc : iteration.getDocuments().values() )
       {
          if( procHandle.shouldStop() )

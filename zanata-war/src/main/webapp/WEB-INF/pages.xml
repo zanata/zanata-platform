@@ -594,7 +594,7 @@
          a brand-new HProject instead of loading the existing one
          (at some stages of the JSF lifecycle)
       -->
-    <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
+    <action execute="#{identity.checkPermission(projectCopyTransOptionsAction.project, 'update')}" />
     
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
@@ -723,7 +723,7 @@
       <action execute="#{breadcrumbs.clear}"/>
       <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
       <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(copyTransAction.projectSlug), copyTransAction.projectSlug)}"/>
-      <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(copyTransAction.projectSlug).concat('&amp;iterationSlug=').concat(copyTransAction.iterationSlug), copyTransAction.iterationSlug)}"/>
+      <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(copyTransAction.projectSlug).concat('/').concat(copyTransAction.iterationSlug), copyTransAction.iterationSlug)}"/>
       <action execute="#{breadcrumbs.addLocation('', messages['jsf.iteration.CopyTrans'])}"/>
 
       <navigation from-action="#{copyTransAction.startCopyTrans}">

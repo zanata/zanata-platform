@@ -81,7 +81,15 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    public void onRevealDisplay()
    {
-      targetContentsPresenter.concealDisplay();
+      if (targetContentsPresenter.hasSelectedRow())
+      {
+         targetContentsPresenter.setFocus();
+         targetContentsPresenter.revealDisplay();
+      }
+      else
+      {
+         targetContentsPresenter.concealDisplay();
+      }
    }
 
    @Override

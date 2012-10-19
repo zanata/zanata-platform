@@ -70,6 +70,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status);
 
+   TransUnit getCachedValue();
+
    interface Listener
    {
       void validate(ToggleEditor editor);
@@ -88,7 +90,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
       void showHistory(TransUnitId transUnitId);
 
-      void onFocus(TransUnitId id, int editorIndex);
+      void onEditorClicked(TransUnitId id, int editorIndex);
 
       boolean isUsingCodeMirror();
 
