@@ -22,7 +22,6 @@ import org.zanata.common.TranslationStats;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.StatusCount;
 
 @Name("documentDAO")
@@ -304,21 +303,6 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       return returnStats;
    }
 
-   public void syncRevisions(HDocument doc, HTextFlow... textFlows)
-   {
-      int rev = doc.getRevision();
-      syncRevisions(doc, rev, textFlows);
-   }
-
-   public void syncRevisions(HDocument doc, int revision, HTextFlow... textFlows)
-   {
-      doc.setRevision(revision);
-      for (HTextFlow textFlow : textFlows)
-      {
-         textFlow.setRevision(revision);
-      }
-   }
-   
    public HDocument getByProjectIterationAndDocId(final String projectSlug, final String iterationSlug, final String docId)
    {
       Session session = getSession();

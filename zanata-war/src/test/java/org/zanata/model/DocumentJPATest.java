@@ -19,14 +19,12 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 
 @Test(groups = { "jpa-tests" })
 public class DocumentJPATest extends ZanataDbunitJpaTest
 {
 
-   private DocumentDAO dao;
    private LocaleDAO localeDAO;
    HLocale en_US;
    HLocale de_DE;
@@ -35,6 +33,21 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
    {
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
+
+   public void syncRevisions(HDocument doc, HTextFlow... textFlows)
+   {
+      int rev = doc.getRevision();
+      syncRevisions(doc, rev, textFlows);
+   }
+
+   private void syncRevisions(HDocument doc, int revision, HTextFlow... textFlows)
+   {
+      doc.setRevision(revision);
+      for (HTextFlow textFlow : textFlows)
+      {
+         textFlow.setRevision(revision);
+      }
    }
 
    @BeforeClass
@@ -46,7 +59,6 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
    @BeforeMethod(firstTimeOnly = true)
    public void beforeMethod()
    {
-      dao = new DocumentDAO((Session) getEm().getDelegate());
       localeDAO = new LocaleDAO((Session) em.getDelegate());
       en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
       de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
@@ -99,7 +111,7 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
 
       textFlows2.remove(flow1);
       flow1.setObsolete(true);
-      dao.syncRevisions(hdoc, flow1);
+      syncRevisions(hdoc, flow1);
 
       // flow1.setPos(null);
       em.flush();
@@ -143,7 +155,7 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
 
       flow1.setContents("nwe content!");
 
-      dao.syncRevisions(hdoc, flow1);
+      syncRevisions(hdoc, flow1);
 
       em.flush();
 
