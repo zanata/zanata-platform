@@ -93,7 +93,9 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
 
       if (Strings.isNullOrEmpty(action.getPhrase()))
       {
+         long startTime = System.nanoTime();
          textFlows = textFlowDAO.getNavigationByDocumentId(action.getId(), hLocale, new TextFlowResultTransformer(hLocale));
+         log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
       }
       else
       {
