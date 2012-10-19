@@ -508,7 +508,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   break;
 
                case Running:
-                  ConsoleUtils.setProgressFeedbackMessage("Pushing ...");
+                  ConsoleUtils.setProgressFeedbackMessage(status.getPercentageComplete() + "%");
                   break;
 
                case Waiting:
