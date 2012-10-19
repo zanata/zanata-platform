@@ -264,4 +264,12 @@ public class FilterConstraints
       return includeApproved;
    }
 
+   public FilterConstraints filterByStatus(boolean newState, boolean fuzzyState, boolean approvedState)
+   {
+      if (approvedState == fuzzyState && approvedState == newState)
+      {
+         return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), true, true, true);
+      }
+      return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), newState, fuzzyState, approvedState);
+   }
 }

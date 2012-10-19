@@ -111,4 +111,34 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       result = dao.getTextFlowsByStatus(documentId2, enUSLocale, true, true, false);
       assertThat(result, Matchers.hasSize(3));
    }
+
+   @Test
+   public void canBuildContentStateQuery()
+   {
+      // accept all
+      assertThat(TextFlowDAO.buildContentStateCondition(true, true, true, "tft"), Matchers.equalTo("1"));
+      assertThat(TextFlowDAO.buildContentStateCondition(false, false, false, "tft"), Matchers.equalTo("1"));
+
+      // single status filter
+      assertThat(TextFlowDAO.buildContentStateCondition(true, false, false, "tft"), Matchers.equalTo("(tft.state=2)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(false, true, false, "tft"), Matchers.equalTo("(tft.state=1)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(false, false, true, "tft"), Matchers.equalTo("(tft.state=0 or tft.state is null)"));
+
+      // two status
+      assertThat(TextFlowDAO.buildContentStateCondition(true, false, true, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=0 or tft.state is null)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(true, true, false, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=1)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(false, true, true, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=0 or tft.state is null)"));
+   }
+
+   @Test
+   public void canBuildSearchQuery()
+   {
+      // no search term
+      assertThat(TextFlowDAO.buildSearchCondition(null, "tft"), Matchers.equalTo("1"));
+      assertThat(TextFlowDAO.buildSearchCondition("", "tft"), Matchers.equalTo("1"));
+
+      // with search term
+      assertThat(TextFlowDAO.buildSearchCondition("a", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE '%a%' or lower(tft.content1) LIKE '%a%' or lower(tft.content2) LIKE '%a%' or lower(tft.content3) LIKE '%a%' or lower(tft.content4) LIKE '%a%' or lower(tft.content5) LIKE '%a%')"));
+      assertThat(TextFlowDAO.buildSearchCondition("A", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE '%a%' or lower(tft.content1) LIKE '%a%' or lower(tft.content2) LIKE '%a%' or lower(tft.content3) LIKE '%a%' or lower(tft.content4) LIKE '%a%' or lower(tft.content5) LIKE '%a%')"));
+   }
 }

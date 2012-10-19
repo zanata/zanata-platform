@@ -67,9 +67,6 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
    @In
    ZanataIdentity identity;
 
-   @In
-   private TextFlowSearchService textFlowSearchServiceImpl;
-
 
    @Override
    public GetTransUnitsNavigationResult execute(GetTransUnitsNavigation action, ExecutionContext context) throws ActionException
@@ -86,42 +83,23 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
          throw new ActionException(e);
       }
 
+      FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getPhrase()).filterSource().filterTarget().filterByStatus(action.isNewState(), action.isFuzzyState(), action.isApprovedState());
       ArrayList<Long> idIndexList = new ArrayList<Long>();
-      HashMap<Long, ContentState> transIdStateList = new HashMap<Long, ContentState>();
+      HashMap<Long, ContentState> transIdStateMap = new HashMap<Long, ContentState>();
 
       List<HTextFlow> textFlows;
-
-      if (Strings.isNullOrEmpty(action.getPhrase()))
-      {
-         long startTime = System.nanoTime();
-         textFlows = textFlowDAO.getNavigationByDocumentId(action.getId(), hLocale, new TextFlowResultTransformer(hLocale));
-         log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
-      }
-      else
-      {
-         log.info("find message:" + action.getPhrase());
-         textFlows = searchByPhrase(action);
-      }
-
+      TextFlowResultTransformer resultTransformer = new TextFlowResultTransformer(hLocale);
+      long startTime = System.nanoTime();
+      textFlows = textFlowDAO.getNavigationByDocumentId(action.getId(), hLocale, resultTransformer, filterConstraints);
       for (HTextFlow textFlow : textFlows)
       {
-         HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale.getId());
-         if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), action.isApprovedState(), textFlowTarget))
-         {
-            if (textFlowTarget == null)
-            {
-               transIdStateList.put(textFlow.getId(), ContentState.New);
-            }
-            else
-            {
-               transIdStateList.put(textFlow.getId(), textFlowTarget.getState());
-            }
-            idIndexList.add(textFlow.getId());
-         }
+         idIndexList.add(textFlow.getId());
+         transIdStateMap.put(textFlow.getId(), textFlow.getTargets().get(hLocale.getId()).getState());
       }
-      log.info("returned size: " + idIndexList.size());
+      log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
+      log.debug("for action {} returned size: ", action, idIndexList.size());
+      return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateMap);
 
-      return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateList);
    }
 
    @Override
@@ -129,64 +107,9 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
    {
    }
 
-   private List<HTextFlow> searchByPhrase(GetTransUnitsNavigation action)
-   {
-      FilterConstraints constraints = FilterConstraints.filterBy(action.getPhrase()).ignoreCase();
-
-      List<HTextFlow> textFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), new DocumentId(action.getId()), constraints);
-      Collections.sort(textFlows, HTextFlowPosComparator.INSTANCE);
-      return textFlows;
-   }
-
-   private boolean checkStateAndValidate(boolean isNewState, boolean isFuzzyState, boolean isApprovedState, HTextFlowTarget textFlowTarget)
-   {
-      if ((isNewState && isFuzzyState && isApprovedState) || (!isNewState && !isFuzzyState && !isApprovedState))
-      {
-         return true;
-      }
-
-      if (isNewState && isFuzzyState)
-      {
-         return isNewState(textFlowTarget) || isFuzzyState(textFlowTarget);
-      }
-      else if (isNewState && isApprovedState)
-      {
-         return isNewState(textFlowTarget) || isApprovedState(textFlowTarget);
-      }
-      else if (isFuzzyState && isApprovedState)
-      {
-         return isFuzzyState(textFlowTarget) || isApprovedState(textFlowTarget);
-      }
-      else if (isFuzzyState)
-      {
-         return isFuzzyState(textFlowTarget);
-      }
-      else if (isNewState)
-      {
-         return isNewState(textFlowTarget);
-      }
-      else if (isApprovedState)
-      {
-         return isApprovedState(textFlowTarget);
-      }
-      return false;
-   }
-
-   private boolean isFuzzyState(HTextFlowTarget textFlowTarget)
-   {
-      return textFlowTarget != null && textFlowTarget.getState() == ContentState.NeedReview;
-   }
-
-   private boolean isNewState(HTextFlowTarget textFlowTarget)
-   {
-      return textFlowTarget == null || textFlowTarget.getState() == ContentState.New;
-   }
-
-   private boolean isApprovedState(HTextFlowTarget textFlowTarget)
-   {
-      return textFlowTarget != null && textFlowTarget.getState() == ContentState.Approved;
-   }
-
+   /**
+    * This class is just so we can set id (protected) and avoid hibernate proxies.
+    */
    private static class SimpleHTextFlow extends HTextFlow
    {
       public SimpleHTextFlow(Long id, ContentState contentState, HLocale hLocale)

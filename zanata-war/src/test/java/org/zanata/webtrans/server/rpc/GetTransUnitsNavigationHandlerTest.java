@@ -42,8 +42,6 @@ public class GetTransUnitsNavigationHandlerTest extends ZanataDbunitJpaTest
    private ZanataIdentity identity;
    @Mock
    private LocaleService localeService;
-   @Mock
-   private TextFlowSearchService textFlowSearchServiceImpl;
    private final DocumentId documentId = new DocumentId(1);
    @Override
    protected void prepareDBUnitOperations()
@@ -61,7 +59,6 @@ public class GetTransUnitsNavigationHandlerTest extends ZanataDbunitJpaTest
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
             .use("textFlowDAO", dao)
-            .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .autowire(GetTransUnitsNavigationHandler.class);
       // @formatter:on
    }
@@ -132,5 +129,46 @@ public class GetTransUnitsNavigationHandlerTest extends ZanataDbunitJpaTest
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(10L, ContentState.New));
 
       assertThat(result.getIdIndexList(), Matchers.contains(3L, 5L, 6L, 7L, 8L, 9L, 10L));
+   }
+
+   @Test
+   public void testExecuteWithSearch() throws Exception
+   {
+      // filter by search term in mixed cases
+      GetTransUnitActionContext context = new GetTransUnitActionContext(documentId).changeFindMessage("FiLe");
+      GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
+      prepareActionAndMockLocaleService(action);
+
+      GetTransUnitsNavigationResult result = handler.execute(action, null);
+
+      assertThat(result.getTransIdStateList().size(), Matchers.equalTo(7));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(1L, ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(2L, ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(3L, ContentState.NeedReview));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(4L, ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(5L, ContentState.NeedReview));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(6L, ContentState.NeedReview));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(8L, ContentState.New));
+
+      assertThat(result.getIdIndexList(), Matchers.contains(1L, 2L, 3L, 4L, 5L, 6L, 8L));
+   }
+
+   @Test
+   public void testExecuteWithSearchAndStatusFilter() throws Exception
+   {
+      // filter by search term in mixed cases and accept fuzzy and new
+      GetTransUnitActionContext context = new GetTransUnitActionContext(documentId).changeFindMessage("FiLe").changeFilterNeedReview(true).changeFilterUntranslated(true);
+      GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
+      prepareActionAndMockLocaleService(action);
+
+      GetTransUnitsNavigationResult result = handler.execute(action, null);
+
+      assertThat(result.getTransIdStateList().size(), Matchers.equalTo(4));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(3L, ContentState.NeedReview));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(5L, ContentState.NeedReview));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(6L, ContentState.NeedReview));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(8L, ContentState.New));
+
+      assertThat(result.getIdIndexList(), Matchers.contains(3L, 5L, 6L, 8L));
    }
 }

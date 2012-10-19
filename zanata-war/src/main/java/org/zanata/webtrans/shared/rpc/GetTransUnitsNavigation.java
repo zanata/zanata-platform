@@ -22,6 +22,7 @@ package org.zanata.webtrans.shared.rpc;
 
 
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
+import com.google.common.base.Objects;
 
 public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUnitsNavigationResult>
 {
@@ -74,5 +75,19 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    public boolean isApprovedState()
    {
       return isApprovedState;
+   }
+
+   @Override
+   public String toString()
+   {
+      // @formatter:off
+      return Objects.toStringHelper(this).
+            add("id", id).
+            add("phrase", phrase).
+            add("isFuzzyState", isFuzzyState).
+            add("isNewState", isNewState).
+            add("isApprovedState", isApprovedState).
+            toString();
+      // @formatter:on
    }
 }

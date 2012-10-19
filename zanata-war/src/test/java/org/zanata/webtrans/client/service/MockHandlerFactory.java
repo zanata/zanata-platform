@@ -12,6 +12,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
@@ -77,10 +78,9 @@ public class MockHandlerFactory
             .use("identity", identity)
             .use("textFlowDAO", textFlowDAO)
             .use("localeServiceImpl", localeServiceImpl)
-            .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .autowire(GetTransUnitsNavigationHandler.class);
       // @formatter:on
-      when(textFlowDAO.getNavigationByDocumentId(eq(documentId.getId()), eq(hLocale), isA(ResultTransformer.class))).thenReturn(hTextFlows);
+      when(textFlowDAO.getNavigationByDocumentId(eq(documentId.getId()), eq(hLocale), isA(ResultTransformer.class), isA(FilterConstraints.class))).thenReturn(hTextFlows);
       when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
 
       return handler;

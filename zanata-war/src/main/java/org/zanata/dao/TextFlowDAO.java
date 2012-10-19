@@ -56,12 +56,14 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.FilterConstraints;
 import org.zanata.util.HTextFlowPosComparator;
-import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 @Name("textFlowDAO")
@@ -120,23 +122,107 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getNavigationByDocumentId(Long documentId, HLocale hLocale, ResultTransformer resultTransformer)
+   public List<HTextFlow> getNavigationByDocumentId(Long documentId, HLocale hLocale, ResultTransformer resultTransformer, FilterConstraints filterConstraints)
    {
-      String queryString = "select tf.id, tft.state from HTextFlow tf " +
-            "left join ( select tf_id, state from HTextFlowTarget where locale = :locale) tft on tft.tf_id = tf.id " +
-            "where tf.document_id = :docId " +
-            "order by tf.pos";
-      Query query = getSession().createSQLQuery(queryString)
+      StringBuilder queryBuilder = new StringBuilder();
+      // I can't write a HQL or criteria to achieve the same result. I gave up...
+      // @formatter:off
+      queryBuilder
+            .append("SELECT tf.id, tft.state FROM HTextFlow tf ")
+            .append(" LEFT JOIN ( SELECT tf_id, state, content0, content1, content2, content3, content4, content5 ")
+            .append("             FROM HTextFlowTarget WHERE locale = :locale) tft ON tft.tf_id = tf.id ")
+            .append(" WHERE tf.document_id = :docId ");
+      queryBuilder
+            .append(" AND ")
+            .append(buildContentStateCondition(filterConstraints.isIncludeApproved(), filterConstraints.isIncludeFuzzy(), filterConstraints.isIncludeNew(), "tft"))
+            .append(" AND (")
+            .append(buildSearchCondition(filterConstraints.getSearchString(), "tf")) // search in source
+            .append(" OR ")
+            .append(buildSearchCondition(filterConstraints.getSearchString(), "tft")) // search in target
+            .append(")")
+      ;
+      queryBuilder
+            .append(" ORDER BY tf.pos");
+      // @formatter:on
+      log.debug("get navigation SQL query: {}", queryBuilder);
+      Query query = getSession().createSQLQuery(queryBuilder.toString())
             .addScalar("id", Hibernate.LONG)
             .addScalar("state")
             .setParameter("docId", documentId)
             .setParameter("locale", hLocale.getId())
             .setResultTransformer(resultTransformer);
 
-      List list = query.list();
-      log.info("result: {}", list.size());
-      return list;
+      return query.list();
    }
+
+   /**
+    * This will build a SQL query condition in where clause.
+    * If all status are equal (i.e. all true or all false), it's treated as accept all and it will return '1'.
+    *
+    * @param acceptApproved accept approved status
+    * @param acceptFuzzy accept fuzzy status
+    * @param acceptUntranslated accept untranslated status
+    * @param alias HTextFlowTarget alias
+    * @return '1' if accept all status or a SQL condition clause with target content state conditions in parentheses '()' joined by 'or'
+    */
+   protected static String buildContentStateCondition(boolean acceptApproved, boolean acceptFuzzy, boolean acceptUntranslated, String alias)
+   {
+      if (acceptApproved == acceptFuzzy && acceptApproved == acceptUntranslated)
+      {
+         return "1";
+      }
+      StringBuilder builder = new StringBuilder();
+      builder.append("(");
+      List<String> conditions = Lists.newArrayList();
+      final String column = alias + ".state";
+      if (acceptApproved)
+      {
+         conditions.add(column + "=2");
+      }
+      if (acceptFuzzy)
+      {
+         conditions.add(column + "=1");
+      }
+      if (acceptUntranslated)
+      {
+         conditions.add(column + "=0 or " + column + " is null");
+      }
+      Joiner joiner = Joiner.on(" or ");
+      joiner.appendTo(builder, conditions);
+      builder.append(")");
+      return builder.toString();
+   }
+
+   /**
+    * This will build a SQL query condition in where clause.
+    * It can be used to search string in content0, content1 ... content5 in HTextFlow or HTextFlowTarget.
+    * If search term is empty it will return '1'
+    *
+    * @param searchString search term
+    * @param alias table name alias
+    * @return '1' if searchString is empty or a SQL condition clause with lower(contentX) like '%searchString%' in parentheses '()' joined by 'or'
+    */
+   protected static String buildSearchCondition(String searchString, String alias)
+   {
+      if (Strings.isNullOrEmpty(searchString))
+      {
+         return "1";
+      }
+      StringBuilder builder = new StringBuilder();
+      builder.append("(");
+      List<String> conditions = Lists.newArrayList();
+      for (int i = 0; i < 6; i++)
+      {
+         conditions.add("lower(" + alias + ".content" + i + ") LIKE '%" + searchString.toLowerCase() + "%'");
+      }
+      Joiner joiner = Joiner.on(" or ");
+      joiner.appendTo(builder, conditions);
+      builder.append(")");
+      return builder.toString();
+   }
+
+
+
 
    public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId locale, final int maxResult) throws ParseException
    {
