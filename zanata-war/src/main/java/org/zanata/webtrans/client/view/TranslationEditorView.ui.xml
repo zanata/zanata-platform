@@ -31,6 +31,17 @@
 			border-bottom:1px solid lightGrey;
 			background:#F3F2F2;
 		}
+		
+		.refresh
+		{
+			font-size:20px;
+			cursor:pointer;
+		}
+		
+		.refresh:hover
+		{
+			color:#0085CC;
+		}
 				
 	</ui:style>
 	
@@ -42,6 +53,9 @@
 			            </g:layer>
 						<g:layer width="45%" right="40px" top="9px" height="20px">
 							<g:HTMLPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
+						</g:layer>
+						<g:layer width="20px" right="8px" top="9px" height="20px">
+							<g:InlineLabel ui:field="refreshCurrentPage" styleName="icon-arrows-cw {style.refresh}"/>
 						</g:layer>
 					</g:LayoutPanel>
 				</g:layer>

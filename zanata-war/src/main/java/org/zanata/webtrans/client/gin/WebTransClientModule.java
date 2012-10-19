@@ -98,6 +98,7 @@ import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.client.view.TransUnitNavigationView;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableView;
+import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationMemoryDisplay;
 import org.zanata.webtrans.client.view.TranslationView;
@@ -151,7 +152,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsDisplay.class, TransMemoryDetailsView.class);
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationDisplay.class, TransUnitNavigationView.class);
       bindPresenter(EditorOptionsPresenter.class, EditorOptionsDisplay.class, EditorOptionsView.class);
-      bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
+      bindPresenter(TranslationEditorPresenter.class, TranslationEditorDisplay.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationDisplay.class, NotificationView.class);
       bindPresenter(TransUnitsTablePresenter.class, TransUnitsTableDisplay.class, TransUnitsTableView.class);

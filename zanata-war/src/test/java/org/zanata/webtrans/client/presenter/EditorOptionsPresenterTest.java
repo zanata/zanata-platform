@@ -216,12 +216,4 @@ public class EditorOptionsPresenterTest
       assertThat(configHolder.isShowError(), Matchers.equalTo(true));
       verifyZeroInteractions(eventBus);
    }
-
-   @Test
-   public void onRefreshCurrentPage()
-   {
-      presenter.refreshCurrentPage();
-
-      verify(eventBus).fireEvent(RefreshPageEvent.EVENT);
-   }
 }

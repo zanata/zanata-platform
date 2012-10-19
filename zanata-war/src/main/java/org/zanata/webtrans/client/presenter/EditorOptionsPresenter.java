@@ -169,12 +169,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    }
 
    @Override
-   public void refreshCurrentPage()
-   {
-      eventBus.fireEvent(RefreshPageEvent.EVENT);
-   }
-
-   @Override
    protected void onUnbind()
    {
    }

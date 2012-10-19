@@ -17,6 +17,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
+import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -62,7 +63,7 @@ public class TranslationPresenterTest
    @Captor
    private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
    @Mock
-   private TranslationEditorPresenter.Display translationEditorDisplay;
+   private TranslationEditorDisplay translationEditorDisplay;
 
    @BeforeMethod
    public void beforeMethod()

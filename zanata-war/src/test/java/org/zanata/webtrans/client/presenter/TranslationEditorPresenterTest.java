@@ -8,10 +8,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.view.TransFilterDisplay;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
+import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -28,7 +30,7 @@ public class TranslationEditorPresenterTest
 {
    private TranslationEditorPresenter presenter;
    @Mock
-   private TranslationEditorPresenter.Display display;
+   private TranslationEditorDisplay display;
    @Mock
    private EventBus eventBus;
    @Mock
@@ -129,5 +131,13 @@ public class TranslationEditorPresenterTest
       verify(transFilterPresenter).unbind();
       verify(transUnitsTablePresenter).unbind();
       verify(transUnitNavigationPresenter).unbind();
+   }
+   
+   @Test
+   public void onRefreshCurrentPage()
+   {
+      presenter.refreshCurrentPage();
+
+      verify(eventBus).fireEvent(RefreshPageEvent.EVENT);
    }
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasPager;
@@ -28,15 +27,18 @@ import org.zanata.webtrans.client.ui.Pager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TranslationEditorView extends Composite implements TranslationEditorPresenter.Display
+public class TranslationEditorView extends Composite implements TranslationEditorDisplay
 {
 
    private static TranslationEditorViewUiBinder uiBinder = GWT.create(TranslationEditorViewUiBinder.class);
@@ -59,8 +61,11 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 
    @UiField
    LayoutPanel filterPanelContainer;
+   
+   @UiField
+   InlineLabel refreshCurrentPage;
 
-   // private Widget filterView;
+   private Listener listener;
 
    @Inject
    public TranslationEditorView(final WebTransMessages messages, final Resources resources)
@@ -69,6 +74,8 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       this.pager = new Pager(messages, resources);
 
       initWidget(uiBinder.createAndBindUi(this));
+      
+      refreshCurrentPage.setTitle(messages.refreshCurrentPage());
    }
 
    @Override
@@ -119,4 +126,16 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    {
       return pager.isFocused();
    }
+   
+   @UiHandler("refreshCurrentPage")
+   public void onRedrawCurrentPageClicked(ClickEvent event)
+   {
+      listener.refreshCurrentPage();
+   }
+
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
+
 }

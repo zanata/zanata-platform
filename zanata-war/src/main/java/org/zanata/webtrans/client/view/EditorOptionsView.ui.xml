@@ -50,15 +50,6 @@
             margin-right: 3px;
         }
 
-        .clickable {
-            cursor: pointer;
-            padding: 3px;
-        }
-
-        .clickable:hover {
-            color: #add8e6;
-        }
-
     </ui:style>
 	
     <g:LayoutPanel>
@@ -101,7 +92,6 @@
                         <g:Label ui:field="otherConfigHeader" styleName="sideMenuHeader"/>
                         <g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
                         <g:CheckBox ui:field="useCodeMirrorChk" visible="false" enabled="false"><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
-                        <g:Label ui:field="refreshCurrentPage" styleName="{style.clickable} icon-arrows-cw"><ui:msg >Refresh current page</ui:msg></g:Label>
                     </g:VerticalPanel>
                 </g:layer>
             </g:LayoutPanel>

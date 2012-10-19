@@ -33,7 +33,5 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onShowErrorsOptionChanged(Boolean showErrorChkValue);
 
       void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue);
-
-      void refreshCurrentPage();
    }
 }
