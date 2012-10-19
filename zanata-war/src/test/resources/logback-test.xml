@@ -24,7 +24,8 @@
         </encoder>
     </appender>
 
-    <logger name="org.hibernate.SQL" level="TRACE">
+    <!-- set to TRACE to see hibernate generated sql-->
+    <logger name="org.hibernate.SQL" level="INFO">
         <appender-ref ref="STDOUT-SQL" />
     </logger>
 
