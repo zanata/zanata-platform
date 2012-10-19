@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.service;
 
 import java.util.List;
 
+import org.hibernate.transform.ResultTransformer;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.common.LocaleId;
@@ -17,12 +18,12 @@ import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
 
 /**
@@ -79,7 +80,7 @@ public class MockHandlerFactory
             .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .autowire(GetTransUnitsNavigationHandler.class);
       // @formatter:on
-      when(textFlowDAO.getNavigationByDocumentId(documentId.getId())).thenReturn(hTextFlows);
+      when(textFlowDAO.getNavigationByDocumentId(eq(documentId.getId()), eq(hLocale), isA(ResultTransformer.class))).thenReturn(hTextFlows);
       when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
 
       return handler;

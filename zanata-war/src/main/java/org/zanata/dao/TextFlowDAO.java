@@ -22,14 +22,10 @@ package org.zanata.dao;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,13 +36,13 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -54,7 +50,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HDocument;
@@ -62,6 +57,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.util.HTextFlowPosComparator;
+import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
@@ -124,16 +120,22 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getNavigationByDocumentId(Long documentId)
+   public List<HTextFlow> getNavigationByDocumentId(Long documentId, HLocale hLocale, ResultTransformer resultTransformer)
    {
-      Criteria c = getSession().createCriteria(HTextFlow.class);
-      c.add(Restrictions.eq("document.id", documentId)).add(Restrictions.eq("obsolete", false));
-      c.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-      c.setCacheable(true).setComment("TextFlowDAO.getNavigationByDocumentId");
+      String queryString = "select tf.id, tft.state from HTextFlow tf " +
+            "left join ( select tf_id, state from HTextFlowTarget where locale = :locale) tft on tft.tf_id = tf.id " +
+            "where tf.document_id = :docId " +
+            "order by tf.pos";
+      Query query = getSession().createSQLQuery(queryString)
+            .addScalar("id", Hibernate.LONG)
+            .addScalar("state")
+            .setParameter("docId", documentId)
+            .setParameter("locale", hLocale.getId())
+            .setResultTransformer(resultTransformer);
 
-      c.addOrder(Order.asc("pos"));
-
-      return c.list();
+      List list = query.list();
+      log.info("result: {}", list.size());
+      return list;
    }
 
    public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId locale, final int maxResult) throws ParseException
