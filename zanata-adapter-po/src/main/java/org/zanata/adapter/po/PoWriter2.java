@@ -64,6 +64,7 @@ public class PoWriter2
     * @param doc
     * @throws IOException
     */
+   @Deprecated
    public void writePot(File baseDir, Resource doc) throws IOException
    {
       // write the POT file to pot/$name.pot
@@ -78,10 +79,23 @@ public class PoWriter2
     * @param doc
     * @throws IOException
     */
+   @Deprecated
    public void writePotToDir(File potDir, Resource doc) throws IOException
    {
       // write the POT file to $potDir/$name.pot
       File potFile = new File(potDir, doc.getName() + ".pot");
+      writePotToFile(potFile, doc);
+   }
+
+   /**
+    * Generates a pot file from Resource (document).
+    *
+    * @param doc
+    * @param potFile file to be written
+    * @throws IOException
+    */
+   public void writePotToFile(File potFile, Resource doc) throws IOException
+   {
       PathUtil.makeParents(potFile);
       FileWriter fWriter = new FileWriter(potFile);
       write(fWriter, "UTF-8", doc, null);
@@ -106,11 +120,25 @@ public class PoWriter2
     * @param targetDoc
     * @throws IOException
     */
+   @Deprecated
    public void writePo(File baseDir, Resource doc, String locale, TranslationsResource targetDoc) throws IOException
    {
       // write the PO file to $locale/$name.po
       File localeDir = new File(baseDir, locale);
       File poFile = new File(localeDir, doc.getName() + ".po");
+      writePoToFile(poFile, doc, targetDoc);
+   }
+
+   /**
+    * Generates a po file from a Resource and a TranslationsResource.
+    *
+    * @param poFile file to be written
+    * @param doc a source Resource whose translation is to be written
+    * @param targetDoc translated document to be written
+    * @throws IOException
+    */
+   public void writePoToFile(File poFile, Resource doc, TranslationsResource targetDoc) throws IOException
+   {
       mkdirs(poFile.getParentFile());
       FileWriter fWriter = new FileWriter(poFile);
       write(fWriter, "UTF-8", doc, targetDoc);
@@ -132,9 +160,9 @@ public class PoWriter2
    }
 
    /**
-    * Generates a pot or po file from a Resource and/or TranslationsResource,
-    * using the publican directory layout. If targetDoc is non-null, a po file
-    * will be generated from Resource+TranslationsResource, otherwise a pot file
+    * Generates a pot or po file from a Resource and/or TranslationsResource.
+    * If targetDoc is non-null, a po file will be generated from the
+    * Resource and TranslationsResource, otherwise a pot file
     * will be generated from the Resource only.
     * 
     * @param writer
