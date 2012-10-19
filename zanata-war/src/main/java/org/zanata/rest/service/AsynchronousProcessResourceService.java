@@ -252,6 +252,12 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                new RunnableProcess<MessagesProcessHandle>()
                {
                   @Override
+                  protected void prepare(MessagesProcessHandle handle)
+                  {
+                     handle.setMaxProgress( translatedDoc.getTextFlowTargets().size() );
+                  }
+
+                  @Override
                   protected void run(MessagesProcessHandle handle) throws Throwable
                   {
                      TranslationService translationServiceImpl =
@@ -302,7 +308,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       int perComplete = 100;
       if(handle.getMaxProgress() > 0)
       {
-         perComplete = (handle.getCurrentProgress() / handle.getMaxProgress()) * 100;
+         perComplete = (handle.getCurrentProgress() * 100 / handle.getMaxProgress());
       }
       status.setPercentageComplete(perComplete);
       status.setUrl("" + processId);

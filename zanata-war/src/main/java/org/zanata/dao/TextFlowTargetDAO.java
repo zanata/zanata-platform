@@ -261,8 +261,10 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    public HTextFlowTarget getTextFlowTarget(HTextFlow hTextFlow, HLocale hLocale)
    {
       HTextFlowTarget hTextFlowTarget =
-            (HTextFlowTarget)getSession().createQuery("select tf.targets[:localeId] from HTextFlow tf")
-                  .setParameter("localeId", hLocale.getId())
+            (HTextFlowTarget)getSession().createQuery(
+                     "select tft from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale = :locale")
+                  .setParameter("textFlow", hTextFlow)
+                  .setParameter("locale", hLocale)
                   .uniqueResult();
       return hTextFlowTarget;
    }

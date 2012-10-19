@@ -26,14 +26,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.HibernateException;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -42,7 +38,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.jboss.seam.transaction.UserTransaction;
+import org.jboss.seam.util.Work;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -76,8 +72,9 @@ import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-
 import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Name("translationServiceImpl")
 @AutoCreate
@@ -355,6 +352,8 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
+   // This will not run in a transaction. Instead, transactions are controlled within the method itself.
+   @Transactional(TransactionPropagationType.NEVER)
    public void translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                          TranslationsResource translations, Set<String> extensions, MergeType mergeType,
                                          boolean lock, String userName, MessagesProcessHandle handle)
@@ -386,9 +385,9 @@ public class TranslationServiceImpl implements TranslationService
       return this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType, MessagesProcessHandle.NO_HANDLE);
    }
 
-   private List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
-                                          TranslationsResource translations, Set<String> extensions, MergeType mergeType,
-                                          MessagesProcessHandle handle)
+   private List<String> translateAllInDoc(final String projectSlug, final String iterationSlug, final String docId, final LocaleId locale,
+                                          final TranslationsResource translations, final Set<String> extensions, final MergeType mergeType,
+                                          final MessagesProcessHandle handle)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       if (hProjectIteration == null)
@@ -399,7 +398,7 @@ public class TranslationServiceImpl implements TranslationService
       ResourceUtils.validateExtensions(extensions);
 
       log.debug("pass evaluate");
-      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
+      final HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
       if (document.isObsolete())
       {
          throw new ZanataServiceException("A document was not found.", 404);
@@ -409,13 +408,31 @@ public class TranslationServiceImpl implements TranslationService
 
       boolean changed = false;
 
-      HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-      // handle extensions
-      changed |= resourceUtils.transferFromTranslationsResourceExtensions(translations.getExtensions(true), document, extensions, hLocale, mergeType);
+      final HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
+
+      try
+      {
+         changed |=
+         new Work<Boolean>()
+         {
+            @Override
+            protected Boolean work() throws Exception
+            {
+               // handle extensions
+               boolean changed =
+                     resourceUtils.transferFromTranslationsResourceExtensions(translations.getExtensions(true), document, extensions, hLocale, mergeType);
+               return changed;
+            }
+         }.workInTransaction();
+      }
+      catch (Exception e)
+      {
+         throw new ZanataServiceException("Error during translation.", 500, e);
+      }
 
       // NB: removedTargets only applies for MergeType.IMPORT
-      Collection<HTextFlowTarget> removedTargets = new HashSet<HTextFlowTarget>();
-      List<String> warnings = new ArrayList<String>();
+      final Collection<HTextFlowTarget> removedTargets = new HashSet<HTextFlowTarget>();
+      final List<String> warnings = new ArrayList<String>();
 
       if (mergeType == MergeType.IMPORT)
       {
@@ -429,128 +446,166 @@ public class TranslationServiceImpl implements TranslationService
          }
       }
 
-      int counter = 0;
-      for (int i = 0; i < translations.getTextFlowTargets().size(); i++)
-      {
-         TextFlowTarget incomingTarget = translations.getTextFlowTargets().get(i);
+      // Break the target into batches
+      List<List<TextFlowTarget>> batches = Lists.partition(translations.getTextFlowTargets(), BATCH_SIZE);
 
-         String resId = incomingTarget.getResId();
-         HTextFlow textFlow = textFlowDAO.getById(document, resId);
-         if (textFlow == null)
+      for( final List<TextFlowTarget> batch : batches )
+      {
+         try
          {
-            // return warning for unknown resId to caller
-            String warning = "Could not find text flow for message: " + incomingTarget.getContents();
-            warnings.add(warning);
-            handle.addMessages(warning);
-            log.warn("skipping TextFlowTarget with unknown resId: {}", resId);
-         }
-         else
-         {
-            HTextFlowTarget hTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, hLocale);
-            boolean targetChanged = false;
-            if (hTarget == null)
+            changed |=
+            new Work<Boolean>()
             {
-               targetChanged = true;
-               log.debug("locale: {}", locale);
-               hTarget = new HTextFlowTarget(textFlow, hLocale);
-               hTarget.setVersionNum(0); // incremented when content is set
-               textFlowTargetDAO.makePersistent(hTarget);
-               textFlow.getTargets().put(hLocale.getId(), hTarget);
-               targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-               targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-            }
-            else
-            {
-               switch (mergeType)
+               @Override
+               protected Boolean work() throws Exception
                {
-               case AUTO:
-                  if (incomingTarget.getState() != ContentState.New)
+                  boolean changed = false;
+
+                  for (int i = 0; i < batch.size(); i++)
                   {
-                     if (hTarget.getState() == ContentState.New)
+                     TextFlowTarget incomingTarget = batch.get(i);
+
+                     String resId = incomingTarget.getResId();
+                     HTextFlow textFlow = textFlowDAO.getById(document, resId);
+                     if (textFlow == null)
                      {
-                        targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                     }
-                     else if (incomingTarget.getState() == ContentState.Approved)
-                     {
-                        List<String> incomingContents = incomingTarget.getContents();
-                        boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
-                        if (!oldContent)
-                        {
-                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                        }
+                        // return warning for unknown resId to caller
+                        String warning = "Could not find text flow for message: " + incomingTarget.getContents();
+                        warnings.add(warning);
+                        handle.addMessages(warning);
+                        log.warn("skipping TextFlowTarget with unknown resId: {}", resId);
                      }
                      else
                      {
-                        // incomingTarget state = NeedReview
-                        // hTarget state != New
+                        HTextFlowTarget hTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, hLocale);
+                        boolean targetChanged = false;
+                        if (hTarget == null)
+                        {
+                           targetChanged = true;
+                           log.debug("locale: {}", locale);
+                           hTarget = new HTextFlowTarget(textFlow, hLocale);
+                           hTarget.setVersionNum(0); // incremented when content is set
+                           //textFlowTargetDAO.makePersistent(hTarget);
+                           textFlow.getTargets().put(hLocale.getId(), hTarget);
+                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                        }
+                        else
+                        {
+                           switch (mergeType)
+                           {
+                              case AUTO:
+                                 if (incomingTarget.getState() != ContentState.New)
+                                 {
+                                    if (hTarget.getState() == ContentState.New)
+                                    {
+                                       targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                       targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                                    }
+                                    else if (incomingTarget.getState() == ContentState.Approved)
+                                    {
+                                       List<String> incomingContents = incomingTarget.getContents();
+                                       boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
+                                       if (!oldContent)
+                                       {
+                                          targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                          targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                                       }
+                                    }
+                                    else
+                                    {
+                                       // incomingTarget state = NeedReview
+                                       // hTarget state != New
 
-                        // we don't overwrite the server's NeedReview or
-                        // Approved value (business rule)
+                                       // we don't overwrite the server's NeedReview or
+                                       // Approved value (business rule)
+                                    }
+                                 }
+                                 break;
+
+                              case IMPORT:
+                                 removedTargets.remove(hTarget);
+                                 targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                 targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                                 break;
+
+                              default:
+                                 throw new ZanataServiceException("unhandled merge type " + mergeType);
+                           }
+                        }
+                        int nPlurals = getNumPlurals(hLocale, textFlow);
+                        targetChanged |= adjustContentsAndState(hTarget, nPlurals, warnings);
+
+                        // update translation information if applicable
+                        if (targetChanged)
+                        {
+                           hTarget.setVersionNum(hTarget.getVersionNum() + 1);
+
+                           changed = true;
+                           if (incomingTarget.getTranslator() != null)
+                           {
+                              String email = incomingTarget.getTranslator().getEmail();
+                              HPerson hPerson = personDAO.findByEmail(email);
+                              if (hPerson == null)
+                              {
+                                 hPerson = new HPerson();
+                                 hPerson.setEmail(email);
+                                 hPerson.setName(incomingTarget.getTranslator().getName());
+                                 personDAO.makePersistent(hPerson);
+                              }
+                              hTarget.setLastModifiedBy(hPerson);
+                           }
+                           else
+                           {
+                              hTarget.setLastModifiedBy(null);
+                           }
+                           textFlowTargetDAO.makePersistent(hTarget);
+                        }
                      }
+
+                     personDAO.flush();
+                     textFlowTargetDAO.flush();
+                     personDAO.clear();
+                     textFlowTargetDAO.clear();
+                     handle.incrementProgress(1);
                   }
-                  break;
 
-               case IMPORT:
-                  removedTargets.remove(hTarget);
-                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                  break;
-
-               default:
-                  throw new ZanataServiceException("unhandled merge type " + mergeType);
+                  return changed;
                }
-            }
-            int nPlurals = getNumPlurals(hLocale, textFlow);
-            targetChanged |= adjustContentsAndState(hTarget, nPlurals, warnings);
-
-            // update translation information if applicable
-            if (targetChanged)
-            {
-               hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-
-               changed = true;
-               if (incomingTarget.getTranslator() != null)
-               {
-                  String email = incomingTarget.getTranslator().getEmail();
-                  HPerson hPerson = personDAO.findByEmail(email);
-                  if (hPerson == null)
-                  {
-                     hPerson = new HPerson();
-                     hPerson.setEmail(email);
-                     hPerson.setName(incomingTarget.getTranslator().getName());
-                     personDAO.makePersistent(hPerson);
-                  }
-                  hTarget.setLastModifiedBy(hPerson);
-               }
-               else
-               {
-                  hTarget.setLastModifiedBy(null);
-               }
-               textFlowTargetDAO.makePersistent(hTarget);
-               counter++;
-               if (counter == BATCH_SIZE || i == translations.getTextFlowTargets().size() - 1)
-               {
-                  personDAO.flush();
-                  textFlowTargetDAO.flush();
-                  personDAO.clear();
-                  textFlowTargetDAO.clear();
-                  counter = 0;
-               }
-            }
+            }.workInTransaction();
          }
+         catch (Exception e)
+         {
+            throw new ZanataServiceException("Error during translation.", 500, e);
+         }
+
       }
 
       if (changed || !removedTargets.isEmpty())
       {
-         for (HTextFlowTarget target : removedTargets)
+         try
          {
-            target.clear();
-         }
-         textFlowTargetDAO.flush();
+            new Work<Void>()
+            {
+               @Override
+               protected Void work() throws Exception
+               {
+                  for (HTextFlowTarget target : removedTargets)
+                  {
+                     target = textFlowTargetDAO.findById(target.getId(), true); // need to refresh from persistence
+                     target.clear();
+                  }
+                  textFlowTargetDAO.flush();
 
-         documentDAO.flush();
+                  documentDAO.flush();
+                  return null;
+               }
+            }.workInTransaction();
+         }
+         catch (Exception e)
+         {
+            throw new ZanataServiceException("Error during translation.", 500, e);
+         }
       }
 
       return warnings;

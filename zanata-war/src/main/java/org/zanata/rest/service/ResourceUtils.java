@@ -390,7 +390,7 @@ public class ResourceUtils
                                                                                          // value
                                                                                          // not
                                                                                          // needed
-         doc.getPoTargetHeaders().put(locale, toTargetHeader);
+         entityManager.persist(toTargetHeader);
          entityManager.flush();
       }
       else
