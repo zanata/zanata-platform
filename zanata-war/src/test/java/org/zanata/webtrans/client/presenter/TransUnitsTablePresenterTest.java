@@ -308,6 +308,7 @@ public class TransUnitsTablePresenterTest
       TransUnit updatedTransUnit = TestFixture.makeTransUnit(1);
       presenter.setStateForTesting(updatedTransUnit.getId());
       when(messages.concurrentEdit()).thenReturn("concurrent edit detected");
+      when(messages.concurrentEditTitle()).thenReturn("please resolve conflict");
       // current user does not have unsaved change
       when(targetContentsPresenter.currentEditorContentHasChanged()).thenReturn(true);
 
@@ -321,7 +322,7 @@ public class TransUnitsTablePresenterTest
 
       ArgumentCaptor<TransHistoryItem> transHistoryCaptor = ArgumentCaptor.forClass(TransHistoryItem.class);
       InOrder inOrder = Mockito.inOrder(targetContentsPresenter, translationHistoryPresenter);
-      inOrder.verify(translationHistoryPresenter).popupAndShowLoading("concurrent edit detected");
+      inOrder.verify(translationHistoryPresenter).popupAndShowLoading("please resolve conflict");
       inOrder.verify(translationHistoryPresenter).displayEntries(transHistoryCaptor.capture(), eq(Collections.<TransHistoryItem>emptyList()));
       assertThat(transHistoryCaptor.getValue().getVersionNum(), Matchers.equalTo(updatedTransUnit.getVerNum().toString()));
       assertThat(transHistoryCaptor.getValue().getContents(), Matchers.equalTo(updatedTransUnit.getTargets()));

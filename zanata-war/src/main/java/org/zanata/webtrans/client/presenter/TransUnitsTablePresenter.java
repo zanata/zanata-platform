@@ -248,7 +248,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
          if (targetContentsPresenter.currentEditorContentHasChanged())
          {
-            translationHistoryPresenter.popupAndShowLoading(messages.concurrentEdit());
+            translationHistoryPresenter.popupAndShowLoading(messages.concurrentEditTitle());
             TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
             translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem>emptyList());
          }

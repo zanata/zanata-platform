@@ -455,6 +455,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Concurrent edit detected. Reset value for current row. Your change will be lost.")
    String concurrentEdit();
 
+   @DefaultMessage("Other user has saved newer version. Please resolve conflict between your unsaved change and latest version.")
+   String concurrentEditTitle();
+
    @DefaultMessage("Editor")
    String editor();
 
@@ -463,8 +466,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("By message")
    String byMessage();
-   
+
    @DefaultMessage("Refresh current page")
    String refreshCurrentPage();
-
 }
