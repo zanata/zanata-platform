@@ -12,6 +12,10 @@ public interface PushOptions extends PushPullOptions
    public String getMergeType();
    public List<String> getIncludes();
    public List<String> getExcludes();
+
+   public boolean getCaseSensitive();
+
+   public boolean getExcludeLocale();
    public boolean getDefaultExcludes();
    public boolean getDeleteObsoleteModules();
    public int getBatchSize();

@@ -1,7 +1,9 @@
 package org.zanata.client.commands.push;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.notNull;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -11,10 +13,8 @@ import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.BeforeMethod;
+import org.mockito.Mock;
 import org.testng.annotations.Test;
 import org.zanata.client.commands.DummyResponse;
 import org.zanata.client.commands.OptionsUtil;
@@ -34,12 +34,16 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Test(groups = "unit-tests")
 public class PushCommandTest
 {
-   IMocksControl control = EasyMock.createControl();
-   ISourceDocResource mockSourceDocResource = createMock("mockSourceDocResource", ISourceDocResource.class);
-   ITranslatedDocResource mockTranslationResources = createMock("mockTranslationResources", ITranslatedDocResource.class);
+   @Mock
+   ZanataProxyFactory mockRequestFactory;
+   @Mock
+   ISourceDocResource mockSourceDocResource;
+   @Mock
+   ITranslatedDocResource mockTranslationResources;
 
    public PushCommandTest() throws Exception
    {
+      initMocks(this);
    }
 
    @Test
@@ -147,21 +151,7 @@ public class PushCommandTest
       opts.setLocaleMapList(locales);
       OptionsUtil.applyConfigFiles(opts);
 
-      ZanataProxyFactory mockRequestFactory = EasyMock.createNiceMock(ZanataProxyFactory.class);
-
       return new PushCommand(opts, mockRequestFactory, mockSourceDocResource, mockTranslationResources, new URI("http://example.com/"));
-   }
-
-   @BeforeMethod
-   void beforeMethod()
-   {
-      control.reset();
-   }
-
-   <T> T createMock(String name, Class<T> toMock)
-   {
-      T mock = control.createMock(name, toMock);
-      return mock;
    }
    
 
@@ -170,13 +160,13 @@ public class PushCommandTest
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
       resourceMetaList.add(new ResourceMeta("obsolete"));
       resourceMetaList.add(new ResourceMeta("RPM"));
-      EasyMock.expect(mockSourceDocResource.get(null)).andReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
+      when(mockSourceDocResource.get(null)).thenReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
 
       final ClientResponse<String> okResponse = new DummyResponse<String>(Status.OK, null);
-      EasyMock.expect(mockSourceDocResource.deleteResource("obsolete")).andReturn(okResponse);
+      when(mockSourceDocResource.deleteResource("obsolete")).thenReturn(okResponse);
       StringSet extensionSet = new StringSet("gettext;comment");
-      EasyMock.expect(mockSourceDocResource.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).andReturn(okResponse);
-      EasyMock.expect(mockSourceDocResource.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).andReturn(okResponse);
+      when(mockSourceDocResource.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).thenReturn(okResponse);
+      when(mockSourceDocResource.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).thenReturn(okResponse);
 
       if (pushTrans)
       {
@@ -189,12 +179,10 @@ public class PushCommandTest
          {
             expectedLocale = new LocaleId("ja-JP");
          }
-         EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet), eq("auto"))).andReturn(okResponse);
+         when(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet), eq("auto"))).thenReturn(okResponse);
       }
-      control.replay();
       ZanataCommand cmd = generatePushCommand(pushTrans, mapLocale);
       cmd.run();
-      control.verify();
    }
 
 }

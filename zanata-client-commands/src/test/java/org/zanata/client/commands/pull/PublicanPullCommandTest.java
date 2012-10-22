@@ -1,4 +1,7 @@
-package org.zanata.client.commands;
+package org.zanata.client.commands.pull;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.URI;
@@ -7,10 +10,16 @@ import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.client.commands.DummyResponse;
+import org.zanata.client.commands.OptionsUtil;
+import org.zanata.client.commands.PublicanPullCommand;
+import org.zanata.client.commands.PublicanPullOptions;
+import org.zanata.client.commands.PublicanPullOptionsImpl;
+import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
@@ -26,12 +35,16 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Test(groups = "unit-tests")
 public class PublicanPullCommandTest
 {
-   IMocksControl control = EasyMock.createControl();
-   ISourceDocResource mockSourceDocResource = createMock("mockSourceDocResource", ISourceDocResource.class);
-   ITranslatedDocResource mockTranslationResources = createMock("mockTranslationResources", ITranslatedDocResource.class);
+   @Mock
+   private ISourceDocResource mockSourceDocResource;
 
-   public PublicanPullCommandTest() throws Exception
+   @Mock
+   private ITranslatedDocResource mockTranslationResources;
+
+   @BeforeMethod
+   public void beforeMethod()
    {
+      MockitoAnnotations.initMocks(this);
    }
 
    public void publicanPullPo() throws Exception
@@ -48,18 +61,6 @@ public class PublicanPullCommandTest
    public void publicanPullPotAndPoWithLocaleMapping() throws Exception
    {
       publicanPull(true, true);
-   }
-
-   @BeforeMethod
-   void beforeMethod()
-   {
-      control.reset();
-   }
-
-   <T> T createMock(String name, Class<T> toMock)
-   {
-      T mock = control.createMock(name, toMock);
-      return mock;
    }
    
    @SuppressWarnings("deprecation")
@@ -84,13 +85,16 @@ public class PublicanPullCommandTest
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
       resourceMetaList.add(new ResourceMeta("RPM"));
       resourceMetaList.add(new ResourceMeta("sub/RPM"));
-      EasyMock.expect(mockSourceDocResource.get(null)).andReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
+
+      when(mockSourceDocResource.get(null)).thenReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
 
       Resource rpmResource = new Resource("RPM");
-      mockExpectGetResourceAndReturnResponse(rpmResource);
+
+      StringSet ext = new StringSet("comment;gettext");
+      when(mockSourceDocResource.getResource(RestUtil.convertToDocumentURIId(rpmResource.getName()), ext)).thenReturn(new DummyResponse<Resource>(Status.OK, rpmResource));
+
       Resource subRpmResource = new Resource("sub/RPM");
-      mockExpectGetResourceAndReturnResponse(subRpmResource);
-      // StringSet extensionSet = new StringSet("gettext;comment");
+      when(mockSourceDocResource.getResource(RestUtil.convertToDocumentURIId(subRpmResource.getName()), ext)).thenReturn(new DummyResponse<Resource>(Status.OK, subRpmResource));
 
       LocaleId expectedLocale;
       if (mapLocale)
@@ -100,21 +104,12 @@ public class PublicanPullCommandTest
       TranslationsResource rpmTransJa = new TranslationsResource();
       mockExpectGetTranslationsAndReturnResponse("RPM", expectedLocale, rpmTransJa);
       mockExpectGetTranslationsAndReturnResponse("sub/RPM", expectedLocale, null);
-      ZanataProxyFactory mockRequestFactory = EasyMock.createNiceMock(ZanataProxyFactory.class);
+      ZanataProxyFactory mockRequestFactory = mock(ZanataProxyFactory.class);
 
-      control.replay();
       ZanataCommand cmd = new PublicanPullCommand(opts, mockRequestFactory, mockSourceDocResource, mockTranslationResources, new URI("http://example.com/"));
       cmd.run();
-      control.verify();
    }
 
-   private void mockExpectGetResourceAndReturnResponse(Resource entity)
-   {
-      String id = entity.getName();
-      String docUri = RestUtil.convertToDocumentURIId(id);
-      StringSet ext = new StringSet("comment;gettext");
-      EasyMock.expect(mockSourceDocResource.getResource(docUri, ext)).andReturn(new DummyResponse<Resource>(Status.OK, entity));
-   }
 
    private void mockExpectGetTranslationsAndReturnResponse(String id, LocaleId locale, TranslationsResource entity)
    {
@@ -122,11 +117,11 @@ public class PublicanPullCommandTest
       StringSet ext = new StringSet("comment;gettext");
       if (entity != null)
       {
-         EasyMock.expect(mockTranslationResources.getTranslations(docUri, locale, ext)).andReturn(new DummyResponse<TranslationsResource>(Status.OK, entity));
+         when(mockTranslationResources.getTranslations(docUri, locale, ext)).thenReturn(new DummyResponse<TranslationsResource>(Status.OK, entity));
       }
       else
       {
-         EasyMock.expect(mockTranslationResources.getTranslations(docUri, locale, ext)).andReturn(new DummyResponse<TranslationsResource>(Status.NOT_FOUND, entity));
+         when(mockTranslationResources.getTranslations(docUri, locale, ext)).thenReturn(new DummyResponse<TranslationsResource>(Status.NOT_FOUND, entity));
       }
    }
 

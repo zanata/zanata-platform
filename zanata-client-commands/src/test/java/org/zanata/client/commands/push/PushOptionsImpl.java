@@ -40,6 +40,8 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    List<String> excludes;
    boolean defaultExcludes;
    String mergeType;
+   boolean caseSensitive = true;
+   boolean excludeLocale = true;
    boolean copyTrans;
    boolean pushTrans;
    String pushType;
@@ -192,6 +194,18 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    public int getBatchSize()
    {
       return batchSize;
+   }
+
+   @Override
+   public boolean getCaseSensitive()
+   {
+      return caseSensitive;
+   }
+
+   @Override
+   public boolean getExcludeLocale()
+   {
+      return excludeLocale;
    }
 
 }

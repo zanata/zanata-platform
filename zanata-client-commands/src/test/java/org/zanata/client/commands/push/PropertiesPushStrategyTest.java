@@ -1,36 +1,45 @@
 package org.zanata.client.commands.push;
 
 import static java.util.Arrays.asList;
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.fedorahosted.openprops.Properties;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.zanata.rest.dto.resource.Resource;
 
 @Test
-public class PushPropertiesStrategyTest
+public class PropertiesPushStrategyTest
 {
-   IMocksControl control = EasyMock.createControl();
+   private File outDir = new File("target/test-output/readprops/");
+   private Properties props;
 
-   File outDir = new File("target/test-output/readprops/");
-   Properties props = new Properties();
-   PushOptions opts;
+   @Mock
+   private PushOptions opts;
 
-   public PushPropertiesStrategyTest()
+   @BeforeTest
+   public void prepare()
    {
       outDir.mkdirs();
+      props = new Properties();
       props.setProperty("key", "value");
       props.setProperty("unicode", "レス");
-      opts = control.createMock(PushOptions.class);
-      EasyMock.expect(opts.getSourceLang()).andReturn("en").anyTimes();
-      control.replay();
+   }
+
+   @BeforeMethod
+   public void beforeMethod()
+   {
+      MockitoAnnotations.initMocks(this);
+      when(opts.getSourceLang()).thenReturn("en");
    }
 
    @Test
