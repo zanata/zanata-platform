@@ -45,12 +45,12 @@ public class LocaleList implements List<LocaleMapping>
     * @param localLocale
     * @return
     */
-   public String getCanonicalLocale(String localLocale)
+   public LocaleMapping findByLocalLocale(String localLocale)
    {
       for (LocaleMapping loc : locales)
       {
          if (loc.getLocalLocale().equals(localLocale))
-            return loc.getLocale();
+            return loc;
       }
       return null;
    }
@@ -61,12 +61,12 @@ public class LocaleList implements List<LocaleMapping>
     * @param canonicalLocale
     * @return
     */
-   public String getLocalLocale(String canonicalLocale)
+   public LocaleMapping findByCanonicalLocale(String canonicalLocale)
    {
       for (LocaleMapping loc : locales)
       {
          if (loc.getLocale().equals(canonicalLocale))
-            return loc.getLocalLocale();
+            return loc;
       }
       return null;
    }

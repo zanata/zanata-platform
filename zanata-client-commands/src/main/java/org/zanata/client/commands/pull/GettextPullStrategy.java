@@ -32,16 +32,17 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class GettextDirStrategy extends AbstractGettextPullStrategy
+public class GettextPullStrategy extends AbstractGettextPullStrategy
 {
 
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
    {
       String localLocale = locMapping.getLocalLocale();
-      // write the PO file to $locale/$name.po
-      File localeDir = new File(getOpts().getTransDir(), localLocale);
-      File transFile = new File(localeDir, doc.getName() + ".po");
+      // write the PO file to $docdirname/$locale.po
+      File transDir = getOpts().getTransDir();
+      File docDir = new File(transDir, docName).getParentFile();
+      File transFile = new File(docDir, localLocale + ".po");
       getPoWriter().writePoToFile(transFile, doc, targetDoc);
    }
 
