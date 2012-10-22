@@ -10,6 +10,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
@@ -30,20 +31,32 @@ public class SaveEventQueue
    public void push(TransUnitSaveEvent event)
    {
       EventWrapper comingEvent = new EventWrapper(event);
-      Collection<EventWrapper> previousEvents = filter(eventQueue, Predicates.and(new FindByTransUnitIdPredicate(comingEvent.getId()), NotSavingPredicate.INSTANCE));
-      if (previousEvents.isEmpty())
+      Optional<EventWrapper> previousEvent = Iterables.tryFind(eventQueue, new FindByTransUnitIdPredicate(comingEvent.getId()));
+      if (!previousEvent.isPresent())
       {
          eventQueue.add(comingEvent);
          Log.info("pushed into queue:" + comingEvent);
          return;
       }
       // there is a previous pending item in it
-      EventWrapper prevEvent = previousEvents.iterator().next();
+      EventWrapper prevEvent = previousEvent.get();
+      if (prevEvent.isSaving() && !stateEqual(event, prevEvent.toEvent()))
+      {
+         eventQueue.add(comingEvent);
+         Log.info("saving event exist but this has new state. Pushed into queue:" + comingEvent);
+         return;
+      }
+
       if (validState(comingEvent, prevEvent))
       {
          replacePreviousEventIfApplicable(comingEvent, prevEvent);
       }
 //      Log.info("coming event has invalid state (i.e. old contents does not equal to previous event's new contents). Discard!");
+   }
+
+   private static boolean stateEqual(TransUnitSaveEvent comingEvent, TransUnitSaveEvent prevEvent)
+   {
+      return Objects.equal(prevEvent.getTargets(), comingEvent.getTargets()) && Objects.equal(prevEvent.getAdjustedStatus(), comingEvent.getAdjustedStatus());
    }
 
    private static boolean validState(EventWrapper comingEvent, EventWrapper prevEvent)
@@ -63,14 +76,14 @@ public class SaveEventQueue
 
    public TransUnitSaveEvent getNextPendingForSaving(TransUnitId idToSave)
    {
-      Collection<EventWrapper> pendingEvents = filter(eventQueue, Predicates.and(new FindByTransUnitIdPredicate(idToSave), NotSavingPredicate.INSTANCE));
-      if (pendingEvents.isEmpty())
+      Optional<EventWrapper> pendingEvents = Iterables.tryFind(eventQueue, Predicates.and(new FindByTransUnitIdPredicate(idToSave), NotSavingPredicate.INSTANCE));
+      if (!pendingEvents.isPresent())
       {
          return null;
       }
       else
       {
-         EventWrapper wrapper = pendingEvents.iterator().next();
+         EventWrapper wrapper = pendingEvents.get();
          wrapper.setSaving(true);
          return wrapper.toEvent();
       }
@@ -104,13 +117,13 @@ public class SaveEventQueue
 
    public boolean hasPending()
    {
-      return filter(eventQueue, NotSavingPredicate.INSTANCE).size() > 0;
+      return Iterables.tryFind(eventQueue, NotSavingPredicate.INSTANCE).isPresent();
    }
 
    public boolean isSaving(TransUnitId transUnitId)
    {
-      Collection<EventWrapper> saving = filter(eventQueue, Predicates.and(new FindByTransUnitIdPredicate(transUnitId), HasSavingPredicate.INSTANCE));
-      return !saving.isEmpty();
+      Optional<EventWrapper> saving = Iterables.tryFind(eventQueue, Predicates.and(new FindByTransUnitIdPredicate(transUnitId), HasSavingPredicate.INSTANCE));
+      return saving.isPresent();
    }
 
    protected static class EventWrapper implements HasTransUnitId

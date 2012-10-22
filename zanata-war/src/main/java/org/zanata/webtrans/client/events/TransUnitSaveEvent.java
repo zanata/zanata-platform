@@ -117,8 +117,8 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
    /**
     *
     *
-    * @param newContents
-    * @param requestedState
+    * @param newContents new target contents
+    * @param requestedState requested state by user
     * @see org.zanata.service.impl.TranslationServiceImpl#adjustContentsAndState
     */
    public static ContentState adjustState(List<String> newContents, ContentState requestedState)

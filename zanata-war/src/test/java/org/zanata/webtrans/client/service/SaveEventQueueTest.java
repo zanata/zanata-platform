@@ -83,6 +83,13 @@ public class SaveEventQueueTest
       assertEventEquals(fromQueueAsEvent(queue.getEventQueue(), 0), anotherEvent);
       assertEventEquals(fromQueueAsEvent(queue.getEventQueue(), 1), differentId);
       assertThat(queue.hasPending(), Matchers.is(true));
+
+      // pushing an event with equal state as the saving event. It will be discarded
+      queue.getNextPendingForSaving(anotherEvent.getTransUnitId());
+      queue.push(anotherEvent);
+      assertThat(queue.getEventQueue(), Matchers.hasSize(2));
+      assertEventEquals(fromQueueAsEvent(queue.getEventQueue(), 0), anotherEvent);
+      assertEventEquals(fromQueueAsEvent(queue.getEventQueue(), 1), differentId);
    }
 
    @Test
