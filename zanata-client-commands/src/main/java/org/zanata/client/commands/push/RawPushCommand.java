@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jboss.resteasy.client.ClientResponse;
 import org.apache.commons.codec.binary.Hex;
+import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -130,7 +130,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
          return;
       }
 
-      String[] srcFiles = strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), types, true);
+      String[] srcFiles = strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), types, true, getOpts().getCaseSensitive());
 
       // TODO handle obsolete document deletion
       log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.");

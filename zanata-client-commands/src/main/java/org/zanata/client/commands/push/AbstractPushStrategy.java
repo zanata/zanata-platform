@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 
@@ -41,7 +42,7 @@ public abstract class AbstractPushStrategy extends AbstractCommonPushStrategy<Pu
    private StringSet extensions;
    private String fileExtension;
 
-   public abstract Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean includeDefaultExclude) throws IOException;
+   public abstract Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocale) throws IOException;
 
    public abstract Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
 
@@ -57,29 +58,37 @@ public abstract class AbstractPushStrategy extends AbstractCommonPushStrategy<Pu
     * Scan srcDir to return a list of all source files.
     * 
     * @param srcDir base directory in which to find source files
-    * @param includes empty to find all source files, non-empty to find only the documents in this list
+    * @param includes empty to find all source files, non-empty to find only the
+    *           documents in this list
     * @param excludes
-    * @param excludeLocaleFileNames adds entries to excludes to ignore any file with a locale id
-    *        suffix before the file extension.
-    * @param includeDefaultExclude true to also exclude a set of default excludes for common temp file
-    *        and source control filenames
+    * @param excludeLocaleFileNames adds entries to excludes to ignore any file
+    *           with a locale id suffix before the file extension.
+    * @param useDefaultExclude true to also exclude a set of default excludes
+    *           for common temp file and source control filenames
+    * @param isCaseSensitive case sensitive search for includes and excludes
+    *           options
     * @return document paths for source files found in srcDir
     */
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocaleFileNames, boolean includeDefaultExclude)
+   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocaleFileNames, boolean useDefaultExclude, boolean isCaseSensitive)
    {
       if (excludeLocaleFileNames)
       {
          excludeLocaleFileNames(excludes);
       }
-      return getSrcFiles(srcDir, includes, excludes, Collections.<String>singletonList(fileExtension), includeDefaultExclude);
+      return getSrcFiles(srcDir, includes, excludes, Collections.<String> singletonList(fileExtension), useDefaultExclude, isCaseSensitive);
    }
 
    private void excludeLocaleFileNames(List<String> excludes)
    {
+      String sourceLang = new LocaleId(getOpts().getSourceLang()).toJavaName();
+
       for (LocaleMapping locMap : getOpts().getLocaleMapList())
       {
-         String loc = locMap.getJavaLocale().toLowerCase();
-         excludes.add("**/*_" + loc + fileExtension);
+         String loc = locMap.getJavaLocale();
+         if (!sourceLang.equals(loc))
+         {
+            excludes.add("**/*_" + loc + fileExtension);
+         }
       }
    }
    

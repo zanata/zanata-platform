@@ -51,7 +51,7 @@ public abstract class AbstractCommonPushStrategy<O extends PushOptions>
    /**
     * excludes should already contain paths for translation files that are to be excluded.
     */
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, List<String> fileExtensions, boolean useDefaultExcludes)
+   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, List<String> fileExtensions, boolean useDefaultExcludes, boolean isCaseSensitive)
    {
       if (includes.isEmpty())
       {
@@ -70,8 +70,8 @@ public abstract class AbstractCommonPushStrategy<O extends PushOptions>
 
       dirScanner.setBasedir(srcDir);
 
-      // FIXME why are we using case-insensitive here?
-      dirScanner.setCaseSensitive(false);
+      dirScanner.setCaseSensitive(isCaseSensitive);
+
       dirScanner.setExcludes(excludes.toArray(new String[excludes.size()]));
       dirScanner.setIncludes(includes.toArray(new String[includes.size()]));
       dirScanner.scan();

@@ -40,9 +40,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 
-import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
-import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
-
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -255,7 +252,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       final StringSet extensions = strat.getExtensions();
 
       // to save memory, we don't load all the docs into a HashMap
-      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes());
+      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes(), getOpts().getCaseSensitive(), getOpts().getExcludeLocale());
       for (String docName : localDocNames)
       {
          log.info("Found source document: {}", docName);

@@ -88,7 +88,7 @@ public class ConsoleUtils
          if( start != null )
          {
             StringBuilder endMssg = new StringBuilder("Done in " + formatDuration(start, new Date()));
-            while( lastOutput.length() > endMssg.length() )
+            while (lastOutput != null && (lastOutput.length() > endMssg.length()))
             {
                endMssg.append(" ");
             }

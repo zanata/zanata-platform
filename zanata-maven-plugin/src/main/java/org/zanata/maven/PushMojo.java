@@ -152,6 +152,21 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     */
    private String[] fileTypes;
 
+   /**
+    * Case sensitive for includes and excludes options.
+    * 
+    * @parameter expression="${zanata.caseSensitive}" default-value="true"
+    */
+   private boolean caseSensitive = true;
+
+   /**
+    * Exclude all locales in zanata.xml. This parameter is does not apply to
+    * projectType 'podir'
+    * 
+    * @parameter expression="${zanata.excludeLocale}" default-value="true"
+    */
+   private boolean excludeLocale = true;
+
 
    @Override
    public String getSourceLang()
@@ -283,5 +298,17 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    public String getCommandName()
    {
       return "push";
+   }
+
+   @Override
+   public boolean getCaseSensitive()
+   {
+      return caseSensitive;
+   }
+
+   @Override
+   public boolean getExcludeLocale()
+   {
+      return excludeLocale;
    }
 }
