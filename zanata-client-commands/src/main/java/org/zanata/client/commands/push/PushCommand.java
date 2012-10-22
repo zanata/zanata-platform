@@ -131,7 +131,9 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
       logger.info("Include patterns: {}", StringUtils.join(opts.getIncludes(), " "));
       logger.info("Exclude patterns: {}", StringUtils.join(opts.getExcludes(), " "));
+      logger.info("Case sensitive: {}", opts.getCaseSensitive());
       logger.info("Default excludes: {}", opts.getDefaultExcludes());
+      logger.info("Exclude locale: {}", opts.getExcludeLocale());
 
       if (opts.getPushType() == PushPullType.Trans)
       {
