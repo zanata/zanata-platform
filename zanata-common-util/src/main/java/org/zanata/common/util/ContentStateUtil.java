@@ -55,21 +55,21 @@ public class ContentStateUtil
       case NeedReview:
          if (allEmpty(contents))
          {
-            warnings.add("ContentState NeedReview is invalid for TextFlowTarget '" + resId + "' with no contents; assuming New");
+            warnings.add("Invalid ContentState; changed from NeedReview to New: TextFlowTarget "+resId+" with no contents");
             return ContentState.New;
          }
          break;
       case New:
          if (allNonEmpty(contents))
          {
-            warnings.add("ContentState New is invalid for non-empty TextFlowTarget '" + resId + "'; assuming NeedReview");
+            warnings.add("Invalid ContentState (non-empty contents); changed from New to NeedReview: TextFlowTarget "+resId+" with contents: " + contents);
             return ContentState.NeedReview;
          }
          break;
       case Approved:
          if (!allNonEmpty(contents))
          {
-            warnings.add("ContentState Approved is invalid for TextFlowTarget '" + resId + "' with one or more empty strings; assuming NeedReview");
+            warnings.add("Invalid ContentState (some empty contents); changed from Approved to New: TextFlowTarget "+resId+" with contents: " + contents);
             return ContentState.New;
          }
          break;
