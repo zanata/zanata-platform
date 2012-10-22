@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -326,7 +327,8 @@ public class TranslationServiceImpl implements TranslationService
       int contentsSize = target.getContents().size();
       if (contentsSize < legalSize)
       {
-         warnings.add("TextFlowTarget " + resId + " should have " + legalSize + " contents; filling with empty strings");
+         String warning = "Should have " + legalSize + " contents; adding empty strings: TextFlowTarget "+resId+" with contents: " + target.getContents();
+         warnings.add(warning);
          List<String> newContents = new ArrayList<String>(legalSize);
          newContents.addAll(target.getContents());
          while (newContents.size() < legalSize)
@@ -338,7 +340,8 @@ public class TranslationServiceImpl implements TranslationService
       }
       else if (contentsSize > legalSize)
       {
-         warnings.add("TextFlowTarget " + resId + " should have " + legalSize + " contents; discarding extra strings");
+         String warning = "Should have " + legalSize + " contents; discarding extra strings: TextFlowTarget "+resId+" with contents: " + target.getContents();
+         warnings.add(warning);
          List<String> newContents = new ArrayList<String>(legalSize);
          for (int i = 0; i < contentsSize; i++)
          {
@@ -470,13 +473,14 @@ public class TranslationServiceImpl implements TranslationService
                      if (textFlow == null)
                      {
                         // return warning for unknown resId to caller
-                        String warning = "Could not find text flow for message: " + incomingTarget.getContents();
+                        String warning = "Could not find TextFlow for TextFlowTarget "+resId+" with contents: " + incomingTarget.getContents();
                         warnings.add(warning);
                         handle.addMessages(warning);
                         log.warn("skipping TextFlowTarget with unknown resId: {}", resId);
                      }
                      else
                      {
+                        int nPlurals = getNumPlurals(hLocale, textFlow);
                         HTextFlowTarget hTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, hLocale);
                         boolean targetChanged = false;
                         if (hTarget == null)
@@ -484,6 +488,8 @@ public class TranslationServiceImpl implements TranslationService
                            targetChanged = true;
                            log.debug("locale: {}", locale);
                            hTarget = new HTextFlowTarget(textFlow, hLocale);
+                           List<String> contents = Collections.nCopies(nPlurals, "");
+                           hTarget.setContents(contents);
                            hTarget.setVersionNum(0); // incremented when content is set
                            //textFlowTargetDAO.makePersistent(hTarget);
                            textFlow.getTargets().put(hLocale.getId(), hTarget);
@@ -533,7 +539,6 @@ public class TranslationServiceImpl implements TranslationService
                                  throw new ZanataServiceException("unhandled merge type " + mergeType);
                            }
                         }
-                        int nPlurals = getNumPlurals(hLocale, textFlow);
                         targetChanged |= adjustContentsAndState(hTarget, nPlurals, warnings);
 
                         // update translation information if applicable
