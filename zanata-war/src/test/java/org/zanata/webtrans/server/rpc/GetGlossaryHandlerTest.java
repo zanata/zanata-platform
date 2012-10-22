@@ -1,7 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
 import org.hamcrest.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -24,7 +22,7 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

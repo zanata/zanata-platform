@@ -34,10 +34,8 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
@@ -53,6 +51,9 @@ import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 @Name("webtrans.gwt.GetGlossaryHandler")
 @Scope(ScopeType.STATELESS)
@@ -63,20 +64,25 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
 
    private static final int MAX_RESULTS = 20;
 
+   private static final Comparator<GlossaryResultItem> COMPARATOR = new GlossaryResultItemComparator();
+
    @In
    private LocaleService localeServiceImpl;
 
    @In
    private GlossaryDAO glossaryDAO;
 
+   @In
+   private ZanataIdentity identity;
+
    @Override
    public GetGlossaryResult execute(GetGlossary action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
-      final String searchText = action.getQuery();
+      String searchText = action.getQuery();
       ShortString abbrev = new ShortString(searchText);
-      final SearchType searchType = action.getSearchType();
+      SearchType searchType = action.getSearchType();
       log.debug("Fetching Glossary matches({}) for \"{}\"", searchType, abbrev);
 
       LocaleId localeID = action.getLocaleId();
@@ -87,45 +93,21 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       {
          List<HGlossaryEntry> entries = glossaryDAO.getEntriesByLocaleId(localeID);
          List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, action.getSrcLocaleId(), MAX_RESULTS);
+         Iterable<Object[]> matchesHasGlossaryTerm = Iterables.filter(matches, GlossaryTermNotNullPredicate.INSTANCE);
 
          Map<GlossaryKey, GlossaryResultItem> matchesMap = new LinkedHashMap<GlossaryKey, GlossaryResultItem>();
-         for (Object[] match : matches)
+         for (Object[] match : matchesHasGlossaryTerm)
          {
-            float score = (Float) match[0];
-            HGlossaryTerm glossaryTerm = (HGlossaryTerm) match[1];
-            if (glossaryTerm == null)
-            {
-               continue;
-            }
-
-            String srcTermContent = glossaryTerm.getContent();
-
-            HGlossaryTerm targetTerm = null;
-            for (HGlossaryEntry entry : entries)
-            {
-               if (entry.getId().equals(glossaryTerm.getGlossaryEntry().getId()))
-               {
-                  targetTerm = entry.getGlossaryTerms().get(hLocale);
-               }
-            }
-
+            HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
+            HGlossaryTerm targetTerm = findTargetTermFromMatch(hLocale, entries, sourceTerm);
             if (targetTerm == null)
             {
                continue;
             }
-
+            String srcTermContent = sourceTerm.getContent();
             String targetTermContent = targetTerm.getContent();
-
-            double percent = 100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent);
-
-            GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
-            GlossaryResultItem item = matchesMap.get(key);
-            if (item == null)
-            {
-               item = new GlossaryResultItem(srcTermContent, targetTermContent, score, percent);
-               matchesMap.put(key, item);
-            }
-            item.addSourceId(glossaryTerm.getId());
+            GlossaryResultItem item = getOrCreateGlossaryResultItem(matchesMap, srcTermContent, targetTermContent, (Float) match[0], searchText);
+            item.addSourceId(sourceTerm.getId());
          }
          results = new ArrayList<GlossaryResultItem>(matchesMap.values());
       }
@@ -143,54 +125,33 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
          results = new ArrayList<GlossaryResultItem>(0);
       }
 
-      /**
-       * NB just because this Comparator returns 0 doesn't mean the matches are
-       * identical.
-       */
-      Comparator<GlossaryResultItem> comp = new Comparator<GlossaryResultItem>()
-      {
-         @Override
-         public int compare(GlossaryResultItem m1, GlossaryResultItem m2)
-         {
-            int result;
-            result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
-            if (result != 0)
-            {
-               return -result;
-            }
-            result = compare(m1.getSource().length(), m2.getSource().length());
-            if (result != 0)
-            {
-               // shorter matches are preferred, if similarity is the same
-               return result;
-            }
-            result = Double.compare(m1.getRelevanceScore(), m2.getRelevanceScore());
-            if (result != 0)
-            {
-               return -result;
-            }
-            return m1.getSource().compareTo(m2.getSource());
-         }
-
-         private int compare(int a, int b)
-         {
-            if (a < b)
-            {
-               return -1;
-            }
-            if (a > b)
-            {
-               return 1;
-            }
-            return 0;
-         }
-
-      };
-
-      Collections.sort(results, comp);
+      Collections.sort(results, COMPARATOR);
 
       log.debug("Returning {} Glossary matches for \"{}\"", results.size(), abbrev);
       return new GetGlossaryResult(action, results);
+   }
+
+   private HGlossaryTerm findTargetTermFromMatch(HLocale hLocale, List<HGlossaryEntry> entries, HGlossaryTerm sourceTerm)
+   {
+      Optional<HGlossaryEntry> entryOptional = Iterables.tryFind(entries, new HGlossaryEntryByIdPredicate(sourceTerm.getGlossaryEntry().getId()));
+      if (entryOptional.isPresent())
+      {
+         return entryOptional.get().getGlossaryTerms().get(hLocale);
+      }
+      return null;
+   }
+
+   private static GlossaryResultItem getOrCreateGlossaryResultItem(Map<GlossaryKey, GlossaryResultItem> matchesMap, String srcTermContent, String targetTermContent, float score, String searchText)
+   {
+      GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
+      GlossaryResultItem item = matchesMap.get(key);
+      if (item == null)
+      {
+         double percent = 100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent);
+         item = new GlossaryResultItem(srcTermContent, targetTermContent, score, percent);
+         matchesMap.put(key, item);
+      }
+      return item;
    }
 
    @Override
@@ -228,4 +189,73 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       }
    }
 
+   /**
+    * NB just because this Comparator returns 0 doesn't mean the matches are
+    * identical.
+    */
+   private static class GlossaryResultItemComparator implements Comparator<GlossaryResultItem>
+   {
+      @Override
+      public int compare(GlossaryResultItem m1, GlossaryResultItem m2)
+      {
+         int result;
+         result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
+         if (result != 0)
+         {
+            return -result;
+         }
+         result = compare(m1.getSource().length(), m2.getSource().length());
+         if (result != 0)
+         {
+            // shorter matches are preferred, if similarity is the same
+            return result;
+         }
+         result = Double.compare(m1.getRelevanceScore(), m2.getRelevanceScore());
+         if (result != 0)
+         {
+            return -result;
+         }
+         return m1.getSource().compareTo(m2.getSource());
+      }
+
+      private int compare(int a, int b)
+      {
+         if (a < b)
+         {
+            return -1;
+         }
+         if (a > b)
+         {
+            return 1;
+         }
+         return 0;
+      }
+
+   }
+
+   private static enum GlossaryTermNotNullPredicate implements Predicate<Object[]>
+   {
+      INSTANCE;
+      @Override
+      public boolean apply(Object[] input)
+      {
+         return input[1] != null;
+      }
+   }
+
+   private static class HGlossaryEntryByIdPredicate implements Predicate<HGlossaryEntry>
+   {
+      private final Long id;
+
+      public HGlossaryEntryByIdPredicate(Long id)
+      {
+         this.id = id;
+      }
+
+      @Override
+      public boolean apply(HGlossaryEntry entry)
+      {
+         return entry.getId().equals(id);
+      }
+   }
 }
