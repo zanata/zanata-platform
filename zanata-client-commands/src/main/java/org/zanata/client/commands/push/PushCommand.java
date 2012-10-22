@@ -106,7 +106,14 @@ public class PushCommand extends PushPullCommand<PushOptions>
       logger.info("Username: {}", opts.getUsername());
       logger.info("Project type: {}", opts.getProjectType());
       logger.info("Source language: {}", opts.getSourceLang());
-      logger.info("Copy previous translations: {}", opts.getCopyTrans());
+
+      String copyTransMssg = "" + opts.getCopyTrans();
+      if( opts.getCopyTrans() && opts.getPushType() == PushPullType.Trans )
+      {
+         copyTransMssg = "disabled since pushType=Trans";
+      }
+      logger.info("Copy previous translations: {}", copyTransMssg);
+
       logger.info("Merge type: {}", opts.getMergeType());
       logger.info("Enable modules: {}", opts.getEnableModules());
 
@@ -326,8 +333,9 @@ public class PushCommand extends PushPullCommand<PushOptions>
             });
          }
 
-         // Copy Trans after pushing
-         if( getOpts().getCopyTrans() )
+         // Copy Trans after pushing (only when pushing source)
+         if( getOpts().getCopyTrans() &&
+           (getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Source) )
          {
             this.copyTransForDocument(qualifiedDocName);
          }
