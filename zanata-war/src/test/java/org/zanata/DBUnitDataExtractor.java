@@ -43,15 +43,16 @@ public class DBUnitDataExtractor
          dataSet.addTable(entry.getKey(), entry.getValue());
       }
 
-      log.info("+++++ writing DBUnit data set to : {}", TEMP_DIR);
       FlatDtdDataSet.write(dataSet, new FileOutputStream(new File(TEMP_DIR, dataSetName + ".dbunit.dtd")));
-      FlatXmlDataSet.write(dataSet, new FileOutputStream(new File(TEMP_DIR, dataSetName + ".dbunit.xml")));
+      File dbunitFile = new File(TEMP_DIR, dataSetName + ".dbunit.xml");
+      FlatXmlDataSet.write(dataSet, new FileOutputStream(dbunitFile));
+      log.info("dbunit file: {}", dbunitFile.getAbsolutePath());
 
       jdbcConnection.close();
    }
 
    @Test
-   public void run() throws Exception
+   public void getTextFlowsAndTargets() throws Exception
    {
       List<Map.Entry<String, String>> tableNameAndQuery = Lists.newArrayList();
 
@@ -68,6 +69,18 @@ public class DBUnitDataExtractor
       addEntry(tableNameAndQuery, "HTextFlowTarget", "SELECT * FROM HTextFlowTarget where tf_id >= 1 AND tf_id <= 10 AND locale = 3");
 
       generateTestData("GetTransUnitListHandlerPerformanceTest", tableNameAndQuery);
+   }
+
+   @Test
+   public void getGlossary() throws Exception
+   {
+      List<Map.Entry<String, String>> tableNameAndQuery = Lists.newArrayList();
+
+      addEntry(tableNameAndQuery, "HLocale", "SELECT * FROM HLocale where id in (2, 5)");
+      addEntry(tableNameAndQuery, "HGlossaryEntry", "SELECT * FROM HGlossaryEntry");
+      addEntry(tableNameAndQuery, "HGlossaryTerm", "SELECT * FROM HGlossaryTerm");
+
+      generateTestData("GlossaryTest", tableNameAndQuery);
    }
 
    private static void addEntry(List<Map.Entry<String, String>> tableNameAndQuery, String table, String query)
