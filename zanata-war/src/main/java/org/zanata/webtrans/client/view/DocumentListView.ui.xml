@@ -21,14 +21,21 @@
 			color:#595959;
 		}
 		
+		.statsOption
+		{
+			display:inline-block;
+			width:120px;
+			text-align:left;
+		}
+		
 		.filterTextBox
 		{
-			font-size:16px;
-			padding: 2px;
+			font-size:18px;
 			margin: 0px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
 			width:440px;
+			height:25px;
 		}
 		
 		.topBar
@@ -53,19 +60,19 @@
                 <g:layer top='0' height='40px' left="0px" right="0px">
                 	<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
                 		<g:cell width="450px">
-                			<g:TextBox ui:field='filterTextBox' styleName="{style.filterTextBox}"/>
-                		</g:cell>
-                		<g:cell width="120px">
-                			<g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.optionStyle}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
+                			<g:TextBox ui:field='filterTextBox' addStyleNames="{style.filterTextBox}"/>
                 		</g:cell>
                 		<g:cell>
-                			<g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.optionStyle}"><ui:msg>Exact match only</ui:msg></g:CheckBox>
+                			<g:HTMLPanel>
+                				<g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.optionStyle}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
+                				<g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.optionStyle}"><ui:msg>Exact match</ui:msg></g:CheckBox>
+                			</g:HTMLPanel>
                 		</g:cell>
-                		<g:cell horizontalAlignment="ALIGN_RIGHT" width="240px">
+                		<g:cell horizontalAlignment="ALIGN_RIGHT">
                 			<g:HTMLPanel>
                         		<g:InlineLabel styleName="{style.optionStyle}"><ui:msg>Statistic: </ui:msg></g:InlineLabel>
-                        		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle}" name="statsOption"/>
-                        		<g:RadioButton ui:field="statsByMsg" styleName="{style.optionStyle}" name="statsOption"/>
+                        		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/><br/>
+                        		<g:RadioButton ui:field="statsByMsg" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/>
                         	</g:HTMLPanel>
                 		</g:cell>
                 	</g:HorizontalPanel>
