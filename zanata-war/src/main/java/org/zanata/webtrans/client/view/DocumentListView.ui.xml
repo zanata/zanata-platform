@@ -35,6 +35,10 @@
 		{
 			border-bottom:1px solid lightGrey;
 			background:#F3F2F2;
+			width:100%;
+			height:100%;
+			padding-left:10px;
+			padding-right:10px;
 		}
 		
 		.listContainer
@@ -47,24 +51,24 @@
         <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
                 <g:layer top='0' height='40px' left="0px" right="0px">
-                    <g:LayoutPanel styleName="{style.topBar}">
-                        <g:layer top="7px" bottom="5px" left="15px" width="450px">
-                            <g:TextBox ui:field='filterTextBox' styleName="{style.filterTextBox}"/>
-                        </g:layer>
-                        <g:layer top="10px" height="34px" left="470px" width="120px">
-                            <g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.optionStyle}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
-                        </g:layer>
-                        <g:layer top="10px" height="34px" left="585px" width="140px">
-                            <g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.optionStyle}"><ui:msg>Exact match only</ui:msg></g:CheckBox>
-                        </g:layer>
-                        <g:layer right="0" width="240px" top="10px" bottom="0">
-                        	<g:HTMLPanel>
+                	<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
+                		<g:cell width="450px">
+                			<g:TextBox ui:field='filterTextBox' styleName="{style.filterTextBox}"/>
+                		</g:cell>
+                		<g:cell width="120px">
+                			<g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.optionStyle}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
+                		</g:cell>
+                		<g:cell>
+                			<g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.optionStyle}"><ui:msg>Exact match only</ui:msg></g:CheckBox>
+                		</g:cell>
+                		<g:cell horizontalAlignment="ALIGN_RIGHT" width="240px">
+                			<g:HTMLPanel>
                         		<g:InlineLabel styleName="{style.optionStyle}"><ui:msg>Statistic: </ui:msg></g:InlineLabel>
                         		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle}" name="statsOption"/>
                         		<g:RadioButton ui:field="statsByMsg" styleName="{style.optionStyle}" name="statsOption"/>
                         	</g:HTMLPanel>
-                        </g:layer>
-                    </g:LayoutPanel>
+                		</g:cell>
+                	</g:HorizontalPanel>
                 </g:layer>
                 <g:layer top='40px' bottom="0px">
                 	<g:ScrollPanel styleName="{style.listContainer}">
