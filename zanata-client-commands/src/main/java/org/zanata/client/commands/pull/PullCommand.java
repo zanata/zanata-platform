@@ -40,6 +40,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
    {
       strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, new UTF8PropertiesStrategy());
       strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
+      strategies.put(PROJECT_TYPE_GETTEXT, new GettextPullStrategy());
       strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
       strategies.put(PROJECT_TYPE_XLIFF, new XliffStrategy());
       strategies.put(PROJECT_TYPE_XML, new XmlStrategy());

@@ -40,7 +40,7 @@ public interface PushOptions extends PushPullOptions
 
    public boolean getCaseSensitive();
 
-   public boolean getExcludeLocale();
+   public boolean getExcludeLocaleFilenames();
    public boolean getDefaultExcludes();
    public boolean getDeleteObsoleteModules();
    public boolean getCopyTrans();

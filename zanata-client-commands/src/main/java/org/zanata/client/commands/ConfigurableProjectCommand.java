@@ -36,6 +36,7 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
 
    protected static final String PROJECT_TYPE_UTF8_PROPERTIES = "utf8properties";
    protected static final String PROJECT_TYPE_PROPERTIES = "properties";
+   protected static final String PROJECT_TYPE_GETTEXT = "gettext";
    protected static final String PROJECT_TYPE_PUBLICAN = "podir";
    protected static final String PROJECT_TYPE_XLIFF = "xliff";
    protected static final String PROJECT_TYPE_XML = "xml";

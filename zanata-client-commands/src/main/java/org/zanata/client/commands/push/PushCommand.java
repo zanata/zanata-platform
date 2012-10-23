@@ -63,6 +63,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, new PropertiesStrategy(UTF_8));
       strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
+      strategies.put(PROJECT_TYPE_GETTEXT, new GettextPushStrategy());
       strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
       strategies.put(PROJECT_TYPE_XLIFF, new XliffStrategy());
       strategies.put(PROJECT_TYPE_XML, new XmlStrategy());
@@ -133,7 +134,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       logger.info("Exclude patterns: {}", StringUtils.join(opts.getExcludes(), " "));
       logger.info("Case sensitive: {}", opts.getCaseSensitive());
       logger.info("Default excludes: {}", opts.getDefaultExcludes());
-      logger.info("Exclude locale: {}", opts.getExcludeLocale());
+      log.info("Exclude locale filenames: {}", opts.getExcludeLocaleFilenames());
 
       if (opts.getPushType() == PushPullType.Trans)
       {
@@ -261,7 +262,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       final StringSet extensions = strat.getExtensions();
 
       // to save memory, we don't load all the docs into a HashMap
-      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes(), getOpts().getCaseSensitive(), getOpts().getExcludeLocale());
+      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes(), getOpts().getCaseSensitive(), getOpts().getExcludeLocaleFilenames());
       for (String docName : localDocNames)
       {
          log.info("Found source document: {}", docName);

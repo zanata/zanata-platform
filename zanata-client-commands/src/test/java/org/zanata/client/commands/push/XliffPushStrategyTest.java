@@ -66,11 +66,11 @@ public class XliffPushStrategyTest
       when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
-      when(mockPushOption.getExcludeLocale()).thenReturn(true);
+      when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
 
       xliffStrategy.setPushOptions(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocale());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
       Assert.assertEquals(3, localDocNames.size());
    }
 
@@ -84,11 +84,11 @@ public class XliffPushStrategyTest
       when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
-      when(mockPushOption.getExcludeLocale()).thenReturn(true);
+      when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
 
       xliffStrategy.setPushOptions(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocale());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {
@@ -121,11 +121,11 @@ public class XliffPushStrategyTest
       when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
       when(mockPushOption.getLocaleMapList()).thenReturn(locales);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
-      when(mockPushOption.getExcludeLocale()).thenReturn(true);
+      when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
       when(mockPushOption.getDefaultExcludes()).thenReturn(false);
 
       xliffStrategy.setPushOptions(mockPushOption);
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocale());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
       Assert.assertEquals(5, localDocNames.size());
    }
 
@@ -137,11 +137,11 @@ public class XliffPushStrategyTest
       when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
       when(mockPushOption.getLocaleMapList()).thenReturn(locales);
       when(mockPushOption.getCaseSensitive()).thenReturn(false);
-      when(mockPushOption.getExcludeLocale()).thenReturn(true);
+      when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
       when(mockPushOption.getDefaultExcludes()).thenReturn(false);
 
       xliffStrategy.setPushOptions(mockPushOption);
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocale());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
       Assert.assertEquals(6, localDocNames.size());
    }
 
@@ -156,11 +156,11 @@ public class XliffPushStrategyTest
       when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
-      when(mockPushOption.getExcludeLocale()).thenReturn(true);
+      when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
 
       xliffStrategy.setPushOptions(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocale());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {
@@ -195,11 +195,11 @@ public class XliffPushStrategyTest
       when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
-      when(mockPushOption.getExcludeLocale()).thenReturn(true);
+      when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
 
       xliffStrategy.setPushOptions(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocale());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {

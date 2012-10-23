@@ -21,28 +21,59 @@
 
 package org.zanata.client.commands.pull;
 
+
 import java.io.File;
 import java.io.IOException;
 
-import org.zanata.client.config.LocaleMapping;
+import org.zanata.adapter.po.PoWriter2;
+import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class GettextDirStrategy extends AbstractGettextPullStrategy
+public abstract class AbstractGettextPullStrategy implements PullStrategy
 {
+   private PoWriter2 poWriter = new PoWriter2();
+   private StringSet extensions = new StringSet("gettext;comment");
+   private PullOptions opts;
+
+   public PullOptions getOpts()
+   {
+      return opts;
+   }
+
+   protected PoWriter2 getPoWriter()
+   {
+      return poWriter;
+   }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   public void setPullOptions(PullOptions opts)
    {
-      String localLocale = locMapping.getLocalLocale();
-      // write the PO file to $locale/$name.po
-      File localeDir = new File(getOpts().getTransDir(), localLocale);
-      File transFile = new File(localeDir, doc.getName() + ".po");
-      getPoWriter().writePoToFile(transFile, doc, targetDoc);
+      this.opts = opts;
+   }
+
+   @Override
+   public StringSet getExtensions()
+   {
+      return extensions;
+   }
+
+   @Override
+   public boolean needsDocToWriteTrans()
+   {
+      return true;
+   }
+
+   @Override
+   public void writeSrcFile(Resource doc) throws IOException
+   {
+      File potDir = getOpts().getSrcDir();
+      // write the POT file to $potDir/$name.pot
+      File potFile = new File(potDir, doc.getName() + ".pot");
+      getPoWriter().writePotToFile(potFile, doc);
    }
 
 }

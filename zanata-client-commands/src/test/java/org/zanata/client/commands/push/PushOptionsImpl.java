@@ -42,7 +42,7 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    boolean defaultExcludes;
    String mergeType;
    boolean caseSensitive = true;
-   boolean excludeLocale = true;
+   boolean excludeLocaleFilenames = true;
    boolean copyTrans;
    boolean pushTrans;
    String pushType;
@@ -209,9 +209,9 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    }
 
    @Override
-   public boolean getExcludeLocale()
+   public boolean getExcludeLocaleFilenames()
    {
-      return excludeLocale;
+      return excludeLocaleFilenames;
    }
 
 }
