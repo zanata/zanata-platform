@@ -1,38 +1,47 @@
 package org.zanata.client.commands.pull;
 
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.fedorahosted.openprops.Properties;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 
 @Test
-public class PullPropertiesStrategyTest
+public class PropertiesPullStrategyTest
 {
-   IMocksControl control = EasyMock.createControl();
-
    File outDir = new File("target/test-output/writeprops/");
    Properties props = new Properties();
-   PullOptions opts;
-   Resource doc;
 
-   public PullPropertiesStrategyTest()
+   @Mock
+   private PullOptions opts;
+
+   private Resource doc;
+
+   @BeforeTest
+   public void prepare()
    {
       outDir.mkdirs();
-      opts = control.createMock(PullOptions.class);
-      EasyMock.expect(opts.getSrcDir()).andReturn(outDir).anyTimes();
-      control.replay();
       doc = new Resource(null);
       doc.getTextFlows().add(newTextFlow("key", "value"));
       doc.getTextFlows().add(newTextFlow("unicode", "レス"));
+   }
+
+   @BeforeMethod
+   public void beforeMethod()
+   {
+      MockitoAnnotations.initMocks(this);
+      when(opts.getSrcDir()).thenReturn(outDir);
    }
 
    @Test
