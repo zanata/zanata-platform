@@ -36,6 +36,7 @@ import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.Version;
+import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
@@ -52,7 +53,7 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HDocument;
-import org.zanata.model.HProject;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -63,6 +64,10 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static org.zanata.util.QueryBuilder.select;
+import static org.zanata.util.QueryBuilder.and;
+import static org.zanata.util.QueryBuilder.or;
 
 /**
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -88,6 +93,11 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
    @In
    private FullTextEntityManager entityManager;
+
+   @In
+   private FullTextSession session;
+
+   private boolean useDatabaseSearch = false;
 
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints)
@@ -134,6 +144,183 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          return Collections.emptyList();
       }
 
+      if (!constraints.isIncludeNew() && !constraints.isIncludeFuzzy() && !constraints.isIncludeApproved())
+      {
+         // including nothing
+         return Collections.emptyList();
+      }
+
+      // FIXME this switch is provided for easy comparison of options before a final
+      // decisions is made on which option to use. Remove before signing off on this.
+      if (useDatabaseSearch)
+      {
+         return findTextFlowsWithDatabaseSearch(projectSlug, iterationSlug, localeId, documentPaths, constraints);
+      }
+      else
+      {
+         return findTextFlowsWithHibernateSearch(projectSlug, iterationSlug, localeId, documentPaths, constraints);
+      }
+   }
+
+   private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug, String iterationSlug,
+         LocaleId validatedLocaleId, List<String> documentPaths, FilterConstraints constraints)
+   {
+      // TODO wrap in method for batching list of documents
+      // assuming doclist has already been batched before this method call
+
+      HLocale loc = localeServiceImpl.getByLocaleId(validatedLocaleId);
+      Long locId = loc.getId();
+
+      ArrayList<String> projectDpcStateConstraints = new ArrayList<String>();
+      projectDpcStateConstraints.add("tf.document.projectIteration.project.slug = :project");
+      projectDpcStateConstraints.add("tf.document.projectIteration.slug = :iteration");
+
+      boolean hasDocumentPaths = documentPaths != null && !documentPaths.isEmpty();
+      if (hasDocumentPaths)
+      {
+         projectDpcStateConstraints.add("tf.document.docId in ( :doclist )");
+      }
+
+      ArrayList<ContentState> stateList = new ArrayList<ContentState>(2);
+      boolean includeAllStates = constraints.isIncludeNew() && constraints.isIncludeFuzzy() && constraints.isIncludeApproved();
+      if (!includeAllStates)
+      {
+         // a different approach is required to ensure that text flows with no
+         // target are returned iff new state is included.
+         if (constraints.isIncludeNew())
+         {
+            // exclude non-matching states (so that flows with no target will match)
+            projectDpcStateConstraints.add("tf.targets[" + locId + "].state not in ( :statelist )");
+            if (!constraints.isIncludeFuzzy())
+            {
+               stateList.add(ContentState.NeedReview);
+            }
+            if (!constraints.isIncludeApproved())
+            {
+               stateList.add(ContentState.Approved);
+            }
+         }
+         else
+         {
+            // include matching states (so that flows with no target will not match)
+            projectDpcStateConstraints.add("tf.targets[" + locId + "].state in ( :statelist )");
+            if (constraints.isIncludeFuzzy())
+            {
+               stateList.add(ContentState.NeedReview);
+            }
+            if (constraints.isIncludeApproved())
+            {
+               stateList.add(ContentState.Approved);
+            }
+         }
+      }
+
+      ArrayList<String> contentCheckList = new ArrayList<String>(12);
+      if (constraints.isSearchInSource())
+      {
+         for (int i = 0; i < 6; i++)
+         {
+            contentCheckList.add("tf.content" + i + " like :searchString");
+         }
+      }
+      if (constraints.isSearchInTarget())
+      {
+         String contentPrefix = "tf.targets[" + locId + "].content";
+         for (int i = 0; i < 6; i++)
+         {
+            contentCheckList.add(contentPrefix + i + " like :searchString");
+         }
+      }
+
+      String[] contentChecks = contentCheckList.toArray(new String[contentCheckList.size()]);
+      String[] projectDocStateChecks = projectDpcStateConstraints.toArray(new String[projectDpcStateConstraints.size()]);
+
+      String queryStr = select("tf").from("HTextFlow tf")
+            .where(and(and(projectDocStateChecks), or(contentChecks)))
+            .toQueryString();
+
+      String searchString = constraints.getSearchString();
+      searchString = "%" + searchString + "%";
+
+      org.hibernate.Query query = session.createQuery(queryStr)
+            .setParameter("searchString", searchString)
+            .setParameter("project", projectSlug)
+            .setParameter("iteration", iterationSlug);
+      if (hasDocumentPaths)
+      {
+         query.setParameterList("doclist", documentPaths);
+      }
+      if (!includeAllStates)
+      {
+         query.setParameterList("statelist", stateList);
+      }
+
+      @SuppressWarnings("unchecked")
+      List<HTextFlow> results = query.list();
+      if (constraints.isCaseSensitive())
+      {
+         results = filterCaseSensitive(results, constraints, locId);
+      }
+      return results;
+   }
+
+   /**
+    * Filter a list of text flows to include only those that have a case
+    * sensitive match of the search string in the contents of interest.
+    * 
+    * @param results the list to filter
+    * @param constraints describing search term and whether to match in source, target or both
+    * @param localeId used to look up targets if target content is checked
+    * @return filtered list
+    */
+   private List<HTextFlow> filterCaseSensitive(List<HTextFlow> results, FilterConstraints constraints, Long localeId)
+   {
+      List<HTextFlow> matchingTextFlows = new ArrayList<HTextFlow>();
+      String search = constraints.getSearchString();
+
+      scanning_text_flows: for (HTextFlow tf : results)
+      {
+         if (constraints.isSearchInSource())
+         {
+            for (String content : tf.getContents())
+            {
+               if (content.contains(search))
+               {
+                  matchingTextFlows.add(tf);
+                  continue scanning_text_flows;
+               }
+            }
+         }
+         if (constraints.isSearchInTarget())
+         {
+            HTextFlowTarget tft = tf.getTargets().get(localeId);
+            if (tft != null)
+            {
+               for (String content : tft.getContents())
+               {
+                  if (content.contains(search))
+                  {
+                     matchingTextFlows.add(tf);
+                     continue scanning_text_flows;
+                  }
+               }
+            }
+         }
+      }
+
+      return matchingTextFlows;
+   }
+
+   /**
+    * @param projectSlug
+    * @param iterationSlug
+    * @param localeId validated locale id
+    * @param documentPaths
+    * @param constraints
+    * @return
+    */
+   private List<HTextFlow> findTextFlowsWithHibernateSearch(String projectSlug, String iterationSlug, LocaleId localeId, List<String> documentPaths, FilterConstraints constraints)
+   {
       // Common query terms between source and targets
       TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
       TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
