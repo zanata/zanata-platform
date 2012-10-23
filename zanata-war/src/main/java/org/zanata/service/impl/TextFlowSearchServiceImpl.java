@@ -97,7 +97,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    @In
    private FullTextSession session;
 
-   private boolean useDatabaseSearch = false;
+   private boolean useDatabaseSearch = true;
 
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints)
