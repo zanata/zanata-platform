@@ -129,8 +129,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       // @formatter:off
       queryBuilder
             .append("SELECT tf.id, tft.state FROM HTextFlow tf ")
-            .append(" LEFT JOIN ( SELECT tf_id, state, content0, content1, content2, content3, content4, content5 ")
-            .append("             FROM HTextFlowTarget WHERE locale = :locale) tft ON tft.tf_id = tf.id ")
+            .append(" LEFT JOIN HTextFlowTarget tft on tf.id = tft.tf_id AND locale = :locale")
             .append(" WHERE tf.document_id = :docId ");
       queryBuilder
             .append(" AND ")
@@ -140,8 +139,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
             .append(" OR ")
             .append(buildSearchCondition(filterConstraints.getSearchString(), "tft")) // search in target
             .append(")")
-      ;
-      queryBuilder
             .append(" ORDER BY tf.pos");
       // @formatter:on
       log.debug("get navigation SQL query: {}", queryBuilder);
