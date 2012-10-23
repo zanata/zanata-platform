@@ -139,12 +139,17 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private boolean caseSensitive = true;
 
    /**
-    * Exclude all locales in zanata.xml. This parameter is does not apply to
-    * projectType 'podir'
-    * 
-    * @parameter expression="${zanata.excludeLocale}" default-value="true"
+    * Exclude filenames which match locales in zanata.xml (other than the
+    * source locale).  For instance, if zanata.xml includes de and fr,
+    * then the files messages_de.properties and messages_fr.properties
+    * will not be treated as source files.
+    * <p>
+    * NB: This parameter will be ignored for some project types which use
+    * different file naming conventions (eg podir, gettext).
+    *
+    * @parameter expression="${zanata.excludeLocaleFilenames}" default-value="true"
     */
-   private boolean excludeLocale = true;
+   private boolean excludeLocaleFilenames = true;
 
 
    @Override
@@ -280,8 +285,8 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    }
 
    @Override
-   public boolean getExcludeLocale()
+   public boolean getExcludeLocaleFilenames()
    {
-      return excludeLocale;
+      return excludeLocaleFilenames;
    }
 }

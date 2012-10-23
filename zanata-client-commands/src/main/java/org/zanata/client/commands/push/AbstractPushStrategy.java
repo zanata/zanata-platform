@@ -43,7 +43,7 @@ public abstract class AbstractPushStrategy
    private StringSet extensions;
    private String fileExtension;
 
-   public abstract Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocale) throws IOException;
+   public abstract Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocaleFilenames) throws IOException;
 
    public abstract Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
 
@@ -62,7 +62,7 @@ public abstract class AbstractPushStrategy
     * @param includes empty to find all source files, non-empty to find only the
     *           documents in this list
     * @param excludes
-    * @param excludeLocaleFileNames adds entries to excludes to ignore any file
+    * @param excludeLocaleFilenames adds entries to excludes to ignore any file
     *           with a locale id suffix before the file extension.
     * @param useDefaultExclude true to also exclude a set of default excludes
     *           for common temp file and source control filenames
@@ -70,16 +70,16 @@ public abstract class AbstractPushStrategy
     *           options
     * @return document paths for source files found in srcDir
     */
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocaleFileNames, boolean useDefaultExclude, boolean isCaseSensitive)
+   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocaleFilenames, boolean useDefaultExclude, boolean isCaseSensitive)
   {
       if (includes.isEmpty())
       {
          includes.add("**/*" + fileExtension);
       }
 
-      if (excludeLocaleFileNames)
+      if (excludeLocaleFilenames)
       {
-         excludeLocaleFileName(excludes);
+         addExcludesForLocaleFilenames(excludes);
       }
 
       DirectoryScanner dirScanner = new DirectoryScanner();
@@ -104,7 +104,7 @@ public abstract class AbstractPushStrategy
 
    }
 
-   private void excludeLocaleFileName(List<String> excludes)
+   private void addExcludesForLocaleFilenames(List<String> excludes)
    {
       String sourceLang = new LocaleId(getOpts().getSourceLang()).toJavaName();
 

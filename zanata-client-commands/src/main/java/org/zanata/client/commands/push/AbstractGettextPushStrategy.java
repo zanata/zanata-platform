@@ -50,7 +50,7 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy
       super(new StringSet("comment;gettext"), ".pot");
    }
 
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocale) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocaleFilenames) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
 

@@ -117,7 +117,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       log.info("Exclude patterns: {}", StringUtils.join(getOpts().getExcludes(), " "));
       log.info("Case sensitive: {}", getOpts().getCaseSensitive());
       log.info("Default excludes: {}", getOpts().getDefaultExcludes());
-      log.info("Exclude locale: {}", getOpts().getExcludeLocale());
+      log.info("Exclude locale filenames: {}", getOpts().getExcludeLocaleFilenames());
 
       if (getOpts().getPushType() == PushPullType.Trans)
       {
@@ -251,7 +251,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       final StringSet extensions = strat.getExtensions();
 
       // to save memory, we don't load all the docs into a HashMap
-      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes(), getOpts().getCaseSensitive(), getOpts().getExcludeLocale());
+      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes(), getOpts().getCaseSensitive(), getOpts().getExcludeLocaleFilenames());
       for (String docName : localDocNames)
       {
          log.info("Found source document: {}", docName);
