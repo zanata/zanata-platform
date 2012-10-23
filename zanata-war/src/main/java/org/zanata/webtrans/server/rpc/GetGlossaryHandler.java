@@ -27,10 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -38,12 +34,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HLocale;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.LocaleService;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
@@ -51,9 +44,10 @@ import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetGlossaryHandler")
 @Scope(ScopeType.STATELESS)
@@ -65,9 +59,6 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
    private static final int MAX_RESULTS = 20;
 
    private static final Comparator<GlossaryResultItem> COMPARATOR = new GlossaryResultItemComparator();
-
-   @In
-   private LocaleService localeServiceImpl;
 
    @In
    private GlossaryDAO glossaryDAO;
@@ -86,20 +77,21 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       log.debug("Fetching Glossary matches({}) for \"{}\"", searchType, abbrev);
 
       LocaleId localeID = action.getLocaleId();
-      HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
       ArrayList<GlossaryResultItem> results;
 
       try
       {
-         List<HGlossaryEntry> entries = glossaryDAO.getEntriesByLocaleId(localeID);
          List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, action.getSrcLocaleId(), MAX_RESULTS);
-         Iterable<Object[]> matchesHasGlossaryTerm = Iterables.filter(matches, GlossaryTermNotNullPredicate.INSTANCE);
 
          Map<GlossaryKey, GlossaryResultItem> matchesMap = new LinkedHashMap<GlossaryKey, GlossaryResultItem>();
-         for (Object[] match : matchesHasGlossaryTerm)
+         for (Object[] match : matches)
          {
             HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
-            HGlossaryTerm targetTerm = findTargetTermFromMatch(hLocale, entries, sourceTerm);
+            HGlossaryTerm targetTerm = null;
+            if (sourceTerm != null)
+            {
+               targetTerm = glossaryDAO.getTermByEntryAndLocale(sourceTerm.getGlossaryEntry().getId(), localeID);
+            }
             if (targetTerm == null)
             {
                continue;
@@ -131,16 +123,6 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       return new GetGlossaryResult(action, results);
    }
 
-   private HGlossaryTerm findTargetTermFromMatch(HLocale hLocale, List<HGlossaryEntry> entries, HGlossaryTerm sourceTerm)
-   {
-      Optional<HGlossaryEntry> entryOptional = Iterables.tryFind(entries, new HGlossaryEntryByIdPredicate(sourceTerm.getGlossaryEntry().getId()));
-      if (entryOptional.isPresent())
-      {
-         return entryOptional.get().getGlossaryTerms().get(hLocale);
-      }
-      return null;
-   }
-
    private static GlossaryResultItem getOrCreateGlossaryResultItem(Map<GlossaryKey, GlossaryResultItem> matchesMap, String srcTermContent, String targetTermContent, float score, String searchText)
    {
       GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
@@ -159,7 +141,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
    {
    }
 
-   static class GlossaryKey
+   private static class GlossaryKey
    {
 
       private final String srcTermContent;
@@ -233,29 +215,4 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
 
    }
 
-   private static enum GlossaryTermNotNullPredicate implements Predicate<Object[]>
-   {
-      INSTANCE;
-      @Override
-      public boolean apply(Object[] input)
-      {
-         return input[1] != null;
-      }
-   }
-
-   private static class HGlossaryEntryByIdPredicate implements Predicate<HGlossaryEntry>
-   {
-      private final Long id;
-
-      public HGlossaryEntryByIdPredicate(Long id)
-      {
-         this.id = id;
-      }
-
-      @Override
-      public boolean apply(HGlossaryEntry entry)
-      {
-         return entry.getId().equals(id);
-      }
-   }
 }

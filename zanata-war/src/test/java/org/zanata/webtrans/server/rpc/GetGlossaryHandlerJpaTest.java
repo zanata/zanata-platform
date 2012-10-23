@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -94,5 +93,11 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest
       assertThat(result.getGlossaries().get(0).getTarget(), Matchers.equalTo("Fedora 博客聚集"));
       assertThat(result.getGlossaries().get(1).getSource(), Matchers.equalTo("Fedora Artwork"));
       assertThat(result.getGlossaries().get(1).getTarget(), Matchers.equalTo("Fedora 美工"));
+   }
+
+   @Test
+   public void testRollback() throws Exception
+   {
+      handler.rollback(null, null, null);
    }
 }
