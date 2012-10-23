@@ -82,7 +82,7 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
       {
          throw new ActionException(e);
       }
-
+      long start = System.nanoTime();
       FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getPhrase()).filterSource().filterTarget().filterByStatus(action.isNewState(), action.isFuzzyState(), action.isApprovedState());
       ArrayList<Long> idIndexList = new ArrayList<Long>();
       HashMap<Long, ContentState> transIdStateMap = new HashMap<Long, ContentState>();
@@ -96,6 +96,8 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
          idIndexList.add(textFlow.getId());
          transIdStateMap.put(textFlow.getId(), textFlow.getTargets().get(hLocale.getId()).getState());
       }
+      double duration = (System.nanoTime() - start) / 1000000000.0;
+      log.info("******* duration {} seconds", duration);
       log.debug("for action {} returned size: ", action, idIndexList.size());
       return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateMap);
 
