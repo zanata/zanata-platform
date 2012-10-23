@@ -83,42 +83,40 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       TransMemoryQuery transMemoryQuery = action.getQuery();
       log.debug("Fetching matches for {}", transMemoryQuery);
 
-      HLocale hLocale = localeServiceImpl.getByLocaleId(action.getLocaleId().getId());
-      HLocale sourceLocale = localeServiceImpl.getByLocaleId(action.getSourceLocaleId().getId());
+      HLocale targetLocale = localeServiceImpl.getByLocaleId(action.getLocaleId().getId());
 
-      ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, sourceLocale, transMemoryQuery);
+      ArrayList<TransMemoryResultItem> results = searchTransMemory(targetLocale, transMemoryQuery, action.getSourceLocaleId());
 
       log.debug("Returning {} TM matches for {}", results.size(), transMemoryQuery);
       return new GetTranslationMemoryResult(action, results);
    }
 
-   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale hLocale, HLocale sourceLocale, TransMemoryQuery transMemoryQuery)
+   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale targetLocale, TransMemoryQuery transMemoryQuery, LocaleId sourceLocaleId)
    {
       ArrayList<TransMemoryResultItem> results = Lists.newArrayList();
       try
       {
-         List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocale.getLocaleId(), MAX_RESULTS);
+         List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocaleId, MAX_RESULTS);
 
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
-            float score = (Float) match[0];
             HTextFlowTarget textFlowTarget = (HTextFlowTarget) match[1];
 
-            if (isInvalidResult(textFlowTarget, hLocale))
+            if (isInvalidResult(textFlowTarget, targetLocale))
             {
                continue;
             }
 
-            double percent = calculateSimilarityPercentage(transMemoryQuery, textFlowTarget.getTextFlow().getContents());
-
             ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
-            ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getTextFlow().getTargets().get(hLocale.getId()).getContents());
+            ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getTextFlow().getTargets().get(targetLocale.getId()).getContents());
 
             TMKey key = new TMKey(textFlowContents, targetContents);
             TransMemoryResultItem item = matchesMap.get(key);
             if (item == null)
             {
+               float score = (Float) match[0];
+               double percent = calculateSimilarityPercentage(transMemoryQuery, textFlowTarget.getTextFlow().getContents());
                item = new TransMemoryResultItem(textFlowContents, targetContents, score, percent);
                matchesMap.put(key, item);
             }

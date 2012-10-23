@@ -61,7 +61,6 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
             .use("textFlowDAO", textFlowDAOSpy)
             .autowire(GetTransMemoryHandler.class);
       // @formatter:on
-      when(localeService.getByLocaleId(sourceLocaleId.getId())).thenReturn(getEm().find(HLocale.class, 5L));
       when(localeService.getByLocaleId(targetLocaleId.getId())).thenReturn(getEm().find(HLocale.class, 3L));
    }
 

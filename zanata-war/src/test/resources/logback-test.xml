@@ -26,6 +26,7 @@
 
     <!-- set to TRACE to see hibernate generated sql-->
     <logger name="org.hibernate.SQL" level="INFO">
+    <!--<logger name="org.hibernate.SQL" level="TRACE">-->
         <appender-ref ref="STDOUT-SQL" />
     </logger>
 

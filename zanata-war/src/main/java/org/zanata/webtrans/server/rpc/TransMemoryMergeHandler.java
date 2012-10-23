@@ -103,7 +103,7 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
             log.warn("Text flow id {} is approved. Ignored.", hTextFlow.getId());
             continue;
          }
-         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, sourceLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL));
+         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), sourceLocale.getLocaleId());
          TransMemoryResultItem tmResult = findTMAboveThreshold(tmResults, predicate, hTextFlow, action.getThresholdPercent());
          TransUnitUpdateRequest request = createRequest(action, hLocale, requestMap, hTextFlow, tmResult, hTextFlowTarget);
          if (request != null)
