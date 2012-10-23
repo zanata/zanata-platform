@@ -34,8 +34,12 @@
 	            columnClasses="centered,centered,centered,centered"
 	            styleClass="fullwidth">
 	          <h:column width="auto">
-	            <f:facet name="header">User name</f:facet>
+	            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
 	            #{user}
+	          </h:column>
+	          <h:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+	            #{userAction.getEmail(userSearch.selectedUser)}
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.MemberOf']}</f:facet>

@@ -15,11 +15,12 @@
             <s:validateAll>
                 <ui:insert/>
             </s:validateAll>
-            
-            <s:span styleClass="icon-cancel-circle-2 errors" rendered="#{invalid}"/>
-            <s:message styleClass="errors"/>
         </span>
-
+        
+        <span class="value #{invalid?'errors':''} errorsMessage">
+			<s:span styleClass="icon-cancel-circle-2 errors" rendered="#{invalid}"/>
+        	<s:message styleClass="errors"/>
+        </span>
     </div>
 
 </ui:composition>

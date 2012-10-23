@@ -75,8 +75,9 @@ input,textarea {
 
 input[type="text"], input[type="password"]
 {
-	width:210px;
-	font-size:12px;
+	width:260px;
+	font-size:14px;
+	height:20px;
 }
 
 button,input[type="checkbox"],input[type="radio"],input[type="reset"],input[type="submit"],input[type="button"]
@@ -320,7 +321,7 @@ a.breadcrumbs_link:hover
 	padding: 5px;
 	margin-top: 5px;
 	clear: left;
-	font-size:12px;
+	font-size:13px;
 }
 
 img.login_option {
@@ -356,6 +357,10 @@ img.selected_login_option {
 .errors {
 	color: #F00000;
 	font-size:13px;
+}
+.errorsMessage
+{
+	width:188px;
 }
 
 img.errors {
@@ -605,11 +610,11 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 .footer div.footer_container
 {
-	width:960px;
+	width:900px;
 	margin-left:auto;
 	margin-right:auto;
 	display:block;
-	padding:0 2px;
+	padding:0 30px;
 }
 
 .footer

@@ -20,8 +20,12 @@
  */
 package org.zanata.action;
 
+import static org.jboss.seam.ScopeType.CONVERSATION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
+
 import java.io.Serializable;
 import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
@@ -33,9 +37,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
-
-import static org.jboss.seam.ScopeType.CONVERSATION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.dao.PersonDAO;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
@@ -59,6 +62,9 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
    @In
    private Map<String, String> messages;
 
+   @In
+   private PersonDAO personDAO;
+
    public void deleteUser( String userName )
    {
       try
@@ -74,5 +80,11 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
             FacesMessages.instance().add(StatusMessage.Severity.ERROR, messages.get("jsf.UserManager.delete.constraintViolation.error") );
          }
       }
+   }
+
+   @CachedMethodResult
+   public String getEmail(String username)
+   {
+      return personDAO.findEmail(username);
    }
 }
