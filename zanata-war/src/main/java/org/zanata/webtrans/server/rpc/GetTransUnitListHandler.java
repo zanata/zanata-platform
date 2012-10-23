@@ -100,10 +100,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       else if (action.isAcceptAllStatus())
       {
          log.debug("Fetch TransUnits:*");
-         long startTime = System.nanoTime();
-         GetTransUnitListResult result = getTransUnitsWithPage(action, hLocale);
-         log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
-         return result;
+         return getTransUnitsWithPage(action, hLocale);
       }
       else
       {

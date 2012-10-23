@@ -89,14 +89,13 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
 
       List<HTextFlow> textFlows;
       TextFlowResultTransformer resultTransformer = new TextFlowResultTransformer(hLocale);
-      long startTime = System.nanoTime();
+
       textFlows = textFlowDAO.getNavigationByDocumentId(action.getId(), hLocale, resultTransformer, filterConstraints);
       for (HTextFlow textFlow : textFlows)
       {
          idIndexList.add(textFlow.getId());
          transIdStateMap.put(textFlow.getId(), textFlow.getTargets().get(hLocale.getId()).getState());
       }
-      log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
       log.debug("for action {} returned size: ", action, idIndexList.size());
       return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateMap);
 
@@ -156,6 +155,7 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
       }
 
       @Override
+      @SuppressWarnings("unchecked")
       public List<HTextFlow> transformList(List collection)
       {
          return collection;

@@ -88,7 +88,9 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId));
       prepareActionAndMockLocaleService(action);
 
+      long startTime = System.nanoTime();
       GetTransUnitListResult result = handler.execute(action, null);
+      log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
 
       log.info("result: {}", result);
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
