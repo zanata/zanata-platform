@@ -72,10 +72,13 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    @In
    private TextFlowDAO textFlowDAO;
 
+   @In
+   private ZanataIdentity identity;
+
    @Override
    public GetTranslationMemoryResult execute(GetTranslationMemory action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
 
       TransMemoryQuery transMemoryQuery = action.getQuery();
       log.debug("Fetching matches for {}", transMemoryQuery);
