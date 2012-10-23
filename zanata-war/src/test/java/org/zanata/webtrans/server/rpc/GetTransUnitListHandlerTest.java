@@ -51,7 +51,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("performance/GetTransUnitListHandlerPerformanceTest.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("performance/GetTransUnitListTest.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @BeforeMethod
