@@ -72,4 +72,15 @@ public class QueryBuilderTest
 
       assertThat(query, equalToIgnoringCase("SELECT col1, col2 FROM DatabaseTable WHERE (col1 = 2 AND (or1 OR or2 OR or3) AND (and1 AND and2))"));
    }
+
+   @Test
+   public void emptyArgumentsQueryTest()
+   {
+      String query =
+            QueryBuilder.select("col1, col2").from("DatabaseTable")
+                  .where(and("col1 = 2", or(), and("and1", "and2"), and())).toQueryString();
+
+      assertThat(query, equalToIgnoringCase("SELECT col1, col2 FROM DatabaseTable WHERE (col1 = 2 AND (and1 AND and2))"));
+
+   }
 }

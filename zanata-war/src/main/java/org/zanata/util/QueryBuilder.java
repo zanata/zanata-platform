@@ -20,6 +20,16 @@
  */
 package org.zanata.util;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,14 +72,14 @@ public final class QueryBuilder
    public static String and( String ... ops )
    {
       LogicalExpression clause = new LogicalExpression(LogicalOperator.AND);
-      clause.operands = ops;
+      clause.operands = Lists.newArrayList(ops);
       return clause.toWhereClause();
    }
 
    public static String or( String ... ops )
    {
       LogicalExpression clause = new LogicalExpression(LogicalOperator.OR);
-      clause.operands = ops;
+      clause.operands = Lists.newArrayList(ops);
       return clause.toWhereClause();
    }
 
@@ -88,6 +98,8 @@ public final class QueryBuilder
 
    private static class LogicalExpression implements WhereExpression
    {
+      private static final String EMPTY_EXPRESSION = "";
+
       protected LogicalExpression(LogicalOperator operator)
       {
          this.operator = operator;
@@ -95,7 +107,7 @@ public final class QueryBuilder
 
       @Getter
       @Setter
-      protected String[] operands;
+      protected List<String> operands;
 
       @Getter
       protected LogicalOperator operator;
@@ -103,18 +115,28 @@ public final class QueryBuilder
       @Override
       public String toWhereClause()
       {
-         StringBuilder expStr = new StringBuilder("(");
-         for( int i=0; i<operands.length; i++ )
+         Iterable<String> notEmptyOperands = Iterables.filter(operands, StringNotEmptyPredicate.PREDICATE);
+         if (Iterables.isEmpty(notEmptyOperands))
          {
-            if( i > 0 )
-            {
-               expStr.append(" " + operator.name() + " " );
-            }
-            expStr.append(operands[i]);
+            return EMPTY_EXPRESSION;
          }
-
+         Joiner joiner = Joiner.on(" " + operator.name() + " ");
+         StringBuilder expStr = new StringBuilder("(");
+         joiner.appendTo(expStr, notEmptyOperands);
          expStr.append(")");
          return expStr.toString();
+      }
+
+
+   }
+
+   private static enum StringNotEmptyPredicate implements Predicate<String>
+   {
+      PREDICATE;
+      @Override
+      public boolean apply(@Nullable String input)
+      {
+         return !Strings.isNullOrEmpty(input);
       }
    }
 
