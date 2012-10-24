@@ -15,7 +15,7 @@
 
   <ui:define name="right_content">
     <rich:panel rendered="#{applicationConfiguration.internalAuth}">
-      <s:link view="/account/password_reset_request.xhtml"
+      <s:link view="/account/password_reset_request.xhtml" styleClass="table_link"
         propagation="none">#{messages['jsf.ForgotYourPassword']}</s:link>
     </rich:panel>
   </ui:define>

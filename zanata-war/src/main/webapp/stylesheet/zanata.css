@@ -489,8 +489,8 @@ a.action_link {
 	font-weight: bold;
 	background-color: #FFFFFF;
 	border: 1px solid #A2C4F5;
-	padding: 6px;
-	border-radius: 5px;
+	padding: 8px;
+	border-radius: 4px;
 	color: #7092C3;
 	margin-top: 4px;
 	text-align: center;
@@ -499,7 +499,7 @@ a.action_link {
 
 a.action_link:hover, a.button:hover {
 	background-color: #FFFFFF;
-    box-shadow: 0 0 5px #7092C3 inset;
+    box-shadow: 0 0 2px #5274A5 inset;
 }
 
 .hightlight_button:hover {
@@ -509,13 +509,11 @@ a.action_link:hover, a.button:hover {
 
 input[type="text"].api_key
 {
-	width:250px;
+	width:280px;
 }
 
 a.table_link {
 	font-size: 14px;
-	padding: 4px;
-	border-radius: 5px;
 	color: #454545;
 	text-decoration: underline;
 	text-align: right;
@@ -560,51 +558,6 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 }
 /* -----------------------  End Left/right container CSS  -------------------------*/
 
-/* -----------------------  Header CSS  -------------------------*/
-#headerlogo {
-	padding-top: 6px;
-	float: left;
-}
-
-#banner {
-	float: left;
-	width: 900px;
-	background: #ffffff;
-	padding-bottom: 10px;
-}
-
-#header_top_right {
-	box-shadow: 0 0 2px #aaa;
-	-moz-box-shadow:0 0 2px #aaa;
-	border: 1px solid #CCC;
-	border-radius: 5px;
-	margin-top: 5px;
-	float: right;
-	padding: 10px 20px;
-}
-
-.user_img {
-	box-shadow: 0 0 2px #aaa;
-	-moz-box-shadow:0 0 2px #aaa;
-	border: 1px solid #CCC;
-	border-radius: 5px;
-	margin-top: 5px;
-	margin-right: 5px;
-	float: right;
-}
-
-#loading_top_right {
-	position: fixed;
-	right: 2px;
-	top: 2px;
-}
-
-.downArrow
-{
-	padding-left:10px;
-}
-
-/* ----------------------- End Header CSS  -------------------------*/
 
 /* -----------------------  Footer CSS  -------------------------*/
 
@@ -891,10 +844,8 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 }
 
 .version_link_div:hover {
-	/*border:1px solid #990000;
-	background-color: #F3F2F2;*/
     background-color: #FFFFFF;
-    box-shadow: 0 0 3px #7092C3 inset;
+    box-shadow: 0 0 3px #5274A5 inset;
 }
 
 .version_link_div .version_title {
@@ -959,6 +910,12 @@ a.version_link:hover {
 
 .highlighted_datatable_row {
 	background-color:#FFFFD5;
+}
+
+.maintainer
+{
+	font-weight:bold;
+	color:#595959;
 }
 /* -----------------------  End project iteration CSS  -------------------------*/
 

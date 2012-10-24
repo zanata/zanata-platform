@@ -77,7 +77,7 @@
     <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
     <h:outputText rendered="#{empty versionGroupHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
     <rich:dataList value="#{versionGroupHome.instance.maintainers.toArray()}" var="maintainer">
-      <h:outputText value="#{maintainer.name}"/>
+      <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
     </rich:dataList>
   </rich:panel>
 
