@@ -33,7 +33,6 @@
 	width:960px;
 	height: 100%;
 	margin: 0 auto;
-	padding: 0 2px;
 }
 
 .navBar ul {
@@ -94,6 +93,7 @@
 	border-right: none;
 	box-shadow: none;
 	background: none;
+	padding-left:2px;
 }
 
 #logoCol a {
