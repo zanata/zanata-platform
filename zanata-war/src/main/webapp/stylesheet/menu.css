@@ -1,3 +1,12 @@
+#contentDiv
+{
+	position:absolute;
+	left:0;
+	right:0;
+	top:45px;
+	bottom:0;
+}
+
 /* -----------------------  Top menu CSS  -------------------------*/
 
 #loading_top_right {
