@@ -2,6 +2,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
@@ -93,6 +94,22 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       HTextFlowTarget tmMatch1 = getEm().find(HTextFlowTarget.class, 61L);
       List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
       doReturn(matches).when(textFlowDAOSpy).getSearchResult(query, sourceLocaleId, 10);
+      GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
+
+      // When:
+      GetTranslationMemoryResult result = handler.execute(action, null);
+
+      // Then:
+      verify(identity).checkLoggedIn();
+      assertThat(result.getMemories(), Matchers.hasSize(0));
+   }
+
+   @Test
+   public void whenThereAreParseException() throws Exception
+   {
+      // Given: hibernate search can not parse query
+      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
+      doThrow(new ParseException("bad token")).when(textFlowDAOSpy).getSearchResult(query, sourceLocaleId, 10);
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
