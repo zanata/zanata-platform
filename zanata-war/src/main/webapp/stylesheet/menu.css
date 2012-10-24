@@ -1,8 +1,21 @@
 /* -----------------------  Top menu CSS  -------------------------*/
+
+#loading_top_right {
+	position: fixed;
+	right: 2px;
+	top: 2px;
+}
+
+.downArrow
+{
+	padding-left:10px;
+	font-size:14px;
+}
+
 .header {
 	width: 100%;
 	min-width:960px;
-	height: 35px;
+	height: 44px;
 	margin: 0;
 	background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
@@ -52,15 +65,15 @@
 
 .navBar ul li a {
 	display: block;
-	height: 33px;
-	line-height: 33px;
-	font-size: 13px;
+	height: 44px;
+	line-height: 44px;
+	font-size: 14px;
 	color: #595959;
 	font-family: helvetica;
 	font-weight: bold;
 	text-decoration: none;
 	outline: none;
-	width: 120px;
+	width: 130px;
 	margin: 0 auto;
 }
 
@@ -92,7 +105,7 @@
 }
 
 #logoCol img {
-	padding-top: 3px;
+	padding-top: 8px;
 }
 
 
@@ -116,6 +129,19 @@
 	white-space:nowrap;
 }
 
+#userCol table
+{
+	color:#595959;
+	font-weight:bold;
+	height:100%;
+}
+
+#userCol:hover table
+{
+	color:#FFFFFF;
+}
+
+
 #userCol span.username
 {
 	text-overflow:ellipsis;
@@ -123,6 +149,7 @@
 	min-width:0;
 	max-width:55px;
 	display:inline-block;
+	font-size:14px;
 }
 
 #userCol img.avatar {
@@ -138,7 +165,7 @@ div.submenu {
 	width: 150px;
 	overflow: hidden;
 	z-index: 999;
-	margin-top:1px;
+	margin-top:0px;
 }
 
 .navBar li:hover div.submenu {
@@ -188,9 +215,9 @@ div.submenu ul li:hover {
 
 div.submenu ul li a {
 	color: #454545;
-	font-size: 12px;
+	font-size: 13px;
 	text-shadow: none;
-	line-height: 28px;
+	line-height: 44px;
 	text-align: left;
 	margin-left: 5px;
 	margin-right: 5px;

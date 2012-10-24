@@ -99,6 +99,16 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       return (HPerson) query.uniqueResult();
    }
    
+   public String findEmail(String username)
+   {
+      Query query = getSession().createQuery("select p.email from HPerson as p where p.account.username = :username");
+      query.setParameter("username", username);
+      query.setCacheable(true);
+      query.setComment("PersonDAO.findEmail");
+      return (String) query.uniqueResult();
+
+   }
+
    @SuppressWarnings("unchecked")
    public List<HPerson> findAllContainingName(String name)
    {

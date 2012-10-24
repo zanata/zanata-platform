@@ -19,6 +19,10 @@
             <ui:define name="label">#{messages['jsf.Username']}</ui:define>
             <h:inputText id="username" value="#{userAction.username}" readonly="#{identityManager.userExists(userAction.username)}"/>
           </s:decorate>
+          <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
+            <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+            <h:inputText id="email" value="#{userAction.getEmail(userAction.username)}" readonly="#{identityManager.userExists(userAction.username)}"/>
+          </s:decorate>
 	      <s:fragment rendered="#{applicationConfiguration.internalAuth}">
 	          <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml" >
 	            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
