@@ -24,7 +24,6 @@ package org.zanata.model;
 import java.util.Date;
 import java.util.List;
 
-import org.mockito.ArgumentCaptor;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -111,8 +110,12 @@ public class TestFixture
 
    public static WorkspaceId workspaceId(LocaleId localeId)
    {
-      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
-      return new WorkspaceId(projectIterationId, localeId);
+      return workspaceId(localeId, "project", "master");
+   }
+
+   public static WorkspaceId workspaceId(LocaleId localeId, String projectSlug, String iterationSlug)
+   {
+      return new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
    }
 
    public static Person person()

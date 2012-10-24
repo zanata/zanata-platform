@@ -2,15 +2,16 @@ package org.zanata.webtrans.server.rpc;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.hibernate.Session;
+import org.hibernate.search.impl.FullTextSessionImpl;
+import org.hibernate.search.jpa.impl.FullTextEntityManagerImpl;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -20,6 +21,7 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
+import org.zanata.service.impl.TextFlowSearchServiceImpl;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -27,9 +29,8 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 
-import ch.qos.logback.classic.Level;
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,9 +45,9 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    private ZanataIdentity identity;
    @Mock
    private LocaleService localeService;
-   @Mock
-   private TextFlowSearchService textFlowSearchServiceImpl;
    private final DocumentId documentId = new DocumentId(1);
+   private final LocaleId localeId = new LocaleId("ja");
+   private HLocale jaHLocale;
 
    @Override
    protected void prepareDBUnitOperations()
@@ -58,28 +59,36 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      TextFlowDAO dao = new TextFlowDAO((Session) getEm().getDelegate());
       ResourceUtils resourceUtils = new ResourceUtils();
       resourceUtils.create(); //postConstruct
       TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", resourceUtils).autowire(TransUnitTransformer.class);
       // @formatter:off
+      TextFlowSearchService textFlowSearchServiceImpl = SeamAutowire.instance()
+            .use("localeServiceImpl", localeService)
+            .use("documentDAO", new DocumentDAO(getSession()))
+            .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
+            .use("entityManager", new FullTextEntityManagerImpl(getEm()))
+            .use("session", new FullTextSessionImpl(getSession()))
+            .autowire(TextFlowSearchServiceImpl.class);
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
-            .use("textFlowDAO", dao)
+            .use("textFlowDAO", new TextFlowDAO(getSession()))
             .use("transUnitTransformer", transUnitTransformer)
             .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .autowire(GetTransUnitListHandler.class);
       // @formatter:on
+
+      jaHLocale = getEm().find(HLocale.class, 3L);
    }
 
    private void prepareActionAndMockLocaleService(GetTransUnitList action)
    {
       action.setEditorClientId(new EditorClientId("sessionId", 1));
-      action.setWorkspaceId(TestFixture.workspaceId(new LocaleId("ja")));
-      HLocale jaLocale = getEm().find(HLocale.class, 3L);
+      action.setWorkspaceId(TestFixture.workspaceId(localeId, "plurals", "master"));
       ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
-      when(localeService.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(jaLocale);
+      when(localeService.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(jaHLocale);
+      when(localeService.getByLocaleId(localeId)).thenReturn(jaHLocale);
    }
 
    @Test
@@ -102,7 +111,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteToGetByStatus() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFilterNeedReview(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFilterNeedReview(true).changeFilterUntranslated(true));
       prepareActionAndMockLocaleService(action);
 
       GetTransUnitListResult result = handler.execute(action, null);
@@ -110,8 +119,28 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       log.info("result: {}", result);
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
+      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 7, 8));
+   }
+
+
+   @Test
+   public void testExecuteForSearch() throws Exception
+   {
+      // Given: we want to search for file in fuzzy and untranslated text flows
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId)
+            .changeFindMessage("file").changeFilterUntranslated(true).changeFilterNeedReview(true));
+      prepareActionAndMockLocaleService(action);
+
+      // When:
+      GetTransUnitListResult result = handler.execute(action, null);
+
+      // Then:
+      log.info("result: {}", result);
+      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6));
    }
+
 
    @Test
    public void selectDocument()

@@ -80,16 +80,13 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 {
 
    @In
-   TextFlowDAO textFlowDAO;
-
-   @In
    private LocaleService localeServiceImpl;
 
    @In
-   DocumentDAO documentDAO;
+   private DocumentDAO documentDAO;
 
    @In
-   ProjectIterationDAO projectIterationDAO;
+   private ProjectIterationDAO projectIterationDAO;
 
    @In
    private FullTextEntityManager entityManager;
