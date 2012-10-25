@@ -8,17 +8,18 @@
 			font-size: 18px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
-			width:440px;
-			height:31px;
+			width:415px;
+			line-height:25px;
+			padding-left:25px;
 		}
 		
 		.transFilterTextBoxEmpty {
 			color: grey;
 			font-style: italic;
 		}
+		
+		
 	</ui:style>
-
-
 	<g:TextBox ui:field="filterTextBox" addStyleNames='{style.transFilterTextBox}' />
 
 </ui:UiBinder> 

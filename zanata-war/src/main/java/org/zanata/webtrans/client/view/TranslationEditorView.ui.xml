@@ -48,6 +48,11 @@
 			color:#0085CC;
 		}
 		
+		.searchIcon
+		{
+			font-size:22px;
+		}
+		
 	</ui:style>
 	
 			<g:LayoutPanel>
@@ -64,7 +69,9 @@
 						</g:cell>
 					</g:HorizontalPanel>
 				</g:layer>
-	            
+	            <g:layer top='8px' height='24px' left="13px" width="24px">
+            	 	<g:InlineLabel styleName="icon-search {style.searchIcon}"/>
+            	 </g:layer>
 	           
 				<g:layer top="40px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
