@@ -81,9 +81,6 @@ is visible outside of the scrolling box. */
 }
 
 .CodeMirror pre {
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  -o-border-radius: 0;
   border-radius: 0;
   border-width: 0; margin: 0; padding: 0; background: transparent;
   font-family: inherit;
@@ -183,8 +180,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 /* show visible tab */
 .cm-tab:after {
     content: "\21e5";
-    display: -moz-inline-block;
-    display: -webkit-inline-block;
     display: inline-block;
     width: 1em;
     position: relative;

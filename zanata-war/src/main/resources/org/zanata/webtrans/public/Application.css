@@ -223,7 +223,6 @@ td.TableEditorCell {
 
 tr.TableEditorRow.content-filter-nomatch {
 	filter: alpha(opacity =     25);
-	-moz-opacity: 0.25;
 	opacity: 0.25;
 }
 
@@ -642,7 +641,6 @@ td.ApprovedStateDecoration div div div
 	padding: 5px 20px 0px 20px;
 	color: #FFFFFF;
 	border-radius: 20px;
-	-moz-border-radius: 20px;
 	font-weight: bold;
 }
 .sourceTable {
