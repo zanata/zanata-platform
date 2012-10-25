@@ -24,8 +24,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
-import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
+import org.zanata.webtrans.client.events.DisplaySouthPanelEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -44,7 +44,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
 
 
-public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements WorkspaceContextUpdateEventHandler
+public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements WorkspaceContextUpdateEventHandler, DisplaySouthPanelEventHandler
 {
    public interface Display extends WidgetDisplay
    {
@@ -99,6 +99,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       translationEditorPresenter.bind();
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+      registerHandler(eventBus.addHandler(DisplaySouthPanelEvent.TYPE, this));
       setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
       KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
@@ -238,5 +239,11 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
       setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+   }
+
+   @Override
+   public void onDisplaySouthPanel(DisplaySouthPanelEvent event)
+   {
+      setSouthPanelExpanded(event.isDisplay());
    }
 }

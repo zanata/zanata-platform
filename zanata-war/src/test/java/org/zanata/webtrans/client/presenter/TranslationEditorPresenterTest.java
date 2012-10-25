@@ -1,11 +1,17 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
@@ -17,10 +23,6 @@ import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -139,5 +141,15 @@ public class TranslationEditorPresenterTest
       presenter.refreshCurrentPage();
 
       verify(eventBus).fireEvent(RefreshPageEvent.EVENT);
+   }
+
+   @Test
+   public void onResizeClick()
+   {
+      when(display.getAndToggleResizeButton()).thenReturn(true);
+
+      presenter.onResizeClicked();
+
+      verify(eventBus).fireEvent(isA(DisplaySouthPanelEvent.class));
    }
 }

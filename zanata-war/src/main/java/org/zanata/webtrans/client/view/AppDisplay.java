@@ -20,10 +20,6 @@ public interface AppDisplay extends WidgetDisplay
 
    void setReadOnlyVisible(boolean visible);
 
-   boolean getAndToggleResizeButton();
-
-   void setResizeVisible(boolean visible);
-
    void showSideMenu(boolean isShowing);
 
    void setIterationFilesLabel(String iterationSlug);
@@ -41,8 +37,6 @@ public interface AppDisplay extends WidgetDisplay
       void onDocumentListClicked();
 
       void onKeyShortcutsClicked();
-
-      void onResizeClicked();
 
       void onEditorClicked();
    }

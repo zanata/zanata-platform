@@ -62,19 +62,27 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    HTMLPanel filterPanelContainer;
    
    @UiField
-   InlineLabel refreshCurrentPage;
+   InlineLabel refreshCurrentPage, resize;
 
    private Listener listener;
+
+   private final WebTransMessages messages;
+
+   private final static String STYLE_HIDE_SOUTHPANEL = "icon-down-circle";
+   private final static String STYLE_RESTORE_SOUTHPANEL = "icon-up-circle";
 
    @Inject
    public TranslationEditorView(final WebTransMessages messages, final Resources resources)
    {
       this.resources = resources;
       this.pager = new Pager(messages, resources);
+      this.messages = messages;
 
       initWidget(uiBinder.createAndBindUi(this));
       
       refreshCurrentPage.setTitle(messages.refreshCurrentPage());
+      resize.setTitle(messages.hideSouthPanel());
+      resize.addStyleName(STYLE_HIDE_SOUTHPANEL);
    }
 
    @Override
@@ -92,12 +100,28 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       transUnitNavigationContainer.add(navigationWidget);
    }
 
-   // @Override
-   // public void setUndoRedo(Widget undoRedoWidget)
-   // {
-   // undoRedoContainer.clear();
-   // undoRedoContainer.add(undoRedoWidget);
-   // }
+   /**
+    * return false if to be maximise, true for minimise
+    * 
+    */
+   @Override
+   public boolean getAndToggleResizeButton()
+   {
+      if (resize.getStyleName().contains(STYLE_HIDE_SOUTHPANEL))
+      {
+         resize.removeStyleName(STYLE_HIDE_SOUTHPANEL);
+         resize.addStyleName(STYLE_RESTORE_SOUTHPANEL);
+         resize.setTitle(messages.restoreSouthPanel());
+         return false;
+      }
+      else
+      {
+         resize.removeStyleName(STYLE_RESTORE_SOUTHPANEL);
+         resize.addStyleName(STYLE_HIDE_SOUTHPANEL);
+         resize.setTitle(messages.hideSouthPanel());
+         return true;
+      }
+   }
 
    @Override
    public Widget asWidget()
@@ -133,6 +157,12 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public void setListener(Listener listener)
    {
       this.listener = listener;
+   }
+
+   @UiHandler("resize")
+   public void onResizeIconClick(ClickEvent event)
+   {
+      listener.onResizeClicked();
    }
 
 }

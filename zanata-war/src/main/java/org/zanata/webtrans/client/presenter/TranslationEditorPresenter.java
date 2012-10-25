@@ -20,22 +20,20 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
-import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener
 {
@@ -116,6 +114,12 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public boolean isTransFilterFocused()
    {
       return transFilterPresenter.isFocused();
+   }
+
+   @Override
+   public void onResizeClicked()
+   {
+      eventBus.fireEvent(new DisplaySouthPanelEvent(display.getAndToggleResizeButton()));
    }
 
 }

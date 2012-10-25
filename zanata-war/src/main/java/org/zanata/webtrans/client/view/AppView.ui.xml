@@ -72,11 +72,6 @@
             color:#0085CC;
 		}
 		
-		.resize
-		{
-			margin-left:5px;
-		}
-		
 		.breadcrumbs_display
 		{
 			font-size:14px;
@@ -152,10 +147,6 @@
 					</g:HorizontalPanel>
 				</g:layer>
 			</g:LayoutPanel>
-		</g:layer>
-		
-		<g:layer right="5px" width="24px" top="5px" height="24px">
-			<g:InlineLabel ui:field="resize" styleName="{style.topMenuButton} {style.resize}"/>
 		</g:layer>
 		
 		<g:layer top="25px" bottom="0px" left='0px' right='0px' >

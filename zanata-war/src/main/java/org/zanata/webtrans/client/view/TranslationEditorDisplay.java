@@ -25,8 +25,13 @@ public interface TranslationEditorDisplay extends WidgetDisplay
    
    void setListener(Listener listener);
 
+   boolean getAndToggleResizeButton();
+
    interface Listener
    {
       void refreshCurrentPage();
+
+      void onResizeClicked();
    }
+
 }

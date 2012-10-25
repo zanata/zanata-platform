@@ -1,6 +1,4 @@
 package org.zanata.webtrans.client.presenter;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -11,6 +9,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 
@@ -247,7 +248,6 @@ public class AppPresenterTest
       verify(translationPresenter).revealDisplay();
       verify(searchResultPresenter).concealDisplay();
       verify(sideMenuPresenter).showEditorMenu(true);
-      verify(display).setResizeVisible(true);
       verify(display).showInMainView(MainView.Editor);
       verify(display).setStats(statsCaptor.capture(), eq(true));
 
@@ -270,7 +270,6 @@ public class AppPresenterTest
       verify(translationPresenter).concealDisplay();
       verify(searchResultPresenter).revealDisplay();
       verify(sideMenuPresenter).showEditorMenu(false);
-      verify(display).setResizeVisible(false);
       verify(display).showInMainView(MainView.Search);
       verify(display).setStats(statsCaptor.capture(), eq(true));
 
@@ -293,7 +292,6 @@ public class AppPresenterTest
       verify(translationPresenter).concealDisplay();
       verify(searchResultPresenter).concealDisplay();
       verify(sideMenuPresenter).showEditorMenu(false);
-      verify(display).setResizeVisible(false);
       verify(display).showInMainView(MainView.Documents);
       verify(display).setStats(statsCaptor.capture(), eq(true));
 
@@ -483,16 +481,6 @@ public class AppPresenterTest
       presenter.onKeyShortcutsClicked();
 
       verify(keyShortcutPresenter).showShortcuts();
-   }
-
-   @Test
-   public void onResizeClick()
-   {
-      when(display.getAndToggleResizeButton()).thenReturn(true);
-
-      presenter.onResizeClicked();
-
-      verify(translationPresenter).setSouthPanelExpanded(true);
    }
 
    private static HasWorkspaceContextUpdateData contextUpdateData(final boolean projectActive)

@@ -226,7 +226,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          translationPresenter.revealDisplay();
          searchResultsPresenter.concealDisplay();
          sideMenuPresenter.showEditorMenu(true);
-         display.setResizeVisible(true);
          break;
       case Search:
          // these two lines temporarily here until PresenterRevealedHandler
@@ -237,7 +236,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          translationPresenter.concealDisplay();
          searchResultsPresenter.revealDisplay();
          sideMenuPresenter.showEditorMenu(false);
-         display.setResizeVisible(false);
          break;
       case Documents:
       default:
@@ -246,7 +244,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          translationPresenter.concealDisplay();
          searchResultsPresenter.concealDisplay();
          sideMenuPresenter.showEditorMenu(false);
-         display.setResizeVisible(false);
          break;
       }
       display.showInMainView(viewToShow);
@@ -392,13 +389,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    public void onKeyShortcutsClicked()
    {
       keyShortcutPresenter.showShortcuts();
-   }
-
-   @Override
-   public void onResizeClicked()
-   {
-      boolean expended = display.getAndToggleResizeButton();
-      translationPresenter.setSouthPanelExpanded(expended);
    }
 
    @Override

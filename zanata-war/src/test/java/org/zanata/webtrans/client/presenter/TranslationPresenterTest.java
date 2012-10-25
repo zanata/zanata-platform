@@ -1,28 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.List;
-
-import org.hamcrest.Matchers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.model.TestFixture;
-import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.keys.KeyShortcut;
-import org.zanata.webtrans.client.keys.Keys;
-import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.service.NavigationService;
-import org.zanata.webtrans.client.view.TranslationEditorDisplay;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import com.google.gwt.event.dom.client.KeyCodes;
-
-import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeastOnce;
@@ -33,6 +10,32 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
+
+import org.hamcrest.Matchers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.NavigationService;
+import org.zanata.webtrans.client.view.TranslationEditorDisplay;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+
+import com.google.gwt.event.dom.client.KeyCodes;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -106,6 +109,7 @@ public class TranslationPresenterTest
       verify(glossaryPresenter).bind();
       verify(translationEditorPresenter).bind();
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), spyPresenter);
+      verify(eventBus).addHandler(DisplaySouthPanelEvent.TYPE, spyPresenter);
       verify(spyPresenter).setSouthPanelExpanded(!userWorkspaceContext.hasReadOnlyAccess());
       verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());
    }
@@ -229,6 +233,31 @@ public class TranslationPresenterTest
       assertThat(userWorkspaceContext.hasReadOnlyAccess(), Matchers.is(true));
       verify(transMemoryPresenter).unbind();
       verify(glossaryPresenter).unbind();
+   }
+
+   @Test
+   public void onHideSouthPanel()
+   {
+      DisplaySouthPanelEvent event = mock(DisplaySouthPanelEvent.class);
+      when(event.isDisplay()).thenReturn(false);
+
+      presenter.onDisplaySouthPanel(event);
+      verify(transMemoryPresenter).unbind();
+      verify(glossaryPresenter).unbind();
+   }
+
+   @Test
+   public void onDisplaySouthPanel()
+   {
+      DisplaySouthPanelEvent event = mock(DisplaySouthPanelEvent.class);
+      when(event.isDisplay()).thenReturn(true);
+
+      // hide south panel first
+      presenter.setSouthPanelExpanded(false);
+
+      presenter.onDisplaySouthPanel(event);
+      verify(transMemoryPresenter).bind();
+      verify(glossaryPresenter).bind();
    }
 
 }

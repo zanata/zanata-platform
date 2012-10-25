@@ -36,17 +36,18 @@
 			padding-right:10px;
 		}
 		
-		.refresh
+		.iconButton
 		{
 			font-size:20px;
 			cursor:pointer;
+			color:#4E4E4E;
 		}
 		
-		.refresh:hover
+		.iconButton:hover
 		{
 			color:#0085CC;
 		}
-				
+		
 	</ui:style>
 	
 			<g:LayoutPanel>
@@ -59,7 +60,7 @@
 							<g:HTMLPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
 						</g:cell>
 						<g:cell horizontalAlignment="ALIGN_RIGHT">
-							<g:InlineLabel ui:field="refreshCurrentPage" styleName="icon-arrows-cw {style.refresh}"/>
+							<g:InlineLabel ui:field="refreshCurrentPage" styleName="icon-arrows-cw {style.iconButton}"/>
 						</g:cell>
 					</g:HorizontalPanel>
 				</g:layer>
@@ -68,10 +69,14 @@
 				<g:layer top="40px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
 				</g:layer>
-				<g:layer bottom="0px" height="2em" left="0" right="0">
+				<g:layer bottom="0px" height="2em" left="0" right="16px">
 					<g:FlowPanel>
 						<fui:Pager ui:field="pager"/>
+						
 					</g:FlowPanel>
+				</g:layer>
+				<g:layer bottom="0px" height="24px" right="0" width="24px">
+					<g:InlineLabel ui:field="resize" styleName="{style.iconButton}"/>
 				</g:layer>
 			</g:LayoutPanel>
 </ui:UiBinder> 

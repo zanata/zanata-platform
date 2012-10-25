@@ -66,7 +66,7 @@ public class AppView extends Composite implements AppDisplay
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel projectLink, iterationFilesLink, readOnlyLabel, resize, keyShortcuts;
+   InlineLabel projectLink, iterationFilesLink, readOnlyLabel, keyShortcuts;
    
    @UiField
    InlineLabel selectedDocumentSpan;
@@ -90,9 +90,6 @@ public class AppView extends Composite implements AppDisplay
 
    private final WebTransMessages messages;
    
-   private final static String STYLE_MAXIMIZE = "icon-resize-full-3";
-   private final static String STYLE_MINIMIZE = "icon-resize-small-2";
-
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity)
    {
@@ -111,9 +108,6 @@ public class AppView extends Composite implements AppDisplay
       readOnlyLabel.setText("[" + messages.readOnly() + "]");
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
-
-      resize.setTitle(messages.maximize());
-      resize.addStyleName(STYLE_MAXIMIZE);
 
       sideMenuContainer.add(sideMenuView.asWidget());
 
@@ -206,35 +200,6 @@ public class AppView extends Composite implements AppDisplay
       readOnlyLabel.setVisible(visible);
    }
 
-   /**
-    * return false if to be maximise, true for minimise
-    * 
-    */
-   @Override
-   public boolean getAndToggleResizeButton()
-   {
-      if (resize.getStyleName().contains(STYLE_MAXIMIZE))
-      {
-         resize.removeStyleName(STYLE_MAXIMIZE);
-         resize.addStyleName(STYLE_MINIMIZE);
-         resize.setTitle(messages.minimize());
-         return false;
-      }
-      else
-      {
-         resize.removeStyleName(STYLE_MINIMIZE);
-         resize.addStyleName(STYLE_MAXIMIZE);
-         resize.setTitle(messages.maximize());
-         return true;
-      }
-   }
-
-   @Override
-   public void setResizeVisible(boolean visible)
-   {
-      resize.setVisible(visible);
-   }
-
    private final static double MIN_MENU_WIDTH = 24.0;
    private final static double EXPENDED_MENU_RIGHT = 304.0;
 
@@ -276,12 +241,6 @@ public class AppView extends Composite implements AppDisplay
       listener.onKeyShortcutsClicked();
    }
 
-   @UiHandler("resize")
-   public void onResizeIconClick(ClickEvent event)
-   {
-      listener.onResizeClicked();
-   }
-   
    @Override
    public void enableTab(MainView view, boolean enable)
    {

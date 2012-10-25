@@ -59,11 +59,11 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Chat room")
    String chatRoom();
 
-   @DefaultMessage("Maximise workspace")
-   String maximize();
+   @DefaultMessage("Hide Translation Memory and Glossary")
+   String hideSouthPanel();
 
-   @DefaultMessage("Restore default")
-   String minimize();
+   @DefaultMessage("Restore Translation Memory and Glossary")
+   String restoreSouthPanel();
 
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
