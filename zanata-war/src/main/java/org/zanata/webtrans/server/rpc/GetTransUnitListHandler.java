@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +37,6 @@ import org.zanata.model.HTextFlow;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
-import org.zanata.service.TextFlowSearchService;
-import org.zanata.util.HTextFlowPosComparator;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -68,9 +64,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    private LocaleService localeServiceImpl;
 
    @In
-   private TextFlowSearchService textFlowSearchServiceImpl;
-
-   @In
    private ZanataIdentity identity;
 
    @Override
@@ -80,53 +73,39 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       log.info("Fetching TransUnits for document {}", action.getDocumentId());
       log.debug("action: {}", action);
 
-      final HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e);
-      }
+      HLocale hLocale = validateAndGetLocale(action);
 
       List<HTextFlow> textFlows;
 
       if (action.isAcceptAllStatus() && !hasSearchPhrase(action.getPhrase()))
       {
          log.debug("Fetch TransUnits:*");
-         return getTransUnitsWithPage(action, hLocale);
+         textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), action.getOffset(), action.getCount());
       }
       else
       {
-         FilterConstraints constraints = FilterConstraints.filterBy(action.getPhrase())
-               .ignoreCase()
+         // @formatter:off
+         FilterConstraints constraints = FilterConstraints
+               .filterBy(action.getPhrase())
+               .ignoreCase().filterSource().filterTarget()
                .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
+         // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
-         textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints);
-//         textFlows = searchByPhrase(action);
-//         textFlows = textFlowDAO.getTextFlowsByStatus(action.getDocumentId(), hLocale, action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
+         textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, action.getOffset(), action.getCount());
       }
+      return transformToTransUnits(action, hLocale, textFlows);
+   }
 
-      int gotoRow = 0;
-      int size = textFlows.size();
-      int startIndex = action.getOffset();
-      int endIndex = Math.min(action.getOffset() + action.getCount(), size);
-      log.debug("loading index from {} to {}", startIndex, endIndex);
-
-      ArrayList<TransUnit> units = new ArrayList<TransUnit>();
-      for (int i = startIndex; i < endIndex; i++)
+   private HLocale validateAndGetLocale(GetTransUnitList action) throws ActionException
+   {
+      try
       {
-         HTextFlow textFlow = textFlows.get(i);
-         TransUnit tu = transUnitTransformer.transform(textFlow, hLocale);
-         if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
-         {
-            gotoRow = i - startIndex;
-         }
-         units.add(tu);
+         return localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
       }
-      log.debug("go to index {}", gotoRow);
-      return new GetTransUnitListResult(action.getDocumentId(), units, gotoRow);
+      catch (ZanataServiceException e)
+      {
+         throw new ActionException(e);
+      }
    }
 
    private boolean hasSearchPhrase(String phrase)
@@ -134,20 +113,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       return !Strings.isNullOrEmpty(phrase) && phrase.trim().length() != 0;
    }
 
-   private List<HTextFlow> searchByPhrase(GetTransUnitList action)
+   private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows)
    {
-      FilterConstraints constraints = FilterConstraints.filterBy(action.getPhrase())
-            .ignoreCase()
-            .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
-
-      List<HTextFlow> textFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentId(), constraints);
-      Collections.sort(textFlows, HTextFlowPosComparator.INSTANCE);
-      return textFlows;
-   }
-
-   private GetTransUnitListResult getTransUnitsWithPage(GetTransUnitList action, final HLocale hLocale)
-   {
-      List<HTextFlow> textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), action.getOffset(), action.getCount());
       List<TransUnit> units = Lists.transform(textFlows, new HTextFlowToTransUnitFunction(hLocale, transUnitTransformer));
 
       int gotoRow = 0;

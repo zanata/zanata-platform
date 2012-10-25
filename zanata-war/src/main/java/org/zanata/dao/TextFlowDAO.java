@@ -355,92 +355,19 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return q.list();
    }
 
-   /**
-    * for a given locale, we first find text flow where has no target (targets
-    * map has no key equals the locale), or (the text flow target has zero size
-    * contents OR content state is NEW).
-    * 
-    * @param documentId document id (NOT the String type docId)
-    * @param hLocale locale
-    * @return a list of HTextFlow that has no translation for given locale.
-    */
-   public List<HTextFlow> getAllUntranslatedTextFlowByDocumentId(DocumentId documentId, HLocale hLocale)
-   {
-      // @formatter:off
-      String query = "select distinct tf from HTextFlow tf left join tf.targets " +
-            "where tf.obsolete = 0 and tf.document.id = :docId and " +
-            "(:locale not in indices(tf.targets) or exists " + //text flow does not have a target for given locale
-            "  (select tft.id from HTextFlowTarget tft where tft.textFlow.id = tf.id and tft.locale = :locale and tft.state = :contentState)" + //text flow has target but target has either empty contents or content state is NEW
-            ") order by tf.pos";
-      // @formatter:on
-
-      Query textFlowQuery = getSession().createQuery(query);
-      textFlowQuery.setParameter("docId", documentId.getId());
-      textFlowQuery.setParameter("locale", hLocale);
-      textFlowQuery.setParameter("contentState", ContentState.New);
-      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getAllUntranslatedTextFlowByDocId");
-
-      @SuppressWarnings("unchecked")
-      List<HTextFlow> result = textFlowQuery.list();
-      log.debug("doc {} has {} untranslated textFlow for locale {}", new Object[] { documentId, result.size(), hLocale.getLocaleId() });
-      return result;
-   }
-
-   public List<HTextFlow> getTextFlowsByStatus(DocumentId documentId, HLocale hLocale, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
-   {
-      List<HTextFlow> result = Lists.newArrayList();
-      List<HTextFlow> untranslated = Lists.newArrayList();
-      List<HTextFlow> translated = Lists.newArrayList();
-
-      if (filterUntranslated)
-      {
-         // hard part. leave it alone.
-         untranslated = getAllUntranslatedTextFlowByDocumentId(documentId, hLocale);
-         result.addAll(untranslated);
-      }
-      if (filterNeedReview || filterTranslated)
-      {
-         // @formatter:off
-         String queryString = "select distinct tf from HTextFlow tf inner join tf.targets as tft " +
-               "where tf.document.id = :docId and tft.locale = :locale and tft.state in (:contentStates) " +
-               "order by tf.pos";
-         // @formatter:on
-         List<ContentState> contentStates = Lists.newArrayList();
-         if (filterNeedReview)
-         {
-            contentStates.add(ContentState.NeedReview);
-         }
-         if (filterTranslated)
-         {
-            contentStates.add(ContentState.Approved);
-         }
-         Query query = getSession().createQuery(queryString);
-         query.setParameter("docId", documentId.getId());
-         query.setParameter("locale", hLocale);
-         query.setParameterList("contentStates", contentStates);
-         query.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByStatus");
-
-         translated = query.list();
-         result.addAll(translated);
-      }
-
-      if (!untranslated.isEmpty() && !translated.isEmpty())
-      {
-         Collections.sort(result, HTextFlowPosComparator.INSTANCE);
-      }
-      return result;
-   }
-
 
    /**
     * for a given locale, we can filter it by content state or search in source and target.
     *
+    *
     * @param documentId document id (NOT the String type docId)
     * @param hLocale locale
     * @param constraints filter constraints
+    * @param firstResult start index
+    * @param maxResult max result
     * @return a list of HTextFlow that matches the constraint.
     */
-   public List<HTextFlow> getTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints)
+   public List<HTextFlow> getTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints, int firstResult, int maxResult)
    {
       boolean hasSearch = !Strings.isNullOrEmpty(constraints.getSearchString());
       boolean includeAllState = constraints.isIncludeAllState();
@@ -484,6 +411,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       textFlowQuery.setParameter("docId", documentId.getId());
       textFlowQuery.setParameter("locale", hLocale.getId());
       textFlowQuery.setParameterList("contentStateList", constraints.getContentStateAsList());
+      textFlowQuery.setFirstResult(firstResult).setMaxResults(maxResult);
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getTextFlowByDocumentIdWithConstraint");
 
       @SuppressWarnings("unchecked")
