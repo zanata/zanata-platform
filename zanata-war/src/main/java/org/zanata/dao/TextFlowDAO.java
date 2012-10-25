@@ -366,6 +366,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * @param firstResult start index
     * @param maxResult max result
     * @return a list of HTextFlow that matches the constraint.
+    * @see org.zanata.service.impl.TextFlowSearchServiceImpl#findTextFlows(org.zanata.webtrans.shared.model.WorkspaceId, org.zanata.search.FilterConstraints)
     */
    public List<HTextFlow> getTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints, int firstResult, int maxResult)
    {

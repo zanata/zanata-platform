@@ -159,6 +159,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       }
    }
 
+   /**
+    *
+    * @see org.zanata.dao.TextFlowDAO#getTextFlowByDocumentIdWithConstraint(org.zanata.webtrans.shared.model.DocumentId, org.zanata.model.HLocale, org.zanata.search.FilterConstraints, int, int)
+    */
    private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug, String iterationSlug,
          LocaleId validatedLocaleId, List<String> documentPaths, FilterConstraints constraints)
    {

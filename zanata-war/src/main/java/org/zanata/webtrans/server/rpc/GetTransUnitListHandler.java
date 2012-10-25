@@ -70,7 +70,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
    {
       identity.checkLoggedIn();
-      log.info("Fetching TransUnits for document {}", action.getDocumentId());
       log.debug("action: {}", action);
 
       HLocale hLocale = validateAndGetLocale(action);
