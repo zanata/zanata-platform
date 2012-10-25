@@ -25,6 +25,12 @@ package org.zanata.search;
 //justify this. May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.
 
+import java.util.List;
+
+import org.zanata.common.ContentState;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+
 /**
  * Specifies a set of constraints to be applied by a filter.
  * 
@@ -271,5 +277,44 @@ public class FilterConstraints
          return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), true, true, true);
       }
       return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), newState, fuzzyState, approvedState);
+   }
+
+   public boolean isIncludeAllState()
+   {
+      return includeApproved && includeFuzzy && includeNew;
+   }
+
+   public List<ContentState> getContentStateAsList()
+   {
+      List<ContentState> result = Lists.newArrayList();
+      if (includeApproved)
+      {
+         result.add(ContentState.Approved);
+      }
+      if (includeFuzzy)
+      {
+         result.add(ContentState.NeedReview);
+      }
+      if (includeNew)
+      {
+         result.add(ContentState.New);
+      }
+      return result;
+   }
+
+   @Override
+   public String toString()
+   {
+      // @formatter:off
+      return Objects.toStringHelper(this).
+            add("searchString", searchString).
+            add("isCaseSensitive", isCaseSensitive).
+            add("searchInSource", searchInSource).
+            add("searchInTarget", searchInTarget).
+            add("includeNew", includeNew).
+            add("includeFuzzy", includeFuzzy).
+            add("includeApproved", includeApproved).
+            toString();
+      // @formatter:on
    }
 }

@@ -58,11 +58,13 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
 import org.zanata.util.HTextFlowPosComparator;
+import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -428,4 +430,95 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       }
       return result;
    }
+
+
+   /**
+    * for a given locale, we can filter it by content state or search in source and target.
+    *
+    * @param documentId document id (NOT the String type docId)
+    * @param hLocale locale
+    * @param constraints filter constraints
+    * @return a list of HTextFlow that matches the constraint.
+    */
+   public List<HTextFlow> getTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints)
+   {
+      boolean hasSearch = !Strings.isNullOrEmpty(constraints.getSearchString());
+      boolean includeAllState = constraints.isIncludeAllState();
+
+      // @formatter:off
+      StringBuilder queryBuilder = new StringBuilder("select distinct tf from HTextFlow tf left join tf.targets tfts with index(tfts) = :locale ");
+      queryBuilder.append(" where tf.obsolete = 0 and tf.document.id = :docId ");
+
+      if (hasSearch)
+      {
+         queryBuilder.append(" and (").append(buildSearchConditionForHQL(constraints.getSearchString(), "tf")); // search in source
+         // search in target
+         queryBuilder.append(" or exists (")
+               .append("from HTextFlowTarget where textFlow = tf and locale = :locale")
+               .append(" and ").append(buildSearchConditionForHQL(constraints.getSearchString(), ""))
+               .append(")");
+         // end search in target
+         queryBuilder.append(")"); // end search
+      }
+      if (!includeAllState)
+      {
+         // content state restriction
+         queryBuilder.append(" and (exists (from HTextFlowTarget where textFlow = tf and locale = :locale and state in (:contentStateList))");
+         if (constraints.isIncludeNew())
+         {
+            queryBuilder.append(" or (:locale not in indices(tf.targets)"); // null target
+            if (hasSearch)
+            {
+               queryBuilder.append(" and ").append(buildSearchConditionForHQL(constraints.getSearchString(), "tf"));
+            }
+            queryBuilder.append(")"); // end null target condition
+         }
+         queryBuilder.append(")"); // content state sub query end
+      }
+
+      queryBuilder.append(" order by tf.pos");
+      // @formatter:on
+      log.debug("\n\n query : {}\n\n", queryBuilder);
+
+      Query textFlowQuery = getSession().createQuery(queryBuilder.toString());
+      textFlowQuery.setParameter("docId", documentId.getId());
+      textFlowQuery.setParameter("locale", hLocale.getId());
+      textFlowQuery.setParameterList("contentStateList", constraints.getContentStateAsList());
+      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getTextFlowByDocumentIdWithConstraint");
+
+      @SuppressWarnings("unchecked")
+      List<HTextFlow> result = textFlowQuery.list();
+      log.debug("{} textFlow for locale {} filter by {}", new Object[] { result.size(), hLocale.getLocaleId(), constraints });
+      return result;
+   }
+
+
+
+
+   /**
+    * This will build a HQL query condition in where clause.
+    * It can be used to search string in content0, content1 ... content5 in HTextFlow or HTextFlowTarget.
+    *
+    * @param searchString search term
+    * @param alias table name alias
+    * @return a HQL condition clause with contentX like '%searchString%' in parentheses '()' joined by 'or'
+    */
+   protected static String buildSearchConditionForHQL(String searchString, String alias)
+   {
+      String columnNameInLower = Strings.isNullOrEmpty(alias) ? "lower(content" : "lower(" + alias + ".content";
+      String searchStringInLowerCase = searchString.toLowerCase();
+
+      StringBuilder builder = new StringBuilder();
+      builder.append("(");
+      List<String> conditions = Lists.newArrayList();
+      for (int i = 0; i < 6; i++)
+      {
+         conditions.add(columnNameInLower + i + ") LIKE '%" + searchStringInLowerCase + "%'");
+      }
+      Joiner joiner = Joiner.on(" or ");
+      joiner.appendTo(builder, conditions);
+      builder.append(")");
+      return builder.toString();
+   }
+
 }

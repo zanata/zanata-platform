@@ -126,9 +126,9 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteForSearch() throws Exception
    {
-      // Given: we want to search for file in fuzzy and untranslated text flows
+      // Given: we want to search for file (mixed case) in fuzzy and untranslated text flows
       GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId)
-            .changeFindMessage("file").changeFilterUntranslated(true).changeFilterNeedReview(true));
+            .changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true));
       prepareActionAndMockLocaleService(action);
 
       // When:
@@ -138,7 +138,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       log.info("result: {}", result);
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
-      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6));
+      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 8));
    }
 
 

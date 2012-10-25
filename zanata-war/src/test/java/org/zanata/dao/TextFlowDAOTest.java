@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -12,6 +13,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
 
 import lombok.extern.slf4j.Slf4j;
@@ -140,5 +142,27 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       // with search term
       assertThat(TextFlowDAO.buildSearchCondition("a", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE '%a%' or lower(tft.content1) LIKE '%a%' or lower(tft.content2) LIKE '%a%' or lower(tft.content3) LIKE '%a%' or lower(tft.content4) LIKE '%a%' or lower(tft.content5) LIKE '%a%')"));
       assertThat(TextFlowDAO.buildSearchCondition("A", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE '%a%' or lower(tft.content1) LIKE '%a%' or lower(tft.content2) LIKE '%a%' or lower(tft.content3) LIKE '%a%' or lower(tft.content4) LIKE '%a%' or lower(tft.content5) LIKE '%a%')"));
+   }
+
+   @Test
+   public void testGetTextFlowByDocumentIdWithConstraint()
+   {
+      HLocale deLocale = getEm().find(HLocale.class, 3L);
+
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(4), deLocale, FilterConstraints.filterBy("mssg").excludeApproved().excludeFuzzy());
+
+      assertThat(result, Matchers.hasSize(1));
+   }
+
+   @Test
+   public void queryTest1()
+   {
+      HLocale deLocale = getEm().find(HLocale.class, 3L);
+
+      String queryString = "from HTextFlow tf left join tf.targets tft with (index(tft) = 3) " +
+            "where (exists (from HTextFlowTarget where textFlow = tf and content0 like '%mssg%'))";
+      Query query = getSession().createQuery(queryString);
+      List result = query.list();
+
    }
 }

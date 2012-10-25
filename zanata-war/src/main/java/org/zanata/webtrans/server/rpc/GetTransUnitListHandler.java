@@ -92,20 +92,20 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       List<HTextFlow> textFlows;
 
-      if (hasSearchPhrase(action))
-      {
-         log.debug("Fetch TransUnits: {}", action.getPhrase());
-         textFlows = searchByPhrase(action);
-      }
-      else if (action.isAcceptAllStatus())
+      if (action.isAcceptAllStatus() && !hasSearchPhrase(action.getPhrase()))
       {
          log.debug("Fetch TransUnits:*");
          return getTransUnitsWithPage(action, hLocale);
       }
       else
       {
-         log.debug("Fetch TransUnits filtered by status: {}", action);
-         textFlows = textFlowDAO.getTextFlowsByStatus(action.getDocumentId(), hLocale, action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
+         FilterConstraints constraints = FilterConstraints.filterBy(action.getPhrase())
+               .ignoreCase()
+               .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
+         log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
+         textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints);
+//         textFlows = searchByPhrase(action);
+//         textFlows = textFlowDAO.getTextFlowsByStatus(action.getDocumentId(), hLocale, action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
       }
 
       int gotoRow = 0;
@@ -129,30 +129,16 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       return new GetTransUnitListResult(action.getDocumentId(), units, gotoRow);
    }
 
-   private boolean hasSearchPhrase(GetTransUnitList action)
+   private boolean hasSearchPhrase(String phrase)
    {
-      return !Strings.isNullOrEmpty(action.getPhrase()) && action.getPhrase().trim().length() != 0;
+      return !Strings.isNullOrEmpty(phrase) && phrase.trim().length() != 0;
    }
 
    private List<HTextFlow> searchByPhrase(GetTransUnitList action)
    {
-      FilterConstraints constraints = FilterConstraints.filterBy(action.getPhrase()).ignoreCase();
-      constraints.includeApproved().includeFuzzy().includeNew();
-      if (!action.isAcceptAllStatus())
-      {
-         if (!action.isFilterNeedReview())
-         {
-            constraints.excludeFuzzy();
-         }
-         if (!action.isFilterTranslated())
-         {
-            constraints.excludeApproved();
-         }
-         if (!action.isFilterUntranslated())
-         {
-            constraints.excludeNew();
-         }
-      }
+      FilterConstraints constraints = FilterConstraints.filterBy(action.getPhrase())
+            .ignoreCase()
+            .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
 
       List<HTextFlow> textFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentId(), constraints);
       Collections.sort(textFlows, HTextFlowPosComparator.INSTANCE);
