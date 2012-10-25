@@ -5,17 +5,17 @@
 	<ui:style>
             
         .nav-button {
-	       width:34px;
-	       height:12px;
+	       width:40px;
+	       height:16px;
 	       border-radius:2px; 
-	       margin-right:1px;
+	       margin-right:3px;
 	       border-style:solid;
 	       outline:none;
         }
         
         .nav-button img {
-	       margin-bottom:1px;
-	       margin-left:2px;
+	       margin-top:3px;
+	       margin-left:4px;
         }
         
        
