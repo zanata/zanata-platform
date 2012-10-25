@@ -8,17 +8,28 @@
 			font-size: 18px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
-			width:440px;
+			width:450px;
 			height:31px;
+			padding-left:25px;
 		}
 		
 		.transFilterTextBoxEmpty {
 			color: grey;
 			font-style: italic;
 		}
+		
+		.searchIcon
+		{
+			font-size:22px;
+		}
 	</ui:style>
-
-
-	<g:TextBox ui:field="filterTextBox" addStyleNames='{style.transFilterTextBox}' />
+	<g:LayoutPanel height="38px">
+		<g:layer top='4px' bottom='0' left="0px" right="0">
+			<g:TextBox ui:field="filterTextBox" addStyleNames='{style.transFilterTextBox}' />
+		</g:layer>
+		<g:layer top='8px' height='24px' left="3px" width="24px">
+	           <g:InlineLabel styleName="icon-search {style.searchIcon}"/>
+		</g:layer>
+	</g:LayoutPanel>
 
 </ui:UiBinder> 
