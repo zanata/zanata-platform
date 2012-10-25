@@ -109,7 +109,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
 
 
    @Test
-   public void testExecuteToGetByStatus() throws Exception
+   public void testExecuteWithStatusFilterOnly() throws Exception
    {
       GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFilterNeedReview(true).changeFilterUntranslated(true));
       prepareActionAndMockLocaleService(action);
@@ -124,7 +124,24 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
 
 
    @Test
-   public void testExecuteForSearch() throws Exception
+   public void testExecuteWithSearchOnly() throws Exception
+   {
+      // Given: we want to search for file (mixed case) and we change page size to 10 and start from index 2
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFindMessage("FiLe").changeCount(10).changeOffset(1));
+      prepareActionAndMockLocaleService(action);
+
+      // When:
+      GetTransUnitListResult result = handler.execute(action, null);
+
+      // Then:
+      log.info("result: {}", result);
+      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getGotoRow(), Matchers.equalTo(0));
+      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(2, 3, 4, 5, 6, 8));
+   }
+
+   @Test
+   public void testExecuteWithSearchAndStatusFilter() throws Exception
    {
       // Given: we want to search for file (mixed case) in fuzzy and untranslated text flows
       GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId)

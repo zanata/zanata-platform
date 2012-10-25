@@ -376,13 +376,14 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       StringBuilder queryBuilder = new StringBuilder("select distinct tf from HTextFlow tf left join tf.targets tfts with index(tfts) = :locale ");
       queryBuilder.append(" where tf.obsolete = 0 and tf.document.id = :docId ");
 
+      String searchStringNamedParam = "searchString";
       if (hasSearch)
       {
-         queryBuilder.append(" and (").append(buildSearchConditionForHQL(constraints.getSearchString(), "tf")); // search in source
+         queryBuilder.append(" and (").append(buildSearchConditionForHQL(searchStringNamedParam, "tf")); // search in source
          // search in target
          queryBuilder.append(" or exists (")
                .append("from HTextFlowTarget where textFlow = tf and locale = :locale")
-               .append(" and ").append(buildSearchConditionForHQL(constraints.getSearchString(), ""))
+               .append(" and ").append(buildSearchConditionForHQL(searchStringNamedParam, ""))
                .append(")");
          // end search in target
          queryBuilder.append(")"); // end search
@@ -396,7 +397,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
             queryBuilder.append(" or (:locale not in indices(tf.targets)"); // null target
             if (hasSearch)
             {
-               queryBuilder.append(" and ").append(buildSearchConditionForHQL(constraints.getSearchString(), "tf"));
+               queryBuilder.append(" and ").append(buildSearchConditionForHQL(searchStringNamedParam, "tf"));
             }
             queryBuilder.append(")"); // end null target condition
          }
@@ -410,7 +411,14 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       Query textFlowQuery = getSession().createQuery(queryBuilder.toString());
       textFlowQuery.setParameter("docId", documentId.getId());
       textFlowQuery.setParameter("locale", hLocale.getId());
-      textFlowQuery.setParameterList("contentStateList", constraints.getContentStateAsList());
+      if (!includeAllState)
+      {
+         textFlowQuery.setParameterList("contentStateList", constraints.getContentStateAsList());
+      }
+      if (hasSearch)
+      {
+         textFlowQuery.setParameter(searchStringNamedParam, "%" + constraints.getSearchString().toLowerCase() + "%");
+      }
       textFlowQuery.setFirstResult(firstResult).setMaxResults(maxResult);
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getTextFlowByDocumentIdWithConstraint");
 
@@ -427,21 +435,20 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * This will build a HQL query condition in where clause.
     * It can be used to search string in content0, content1 ... content5 in HTextFlow or HTextFlowTarget.
     *
-    * @param searchString search term
+    * @param searchString named parameter
     * @param alias table name alias
     * @return a HQL condition clause with contentX like '%searchString%' in parentheses '()' joined by 'or'
     */
    protected static String buildSearchConditionForHQL(String searchString, String alias)
    {
       String columnNameInLower = Strings.isNullOrEmpty(alias) ? "lower(content" : "lower(" + alias + ".content";
-      String searchStringInLowerCase = searchString.toLowerCase();
 
       StringBuilder builder = new StringBuilder();
       builder.append("(");
       List<String> conditions = Lists.newArrayList();
       for (int i = 0; i < 6; i++)
       {
-         conditions.add(columnNameInLower + i + ") LIKE '%" + searchStringInLowerCase + "%'");
+         conditions.add(columnNameInLower + i + ") LIKE :" + searchString);
       }
       Joiner joiner = Joiner.on(" or ");
       joiner.appendTo(builder, conditions);
