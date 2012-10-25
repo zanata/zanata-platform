@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -47,10 +51,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetTransUnitListHandler")
 @Scope(ScopeType.STATELESS)
@@ -164,13 +164,17 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       List<HTextFlow> textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), action.getOffset(), action.getCount());
       List<TransUnit> units = Lists.transform(textFlows, new HTextFlowToTransUnitFunction(hLocale, transUnitTransformer));
 
-      int goToRow = 0;
+      int gotoRow = 0;
       if (action.getTargetTransUnitId() != null)
       {
-         goToRow = Iterables.indexOf(units, new FindByTransUnitIdPredicate(action.getTargetTransUnitId()));
+         int row = Iterables.indexOf(units, new FindByTransUnitIdPredicate(action.getTargetTransUnitId()));
+         if (row != -1)
+         {
+            gotoRow = row;
+         }
       }
       // stupid GWT RPC can't handle com.google.common.collect.Lists$TransformingRandomAccessList
-      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), goToRow);
+      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow);
    }
 
    @Override
