@@ -228,6 +228,7 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay
       listener.onDismissClick();
    }
 
+   @UiHandler("saveButton")
    public void onSaveButtonClick(ClickEvent event)
    {
       listener.onSaveClick();
