@@ -20,6 +20,7 @@
  */
 package org.zanata.util;
 
+import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -82,5 +83,36 @@ public class QueryBuilderTest
 
       assertThat(query, equalToIgnoringCase("SELECT col1, col2 FROM DatabaseTable WHERE (col1 = 2 AND (and1 AND and2))"));
 
+   }
+
+   @Test
+   public void complexQueryWithLeftJoinTest()
+   {
+      String query =
+            QueryBuilder.select("col1, col2").from("DatabaseTable").leftJoin("Table2").with(Restrictions.eq("Table2.content", ":content").toString())
+                  .where(and("col1 = 2", or("or1", "or2", "or3"), and("and1", "and2"))).toQueryString();
+
+      assertThat(query, equalToIgnoringCase("SELECT col1, col2 FROM DatabaseTable LEFT JOIN Table2 WITH Table2.content=:content WHERE (col1 = 2 AND (or1 OR or2 OR or3) AND (and1 AND and2))"));
+   }
+
+   @Test
+   public void existsSubQueryTest()
+   {
+      String query =
+            QueryBuilder.exists().from("DatabaseTable")
+                  .where("col1 = 2 and col2 = 1").toQueryString();
+
+      assertThat(query, equalToIgnoringCase(" exists ( from DatabaseTable where col1 = 2 and col2 = 1)"));
+   }
+
+   @Test
+   public void orderByQueryTest()
+   {
+      String query =
+            QueryBuilder.select("col1, col2").from("DatabaseTable")
+                  .where("col1 = 2 and col2 = 1")
+                  .orderBy("col1").toQueryString();
+
+      assertThat(query, equalToIgnoringCase("select col1, col2 from DatabaseTable where col1 = 2 and col2 = 1 order by col1"));
    }
 }

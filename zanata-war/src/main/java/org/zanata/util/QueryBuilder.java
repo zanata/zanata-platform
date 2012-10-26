@@ -21,9 +21,9 @@
 package org.zanata.util;
 
 import java.util.List;
-
 import javax.annotation.Nullable;
 
+import org.hibernate.criterion.Criterion;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -44,16 +44,27 @@ public final class QueryBuilder
    private String select;
    private String from;
    private String where;
+   private String leftJoin;
+   private String withClause;
+   private boolean isExistsSubQuery = false;
+   private String orderBy;
 
    protected QueryBuilder()
    {
-
    }
 
    public static QueryBuilder select( String select )
    {
       QueryBuilder builder = new QueryBuilder();
       builder.select = select;
+      return builder;
+   }
+
+   // TODO this and with only works in HQL.
+   public static QueryBuilder exists()
+   {
+      QueryBuilder builder = new QueryBuilder();
+      builder.isExistsSubQuery = true;
       return builder;
    }
 
@@ -71,21 +82,64 @@ public final class QueryBuilder
 
    public static String and( String ... ops )
    {
-      LogicalExpression clause = new LogicalExpression(LogicalOperator.AND);
-      clause.operands = Lists.newArrayList(ops);
+      WhereExpression clause = LogicalExpression.conjunction(Lists.newArrayList(ops));
       return clause.toWhereClause();
    }
 
    public static String or( String ... ops )
    {
-      LogicalExpression clause = new LogicalExpression(LogicalOperator.OR);
-      clause.operands = Lists.newArrayList(ops);
+      WhereExpression clause = LogicalExpression.disjunction(Lists.newArrayList(ops));
       return clause.toWhereClause();
+   }
+
+   public QueryBuilder leftJoin(String association)
+   {
+      this.leftJoin = association;
+      return this;
+   }
+
+   public QueryBuilder with(String withClause)
+   {
+      this.withClause = withClause;
+      return this;
    }
 
    public String toQueryString()
    {
-      return "SELECT " + this.select + " FROM " + this.from + " WHERE " + this.where;
+      StringBuilder stringBuilder = new StringBuilder();
+      if (select != null && !isExistsSubQuery)
+      {
+         stringBuilder.append("SELECT ").append(select);
+      }
+      else
+      {
+         stringBuilder.append(" EXISTS (");
+      }
+      stringBuilder.append(" FROM ").append(from);
+      if (!Strings.isNullOrEmpty(leftJoin))
+      {
+         stringBuilder.append(" LEFT JOIN ").append(leftJoin);
+         if (withClause != null)
+         {
+            stringBuilder.append(" WITH ").append(withClause);
+         }
+      }
+      stringBuilder.append(" WHERE ").append(where);
+      if (isExistsSubQuery)
+      {
+         stringBuilder.append(")");
+      }
+      if (!Strings.isNullOrEmpty(orderBy))
+      {
+         stringBuilder.append(" ORDER BY ").append(orderBy);
+      }
+      return stringBuilder.toString();
+   }
+
+   public QueryBuilder orderBy(String orderBy)
+   {
+      this.orderBy = orderBy;
+      return this;
    }
 
    // ============== Internal implementation classes
@@ -100,17 +154,29 @@ public final class QueryBuilder
    {
       private static final String EMPTY_EXPRESSION = "";
 
-      protected LogicalExpression(LogicalOperator operator)
+      @Setter
+      private List<String> operands;
+
+      private LogicalOperator operator;
+
+      private LogicalExpression(LogicalOperator operator)
       {
          this.operator = operator;
       }
 
-      @Getter
-      @Setter
-      protected List<String> operands;
+      public static WhereExpression conjunction(List<String> ops)
+      {
+         LogicalExpression expression = new LogicalExpression(LogicalOperator.AND);
+         expression.setOperands(ops);
+         return expression;
+      }
 
-      @Getter
-      protected LogicalOperator operator;
+      public static WhereExpression disjunction(List<String> ops)
+      {
+         LogicalExpression expression = new LogicalExpression(LogicalOperator.OR);
+         expression.setOperands(ops);
+         return expression;
+      }
 
       @Override
       public String toWhereClause()
@@ -142,12 +208,12 @@ public final class QueryBuilder
 
    private static class SimpleExpression implements WhereExpression
    {
-      public SimpleExpression(String exp)
+      private String exp;
+
+      private SimpleExpression(String exp)
       {
          this.exp = exp;
       }
-
-      protected String exp;
 
       @Override
       public String toWhereClause()
