@@ -48,7 +48,6 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
@@ -94,7 +93,8 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    @In
    private FullTextSession session;
 
-   private boolean useDatabaseSearch = true;
+   // Disabled for now, due to the need for a left join
+   private static final boolean ENABLE_HQL_SEARCH = false;
 
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints)
@@ -149,7 +149,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
       // FIXME this switch is provided for easy comparison of options before a final
       // decisions is made on which option to use. Remove before signing off on this.
-      if (useDatabaseSearch)
+      if (ENABLE_HQL_SEARCH)
       {
          return findTextFlowsWithDatabaseSearch(projectSlug, iterationSlug, localeId, documentPaths, constraints);
       }
@@ -168,6 +168,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    {
       // TODO wrap in method for batching list of documents
       // assuming doclist has already been batched before this method call
+
+      // FIXME this query needs to use a left join, at least when searching
+      // source strings, because there may not be HTextFlowTarget for the
+      // HTextFlow.
 
       HLocale loc = localeServiceImpl.getByLocaleId(validatedLocaleId);
       Long locId = loc.getId();
