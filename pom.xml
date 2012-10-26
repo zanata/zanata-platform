@@ -19,7 +19,7 @@
 	</scm>
 
   <properties>
-      <zanata.api.version>1.6.0</zanata.api.version>
+      <zanata.api.version>1.7.2</zanata.api.version>
   </properties>
   
   <dependencyManagement>
@@ -32,7 +32,7 @@
         <dependency>
           <groupId>org.zanata</groupId>
           <artifactId>zanata-common-util</artifactId>
-          <version>1.8.3-SNAPSHOT</version>
+          <version>${project.version}</version>
         </dependency>
       </dependencies>
    </dependencyManagement>
