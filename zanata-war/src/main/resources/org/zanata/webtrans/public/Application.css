@@ -539,8 +539,11 @@ td.ApprovedStateDecoration div div div
 {
     margin-top: 5px;
     margin-bottom: 5px;
-    line-height: 1em;
     min-height: 1em;
+    font-size: 14px;
+    font-family: sans-serif;
+    word-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .translationContainer pre, .translationContainer textarea {
