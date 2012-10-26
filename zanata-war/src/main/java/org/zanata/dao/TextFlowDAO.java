@@ -56,6 +56,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
 import org.zanata.util.HTextFlowPosComparator;
 import org.zanata.util.QueryBuilder;
@@ -370,56 +371,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     */
    public List<HTextFlow> getTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints, int firstResult, int maxResult)
    {
-      boolean hasSearch = !Strings.isNullOrEmpty(constraints.getSearchString());
-      boolean includeAllState = constraints.isIncludeAllState();
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(constraints);
+      String queryString = constraintToQuery.toHQL();
+      log.debug("\n query {}\n", queryString);
 
-      // @formatter:off
-      StringBuilder queryBuilder = new StringBuilder("select distinct tf from HTextFlow tf left join tf.targets tfts with index(tfts) = :locale ");
-      queryBuilder.append(" where tf.obsolete = 0 and tf.document.id = :docId ");
-
-      String searchStringNamedParam = "searchString";
-      if (hasSearch)
-      {
-         queryBuilder.append(" and (").append(buildSearchConditionForHQL(searchStringNamedParam, "tf")); // search in source
-         // search in target
-         queryBuilder.append(" or exists (")
-               .append("from HTextFlowTarget where textFlow = tf and locale = :locale")
-               .append(" and ").append(buildSearchConditionForHQL(searchStringNamedParam, ""))
-               .append(")");
-         // end search in target
-         queryBuilder.append(")"); // end search
-      }
-      if (!includeAllState)
-      {
-         // content state restriction
-         queryBuilder.append(" and (exists (from HTextFlowTarget where textFlow = tf and locale = :locale and state in (:contentStateList))");
-         if (constraints.isIncludeNew())
-         {
-            queryBuilder.append(" or (:locale not in indices(tf.targets)"); // null target
-            if (hasSearch)
-            {
-               queryBuilder.append(" and ").append(buildSearchConditionForHQL(searchStringNamedParam, "tf"));
-            }
-            queryBuilder.append(")"); // end null target condition
-         }
-         queryBuilder.append(")"); // content state sub query end
-      }
-
-      queryBuilder.append(" order by tf.pos");
-      // @formatter:on
-      log.debug("\n\n query : {}\n\n", queryBuilder);
-
-      Query textFlowQuery = getSession().createQuery(queryBuilder.toString());
-      textFlowQuery.setParameter("docId", documentId.getId());
-      textFlowQuery.setParameter("locale", hLocale.getId());
-      if (!includeAllState)
-      {
-         textFlowQuery.setParameterList("contentStateList", constraints.getContentStateAsList());
-      }
-      if (hasSearch)
-      {
-         textFlowQuery.setParameter(searchStringNamedParam, "%" + constraints.getSearchString().toLowerCase() + "%");
-      }
+      Query textFlowQuery = getSession().createQuery(queryString);
+      constraintToQuery.setQueryParameters(textFlowQuery, documentId, hLocale);
       textFlowQuery.setFirstResult(firstResult).setMaxResults(maxResult);
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getTextFlowByDocumentIdWithConstraint");
 
@@ -428,33 +385,4 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       log.debug("{} textFlow for locale {} filter by {}", new Object[] { result.size(), hLocale.getLocaleId(), constraints });
       return result;
    }
-
-
-
-
-   /**
-    * This will build a HQL query condition in where clause.
-    * It can be used to search string in content0, content1 ... content5 in HTextFlow or HTextFlowTarget.
-    *
-    * @param searchString named parameter
-    * @param alias table name alias
-    * @return a HQL condition clause with contentX like '%searchString%' in parentheses '()' joined by 'or'
-    */
-   protected static String buildSearchConditionForHQL(String searchString, String alias)
-   {
-      String columnNameInLower = Strings.isNullOrEmpty(alias) ? "lower(content" : "lower(" + alias + ".content";
-
-      StringBuilder builder = new StringBuilder();
-      builder.append("(");
-      List<String> conditions = Lists.newArrayList();
-      for (int i = 0; i < 6; i++)
-      {
-         conditions.add(columnNameInLower + i + ") LIKE :" + searchString);
-      }
-      Joiner joiner = Joiner.on(" or ");
-      joiner.appendTo(builder, conditions);
-      builder.append(")");
-      return builder.toString();
-   }
-
 }
