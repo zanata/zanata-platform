@@ -43,7 +43,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TransFilterPresenter transFilterPresenter;
    private final TransUnitsTablePresenter transUnitsTablePresenter;
 
-
    @Inject
    public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter)
    {
@@ -120,6 +119,11 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public void onResizeClicked()
    {
       eventBus.fireEvent(new DisplaySouthPanelEvent(display.getAndToggleResizeButton()));
+   }
+
+   public void setReadOnly(boolean isReadOnly)
+   {
+      display.getResizeButton().setVisible(isReadOnly);
    }
 
 }

@@ -4,6 +4,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.HasPager;
 
+import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -33,5 +34,7 @@ public interface TranslationEditorDisplay extends WidgetDisplay
 
       void onResizeClicked();
    }
+
+   HasVisibility getResizeButton();
 
 }

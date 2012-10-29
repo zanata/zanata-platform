@@ -32,6 +32,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -121,6 +122,12 @@ public class TranslationEditorView extends Composite implements TranslationEdito
          resize.setTitle(messages.hideSouthPanel());
          return true;
       }
+   }
+
+   @Override
+   public HasVisibility getResizeButton()
+   {
+      return resize;
    }
 
    @Override

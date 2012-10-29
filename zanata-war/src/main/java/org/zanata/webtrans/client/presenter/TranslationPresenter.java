@@ -177,10 +177,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       {
          // includes unbinding
          setSouthPanelExpanded(false);
+         translationEditorPresenter.setReadOnly(false);
       }
       else
       {
          setSouthPanelExpanded(true);
+         translationEditorPresenter.setReadOnly(true);
       }
    }
 
@@ -199,7 +201,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       }
       display.setSouthPanelExpanded(expanded);
       southPanelExpanded = expanded;
-      if (expanded)
+      if (expanded && !userWorkspaceContext.hasReadOnlyAccess())
       {
          bindSouthPanelPresenters();
 
