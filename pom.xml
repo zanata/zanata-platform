@@ -24,7 +24,7 @@
       <cobertura.halt.failure>false</cobertura.halt.failure>
       <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
       <enunciate.version>1.24</enunciate.version>
-      <gwt.version>2.4.0</gwt.version>
+      <gwt.version>2.5.0</gwt.version>
       <icu4j.version>4.8</icu4j.version>
       <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
       <lucene.version>2.9.2</lucene.version>
@@ -350,7 +350,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
+                <version>2.5.0-rc2</version>
             </plugin>
              <plugin>
                  <groupId>org.codehaus.mojo</groupId>
