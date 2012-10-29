@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>8-SNAPSHOT</version>
+    <version>8</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -270,6 +270,60 @@
 
       </dependencies>
    </dependencyManagement>    
+
+   <!--
+   https://community.jboss.org/wiki/MavenRepository
+   https://community.jboss.org/wiki/MavenSettings
+   https://community.jboss.org/wiki/MavenGettingStarted-Developers
+   https://community.jboss.org/wiki/MavenGettingStarted-Users
+   -->
+
+   <repositories>
+        <repository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Maven Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>okapi-cloudbees-release</id>
+          <name>okapi-cloudbees-release</name>
+          <url>http://repository-okapi.forge.cloudbees.com/release/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Maven Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+
    <build>
       <pluginManagement>
          <plugins>
@@ -473,3 +527,4 @@
 	<!-- <module>zanata-dist</module> -->
   </modules>
 </project>
+
