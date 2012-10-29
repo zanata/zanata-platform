@@ -219,6 +219,15 @@
                             <port>8080</port>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>run-codeserver</id>
+                        <goals>
+                            <goal>run-codeserver</goal>
+                        </goals>
+                        <configuration>
+                            <module>org.zanata.webtrans.ApplicationSafari</module>
+                        </configuration>
+                    </execution>
                 </executions>
                 <configuration>
                     <runTarget>zanata/webtrans/Application.html</runTarget>
