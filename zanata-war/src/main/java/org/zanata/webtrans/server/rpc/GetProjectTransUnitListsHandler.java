@@ -26,10 +26,8 @@ import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -41,7 +39,10 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.ibm.icu.lang.UCharacter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +76,15 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    {
       identity.checkLoggedIn();
       log.info("Searching all targets for workspace {}", action.getWorkspaceId());
+      HLocale hLocale;
+      try
+      {
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      }
+      catch (ZanataServiceException e)
+      {
+         throw new ActionException(e);
+      }
 
       HashMap<Long, List<TransUnit>> matchingTUs = new HashMap<Long, List<TransUnit>>();
       HashMap<Long, String> docPaths = new HashMap<Long, String>();
@@ -99,74 +109,20 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
       List<HTextFlow> matchingFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
       log.info("Returned {} results for search", matchingFlows.size());
 
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e);
-      }
-
       //FIXME remove when analyzer handles leading & trailing whitespace
       boolean needsWhitespaceCheck = !action.getSearchString().equals(action.getSearchString().trim());
-      String searchString = action.getSearchString();
-      if (!action.isCaseSensitive())
-      {
-         searchString = foldCase(searchString);
-      }
-
-
-      for (HTextFlow textFlow : matchingFlows)
+      Iterable<HTextFlow> result = matchingFlows;
+      if (needsWhitespaceCheck)
       {
          // FIXME temporary check for leading and trailing whitespace to compensate
          // for NGramAnalyzer trimming strings before tokenization. This should
          // be removed when updating to a lucene version with the whitespace
          // issue resolved.
-         if (needsWhitespaceCheck)
-         {
-            boolean whitespaceMatch = false;
-            if (action.isSearchInSource())
-            {
-               for (String content : textFlow.getContents())
-               {
-                  String contentStr = content;
-                  if (!action.isCaseSensitive())
-                  {
-                     contentStr = foldCase(contentStr);
-                  }
-                  if (contentStr.contains(searchString))
-                  {
-                     whitespaceMatch = true;
-                     break;
-                  }
-               }
-            }
-            if (!whitespaceMatch && action.isSearchInTarget())
-            {
-               // FIXME hibernate n + 1 select happening here
-               List<String> targetContents = textFlow.getTargets().get(hLocale.getId()).getContents();
-               for (String content : targetContents)
-               {
-                  String contentStr = content;
-                  if (!action.isCaseSensitive())
-                  {
-                     contentStr = foldCase(contentStr);
-                  }
-                  if (contentStr.contains(searchString))
-                  {
-                     whitespaceMatch = true;
-                     break;
-                  }
-               }
-            }
-            if (!whitespaceMatch)
-            {
-               continue;
-            }
-         }
+         result = Iterables.filter(matchingFlows, new WhitespaceMatchPredicate(action, hLocale.getId()));
+      }
 
+      for (HTextFlow textFlow : result)
+      {
          List<TransUnit> listForDoc = matchingTUs.get(textFlow.getDocument().getId());
          if (listForDoc == null)
          {
@@ -178,11 +134,10 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          matchingTUs.put(textFlow.getDocument().getId(), listForDoc);
          docPaths.put(textFlow.getDocument().getId(), textFlow.getDocument().getDocId());
       }
-
       return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
    }
 
-   private String foldCase(String original)
+   private static String foldCase(String original)
    {
       char[] buffer = original.toCharArray();
       for (int i=0; i<buffer.length; i++)
@@ -197,4 +152,60 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    {
    }
 
+   private static class WhitespaceMatchPredicate implements Predicate<HTextFlow>
+   {
+
+      private final GetProjectTransUnitLists action;
+      private final Long localeId;
+      private ContainSearchTermPredicate containSearchTermPredicate;
+
+      private WhitespaceMatchPredicate(GetProjectTransUnitLists action, Long localeId)
+      {
+         this.action = action;
+         this.localeId = localeId;
+         containSearchTermPredicate = new ContainSearchTermPredicate(action);
+      }
+
+      @Override
+      public boolean apply(HTextFlow textFlow)
+      {
+         if (action.isSearchInSource())
+         {
+            Optional<String> optional = Iterables.tryFind(textFlow.getContents(), containSearchTermPredicate);
+            if (optional.isPresent())
+            {
+               return true;
+            }
+         }
+
+         if (action.isSearchInTarget())
+         {
+            // FIXME hibernate n + 1 select happening here
+            List<String> targetContents = textFlow.getTargets().get(localeId).getContents();
+            Optional<String> optional = Iterables.tryFind(targetContents, containSearchTermPredicate);
+            return optional.isPresent();
+         }
+         return false;
+      }
+
+   }
+
+   private static class ContainSearchTermPredicate implements Predicate<String>
+   {
+      private final String searchTerm;
+      private final boolean caseSensitive;
+
+      private ContainSearchTermPredicate(GetProjectTransUnitLists action)
+      {
+         caseSensitive = action.isCaseSensitive();
+         searchTerm = !caseSensitive ? foldCase(action.getSearchString()) : action.getSearchString();
+      }
+
+      @Override
+      public boolean apply(String input)
+      {
+         String contentStr = !caseSensitive ? foldCase(input) : input;
+         return contentStr.contains(searchTerm);
+      }
+   }
 }
