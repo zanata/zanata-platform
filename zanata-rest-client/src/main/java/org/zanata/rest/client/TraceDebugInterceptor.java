@@ -34,9 +34,10 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 
 /**
- * Performs logging of Resteasy Requests on the client side. This interceptor logs only
- * at the Trace debug level. 
- * 
+ * Performs logging of Resteasy Requests on the client side. This interceptor logs
+ * at the level TRACE, unless the option logHttp is set, in which case it will log
+ * as INFO.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  *
  */
@@ -58,18 +59,29 @@ public class TraceDebugInterceptor implements ClientExecutionInterceptor
    {
       this.logHttp = logHttp;
    }
-   
-   
+
+   private void log(String msg)
+   {
+      if (logHttp)
+      {
+         log.info(msg);
+      }
+      else
+      {
+         log.trace(msg);
+      }
+   }
+
    @SuppressWarnings("rawtypes")
    @Override
    public ClientResponse execute(ClientExecutionContext ctx) throws Exception
    {
-      if( !log.isInfoEnabled() || !this.logHttp )
+      if (!logHttp && !log.isTraceEnabled())
       {
          return ctx.proceed();
       }
 
-      log.info( ">> REST Request: " + ctx.getRequest().getHttpMethod() + " => " + ctx.getRequest().getUri() );
+      log( ">> REST Request: " + ctx.getRequest().getHttpMethod() + " => " + ctx.getRequest().getUri() );
       
       // Log before sending a request
       for( String key : ctx.getRequest().getHeaders().keySet() )
@@ -80,17 +92,17 @@ public class TraceDebugInterceptor implements ClientExecutionInterceptor
             headerVal = this.maskHeaderValues(ctx.getRequest().getHeaders().get(key));
          }
          
-         log.info(">> Header: " + key + " = " + headerVal );
+         log(">> Header: " + key + " = " + headerVal );
       }
-      log.info(">> Body: " + ctx.getRequest().getBody() );
+      log(">> Body: " + ctx.getRequest().getBody() );
       
       ClientResponse result = ctx.proceed();
       
       // log after a response has been received
-      log.info("<< REST Response: " + result.getResponseStatus().getStatusCode() + ":" + result.getResponseStatus());
+      log("<< REST Response: " + result.getResponseStatus().getStatusCode() + ":" + result.getResponseStatus());
       for( Object key : result.getHeaders().keySet() )
       {
-         log.info("<< Header: " + key + " = " + result.getHeaders().get(key) );
+         log("<< Header: " + key + " = " + result.getHeaders().get(key) );
       }
 
       return result;
