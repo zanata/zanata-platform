@@ -41,8 +41,10 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
+import com.google.common.base.Strings;
 import com.ibm.icu.lang.UCharacter;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -53,12 +55,9 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Name("webtrans.gwt.GetProjectTransUnitListsHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetProjectTransUnitLists.class)
+@Slf4j
 public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetProjectTransUnitLists, GetProjectTransUnitListsResult>
 {
-
-   @Logger
-   Log log;
-
    @In
    private LocaleService localeServiceImpl;
 
@@ -68,15 +67,18 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    @In
    private TransUnitTransformer transUnitTransformer;
 
+   @In
+   private ZanataIdentity identity;
+
    @Override
    public GetProjectTransUnitListsResult execute(GetProjectTransUnitLists action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
-      log.info("Searching all targets for workspace {0}", action.getWorkspaceId().toString());
+      identity.checkLoggedIn();
+      log.info("Searching all targets for workspace {}", action.getWorkspaceId());
 
       HashMap<Long, List<TransUnit>> matchingTUs = new HashMap<Long, List<TransUnit>>();
       HashMap<Long, String> docPaths = new HashMap<Long, String>();
-      if ((action.getSearchString() == null || action.getSearchString().isEmpty()))
+      if (Strings.isNullOrEmpty(action.getSearchString()))
       {
          // TODO empty searches shouldn't be requested, consider replacing this
          // with an error, or making behaviour return all targets for the
@@ -95,7 +97,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
       }
       // TODO handle exception thrown by search service
       List<HTextFlow> matchingFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
-      log.info("Returned {0} results for search", matchingFlows.size());
+      log.info("Returned {} results for search", matchingFlows.size());
 
       HLocale hLocale;
       try
@@ -143,6 +145,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
             }
             if (!whitespaceMatch && action.isSearchInTarget())
             {
+               // FIXME hibernate n + 1 select happening here
                List<String> targetContents = textFlow.getTargets().get(hLocale.getId()).getContents();
                for (String content : targetContents)
                {
