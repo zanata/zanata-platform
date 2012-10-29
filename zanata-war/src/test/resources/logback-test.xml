@@ -11,7 +11,7 @@
 
   <logger name="org.hibernate" level="INFO" />
 
-  <root level="DEBUG">
+  <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>
 
@@ -31,3 +31,4 @@
     </logger>
 
 </configuration>
+
