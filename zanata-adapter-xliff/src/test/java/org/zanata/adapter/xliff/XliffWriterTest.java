@@ -39,8 +39,8 @@ public class XliffWriterTest
       TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 1);
 
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation Unit 1")));
-      assertThat(secondTextFlow.getContents(), equalTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)")));
-      assertThat(lastTextFlow.getContents(), equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) ")));
+      assertThat(secondTextFlow.getContents(), equalTo(asList("Translation Unit 4 (4 &amp;lt; 5 &amp;amp; 4 &amp;gt; 3)")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList(" Translation Unit 5 (4 &amp;lt; 5 &amp;amp; 4 &amp;gt; 3) ")));
    }
 
    @Test
