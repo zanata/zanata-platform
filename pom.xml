@@ -20,7 +20,7 @@
 
     <properties>
       <zanata.api.version>1.8.0-SNAPSHOT</zanata.api.version>
-      <zanata.common.version>1.8.3-SNAPSHOT</zanata.common.version>
+      <zanata.common.version>1.8.4-SNAPSHOT</zanata.common.version>
     </properties>
 
    <dependencyManagement>
@@ -41,8 +41,6 @@
           <version>${project.version}</version>
         </dependency>
         <dependency>
-
-
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-glossary</artifactId>
             <version>${zanata.common.version}</version>
