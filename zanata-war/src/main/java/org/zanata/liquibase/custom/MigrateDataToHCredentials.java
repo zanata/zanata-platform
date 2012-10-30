@@ -20,10 +20,12 @@
  */
 package org.zanata.liquibase.custom;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import liquibase.change.custom.CustomTaskChange;
@@ -104,7 +106,16 @@ public class MigrateDataToHCredentials implements CustomTaskChange
    public void setUp() throws SetupException
    {
       // Get the zanata.properties file from the classpath
-      ResourceBundle zanataProperties = ResourceBundle.getBundle("zanata");
+      Properties zanataProperties = new Properties();
+      try
+      {
+         zanataProperties.load(this.getClass().getClassLoader().getResourceAsStream("zanata.properties"));
+      }
+      catch (IOException e)
+      {
+         throw new SetupException(e);
+      }
+      //ResourceBundle zanataProperties = ResourceBundle.getBundle("zanata");
 
       // Currently only care for Open Id
       if( zanataProperties.containsKey("zanata.security.auth.policy.openid"))
