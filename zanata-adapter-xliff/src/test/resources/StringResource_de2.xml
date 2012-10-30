@@ -11,7 +11,7 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
           <target> Leading and trailing white space </target>
         </trans-unit>
       <trans-unit id="transunit1">
-        <source>Translation Unit 1</source>
+        <source>Translation Unit 1<g id="1"></g></source>
         <target>Translation 1 <test></test></target>
         <context-group name="ctx">
           <context context-type="sourcefile">/test/file1</context>

@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
+import org.zanata.adapter.xliff.XliffCommon.CHECK;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -23,6 +24,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public class XliffReaderTest
 {
    private static final String TEST_DIR = "src/test/resources/";
+   private static final String RESOURCE_DIR = "src/main/resources/";
    private static final String DOC_NAME = "StringResource_en_US.xml";
    private XliffReader reader;
 
@@ -30,6 +32,7 @@ public class XliffReaderTest
    public void resetReader()
    {
       reader = new XliffReader();
+      reader.setSchemaLocation(RESOURCE_DIR + "/schema/xliff-core-1.1.xsd");
    }
 
    @Test
@@ -106,9 +109,10 @@ public class XliffReaderTest
    }
 
    @Test(expectedExceptions = RuntimeException.class)
-   public void invalidSourceContentElementTest() throws FileNotFoundException
+   public void invalidSourceContentElementSchemaCheckTest() throws FileNotFoundException
    {
-      // expect RuntimeException with tu:transunit2 - source
+      reader.setCheck(CHECK.Validate);
+      // expect SAXParseException with tu:transunit2 - source
 
       File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
@@ -116,12 +120,38 @@ public class XliffReaderTest
    }
 
    @Test(expectedExceptions = RuntimeException.class)
-   public void invalidTargetContentElementTest() throws FileNotFoundException
+   public void invalidTargetContentElementSchemaCheckTest() throws FileNotFoundException
    {
-      // expect RuntimeException with tu:transunit1 - target
+      reader.setCheck(CHECK.Validate);
+      // expect SAXParseException with tu:transunit1 - target
       File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
+   }
+
+   @Test(expectedExceptions = RuntimeException.class)
+   public void invalidSourceContentElementQuickCheckTest() throws FileNotFoundException
+   {
+      reader.setCheck(CHECK.Quick);
+
+      File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
+      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
+      Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
+   }
+
+   @Test(expectedExceptions = RuntimeException.class)
+   public void invalidSourceContentElementTestNoCheck() throws FileNotFoundException
+   {
+      reader.setCheck(CHECK.None);
+
+      File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
+      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
+      Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
+
+      TextFlow tf3 = resource.getTextFlows().get(2);
+      TextFlow tf2 = resource.getTextFlows().get(1);
+      assertThat(tf3.getContents(), equalTo(asList("Translation Unit<br></br>2")));
+      assertThat(tf2.getContents(), equalTo(asList("Translation Unit 1<g></g>")));
    }
 
 

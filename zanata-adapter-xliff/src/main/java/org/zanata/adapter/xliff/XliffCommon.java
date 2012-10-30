@@ -25,7 +25,7 @@ public abstract class XliffCommon
    protected static final String ATTRI_DATATYPE = "datatype";
    protected static final String ATTRI_ORIGINAL = "original";
 
-   protected static List<String> getContentElementList()
+   protected List<String> getContentElementList()
    {
       if (contentEle.isEmpty())
       {
@@ -59,6 +59,11 @@ public abstract class XliffCommon
       }
       return contentEle;
 
+   }
+
+   protected enum CHECK
+   {
+      Validate, Quick, None;
    }
 
 }

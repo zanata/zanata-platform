@@ -2,6 +2,8 @@ package org.zanata.adapter.xliff;
 
 import static java.util.Arrays.asList;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,11 +12,14 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -31,9 +36,13 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public class XliffReader extends XliffCommon
 {
-   private static final Logger log = LoggerFactory.getLogger(XliffReader.class);
+   private CHECK check = CHECK.Quick;
+   private SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+   private File schemaLocation = new File("schema/xliff-core-1.1.xsd");
+   private Schema schema;
+   private Validator validator;
 
-   LocaleId srcLang;
+   private LocaleId srcLang;
 
    public Resource extractTemplate(InputSource inputSource, LocaleId sourceLocaleId, String docName)
    {
@@ -52,16 +61,44 @@ public class XliffReader extends XliffCommon
       return document;
    }
 
+   /*
+    * Validate xliff file against schema version 1.1
+    */
+   private void validateXliffFile(XMLStreamReader xmlr)
+   {
+      if (check == CHECK.Validate)
+      {
+         try
+         {
+            schema = factory.newSchema(schemaLocation);
+            validator = schema.newValidator();
+            validator.validate(new StAXSource(xmlr));
+         }
+         catch (SAXException saxException)
+         {
+            throw new RuntimeException("Invalid XLIFF file format  ", saxException);
+         }
+         catch (IOException ioException)
+         {
+            throw new RuntimeException("Invalid XLIFF file format  ", ioException);
+         }
+      }
+
+   }
+
    private void extractXliff(InputSource inputSource, Resource document, TranslationsResource transDoc)
    {
       try
       {
          XMLInputFactory xmlif = XMLInputFactory.newInstance();
          xmlif.setProperty(XMLInputFactory.IS_COALESCING, true); // decode
-                                                                   // entities
-                                                                   // into one
-                                                                   // string
+                                                                 // entities
+                                                                 // into one
+                                                                 // string
+
          XMLStreamReader xmlr = xmlif.createXMLStreamReader(inputSource.getByteStream());
+         validateXliffFile(xmlr);
+
          while (xmlr.hasNext())
          {
             xmlr.next();
@@ -124,7 +161,7 @@ public class XliffReader extends XliffCommon
    private String extractAndValidateContent(XMLStreamReader xmlr, String endElement, String id) throws XMLStreamException
    {
       String content = getElementValue(xmlr, endElement);
-      if (!StringUtils.isEmpty(content))
+      if ((check == CHECK.Quick) && !StringUtils.isEmpty(content))
       {
          Matcher matcher = xmlTagPattern.matcher(content);
 
@@ -250,6 +287,7 @@ public class XliffReader extends XliffCommon
    {
       return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
    }
+
    /**
     * Extract given element's value
     * 
@@ -318,5 +356,15 @@ public class XliffReader extends XliffCommon
          }
       }
       return null;
+   }
+
+   public void setSchemaLocation(String schemaLocation)
+   {
+      this.schemaLocation = new File(schemaLocation);
+   }
+
+   public void setCheck(CHECK check)
+   {
+      this.check = check;
    }
 }
