@@ -100,14 +100,16 @@ public class XliffReaderTest
 
       TextFlow tf = resource.getTextFlows().get(resource.getTextFlows().size() - 1);
       assertThat(tf.getContents(), equalTo(asList(" Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3) ")));
-      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3)"))));
-      assertThat(tf.getContents(), not(equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3)"))));
-      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3) "))));
+      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3)"))));
+      assertThat(tf.getContents(), not(equalTo(asList(" Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3)"))));
+      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3) "))));
    }
 
    @Test(expectedExceptions = RuntimeException.class)
    public void invalidSourceContentElementTest() throws FileNotFoundException
    {
+      // expect RuntimeException with tu:transunit2 - source
+
       File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
@@ -116,6 +118,7 @@ public class XliffReaderTest
    @Test(expectedExceptions = RuntimeException.class)
    public void invalidTargetContentElementTest() throws FileNotFoundException
    {
+      // expect RuntimeException with tu:transunit1 - target
       File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
