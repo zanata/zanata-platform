@@ -166,6 +166,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.jboss.el</groupId>
+				<artifactId>jboss-el</artifactId>
+				<version>1.0_02.CR6</version>
+			</dependency>
+
+			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>root</artifactId>
 				<version>${seam.version}</version>
