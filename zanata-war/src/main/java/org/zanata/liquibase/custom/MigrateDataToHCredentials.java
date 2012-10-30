@@ -21,6 +21,7 @@
 package org.zanata.liquibase.custom;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -107,15 +108,26 @@ public class MigrateDataToHCredentials implements CustomTaskChange
    {
       // Get the zanata.properties file from the classpath
       Properties zanataProperties = new Properties();
+      InputStream iStream = this.getClass().getClassLoader().getResourceAsStream("zanata.properties");
       try
       {
-         zanataProperties.load(this.getClass().getClassLoader().getResourceAsStream("zanata.properties"));
+         zanataProperties.load(iStream);
       }
       catch (IOException e)
       {
          throw new SetupException(e);
       }
-      //ResourceBundle zanataProperties = ResourceBundle.getBundle("zanata");
+      finally
+      {
+         try
+         {
+            iStream.close();
+         }
+         catch (IOException e)
+         {
+            // stream already closed
+         }
+      }
 
       // Currently only care for Open Id
       if( zanataProperties.containsKey("zanata.security.auth.policy.openid"))
