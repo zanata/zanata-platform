@@ -133,7 +133,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       queryBuilder
             .append("SELECT tf.id, tft.state FROM HTextFlow tf ")
             .append(" LEFT JOIN HTextFlowTarget tft on tf.id = tft.tf_id AND locale = :locale")
-            .append(" WHERE tf.document_id = :docId ");
+            .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
       queryBuilder
             .append(" AND ")
             .append(buildContentStateCondition(filterConstraints.isIncludeApproved(), filterConstraints.isIncludeFuzzy(), filterConstraints.isIncludeNew(), "tft"))
