@@ -38,7 +38,7 @@ public class XliffReaderTest
       Resource doc = getTemplateDoc();
 
       assertThat(doc.getName(), equalTo(DOC_NAME));
-      assertThat(doc.getTextFlows().size(), is(6));
+      assertThat(doc.getTextFlows().size(), is(7));
    }
 
    @Test
@@ -50,7 +50,7 @@ public class XliffReaderTest
       TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 2);
 
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation Unit 1")));
-      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 4 (4 &lt; 5 &amp; 4 &gt; 3)")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 4 (4 < 5 & 4 > 3)")));
    }
 
    @Test
@@ -74,7 +74,7 @@ public class XliffReaderTest
       TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 2);
      
       assertThat(firstTextFlow.getContents(), equalTo(asList("Translation 1")));
-      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation 4 (4 &lt; 5 &amp; 4 &gt; 3)")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation 4 (4 < 5 & 4 > 3)")));
    }
    
    @Test
@@ -99,27 +99,37 @@ public class XliffReaderTest
       Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
 
       TextFlow tf = resource.getTextFlows().get(resource.getTextFlows().size() - 1);
-      assertThat(tf.getContents(), equalTo(asList(" Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3) ")));
-      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3)"))));
-      assertThat(tf.getContents(), not(equalTo(asList(" Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3)"))));
-      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3) "))));
+      assertThat(tf.getContents(), equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) ")));
+      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3)"))));
+      assertThat(tf.getContents(), not(equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3)"))));
+      assertThat(tf.getContents(), not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3) "))));
    }
 
-   @Test(expectedExceptions = RuntimeException.class)
+   @Test (expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*br is not legal.*")
    public void invalidSourceContentElementTest() throws FileNotFoundException
    {
       // expect RuntimeException with tu:transunit2 - source
 
-      File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
+      File fileTarget = new File(TEST_DIR, "/StringResource_source_invalid.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
    }
 
-   @Test(expectedExceptions = RuntimeException.class)
+   @Test (expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*does not support elements.*: g.*")
+   public void unsupportedSourceContentElementTest() throws FileNotFoundException
+   {
+      // expect RuntimeException with tu:transunit2 - source
+
+      File fileTarget = new File(TEST_DIR, "/StringResource_source_unsupported.xml");
+      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
+      Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
+   }
+
+   @Test (expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*test is not legal.*")
    public void invalidTargetContentElementTest() throws FileNotFoundException
    {
       // expect RuntimeException with tu:transunit1 - target
-      File fileTarget = new File(TEST_DIR, "/StringResource_de2.xml");
+      File fileTarget = new File(TEST_DIR, "/StringResource_target_invalid.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
    }

@@ -2,9 +2,8 @@ package org.zanata.adapter.xliff;
 
 import static java.util.Arrays.asList;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -103,6 +102,7 @@ public class XliffReader extends XliffCommon
             else if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_FILE))
             {
                // this is to ensure only 1 <file> element in each xliff document
+               // FIXME it only ensures that we silently ignore extra file elements!
                break;
             }
          }
@@ -111,32 +111,6 @@ public class XliffReader extends XliffCommon
       {
          throw new RuntimeException("Invalid XLIFF file format  ", e);
       }
-   }
-
-   // Text,
-   // Zero, one or more of the following elements: <g>, <x/>, <bx/>, <ex/>,
-   // <bpt> , <ept>, <ph>, <it> , <mrk>, in any order.
-
-   // private final static String xmlTagRegex = "(<.[^(><.)]+>)";
-   private final static String xmlTagRegex = "<[/]?[a-z]+[0-9]*[/]?>";
-   private final static Pattern xmlTagPattern = Pattern.compile(xmlTagRegex);
-
-   private String extractAndValidateContent(XMLStreamReader xmlr, String endElement, String id) throws XMLStreamException
-   {
-      String content = getElementValue(xmlr, endElement);
-      if (!StringUtils.isEmpty(content))
-      {
-         Matcher matcher = xmlTagPattern.matcher(content);
-
-         while (matcher.find())
-         {
-            if (!getContentElementList().contains(matcher.group()))
-            {
-               throw new RuntimeException("Invalid XLIFF file format: unknown element in -id:" + id + " -content:" + content + " -element:" + matcher.group());
-            }
-         }
-      }
-      return content;
    }
 
    private TextFlow extractTransUnit(XMLStreamReader xmlr) throws XMLStreamException
@@ -161,7 +135,7 @@ public class XliffReader extends XliffCommon
             boolean startElement = xmlr.isStartElement();
             if (startElement && localName.equals(ELE_SOURCE))
             {
-               String content = extractAndValidateContent(xmlr, ELE_SOURCE, id);
+               String content = getElementValue(xmlr, ELE_SOURCE, getContentElementList());
                textFlow.setContents(content);
             }
             else if (startElement && localName.equals(ELE_CONTEXT_GROUP))
@@ -195,7 +169,7 @@ public class XliffReader extends XliffCommon
          {
             if (xmlr.isStartElement() && localName.equals(ELE_TARGET))
             {
-               String content = extractAndValidateContent(xmlr, ELE_TARGET, textFlowTarget.getResId());
+               String content = getElementValue(xmlr, ELE_TARGET, getContentElementList());
                textFlowTarget.setContents(asList(content));
             }
             else if (xmlr.isStartElement() && localName.equals(ELE_CONTEXT_GROUP))
@@ -237,7 +211,7 @@ public class XliffReader extends XliffCommon
                sb.append(DELIMITER);
                sb.append(getAttributeValue(xmlr, ATTRI_CONTEXT_TYPE));// context-type
                sb.append(DELIMITER);
-               sb.append(getElementValue(xmlr, ELE_CONTEXT));// value
+               sb.append(getElementValue(xmlr, ELE_CONTEXT, null));// value
                contextList.add(new SimpleComment(sb.toString()));
             }
          }
@@ -245,54 +219,53 @@ public class XliffReader extends XliffCommon
       return contextList;
    }
 
-   // Escape html character
-   private String escapeHTML(String text)
-   {
-      return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-   }
    /**
     * Extract given element's value
     * 
-    * @param currentCursor
+    * @param reader
     * @return
     * @throws XMLStreamException
     */
-   private String getElementValue(XMLStreamReader currentCursor, String endElement) throws XMLStreamException
+   private String getElementValue(XMLStreamReader reader, String elementName, Collection<String> legalElements) throws XMLStreamException
    {
-      boolean loop = true;
+      boolean keepReading = true;
       StringBuilder contents = new StringBuilder();
 
-      currentCursor.next();
+      reader.next();
 
-      if ((currentCursor.isEndElement() || currentCursor.isStartElement()) && currentCursor.getLocalName().equals(endElement))
+      String localName = reader.getLocalName();
+      if ((reader.isEndElement() || reader.isStartElement()) && localName.equals(elementName))
       {
-         loop = false;
+         keepReading = false;
       }
 
-      while (loop)
+      while (keepReading)
       {
-         if (currentCursor.hasText()) // if the value in element is text
+         if (reader.hasText()) // if the value in element is text
          {
-            // make sure all the values are properly xml encoded/escaped
-            contents.append(escapeHTML(currentCursor.getText()));
+            contents.append(reader.getText());
          }
          else
          {
             // if value in element is a xml element; invalid text
-            if (currentCursor.isStartElement())
+            if (reader.isStartElement() || reader.isEndElement())
             {
-               contents.append("<" + currentCursor.getLocalName() + ">");
-            }
-            else if (currentCursor.isEndElement())
-            {
-               contents.append("</" + currentCursor.getLocalName() + ">");
+               if (legalElements == null || legalElements.contains(localName))
+               {
+                  throw new RuntimeException("Sorry, Zanata does not support elements inside " + elementName + ": " + localName);
+               }
+               else
+               {
+                  throw new RuntimeException("Invalid XLIFF: " + localName + " is not legal inside " + elementName);
+               }
             }
          }
-         currentCursor.next();
+         reader.next();
+         localName = reader.getLocalName();
 
-         if ((currentCursor.isEndElement() || currentCursor.isStartElement()) && currentCursor.getLocalName().equals(endElement))
+         if ((reader.isEndElement() || reader.isStartElement()) && localName.equals(elementName))
          {
-            loop = false;
+            keepReading = false;
          }
       }
       return contents.toString();

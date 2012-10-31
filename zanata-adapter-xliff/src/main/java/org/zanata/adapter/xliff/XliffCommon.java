@@ -1,7 +1,7 @@
 package org.zanata.adapter.xliff;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.TreeSet;
 
 public abstract class XliffCommon
 {
@@ -15,7 +15,7 @@ public abstract class XliffCommon
    protected static final String ELE_TARGET = "target";
    protected static final String ELE_BODY = "body";
 
-   private static List<String> contentEle = new ArrayList<String>();
+   private static Collection<String> contentEle = new TreeSet<String>();
 
    protected static final String ATTRI_SOURCE_LANGUAGE = "source-language";
    protected static final String ATTRI_TARGET_LANGUAGE = "target-language";
@@ -25,37 +25,25 @@ public abstract class XliffCommon
    protected static final String ATTRI_DATATYPE = "datatype";
    protected static final String ATTRI_ORIGINAL = "original";
 
-   protected static List<String> getContentElementList()
+   public static boolean legalInsideContent(String localName)
+   {
+      return getContentElementList().contains(localName);
+   }
+
+
+   protected static Collection<String> getContentElementList()
    {
       if (contentEle.isEmpty())
       {
-         contentEle.add("<g>");
-         contentEle.add("</g>");
-         contentEle.add("<g/>");
-         contentEle.add("<x>");
-         contentEle.add("</x>");
-         contentEle.add("<x/>");
-         contentEle.add("<bx>");
-         contentEle.add("</bx>");
-         contentEle.add("<bx/>");
-         contentEle.add("<ex>");
-         contentEle.add("</ex>");
-         contentEle.add("<ex/>");
-         contentEle.add("<bpt>");
-         contentEle.add("</bpt>");
-         contentEle.add("<bpt/>");
-         contentEle.add("<ept>");
-         contentEle.add("</ept>");
-         contentEle.add("<ept/>");
-         contentEle.add("<ph>");
-         contentEle.add("</ph>");
-         contentEle.add("<ph/>");
-         contentEle.add("<it>");
-         contentEle.add("</it>");
-         contentEle.add("<it/>");
-         contentEle.add("<mrk>");
-         contentEle.add("</mrk>");
-         contentEle.add("<mrk/>");
+         contentEle.add("g");
+         contentEle.add("x");
+         contentEle.add("bx");
+         contentEle.add("ex");
+         contentEle.add("bpt");
+         contentEle.add("ept");
+         contentEle.add("ph");
+         contentEle.add("it");
+         contentEle.add("mrk");
       }
       return contentEle;
 
