@@ -133,7 +133,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       }
    }
 
-   private String getSessionId()
+   protected String getSessionId()
    {
       HttpServletRequest request = ServletContexts.instance().getRequest();
       if (request == null)
@@ -201,10 +201,10 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       log.info("Removed {} client(s).  Waiting for outstanding polls to time out...", clientCount);
    }
 
-   public int getWorkspaceCount()
-   {
-      return workspaceMap.size();
-   }
+//   public int getWorkspaceCount()
+//   {
+//      return workspaceMap.size();
+//   }
 
    @Override
    public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException
@@ -219,7 +219,9 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
          {
             projIterWorkspaceMap.put(workspaceId.getProjectIterationId(), workspace);
             if (Events.exists())
+            {
                Events.instance().raiseEvent(EVENT_WORKSPACE_CREATED, workspaceId);
+            }
          }
 
          return prev == null ? workspace : prev;
@@ -262,21 +264,21 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       return new WorkspaceContext(workspaceId, workspaceName, localeDisplayName);
    }
 
-   private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException
+   protected TranslationWorkspace createWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException
    {
       WorkspaceContext workspaceContext = validateAndGetWorkspaceContext(workspaceId);
       return new TranslationWorkspaceImpl(workspaceContext);
    }
 
-   public TranslationWorkspace getWorkspace(ProjectIterationId projectIterationId, LocaleId localeId)
-   {
-      WorkspaceId workspaceId = new WorkspaceId(projectIterationId, localeId);
-      return getWorkspace(workspaceId);
-   }
-
-   private TranslationWorkspace getWorkspace(WorkspaceId workspaceId)
-   {
-      return workspaceMap.get(workspaceId);
-   }
+//   public TranslationWorkspace getWorkspace(ProjectIterationId projectIterationId, LocaleId localeId)
+//   {
+//      WorkspaceId workspaceId = new WorkspaceId(projectIterationId, localeId);
+//      return getWorkspace(workspaceId);
+//   }
+//
+//   private TranslationWorkspace getWorkspace(WorkspaceId workspaceId)
+//   {
+//      return workspaceMap.get(workspaceId);
+//   }
 
 }
