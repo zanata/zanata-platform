@@ -3,17 +3,31 @@ package org.zanata.adapter.xliff;
 import static java.util.Arrays.asList;
 
 import java.util.Collection;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.Source;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -30,37 +44,91 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public class XliffReader extends XliffCommon
 {
-   private static final Logger log = LoggerFactory.getLogger(XliffReader.class);
+   private final SchemaFactory factory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+   private final XMLInputFactory xmlif = XMLInputFactory.newInstance();
 
-   LocaleId srcLang;
+   private LocaleId srcLang;
+   private ValidationType validationType;
 
-   public Resource extractTemplate(InputSource inputSource, LocaleId sourceLocaleId, String docName)
+   public Resource extractTemplate(File file, LocaleId sourceLocaleId, String docName, String validationType) throws FileNotFoundException
    {
       Resource document = new Resource(docName);
       document.setContentType(ContentType.TextPlain);
       document.setLang(sourceLocaleId);
       srcLang = sourceLocaleId;
-      extractXliff(inputSource, document, null);
+      this.validationType = ValidationType.valueOf(validationType.toUpperCase());
+      extractXliff(file, document, null);
       return document;
    }
 
-   public TranslationsResource extractTarget(InputSource inputSource)
+   public TranslationsResource extractTarget(File file) throws FileNotFoundException
    {
       TranslationsResource document = new TranslationsResource();
-      extractXliff(inputSource, null, document);
+      extractXliff(file, null, document);
       return document;
    }
 
-   private void extractXliff(InputSource inputSource, Resource document, TranslationsResource transDoc)
+   /*
+    * Validate xliff file against schema version 1.1
+    */
+   private void validateXliffFile(InputSource inputSource)
    {
       try
       {
-         XMLInputFactory xmlif = XMLInputFactory.newInstance();
+         final XMLStreamReader xmlr = xmlif.createXMLStreamReader(inputSource.getByteStream());
+         final Source schemaSource = new StreamSource(Thread.currentThread().getContextClassLoader().getResourceAsStream("schema/xliff-core-1.1.xsd"));
+
+         factory.setResourceResolver(new LSResourceResolver()
+         {
+            @Override
+            public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI)
+            {
+               InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("schema/" + systemId);
+               return new Input(publicId, systemId, resourceAsStream);
+            }
+         });
+
+         Schema schema = factory.newSchema(schemaSource);
+         Validator validator = schema.newValidator();
+         validator.validate(new StAXSource(xmlr));
+
+         xmlr.close();
+
+      }
+      catch (XMLStreamException e)
+      {
+         throw new RuntimeException("Invalid XLIFF file format  ", e);
+      }
+      catch (SAXException saxException)
+      {
+         throw new RuntimeException("Invalid XLIFF file format  ", saxException);
+      }
+      catch (IOException ioException)
+      {
+         throw new RuntimeException("Invalid XLIFF file format  ", ioException);
+      }
+   }
+
+   private void extractXliff(File file, Resource document, TranslationsResource transDoc) throws FileNotFoundException
+   {
+
+      if (validationType == ValidationType.XSD)
+      {
+         InputSource inputSource = new InputSource(new FileInputStream(file));
+         inputSource.setEncoding("utf8");
+         validateXliffFile(new InputSource(new FileInputStream(file)));
+      }
+
+      try
+      {
          xmlif.setProperty(XMLInputFactory.IS_COALESCING, true); // decode
-                                                                   // entities
-                                                                   // into one
-                                                                   // string
-         XMLStreamReader xmlr = xmlif.createXMLStreamReader(inputSource.getByteStream());
+                                                                 // entities
+                                                                 // into one
+                                                                 // string
+
+         InputSource inputSource = new InputSource(new FileInputStream(file));
+         inputSource.setEncoding("utf8");
+         final XMLStreamReader xmlr = xmlif.createXMLStreamReader(inputSource.getByteStream());
          while (xmlr.hasNext())
          {
             xmlr.next();
@@ -96,7 +164,6 @@ public class XliffReader extends XliffCommon
                      tfTarget.setState(ContentState.Approved);
                      transDoc.getTextFlowTargets().add(tfTarget);
                   }
-
                }
             }
             else if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_FILE))
@@ -106,6 +173,7 @@ public class XliffReader extends XliffCommon
                break;
             }
          }
+         xmlr.close();
       }
       catch (XMLStreamException e)
       {
@@ -291,5 +359,121 @@ public class XliffReader extends XliffCommon
          }
       }
       return null;
+   }
+
+   public class Input implements LSInput
+   {
+
+      private String publicId;
+
+      private String systemId;
+
+      public String getPublicId()
+      {
+         return publicId;
+      }
+
+      public void setPublicId(String publicId)
+      {
+         this.publicId = publicId;
+      }
+
+      public String getBaseURI()
+      {
+         return null;
+      }
+
+      public InputStream getByteStream()
+      {
+         return null;
+      }
+
+      public boolean getCertifiedText()
+      {
+         return false;
+      }
+
+      public Reader getCharacterStream()
+      {
+         return null;
+      }
+
+      public String getEncoding()
+      {
+         return null;
+      }
+
+      public String getStringData()
+      {
+         synchronized (inputStream)
+         {
+            try
+            {
+               byte[] input = new byte[inputStream.available()];
+               inputStream.read(input);
+               String contents = new String(input);
+               return contents;
+            }
+            catch (IOException e)
+            {
+               e.printStackTrace();
+               System.out.println("Exception " + e);
+               return null;
+            }
+         }
+      }
+
+      public void setBaseURI(String baseURI)
+      {
+      }
+
+      public void setByteStream(InputStream byteStream)
+      {
+      }
+
+      public void setCertifiedText(boolean certifiedText)
+      {
+      }
+
+      public void setCharacterStream(Reader characterStream)
+      {
+      }
+
+      public void setEncoding(String encoding)
+      {
+      }
+
+      public void setStringData(String stringData)
+      {
+      }
+
+      public String getSystemId()
+      {
+         return systemId;
+      }
+
+      public void setSystemId(String systemId)
+      {
+         this.systemId = systemId;
+      }
+
+      public BufferedInputStream getInputStream()
+      {
+         return inputStream;
+      }
+
+      public void setInputStream(BufferedInputStream inputStream)
+      {
+         this.inputStream = inputStream;
+      }
+
+      private BufferedInputStream inputStream;
+
+      public Input(String publicId, String sysId, InputStream input)
+      {
+         this.publicId = publicId;
+         this.systemId = sysId;
+         this.inputStream = new BufferedInputStream(input);
+      }
    }
 }

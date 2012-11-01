@@ -7,12 +7,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import org.xml.sax.InputSource;
+import org.zanata.adapter.xliff.XliffCommon.ValidationType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -57,8 +56,7 @@ public class XliffReaderTest
    public void extractTargetSizeTest() throws FileNotFoundException
    {
       File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
-      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      TranslationsResource tr = reader.extractTarget(inputSource);
+      TranslationsResource tr = reader.extractTarget(fileTarget);
       // the file contains 4 trans-units, but one has no target element
       assertThat(tr.getTextFlowTargets().size(), is(4));
    }
@@ -67,8 +65,7 @@ public class XliffReaderTest
    public void targetFirstAndLastTextFlowTest() throws FileNotFoundException
    {
       File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
-      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      TranslationsResource tr = reader.extractTarget(inputSource);
+      TranslationsResource tr = reader.extractTarget(fileTarget);
 
       TextFlowTarget firstTextFlow = tr.getTextFlowTargets().get(0);
       TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 2);
@@ -81,8 +78,7 @@ public class XliffReaderTest
    public void leadingEndingWhiteSpaceTargetTest() throws FileNotFoundException
    {
       File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
-      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      TranslationsResource tr = reader.extractTarget(inputSource);
+      TranslationsResource tr = reader.extractTarget(fileTarget);
 
       TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 1);
       assertThat(lastTextFlow.getContents(), equalTo(asList(" Leading and trailing white space ")));
@@ -95,8 +91,7 @@ public class XliffReaderTest
    public void leadingEndingWhiteSpaceSourceTest() throws FileNotFoundException
    {
       File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
-      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
+      Resource resource = reader.extractTemplate(fileTarget, LocaleId.EN_US, null, ValidationType.XSD.toString());
 
       TextFlow tf = resource.getTextFlows().get(resource.getTextFlows().size() - 1);
       assertThat(tf.getContents(), equalTo(asList(" Translation Unit 5 (4 < 5 & 4 > 3) ")));
@@ -109,20 +104,32 @@ public class XliffReaderTest
    public void invalidSourceContentElementTest() throws FileNotFoundException
    {
       // expect RuntimeException with tu:transunit2 - source
-
       File fileTarget = new File(TEST_DIR, "/StringResource_source_invalid.xml");
-      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
+      Resource resource = reader.extractTemplate(fileTarget, LocaleId.EN_US, null, ValidationType.CONTENT.toString());
+   }
+
+   @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Invalid XLIFF file format  ")
+   public void invalidSourceContentElementTest2() throws FileNotFoundException
+   {
+      // expect RuntimeException with tu:transunit2 - source
+      File fileTarget = new File(TEST_DIR, "/StringResource_source_invalid.xml");
+      Resource resource = reader.extractTemplate(fileTarget, LocaleId.EN_US, null, ValidationType.XSD.toString());
    }
 
    @Test (expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*does not support elements.*: g.*")
    public void unsupportedSourceContentElementTest() throws FileNotFoundException
    {
       // expect RuntimeException with tu:transunit2 - source
-
       File fileTarget = new File(TEST_DIR, "/StringResource_source_unsupported.xml");
-      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      Resource resource = reader.extractTemplate(inputSource, LocaleId.EN_US, null);
+      Resource resource = reader.extractTemplate(fileTarget, LocaleId.EN_US, null, ValidationType.CONTENT.toString());
+   }
+
+   @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Invalid XLIFF file format  ")
+   public void unsupportedSourceContentElementTest2() throws FileNotFoundException
+   {
+      // expect RuntimeException with tu:transunit2 - source
+      File fileTarget = new File(TEST_DIR, "/StringResource_source_unsupported.xml");
+      Resource resource = reader.extractTemplate(fileTarget, LocaleId.EN_US, null, ValidationType.XSD.toString());
    }
 
    @Test (expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*test is not legal.*")
@@ -130,15 +137,23 @@ public class XliffReaderTest
    {
       // expect RuntimeException with tu:transunit1 - target
       File fileTarget = new File(TEST_DIR, "/StringResource_target_invalid.xml");
-      InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      TranslationsResource tr = reader.extractTarget(inputSource);
+      Resource resource = reader.extractTemplate(fileTarget, LocaleId.EN_US, null, ValidationType.CONTENT.toString());
+      TranslationsResource tr = reader.extractTarget(fileTarget);
+   }
+
+   @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Invalid XLIFF file format  ")
+   public void invalidTargetContentElementTest2() throws FileNotFoundException
+   {
+      // expect RuntimeException with tu:transunit1 - target
+      File fileTarget = new File(TEST_DIR, "/StringResource_target_invalid.xml");
+      Resource resource = reader.extractTemplate(fileTarget, LocaleId.EN_US, null, ValidationType.XSD.toString());
+      TranslationsResource tr = reader.extractTarget(fileTarget);
    }
 
 
    private Resource getTemplateDoc() throws FileNotFoundException
    {
       File file = new File(TEST_DIR, File.separator + DOC_NAME);
-      InputSource inputSource = new InputSource(new FileInputStream(file));
-      return reader.extractTemplate(inputSource, LocaleId.EN_US, DOC_NAME);
+      return reader.extractTemplate(file, LocaleId.EN_US, DOC_NAME, ValidationType.XSD.toString());
    }
 }

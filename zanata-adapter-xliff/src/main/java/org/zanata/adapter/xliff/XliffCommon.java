@@ -49,4 +49,9 @@ public abstract class XliffCommon
 
    }
 
+   public enum ValidationType
+   {
+      XSD, CONTENT;
+   }
+
 }
