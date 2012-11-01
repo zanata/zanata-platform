@@ -1,7 +1,6 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
@@ -10,7 +9,6 @@ import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xml.sax.InputSource;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
@@ -62,7 +60,7 @@ public class XliffStrategy extends AbstractPushStrategy
    }
 
    @Override
-   public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
+   public Resource loadSrcDoc(File sourceDir, String docName) throws FileNotFoundException
    {
       File srcFile = null;
 	   for(String file:sourceFiles){
@@ -72,8 +70,7 @@ public class XliffStrategy extends AbstractPushStrategy
 	         break;
 	      }
 	   }
-      InputSource srcInputSource = new InputSource(new FileInputStream(srcFile));
-      return reader.extractTemplate(srcInputSource, new LocaleId(getOpts().getSourceLang()), docName);
+      return reader.extractTemplate(srcFile, new LocaleId(getOpts().getSourceLang()), docName, getOpts().getValidate());
    }
 
    @Override
@@ -85,10 +82,7 @@ public class XliffStrategy extends AbstractPushStrategy
          File transFile = new File(getOpts().getTransDir(), filename);
          if (transFile.exists())
          {
-            InputSource inputSource = new InputSource(new FileInputStream(transFile));
-            inputSource.setEncoding("utf8");
-            // TODO opts.getUseSourceOrder()
-            TranslationsResource targetDoc = reader.extractTarget(inputSource);
+            TranslationsResource targetDoc = reader.extractTarget(transFile);
             visitor.visit(locale, targetDoc);
          }
       }

@@ -67,6 +67,7 @@ public class XliffPushStrategyTest
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
       when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
+      when(mockPushOption.getValidate()).thenReturn("xsd");
 
       xliffStrategy.setPushOptions(mockPushOption);
 
@@ -85,6 +86,7 @@ public class XliffPushStrategyTest
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
       when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
+      when(mockPushOption.getValidate()).thenReturn("xsd");
 
       xliffStrategy.setPushOptions(mockPushOption);
 
@@ -123,6 +125,7 @@ public class XliffPushStrategyTest
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
       when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
       when(mockPushOption.getDefaultExcludes()).thenReturn(false);
+      when(mockPushOption.getValidate()).thenReturn("xsd");
 
       xliffStrategy.setPushOptions(mockPushOption);
       Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
@@ -139,6 +142,7 @@ public class XliffPushStrategyTest
       when(mockPushOption.getCaseSensitive()).thenReturn(false);
       when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
       when(mockPushOption.getDefaultExcludes()).thenReturn(false);
+      when(mockPushOption.getValidate()).thenReturn("xsd");
 
       xliffStrategy.setPushOptions(mockPushOption);
       Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
@@ -157,6 +161,7 @@ public class XliffPushStrategyTest
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
       when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
+      when(mockPushOption.getValidate()).thenReturn("xsd");
 
       xliffStrategy.setPushOptions(mockPushOption);
 
@@ -196,6 +201,7 @@ public class XliffPushStrategyTest
       when(mockPushOption.getDefaultExcludes()).thenReturn(true);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
       when(mockPushOption.getExcludeLocaleFilenames()).thenReturn(true);
+      when(mockPushOption.getValidate()).thenReturn("xsd");
 
       xliffStrategy.setPushOptions(mockPushOption);
 

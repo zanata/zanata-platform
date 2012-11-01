@@ -50,6 +50,8 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    String sourceLang;
    int batchSize;
 
+   String validate;
+
    @Override
    public ZanataCommand initCommand()
    {
@@ -208,4 +210,9 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
       return excludeLocaleFilenames;
    }
 
+   @Override
+   public String getValidate()
+   {
+      return validate;
+   }
 }

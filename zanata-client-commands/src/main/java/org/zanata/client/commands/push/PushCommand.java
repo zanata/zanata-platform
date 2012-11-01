@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.adapter.xliff.XliffCommon.ValidationType;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -141,6 +142,19 @@ public class PushCommand extends PushPullCommand<PushOptions>
       if (getOpts().isDryRun())
       {
          log.info("DRY RUN: no permanent changes will be made");
+      }
+      if (getOpts().getProjectType().equalsIgnoreCase("xliff"))
+      {
+         validateValidation(getOpts().getValidate());
+         log.info("Validate option: {}", getOpts().getValidate());
+      }
+   }
+
+   private static void validateValidation(String validate)
+   {
+      if (!validate.equalsIgnoreCase(ValidationType.CONTENT.toString()) && !validate.equalsIgnoreCase(ValidationType.XSD.toString()))
+      {
+         throw new RuntimeException("unknown validate option: " + validate);
       }
    }
 
