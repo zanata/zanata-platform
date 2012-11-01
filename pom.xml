@@ -327,6 +327,17 @@
             <updatePolicy>never</updatePolicy>
           </snapshots>
         </pluginRepository>
+
+        <pluginRepository>
+            <id>cobertura-it-maven-plugin-maven2-release</id>
+            <url>http://cobertura-it-maven-plugin.googlecode.com/svn/maven2/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
     </pluginRepositories>
 
 
