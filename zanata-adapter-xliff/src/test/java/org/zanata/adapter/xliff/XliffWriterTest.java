@@ -6,11 +6,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.xml.sax.InputSource;
+import org.zanata.adapter.xliff.XliffCommon.ValidationType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -23,7 +23,13 @@ public class XliffWriterTest
    private String generatedDocName = "Generated_StringResource";
    private String generatedDocFileName = generatedDocName + "_en_US.xml";
 
-   XliffReader reader;
+   private XliffReader reader;
+
+   @BeforeMethod
+   public void beforeMethod()
+   {
+      reader = new XliffReader();
+   }
 
    @Test
    public void checkTransUnit() throws FileNotFoundException
@@ -31,8 +37,7 @@ public class XliffWriterTest
       prepareTemplateDoc();
 
       File generatedFile = new File(generateDir, "/" + generatedDocFileName);
-      InputSource inputSource = new InputSource(new FileInputStream(generatedFile));
-      Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, generatedDocName);
+      Resource doc = reader.extractTemplate(generatedFile, LocaleId.EN_US, generatedDocName, ValidationType.XSD.toString());
 
       TextFlow firstTextFlow = doc.getTextFlows().get(0);
       TextFlow secondTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 2);
@@ -49,8 +54,7 @@ public class XliffWriterTest
       prepareTemplateDoc();
 
       File generatedFile = new File(generateDir, "/" + generatedDocFileName);
-      InputSource inputSource = new InputSource(new FileInputStream(generatedFile));
-      Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, generatedDocName);
+      Resource doc = reader.extractTemplate(generatedFile, LocaleId.EN_US, generatedDocName, ValidationType.XSD.toString());
 
       assertThat(doc.getTextFlows().size(), is(6));
    }
@@ -59,11 +63,8 @@ public class XliffWriterTest
    {
       String docName = "StringResource_en_US.xml";
 
-      reader = new XliffReader();
-
       File file = new File(testDir, "/" + docName);
-      InputSource inputSource = new InputSource(new FileInputStream(file));
-      Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, docName);
+      Resource doc = reader.extractTemplate(file, LocaleId.EN_US, docName, ValidationType.XSD.toString());
       doc.setName(generatedDocName);
 
       XliffWriter.write(new File(generateDir), doc, "en_US");

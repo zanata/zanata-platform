@@ -61,9 +61,9 @@ public abstract class XliffCommon
 
    }
 
-   protected enum CHECK
+   public enum ValidationType
    {
-      Validate, Quick, None;
+      XSD, CONTENT;
    }
 
 }
