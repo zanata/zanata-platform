@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>client</artifactId>
-  <version>1.7.5-SNAPSHOT</version>
+  <version>1.7.6-SNAPSHOT</version>
   <name>Zanata client modules</name>
   <packaging>pom</packaging>
   <parent>
@@ -20,7 +20,7 @@
 
     <properties>
       <zanata.api.version>1.7.2</zanata.api.version>
-      <zanata.common.version>1.8.4-SNAPSHOT</zanata.common.version>
+      <zanata.common.version>1.8.4</zanata.common.version>
     </properties>
 
    <dependencyManagement>
