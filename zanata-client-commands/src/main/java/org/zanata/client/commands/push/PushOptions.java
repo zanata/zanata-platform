@@ -43,10 +43,14 @@ public interface PushOptions extends PushPullOptions
    public boolean getExcludeLocaleFilenames();
    public boolean getDefaultExcludes();
    public boolean getDeleteObsoleteModules();
+
    public boolean getCopyTrans();
 
    // raw push
    public int getChunkSize();
    public List<String> getFileTypes();
+
+   public String getValidate();
+
 }
 

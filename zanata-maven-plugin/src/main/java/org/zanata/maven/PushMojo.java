@@ -171,6 +171,17 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     * @parameter expression="${zanata.excludeLocaleFilenames}" default-value="true"
     */
    private boolean excludeLocaleFilenames = true;
+   
+   
+   /**
+    * Run validation check against file. Only apply to Xliff project type.
+    * "CONTENT" - content validation check. "XSD" - validation check against
+    * xliff 1.1 schema -
+    * http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd.
+    * 
+    * @parameter expression="${zanata.validate}" default-value="content"
+    */
+   private String validate = "content";
 
 
    @Override
@@ -315,5 +326,11 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    public boolean getExcludeLocaleFilenames()
    {
       return excludeLocaleFilenames;
+   }
+
+   @Override
+   public String getValidate()
+   {
+      return validate;
    }
 }
