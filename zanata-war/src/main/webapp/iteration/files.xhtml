@@ -188,6 +188,7 @@
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
                     </s:link>
+                    <h:outputText value="&#160;&#160;&#160;" />
                     <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/baked">
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
