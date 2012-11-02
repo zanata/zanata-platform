@@ -470,42 +470,4 @@
         <dropTable tableName="HTextFlowTargetContent" cascadeConstraints="false"/>
     </changeSet>
 
-    <changeSet id="16" author="camunoz@redhat.com">
-        <comment>Add HEditorOption table.</comment>
-        <createTable tableName="HEditorOption">
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="value" type="longtext">
-                <constraints nullable="true" />
-            </column>
-            <column name="account_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="17" author="camunoz@redhat.com">
-        <comment>Add HEditorOption foreign key to HAccount.</comment>
-        <addForeignKeyConstraint constraintName="FK_HEditorOption_HAccount"
-                                 baseTableName="HEditorOption"
-                                 baseColumnNames="account_id"
-                                 referencedTableName="HAccount"
-                                 referencedColumnNames="id"/>
-    </changeSet>
-
-
 </databaseChangeLog>
