@@ -32,7 +32,7 @@
 		}
 
 		.topPanel-Workspace a {
-			color: white;
+			color: #0085CC;
 			font-weight: bold;
 			text-decoration: none;
 		}
@@ -130,9 +130,11 @@
 							<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 									<nobr>
 									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.breadcrumbs_display}"/>
-								  	<g:InlineLabel ui:field="projectLink" styleName="{style.breadcrumbs-link}"/>
+									<g:Anchor ui:field="projectLink" styleName="{style.breadcrumbs-link}"/>
 									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
-									<g:InlineLabel ui:field="iterationFilesLink" styleName="{style.breadcrumbs-link}"/>
+									<g:Anchor ui:field="versionLink" styleName="{style.breadcrumbs-link}"/>
+									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
+									<g:Anchor ui:field="versionFilesLink" styleName="{style.breadcrumbs-link}"/>
 									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
 									<g:InlineLabel ui:field="selectedDocumentSpan" styleName="{style.breadcrumbs_display}"/>
 								</nobr>

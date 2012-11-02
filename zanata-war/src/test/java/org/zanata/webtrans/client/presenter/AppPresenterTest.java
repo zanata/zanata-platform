@@ -116,7 +116,13 @@ public class AppPresenterTest
       String localeId = workspaceId.getLocaleId().getId();
       
       verify(display).setProjectLinkLabel(workspaceId.getProjectIterationId().getProjectSlug());
-      verify(display).setIterationFilesLabel(workspaceId.getProjectIterationId().getIterationSlug() + " [" + localeId + "]");
+      verify(display).setVersionLinkLabel(workspaceId.getProjectIterationId().getIterationSlug());
+      verify(display).setVersionFilesLabel(workspaceId.getProjectIterationId().getIterationSlug() + " [" + localeId + "]");
+      
+      verify(display).setProjectLink("");
+      verify(display).setVersionLink("");
+      verify(display).setVersionFilesLink("");
+      
       verify(display).setReadOnlyVisible(userWorkspace.hasReadOnlyAccess());
       verify(window).setTitle("new title");
       verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());

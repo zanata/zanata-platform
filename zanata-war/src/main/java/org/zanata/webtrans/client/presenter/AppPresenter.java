@@ -129,8 +129,14 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerKeyShortcuts();
 
       display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
-      display.setIterationFilesLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug() + " [" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + "]");
-
+      display.setProjectLink(Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      
+      display.setVersionLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug());
+      display.setVersionLink(Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      
+      display.setVersionFilesLabel("Documents (" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + ")");
+      display.setVersionFilesLink(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       if (!Strings.isNullOrEmpty(workspaceTitle))
       {
@@ -141,8 +147,9 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
       }
 
-
       display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
+      
+      
    }
 
    private void registerKeyShortcuts()
@@ -335,18 +342,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       {
          refreshStatsDisplay();
       }
-   }
-
-   @Override
-   public void onProjectLinkClicked()
-   {
-      Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
-   }
-
-   @Override
-   public void onIterationFilesLinkClicked()
-   {
-      Application.redirectToIterationFiles(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
    }
 
    @Override

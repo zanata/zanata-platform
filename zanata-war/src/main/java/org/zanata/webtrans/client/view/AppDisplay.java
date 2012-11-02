@@ -12,8 +12,6 @@ public interface AppDisplay extends WidgetDisplay
 {
    void showInMainView(MainView view);
 
-   void setProjectLinkLabel(String workspaceNameLabel);
-
    void setDocumentLabel(String docPath, String docName);
 
    void setStats(TranslationStats transStats, boolean statsByWords);
@@ -21,17 +19,23 @@ public interface AppDisplay extends WidgetDisplay
    void setReadOnlyVisible(boolean visible);
 
    void showSideMenu(boolean isShowing);
+   
+   void setProjectLinkLabel(String text);
 
-   void setIterationFilesLabel(String iterationSlug);
+   void setVersionFilesLabel(String text);
+   
+   void setVersionLinkLabel(String text);
 
    void setListener(Listener listener);
+   
+   void setProjectLink(String url);
+   
+   void setVersionLink(String url);
+   
+   void setVersionFilesLink(String url);
 
    interface Listener
    {
-      void onProjectLinkClicked();
-
-      void onIterationFilesLinkClicked();
-
       void onSearchAndReplaceClicked();
 
       void onDocumentListClicked();
