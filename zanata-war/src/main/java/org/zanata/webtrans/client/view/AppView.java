@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -99,13 +100,10 @@ public class AppView extends Composite implements AppDisplay
 
    private Listener listener;
 
-   private final WebTransMessages messages;
-   
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity, final UserWorkspaceContext userWorkspaceContext)
    {
       this.resources = resources;
-      this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
 
@@ -125,7 +123,11 @@ public class AppView extends Composite implements AppDisplay
       searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
-
+      
+      projectLink.setHref(Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      versionLink.setHref(Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      versionFilesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
       content.add(searchResultsView.asWidget());
@@ -210,27 +212,7 @@ public class AppView extends Composite implements AppDisplay
       translationStatsBar.setStats(transStats, statsByWords);
       translationStatsBar.setVisible(true);
    }
-   
-   @Override
-   public void setProjectLink(String url)
-   {
-      projectLink.setHref(url);
-   }
-   
-   @Override
-   public void setVersionLink(String url)
-   {
-      versionLink.setHref(url);
-   }
-   
-   @Override
-   public void setVersionFilesLink(String url)
-   {
-      versionFilesLink.setHref(url);
-   }
-   
-   
-
+  
    @Override
    public void setReadOnlyVisible(boolean visible)
    {

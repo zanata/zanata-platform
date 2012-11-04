@@ -129,13 +129,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerKeyShortcuts();
 
       display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
-      display.setProjectLink(Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      
       display.setVersionLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug());
-      display.setVersionLink(Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      
       display.setVersionFilesLabel("Documents (" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + ")");
-      display.setVersionFilesLink(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
       
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       if (!Strings.isNullOrEmpty(workspaceTitle))
@@ -148,10 +143,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       }
 
       display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
-      
-      
    }
-
+   
    private void registerKeyShortcuts()
    {
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()

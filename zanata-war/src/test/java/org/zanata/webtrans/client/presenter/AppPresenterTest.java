@@ -117,11 +117,8 @@ public class AppPresenterTest
       
       verify(display).setProjectLinkLabel(workspaceId.getProjectIterationId().getProjectSlug());
       verify(display).setVersionLinkLabel(workspaceId.getProjectIterationId().getIterationSlug());
-      verify(display).setVersionFilesLabel(workspaceId.getProjectIterationId().getIterationSlug() + " [" + localeId + "]");
+      verify(display).setVersionFilesLabel("Documents (" + localeId + ")");
       
-      verify(display).setProjectLink("");
-      verify(display).setVersionLink("");
-      verify(display).setVersionFilesLink("");
       
       verify(display).setReadOnlyVisible(userWorkspace.hasReadOnlyAccess());
       verify(window).setTitle("new title");

@@ -28,12 +28,6 @@ public interface AppDisplay extends WidgetDisplay
 
    void setListener(Listener listener);
    
-   void setProjectLink(String url);
-   
-   void setVersionLink(String url);
-   
-   void setVersionFilesLink(String url);
-
    interface Listener
    {
       void onSearchAndReplaceClicked();
