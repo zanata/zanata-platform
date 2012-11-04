@@ -404,7 +404,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Read only")
    String readOnly();
 
-   @DefaultMessage("Advance user configuration")
+   @DefaultMessage("Advanced user configuration")
    String otherConfiguration();
 
    @DefaultMessage("When unexpected error happens, a popup window will display and show it")
