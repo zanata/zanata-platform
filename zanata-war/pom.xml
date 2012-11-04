@@ -1511,7 +1511,7 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<scope>provided</scope>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
