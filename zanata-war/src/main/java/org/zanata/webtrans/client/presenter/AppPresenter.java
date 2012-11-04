@@ -251,7 +251,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       currentView = viewToShow;
       if (currentView == MainView.Editor)
       {
-         eventBus.fireEvent(RefreshPageEvent.EVENT);
+         eventBus.fireEvent(RefreshPageEvent.REFRESH_CODEMIRROR_EVENT);
       }
    }
 

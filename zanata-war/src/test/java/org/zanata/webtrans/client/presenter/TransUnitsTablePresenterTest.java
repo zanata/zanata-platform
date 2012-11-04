@@ -461,7 +461,7 @@ public class TransUnitsTablePresenterTest
    @Test
    public void onRefreshPageEvent()
    {
-      presenter.onRefreshPage(RefreshPageEvent.EVENT);
+      presenter.onRefreshPage(RefreshPageEvent.REFRESH_CODEMIRROR_EVENT);
 
       verify(display).delayRefresh();
    }

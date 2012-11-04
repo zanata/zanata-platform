@@ -231,7 +231,16 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void onRefreshPage(RefreshPageEvent event)
    {
-      display.delayRefresh();
+      if (event == RefreshPageEvent.REFRESH_CODEMIRROR_EVENT)
+      {
+         display.delayRefresh();
+      }
+      else if (event == RefreshPageEvent.REDRAW_PAGE_EVENT)
+      {
+         List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
+         targetContentsPresenter.showData(currentPageValues);
+         display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
+      }
    }
 
    @Override

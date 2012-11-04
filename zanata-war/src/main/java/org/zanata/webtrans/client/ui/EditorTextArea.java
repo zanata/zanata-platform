@@ -21,7 +21,10 @@
 package org.zanata.webtrans.client.ui;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
@@ -50,6 +53,7 @@ public class EditorTextArea extends TextArea
       var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
          lineNumbers: true,
          lineWrapping: true,
+         disableSpellcheck: false,
          mode: "visibleSpace",
          value: element.value,
          onFocus: function() {
@@ -76,6 +80,13 @@ public class EditorTextArea extends TextArea
       if (useCodeMirrorFlag)
       {
          setCodeMirrorContent(text);
+      }
+      else
+      {
+         // if we are not using code mirror, we will try to hide text area scroll bar.
+         Splitter splitter = Splitter.on("\n");
+         Iterable<String> split = splitter.split(text);
+         setVisibleLines(Iterables.size(split));
       }
    }
 

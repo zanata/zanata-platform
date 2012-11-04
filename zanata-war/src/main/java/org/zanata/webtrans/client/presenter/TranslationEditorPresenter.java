@@ -94,7 +94,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    @Override
    public void refreshCurrentPage()
    {
-      eventBus.fireEvent(RefreshPageEvent.EVENT);
+      eventBus.fireEvent(RefreshPageEvent.REFRESH_CODEMIRROR_EVENT);
    }
 
    @Override

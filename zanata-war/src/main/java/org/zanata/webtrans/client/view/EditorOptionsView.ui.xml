@@ -91,7 +91,7 @@
                     <g:VerticalPanel width="100%">
                         <g:Label ui:field="otherConfigHeader" styleName="sideMenuHeader"/>
                         <g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
-                        <g:CheckBox ui:field="useCodeMirrorChk" visible="false" enabled="false"><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
+                        <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
                     </g:VerticalPanel>
                 </g:layer>
             </g:LayoutPanel>

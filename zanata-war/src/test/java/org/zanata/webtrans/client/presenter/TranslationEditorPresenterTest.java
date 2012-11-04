@@ -140,7 +140,7 @@ public class TranslationEditorPresenterTest
    {
       presenter.refreshCurrentPage();
 
-      verify(eventBus).fireEvent(RefreshPageEvent.EVENT);
+      verify(eventBus).fireEvent(RefreshPageEvent.REFRESH_CODEMIRROR_EVENT);
    }
 
    @Test

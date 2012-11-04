@@ -78,7 +78,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    @UiField
    CheckBox showErrorChk;
    @UiField
-   CheckBox useCodeMirrorChk; // TODO this is disabled and invisible to user. If codemirror works fine then remove this option.
+   CheckBox useCodeMirrorChk;
 
    private Listener listener;
 
