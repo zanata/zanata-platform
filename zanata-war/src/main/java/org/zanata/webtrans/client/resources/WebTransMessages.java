@@ -98,7 +98,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Project-wide Search & Replace")
    String projectWideSearchAndReplace();
    
-   @DefaultMessage("Documents")
+   @DefaultMessage("Document List")
    String documentListTitle();
 
    @DefaultMessage("{0} has quit workspace")

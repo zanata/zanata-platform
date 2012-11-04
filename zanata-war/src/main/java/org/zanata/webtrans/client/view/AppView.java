@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
@@ -28,6 +29,7 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -38,6 +40,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -66,10 +69,19 @@ public class AppView extends Composite implements AppDisplay
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   InlineLabel projectLink, iterationFilesLink, readOnlyLabel, keyShortcuts;
+   InlineLabel readOnlyLabel, keyShortcuts;
    
    @UiField
    InlineLabel selectedDocumentSpan;
+   
+   @UiField
+   Anchor projectLink;
+   
+   @UiField
+   Anchor versionLink;
+   
+   @UiField
+   Anchor versionFilesLink;
 
    @UiField
    LayoutPanel sideMenuContainer, rootContainer, contentContainer;
@@ -88,13 +100,10 @@ public class AppView extends Composite implements AppDisplay
 
    private Listener listener;
 
-   private final WebTransMessages messages;
-   
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity, final UserWorkspaceContext userWorkspaceContext)
    {
       this.resources = resources;
-      this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
 
@@ -104,7 +113,7 @@ public class AppView extends Composite implements AppDisplay
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
       initWidget(uiBinder.createAndBindUi(this));
-
+      
       readOnlyLabel.setText("[" + messages.readOnly() + "]");
 
       keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
@@ -114,7 +123,11 @@ public class AppView extends Composite implements AppDisplay
       searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
-
+      
+      projectLink.setHref(Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      versionLink.setHref(Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      versionFilesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
       content.add(searchResultsView.asWidget());
@@ -164,15 +177,21 @@ public class AppView extends Composite implements AppDisplay
    }
 
    @Override
-   public void setProjectLinkLabel(String workspaceNameLabel)
+   public void setProjectLinkLabel(String text)
    {
-      projectLink.setText(workspaceNameLabel);
+      projectLink.setText(text);
+   }
+   
+   @Override
+   public void setVersionLinkLabel(String text)
+   {
+      versionLink.setText(text);
    }
 
    @Override
-   public void setIterationFilesLabel(String name)
+   public void setVersionFilesLabel(String text)
    {
-      iterationFilesLink.setText(name);
+      versionFilesLink.setText(text);
    }
 
    @Override
@@ -193,7 +212,7 @@ public class AppView extends Composite implements AppDisplay
       translationStatsBar.setStats(transStats, statsByWords);
       translationStatsBar.setVisible(true);
    }
-
+  
    @Override
    public void setReadOnlyVisible(boolean visible)
    {
@@ -221,18 +240,6 @@ public class AppView extends Composite implements AppDisplay
          rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
       }
       rootContainer.animate(ANIMATE_DURATION);
-   }
-
-   @UiHandler("projectLink")
-   public void onProjectLinkClick(ClickEvent event)
-   {
-      listener.onProjectLinkClicked();
-   }
-
-   @UiHandler("iterationFilesLink")
-   public void onIterationFilesLinkClick(ClickEvent event)
-   {
-      listener.onIterationFilesLinkClicked();
    }
 
    @UiHandler("keyShortcuts")

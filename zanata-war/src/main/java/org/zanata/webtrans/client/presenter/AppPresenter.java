@@ -129,8 +129,9 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerKeyShortcuts();
 
       display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
-      display.setIterationFilesLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug() + " [" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + "]");
-
+      display.setVersionLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug());
+      display.setVersionFilesLabel("Documents (" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + ")");
+      
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       if (!Strings.isNullOrEmpty(workspaceTitle))
       {
@@ -141,10 +142,9 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          window.setTitle(messages.windowTitle(userWorkspaceContext.getWorkspaceContext().getWorkspaceName(), userWorkspaceContext.getWorkspaceContext().getLocaleName()));
       }
 
-
       display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
    }
-
+   
    private void registerKeyShortcuts()
    {
       keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
@@ -335,18 +335,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       {
          refreshStatsDisplay();
       }
-   }
-
-   @Override
-   public void onProjectLinkClicked()
-   {
-      Application.redirectToZanataProjectHome(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
-   }
-
-   @Override
-   public void onIterationFilesLinkClicked()
-   {
-      Application.redirectToIterationFiles(userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
    }
 
    @Override

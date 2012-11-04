@@ -229,14 +229,19 @@ public class Application implements EntryPoint
       redirectToUrl(getModuleParentBaseUrl() + "account/sign_out");
    }
 
-   public static void redirectToZanataProjectHome(WorkspaceId workspaceId)
+   public static String getProjectHomeURL(WorkspaceId workspaceId)
    {
-      redirectToUrl(getModuleParentBaseUrl() + "project/view/" + workspaceId.getProjectIterationId().getProjectSlug());
+      return getModuleParentBaseUrl() + "project/view/" + workspaceId.getProjectIterationId().getProjectSlug();
+   }
+   
+   public static String getVersionHomeURL(WorkspaceId workspaceId)
+   {
+      return getModuleParentBaseUrl() + "iteration/view/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug()  ;
    }
 
-   public static void redirectToIterationFiles(WorkspaceId workspaceId)
+   public static String getVersionFilesURL(WorkspaceId workspaceId)
    {
-      redirectToUrl(getModuleParentBaseUrl() + "iteration/files/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId());
+      return getModuleParentBaseUrl() + "iteration/files/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId();
    }
 
    public static native void redirectToUrl(String url)/*-{
