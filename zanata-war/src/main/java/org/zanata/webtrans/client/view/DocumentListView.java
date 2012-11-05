@@ -34,6 +34,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -69,14 +70,14 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @UiField
    InlineLabel twentyFiveDoc, fiftyDoc, hundredDoc, allDoc; 
    
-   // @UiField
-   // ListBox statsOptions;
-
    @UiField
    RadioButton statsByMsg, statsByWord;
 
    @UiField
    SimplePager pager;
+
+   @UiField
+   Styles style;
 
    private DocumentListTable documentListTable;
 
@@ -84,6 +85,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    private final WebTransMessages messages;
    
    private ListDataProvider<DocumentNode> dataProvider;
+
+   interface Styles extends CssResource
+   {
+      String selectedDocCount();
+   }
 
    @Inject
    public DocumentListView(Resources resources, WebTransMessages messages)
@@ -154,8 +160,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    }
 
 
-   @Override
-   public void setPageSize(int pageSize)
+   private void setPageSize(int pageSize)
    {
       documentListTable.setPageSize(pageSize);
       pager.setDisplay(documentListTable);
@@ -207,28 +212,40 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       }
    }
    
+   private void onDocumentListCountChanged(InlineLabel selectedWidget, int pageSize)
+   {
+      setPageSize(pageSize);
+
+      twentyFiveDoc.removeStyleName(style.selectedDocCount());
+      fiftyDoc.removeStyleName(style.selectedDocCount());
+      hundredDoc.removeStyleName(style.selectedDocCount());
+      allDoc.removeStyleName(style.selectedDocCount());
+
+      selectedWidget.addStyleName(style.selectedDocCount());
+   }
+
    @UiHandler("twentyFiveDoc")
    public void onTwentyFiveDocClicked(ClickEvent event)
    {
-      setPageSize(25);
+      onDocumentListCountChanged(twentyFiveDoc, 25);
    }
    
    @UiHandler("fiftyDoc")
    public void onFiftyDocClicked(ClickEvent event)
    {
-      setPageSize(50);
+      onDocumentListCountChanged(fiftyDoc, 50);
    }
    
    @UiHandler("hundredDoc")
    public void onHundredDocClicked(ClickEvent event)
    {
-      setPageSize(100);
+      onDocumentListCountChanged(hundredDoc, 100);
    }
    
    @UiHandler("allDoc")
    public void onAllDocClicked(ClickEvent event)
    {
-      setPageSize(dataProvider.getList().size());
+      onDocumentListCountChanged(allDoc, dataProvider.getList().size());
    }
   
 

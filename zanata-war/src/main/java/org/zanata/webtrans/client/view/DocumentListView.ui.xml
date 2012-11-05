@@ -5,7 +5,7 @@
     xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
     xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
-    <ui:style>
+    <ui:style type="org.zanata.webtrans.client.view.DocumentListView.Styles">
         .unitStatus {
             float: right;
             width: 100px;
@@ -72,7 +72,7 @@
             color:#FFFFFF;
         }
         
-        .pageSizeContainer span:hover {
+        .pageSizeContainer span:hover,  .pageSizeContainer span.selectedDocCount {
             background:#B62918;
         }
         
