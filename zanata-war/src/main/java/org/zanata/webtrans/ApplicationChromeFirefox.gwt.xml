@@ -8,4 +8,8 @@
     <extend-property name="log_level" values="DEBUG" />
     <set-property name="log_level" value="DEBUG" />
     <set-property name="user.agent" value="gecko1_8,safari" />
+
+    <!-- support gwt super dev mode -->
+    <add-linker name="xsiframe"/>
+    <set-configuration-property name="devModeRedirectEnabled" value="true"/>
 </module>
