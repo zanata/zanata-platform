@@ -35,5 +35,9 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue);
 
       void persistOptionChange();
+
+      void loadOptions();
+
+      void loadDefaultOptions();
    }
 }

@@ -65,7 +65,7 @@ public class UserConfigHolder
 
    protected void setEnterSavesApproved(boolean enterSavesApproved)
    {
-      state = new ConfigurationState(enterSavesApproved, state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError(), state.isUseCodeMirrorEditor());
+      state.enterSavesApproved = enterSavesApproved;
    }
 
    public boolean isDisplayButtons()
@@ -75,12 +75,12 @@ public class UserConfigHolder
 
    protected void setDisplayButtons(boolean displayButtons)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), displayButtons, state.getPageSize(), state.getNavOption(), state.isShowError(), state.isUseCodeMirrorEditor());
+      state.displayButtons = displayButtons;
    }
 
    protected void setNavOption(NavOption navOption)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isDisplayButtons(), state.getPageSize(), navOption, state.isShowError(), state.isUseCodeMirrorEditor());
+      state.navOption = navOption;
    }
 
    public NavOption getNavOption()
@@ -111,7 +111,7 @@ public class UserConfigHolder
 
    protected void setPageSize(int pageSize)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isDisplayButtons(), pageSize, state.getNavOption(), state.isShowError(), state.isUseCodeMirrorEditor());
+      state.pageSize = pageSize;
    }
 
    public ConfigurationState getState()
@@ -126,7 +126,7 @@ public class UserConfigHolder
 
    public void setShowError(boolean showError)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), showError, state.isUseCodeMirrorEditor());
+      state.showError = showError;
    }
 
    public boolean isUseCodeMirrorEditor()
@@ -136,11 +136,11 @@ public class UserConfigHolder
 
    public void setUseCodeMirrorEditor(boolean useCodeMirrorEditor)
    {
-      state = new ConfigurationState(state.isEnterSavesApproved(), state.isDisplayButtons(), state.getPageSize(), state.getNavOption(), state.isShowError(), useCodeMirrorEditor);
+      state.useCodeMirrorEditor = useCodeMirrorEditor;
    }
 
    /**
-    * Immutable object represents configuration state
+    * Represents configuration state
     */
    public static class ConfigurationState implements IsSerializable
    {

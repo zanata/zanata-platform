@@ -28,12 +28,16 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HEditorOption;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
+
+import static org.zanata.model.HEditorOption.OptionName;
+import static org.zanata.model.HEditorOption.OptionName.*;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -53,20 +57,17 @@ public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction,
    public SaveOptionsResult execute(SaveOptionsAction action, ExecutionContext context) throws ActionException
    {
       HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
+      UserConfigHolder.ConfigurationState config = action.getConfiguration();
 
-      HEditorOption option = account.getEditorOptions().get( HEditorOption.OptionName.DisplayButtons.getPersistentName() );
-      if( option == null )
-      {
-         option = new HEditorOption(HEditorOption.OptionName.DisplayButtons.getPersistentName(), Boolean.toString( action.getConfiguration().isDisplayButtons() ));
-         option.setAccount(account);
-         account.getEditorOptions().put( option.getName(), option );
-      }
-      else
-      {
-         option.setValue( Boolean.toString(action.getConfiguration().isDisplayButtons()) );
-      }
+      this.setOrCreateOptionValue(account, DisplayButtons, Boolean.toString(config.isDisplayButtons()));
+      this.setOrCreateOptionValue(account, EnterSavesApproved, Boolean.toString(config.isEnterSavesApproved()));
+      this.setOrCreateOptionValue(account, PageSize, Integer.toString(config.getPageSize()));
+      this.setOrCreateOptionValue(account, ShowErrors, Boolean.toString(config.isShowError()));
+      this.setOrCreateOptionValue(account, TranslatedMessageFilter, Boolean.toString(action.getFilterByTranslated()));
+      this.setOrCreateOptionValue(account, NeedReviewMessageFilter, Boolean.toString(action.getFilterByNeedReview()));
+      this.setOrCreateOptionValue(account, UntranslatedMessageFilter, Boolean.toString(action.getFilterByUntranslated()));
+      this.setOrCreateOptionValue(account, Navigation, config.getNavOption().toString());
 
-      // TODO put other options
       accountDAO.makePersistent(account);
       accountDAO.flush();
 
@@ -79,5 +80,21 @@ public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction,
    @Override
    public void rollback(SaveOptionsAction action, SaveOptionsResult result, ExecutionContext context) throws ActionException
    {
+   }
+
+   private void setOrCreateOptionValue(HAccount account, OptionName name, String newVal)
+   {
+      HEditorOption option = account.getEditorOptions().get(name);
+
+      if( option == null )
+      {
+         option = new HEditorOption(name, newVal);
+         option.setAccount(account);
+         account.getEditorOptions().put(name.getPersistentName(), option);
+      }
+      else
+      {
+         option.setValue(newVal);
+      }
    }
 }

@@ -84,6 +84,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    @UiField
    PushButton saveButton;
 
+   @UiField
+   PushButton loadButton;
+
+   @UiField
+   PushButton restoreToDefaultsButton;
+
    private Listener listener;
 
    @Inject
@@ -103,6 +109,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
 
       saveButton.setText(messages.save());
+      loadButton.setText(messages.load());
+      restoreToDefaultsButton.setText(messages.restoreDefaults());
    }
 
    @Override
@@ -238,6 +246,18 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.persistOptionChange();
    }
 
+   @UiHandler("loadButton")
+   public void onLoadButtonClick( ClickEvent event )
+   {
+      listener.loadOptions();
+   }
+
+   @UiHandler("restoreToDefaultsButton")
+   public void onRestoreToDefaultsButtonClick( ClickEvent event )
+   {
+      listener.loadDefaultOptions();
+   }
+
    private void selectPageSize(int pageSize)
    {
       if (pageSize == 5)
@@ -276,5 +296,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       String untranslated();
 
       String pageSizeContainer();
+
+      String editorOptsButton();
    }
 }

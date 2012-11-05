@@ -25,6 +25,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -41,10 +43,13 @@ public class HEditorOption extends ModelEntityBase
    public static enum OptionName
    {
       EnterSavesApproved("editor.EnterSavesApproved"),
-      EscClosesEditor("editor.EscClosesEditor"),
       DisplayButtons("editor.DisplayButtons"),
       PageSize("editor.PageSize"),
-      ShowErrors("editor.ShowErrors");
+      ShowErrors("editor.ShowErrors"),
+      TranslatedMessageFilter("editor.TranslatedMessageFilter"),
+      NeedReviewMessageFilter("editor.NeedReviewMessageFilter"),
+      UntranslatedMessageFilter("editor.UntranslatedMessageFilter"),
+      Navigation("editor.Navigation");
 
       private String persistentName;
 
@@ -66,9 +71,9 @@ public class HEditorOption extends ModelEntityBase
    private HAccount account;
 
 
-   public HEditorOption(String name, String value)
+   public HEditorOption(OptionName name, String value)
    {
-      this.name = name;
+      this.name = name.getPersistentName();
       this.value = value;
    }
 

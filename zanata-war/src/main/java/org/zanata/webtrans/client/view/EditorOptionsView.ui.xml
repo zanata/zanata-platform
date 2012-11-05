@@ -50,6 +50,13 @@
             margin-right: 3px;
         }
 
+        .editorOptsButton {
+            float: right;
+            color: #000000;
+            margin-right: 3px;
+            border-radius: 3px;
+        }
+
     </ui:style>
 	
     <g:LayoutPanel>
@@ -95,11 +102,11 @@
                     </g:VerticalPanel>
                 </g:layer>
                 <g:layer bottom="2px" height="24px">
-                    <g:HorizontalPanel width="100%" spacing="3">
-                        <g:cell>
-                            <g:PushButton ui:field="saveButton"/>
-                        </g:cell>
-                    </g:HorizontalPanel>
+                    <g:HTMLPanel>
+                        <g:PushButton ui:field="saveButton" addStyleNames="{style.editorOptsButton}"/>
+                        <g:PushButton ui:field="loadButton" addStyleNames="{style.editorOptsButton}" title=""/>
+                        <g:PushButton ui:field="restoreToDefaultsButton" addStyleNames="{style.editorOptsButton}"/>
+                    </g:HTMLPanel>
                 </g:layer>
             </g:LayoutPanel>
     	</g:layer>

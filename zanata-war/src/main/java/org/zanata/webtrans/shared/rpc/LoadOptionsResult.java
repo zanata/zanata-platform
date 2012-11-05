@@ -20,28 +20,46 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
-
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class SaveOptionsAction implements DispatchAction<SaveOptionsResult>
+public class LoadOptionsResult implements DispatchResult
 {
-   private UserConfigHolder.ConfigurationState configuration;
+   private boolean showEditorButtons;
 
-   // Other options not contained in the configuration object
+   private boolean enterKeySavesImmediately;
+
    private boolean filterByTranslated;
-   private boolean filterByNeedReview;
-   private boolean  filterByUntranslated;
 
-   public UserConfigHolder.ConfigurationState getConfiguration()
+   private boolean filterByNeedReview;
+
+   private boolean filterByUntraslated;
+
+   private NavOption navOption;
+
+   private int pageSize;
+
+   private boolean showErrors;
+
+
+   public boolean getShowEditorButtons()
    {
-      return configuration;
+      return showEditorButtons;
    }
 
-   public void setConfiguration(UserConfigHolder.ConfigurationState configuration)
+   public void setShowEditorButtons(boolean showEditorButtons)
    {
-      this.configuration = configuration;
+      this.showEditorButtons = showEditorButtons;
+   }
+
+   public boolean getEnterKeySavesImmediately()
+   {
+      return enterKeySavesImmediately;
+   }
+
+   public void setEnterKeySavesImmediately(boolean enterKeySavesImmediately)
+   {
+      this.enterKeySavesImmediately = enterKeySavesImmediately;
    }
 
    public boolean getFilterByTranslated()
@@ -64,13 +82,43 @@ public class SaveOptionsAction implements DispatchAction<SaveOptionsResult>
       this.filterByNeedReview = filterByNeedReview;
    }
 
-   public boolean getFilterByUntranslated()
+   public boolean getFilterByUntraslated()
    {
-      return filterByUntranslated;
+      return filterByUntraslated;
    }
 
-   public void setFilterByUntranslated(boolean filterByUntranslated)
+   public void setFilterByUntraslated(boolean filterByUntraslated)
    {
-      this.filterByUntranslated = filterByUntranslated;
+      this.filterByUntraslated = filterByUntraslated;
+   }
+
+   public NavOption getNavOption()
+   {
+      return navOption;
+   }
+
+   public void setNavOption(NavOption navOption)
+   {
+      this.navOption = navOption;
+   }
+
+   public int getPageSize()
+   {
+      return pageSize;
+   }
+
+   public void setPageSize(int pageSize)
+   {
+      this.pageSize = pageSize;
+   }
+
+   public boolean getShowErrors()
+   {
+      return showErrors;
+   }
+
+   public void setShowErrors(boolean showErrors)
+   {
+      this.showErrors = showErrors;
    }
 }
