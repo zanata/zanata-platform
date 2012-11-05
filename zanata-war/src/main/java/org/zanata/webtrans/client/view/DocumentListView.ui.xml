@@ -24,18 +24,17 @@
 		.statsOption
 		{
 			display:inline-block;
-			width:120px;
 			text-align:left;
 		}
 		
 		.filterTextBox
 		{
-			font-size:18px;
+			font-size:16px;
 			margin: 0px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
 			width:415px;
-			line-height:25px;
+			line-height:18px;
 			padding-left:25px;
 		}
 		
@@ -56,19 +55,19 @@
 		
 		.searchIcon
 		{
-			font-size:22px;
+			font-size:20px;
 		}
         
     </ui:style>
     <g:LayoutPanel>
         <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
-                <g:layer top='0' height='40px' left="0px" right="0px">
+                <g:layer top='0' height='32px' left="0px" right="0px">
                 	<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
                 		<g:cell width="420px">
                 			<g:TextBox ui:field='filterTextBox' addStyleNames="{style.filterTextBox}"/>
                 		</g:cell>
-                		<g:cell>
+                		<g:cell width="210px">
                 			<g:HTMLPanel>
                 				<g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.optionStyle}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                 				<g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.optionStyle}"><ui:msg>Exact match</ui:msg></g:CheckBox>
@@ -77,16 +76,16 @@
                 		<g:cell horizontalAlignment="ALIGN_RIGHT">
                 			<g:HTMLPanel>
                         		<g:InlineLabel styleName="{style.optionStyle}"><ui:msg>Statistic: </ui:msg></g:InlineLabel>
-                        		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/><br/>
+                        		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/>
                         		<g:RadioButton ui:field="statsByMsg" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/>
                         	</g:HTMLPanel>
                 		</g:cell>
                 	</g:HorizontalPanel>
                 </g:layer>
-                 <g:layer top='8px' height='24px' left="13px" width="24px">
+                 <g:layer top='5px' height='24px' left="13px" width="24px">
             	 	<g:InlineLabel styleName="icon-search {style.searchIcon}"/>
             	 </g:layer>
-                <g:layer top='40px' bottom="0px">
+                <g:layer top='32px' bottom="0px">
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:VerticalPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>

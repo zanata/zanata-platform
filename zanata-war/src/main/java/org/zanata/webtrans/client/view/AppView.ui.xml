@@ -122,7 +122,7 @@
 		
 	</ui:style>
 	<g:LayoutPanel stylePrimaryName="{style.rootContainer}" ui:field="rootContainer">
-		<g:layer top="0px" height="30px">
+		<g:layer top="0px" height="25px">
 			<g:LayoutPanel styleName="subHeader">
 				<g:layer left="25px" right="25px">
 					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE" styleName="{style.fixedLayout}">
@@ -153,11 +153,11 @@
 		
 		<g:layer top="25px" bottom="0px" left='0px' right='0px' >
 				<g:LayoutPanel ui:field="contentContainer">
-					<g:layer top="5px" bottom="3px" left="25px" right="25px">
+					<g:layer top="0px" bottom="3px" left="25px" right="25px">
 						<g:TabLayoutPanel ui:field="content" barHeight="0" barUnit='PX' />
 					</g:layer>
 					
-					<g:layer left="0" width="24px" top="5px" height="82px">
+					<g:layer left="0" width="24px" top="0px" height="82px">
 						<g:HTMLPanel>
 							<g:Label styleName="icon-list {style.viewMenuTab}" ui:field="documentListTab"/>
 							<g:Label styleName="icon-edit {style.viewMenuTab}" ui:field="editorTab"/>
@@ -168,7 +168,7 @@
 				
 		</g:layer>
 		
-		<g:layer right="0" width="24px" top="30px" bottom="10px">
+		<g:layer right="0" width="24px" top="25px" bottom="10px">
 			<g:LayoutPanel ui:field="sideMenuContainer"/>
 		</g:layer>
 		

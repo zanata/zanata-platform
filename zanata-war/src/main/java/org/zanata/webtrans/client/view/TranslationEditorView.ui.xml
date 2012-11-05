@@ -50,13 +50,13 @@
 		
 		.searchIcon
 		{
-			font-size:22px;
+			font-size:20px;
 		}
 		
 	</ui:style>
 	
 			<g:LayoutPanel>
-				<g:layer top="0" height="40px">
+				<g:layer top="0" height="32px">
 					<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
 						<g:cell width="450px">
 							<g:HTMLPanel ui:field="filterPanelContainer"/>		
@@ -69,11 +69,11 @@
 						</g:cell>
 					</g:HorizontalPanel>
 				</g:layer>
-	            <g:layer top='8px' height='24px' left="13px" width="24px">
+	            <g:layer top='5px' height='24px' left="13px" width="24px">
             	 	<g:InlineLabel styleName="icon-search {style.searchIcon}"/>
             	 </g:layer>
 	           
-				<g:layer top="40px" bottom="2em">
+				<g:layer top="32px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
 				</g:layer>
 				<g:layer bottom="0px" height="2em" left="0" right="16px">

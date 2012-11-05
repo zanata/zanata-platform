@@ -3,7 +3,7 @@
 	position:absolute;
 	left:0;
 	right:0;
-	top:45px;
+	top:37px;
 	bottom:0;
 }
 
@@ -24,7 +24,7 @@
 .header {
 	width: 100%;
 	min-width:960px;
-	height: 44px;
+	height: 36px;
 	margin: 0;
 	background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
 	background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
@@ -73,15 +73,15 @@
 
 .navBar ul li a {
 	display: block;
-	height: 44px;
-	line-height: 44px;
-	font-size: 14px;
+	height: 36px;
+	line-height: 36px;
+	font-size: 13px;
 	color: #595959;
 	font-family: helvetica;
 	font-weight: bold;
 	text-decoration: none;
 	outline: none;
-	width: 130px;
+	width: 120px;
 	margin: 0 auto;
 }
 
@@ -114,7 +114,7 @@
 }
 
 #logoCol img {
-	padding-top: 8px;
+	padding-top: 5px;
 }
 
 
@@ -152,7 +152,7 @@
 
 #userCol div.submenu
 {
-	margin-left:-20px;
+	margin-left:-30px;
 }
 
 
@@ -229,7 +229,7 @@ div.submenu ul li a {
 	color: #454545;
 	font-size: 13px;
 	text-shadow: none;
-	line-height: 44px;
+	line-height: 36px;
 	text-align: left;
 	margin-left: 5px;
 	margin-right: 5px;
