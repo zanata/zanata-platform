@@ -83,8 +83,8 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("History")
    String history();
 
-   @DefaultMessage("Translation Unit Details: Row {0}; Id {1}; {2}")
-   String transUnitDetailsHeadingWithInfo(int rowIndex, String transUnitId, String info);
+   @DefaultMessage("Translation Unit Details: Row {0}; {1}")
+   String transUnitDetailsHeadingWithInfo(int rowIndex, String info);
 
    @DefaultMessage("Copy message from source language (Alt+G)")
    String copyFromSource();
