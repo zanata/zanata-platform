@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -40,6 +41,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
@@ -63,6 +65,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
+   
+   @UiField
+   InlineLabel twentyFiveDoc, fiftyDoc, hundredDoc, allDoc; 
    
    // @UiField
    // ListBox statsOptions;
@@ -102,6 +107,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
             listener.fireDocumentSelection(event.getSelectedItem());
          }
       });
+      
+      twentyFiveDoc.setText("25");
+      fiftyDoc.setText("50");
+      hundredDoc.setText("100");
+      allDoc.setText("All");
    }
 
 
@@ -196,6 +206,31 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
          listener.statsOptionChange(HasStatsFilter.STATS_OPTION_WORDS);
       }
    }
+   
+   @UiHandler("twentyFiveDoc")
+   public void onTwentyFiveDocClicked(ClickEvent event)
+   {
+      setPageSize(25);
+   }
+   
+   @UiHandler("fiftyDoc")
+   public void onFiftyDocClicked(ClickEvent event)
+   {
+      setPageSize(50);
+   }
+   
+   @UiHandler("hundredDoc")
+   public void onHundredDocClicked(ClickEvent event)
+   {
+      setPageSize(100);
+   }
+   
+   @UiHandler("allDoc")
+   public void onAllDocClicked(ClickEvent event)
+   {
+      setPageSize(dataProvider.getList().size());
+   }
+  
 
    @Override
    public void setStatsFilter(String option)
