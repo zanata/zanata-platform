@@ -22,7 +22,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -33,7 +33,6 @@ public interface HasTransUnitEditData
 
    Person getPerson();
 
-   TransUnit getSelectedTransUnit();
-   
-   TransUnit getPrevSelectedTransUnit();
+   TransUnitId getSelectedTransUnitId();
+
 }

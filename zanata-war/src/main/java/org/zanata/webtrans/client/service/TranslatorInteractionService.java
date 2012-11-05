@@ -27,6 +27,7 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 import com.google.inject.Inject;
@@ -50,7 +51,7 @@ public class TranslatorInteractionService
 
    public void transUnitSelected(TransUnit selectedTransUnit)
    {
-      dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit), new NoOpAsyncCallback<NoOpResult>());
+      dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit.getId()), new NoOpAsyncCallback<NoOpResult>());
    }
 
    public EditorClientId getCurrentEditorClientId()
@@ -58,11 +59,11 @@ public class TranslatorInteractionService
       return identity.getEditorClientId();
    }
 
-   public void personExit(Person person, TransUnit selectedTransUnit)
+   public void personExit(Person person, TransUnitId selectedTransUnitId)
    {
-      if (selectedTransUnit != null)
+      if (selectedTransUnitId != null)
       {
-         dispatcher.execute(new TransUnitEditAction(person, selectedTransUnit), new NoOpAsyncCallback<NoOpResult>());
+         dispatcher.execute(new TransUnitEditAction(person, selectedTransUnitId), new NoOpAsyncCallback<NoOpResult>());
       }
    }
 }

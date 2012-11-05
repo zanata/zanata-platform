@@ -44,9 +44,9 @@ public class EditorTranslators
       {
          EditorClientId editorClientId = entry.getKey();
          UserPanelSessionItem panelSessionItem = entry.getValue();
-         if (panelSessionItem.getSelectedTransUnit() != null)
+         if (panelSessionItem.getSelectedId() != null)
          {
-            updateEditorTranslatorList(panelSessionItem.getSelectedTransUnit().getId(), panelSessionItem.getPerson(), editorClientId, editors, currentTransUnitId);
+            updateEditorTranslatorList(panelSessionItem.getSelectedId(), panelSessionItem.getPerson(), editorClientId, editors, currentTransUnitId);
          }
       }
    }

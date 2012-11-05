@@ -8,12 +8,17 @@ public class UserPanelSessionItem implements IsSerializable
 {
    private HasManageUserPanel panel;
    private Person person;
-   private TransUnit selectedTransUnit;
+   private TransUnitId selectedId;
 
    public UserPanelSessionItem(HasManageUserPanel panel, Person person)
    {
       this.panel = panel;
       this.person = person;
+   }
+
+   @SuppressWarnings("unused")
+   protected UserPanelSessionItem()
+   {
    }
 
    public HasManageUserPanel getPanel()
@@ -26,13 +31,13 @@ public class UserPanelSessionItem implements IsSerializable
       return person;
    }
 
-   public TransUnit getSelectedTransUnit()
+   public TransUnitId getSelectedId()
    {
-      return selectedTransUnit;
+      return selectedId;
    }
 
-   public void setSelectedTransUnit(TransUnit selectedTransUnit)
+   public void setSelectedId(TransUnitId selectedId)
    {
-      this.selectedTransUnit = selectedTransUnit;
+      this.selectedId = selectedId;
    }
 }

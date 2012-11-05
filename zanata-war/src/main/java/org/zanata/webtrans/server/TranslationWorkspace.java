@@ -28,6 +28,7 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 
@@ -44,7 +45,7 @@ public interface TranslationWorkspace
    Collection<EditorClientId> removeEditorClients(String httpSessionId);
    <T extends SessionEventData> void publish(T eventData);
    WorkspaceContext getWorkspaceContext();
-   void updateUserSelection(EditorClientId editorClientId, TransUnit selectedTransUnit);
-   TransUnit getUserSelection(EditorClientId editorClientId);
+   void updateUserSelection(EditorClientId editorClientId, TransUnitId selectedTransUnitId);
+   TransUnitId getUserSelection(EditorClientId editorClientId);
    public void onEventServiceConnected(EditorClientId editorClientId, String connectionId);
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -14,7 +13,6 @@ import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import com.google.common.collect.ImmutableMap;
@@ -69,7 +67,7 @@ public class EditorTranslatorsTest
       Map<EditorClientId, UserPanelSessionItem> sessionMap = ImmutableMap.<EditorClientId, UserPanelSessionItem>builder().put(editorClientId, panelSessionItem).build();
       when(sessionService.getUserSessionMap()).thenReturn(sessionMap);
       when(sessionService.getColor(editorClientId)).thenReturn("red");
-      when(panelSessionItem.getSelectedTransUnit()).thenReturn(TestFixture.makeTransUnit(1));
+      when(panelSessionItem.getSelectedId()).thenReturn(TestFixture.makeTransUnit(1).getId());
       Person person = TestFixture.person();
       when(panelSessionItem.getPerson()).thenReturn(person);
       EditorClientId ourClientId = new EditorClientId("another client id", 2);
@@ -91,7 +89,7 @@ public class EditorTranslatorsTest
       Map<EditorClientId, UserPanelSessionItem> sessionMap = ImmutableMap.<EditorClientId, UserPanelSessionItem>builder().put(editorClientId, panelSessionItem).build();
       when(sessionService.getUserSessionMap()).thenReturn(sessionMap);
       when(sessionService.getColor(editorClientId)).thenReturn("red");
-      when(panelSessionItem.getSelectedTransUnit()).thenReturn(TestFixture.makeTransUnit(1));
+      when(panelSessionItem.getSelectedId()).thenReturn(TestFixture.makeTransUnit(1).getId());
       Person person = TestFixture.person();
       when(panelSessionItem.getPerson()).thenReturn(person);
       EditorClientId ourClientId = new EditorClientId("another client id", 2);
@@ -112,7 +110,7 @@ public class EditorTranslatorsTest
       EditorClientId editorClientId = new EditorClientId("sessionId", 1);
       Map<EditorClientId, UserPanelSessionItem> sessionMap = ImmutableMap.<EditorClientId, UserPanelSessionItem>builder().put(editorClientId, panelSessionItem).build();
       when(sessionService.getUserSessionMap()).thenReturn(sessionMap);
-      when(panelSessionItem.getSelectedTransUnit()).thenReturn(null);
+      when(panelSessionItem.getSelectedId()).thenReturn(null);
 
       // When:
       editorTranslators.updateTranslator(editors, new TransUnitId(1));

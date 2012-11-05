@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.service;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -19,7 +18,6 @@ import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 
-import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -61,7 +59,7 @@ public class TranslatorInteractionServiceTest
       verify(dispatcher).execute(actionCaptor.capture(), Mockito.isA(NoOpAsyncCallback.class));
       TransUnitEditAction action = actionCaptor.getValue();
       assertThat(action.getPerson(), Matchers.sameInstance(identity.getPerson()));
-      assertThat(action.getSelectedTransUnit(), Matchers.sameInstance(selectedTransUnit));
+      assertThat(action.getSelectedTransUnitId(), Matchers.sameInstance(selectedTransUnit.getId()));
    }
 
    @Test
@@ -70,11 +68,11 @@ public class TranslatorInteractionServiceTest
       TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
       Person person = TestFixture.person();
 
-      service.personExit(person, selectedTransUnit);
+      service.personExit(person, selectedTransUnit.getId());
 
       verify(dispatcher).execute(actionCaptor.capture(), Mockito.isA(NoOpAsyncCallback.class));
       TransUnitEditAction action = actionCaptor.getValue();
       assertThat(action.getPerson(), Matchers.sameInstance(person));
-      assertThat(action.getSelectedTransUnit(), Matchers.sameInstance(selectedTransUnit));
+      assertThat(action.getSelectedTransUnitId(), Matchers.sameInstance(selectedTransUnit.getId()));
    }
 }
