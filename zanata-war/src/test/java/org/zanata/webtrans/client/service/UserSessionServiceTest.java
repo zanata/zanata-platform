@@ -13,13 +13,11 @@ import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 
 import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -68,14 +66,14 @@ public class UserSessionServiceTest
       TransUnit transUnit = TestFixture.makeTransUnit(2);
       service.getUserSessionMap().put(editorClientId, sessionItem);
       when(hasTransUnitData.getEditorClientId()).thenReturn(editorClientId);
-      when(hasTransUnitData.getSelectedTransUnit()).thenReturn(transUnit);
+      when(hasTransUnitData.getSelectedTransUnitId()).thenReturn(transUnit.getId());
 
       // When:
       service.onTransUnitEdit(new TransUnitEditEvent(hasTransUnitData));
 
       // Then:
-      assertThat(service.getUserSessionMap().get(editorClientId).getSelectedTransUnit(), Matchers.sameInstance(transUnit));
-      assertThat(service.getUserSessionMap().get(editorClientId).getSelectedTransUnit(), Matchers.sameInstance(transUnit));
+      assertThat(service.getUserSessionMap().get(editorClientId).getSelectedId(), Matchers.sameInstance(transUnit.getId()));
+      assertThat(service.getUserSessionMap().get(editorClientId).getSelectedId(), Matchers.sameInstance(transUnit.getId()));
    }
 
    @Test
@@ -95,7 +93,7 @@ public class UserSessionServiceTest
       UserPanelSessionItem userPanel = service.getUserSessionMap().get(editorClientId);
       assertThat(userPanel.getPanel(), Matchers.sameInstance(panel));
       verify(panel).setColor("red");
-      assertThat(userPanel.getSelectedTransUnit(), Matchers.nullValue());
+      assertThat(userPanel.getSelectedId(), Matchers.nullValue());
    }
 
    @Test
@@ -108,13 +106,13 @@ public class UserSessionServiceTest
       when(event.getPerson()).thenReturn(person);
       UserPanelSessionItem sessionItem = new UserPanelSessionItem(panel, person);
       TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
-      sessionItem.setSelectedTransUnit(selectedTransUnit);
+      sessionItem.setSelectedId(selectedTransUnit.getId());
       service.getUserSessionMap().put(editorClientId, sessionItem);
 
       service.onExitWorkspace(event);
 
       verify(workspaceUsersPresenter).removeUser(panel, person.getId().toString());
-      verify(translatorInteractionService).personExit(person, selectedTransUnit);
+      verify(translatorInteractionService).personExit(person, selectedTransUnit.getId());
       assertThat(service.getUserSessionMap().size(), Matchers.is(0));
    }
 

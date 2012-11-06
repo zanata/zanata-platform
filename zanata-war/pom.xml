@@ -225,7 +225,7 @@
                             <goal>run-codeserver</goal>
                         </goals>
                         <configuration>
-                            <module>org.zanata.webtrans.ApplicationSafari</module>
+                            <module>${zanata.gwt.module}</module>
                         </configuration>
                     </execution>
                 </executions>

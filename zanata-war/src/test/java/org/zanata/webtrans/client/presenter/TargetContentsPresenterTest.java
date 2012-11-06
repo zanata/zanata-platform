@@ -558,7 +558,7 @@ public class TargetContentsPresenterTest
    {
       selectedTU = currentPageRows.get(0);
       TransUnitEditEvent event = mock(TransUnitEditEvent.class);
-      when(event.getSelectedTransUnit()).thenReturn(selectedTU);
+      when(event.getSelectedTransUnitId()).thenReturn(selectedTU.getId());
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
       presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
 

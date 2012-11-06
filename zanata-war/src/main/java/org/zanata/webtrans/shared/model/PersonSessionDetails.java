@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class PersonSessionDetails implements IsSerializable
 {
    private Person person;
-   private TransUnit selectedTransUnit;
+   private TransUnitId selectedTransUnitId;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -14,10 +14,10 @@ public class PersonSessionDetails implements IsSerializable
    {
    }
 
-   public PersonSessionDetails(Person person, TransUnit selectedTransUnit)
+   public PersonSessionDetails(Person person, TransUnitId selectedTransUnitId)
    {
       this.person = person;
-      this.selectedTransUnit = selectedTransUnit;
+      this.selectedTransUnitId = selectedTransUnitId;
    }
 
    public Person getPerson()
@@ -25,14 +25,14 @@ public class PersonSessionDetails implements IsSerializable
       return person;
    }
 
-   public TransUnit getSelectedTransUnit()
+   public TransUnitId getSelectedTransUnitId()
    {
-      return selectedTransUnit;
+      return selectedTransUnitId;
    }
 
-   public void setSelectedTransUnit(TransUnit selectedTransUnit)
+   public void setSelectedTransUnitId(TransUnitId selectedTransUnitId)
    {
-      this.selectedTransUnit = selectedTransUnit;
+      this.selectedTransUnitId = selectedTransUnitId;
    }
 
    public void setPerson(Person person)

@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.resources;
 
+import java.util.List;
+
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -98,8 +100,8 @@ public interface UiMessages extends Messages
    @DefaultMessage("TM merge failed")
    String mergeTMFailed();
 
-   @DefaultMessage("TM merge success")
-   String mergeTMSuccess();
+   @DefaultMessage("TM merge success on folowing rows: {0,list,string}")
+   String mergeTMSuccess(List<String> rowIndices);
 
    @DefaultMessage("Proceed to auto-fill")
    String mergeTMConfirm();

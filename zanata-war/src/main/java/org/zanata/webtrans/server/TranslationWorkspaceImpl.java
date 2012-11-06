@@ -12,7 +12,6 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
@@ -230,20 +229,20 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    }
 
    @Override
-   public void updateUserSelection(EditorClientId editorClientId, TransUnit selectedTransUnit)
+   public void updateUserSelection(EditorClientId editorClientId, TransUnitId selectedTransUnitId)
    {
       if (sessions.containsKey(editorClientId))
       {
-         sessions.get(editorClientId).setSelectedTransUnit(selectedTransUnit);
+         sessions.get(editorClientId).setSelectedTransUnitId(selectedTransUnitId);
       }
    }
 
    @Override
-   public TransUnit getUserSelection(EditorClientId editorClientId)
+   public TransUnitId getUserSelection(EditorClientId editorClientId)
    {
       if (sessions.containsKey(editorClientId))
       {
-         return sessions.get(editorClientId).getSelectedTransUnit();
+         return sessions.get(editorClientId).getSelectedTransUnitId();
       }
 
       return null;

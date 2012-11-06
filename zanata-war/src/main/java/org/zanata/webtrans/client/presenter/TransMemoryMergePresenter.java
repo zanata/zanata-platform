@@ -27,6 +27,8 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -39,15 +41,18 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+import org.zanata.webtrans.shared.util.StringNotEmptyPredicate;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -114,19 +119,12 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
             {
                final UndoLink undoLink = undoLinkProvider.get();
                undoLink.prepareUndoFor(result);
-               undoLink.setUndoCallback(new UndoLink.UndoCallback()
-               {
-                  @Override
-                  public void preUndo()
-                  {
-                  }
 
-                  @Override
-                  public void postUndoSuccess()
-                  {
-                  }
-               });
-               NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(), undoLink);
+               List<String> rowIndicesOrNull = Lists.transform(result.getUpdateInfoList(), SuccessRowIndexOrNullFunction.FUNCTION);
+               Iterable<String> successRowIndices = Iterables.filter(rowIndicesOrNull, StringNotEmptyPredicate.INSTANCE);
+
+               Log.info("number of rows auto filled by TM merge: " + Iterables.size(successRowIndices));
+               NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(Lists.newArrayList(successRowIndices)), undoLink);
                eventBus.fireEvent(event);
             }
             display.hide();
@@ -185,5 +183,19 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    @Override
    protected void onRevealDisplay()
    {
+   }
+
+   private static enum SuccessRowIndexOrNullFunction implements Function<TransUnitUpdateInfo, String>
+   {
+      FUNCTION;
+      @Override
+      public String apply(TransUnitUpdateInfo input)
+      {
+         if (input.isSuccess())
+         {
+            return String.valueOf(input.getTransUnit().getRowIndex());
+         }
+         return "";
+      }
    }
 }

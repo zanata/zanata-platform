@@ -32,6 +32,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
+import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -54,6 +55,7 @@ import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -204,7 +206,11 @@ public class TransMemoryMergePresenterTest
    public void onRequestTMMergeSuccessWithTranslationWillCreateUndoLinkAndNotify() {
       // Given:
       // there is untranslated text flow on page
-      List<TransUnit> currentPageRows = Lists.newArrayList(makeTransUnit(1, ContentState.New));
+      List<TransUnit> currentPageRows = Lists.newArrayList(
+            makeTransUnit(1, ContentState.New),
+            makeTransUnit(2, ContentState.NeedReview),
+            makeTransUnit(3, ContentState.New),
+            makeTransUnit(4, ContentState.NeedReview));
       mockCurrentPageToReturn(currentPageRows);
       UndoLink undoLink = mock(UndoLink.class);
       when(undoLinkProvider.get()).thenReturn(undoLink);
@@ -214,16 +220,21 @@ public class TransMemoryMergePresenterTest
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success and result has some updated info
-      UpdateTransUnitResult result = new UpdateTransUnitResult(new TransUnitUpdateInfo(true, true, null, null, 0, 0, ContentState.Approved));
+      UpdateTransUnitResult result = new UpdateTransUnitResult();
+      result.addUpdateResult(new TransUnitUpdateInfo(true, true, null, currentPageRows.get(0), 0, 0, ContentState.Approved));
+      // add an unsuccessful result
+      result.addUpdateResult(new TransUnitUpdateInfo(false, true, null, currentPageRows.get(1), 0, 0, ContentState.Approved));
+      result.addUpdateResult(new TransUnitUpdateInfo(true, true, null, currentPageRows.get(2), 0, 0, ContentState.Approved));
+      result.addUpdateResult(new TransUnitUpdateInfo(true, true, null, currentPageRows.get(3), 0, 0, ContentState.Approved));
       callback.onSuccess(result);
 
       // Then:
-      verify(messages).mergeTMSuccess();
+      verify(messages).mergeTMSuccess(Lists.newArrayList("1", "3", "4"));
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
       verify(display).hide();
       NotificationEvent event = notificationEventCaptor.getValue();
       assertThat(event.getSeverity(), Matchers.equalTo(NotificationEvent.Severity.Info));
-      assertThat(event.getMessage(), Matchers.sameInstance(messages.mergeTMSuccess()));
+      assertThat(event.getMessage(), Matchers.sameInstance(messages.mergeTMSuccess(Lists.newArrayList("1", "3", "4"))));
       assertThat(event.getInlineLink(), Matchers.<InlineLink>sameInstance(undoLink));
       verify(undoLink).prepareUndoFor(result);
    }

@@ -4,7 +4,6 @@ import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -60,7 +59,7 @@ public class TransUnitEditHandlerTest
       TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
       WorkspaceId workspaceId = TestFixture.workspaceId();
       EditorClientId editorClientId = new EditorClientId("sessionId", 1);
-      TransUnitEditAction action = new TransUnitEditAction(person, selectedTransUnit);
+      TransUnitEditAction action = new TransUnitEditAction(person, selectedTransUnit.getId());
       action.setWorkspaceId(workspaceId);
       action.setEditorClientId(editorClientId);
       when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId)).thenReturn(translationWorkspace);
@@ -68,12 +67,12 @@ public class TransUnitEditHandlerTest
       handler.execute(action, null);
 
       verify(identity).checkLoggedIn();
-      verify(translationWorkspace).updateUserSelection(editorClientId, selectedTransUnit);
+      verify(translationWorkspace).updateUserSelection(editorClientId, selectedTransUnit.getId());
       verify(translationWorkspace).publish(eventCaptor.capture());
       TransUnitEdit transUnitEdit = eventCaptor.getValue();
       assertThat(transUnitEdit.getEditorClientId(), Matchers.sameInstance(editorClientId));
       assertThat(transUnitEdit.getPerson(), Matchers.sameInstance(person));
-      assertThat(transUnitEdit.getSelectedTransUnit(), Matchers.sameInstance(selectedTransUnit));
+      assertThat(transUnitEdit.getSelectedTransUnitId(), Matchers.sameInstance(selectedTransUnit.getId()));
    }
 
    @Test

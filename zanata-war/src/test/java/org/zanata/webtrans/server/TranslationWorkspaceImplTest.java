@@ -121,11 +121,11 @@ public class TranslationWorkspaceImplTest
       translationWorkspace.addEditorClient("sessionId", editorClientId, new PersonId("personId"));
       TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
 
-      translationWorkspace.updateUserSelection(editorClientId, selectedTransUnit);
+      translationWorkspace.updateUserSelection(editorClientId, selectedTransUnit.getId());
 
       PersonSessionDetails personSessionDetails = translationWorkspace.getUsers().get(editorClientId);
-      assertThat(personSessionDetails.getSelectedTransUnit(), Matchers.equalTo(selectedTransUnit));
-      assertThat(translationWorkspace.getUserSelection(editorClientId), Matchers.equalTo(selectedTransUnit));
+      assertThat(personSessionDetails.getSelectedTransUnitId(), Matchers.equalTo(selectedTransUnit.getId()));
+      assertThat(translationWorkspace.getUserSelection(editorClientId), Matchers.equalTo(selectedTransUnit.getId()));
    }
 
 

@@ -2,7 +2,7 @@ package org.zanata.webtrans.client.events;
 
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -12,15 +12,13 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> impl
 
    private final EditorClientId editorClientId;
    private final Person person;
-   private final TransUnit selectedTransUnit;
-   private final TransUnit prevSelectedTransUnit;
+   private final TransUnitId selectedTransUnitId;
 
    public TransUnitEditEvent(HasTransUnitEditData data)
    {
       editorClientId = data.getEditorClientId();
       person = data.getPerson();
-      selectedTransUnit = data.getSelectedTransUnit();
-      prevSelectedTransUnit = data.getPrevSelectedTransUnit();
+      selectedTransUnitId = data.getSelectedTransUnitId();
    }
 
    /**
@@ -67,14 +65,9 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> impl
    }
 
    @Override
-   public TransUnit getSelectedTransUnit()
+   public TransUnitId getSelectedTransUnitId()
    {
-      return selectedTransUnit;
+      return selectedTransUnitId;
    }
 
-   @Override
-   public TransUnit getPrevSelectedTransUnit()
-   {
-      return prevSelectedTransUnit;
-   }
 }

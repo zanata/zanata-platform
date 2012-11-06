@@ -35,7 +35,7 @@ import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
@@ -73,14 +73,14 @@ public class UserSessionService implements TransUnitEditEventHandler, ExitWorksp
    @Override
    public void onTransUnitEdit(TransUnitEditEvent event)
    {
-      updateTranslatorStatus(event.getEditorClientId(), event.getSelectedTransUnit());
+      updateTranslatorStatus(event.getEditorClientId(), event.getSelectedTransUnitId());
    }
 
-   private void updateTranslatorStatus(EditorClientId editorClientId, TransUnit selectedTransUnit)
+   private void updateTranslatorStatus(EditorClientId editorClientId, TransUnitId selectedId)
    {
-      if (userSessionMap.containsKey(editorClientId) && selectedTransUnit != null)
+      if (userSessionMap.containsKey(editorClientId) && selectedId != null)
       {
-         userSessionMap.get(editorClientId).setSelectedTransUnit(selectedTransUnit);
+         userSessionMap.get(editorClientId).setSelectedId(selectedId);
       }
    }
 
@@ -125,7 +125,7 @@ public class UserSessionService implements TransUnitEditEventHandler, ExitWorksp
       removeUser(editorClientId);
 
       workspaceUsersPresenter.removeUser(item.getPanel(), event.getPerson().getId().toString());
-      interactionService.personExit(event.getPerson(), item.getSelectedTransUnit());
+      interactionService.personExit(event.getPerson(), item.getSelectedId());
 
       if (Objects.equal(editorClientId, interactionService.getCurrentEditorClientId()))
       {
@@ -141,11 +141,11 @@ public class UserSessionService implements TransUnitEditEventHandler, ExitWorksp
          EditorClientId editorClientId = entry.getKey();
          PersonSessionDetails personSessionDetails = entry.getValue();
          HasManageUserPanel panel = workspaceUsersPresenter.addNewUser(personSessionDetails.getPerson());
-         addTranslator(editorClientId, personSessionDetails.getPerson(), personSessionDetails.getSelectedTransUnit(), panel);
+         addTranslator(editorClientId, personSessionDetails.getPerson(), personSessionDetails.getSelectedTransUnitId(), panel);
       }
    }
 
-   private void addTranslator(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit, HasManageUserPanel panel)
+   private void addTranslator(EditorClientId editorClientId, Person person, TransUnitId selectedTransUnitId, HasManageUserPanel panel)
    {
       String color = getColor(editorClientId);
 
@@ -156,10 +156,10 @@ public class UserSessionService implements TransUnitEditEventHandler, ExitWorksp
          addUser(editorClientId, item);
       }
 
-      item.setSelectedTransUnit(selectedTransUnit);
+      item.setSelectedId(selectedTransUnitId);
 
       item.getPanel().setColor(color);
 
-      updateTranslatorStatus(editorClientId, selectedTransUnit);
+      updateTranslatorStatus(editorClientId, selectedTransUnitId);
    }
 }
