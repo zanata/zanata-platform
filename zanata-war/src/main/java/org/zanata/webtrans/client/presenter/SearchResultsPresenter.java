@@ -1198,6 +1198,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    {
       documentDataProviders.clear();
       documentSelectionModels.clear();
+      display.getSelectAllChk().setValue(false, false);
       allReplaceInfos.clear();
       display.clearAll();
       selectAllDocList.clear();
