@@ -68,7 +68,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
    
    @UiField
-   InlineLabel twentyFiveDoc, fiftyDoc, hundredDoc, allDoc; 
+   InlineLabel twentyFiveDoc, fiftyDoc, hundredDoc, twoHundredFiftyDoc;
    
    @UiField
    RadioButton statsByMsg, statsByWord;
@@ -117,16 +117,14 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       twentyFiveDoc.setText("25");
       fiftyDoc.setText("50");
       hundredDoc.setText("100");
-      allDoc.setText("All");
+      twoHundredFiftyDoc.setText("250");
    }
-
 
    @Override
    public Widget asWidget()
    {
       return this;
    }
-
 
    @Override
    public String getSelectedStatsOption()
@@ -159,13 +157,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       return addHandler(handler, SelectionEvent.getType());
    }
 
-
-   private void setPageSize(int pageSize)
-   {
-      documentListTable.setPageSize(pageSize);
-      pager.setDisplay(documentListTable);
-   }
-
    @Override
    public ListDataProvider<DocumentNode> getDataProvider()
    {
@@ -182,16 +173,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    public void onCaseSensitiveCheckboxValueChange(ValueChangeEvent<Boolean> event)
    {
       listener.fireCaseSensitiveToken(event.getValue());
-   }
-
-   @Override
-   public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
-   {
-      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel);
-      dataProvider.addDataDisplay(documentListTable);
-
-      documentListContainer.clear();
-      documentListContainer.add(documentListTable);
    }
 
    @UiHandler("statsByMsg")
@@ -212,18 +193,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       }
    }
    
-   private void onDocumentListCountChanged(InlineLabel selectedWidget, int pageSize)
-   {
-      setPageSize(pageSize);
-
-      twentyFiveDoc.removeStyleName(style.selectedDocCount());
-      fiftyDoc.removeStyleName(style.selectedDocCount());
-      hundredDoc.removeStyleName(style.selectedDocCount());
-      allDoc.removeStyleName(style.selectedDocCount());
-
-      selectedWidget.addStyleName(style.selectedDocCount());
-   }
-
    @UiHandler("twentyFiveDoc")
    public void onTwentyFiveDocClicked(ClickEvent event)
    {
@@ -242,12 +211,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       onDocumentListCountChanged(hundredDoc, 100);
    }
    
-   @UiHandler("allDoc")
-   public void onAllDocClicked(ClickEvent event)
+   @UiHandler("twoHundredFiftyDoc")
+   public void onTwoHundredFiftyDocClicked(ClickEvent event)
    {
-      onDocumentListCountChanged(allDoc, dataProvider.getList().size());
+      onDocumentListCountChanged(twoHundredFiftyDoc, 250);
    }
-  
 
    @Override
    public void setStatsFilter(String option)
@@ -273,6 +241,29 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);
       exactSearchCheckBox.setValue(docFilterExact, false);
       filterTextBox.setValue(docFilterText, false);
+   }
+
+   @Override
+   public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
+   {
+      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel);
+      dataProvider.addDataDisplay(documentListTable);
+
+      documentListContainer.clear();
+      documentListContainer.add(documentListTable);
+   }
+
+   private void onDocumentListCountChanged(InlineLabel selectedWidget, int pageSize)
+   {
+      documentListTable.setPageSize(pageSize);
+      pager.setDisplay(documentListTable);
+
+      twentyFiveDoc.removeStyleName(style.selectedDocCount());
+      fiftyDoc.removeStyleName(style.selectedDocCount());
+      hundredDoc.removeStyleName(style.selectedDocCount());
+      twoHundredFiftyDoc.removeStyleName(style.selectedDocCount());
+
+      selectedWidget.addStyleName(style.selectedDocCount());
    }
 
    @Override

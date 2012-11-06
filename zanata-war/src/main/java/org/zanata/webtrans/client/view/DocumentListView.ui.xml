@@ -115,7 +115,7 @@
 	                				<g:InlineLabel ui:field="twentyFiveDoc"/>
 	                				<g:InlineLabel ui:field="fiftyDoc"/>
 	                				<g:InlineLabel ui:field="hundredDoc"/>
-	                				<g:InlineLabel ui:field="allDoc"/>
+	                				<g:InlineLabel ui:field="twoHundredFiftyDoc"/>
 	                			</g:HTMLPanel>
 	                		</g:cell>
 		                    
