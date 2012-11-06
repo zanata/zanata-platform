@@ -12,4 +12,6 @@ public interface RpcMessages extends Messages
    @DefaultMessage("Dispatcher not set up to delegate WorkspaceContext and Identity.")
    String dispatcherSetupFailed();
 
+   @DefaultMessage("No response from server. Please refresh your page and make sure server is still up.")
+   String noResponseFromServer();
 }

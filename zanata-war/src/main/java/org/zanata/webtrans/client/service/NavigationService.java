@@ -126,14 +126,8 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          @Override
          public void onFailure(Throwable caught)
          {
-            if (caught instanceof AuthenticationError)
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyNotLoggedIn()));
-            } else
-            {
-               Log.error("GetTransUnits failure " + caught, caught);
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyLoadFailed()));
-            }
+            Log.error("GetTransUnits failure " + caught, caught);
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyLoadFailed()));
             isLoadingTU = false;
             finishLoading();
          }

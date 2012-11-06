@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.rpc;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -17,4 +18,5 @@ public interface CachingDispatchAsync extends DispatchAsync
 
    <A extends Action<R>, R extends Result> void rollback(A action, R result, AsyncCallback<Void> callback);
 
+   void setEventBus(EventBus eventBus);
 }

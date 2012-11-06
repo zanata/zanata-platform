@@ -12,9 +12,6 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Message has been copied to the target.")
    String notifyCopied();
 
-   @DefaultMessage("Not logged in!")
-   String notifyNotLoggedIn();
-
    @DefaultMessage("Failed to load data from server")
    String notifyLoadFailed();
 
@@ -35,9 +32,6 @@ public interface TableEditorMessages extends Messages
    String validationWarningsHeading(@PluralCount int warningCount);
    // @formatter:on
 
-   @DefaultMessage(" Run check")
-   String runCheck();
-   
    @DefaultMessage("Copy from translation memory match result no.{0}")
    String copyFromTM(int index);
 
@@ -88,10 +82,6 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Copy message from source language (Alt+G)")
    String copyFromSource();
-
-
-   @DefaultMessage("No response from server. Please refresh your page and make sure server is still up.")
-   String noResponseFromServer();
 
    @DefaultMessage("Saving...")
    String saving();

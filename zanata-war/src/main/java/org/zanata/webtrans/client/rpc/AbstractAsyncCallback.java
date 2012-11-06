@@ -29,7 +29,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public abstract class AbstractAsyncCallback<T> implements AsyncCallback<T>
 {
-   //TODO should refactor all callback implementation to use this as base class and have default/unified failure handling
    @Override
    public void onFailure(Throwable caught)
    {

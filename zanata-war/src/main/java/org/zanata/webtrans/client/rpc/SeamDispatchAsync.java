@@ -2,8 +2,10 @@ package org.zanata.webtrans.client.rpc;
 
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.Application;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.RpcMessages;
 import org.zanata.webtrans.shared.DispatchService;
 import org.zanata.webtrans.shared.DispatchServiceAsync;
@@ -20,6 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
 
 public class SeamDispatchAsync implements CachingDispatchAsync
@@ -36,6 +39,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync
    protected Identity identity;
 
    private final RpcMessages messages;
+   private EventBus eventBus;
 
    @Inject
    public SeamDispatchAsync()
@@ -64,11 +68,15 @@ public class SeamDispatchAsync implements CachingDispatchAsync
       }
 
       String sessionId = Cookies.getCookie("JSESSIONID");
-      realService.execute(new WrappedAction<R>(action, sessionId), new AsyncCallback<Result>()
+      realService.execute(new WrappedAction<R>(action, sessionId), new AbstractAsyncCallback<Result>()
       {
 
          public void onFailure(final Throwable caught)
          {
+            if (caught instanceof com.google.gwt.user.client.rpc.StatusCodeException && ((StatusCodeException) caught).getStatusCode() == 0)
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.noResponseFromServer()));
+            }
             if (caught instanceof AuthenticationError || caught instanceof InvalidTokenError)
             {
                Application.redirectToLogin();
@@ -102,6 +110,12 @@ public class SeamDispatchAsync implements CachingDispatchAsync
    public void setIdentity(Identity identity)
    {
       this.identity = identity;
+   }
+
+   @Override
+   public void setEventBus(EventBus eventBus)
+   {
+      this.eventBus = eventBus;
    }
 
    @Override

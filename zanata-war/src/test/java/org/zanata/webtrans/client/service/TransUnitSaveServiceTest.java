@@ -295,34 +295,6 @@ public class TransUnitSaveServiceTest
       assertThat(event.getInlineLink(), Matchers.<InlineLink>sameInstance(goToLink));
    }
 
-   @Test
-   public void onPRCFailureOnServerDown()
-   {
-      // Given:
-      TransUnit old = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "old content");
-      when(navigationService.getByIdOrNull(TRANS_UNIT_ID)).thenReturn(old);
-
-      // When: save as fuzzy
-      TransUnitSaveEvent saveEvent = event("new content", ContentState.NeedReview, TRANS_UNIT_ID, VER_NUM, "old content");
-      service.onTransUnitSave(saveEvent);
-      verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
-      // on rpc failure and no server response:
-
-      // Then:
-      AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
-      when(messages.noResponseFromServer()).thenReturn("server down");
-      when(messages.notifyUpdateFailed("server down")).thenReturn("update failed: server down");
-      callback.onFailure(new StatusCodeException(0, ""));
-
-      ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
-      verify(targetContentsPresenter).setEditingState(TRANS_UNIT_ID, TargetContentsDisplay.EditingState.UNSAVED);
-      verify(eventBus).fireEvent(notificationEventCaptor.capture());
-      NotificationEvent event = notificationEventCaptor.getValue();
-      assertThat(event.getSeverity(), is(NotificationEvent.Severity.Error));
-      assertThat(event.getMessage(), equalTo("update failed: server down"));
-      assertThat(event.getInlineLink(), Matchers.<InlineLink>sameInstance(goToLink));
-   }
-
    private static UpdateTransUnitResult result(boolean success, TransUnit transUnit, ContentState previousState)
    {
       return new UpdateTransUnitResult(new TransUnitUpdateInfo(success, true, new DocumentId(1), transUnit, 9, VER_NUM, previousState));

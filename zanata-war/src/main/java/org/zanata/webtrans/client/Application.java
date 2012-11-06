@@ -93,6 +93,7 @@ public class Application implements EntryPoint
             identity = result.getIdentity();
             injector.getDispatcher().setIdentity(identity);
             injector.getDispatcher().setUserWorkspaceContext(userWorkspaceContext);
+            injector.getDispatcher().setEventBus(injector.getEventBus());
 
             startApp();
          }

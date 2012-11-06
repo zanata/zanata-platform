@@ -21,13 +21,11 @@
 
 package org.zanata.webtrans.client.service;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
+import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.GoToRowLink;
@@ -39,14 +37,14 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -147,14 +145,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       public void onFailure(Throwable e)
       {
          Log.error("UpdateTransUnit failure ", e);
-         if (e instanceof com.google.gwt.user.client.rpc.StatusCodeException && ((StatusCodeException) e).getStatusCode() == 0)
-         {
-            saveFailure(messages.noResponseFromServer());
-         }
-         else
-         {
-            saveFailure(e.getMessage());
-         }
+         saveFailure(e.getMessage());
       }
 
       @Override
