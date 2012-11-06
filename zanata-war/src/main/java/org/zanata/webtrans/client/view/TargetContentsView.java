@@ -32,7 +32,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -221,7 +220,10 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status)
    {
       cachedValue = TransUnit.Builder.from(cachedValue).setTargets(targets).setVerNum(verNum).setStatus(status).build();
-
+      for (int i = 0; i < editors.size(); i++)
+      {
+         editors.get(i).updateCachedValue(targets.get(i));
+      }
       editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
    }
 
@@ -311,6 +313,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       {
          String target = cachedTargets.get(i);
          editors.get(i).setTextAndValidate(target);
+         editors.get(i).updateCachedValue(target);
       }
       editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
    }
