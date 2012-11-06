@@ -56,8 +56,6 @@ import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, TransUnitUpdatedEventHandler
 {
-   private static final int PAGE_SIZE = 20;
-
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
@@ -134,7 +132,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
 
       display.setListener(this);
-      display.setPageSize(PAGE_SIZE);
+      display.onTwentyFiveDocClicked(null);
    }
 
    @Override
