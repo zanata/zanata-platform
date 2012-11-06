@@ -5,7 +5,7 @@
     xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
     xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
-    <ui:style>
+    <ui:style type="org.zanata.webtrans.client.view.DocumentListView.Styles">
         .unitStatus {
             float: right;
             width: 100px;
@@ -57,6 +57,26 @@
 		{
 			font-size:20px;
 		}
+		
+		.pageSizeContainer span {
+            padding: 3px;
+            border: 1px solid #808080;
+            cursor: pointer;
+            display: block;
+            height: 15px;
+            width: 25px;
+            text-align: center;
+            float: left;
+            margin-right: 3px;
+            background:#808080;
+            color:#FFFFFF;
+        }
+        
+        .pageSizeContainer span:hover,  .pageSizeContainer span.selectedDocCount {
+            background:#B62918;
+        }
+        
+        
         
     </ui:style>
     <g:LayoutPanel>
@@ -89,7 +109,17 @@
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:VerticalPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>
-		                    <c:SimplePager ui:field="pager" location='CENTER'/> 
+	                		<c:SimplePager ui:field="pager" location='CENTER'/> 
+	                		<g:cell>
+	                			<g:HTMLPanel styleName="{style.pageSizeContainer}">
+	                				<g:InlineLabel ui:field="twentyFiveDoc"/>
+	                				<g:InlineLabel ui:field="fiftyDoc"/>
+	                				<g:InlineLabel ui:field="hundredDoc"/>
+	                				<g:InlineLabel ui:field="twoHundredFiftyDoc"/>
+	                			</g:HTMLPanel>
+	                		</g:cell>
+		                    
+		                    
 	                    </g:VerticalPanel>
                     </g:ScrollPanel> 
                 </g:layer>

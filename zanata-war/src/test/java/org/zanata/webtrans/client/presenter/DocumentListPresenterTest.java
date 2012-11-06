@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
@@ -83,7 +82,6 @@ public class DocumentListPresenterTest
 
    private static final String TEST_BY_WORDS_MESSAGE = "By Words";
    private static final String TEST_BY_MESSAGE_MESSAGE = "By Message";
-   private static final int TEST_PAGE_SIZE = 20;
 
    @BeforeMethod
    public void beforeMethod()
@@ -104,25 +102,11 @@ public class DocumentListPresenterTest
 
       verify(mockDisplay).renderTable(isA(SingleSelectionModel.class));
       verify(mockDisplay).setStatsFilter("Words");
-      verify(mockDisplay).setPageSize(TEST_PAGE_SIZE);
+      verify(mockDisplay).onTwentyFiveDocClicked(null);
       verify(mockDisplay).setListener(documentListPresenter);
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(TransUnitUpdatedEvent.getType(), documentListPresenter);
 
-   }
-
-   @Test
-   public void setsPageSize()
-   {
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
-
-      documentListPresenter.bind();
-      documentListPresenter.setDocuments(buildSampleDocumentArray());
-
-      verify(mockDisplay).setPageSize(capturedPageSize.capture());
-
-      assertThat("display page size should be set on bind to a high enough value to show all documents on one page", capturedPageSize.getValue(), greaterThanOrEqualTo(3));
    }
 
    @Test

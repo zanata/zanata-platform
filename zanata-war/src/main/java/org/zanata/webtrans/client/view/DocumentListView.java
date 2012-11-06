@@ -28,11 +28,13 @@ import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -40,6 +42,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
@@ -64,14 +67,17 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
    
-   // @UiField
-   // ListBox statsOptions;
-
+   @UiField
+   InlineLabel twentyFiveDoc, fiftyDoc, hundredDoc, twoHundredFiftyDoc;
+   
    @UiField
    RadioButton statsByMsg, statsByWord;
 
    @UiField
    SimplePager pager;
+
+   @UiField
+   Styles style;
 
    private DocumentListTable documentListTable;
 
@@ -79,6 +85,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    private final WebTransMessages messages;
    
    private ListDataProvider<DocumentNode> dataProvider;
+
+   interface Styles extends CssResource
+   {
+      String selectedDocCount();
+   }
 
    @Inject
    public DocumentListView(Resources resources, WebTransMessages messages)
@@ -102,15 +113,18 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
             listener.fireDocumentSelection(event.getSelectedItem());
          }
       });
+      
+      twentyFiveDoc.setText("25");
+      fiftyDoc.setText("50");
+      hundredDoc.setText("100");
+      twoHundredFiftyDoc.setText("250");
    }
-
 
    @Override
    public Widget asWidget()
    {
       return this;
    }
-
 
    @Override
    public String getSelectedStatsOption()
@@ -143,14 +157,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       return addHandler(handler, SelectionEvent.getType());
    }
 
-
-   @Override
-   public void setPageSize(int pageSize)
-   {
-      documentListTable.setPageSize(pageSize);
-      pager.setDisplay(documentListTable);
-   }
-
    @Override
    public ListDataProvider<DocumentNode> getDataProvider()
    {
@@ -169,16 +175,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       listener.fireCaseSensitiveToken(event.getValue());
    }
 
-   @Override
-   public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
-   {
-      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel);
-      dataProvider.addDataDisplay(documentListTable);
-
-      documentListContainer.clear();
-      documentListContainer.add(documentListTable);
-   }
-
    @UiHandler("statsByMsg")
    public void onStatsByMsgChange(ValueChangeEvent<Boolean> event)
    {
@@ -195,6 +191,30 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       {
          listener.statsOptionChange(HasStatsFilter.STATS_OPTION_WORDS);
       }
+   }
+   
+   @UiHandler("twentyFiveDoc")
+   public void onTwentyFiveDocClicked(ClickEvent event)
+   {
+      onDocumentListCountChanged(twentyFiveDoc, 25);
+   }
+   
+   @UiHandler("fiftyDoc")
+   public void onFiftyDocClicked(ClickEvent event)
+   {
+      onDocumentListCountChanged(fiftyDoc, 50);
+   }
+   
+   @UiHandler("hundredDoc")
+   public void onHundredDocClicked(ClickEvent event)
+   {
+      onDocumentListCountChanged(hundredDoc, 100);
+   }
+   
+   @UiHandler("twoHundredFiftyDoc")
+   public void onTwoHundredFiftyDocClicked(ClickEvent event)
+   {
+      onDocumentListCountChanged(twoHundredFiftyDoc, 250);
    }
 
    @Override
@@ -221,6 +241,29 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);
       exactSearchCheckBox.setValue(docFilterExact, false);
       filterTextBox.setValue(docFilterText, false);
+   }
+
+   @Override
+   public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
+   {
+      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel);
+      dataProvider.addDataDisplay(documentListTable);
+
+      documentListContainer.clear();
+      documentListContainer.add(documentListTable);
+   }
+
+   private void onDocumentListCountChanged(InlineLabel selectedWidget, int pageSize)
+   {
+      documentListTable.setPageSize(pageSize);
+      pager.setDisplay(documentListTable);
+
+      twentyFiveDoc.removeStyleName(style.selectedDocCount());
+      fiftyDoc.removeStyleName(style.selectedDocCount());
+      hundredDoc.removeStyleName(style.selectedDocCount());
+      twoHundredFiftyDoc.removeStyleName(style.selectedDocCount());
+
+      selectedWidget.addStyleName(style.selectedDocCount());
    }
 
    @Override
