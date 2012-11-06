@@ -21,7 +21,6 @@
 package org.zanata.dao;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -48,24 +47,19 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
-import org.zanata.util.HTextFlowPosComparator;
-import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -92,6 +86,16 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    public TextFlowDAO(Session session)
    {
       super(HTextFlow.class, session);
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<Long> findIdsWithTranslations(LocaleId locale)
+   {
+      Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
+      q.setParameter("locale", locale);
+      // TextFlowFilter does its own caching, no need for double caching
+      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
+      return q.list();
    }
 
    public HTextFlow getById(HDocument document, String id)
@@ -224,7 +228,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
 
 
-   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId locale, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId locale, final int maxResult) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -282,21 +286,22 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;
-         if (queriesSize > IndexFieldLabels.TF_CONTENT_FIELDS.length)
+         if (queriesSize > IndexFieldLabels.CONTENT_FIELDS.length)
          {
-            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.TF_CONTENT_FIELDS.length);
+            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.CONTENT_FIELDS.length);
          }
          String[] searchFields = new String[queriesSize];
-         System.arraycopy(IndexFieldLabels.TF_CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
+         System.arraycopy(IndexFieldLabels.CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
 
          textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
-         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.TF_CONTENT_FIELDS, analyzer);
+         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.CONTENT_FIELDS, analyzer);
          textQuery = parser.parse(queryText);
       }
-      FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
+      FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
+      ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
 
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
