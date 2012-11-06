@@ -8,7 +8,7 @@ import java.util.List;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -27,9 +27,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState.*;
+
 public class Editor extends Composite implements ToggleEditor
 {
-   private final String displayString;
+   private String originalValue;
    private TargetContentsDisplay.Listener listener;
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
@@ -82,7 +84,7 @@ public class Editor extends Composite implements ToggleEditor
 
    public Editor(String displayString, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
    {
-      this.displayString = displayString;
+      this.originalValue = displayString;
       this.listener = listener;
       this.index = index;
       this.id = id;
@@ -111,7 +113,8 @@ public class Editor extends Composite implements ToggleEditor
    public void onValueChange(ValueChangeEvent<String> event)
    {
       fireValidationEvent();
-      boolean contentHasChanged = !Objects.equal(textArea.getText(), displayString);
+      boolean contentHasChanged = !Objects.equal(textArea.getText(), originalValue);
+      Log.info("value changed? " + contentHasChanged + " new: " + textArea.getText() + " old: " + originalValue);
       TargetContentsDisplay.EditingState editingState = contentHasChanged ? UNSAVED : SAVED;
       listener.setEditingState(id, editingState);
    }
@@ -264,6 +267,12 @@ public class Editor extends Composite implements ToggleEditor
    public void refresh()
    {
       textArea.refresh();
+   }
+
+   @Override
+   public void updateCachedValue(String displayText)
+   {
+      originalValue = displayText;
    }
 
    @Override
