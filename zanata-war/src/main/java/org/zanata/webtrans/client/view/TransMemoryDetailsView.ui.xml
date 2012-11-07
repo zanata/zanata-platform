@@ -43,7 +43,7 @@
 				</g:HTMLPanel>
 			</g:layer>
 			
-			<g:layer top="106px" height="38px" left="0" right="0">
+			<g:layer top="100px" height="35px" left="0" right="0">
 				<g:HTMLPanel>
 					<g:InlineLabel styleName="headerLabel" text="Project/Iteration:"/>
 					<g:InlineLabel ui:field='projectIterationName'/>
@@ -53,8 +53,8 @@
 				</g:HTMLPanel>
 			</g:layer>
 			
-			<g:layer top="160px" height="280px" left="0" right="0px">
-				<g:ScrollPanel height="180px" width="100%">
+			<g:layer top="140px" height="185px" left="0" right="0px">
+				<g:ScrollPanel height="185px" width="100%">
                     <g:Grid styleName="{style.table}">
                         <g:row>
                             <g:customCell styleName="{style.headerCol}">
@@ -92,7 +92,7 @@
                 </g:ScrollPanel>
             </g:layer>
 
-			<g:layer top="350px" height="25px">
+			<g:layer top="340px" height="30px">
 				<g:HTMLPanel>
 					<g:InlineLabel ui:field='lastModified' styleName="lastModifiedLabel"/>
 					<g:Button ui:field='dismissButton' addStyleNames="button {style.button}"/>
