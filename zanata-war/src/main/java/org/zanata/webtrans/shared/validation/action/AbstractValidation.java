@@ -57,7 +57,7 @@ public abstract class AbstractValidation implements ValidationObject
    @Override
    public void validate(String source, String target)
    {
-      if (!Strings.isNullOrEmpty(target))
+      if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source))
       {
          doValidate(source, target);
       }

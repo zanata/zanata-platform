@@ -50,7 +50,7 @@
 	                	<g:HTMLPanel styleName="TableEditorCell-Target">
                             <fui:TranslatorListWidget ui:field="translatorList" />
                             <div>
-                                <fui:EditorTextArea ui:field="textArea" />
+                                <fui:TextAreaWrapper ui:field="textArea" />
                             </div>
                         </g:HTMLPanel>
 	                </g:HTMLPanel>

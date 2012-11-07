@@ -20,34 +20,19 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.TextArea;
 
-public class EditorTextArea extends TextArea
+public class EditorTextArea extends TextArea implements TextAreaWrapper
 {
-   private boolean useCodeMirrorFlag = true;
-
-   private JavaScriptObject codeMirrorEditor;
-
-   // this timer is used when NOT using code mirror editor. We need this to fire validation and change editing state
+   private static final int INITIAL_LINE_NUMBER = 2;
+   private static final int CHECK_INTERVAL = 50;
+   // this timer is used to fire validation and change editing state in a 50 millisecond interval
+   // @see setFocus(boolean)
    private final Timer typingTimer = new Timer()
    {
       @Override
@@ -57,281 +42,70 @@ public class EditorTextArea extends TextArea
       }
    };
 
-   public EditorTextArea(boolean isUseCodeMirror)
+   public EditorTextArea()
    {
       super();
-      useCodeMirrorFlag = isUseCodeMirror;
-      if (!useCodeMirrorFlag)
+
+      addKeyDownHandler(new KeyDownHandler()
       {
-         addKeyDownHandler(new KeyDownHandler()
+         @Override
+         public void onKeyDown(KeyDownEvent keyDownEvent)
          {
-            @Override
-            public void onKeyDown(KeyDownEvent keyDownEvent)
+            autoSize();
+            if (keyDownEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER)
             {
-               setVisibleLines(2);
-               while (getElement().getScrollHeight() > getElement().getClientHeight())
-               {
-                  setVisibleLines(getVisibleLines() + 1);
-               }
-               if (keyDownEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-               {
-                  setVisibleLines(getVisibleLines() + 1);
-               }
+               setVisibleLines(getVisibleLines() + 1);
             }
-         });
-      }
+         }
+      });
    }
 
-   // see http://codemirror.net/doc/manual.html#usage
-   public native JavaScriptObject initCodeMirror(Element element) /*-{
-      var self = this;
-
-      var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
-         lineNumbers: true,
-         lineWrapping: true,
-         disableSpellcheck: false,
-         mode: "visibleSpace",
-         value: element.value,
-         onFocus: function() {
-            self.@org.zanata.webtrans.client.ui.EditorTextArea::onFocus()();
-         },
-         onBlur: function() {
-            self.@org.zanata.webtrans.client.ui.EditorTextArea::onBlur()();
-         },
-         onChange: function() {
-            self.@org.zanata.webtrans.client.ui.EditorTextArea::onChange()();
-         }
-
-      });
-
-      return codeMirrorEditor;
-
-   }-*/;
-
+   private void autoSize()
+   {
+      setVisibleLines(INITIAL_LINE_NUMBER);
+      while (getElement().getScrollHeight() > getElement().getClientHeight())
+      {
+         setVisibleLines(getVisibleLines() + 1);
+      }
+   }
 
    @Override
    public void setText(String text)
    {
       super.setText(text);
-      if (useCodeMirrorFlag)
-      {
-         setCodeMirrorContent(text);
-      }
-      else
-      {
-         // if we are not using code mirror, we will try to hide text area scroll bar.
-         Splitter splitter = Splitter.on("\n");
-         Iterable<String> split = splitter.split(text);
-         setVisibleLines(Iterables.size(split));
-      }
+      autoSize();
    }
-
-   @Override
-   public String getText()
-   {
-      String text = useCodeMirrorFlag ? getCodeMirrorContent() : super.getText();
-//      Log.info("editor text: [" + text + "]");
-      return text;
-   }
-
-   @Override
-   protected void onLoad()
-   {
-      super.onLoad();
-      if (useCodeMirrorFlag)
-      {
-         codeMirrorEditor = initCodeMirror(getElement());
-      }
-   }
-
-   // callback function for the code mirror instance. Gets called when code mirror editor is on focus.
-   private void onFocus()
-   {
-      NativeEvent focusEvent = Document.get().createFocusEvent();
-      FocusEvent.fireNativeEvent(focusEvent, this, this.getElement());
-   }
-
-   // callback function for the code mirror instance. Gets called when code mirror editor is on blur.
-   private void onBlur()
-   {
-      NativeEvent blurEvent = Document.get().createBlurEvent();
-      BlurEvent.fireNativeEvent(blurEvent, this, this.getElement());
-   }
-
-   // callback function for the code mirror instance. Gets called when code mirror editor content has changed.
-   private void onChange()
-   {
-      if (useCodeMirrorFlag)
-      {
-         ValueChangeEvent.fire(this, getCodeMirrorContent());
-      }
-   }
-
-   @Override
-   public String getValue()
-   {
-      return useCodeMirrorFlag ? getCodeMirrorContent() : super.getValue();
-   }
-
-   @Override
-   public void setValue(String value, boolean fireEvents)
-   {
-      if (useCodeMirrorFlag)
-      {
-         setCodeMirrorContent(value);
-      }
-      else
-      {
-         super.setValue(value, fireEvents);
-      }
-   }
-
-   private native String getCodeMirrorContent() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      return editor.getValue();
-   }-*/;
-
-   private native void setCodeMirrorContent(String text) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      if (editor)
-      {
-         editor.setValue(text);
-      }
-   }-*/;
 
    @Override
    public void setFocus(boolean focused)
    {
-      if (focused && useCodeMirrorFlag)
+      super.setFocus(focused);
+      if (focused)
       {
-         focusEditor();
+         typingTimer.scheduleRepeating(CHECK_INTERVAL);
       }
-      else
-      {
-         super.setFocus(focused);
-         if (focused)
-         {
-            typingTimer.scheduleRepeating(50);
-         }
-      }
-   }
-
-   private native void focusEditor() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      editor.focus();
-   }-*/;
-
-   @Override
-   public void setReadOnly(boolean readOnly)
-   {
-      if (useCodeMirrorFlag)
-      {
-         if (readOnly)
-         {
-            setEditorOption("readOnly", "nocursor");
-         }
-         else
-         {
-            setEditorOption("readOnly", "false");
-         }
-      }
-      super.setReadOnly(readOnly);
-   }
-
-   private native void setEditorOption(String option, String value) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      if (editor)
-      {
-         editor.setOption(option, value);
-      }
-   }-*/;
-
-   private native String getEditorOption(String option, String defaultValue) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      if (editor)
-      {
-         return '' + editor.getOption(option);
-      }
-      return defaultValue;
-   }-*/;
-
-   @Override
-   public boolean isReadOnly()
-   {
-      return useCodeMirrorFlag ? Boolean.parseBoolean(getEditorOption("readOnly", "false")) : super.isReadOnly();
    }
 
    @Override
-   public int getCursorPos()
-   {
-      return useCodeMirrorFlag ? getCodeMirrorCursorPos() : super.getCursorPos();
-   }
-
-   private native int getCodeMirrorCursorPos() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      var pos = editor.getCursor();
-      return editor.indexFromPos(pos);
-   }-*/;
-
-   @Override
-   public void setCursorPos(int pos)
-   {
-      if (useCodeMirrorFlag)
-      {
-         setCodeMirrorCursorPos(pos);
-      }
-      super.setCursorPos(pos);
-   }
-
-   private native void setCodeMirrorCursorPos(int cursorIndex) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      var pos = editor.posFromIndex(cursorIndex);
-      editor.setCursor(pos);
-   }-*/;
-
    public void highlight(String term)
    {
-      if (useCodeMirrorFlag && !Strings.isNullOrEmpty(term))
-      {
-         codeMirrorHighlight(term);
-      }
+      // plain textarea won't support highlight
    }
 
-   private native void codeMirrorHighlight(String term) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-      var searchCursor = editor.getSearchCursor(term, {line: 0, ch: 0}, true);
-      while(searchCursor.findNext())
-      {
-         editor.markText(searchCursor.from(), searchCursor.to(), "CodeMirror-searching");
-      }
-   }-*/;
-
+   @Override
    public void refresh()
    {
-      if (useCodeMirrorFlag)
-      {
-         refreshCodeMirror();
-      }
+      // plain textarea doesn't need refresh
    }
 
-   private native void refreshCodeMirror() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.EditorTextArea::codeMirrorEditor;
-
-      if (editor)
-      {
-         editor.refresh();
-      }
-   }-*/;
-
-   public void startTypingTimer()
+   @Override
+   public void startEditing()
    {
-      if (!useCodeMirrorFlag)
-      {
-         typingTimer.scheduleRepeating(50);
-      }
+      typingTimer.scheduleRepeating(50);
    }
 
-   public void stopTypingTimer()
+   @Override
+   public void stopEditing()
    {
       typingTimer.cancel();
    }
