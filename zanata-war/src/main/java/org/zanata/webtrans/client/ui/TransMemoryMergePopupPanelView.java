@@ -22,9 +22,13 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.UiMessages;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -32,25 +36,39 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TransMemoryMergePopupPanelView extends DialogBox implements TransMemoryMergePopupPanelDisplay
+public class TransMemoryMergePopupPanelView implements TransMemoryMergePopupPanelDisplay
 {
+
+   interface TMIMergeUiBinder extends UiBinder<DialogBox, TransMemoryMergePopupPanelView>
+   {
+   }
 
    private final TMMergeForm TMMergeForm;
    private final Label processingLabel;
+
+   private DialogBox dialogBox;
+
+   private static TMIMergeUiBinder uiBinder = GWT.create(TMIMergeUiBinder.class);
+
+
 
    @Inject
    public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm, UiMessages messages)
    {
       //auto hide false, modal true
-      super(false, true);
-      ensureDebugId("TMMerge");
-      getCaption().setText(messages.mergeTMCaption());
-      setGlassEnabled(true);
+
+      dialogBox = uiBinder.createAndBindUi(this);
+      dialogBox.setText(messages.mergeTMCaption());
+      dialogBox.setGlassEnabled(true);
+      dialogBox.ensureDebugId("TMMerge");
+      dialogBox.setAutoHideEnabled(false);
+      dialogBox.setModal(true);
+
       VerticalPanel main = new VerticalPanel();
       main.add(TMMergeForm);
       processingLabel = new Label(messages.processing());
       main.add(processingLabel);
-      add(main);
+      dialogBox.add(main);
       this.TMMergeForm = TMMergeForm;
       processingLabel.setVisible(false);
       hide();
@@ -74,6 +92,19 @@ public class TransMemoryMergePopupPanelView extends DialogBox implements TransMe
    {
       processingLabel.setVisible(false);
       TMMergeForm.setVisible(true);
-      center();
+      dialogBox.center();
+   }
+
+   @Override
+   public Widget asWidget()
+   {
+      return this.asWidget();
+   }
+
+   @Override
+   public void hide()
+   {
+      dialogBox.hide();
+
    }
 }
