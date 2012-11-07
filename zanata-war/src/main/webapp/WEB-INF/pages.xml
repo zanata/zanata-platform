@@ -274,6 +274,16 @@
     </navigation>
   </page>
 
+  <page view-id="/admin/processmanager.xhtml">
+    <action execute="#{breadcrumbs.clear}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/processmanager', messages['jsf.ProcessManager'])}"/>
+
+    <navigation from-action="#{processManagerAction.clearAllFinished}">
+      <redirect view-id="/admin/processmanager.xhtml"/>
+    </navigation>
+  </page>
+
     <!-- Version Group -->
 
     <page view-id="/version-group/home.xhtml" >

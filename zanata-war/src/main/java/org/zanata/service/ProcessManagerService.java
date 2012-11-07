@@ -20,6 +20,8 @@
  */
 package org.zanata.service;
 
+import java.util.Collection;
+
 import org.zanata.process.ProcessHandle;
 import org.zanata.process.RunnableProcess;
 
@@ -28,7 +30,38 @@ import org.zanata.process.RunnableProcess;
  */
 public interface ProcessManagerService
 {
-   public <H extends ProcessHandle> void startProcess( RunnableProcess<H> process, H handle );
+   /**
+    * Starts a process in the background and returns immediately. The process is also indexed by the
+    * given keys (if any). To retrieve a process handle, any of the provided keys can be used.
+    *
+    * Keys should override the equals and hashCode methods.
+    *
+    * @param process The process to run in the background.
+    * @param handle The unused process handle to communicate with the running process.
+    * @param keys Keys to index the process with.
+    * @param <H>
+    */
+   public <H extends ProcessHandle> void startProcess( RunnableProcess<H> process, H handle, Object ... keys );
 
+   /**
+    * Returns a process handle using its unique, automatically generated id.
+    *
+    * @param processId The process id to find.
+    * @return A Process handle if one is found. Null otherwise.
+    */
    public ProcessHandle getProcessHandle( String processId );
+
+   /**
+    * Returns a process handle using one of the originally used keys.
+    *
+    * @param key The key to look for a process.
+    * @return A Process handle if one is found. Null otherwise.
+    */
+   public ProcessHandle getProcessHandle( Object key );
+
+   public Collection<ProcessHandle> getAllActiveProcessHandles();
+
+   public Collection<ProcessHandle> getAllInactiveProcessHandles();
+
+   public void clearInactive();
 }
