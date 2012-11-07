@@ -30,8 +30,15 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class EditorTextArea extends TextArea
@@ -40,10 +47,39 @@ public class EditorTextArea extends TextArea
 
    private JavaScriptObject codeMirrorEditor;
 
+   // this timer is used when NOT using code mirror editor. We need this to fire validation and change editing state
+   private final Timer typingTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         ValueChangeEvent.fire(EditorTextArea.this, getText());
+      }
+   };
+
    public EditorTextArea(boolean isUseCodeMirror)
    {
       super();
       useCodeMirrorFlag = isUseCodeMirror;
+      if (!useCodeMirrorFlag)
+      {
+         addKeyDownHandler(new KeyDownHandler()
+         {
+            @Override
+            public void onKeyDown(KeyDownEvent keyDownEvent)
+            {
+               setVisibleLines(2);
+               while (getElement().getScrollHeight() > getElement().getClientHeight())
+               {
+                  setVisibleLines(getVisibleLines() + 1);
+               }
+               if (keyDownEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+               {
+                  setVisibleLines(getVisibleLines() + 1);
+               }
+            }
+         });
+      }
    }
 
    // see http://codemirror.net/doc/manual.html#usage
@@ -93,7 +129,9 @@ public class EditorTextArea extends TextArea
    @Override
    public String getText()
    {
-      return useCodeMirrorFlag ? getCodeMirrorContent() : super.getText();
+      String text = useCodeMirrorFlag ? getCodeMirrorContent() : super.getText();
+//      Log.info("editor text: [" + text + "]");
+      return text;
    }
 
    @Override
@@ -123,7 +161,10 @@ public class EditorTextArea extends TextArea
    // callback function for the code mirror instance. Gets called when code mirror editor content has changed.
    private void onChange()
    {
-      ValueChangeEvent.fire(this, getCodeMirrorContent());
+      if (useCodeMirrorFlag)
+      {
+         ValueChangeEvent.fire(this, getCodeMirrorContent());
+      }
    }
 
    @Override
@@ -139,7 +180,10 @@ public class EditorTextArea extends TextArea
       {
          setCodeMirrorContent(value);
       }
-      super.setValue(value, fireEvents);
+      else
+      {
+         super.setValue(value, fireEvents);
+      }
    }
 
    private native String getCodeMirrorContent() /*-{
@@ -165,6 +209,10 @@ public class EditorTextArea extends TextArea
       else
       {
          super.setFocus(focused);
+         if (focused)
+         {
+            typingTimer.scheduleRepeating(50);
+         }
       }
    }
 
@@ -274,4 +322,17 @@ public class EditorTextArea extends TextArea
          editor.refresh();
       }
    }-*/;
+
+   public void startTypingTimer()
+   {
+      if (!useCodeMirrorFlag)
+      {
+         typingTimer.scheduleRepeating(50);
+      }
+   }
+
+   public void stopTypingTimer()
+   {
+      typingTimer.cancel();
+   }
 }

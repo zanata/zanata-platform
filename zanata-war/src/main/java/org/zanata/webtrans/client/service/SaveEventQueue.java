@@ -51,7 +51,7 @@ public class SaveEventQueue
       {
          replacePreviousEventIfApplicable(comingEvent, prevEvent);
       }
-//      Log.info("coming event has invalid state (i.e. old contents does not equal to previous event's new contents). Discard!");
+      Log.info("coming event will be discarded!" + event);
    }
 
    private static boolean stateEqual(TransUnitSaveEvent comingEvent, TransUnitSaveEvent prevEvent)

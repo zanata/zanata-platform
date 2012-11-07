@@ -191,6 +191,10 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void setState(EditingState editingState)
    {
+      if (this.editingState == editingState)
+      {
+         return;
+      }
       this.editingState = editingState;
       if (editingState == EditingState.UNSAVED)
       {
@@ -211,26 +215,10 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public EditingState getEditingState()
-   {
-      return editingState;
-   }
-
-   @Override
    public void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status)
    {
       cachedValue = TransUnit.Builder.from(cachedValue).setTargets(targets).setVerNum(verNum).setStatus(status).build();
-      for (int i = 0; i < editors.size(); i++)
-      {
-         editors.get(i).updateCachedValue(targets.get(i));
-      }
       editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
-   }
-
-   @Override
-   public TransUnit getCachedValue()
-   {
-      return cachedValue;
    }
 
    @UiHandler("saveIcon")
@@ -313,7 +301,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       {
          String target = cachedTargets.get(i);
          editors.get(i).setTextAndValidate(target);
-         editors.get(i).updateCachedValue(target);
       }
       editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
    }
