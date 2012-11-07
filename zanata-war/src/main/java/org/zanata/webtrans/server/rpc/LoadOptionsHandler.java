@@ -29,7 +29,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HEditorOption;
+import org.zanata.model.HAccountOption;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
@@ -38,7 +38,7 @@ import org.zanata.webtrans.shared.rpc.NavOption;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import static org.zanata.model.HEditorOption.OptionName.*;
+import static org.zanata.model.HAccountOption.OptionName.*;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -60,7 +60,7 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
    {
       LoadOptionsResult result = new LoadOptionsResult();
       HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
-      Map<String,HEditorOption> editorOptions = account.getEditorOptions();
+      Map<String,HAccountOption> editorOptions = account.getEditorOptions();
 
       if( editorOptions.containsKey(DisplayButtons.getPersistentName()) )
       {

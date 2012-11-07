@@ -85,7 +85,7 @@ public class HAccount extends ModelEntityBase implements Serializable
    private HAccountResetPasswordKey accountResetPasswordKey;
    private Set<HCredentials> credentials;
    private HAccount mergedInto;
-   private Map<String, HEditorOption> editorOptions;
+   private Map<String, HAccountOption> editorOptions;
 
 
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -178,7 +178,7 @@ public class HAccount extends ModelEntityBase implements Serializable
    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @MapKey(name = "name")
-   public Map<String, HEditorOption> getEditorOptions()
+   public Map<String, HAccountOption> getEditorOptions()
    {
       return editorOptions;
    }

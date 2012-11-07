@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * CHEditorOption, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -38,7 +38,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class HEditorOption extends ModelEntityBase
+public class HAccountOption extends ModelEntityBase
 {
    public static enum OptionName
    {
@@ -71,7 +71,7 @@ public class HEditorOption extends ModelEntityBase
    private HAccount account;
 
 
-   public HEditorOption(OptionName name, String value)
+   public HAccountOption(OptionName name, String value)
    {
       this.name = name.getPersistentName();
       this.value = value;

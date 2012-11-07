@@ -27,7 +27,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HEditorOption;
+import org.zanata.model.HAccountOption;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
@@ -36,8 +36,8 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import static org.zanata.model.HEditorOption.OptionName;
-import static org.zanata.model.HEditorOption.OptionName.*;
+import static org.zanata.model.HAccountOption.OptionName;
+import static org.zanata.model.HAccountOption.OptionName.*;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -84,11 +84,11 @@ public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction,
 
    private void setOrCreateOptionValue(HAccount account, OptionName name, String newVal)
    {
-      HEditorOption option = account.getEditorOptions().get(name);
+      HAccountOption option = account.getEditorOptions().get(name);
 
       if( option == null )
       {
-         option = new HEditorOption(name, newVal);
+         option = new HAccountOption(name, newVal);
          option.setAccount(account);
          account.getEditorOptions().put(name.getPersistentName(), option);
       }
