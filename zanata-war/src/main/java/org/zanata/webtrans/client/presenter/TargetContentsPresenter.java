@@ -232,8 +232,8 @@ public class TargetContentsPresenter implements
    }
 
    /**
-    * Will fire a save event and also update cached targets so that a following navigation event won't cause another pending save event.
-    * If the save failed, TransUnitSaveService will revert the value back to what it was.
+    * Will fire a save event and a following navigation event will cause another pending save event.
+    * But TransUnitSaveService will ignore the second one.
     * @see org.zanata.webtrans.client.service.TransUnitSaveService#onTransUnitSave(org.zanata.webtrans.client.events.TransUnitSaveEvent)
     * @param transUnitId the state variable of the display that user has clicked on
     */
@@ -561,18 +561,23 @@ public class TargetContentsPresenter implements
    public void setEditingState(TransUnitId transUnitId, TargetContentsDisplay.EditingState editingState)
    {
       Optional<TargetContentsDisplay> displayOptional = findDisplayById(transUnitId);
-      TargetContentsDisplay contentsDisplay = displayOptional.orNull();
-      if (contentsDisplay != null && editingState != contentsDisplay.getEditingState())
+      if (!displayOptional.isPresent())
       {
-         if (editingState != TargetContentsDisplay.EditingState.SAVED)
-         {
-            contentsDisplay.setState(editingState);
-         }
-         else if (Objects.equal(contentsDisplay.getCachedTargets(), contentsDisplay.getNewTargets()))
-         {
-            // we set editing state to SAVED only if cached targets and in editor targets are equal
-            contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
-         }
+         return;
+      }
+
+      TargetContentsDisplay contentsDisplay = displayOptional.get();
+      if (editingState == TargetContentsDisplay.EditingState.SAVING)
+      {
+         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVING);
+      }
+      else if (!Objects.equal(contentsDisplay.getCachedTargets(), contentsDisplay.getNewTargets()))
+      {
+         contentsDisplay.setState(TargetContentsDisplay.EditingState.UNSAVED);
+      }
+      else
+      {
+         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
       }
    }
 

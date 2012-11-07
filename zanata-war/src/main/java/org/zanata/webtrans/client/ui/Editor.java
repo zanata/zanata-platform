@@ -8,7 +8,6 @@ import java.util.List;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -31,33 +30,14 @@ import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState
 
 public class Editor extends Composite implements ToggleEditor
 {
-   private String originalValue;
-   private TargetContentsDisplay.Listener listener;
-
-   interface EditorUiBinder extends UiBinder<Widget, Editor>
-   {
-   }
-
-   interface Styles extends CssResource
-   {
-
-      String rootContainer();
-
-      String hasValidationError();
-
-      String copyButton();
-
-      String targetWrapper();
-
-      String targetContainer();
-   }
-
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
 
    private final int index;
-   private final TransUnitId id;
 
+   private final TransUnitId id;
    private boolean isFocused;
+
+   private TargetContentsDisplay.Listener listener;
 
    @UiField
    Styles style;
@@ -71,8 +51,6 @@ public class Editor extends Composite implements ToggleEditor
    @UiField
    TranslatorListWidget translatorList;
 
-   NavigationMessages messages = GWT.create(NavigationMessages.class);
-
    @UiField(provided = true)
    EditorTextArea textArea;
 
@@ -84,7 +62,6 @@ public class Editor extends Composite implements ToggleEditor
 
    public Editor(String displayString, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
    {
-      this.originalValue = displayString;
       this.listener = listener;
       this.index = index;
       this.id = id;
@@ -113,16 +90,14 @@ public class Editor extends Composite implements ToggleEditor
    public void onValueChange(ValueChangeEvent<String> event)
    {
       fireValidationEvent();
-      boolean contentHasChanged = !Objects.equal(textArea.getText(), originalValue);
-      Log.info("value changed? " + contentHasChanged + " new: " + textArea.getText() + " old: " + originalValue);
-      TargetContentsDisplay.EditingState editingState = contentHasChanged ? UNSAVED : SAVED;
-      listener.setEditingState(id, editingState);
+      listener.setEditingState(id, UNSAVED);
    }
 
    @UiHandler("rootContainer")
    public void onEditorClick(ClickEvent event)
    {
       listener.onEditorClicked(id, index);
+      textArea.startTypingTimer();
       fireValidationEvent();
    }
 
@@ -130,6 +105,7 @@ public class Editor extends Composite implements ToggleEditor
    public void onTextAreaBlur(BlurEvent event)
    {
       isFocused = false;
+      textArea.stopTypingTimer();
    }
 
    @UiHandler("textArea")
@@ -270,12 +246,6 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void updateCachedValue(String displayText)
-   {
-      originalValue = displayText;
-   }
-
-   @Override
    public void removeTranslator(String name, String color)
    {
       translatorList.removeTranslator(name, color);
@@ -285,5 +255,23 @@ public class Editor extends Composite implements ToggleEditor
    public boolean isFocused()
    {
       return isFocused;
+   }
+
+   interface EditorUiBinder extends UiBinder<Widget, Editor>
+   {
+   }
+
+   interface Styles extends CssResource
+   {
+
+      String rootContainer();
+
+      String hasValidationError();
+
+      String copyButton();
+
+      String targetWrapper();
+
+      String targetContainer();
    }
 }

@@ -66,11 +66,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    void setState(EditingState editingState);
 
-   EditingState getEditingState();
-
    void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status);
-
-   TransUnit getCachedValue();
 
    interface Listener
    {

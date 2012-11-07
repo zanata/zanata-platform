@@ -26,8 +26,6 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
 
    void refresh();
 
-   void updateCachedValue(String displayText);
-
    static enum ViewMode
    {
       VIEW, EDIT

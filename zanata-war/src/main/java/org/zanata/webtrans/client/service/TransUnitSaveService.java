@@ -78,6 +78,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
    public void onTransUnitSave(TransUnitSaveEvent event)
    {
       TransUnitId idToSave = event.getTransUnitId();
+      Log.info("TU save event: new[" + event.getTargets() + "] + old: [" + event.getOldContents());
       if (stateHasNotChanged(event))
       {
          Log.info("NO OP! state has not changed for " + idToSave);
