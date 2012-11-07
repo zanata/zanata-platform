@@ -5,7 +5,6 @@ import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState
 
 import java.util.List;
 
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
@@ -51,23 +50,30 @@ public class Editor extends Composite implements ToggleEditor
    @UiField
    TranslatorListWidget translatorList;
 
-   @UiField(provided = true)
-   EditorTextArea textArea;
-
    @UiField
    InlineLabel copyIcon;
    
    @UiField
    HTMLPanel targetWrapper;
 
+   @UiField(provided = true)
+   TextAreaWrapper textArea;
+
    public Editor(String displayString, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
    {
       this.listener = listener;
       this.index = index;
       this.id = id;
-      textArea = new EditorTextArea(listener.isUsingCodeMirror());
-      initWidget(uiBinder.createAndBindUi(this));
+      if (listener.isUsingCodeMirror())
+      {
+         textArea = new CodeMirrorEditor();
+      }
+      else
+      {
+         textArea = new EditorTextArea();
+      }
 
+      initWidget(uiBinder.createAndBindUi(this));
       // determine whether to show or hide buttons
       showCopySourceButton(listener.isDisplayButtons());
 
@@ -97,7 +103,7 @@ public class Editor extends Composite implements ToggleEditor
    public void onEditorClick(ClickEvent event)
    {
       listener.onEditorClicked(id, index);
-      textArea.startTypingTimer();
+      textArea.startEditing();
       fireValidationEvent();
    }
 
@@ -105,7 +111,7 @@ public class Editor extends Composite implements ToggleEditor
    public void onTextAreaBlur(BlurEvent event)
    {
       isFocused = false;
-      textArea.stopTypingTimer();
+      textArea.stopEditing();
    }
 
    @UiHandler("textArea")
