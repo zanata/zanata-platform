@@ -57,16 +57,30 @@
 		</div>
 		
 		<s:fragment rendered="#{not empty applicationConfiguration.piwikUrl and not empty applicationConfiguration.piwikIdSite}">
-			<!-- Piwik --> <script type="text/javascript">
-			function stripTrailingSlash(str) 
+			<!-- Piwik --> <script type="text/javascript">//<![CDATA[
+			//remove any trailing slash
+			function stripTrailingSlash(url) 
 			{
-		    	return str.replace(/\/$/, "");
+		    	return url.replace(/\/$/, "");
+			}
+			
+			//if url doesn't contain protocol, append to it
+			function checkProtocol(url)
+			{
+				var protocol="";
+				
+				if((url.indexOf("http") == -1) && (url.indexOf("https") == -1))
+				{
+					protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+				}
+				return stripTrailingSlash(protocol + url);
 			}
 
-			var pkBaseURL = stripTrailingSlash("#{applicationConfiguration.piwikUrl}") + "/";
+			var pkBaseURL = checkProtocol("#{applicationConfiguration.piwikUrl}") + "/";
 			
 			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-			</script><script type="text/javascript">
+			//]]></script>
+			<script type="text/javascript">//<![CDATA[
 			try {
 			var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", #{applicationConfiguration.piwikIdSite});
 			var username =  "#{identity.username}";
@@ -80,7 +94,7 @@
 			piwikTracker.trackPageView();
 			piwikTracker.enableLinkTracking();
 			} catch( err ) {}
-			</script>
+			//]]></script>
 			<!-- End Piwik Code -->
 		</s:fragment>
 	</body>
