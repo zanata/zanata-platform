@@ -34,7 +34,7 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
    private static final int INITIAL_LINE_NUMBER = 2;
    private static final int CHECK_INTERVAL = 50;
    // this timer is used to fire validation and change editing state in a 50 millisecond interval
-   // @see setFocus(boolean)
+   // @see setEditing(boolean)
    private final Timer typingTimer = new Timer()
    {
       @Override
@@ -43,6 +43,7 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
          ValueChangeEvent.fire(EditorTextArea.this, getText());
       }
    };
+   private boolean editing;
 
    public EditorTextArea()
    {
@@ -81,16 +82,6 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
    }
 
    @Override
-   public void setFocus(boolean focused)
-   {
-      super.setFocus(focused);
-      if (focused)
-      {
-         typingTimer.scheduleRepeating(CHECK_INTERVAL);
-      }
-   }
-
-   @Override
    public void highlight(String term)
    {
       // plain textarea won't support highlight
@@ -103,14 +94,22 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
    }
 
    @Override
-   public void startEditing()
+   public void setEditing(boolean isEditing)
    {
-      typingTimer.scheduleRepeating(50);
+      editing = isEditing;
+      if (isEditing)
+      {
+         typingTimer.scheduleRepeating(CHECK_INTERVAL);
+      }
+      else
+      {
+         typingTimer.cancel();
+      }
    }
 
    @Override
-   public void stopEditing()
+   public boolean isEditing()
    {
-      typingTimer.cancel();
+      return editing;
    }
 }

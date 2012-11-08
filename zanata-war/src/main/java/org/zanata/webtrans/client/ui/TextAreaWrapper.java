@@ -1,17 +1,16 @@
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public interface TextAreaWrapper extends IsWidget, HasText, HasValueChangeHandlers<String>, HasBlurHandlers, HasChangeHandlers
+public interface TextAreaWrapper extends IsWidget, HasText, HasValueChangeHandlers<String>, HasBlurHandlers, HasChangeHandlers, HasFocusHandlers
 {
    void setFocus(boolean focused);
 
@@ -27,7 +26,7 @@ public interface TextAreaWrapper extends IsWidget, HasText, HasValueChangeHandle
 
    void refresh();
 
-   void startEditing();
+   void setEditing(boolean isEditing);
 
-   void stopEditing();
+   boolean isEditing();
 }
