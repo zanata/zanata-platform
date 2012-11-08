@@ -112,6 +112,7 @@ public class TransUnitsTablePresenterTest
       verify(sourceContentsPresenter).setSelectedSource(selection.getId());
       verify(targetContentsPresenter).setSelected(selection.getId());
       verify(translatorService).transUnitSelected(selection);
+      verify(display).ensureVisible(targetContentsPresenter.getCurrentDisplay());
    }
 
    @Test

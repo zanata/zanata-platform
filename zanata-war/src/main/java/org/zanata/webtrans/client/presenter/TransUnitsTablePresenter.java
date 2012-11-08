@@ -152,6 +152,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       Log.debug("selected id: " + selectedId);
       sourceContentsPresenter.setSelectedSource(selectedId);
       targetContentsPresenter.setSelected(selectedId);
+      display.ensureVisible(targetContentsPresenter.getCurrentDisplay());
       translatorService.transUnitSelected(selection);
    }
 
