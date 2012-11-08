@@ -80,8 +80,7 @@ public class DocumentServiceImpl implements DocumentService
    @Override
    @Transactional
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
-                                  Set<String> extensions, boolean copyTrans, boolean lock,
-                                  ProcessHandle handle)
+                                  Set<String> extensions, boolean copyTrans, boolean lock)
    {
       Lock docLock = null;
       if( lock )
@@ -93,7 +92,7 @@ public class DocumentServiceImpl implements DocumentService
 
       try
       {
-         return this.saveDocument(projectSlug, iterationSlug, sourceDoc, extensions, copyTrans, handle);
+         return this.saveDocument(projectSlug, iterationSlug, sourceDoc, extensions, copyTrans);
       }
       finally
       {
@@ -104,18 +103,11 @@ public class DocumentServiceImpl implements DocumentService
       }
    }
 
-   @Override
-   public HDocument saveDocument(String projectSlug, String iterationSlug, Resource sourceDoc, Set<String> extensions, boolean copyTrans)
-   {
-      return saveDocument(projectSlug, iterationSlug, sourceDoc, extensions, copyTrans, ProcessHandle.NO_HANDLE);
-   }
-
    // TODO check permissions
    @Override
    @Transactional
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
-                                  Set<String> extensions, boolean copyTrans,
-                                  ProcessHandle handle)
+                                  Set<String> extensions, boolean copyTrans)
    {
       // Only active iterations allow the addition of a document
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);

@@ -42,11 +42,11 @@ public class CopyTransProcess extends RunnableProcess<CopyTransProcessHandle>
 
       if( handle.getProjectIteration() != null )
       {
-         copyTransServiceImpl.copyTransForIteration( handle.getProjectIteration(), handle );
+         copyTransServiceImpl.copyTransForIteration( handle.getProjectIteration() );
       }
       else
       {
-         copyTransServiceImpl.copyTransForDocument( handle.getDocument(), handle );
+         copyTransServiceImpl.copyTransForDocument( handle.getDocument() );
       }
    }
 }
