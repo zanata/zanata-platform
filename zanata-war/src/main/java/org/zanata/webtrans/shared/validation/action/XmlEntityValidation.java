@@ -35,16 +35,16 @@ public class XmlEntityValidation extends AbstractValidation
 {
 
    // &amp;, &quot;
-   private final static String charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
-   private final static RegExp charRefExp = RegExp.compile(charRefRegex);
+   private final static String charRefRegex = ".*&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
+   private final static RegExp charRefExp = RegExp.compile(charRefRegex, "g");
 
    // &#[numeric]
-   private final static String decimalRefRegex = "&#[0-9]+;";
-   private final static RegExp decimalRefExp = RegExp.compile(decimalRefRegex);
+   private final static String decimalRefRegex = ".*&#[0-9]+;";
+   private final static RegExp decimalRefExp = RegExp.compile(decimalRefRegex, "g");
 
    // &#x[hexadecimal]
-   private final static String hexadecimalRefRegex = "&#x[0-9a-f_A-F]+;";
-   private final static RegExp hexadecimalRefExp = RegExp.compile(hexadecimalRefRegex);
+   private final static String hexadecimalRefRegex = ".*&#x[0-9a-f_A-F]+;";
+   private final static RegExp hexadecimalRefExp = RegExp.compile(hexadecimalRefRegex, "g");
 
    private final static String ENTITY_START_CHAR = "&";
 
@@ -74,7 +74,7 @@ public class XmlEntityValidation extends AbstractValidation
 
       for (String word : words)
       {
-         if (word.startsWith(ENTITY_START_CHAR) && word.length() > 1)
+         if (word.contains(ENTITY_START_CHAR) && word.length() > 1)
          {
             if (!charRefExp.test(word) && !decimalRefExp.test(word) && !hexadecimalRefExp.test(word))
             {
@@ -83,4 +83,37 @@ public class XmlEntityValidation extends AbstractValidation
          }
       }
    }
+
+   // private int validateWithRegex(RegExp exp, String text)
+   // {
+   // int count = 0;
+   // MatchResult result = exp.exec(text);
+   // while (result != null)
+   // {
+   // count++;
+   // result = exp.exec(text);
+   // }
+   // return count;
+   // }
+   //
+   // private void validateIncompleteEntity2(String target)
+   // {
+   // if (Strings.isNullOrEmpty(target))
+   // {
+   // return;
+   // }
+   //
+   // target.
+   // if (target.contains(ENTITY_START_CHAR) && target.length() > 1)
+   // {
+   // int charCount = validateWithRegex(charRefExp, target);
+   //
+   // if (!charRefExp.test(target) && !decimalRefExp.test(target) &&
+   // !hexadecimalRefExp.test(target))
+   // {
+   // addError(getMessages().invalidXMLEntity(target));
+   // }
+   // }
+   // }
+
 }
