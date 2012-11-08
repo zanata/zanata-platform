@@ -11,8 +11,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("(No Content)")
    String noContent();
 
-   @DefaultMessage("{0}% ({1,number,#.#}hrs)")
-   String statusBarPercentageHrs(int approved, double remainingHours);
+   @DefaultMessage("{0}% ({1,number,#.#}hrs) {2}")
+   String statusBarPercentageHrs(int approved, double remainingHours, String by);
 
    @DefaultMessage("{0,number,#.#}")
    String statusBarLabelHours(double remainingHours);

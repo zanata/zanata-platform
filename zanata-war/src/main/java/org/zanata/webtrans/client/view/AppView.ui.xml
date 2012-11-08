@@ -41,7 +41,7 @@
 			width: 140px;
 			height: 1.2em;
 			color: #595959;
-			cursor:default;
+			cursor:pointer;
 		}
 		
 		.divider {
@@ -140,7 +140,7 @@
 								</nobr>
 							</g:HTMLPanel>
 						</g:cell>
-						<g:cell width="200px">
+						<g:cell width="250px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
 	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="25px" horizontalAlignment="ALIGN_RIGHT">
