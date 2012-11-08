@@ -35,11 +35,11 @@
     </changeSet>
 
     <changeSet id="2" author="camunoz@redhat.com">
-    <comment>Add HEditorOption foreign key to HAccount.</comment>
-    <addForeignKeyConstraint constraintName="FK_HEditorOption_HAccount"
-                             baseTableName="HEditorOption"
-                             baseColumnNames="account_id"
-                             referencedTableName="HAccount"
-                             referencedColumnNames="id"/>
+        <comment>Add HAccountOption foreign key to HAccount.</comment>
+        <addForeignKeyConstraint constraintName="FK_HAccountOption_HAccount"
+                                 baseTableName="HAccountOption"
+                                 baseColumnNames="account_id"
+                                 referencedTableName="HAccount"
+                                 referencedColumnNames="id"/>
     </changeSet>
 </databaseChangeLog>
