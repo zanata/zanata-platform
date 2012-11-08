@@ -68,6 +68,11 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender
             msg.setFrom();
          }
 
+         if (getTo() == null)
+         {
+            throw new MessagingException();
+         }
+
          msg.setRecipients(Message.RecipientType.TO, parseAddress(getTo()));
       }
       catch (MessagingException e)
