@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -459,10 +460,41 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
-   public void onRefreshPageEvent()
+   public void onCodeMirrorRefreshPageEvent()
    {
       presenter.onRefreshPage(RefreshPageEvent.REFRESH_CODEMIRROR_EVENT);
 
       verify(display).delayRefresh();
+      verifyNoMoreInteractions(display);
+      verifyZeroInteractions(targetContentsPresenter);
+   }
+
+   @Test
+   public void onRedrawPageEventWithSelectedTransUnit()
+   {
+      List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1));
+      when(navigationService.getCurrentPageValues()).thenReturn(transUnits);
+      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(transUnits.get(0).getId());
+
+      presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
+
+      verify(targetContentsPresenter).showData(transUnits);
+      verify(targetContentsPresenter).setSelected(transUnits.get(0).getId());
+      verify(display).buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
+   }
+
+   @Test
+   public void onRedrawPageEventWithoutSelectedTransUnit()
+   {
+      List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1));
+      when(navigationService.getCurrentPageValues()).thenReturn(transUnits);
+      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(null);
+
+      presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
+
+      verify(targetContentsPresenter).showData(transUnits);
+      verify(targetContentsPresenter).getCurrentTransUnitIdOrNull();
+      verify(display).buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
+      verify(targetContentsPresenter, never()).setSelected(any(TransUnitId.class));
    }
 }

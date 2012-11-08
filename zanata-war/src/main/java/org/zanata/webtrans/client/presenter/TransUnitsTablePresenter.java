@@ -239,6 +239,10 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       {
          List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
          targetContentsPresenter.showData(currentPageValues);
+         if (targetContentsPresenter.getCurrentTransUnitIdOrNull() != null)
+         {
+            targetContentsPresenter.setSelected(targetContentsPresenter.getCurrentTransUnitIdOrNull());
+         }
          display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
       }
    }
