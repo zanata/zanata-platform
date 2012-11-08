@@ -67,6 +67,6 @@ public class XliffWriterTest
       Resource doc = reader.extractTemplate(file, LocaleId.EN_US, docName, ValidationType.XSD.toString());
       doc.setName(generatedDocName);
 
-      XliffWriter.write(new File(generateDir), doc, "en_US");
+      XliffWriter.write(new File(generateDir), doc, "en-US");
    }
 }

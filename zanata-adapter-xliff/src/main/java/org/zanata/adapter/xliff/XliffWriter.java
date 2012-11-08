@@ -26,7 +26,13 @@ import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 
 public class XliffWriter extends XliffCommon
 {
-   // Write document header with XML, xliff, file and body tag
+   /**
+    * Write document header with XML, xliff, file and body tag
+    * @param writer
+    * @param doc
+    * @param targetLocale (use hyphen, not underscore)
+    * @throws XMLStreamException
+    */
    private static void writeHeader(IndentingXMLStreamWriter writer, Resource doc, String targetLocale) throws XMLStreamException
    {
       // XML tag
@@ -77,11 +83,11 @@ public class XliffWriter extends XliffCommon
          writer.writeStartElement(ELE_TRANS_UNIT);
          writer.writeAttribute(ATTRI_ID, textFlow.getId());
          writeTransUnitSource(writer, textFlow);
-         writeTransUnitContext(writer, textFlow);
          if (target != null && target.getState() == ContentState.Approved)
          {
             writeTransUnitTarget(writer, target);
          }
+         writeTransUnitContext(writer, textFlow);
          writer.writeEndElement();// end trans-unit tag
       }
    }
@@ -119,7 +125,7 @@ public class XliffWriter extends XliffCommon
          for (TextFlowExtension textFlowExtension : textFlow.getExtensions())
          {
             SimpleComment comment = (SimpleComment) textFlowExtension;
-            String[] contextValues = comment.getValue().split(DELIMITER);
+            String[] contextValues = comment.getValue().split(DELIMITER, 3);
             if (!contextGroupMap.containsKey(contextValues[0]))
             {
                ArrayList<String[]> list = new ArrayList<String[]>();
@@ -159,21 +165,21 @@ public class XliffWriter extends XliffCommon
     * 
     * @param baseDir
     * @param doc
-    * @param javaLocale
+    * @param locale (use hyphen, not underscore)
     * @param targetDoc may be null
     */
-   public static void write(File baseDir, Resource doc, String javaLocale, TranslationsResource targetDoc, boolean createSkeletons)
+   public static void write(File baseDir, Resource doc, String locale, TranslationsResource targetDoc, boolean createSkeletons)
    {
       try
       {
          XMLOutputFactory output = XMLOutputFactory.newInstance();
-         File outFile = new File(baseDir, doc.getName() + "_" + javaLocale + ".xml");
+         File outFile = new File(baseDir, doc.getName() + "_" + locale.replace('-', '_') + ".xml");
          PathUtil.makeParents(outFile);
          XMLStreamWriter xmlStreamWriter = output.createXMLStreamWriter(new FileWriter(outFile));
          IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(xmlStreamWriter);
 
          if (targetDoc != null)
-            writeHeader(writer, doc, javaLocale);
+            writeHeader(writer, doc, locale);
          else
             writeHeader(writer, doc, null);
          writeTransUnits(writer, doc, targetDoc, createSkeletons);
@@ -199,11 +205,11 @@ public class XliffWriter extends XliffCommon
     * 
     * @param baseDir
     * @param doc
-    * @param javaLocale
+    * @param locale (use hyphen, not underscore)
     */
-   public static void write(File baseDir, Resource doc, String javaLocale)
+   public static void write(File baseDir, Resource doc, String locale)
    {
-      write(baseDir, doc, javaLocale, null, true);
+      write(baseDir, doc, locale, null, true);
    }
 
 }
