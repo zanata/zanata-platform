@@ -25,7 +25,7 @@ package org.zanata.process;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface BackgroundProcessListener<T extends ProcessHandle>
+public interface RunnableProcessListener<T extends ProcessHandle>
 {
    /**
     * Invoked when the process is finished.

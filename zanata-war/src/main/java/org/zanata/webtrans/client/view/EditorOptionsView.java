@@ -40,6 +40,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -80,6 +81,15 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    @UiField
    CheckBox useCodeMirrorChk;
 
+   @UiField
+   PushButton saveButton;
+
+   @UiField
+   PushButton loadButton;
+
+   @UiField
+   PushButton restoreToDefaultsButton;
+
    private Listener listener;
 
    @Inject
@@ -97,6 +107,10 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
       showErrorChk.setTitle(messages.showErrorsTooltip());
       useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
+
+      saveButton.setText(messages.save());
+      loadButton.setText(messages.load());
+      restoreToDefaultsButton.setText(messages.restoreDefaults());
    }
 
    @Override
@@ -226,6 +240,24 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
    }
 
+   @UiHandler("saveButton")
+   public void onSaveButtonClick( ClickEvent event )
+   {
+      listener.persistOptionChange();
+   }
+
+   @UiHandler("loadButton")
+   public void onLoadButtonClick( ClickEvent event )
+   {
+      listener.loadOptions();
+   }
+
+   @UiHandler("restoreToDefaultsButton")
+   public void onRestoreToDefaultsButtonClick( ClickEvent event )
+   {
+      listener.loadDefaultOptions();
+   }
+
    private void selectPageSize(int pageSize)
    {
       if (pageSize == 5)
@@ -264,5 +296,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       String untranslated();
 
       String pageSizeContainer();
+
+      String editorOptsButton();
    }
 }

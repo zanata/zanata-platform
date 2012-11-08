@@ -30,9 +30,10 @@ import org.jboss.seam.security.Identity;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.BackgroundProcessListener;
+import org.zanata.process.RunnableProcessListener;
 import org.zanata.process.CopyTransProcess;
 import org.zanata.process.CopyTransProcessHandle;
+import org.zanata.service.ProcessManagerService;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -82,7 +83,7 @@ public class CopyTransManager implements Serializable
                .makeMap();
 
    @In
-   private CopyTransProcess copyTransProcess; // Get a new instance with every injection
+   private ProcessManagerService processManagerServiceImpl;
 
    @In
    private Identity identity;
@@ -104,7 +105,21 @@ public class CopyTransManager implements Serializable
       {
          throw new IllegalArgumentException("Copy Trans can only run for HProjectIteration and HDocument");
       }
-      return currentlyRunning.containsKey( key ) && !currentlyRunning.get( key ).isFinished();
+
+      if( currentlyRunning.containsKey(key) )
+      {
+         CopyTransProcessHandle handle = currentlyRunning.get(key);
+
+         if( handle != null )
+         {
+            if( !handle.isInProgress() )
+            {
+               currentlyRunning.remove(key);
+            }
+            return handle.isInProgress();
+         }
+      }
+      return false;
    }
 
    /**
@@ -130,9 +145,9 @@ public class CopyTransManager implements Serializable
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle( document, identity.getCredentials().getUsername(), options );
       handle.addListener(listenerInstance);
-      currentlyRunning.put(CopyTransProcessKey.getKey(document), handle);
 
-      copyTransProcess.startProcess(handle);
+      processManagerServiceImpl.startProcess(new CopyTransProcess(), handle);
+      currentlyRunning.put(CopyTransProcessKey.getKey(document), handle);
    }
 
    /**
@@ -148,9 +163,9 @@ public class CopyTransManager implements Serializable
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle( iteration, identity.getCredentials().getUsername(), options );
       handle.addListener(listenerInstance);
-      currentlyRunning.put(CopyTransProcessKey.getKey(iteration), handle);
 
-      copyTransProcess.startProcess(handle);
+      processManagerServiceImpl.startProcess(new CopyTransProcess(), handle);
+      currentlyRunning.put(CopyTransProcessKey.getKey(iteration), handle);
    }
 
    public CopyTransProcessHandle getCopyTransProcessHandle(Object target)
@@ -179,9 +194,9 @@ public class CopyTransManager implements Serializable
          CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
          CopyTransProcessHandle handle = this.getCopyTransProcessHandle(iteration);
          handle.stop();
-         handle.setCancelledTime( System.currentTimeMillis() );
-         handle.setCancelledBy( identity.getCredentials().getUsername() );
-         this.recentlyCancelled.put( key, this.currentlyRunning.remove( key ) );
+         handle.setCancelledTime(System.currentTimeMillis());
+         handle.setCancelledBy(identity.getCredentials().getUsername());
+         this.recentlyCancelled.put(key, handle);
       }
    }
 
@@ -237,7 +252,7 @@ public class CopyTransManager implements Serializable
    /**
     * Internal class to detect when a copy trans process is complete.
     */
-   private final class CopyTransProcessListener implements BackgroundProcessListener<CopyTransProcessHandle>, Serializable
+   private final class CopyTransProcessListener implements RunnableProcessListener<CopyTransProcessHandle>, Serializable
    {
       private static final long serialVersionUID = 1L;
 

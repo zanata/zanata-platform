@@ -25,17 +25,24 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
+import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
+import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
+import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler
@@ -43,6 +50,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final UserConfigHolder configHolder;
    private final UserWorkspaceContext userWorkspaceContext;
+   private final CachingDispatchAsync dispatcher;
 
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
    {
@@ -54,12 +62,15 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    };
 
    @Inject
-   public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext, ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder)
+   public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
+                                 ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder,
+                                 CachingDispatchAsync dispatcher)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
       this.configHolder = configHolder;
       this.userWorkspaceContext = userWorkspaceContext;
+      this.dispatcher = dispatcher;
       display.setListener(this);
    }
 
@@ -176,5 +187,82 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onRevealDisplay()
    {
+   }
+
+   @Override
+   public void persistOptionChange()
+   {
+      SaveOptionsAction action = new SaveOptionsAction();
+      action.setConfiguration( this.configHolder.getState() );
+      action.setFilterByTranslated( this.display.getTranslatedChk().getValue() );
+      action.setFilterByNeedReview( this.display.getNeedReviewChk().getValue() );
+      action.setFilterByUntranslated( this.display.getUntranslatedChk().getValue() );
+
+      dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Could not Save editor Options"));
+         }
+
+         @Override
+         public void onSuccess(SaveOptionsResult result)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "Saved editor Options"));
+         }
+      });
+   }
+
+   @Override
+   public void loadOptions()
+   {
+      LoadOptionsAction action = new LoadOptionsAction();
+
+      dispatcher.execute(action, new AsyncCallback<LoadOptionsResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable to Load editor Options"));
+         }
+
+         @Override
+         public void onSuccess(LoadOptionsResult result)
+         {
+            configHolder.setDisplayButtons( result.getShowEditorButtons() );
+            configHolder.setEnterSavesApproved( result.getEnterKeySavesImmediately() );
+            configHolder.setNavOption( result.getNavOption() );
+            configHolder.setPageSize( result.getPageSize() );
+            configHolder.setShowError( result.getShowErrors() );
+            display.getTranslatedChk().setValue( result.getFilterByTranslated() );
+            display.getNeedReviewChk().setValue( result.getFilterByNeedReview() );
+            display.getUntranslatedChk().setValue( result.getFilterByUntraslated() );
+
+            display.setOptionsState(configHolder.getState());
+            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+            filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded editor options"));
+         }
+      });
+   }
+
+   @Override
+   public void loadDefaultOptions()
+   {
+      // default options
+      configHolder.setDisplayButtons(true);
+      configHolder.setEnterSavesApproved(false);
+      display.getNeedReviewChk().setValue(false);
+      display.getTranslatedChk().setValue(false);
+      display.getUntranslatedChk().setValue(false);
+      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+      configHolder.setPageSize(25);
+      configHolder.setShowError(false);
+
+      display.setOptionsState(configHolder.getState());
+      eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+      filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
+      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
    }
 }

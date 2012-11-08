@@ -51,8 +51,9 @@ rm -rf $JBOSS_TMP_DIR/server/default/deploy/ROOT.war
 mv $JBOSS_TMP_DIR/server/default $JBOSS_TMP_DIR/server/zanata
 
 # Add Zanata specific files
-cp $ZANATA_WAR_HOME/target/zanata-*-internal.war $JBOSS_TMP_DIR/server/zanata/deploy/zanata.war
+cp $ZANATA_WAR_HOME/target/zanata-*.war $JBOSS_TMP_DIR/server/zanata/deploy/zanata.war
 cp $ZANATA_WAR_HOME/src/etc/zanata-ds.xml $JBOSS_TMP_DIR/server/zanata/deploy
+cp -r $ZANATA_WAR_HOME/etc/public-package/* $JBOSS_TMP_DIR/
 
 # Get Maven dependencies
 mvn dependency:get -DrepoUrl=http://repo1.maven.org -Dartifact=mysql:mysql-connector-java:$MYSQL_DRV_VERSION
@@ -60,17 +61,10 @@ cp ~/.m2/repository/mysql/mysql-connector-java/$MYSQL_DRV_VERSION/mysql-connecto
 
 # Create zanata start scripts
 
-echo "echo \"=========================================================================\"" >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "echo \"   _____                 _         \""         >> $JBOSS_TMP_DIR/bin/start-zanata.sh  
-echo "echo \"  |__  /__ _ _ __   __ _| |_ __ _  \""         >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "echo \"    / // _' | '_ \ / _' | __/ _' | \""         >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "echo \"   / /| (_| | | | | (_| | || (_| | \""         >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "echo \"  /____\__,_|_| |_|\__,_|\__\__,_| \""         >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "echo \"                                   \""         >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "echo \"  v$zanata_version Red Hat Inc 2012\""         >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "echo \"=========================================================================\"" >> $JBOSS_TMP_DIR/bin/start-zanata.sh
+echo "# Zanata start script" >> $JBOSS_TMP_DIR/bin/start-zanata.sh
 echo "./run.sh -c zanata" >> $JBOSS_TMP_DIR/bin/start-zanata.sh
 echo "run.bat -c zanata" >> $JBOSS_TMP_DIR/bin/start-zanata.bat
+chmod a+x $JBOSS_TMP_DIR/bin/start-zanata.sh
 
 # Rename the JBoss temporary directory
 mv $JBOSS_TMP_DIR $TMP_DIR/zanata-server-$zanata_version

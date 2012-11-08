@@ -79,6 +79,9 @@ public class CopyTransServiceImpl implements CopyTransService
 
    @In
    private ProjectDAO projectDAO;
+
+   @In(required = false, scope = ScopeType.EVENT)
+   private CopyTransProcessHandle asynchronousProcessHandle;
    
    @Logger
    Log log;
@@ -310,34 +313,26 @@ public class CopyTransServiceImpl implements CopyTransService
       }
       return currentState;
    }
-   
+
    @Override
    public void copyTransForDocument(HDocument document)
    {
-      HCopyTransOptions copyTransOpts =
-            document.getProjectIteration().getProject().getDefaultCopyTransOpts();
-      if( copyTransOpts == null )
-      {
-         copyTransOpts = new HCopyTransOptions();
-      }
-
-      this.copyTransForDocument(document, copyTransOpts, null);
-   }
-
-   @Override
-   public void copyTransForDocument(HDocument document, CopyTransProcessHandle processHandle)
-   {
       // Set the max progress only if it hasn't been set yet
-      if( processHandle != null && !processHandle.isMaxProgressSet() )
+      if( asynchronousProcessHandle != null && !asynchronousProcessHandle.isMaxProgressSet() )
       {
          List<HLocale> localeList =
                localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
                      document.getProjectIteration().getSlug());
 
-         processHandle.setMaxProgress(localeList.size());
+         asynchronousProcessHandle.setMaxProgress(localeList.size());
       }
 
-      HCopyTransOptions copyTransOpts = processHandle.getOptions();
+      HCopyTransOptions copyTransOpts = null;
+      // Use process handle options
+      if( asynchronousProcessHandle != null )
+      {
+         copyTransOpts = asynchronousProcessHandle.getOptions();
+      }
       // use project level options
       if( copyTransOpts == null )
       {
@@ -351,39 +346,30 @@ public class CopyTransServiceImpl implements CopyTransService
          copyTransOpts = new HCopyTransOptions();
       }
 
-      this.copyTransForDocument(document, copyTransOpts, processHandle);
+      this.copyTransForDocument(document, copyTransOpts, asynchronousProcessHandle);
    }
 
-   /**
-    * @see CopyTransServiceImpl#copyTransForIteration(org.zanata.model.HProjectIteration, org.zanata.process.CopyTransProcessHandle)
-    */
    @Override
    public void copyTransForIteration(HProjectIteration iteration)
    {
-      this.copyTransForIteration(iteration, null);
-   }
-
-   @Override
-   public void copyTransForIteration(HProjectIteration iteration, CopyTransProcessHandle procHandle)
-   {
-      if( procHandle != null )
+      if( asynchronousProcessHandle != null )
       {
          List<HLocale> localeList =
                localeServiceImpl.getSupportedLangugeByProjectIteration(iteration.getProject().getSlug(),
                      iteration.getSlug());
 
-         procHandle.setMaxProgress( iteration.getDocuments().size() * localeList.size() );
-         procHandle.setCurrentProgress(0);
+         asynchronousProcessHandle.setMaxProgress( iteration.getDocuments().size() * localeList.size() );
+         asynchronousProcessHandle.setCurrentProgress(0);
       }
 
       // TODO RunnableProcess handle may not be null
       for( HDocument doc : iteration.getDocuments().values() )
       {
-         if( procHandle.shouldStop() )
+         if( asynchronousProcessHandle.shouldStop() )
          {
             return;
          }
-         this.copyTransForDocument(doc, procHandle.getOptions(), procHandle);
+         this.copyTransForDocument(doc, asynchronousProcessHandle.getOptions(), asynchronousProcessHandle);
       }
    }
 

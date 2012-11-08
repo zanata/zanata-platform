@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.presenter;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import com.google.common.base.Predicate;
+import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.inject.Singleton;
 
 
@@ -141,7 +142,7 @@ public class UserConfigHolder
    /**
     * Immutable object represents configuration state
     */
-   public static class ConfigurationState
+   public static class ConfigurationState implements IsSerializable
    {
       private boolean enterSavesApproved;
       private boolean displayButtons;
@@ -149,6 +150,11 @@ public class UserConfigHolder
       private NavOption navOption;
       private boolean showError;
       private boolean useCodeMirrorEditor;
+
+      // Needed for GWT serialization
+      private ConfigurationState()
+      {
+      }
 
       private ConfigurationState(boolean enterSavesApproved, boolean displayButtons, int pageSize, NavOption navOption, boolean showError, boolean useCodeMirrorEditor)
       {

@@ -11,7 +11,6 @@ import java.util.UUID;
  */
 public class ProcessHandle
 {
-   public static final ProcessHandle NO_HANDLE = NoProcessHandle.getNullProcessHandle(ProcessHandle.class);
 
    private String id;
    private boolean shouldStop = false;
@@ -23,7 +22,7 @@ public class ProcessHandle
    private Throwable error;
 
    // process listeners
-   private Collection<BackgroundProcessListener> listeners = new HashSet<BackgroundProcessListener>();
+   private Collection<RunnableProcessListener> listeners = new HashSet<RunnableProcessListener>();
 
 
    public ProcessHandle()
@@ -102,7 +101,7 @@ public class ProcessHandle
    void finish()
    {
       this.finishTime = System.currentTimeMillis();
-      for( BackgroundProcessListener l : this.listeners )
+      for( RunnableProcessListener l : this.listeners )
       {
          l.onComplete( this );
       }
@@ -120,7 +119,7 @@ public class ProcessHandle
       this.currentProgress += increment;
    }
 
-   public void addListener( BackgroundProcessListener listener )
+   public void addListener( RunnableProcessListener listener )
    {
       this.listeners.add(listener);
    }

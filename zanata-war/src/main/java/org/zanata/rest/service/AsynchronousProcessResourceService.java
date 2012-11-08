@@ -134,7 +134,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                   DocumentService documentServiceImpl =
                         (DocumentService)Component.getInstance(DocumentServiceImpl.class);
                   documentServiceImpl.saveDocument(
-                        projectSlug, iterationSlug, resource, extensions, copytrans, true, handle);
+                        projectSlug, iterationSlug, resource, extensions, copytrans, true);
                   handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
                }
             }.withIdentity(identity);
@@ -185,7 +185,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                      DocumentService documentServiceImpl =
                            (DocumentService)Component.getInstance(DocumentServiceImpl.class);
                      documentServiceImpl.saveDocument(
-                           projectSlug, iterationSlug, resource, extensions, copytrans, true, handle);
+                           projectSlug, iterationSlug, resource, extensions, copytrans, true);
                      handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
                   }
 
@@ -265,7 +265,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
                      // Translate
                      translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
-                           extensions, finalMergeType, true, userName, handle);
+                           extensions, finalMergeType, true);
                   }
 
                   @Override

@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.log.Logging;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -173,15 +174,29 @@ public class SeamAutowire
 
       try
       {
-         component = componentClass.newInstance();
+         Constructor<T> constructor = componentClass.getDeclaredConstructor(); // No-arg constructor
+         constructor.setAccessible(true);
+         component = constructor.newInstance();
       }
       catch (InstantiationException e)
       {
-         throw new RuntimeException("Could not auto-wire component of type " + componentClass.getName(), e);
+         throw new RuntimeException(
+               "Could not auto-wire component of type " + componentClass.getName(), e);
       }
       catch (IllegalAccessException e)
       {
-         throw new RuntimeException("Could not auto-wire component of type " + componentClass.getName(), e);
+         throw new RuntimeException("" +
+               "Could not auto-wire component of type " + componentClass.getName(), e);
+      }
+      catch (NoSuchMethodException e)
+      {
+         throw new RuntimeException("" +
+               "Could not auto-wire component of type " + componentClass.getName() + ". No empty constructor.", e);
+      }
+      catch (InvocationTargetException e)
+      {
+         throw new RuntimeException("" +
+               "Could not auto-wire component of type " + componentClass.getName() + ". Exception thrown from constructor.", e);
       }
 
       return this.autowire(component);

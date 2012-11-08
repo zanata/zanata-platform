@@ -8,6 +8,9 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface WebTransMessages extends Messages
 {
+   @DefaultMessage("Save")
+   String save();
+
    @DefaultMessage("(No Content)")
    String noContent();
 
@@ -67,6 +70,12 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
+
+   @DefaultMessage("Load")
+   String load();
+
+   @DefaultMessage("Restore Defaults")
+   String restoreDefaults();
 
    @DefaultMessage("Loading")
    String loading();

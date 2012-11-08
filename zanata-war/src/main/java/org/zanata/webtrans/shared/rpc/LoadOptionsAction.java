@@ -18,35 +18,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
-
-import org.jboss.seam.Component;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.zanata.service.CopyTransService;
-import org.zanata.service.impl.CopyTransServiceImpl;
+package org.zanata.webtrans.shared.rpc;
 
 /**
- * Performs copy trans as a background process.
- *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class CopyTransProcess extends RunnableProcess<CopyTransProcessHandle>
+public class LoadOptionsAction implements DispatchAction<LoadOptionsResult>
 {
-   @Override
-   protected void run(CopyTransProcessHandle handle) throws Throwable
-   {
-      CopyTransService copyTransServiceImpl =
-            (CopyTransService)Component.getInstance(CopyTransServiceImpl.class);
-
-      if( handle.getProjectIteration() != null )
-      {
-         copyTransServiceImpl.copyTransForIteration( handle.getProjectIteration() );
-      }
-      else
-      {
-         copyTransServiceImpl.copyTransForDocument( handle.getDocument() );
-      }
-   }
 }

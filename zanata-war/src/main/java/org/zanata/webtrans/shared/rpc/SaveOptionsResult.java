@@ -18,21 +18,22 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
-
-import org.testng.annotations.Test;
+package org.zanata.webtrans.shared.rpc;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = {"unit-tests"})
-public class NoProcessHandleTest
+public class SaveOptionsResult implements DispatchResult
 {
-   @Test
-   public void primitiveReturnTypes() throws Exception
-   {
-      ProcessHandle handle = NoProcessHandle.getNullProcessHandle(ProcessHandle.class);
+   boolean success;
 
-      handle.getCurrentProgress();
+   public boolean isSuccess()
+   {
+      return success;
+   }
+
+   public void setSuccess(boolean success)
+   {
+      this.success = success;
    }
 }

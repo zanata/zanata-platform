@@ -50,6 +50,13 @@
             margin-right: 3px;
         }
 
+        .editorOptsButton {
+            float: right;
+            color: #000000;
+            margin-right: 3px;
+            border-radius: 3px;
+        }
+
     </ui:style>
 	
     <g:LayoutPanel>
@@ -93,6 +100,13 @@
                         <g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
                         <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
                     </g:VerticalPanel>
+                </g:layer>
+                <g:layer bottom="2px" height="24px">
+                    <g:HTMLPanel>
+                        <g:PushButton ui:field="saveButton" addStyleNames="{style.editorOptsButton}"/>
+                        <g:PushButton ui:field="loadButton" addStyleNames="{style.editorOptsButton}" title=""/>
+                        <g:PushButton ui:field="restoreToDefaultsButton" addStyleNames="{style.editorOptsButton}"/>
+                    </g:HTMLPanel>
                 </g:layer>
             </g:LayoutPanel>
     	</g:layer>
