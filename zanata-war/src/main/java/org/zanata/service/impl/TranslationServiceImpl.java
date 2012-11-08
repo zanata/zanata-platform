@@ -64,6 +64,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.process.MessagesProcessHandle;
+import org.zanata.process.ProcessHandle;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
@@ -117,6 +118,9 @@ public class TranslationServiceImpl implements TranslationService
 
    @In
    private LockManagerService lockManagerServiceImpl;
+
+   @In(required = false, scope = ScopeType.EVENT)
+   MessagesProcessHandle asynchronousProcessHandle;
 
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION, required = false)
    private HAccount authenticatedAccount;
@@ -357,9 +361,9 @@ public class TranslationServiceImpl implements TranslationService
    @Override
    // This will not run in a transaction. Instead, transactions are controlled within the method itself.
    @Transactional(TransactionPropagationType.NEVER)
-   public void translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
-                                         TranslationsResource translations, Set<String> extensions, MergeType mergeType,
-                                         boolean lock, String userName, MessagesProcessHandle handle)
+   public void translateAllInDoc( String projectSlug, String iterationSlug, String docId, LocaleId locale,
+                                  TranslationsResource translations, Set<String> extensions, MergeType mergeType,
+                                  boolean lock)
    {
       // Lock this document for push
       Lock transLock = null;
@@ -371,7 +375,7 @@ public class TranslationServiceImpl implements TranslationService
 
       try
       {
-         this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType, handle);
+         this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType);
       }
       finally
       {
@@ -383,14 +387,8 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
-   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions, MergeType mergeType)
-   {
-      return this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType, MessagesProcessHandle.NO_HANDLE);
-   }
-
-   private List<String> translateAllInDoc(final String projectSlug, final String iterationSlug, final String docId, final LocaleId locale,
-                                          final TranslationsResource translations, final Set<String> extensions, final MergeType mergeType,
-                                          final MessagesProcessHandle handle)
+   public List<String> translateAllInDoc(final String projectSlug, final String iterationSlug, final String docId, final LocaleId locale,
+                                          final TranslationsResource translations, final Set<String> extensions, final MergeType mergeType)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       if (hProjectIteration == null)
@@ -475,7 +473,10 @@ public class TranslationServiceImpl implements TranslationService
                         // return warning for unknown resId to caller
                         String warning = "Could not find TextFlow for TextFlowTarget "+resId+" with contents: " + incomingTarget.getContents();
                         warnings.add(warning);
-                        handle.addMessages(warning);
+                        if( asynchronousProcessHandle != null )
+                        {
+                           asynchronousProcessHandle.addMessages(warning);
+                        }
                         log.warn("skipping TextFlowTarget with unknown resId: {}", resId);
                      }
                      else
@@ -572,7 +573,10 @@ public class TranslationServiceImpl implements TranslationService
                      textFlowTargetDAO.flush();
                      personDAO.clear();
                      textFlowTargetDAO.clear();
-                     handle.incrementProgress(1);
+                     if( asynchronousProcessHandle != null )
+                     {
+                        asynchronousProcessHandle.incrementProgress(1);
+                     }
                   }
 
                   return changed;

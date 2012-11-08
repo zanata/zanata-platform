@@ -25,6 +25,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
+import org.jboss.seam.contexts.Contexts;
 import org.zanata.security.ZanataIdentity;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,8 @@ public class AsynchronousExecutor
    @Asynchronous
    public <H extends ProcessHandle> void runAsynchronously(RunnableProcess<H> process, H handle)
    {
+      outjectProcessHandle(handle);
+
       try
       {
          // Authenticate as the provided credentials
@@ -66,5 +69,10 @@ public class AsynchronousExecutor
       {
          handle.finish();
       }
+   }
+
+   private void outjectProcessHandle(ProcessHandle handle)
+   {
+      Contexts.getEventContext().set("asynchronousProcessHandle", handle);
    }
 }

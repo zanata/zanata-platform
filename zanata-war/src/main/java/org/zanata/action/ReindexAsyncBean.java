@@ -32,13 +32,14 @@ import org.zanata.model.HIterationProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.process.BackgroundProcess;
 import org.zanata.process.ProcessHandle;
+import org.zanata.process.RunnableProcess;
+import org.zanata.service.ProcessManagerService;
 
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
 @Startup
-public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.ReindexProcessHandle> implements Serializable
+public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexProcessHandle> implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -50,6 +51,9 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
 
    @In
    EntityManagerFactory entityManagerFactory;
+
+   @In
+   ProcessManagerService processManagerServiceImpl;
 
    private FullTextSession session;
 
@@ -183,8 +187,7 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
    public void startProcess()
    {
       // Invoke a self proxy
-      ReindexAsyncBean self = (ReindexAsyncBean)Component.getInstance(this.getClass(), ScopeType.APPLICATION);
-      self.startProcess( this.handle );
+      processManagerServiceImpl.startProcess(this, this.handle);
    }
 
 
@@ -193,7 +196,7 @@ public class ReindexAsyncBean extends BackgroundProcess<ReindexAsyncBean.Reindex
     * after a single call to prepareReindex()
     */
    @Override
-   protected void runProcess(ReindexProcessHandle handle) throws Exception
+   protected void run(ReindexProcessHandle handle) throws Exception
    {
       // TODO this is necessary because isInProgress checks number of operations, which may be 0
       // look at updating isInProgress not to care about count

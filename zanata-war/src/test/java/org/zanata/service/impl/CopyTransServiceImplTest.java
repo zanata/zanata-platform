@@ -140,7 +140,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    public void testCopyTrans(CopyTransExecution execution)
    {
       // Prepare Execution
-      CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
       ProjectIterationDAO iterationDAO = seam.autowire(ProjectIterationDAO.class);
       LocaleDAO localeDAO = seam.autowire(LocaleDAO.class);
 
@@ -192,7 +191,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
             execution.getDocumentMismatchAction(), execution.getProjectMismatchAction() );
       CopyTransProcessHandle handle = new CopyTransProcessHandle(projectIteration, "admin", options);
 
-      copyTransService.copyTransForIteration(projectIteration, handle);
+      CopyTransService copyTransService = seam.use("asynchronousProcessHandle", handle)
+                                              .autowire(CopyTransServiceImpl.class);
+      copyTransService.copyTransForIteration(projectIteration);
 
       // Validate execution
       HTextFlow targetTextFlow = (HTextFlow)

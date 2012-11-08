@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -44,6 +45,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.FileSystemService;
+import org.zanata.service.impl.ConfigurationServiceImpl;
+import org.zanata.service.impl.FileSystemServiceImpl;
 
 /**
  * Background RunnableProcess implementation that builds a zip file with all translation file
@@ -51,30 +54,33 @@ import org.zanata.service.FileSystemService;
  * 
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("iterationZipFileBuildProcess")
-@AutoCreate
-public class IterationZipFileBuildProcess extends BackgroundProcess<IterationZipFileBuildProcessHandle>
+public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFileBuildProcessHandle>
 {   
-   @In
    private DocumentDAO documentDAO;
    
-   @In
    private LocaleDAO localeDAO;
    
-   @In
    private ResourceUtils resourceUtils;
    
-   @In
    private TextFlowTargetDAO textFlowTargetDAO;
    
-   @In
    private FileSystemService fileSystemServiceImpl;
    
-   @In
    private ConfigurationService configurationServiceImpl;
 
    @Override
-   protected void runProcess(IterationZipFileBuildProcessHandle zipHandle) throws Exception
+   protected void prepare(IterationZipFileBuildProcessHandle handle)
+   {
+      documentDAO = (DocumentDAO)Component.getInstance(DocumentDAO.class);
+      localeDAO = (LocaleDAO)Component.getInstance(LocaleDAO.class);
+      resourceUtils = (ResourceUtils)Component.getInstance(ResourceUtils.class);
+      textFlowTargetDAO = (TextFlowTargetDAO)Component.getInstance(TextFlowTargetDAO.class);
+      fileSystemServiceImpl = (FileSystemService) Component.getInstance(FileSystemServiceImpl.class);
+      configurationServiceImpl = (ConfigurationService)Component.getInstance(ConfigurationServiceImpl.class);
+   }
+
+   @Override
+   protected void run(IterationZipFileBuildProcessHandle zipHandle) throws Exception
    {
       final String projectSlug = zipHandle.getProjectSlug();
       final String iterationSlug = zipHandle.getIterationSlug();

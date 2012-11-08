@@ -95,14 +95,11 @@ public interface TranslationService
     *                  ones. IMPORT will overwrite all existing translations with the new ones.
     * @param lock If true, no other caller will be allowed to translate All for the same project, iteration, document
     *             and locale.
-    * @param userName User name that initiated this translation. If this method is called within a session context, the
-    *                 recorded user will be the session's user. Otherwise, it will be the user specified by this parameter.
-    * @param handle The process handle to constantly communicate progress.
     * @see TranslationService#translateAllInDoc(String, String, String, org.zanata.common.LocaleId, org.zanata.rest.dto.resource.TranslationsResource, java.util.Set, org.zanata.common.MergeType)
     */
    public void translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                          TranslationsResource translations, Set<String> extensions, MergeType mergeType,
-                                         boolean lock, String userName, MessagesProcessHandle handle);
+                                         boolean lock);
 
    /**
     * Translates all text flows in a document.
