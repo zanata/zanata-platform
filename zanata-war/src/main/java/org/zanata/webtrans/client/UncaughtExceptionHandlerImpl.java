@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client;
 
+import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
@@ -8,11 +10,8 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -29,6 +28,8 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
 
    private final CachingDispatchAsync dispatcher;
    private final UserConfigHolder configHolder;
+   private AppPresenter appPresenter;
+   private TargetContentsPresenter targetContentsPresenter;
 
    protected UncaughtExceptionHandlerImpl(CachingDispatchAsync dispatcher, UserConfigHolder configHolder)
    {
@@ -44,7 +45,12 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
       Log.fatal("uncaught exception", e);
 
       String stackTrace = buildStackTraceMessages(e);
-      dispatcher.execute(new RemoteLoggingAction(stackTrace), new NoOpAsyncCallback<NoOpResult>());
+
+      RemoteLoggingAction action = new RemoteLoggingAction(stackTrace);
+      action.addContextInfo("selected Doc", appPresenter.getSelectedDocumentInfoOrNull());
+      action.addContextInfo("selected TransUnitId", targetContentsPresenter.getCurrentTransUnitIdOrNull());
+      action.addContextInfo("editor contents", targetContentsPresenter.getNewTargets());
+      dispatcher.execute(action, new NoOpAsyncCallback<NoOpResult>());
 
       if (!configHolder.isShowError())
       {
@@ -116,5 +122,15 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
       disclosurePanel.setContent(new HTMLPanel(htmlBuilder.toSafeHtml()));
       disclosurePanel.setOpen(false);
       return disclosurePanel;
+   }
+
+   public void setAppPresenter(AppPresenter appPresenter)
+   {
+      this.appPresenter = appPresenter;
+   }
+
+   public void setTargetContentsPresenter(TargetContentsPresenter targetContentsPresenter)
+   {
+      this.targetContentsPresenter = targetContentsPresenter;
    }
 }

@@ -1,6 +1,9 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.logging.Level;
+import java.util.List;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -8,6 +11,7 @@ import java.util.logging.Level;
 public class RemoteLoggingAction extends AbstractWorkspaceAction<NoOpResult>
 {
    private String message;
+   private List<String> contextInfo = Lists.newArrayList();
 
    @SuppressWarnings("unused")
    public RemoteLoggingAction()
@@ -28,5 +32,16 @@ public class RemoteLoggingAction extends AbstractWorkspaceAction<NoOpResult>
    public String getMessage()
    {
       return message;
+   }
+
+   public List<String> getContextInfo()
+   {
+      return contextInfo;
+   }
+
+   public RemoteLoggingAction addContextInfo(String contextName, Object contextValue)
+   {
+      contextInfo.add(Objects.toStringHelper("").add(contextName, contextValue).toString());
+      return this;
    }
 }

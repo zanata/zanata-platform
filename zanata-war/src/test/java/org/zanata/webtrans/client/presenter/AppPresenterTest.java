@@ -284,6 +284,7 @@ public class AppPresenterTest
    {
       // Given: current selected document is null
       assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(Matchers.nullValue()));
+      assertThat(presenter.getSelectedDocumentInfoOrNull(), Matchers.is(Matchers.nullValue()));
       when(messages.documentListTitle()).thenReturn("Documents");
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
 
@@ -344,12 +345,13 @@ public class AppPresenterTest
       
       verifyNoMoreInteractions(display);
       assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(docId));
+      assertThat(presenter.getSelectedDocumentInfoOrNull(), Matchers.is(documentInfo));
    }
 
    @Test
    public void onDocumentStatsUpdateWillDoNothingIfNoSelectedDocument()
    {
-      assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(Matchers.nullValue()));
+      assertThat(presenter.getSelectedDocumentInfoOrNull(), Matchers.is(Matchers.nullValue()));
 
       presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L), new TranslationStats()));
 

@@ -6,6 +6,7 @@ import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -38,4 +39,6 @@ public interface WebTransGinjector extends Ginjector
    History getHistory();
 
    HistoryEventHandlerService getHistoryEventHandlerService();
+
+   TargetContentsPresenter getTargetContentsPresenter();
 }

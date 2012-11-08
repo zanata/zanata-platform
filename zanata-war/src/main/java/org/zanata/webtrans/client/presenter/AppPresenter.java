@@ -293,6 +293,11 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       return selectedDocument == null ? null : selectedDocument.getId();
    }
 
+   public DocumentInfo getSelectedDocumentInfoOrNull()
+   {
+      return selectedDocument == null ? null : selectedDocument;
+   }
+
    @Override
    public void onShowSideMenu(ShowSideMenuEvent event)
    {

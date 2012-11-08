@@ -62,10 +62,10 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    @Override
    public boolean equals(Object obj)
    {
-      if (obj == null)
+      if (obj == null || !(obj instanceof DocumentInfo))
+      {
          return false;
-      if (!(obj instanceof DocumentInfo))
-         return false;
+      }
       DocumentInfo other = (DocumentInfo) obj;
       return (id.equals(other.getId()));
    }

@@ -32,7 +32,7 @@ public class RemoteLoggingHandler extends AbstractActionHandler<RemoteLoggingAct
       {
          identity.checkLoggedIn();
          log.error("[gwt-log] from user: {} on workspace: {}", identity.getCredentials().getUsername(), action.getWorkspaceId());
-         log.error("[gwt-log] {}", action.getMessage());
+         log.error("[gwt-log] context: {} \n{}", action.getContextInfo(), action.getMessage());
       }
       catch (Exception e)
       {
