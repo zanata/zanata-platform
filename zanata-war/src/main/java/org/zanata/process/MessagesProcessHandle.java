@@ -31,8 +31,6 @@ import java.util.List;
  */
 public class MessagesProcessHandle extends ProcessHandle
 {
-   public static final MessagesProcessHandle NO_HANDLE = NoProcessHandle.getNullProcessHandle(MessagesProcessHandle.class);
-
    private List<String> messages = new ArrayList<String>();
 
    public List<String> getMessages()

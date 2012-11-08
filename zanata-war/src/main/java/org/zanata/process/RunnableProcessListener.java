@@ -20,19 +20,17 @@
  */
 package org.zanata.process;
 
-import org.testng.annotations.Test;
-
 /**
+ * Listener interface for background process events.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = {"unit-tests"})
-public class NoProcessHandleTest
+public interface RunnableProcessListener<T extends ProcessHandle>
 {
-   @Test
-   public void primitiveReturnTypes() throws Exception
-   {
-      ProcessHandle handle = NoProcessHandle.getNullProcessHandle(ProcessHandle.class);
-
-      handle.getCurrentProgress();
-   }
+   /**
+    * Invoked when the process is finished.
+    *
+    * @param handle The process' handle.
+    */
+   void onComplete( T handle );
 }

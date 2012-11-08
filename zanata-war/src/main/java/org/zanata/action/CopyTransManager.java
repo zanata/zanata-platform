@@ -30,10 +30,9 @@ import org.jboss.seam.security.Identity;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.BackgroundProcessListener;
+import org.zanata.process.RunnableProcessListener;
 import org.zanata.process.CopyTransProcess;
 import org.zanata.process.CopyTransProcessHandle;
-import org.zanata.process.ProcessHandle;
 import org.zanata.service.ProcessManagerService;
 
 import java.io.Serializable;
@@ -253,7 +252,7 @@ public class CopyTransManager implements Serializable
    /**
     * Internal class to detect when a copy trans process is complete.
     */
-   private final class CopyTransProcessListener implements BackgroundProcessListener<CopyTransProcessHandle>, Serializable
+   private final class CopyTransProcessListener implements RunnableProcessListener<CopyTransProcessHandle>, Serializable
    {
       private static final long serialVersionUID = 1L;
 

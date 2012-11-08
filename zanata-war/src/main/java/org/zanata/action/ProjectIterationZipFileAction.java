@@ -14,6 +14,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.process.IterationZipFileBuildProcess;
 import org.zanata.process.IterationZipFileBuildProcessHandle;
 import org.zanata.process.ProcessHandle;
+import org.zanata.service.ProcessManagerService;
 
 @Name("projectIterationZipFileAction")
 @Scope(ScopeType.CONVERSATION)
@@ -21,12 +22,12 @@ public class ProjectIterationZipFileAction implements Serializable
 {
    
    private static final long serialVersionUID = 1L;
-
-   @In
-   private IterationZipFileBuildProcess iterationZipFileBuildProcess;
    
    @In
    private ProjectIterationDAO projectIterationDAO;
+
+   @In
+   ProcessManagerService processManagerServiceImpl;
    
    private String projectSlug;
    
@@ -56,7 +57,7 @@ public class ProjectIterationZipFileAction implements Serializable
       processHandle.setInitiatingUserName( Identity.instance().getCredentials().getUsername() );
       
       // Fire the zip file building process and wait until it is ready to return
-      this.iterationZipFileBuildProcess.startProcess( processHandle );
+      this.processManagerServiceImpl.startProcess( new IterationZipFileBuildProcess(), processHandle );
       processHandle.waitUntilReady();
    }
    

@@ -33,7 +33,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.zanata.process.BackgroundProcessListener;
+import org.zanata.process.RunnableProcessListener;
 import org.zanata.process.ProcessExecutor;
 import org.zanata.process.ProcessHandle;
 import org.zanata.process.RunnableProcess;
@@ -144,7 +144,7 @@ public class ProcessManagerServiceImpl implements ProcessManagerService
    /**
     * Internal class to detect when a process is complete.
     */
-   private final class DefaultProcessListener implements BackgroundProcessListener<ProcessHandle>, Serializable
+   private final class DefaultProcessListener implements RunnableProcessListener<ProcessHandle>, Serializable
    {
       private static final long serialVersionUID = 1L;
 
