@@ -57,10 +57,12 @@ public class Application implements EntryPoint
    private static Identity identity;
 
    private final static WebTransGinjector injector = GWT.create(WebTransGinjector.class);
+   private UncaughtExceptionHandlerImpl exceptionHandler;
 
    public void onModuleLoad()
    {
-      GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl(injector.getDispatcher(), injector.getUserConfig()));
+      exceptionHandler = new UncaughtExceptionHandlerImpl(injector.getDispatcher(), injector.getUserConfig());
+      GWT.setUncaughtExceptionHandler(exceptionHandler);
 
       injector.getDispatcher().execute(new ActivateWorkspaceAction(getWorkspaceId()), new AsyncCallback<ActivateWorkspaceResult>()
       {
@@ -192,6 +194,9 @@ public class Application implements EntryPoint
             // re-use these stats for the project stats
             Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+
+            exceptionHandler.setAppPresenter(appPresenter);
+            exceptionHandler.setTargetContentsPresenter(injector.getTargetContentsPresenter());
          }
       });
    }
@@ -280,8 +285,6 @@ public class Application implements EntryPoint
     *
     * @param message to display
     * @param e non-null to provide a stack trace in an expandable view.
-    * @param linkText text to display for link
-    * @param linkUrl href for link
     */
    private static void showErrorWithLink(String message, Throwable e)
    {
