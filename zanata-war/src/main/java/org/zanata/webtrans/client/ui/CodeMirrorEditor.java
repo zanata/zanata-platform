@@ -10,6 +10,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -28,6 +30,7 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
 
    private JavaScriptObject codeMirror;
    private boolean valueChangeHandlerInitialized;
+   private boolean editing;
 
 
    public CodeMirrorEditor()
@@ -45,9 +48,9 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
          disableSpellcheck: false,
          mode: "visibleSpace",
          value: element.value,
-//         onFocus: function() {
-//            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onFocus()();
-//         },
+         onFocus: function() {
+            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onFocus()();
+         },
          onBlur: function() {
             self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onBlur()();
          },
@@ -89,11 +92,12 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
    }
 
    // callback function for the code mirror instance. Gets called when code mirror editor is on focus.
-//   private void onFocus()
-//   {
+   private void onFocus()
+   {
 //      NativeEvent focusEvent = Document.get().createFocusEvent();
 //      FocusEvent.fireNativeEvent(focusEvent, this, this.getElement());
-//   }
+      editing = true;
+   }
 
    // callback function for the code mirror instance. Gets called when code mirror editor is on blur.
    private void onBlur()
@@ -250,21 +254,27 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
    }
 
    @Override
-   public void startEditing()
+   public void setEditing(boolean isEditing)
    {
-      // no op
+      editing = isEditing;
    }
 
    @Override
-   public void stopEditing()
+   public boolean isEditing()
    {
-      // no op
+      return editing;
    }
 
    @Override
    public HandlerRegistration addBlurHandler(BlurHandler handler)
    {
       return addHandler(handler, BlurEvent.getType());
+   }
+
+   @Override
+   public HandlerRegistration addFocusHandler(FocusHandler handler)
+   {
+      return addHandler(handler, FocusEvent.getType());
    }
 
    interface CodeMirrorEditorUiBinder extends UiBinder<Widget, CodeMirrorEditor>

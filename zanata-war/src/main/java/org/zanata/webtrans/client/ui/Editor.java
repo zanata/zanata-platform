@@ -1,8 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState.SAVED;
-import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState.UNSAVED;
-
 import java.util.List;
 
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
@@ -25,7 +22,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
-import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState.*;
+import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState.UNSAVED;
 
 public class Editor extends Composite implements ToggleEditor
 {
@@ -34,7 +31,6 @@ public class Editor extends Composite implements ToggleEditor
    private final int index;
 
    private final TransUnitId id;
-   private boolean isFocused;
 
    private TargetContentsDisplay.Listener listener;
 
@@ -103,21 +99,21 @@ public class Editor extends Composite implements ToggleEditor
    public void onEditorClick(ClickEvent event)
    {
       listener.onEditorClicked(id, index);
-      textArea.startEditing();
+      textArea.setEditing(true);
       fireValidationEvent();
-   }
-
-   @UiHandler("textArea")
-   public void onTextAreaBlur(BlurEvent event)
-   {
-      isFocused = false;
-      textArea.stopEditing();
    }
 
    @UiHandler("textArea")
    public void onTextAreaFocus(FocusEvent event)
    {
-      isFocused = true;
+      textArea.setFocus(true);
+      textArea.setEditing(true);
+   }
+
+   @UiHandler("textArea")
+   public void onTextAreaBlur(BlurEvent event)
+   {
+      textArea.setEditing(false);
    }
 
    @UiHandler("copyIcon")
@@ -175,7 +171,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void setFocus()
    {
-      isFocused = true;
+      textArea.setEditing(true);
       textArea.setFocus(true);
    }
 
@@ -260,7 +256,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public boolean isFocused()
    {
-      return isFocused;
+      return textArea.isEditing();
    }
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
