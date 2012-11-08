@@ -20,14 +20,10 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
-import java.util.ArrayList;
-
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -50,11 +46,6 @@ public class XmlEntityValidation extends AbstractValidation
    private final static String hexadecimalRefRegex = "&#x[0-9a-f_A-F]+;";
    private final static RegExp hexadecimalRefExp = RegExp.compile(hexadecimalRefRegex);
 
-
-   private final static RegExp charRefGlobalExp = RegExp.compile(charRefRegex, "g");
-   private final static RegExp decimalRefGlobalExp = RegExp.compile(decimalRefRegex, "g");
-   private final static RegExp hexadecimalRefGlobalExp = RegExp.compile(hexadecimalRefRegex, "g");
-
    private final static String ENTITY_START_CHAR = "&";
 
    // XML PREDEFINED ENTITY
@@ -70,51 +61,6 @@ public class XmlEntityValidation extends AbstractValidation
    public void doValidate(String source, String target)
    {
       validateIncompleteEntity(target);
-      validateSourceTargetEntity(source, target);
-   }
-
-   private void validateSourceTargetEntity(String source, String target)
-   {
-      if (Strings.isNullOrEmpty(source) || Strings.isNullOrEmpty(target))
-      {
-         return;
-      }
-
-      ArrayList<String> unmatched = new ArrayList<String>();
-      unmatched.addAll(validate(source, target, charRefGlobalExp));
-      unmatched.addAll(validate(source, target, decimalRefGlobalExp));
-      unmatched.addAll(validate(source, target, hexadecimalRefGlobalExp));
-
-
-      if (!unmatched.isEmpty())
-      {
-         addError(getMessages().entityMissing(unmatched));
-      }
-
-   }
-
-   private ArrayList<String> validate(String source, String target, RegExp regExp)
-   {
-      ArrayList<String> unmatched = new ArrayList<String>();
-
-      String tmp = target;
-      MatchResult result = regExp.exec(source);
-
-      while (result != null)
-      {
-         String entity = result.getGroup(0);
-         Log.debug("Found entity:" + entity);
-         if (!tmp.contains(entity))
-         {
-            unmatched.add(" [" + entity + "] ");
-         }
-         else
-         {
-            tmp = tmp.replaceFirst(entity, ""); // remove matched entity from
-         }
-         result = regExp.exec(source);
-      }
-      return unmatched;
    }
 
    private void validateIncompleteEntity(String target)
