@@ -26,8 +26,6 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.util.ArrayList;
-
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -166,32 +164,6 @@ public class XMLEntityValidationTests
 
       assertThat(xmlEntityValidation.hasError(), is(true));
       assertThat(xmlEntityValidation.getError().size(), is(2));
-   }
-
-   @Test
-   public void testWithMissingEntity()
-   {
-      mockMessages = createMock(ValidationMessages.class);
-
-      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
-
-      ArrayList<String> missingEntities = new ArrayList<String>();
-      missingEntities.add(" [&amp;] ");
-      missingEntities.add(" [&RedHat;] ");
-      missingEntities.add(" [&#123;] ");
-      missingEntities.add(" [&#x123F;] ");
-      
-      expect(mockMessages.entityMissing(missingEntities)).andReturn("Mock missing messages");
-      replay(mockMessages);
-
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
-      String source = "Source string &amp; and &RedHat; and &#123; and &#x123F;";
-      String target = "Target string";
-      xmlEntityValidation.validate(source, target);
-
-      assertThat(xmlEntityValidation.hasError(), is(true));
-      assertThat(xmlEntityValidation.getError().size(), is(1));
    }
 
 }
