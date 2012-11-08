@@ -49,6 +49,8 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
 
    void delayRefresh();
 
+   void ensureVisible(TargetContentsDisplay currentDisplay);
+
    interface Listener
    {
       void onRowSelected(int rowIndex);

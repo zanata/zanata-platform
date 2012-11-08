@@ -581,6 +581,11 @@ public class TargetContentsPresenter implements
       }
    }
 
+   public TargetContentsDisplay getCurrentDisplay()
+   {
+      return display;
+   }
+
    /**
     * For testing only
     * @param currentTransUnitId current trans unit id

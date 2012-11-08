@@ -179,6 +179,12 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    }
 
    @Override
+   public void ensureVisible(TargetContentsDisplay currentDisplay)
+   {
+      root.ensureVisible(currentDisplay.asWidget());
+   }
+
+   @Override
    public void setRowSelectionListener(Listener listener)
    {
       this.listener = listener;
