@@ -60,7 +60,7 @@ public class TextContentsDisplay
          HighlightingLabel label = new HighlightingLabel(content);
          if (!Strings.isNullOrEmpty(highlightString))
          {
-            label.highlightSearch(highlightString);
+            label.highlight(highlightString);
          }
          appendContent(builder, label.getElement().getString());
       }
