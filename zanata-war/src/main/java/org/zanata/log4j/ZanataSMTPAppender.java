@@ -20,6 +20,8 @@
  */
 package org.zanata.log4j;
 
+import it.openutils.log4j.AlternateSMTPAppender;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -27,14 +29,11 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
 import org.jboss.seam.Component;
-
-import it.openutils.log4j.AlternateSMTPAppender;
 
 /**
  * Extension of the {@link AlternateSMTPAppender} class that allows Zanata to use
@@ -97,6 +96,12 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender
          return InternetAddress.parse(addressStr, true);
       }
       catch (AddressException e)
+      {
+         errorHandler.error("Could not parse address [" + addressStr + "].", e, ErrorCode.ADDRESS_PARSE_FAILURE);
+         return null;
+      }
+
+      catch (NullPointerException e)
       {
          errorHandler.error("Could not parse address [" + addressStr + "].", e, ErrorCode.ADDRESS_PARSE_FAILURE);
          return null;
