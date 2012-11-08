@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -73,7 +75,9 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
    public void setText(String text)
    {
       super.setText(text);
-      autoSize();
+      Splitter splitter = Splitter.on("\n");
+      Iterable<String> lines = splitter.split(text);
+      setVisibleLines(Iterables.size(lines));
    }
 
    @Override

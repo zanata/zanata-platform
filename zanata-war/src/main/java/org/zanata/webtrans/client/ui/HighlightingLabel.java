@@ -24,7 +24,7 @@ import com.google.common.base.Strings;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 
-public class HighlightingLabel extends HTML
+public class HighlightingLabel extends HTML implements SourceContentWrapper
 {
 
    private String plainText;
@@ -63,17 +63,23 @@ public class HighlightingLabel extends HTML
       preElement.addClassName("cm-s-default");
    }
 
-   public void highlightSearch(String search)
+   @Override
+   public void refresh()
+   {
+      // no op
+   }
+
+   @Override
+   public void highlight(String searchTerm)
    {
       Element element = getElement();
-      if (Strings.isNullOrEmpty(search))
+      if (Strings.isNullOrEmpty(searchTerm))
       {
          highlight();
       }
       else
       {
-         Highlighting.searchHighlight(search, element);
+         Highlighting.searchHighlight(searchTerm, element);
       }
    }
-
 }

@@ -663,6 +663,14 @@ td.ApprovedStateDecoration div div div
     cursor: default;
 }
 
+/* when using highlighting label to display source */
+.sourceTable pre.cm-s-default {
+    background: #ffffff;
+    margin: 0;
+    padding: .4em;
+    min-height: 2em;
+}
+
 .keyShortcutPanel
 {
 	border:none;

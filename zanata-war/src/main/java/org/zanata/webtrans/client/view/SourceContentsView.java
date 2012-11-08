@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
@@ -48,10 +49,12 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    private final TransUnitDetailsPanel transUnitDetailsPanel;
 
    private TransUnitId transUnitId;
+   private final UserConfigHolder configHolder;
 
    @Inject
-   public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider)
+   public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider, UserConfigHolder configHolder)
    {
+      this.configHolder = configHolder;
       sourcePanelList = new ArrayList<HasSelectableSource>();
       FlowPanel root = new FlowPanel();
       root.setSize("100%", "100%");
@@ -91,9 +94,10 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       sourcePanelList.clear();
 
       int rowIndex = 0;
+      boolean useCodeMirrorEditor = configHolder.isUseCodeMirrorEditor();
       for (String source : value.getSources())
       {
-         SourcePanel sourcePanel = new SourcePanel(transUnitId);
+         SourcePanel sourcePanel = new SourcePanel(transUnitId, useCodeMirrorEditor);
          sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
          sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
          sourcePanelList.add(sourcePanel);

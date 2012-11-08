@@ -35,6 +35,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SourcePanel extends Composite implements HasSelectableSource
@@ -64,15 +65,25 @@ public class SourcePanel extends Composite implements HasSelectableSource
    @UiField
    Styles style;
    @UiField
-   CodeMirrorReadOnlyWidget sourceContent;
+   SimplePanel sourceContentContainer;
+   private SourceContentWrapper sourceContent;
 
    private String source = "";
    private final TransUnitId transUnitId;
 
-   public SourcePanel(TransUnitId transUnitId)
+   public SourcePanel(TransUnitId transUnitId, boolean useCodeMirrorEditor)
    {
       this.transUnitId = transUnitId;
       initWidget(uiBinder.createAndBindUi(this));
+      if (useCodeMirrorEditor)
+      {
+         sourceContent = new CodeMirrorReadOnlyWidget();
+      }
+      else
+      {
+         sourceContent = new HighlightingLabel();
+      }
+      sourceContentContainer.setWidget(sourceContent);
       sinkEvents(Event.ONCLICK);
    }
 

@@ -23,9 +23,8 @@
 
 	<g:HorizontalPanel width="100%" height="100%" styleName="{style.nonSelectedRow}" ui:field="container">
 		<g:cell horizontalAlignment="ALIGN_LEFT">
-            <g:HTMLPanel>
-                <fui:CodeMirrorReadOnlyWidget ui:field="sourceContent"  />
-            </g:HTMLPanel>
+            <g:SimplePanel ui:field="sourceContentContainer">
+            </g:SimplePanel>
 		</g:cell>
 		<g:cell horizontalAlignment="ALIGN_RIGHT" width="20px">
 			<g:RadioButton ui:field="selectButton" name="selectSourceButton" />
