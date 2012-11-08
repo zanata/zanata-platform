@@ -8,7 +8,7 @@
 
     <changeSet id="1" author="camunoz@redhat.com">
         <comment>Add HEditorOption table.</comment>
-        <createTable tableName="HEditorOption">
+        <createTable tableName="HAccountOption">
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
