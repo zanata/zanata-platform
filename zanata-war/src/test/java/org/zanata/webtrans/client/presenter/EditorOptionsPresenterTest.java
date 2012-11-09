@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
+import javax.lang.model.util.Types;
+
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -8,20 +10,28 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageSizeChangeEvent;
-import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
+import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
+import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
+import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
+import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -48,13 +58,17 @@ public class EditorOptionsPresenterTest
    @Captor
    private ArgumentCaptor<ValueChangeHandler<Boolean>> filterChangeHandlerCaptor;
    @Mock
-   private CachingDispatchAsync mockDispatcher;
+   private CachingDispatchAsync dispatcher;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, configHolder, mockDispatcher);
+      when(display.getNeedReviewChk()).thenReturn(needReviewChk);
+      when(display.getTranslatedChk()).thenReturn(translatedChk);
+      when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
+
+      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, configHolder, dispatcher);
       verify(display).setListener(presenter);
    }
 
@@ -62,9 +76,6 @@ public class EditorOptionsPresenterTest
    public void onBindWillRegisterHandlers()
    {
       // Given: user workspace context is not readonly
-      when(display.getNeedReviewChk()).thenReturn(needReviewChk);
-      when(display.getTranslatedChk()).thenReturn(translatedChk);
-      when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
 
       // When:
@@ -88,9 +99,6 @@ public class EditorOptionsPresenterTest
    public void filterChangeHandlerWillFireEvent()
    {
       // Given: checkbox value as following
-      when(display.getNeedReviewChk()).thenReturn(needReviewChk);
-      when(display.getTranslatedChk()).thenReturn(translatedChk);
-      when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
       when(needReviewChk.getValue()).thenReturn(true);
       when(translatedChk.getValue()).thenReturn(false);
       when(untranslatedChk.getValue()).thenReturn(true);
@@ -144,9 +152,6 @@ public class EditorOptionsPresenterTest
    public void willSetOptionsBackOnFilterViewCancelEvent()
    {
       FilterViewEvent event = new FilterViewEvent(true, true, true, true);
-      when(display.getNeedReviewChk()).thenReturn(needReviewChk);
-      when(display.getTranslatedChk()).thenReturn(translatedChk);
-      when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
 
       presenter.onFilterView(event);
 
@@ -218,5 +223,84 @@ public class EditorOptionsPresenterTest
 
       assertThat(configHolder.isShowError(), Matchers.equalTo(true));
       verifyZeroInteractions(eventBus);
+   }
+
+   @Test
+   public void onLoadDefaultOptions()
+   {
+      when(needReviewChk.getValue()).thenReturn(false);
+      when(translatedChk.getValue()).thenReturn(false);
+      when(untranslatedChk.getValue()).thenReturn(false);
+
+      presenter.loadDefaultOptions();
+
+      verify(needReviewChk).setValue(false);
+      verify(translatedChk).setValue(false);
+      verify(untranslatedChk).setValue(false);
+      assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
+      assertThat(configHolder.getPageSize(), Matchers.equalTo(25));
+      assertThat(configHolder.isShowError(), Matchers.equalTo(false));
+      assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(true));
+      assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(false));
+      verify(display).setOptionsState(configHolder.getState());
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+      verify(eventBus).fireEvent(isA(NotificationEvent.class));
+   }
+
+   @Test
+   public void onPersistOption()
+   {
+      when(needReviewChk.getValue()).thenReturn(true);
+      when(translatedChk.getValue()).thenReturn(false);
+      when(untranslatedChk.getValue()).thenReturn(true);
+
+      presenter.persistOptionChange();
+
+      ArgumentCaptor<SaveOptionsAction> actionCaptor = ArgumentCaptor.forClass(SaveOptionsAction.class);
+      ArgumentCaptor<AsyncCallback> callbackCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
+      verify(dispatcher).execute(actionCaptor.capture(), callbackCaptor.capture());
+
+      SaveOptionsAction action = actionCaptor.getValue();
+      assertThat(action.getConfiguration(), Matchers.is(configHolder.getState()));
+      assertThat(action.getFilterByNeedReview(), Matchers.equalTo(true));
+      assertThat(action.getFilterByTranslated(), Matchers.equalTo(false));
+      assertThat(action.getFilterByUntranslated(), Matchers.equalTo(true));
+
+      AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
+      callback.onSuccess(new SaveOptionsResult());
+      callback.onFailure(null);
+      verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
+   }
+
+   @Test
+   public void onLoadSavedOption()
+   {
+      LoadOptionsResult result = new LoadOptionsResult();
+      result.setEnterKeySavesImmediately(true);
+      result.setFilterByTranslated(true);
+      result.setNavOption(NavOption.FUZZY);
+      result.setPageSize(10);
+
+      presenter.loadOptions();
+
+      ArgumentCaptor<LoadOptionsAction> actionCaptor = ArgumentCaptor.forClass(LoadOptionsAction.class);
+      ArgumentCaptor<AsyncCallback> callbackCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
+      verify(dispatcher).execute(actionCaptor.capture(), callbackCaptor.capture());
+
+      AsyncCallback callback = callbackCaptor.getValue();
+
+      when(needReviewChk.getValue()).thenReturn(false);
+      when(translatedChk.getValue()).thenReturn(true);
+      when(untranslatedChk.getValue()).thenReturn(false);
+      callback.onSuccess(result);
+      verify(needReviewChk).setValue(false);
+      verify(untranslatedChk).setValue(false);
+      verify(translatedChk).setValue(true);
+      assertThat(configHolder.getPageSize(), Matchers.equalTo(10));
+      assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+
+      callback.onFailure(null);
+      verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
    }
 }

@@ -217,9 +217,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void loadOptions()
    {
-      LoadOptionsAction action = new LoadOptionsAction();
-
-      dispatcher.execute(action, new AsyncCallback<LoadOptionsResult>()
+      dispatcher.execute(LoadOptionsAction.ACTION, new AsyncCallback<LoadOptionsResult>()
       {
          @Override
          public void onFailure(Throwable caught)

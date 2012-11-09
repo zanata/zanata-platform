@@ -25,4 +25,9 @@ package org.zanata.webtrans.shared.rpc;
  */
 public class LoadOptionsAction implements DispatchAction<LoadOptionsResult>
 {
+   public static final LoadOptionsAction ACTION = new LoadOptionsAction();
+
+   protected LoadOptionsAction()
+   {
+   }
 }
