@@ -20,13 +20,12 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
 
-import org.testng.annotations.BeforeClass;
+import org.hamcrest.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
@@ -46,124 +45,96 @@ public class XMLEntityValidationTests
 
    private XmlEntityValidation xmlEntityValidation;
 
+   @Mock
    private ValidationMessages mockMessages;
 
-   @BeforeClass
-   public void mockMessages()
-   {
-      mockMessages = createMock(ValidationMessages.class);
-
-      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
-
-      replay(mockMessages);
-   }
-
    @BeforeMethod
-   public void init()
+   public void beforeMethod()
    {
-      xmlEntityValidation = null;
+      MockitoAnnotations.initMocks(this);
+      when(mockMessages.xmlEntityValidatorName()).thenReturn(MOCK_ENTITY_VALIDATOR_NAME);
+      when(mockMessages.xmlEntityValidatorDescription()).thenReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION);
+
+      xmlEntityValidation = new XmlEntityValidation(mockMessages);
    }
 
    @Test
    public void idIsSet()
    {
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
-      assertThat(xmlEntityValidation.getId(), is(MOCK_ENTITY_VALIDATOR_NAME));
+      assertThat(xmlEntityValidation.getId(), Matchers.equalTo(MOCK_ENTITY_VALIDATOR_NAME));
    }
 
    @Test
    public void descriptionIsSet()
    {
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
-      assertThat(xmlEntityValidation.getDescription(), is(MOCK_ENTITY_VALIDATOR_DESCRIPTION));
+      assertThat(xmlEntityValidation.getDescription(), Matchers.equalTo(MOCK_ENTITY_VALIDATOR_DESCRIPTION));
    }
 
    @Test
    public void testNoEntity()
    {
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string without xml entity";
       String target = "Target string without xml entity";
       xmlEntityValidation.validate(source, target);
 
-      assertThat(xmlEntityValidation.hasError(), is(false));
-      assertThat(xmlEntityValidation.getError().size(), is(0));
+      assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(false));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(0));
    }
 
    @Test
    public void testWithCompleteEntity()
    {
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &mash; bla bla &test;";
       xmlEntityValidation.validate(source, target);
 
-      assertThat(xmlEntityValidation.hasError(), is(false));
-      assertThat(xmlEntityValidation.getError().size(), is(0));
+      assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(false));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(0));
    }
 
    @Test
    public void testWithIncompleteEntityCharRef()
    {
-      mockMessages = createMock(ValidationMessages.class);
-
-      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
-
-      expect(mockMessages.invalidXMLEntity("&mash")).andReturn("Mock invalid messages");
-      expect(mockMessages.invalidXMLEntity("&test")).andReturn("Mock invalid messages");
-      replay(mockMessages);
+      when(mockMessages.invalidXMLEntity("&mash")).thenReturn("Mock invalid messages");
+      when(mockMessages.invalidXMLEntity("&test")).thenReturn("Mock invalid messages");
 
       xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &mash bla bla &test";
       xmlEntityValidation.validate(source, target);
 
-      assertThat(xmlEntityValidation.hasError(), is(true));
-      assertThat(xmlEntityValidation.getError().size(), is(2));
+      assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
    }
    
    @Test
    public void testWithIncompleteEntityDecimalRef()
    {
-      mockMessages = createMock(ValidationMessages.class);
-
-      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
-
-      expect(mockMessages.invalidXMLEntity("&#1234")).andReturn("Mock invalid messages");
-      expect(mockMessages.invalidXMLEntity("&#BC;")).andReturn("Mock invalid messages");
-      replay(mockMessages);
+      when(mockMessages.invalidXMLEntity("&#1234")).thenReturn("Mock invalid messages");
+      when(mockMessages.invalidXMLEntity("&#BC;")).thenReturn("Mock invalid messages");
 
       xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &#1234 bla bla &#BC;";
       xmlEntityValidation.validate(source, target);
 
-      assertThat(xmlEntityValidation.hasError(), is(true));
-      assertThat(xmlEntityValidation.getError().size(), is(2));
+      assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
    }
 
    @Test
    public void testWithIncompleteEntityHexadecimalRef()
    {
-      mockMessages = createMock(ValidationMessages.class);
-
-      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
-
-      expect(mockMessages.invalidXMLEntity("&#x1234")).andReturn("Mock invalid messages");
-      expect(mockMessages.invalidXMLEntity("&#x09Z")).andReturn("Mock invalid messages");
-      replay(mockMessages);
+      when(mockMessages.invalidXMLEntity("&#x1234")).thenReturn("Mock invalid messages");
+      when(mockMessages.invalidXMLEntity("&#x09Z")).thenReturn("Mock invalid messages");
 
       xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &#x1234 bla bla &#x09Z";
       xmlEntityValidation.validate(source, target);
 
-      assertThat(xmlEntityValidation.hasError(), is(true));
-      assertThat(xmlEntityValidation.getError().size(), is(2));
+      assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
    }
 
 }

@@ -24,6 +24,7 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -39,11 +40,11 @@ public class XmlEntityValidation extends AbstractValidation
    private final static RegExp charRefExp = RegExp.compile(charRefRegex);
 
    // &#[numeric]
-   private final static String decimalRefRegex = "&#[0-9]+;";
+   private final static String decimalRefRegex = ".*&#[0-9]+;";
    private final static RegExp decimalRefExp = RegExp.compile(decimalRefRegex);
 
    // &#x[hexadecimal]
-   private final static String hexadecimalRefRegex = "&#x[0-9a-f_A-F]+;";
+   private final static String hexadecimalRefRegex = ".*&#x[0-9a-f_A-F]+;";
    private final static RegExp hexadecimalRefExp = RegExp.compile(hexadecimalRefRegex);
 
    private final static String ENTITY_START_CHAR = "&";
@@ -65,22 +66,42 @@ public class XmlEntityValidation extends AbstractValidation
 
    private void validateIncompleteEntity(String target)
    {
-      if (Strings.isNullOrEmpty(target))
-      {
-         return;
-      }
-
       Iterable<String> words = Splitter.on(" ").trimResults().omitEmptyStrings().split(target);
 
       for (String word : words)
       {
-         if (word.startsWith(ENTITY_START_CHAR) && word.length() > 1)
+         if (word.contains(ENTITY_START_CHAR) && word.length() > 1)
          {
-            if (!charRefExp.test(word) && !decimalRefExp.test(word) && !hexadecimalRefExp.test(word))
+            word = replaceEntityWithEmptyString(charRefExp, word);
+            word = replaceEntityWithEmptyString(decimalRefExp, word);
+            word = replaceEntityWithEmptyString(hexadecimalRefExp, word);
+
+            if (word.contains(ENTITY_START_CHAR))
             {
+               //remove any string that occurs in front
+               word = word.substring(word.indexOf(ENTITY_START_CHAR)); 
                addError(getMessages().invalidXMLEntity(word));
             }
          }
       }
+   }
+
+   /**
+    * Replace matched string with empty string
+    * 
+    * @param regex
+    * @param text
+    * @return
+    */
+   private static String replaceEntityWithEmptyString(RegExp regex, String text)
+   {
+      MatchResult result = regex.exec(text);
+      while (result != null)
+      {
+         // replace match entity with empty string
+         text = text.replace(result.getGroup(0), ""); 
+         result = regex.exec(text);
+      }
+      return text;
    }
 }
