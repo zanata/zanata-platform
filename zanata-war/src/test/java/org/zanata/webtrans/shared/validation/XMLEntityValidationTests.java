@@ -104,7 +104,7 @@ public class XMLEntityValidationTests
       xmlEntityValidation.validate(source, target);
 
       assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
-      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(1));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
    }
    
    @Test
@@ -119,7 +119,7 @@ public class XMLEntityValidationTests
       xmlEntityValidation.validate(source, target);
 
       assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
-      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(1));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
    }
 
    @Test
@@ -134,7 +134,7 @@ public class XMLEntityValidationTests
       xmlEntityValidation.validate(source, target);
 
       assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
-      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(1));
+      assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
    }
 
 }
