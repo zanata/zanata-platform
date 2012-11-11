@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:g="urn:import:com.google.gwt.user.client.ui"
     xmlns:f="urn:import:org.zanata.webtrans.client"
-    xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+    xmlns:fui="urn:import:org.zanata.webtrans.client.ui.table"
     xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
     <ui:style type="org.zanata.webtrans.client.view.DocumentListView.Styles">
@@ -109,7 +109,7 @@
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:VerticalPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>
-	                		<c:SimplePager ui:field="pager" location='CENTER'/> 
+	                		<fui:DocumentListPager ui:field="pager"/> 
 	                		<g:cell>
 	                			<g:HTMLPanel styleName="{style.pageSizeContainer}">
 	                				<g:InlineLabel ui:field="twentyFiveDoc"/>
