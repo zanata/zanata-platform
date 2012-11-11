@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
+import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
@@ -38,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.SimplePager;
+import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -73,8 +74,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @UiField
    RadioButton statsByMsg, statsByWord;
 
-   @UiField
-   SimplePager pager;
+   @UiField(provided = true)
+   DocumentListPager pager;
 
    @UiField
    Styles style;
@@ -98,6 +99,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       this.messages = messages;
 
       dataProvider = new ListDataProvider<DocumentNode>();
+
+      pager = new DocumentListPager(TextLocation.CENTER, false, true);
+
       initWidget(uiBinder.createAndBindUi(this));
       filterTextBox.setTitle(messages.docListFilterDescription());
       
