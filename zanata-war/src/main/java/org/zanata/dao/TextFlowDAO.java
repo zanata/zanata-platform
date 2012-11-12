@@ -53,6 +53,7 @@ import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -225,10 +226,33 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return builder.toString();
    }
 
-
-
-
+   /**
+    * Using id list and source index
+    */
    public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId locale, final int maxResult) throws ParseException
+   {
+      return getSearchResult(query, translatedIds, locale, maxResult, false);
+   }
+
+   /**
+    * Using target index (to be phased out)
+    */
+   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId locale, final int maxResult) throws ParseException
+   {
+      return getSearchResult(query, null, locale, maxResult, true);
+   }
+
+   /**
+    * 
+    * @param query
+    * @param translatedIds ignored if useTargetIndex is true
+    * @param locale
+    * @param maxResult
+    * @param useTargetIndex
+    * @return
+    * @throws ParseException
+    */
+   private List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId locale, final int maxResult, boolean useTargetIndex) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -278,6 +302,28 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          throw new RuntimeException("Unknown query type: " + query.getSearchType());
       }
 
+      FullTextQuery ftQuery;
+      if (useTargetIndex)
+      {
+         org.apache.lucene.search.Query textQuery = generateTextQuery(query, locale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
+         ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
+      }
+      else
+      {
+         org.apache.lucene.search.Query textQuery = generateTextQuery(query, locale, queryText, multiQueryText, IndexFieldLabels.CONTENT_FIELDS);
+         ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
+         ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
+      }
+
+
+      ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+      @SuppressWarnings("unchecked")
+      List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
+      return matches;
+   }
+
+   private org.apache.lucene.search.Query generateTextQuery(TransMemoryQuery query, LocaleId locale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
+   {
       org.apache.lucene.search.Query textQuery;
       // Analyzer determined by the language
       String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName( locale.getId() );
@@ -286,27 +332,21 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;
-         if (queriesSize > IndexFieldLabels.CONTENT_FIELDS.length)
+         if (queriesSize > contentFields.length)
          {
-            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.CONTENT_FIELDS.length);
+            log.warn("query contains {} fields, but we only index {}", queriesSize, contentFields.length);
          }
          String[] searchFields = new String[queriesSize];
-         System.arraycopy(IndexFieldLabels.CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
+         System.arraycopy(contentFields, 0, searchFields, 0, queriesSize);
 
          textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
-         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.CONTENT_FIELDS, analyzer);
+         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, contentFields, analyzer);
          textQuery = parser.parse(queryText);
       }
-      FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-      ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
-
-      ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
-      @SuppressWarnings("unchecked")
-      List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
-      return matches;
+      return textQuery;
    }
 
    public int getTotalWords()

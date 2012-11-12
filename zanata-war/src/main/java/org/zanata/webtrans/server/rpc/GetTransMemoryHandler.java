@@ -36,9 +36,12 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.LevenshteinTokenUtil;
@@ -61,6 +64,8 @@ import com.google.common.collect.Lists;
 @Slf4j
 public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult>
 {
+
+   private static final boolean useTargetIndex = true;
 
    private static final int MAX_RESULTS = 10;
 
@@ -94,40 +99,29 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       ArrayList<TransMemoryResultItem> results = Lists.newArrayList();
       try
       {
-         // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
-         List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(targetLocale.getLocaleId());
+         List<Object[]> matches;
+         if (useTargetIndex)
+         {
+            matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocaleId, MAX_RESULTS);
+         }
+         else
+         {
+            // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
+            List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(targetLocale.getLocaleId());
+            matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, sourceLocaleId, MAX_RESULTS);
+         }
 
-         List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, sourceLocaleId, MAX_RESULTS);
-
-         // FIXME this is returning 0% matches, what is the desired cutoff, if any?
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
-            HTextFlow textFlow = (HTextFlow) match[1];
-            HTextFlowTarget textFlowTarget = textFlow.getTargets().get(targetLocale.getId());
-
-            if (textFlowTarget == null)
+            if (useTargetIndex)
             {
-               continue;
+               processTargetIndexMatch(targetLocale, transMemoryQuery, matchesMap, match);
             }
-
-            // double-check text flow is valid in case of caching issues
-            textFlow = textFlowTarget.getTextFlow();
-
-            ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
-            ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
-
-            TMKey key = new TMKey(textFlowContents, targetContents);
-            TransMemoryResultItem item = matchesMap.get(key);
-            if (item == null)
+            else
             {
-               float score = (Float) match[0];
-               double percent = calculateSimilarityPercentage(transMemoryQuery, textFlowTarget.getTextFlow().getContents());
-               item = new TransMemoryResultItem(textFlowContents, targetContents, score, percent);
-               matchesMap.put(key, item);
+               processTextFlowIndexMatch(targetLocale, transMemoryQuery, matchesMap, match);
             }
-            item.incMatchCount();
-            item.addSourceId(textFlowTarget.getTextFlow().getId());
          }
          results.addAll(matchesMap.values());
       }
@@ -148,6 +142,69 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       Collections.sort(results, TransMemoryResultComparator.COMPARATOR);
       return results;
    }
+
+   private void processTargetIndexMatch(HLocale targetLocale, TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
+   {
+      HTextFlowTarget textFlowTarget = (HTextFlowTarget) match[1];
+      if (isInvalidResult(textFlowTarget, targetLocale))
+      {
+         return;
+      }
+      ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
+      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getTextFlow().getTargets().get(targetLocale.getId()).getContents());
+      addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget, textFlowContents, targetContents);
+   }
+
+   private void processTextFlowIndexMatch(HLocale targetLocale, TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
+   {
+      HTextFlow textFlow = (HTextFlow) match[1];
+      HTextFlowTarget textFlowTarget = textFlow.getTargets().get(targetLocale.getId());
+      if (textFlowTarget == null)
+      {
+         return;
+      }
+      // double-check text flow is valid in case of caching issues
+      textFlow = textFlowTarget.getTextFlow();
+
+      ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
+      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
+      addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget, textFlowContents, targetContents);
+   }
+
+   private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match, HTextFlowTarget textFlowTarget, ArrayList<String> textFlowContents, ArrayList<String> targetContents)
+   {
+      TMKey key = new TMKey(textFlowContents, targetContents);
+      TransMemoryResultItem item = matchesMap.get(key);
+      if (item == null)
+      {
+         float score = (Float) match[0];
+         double percent = calculateSimilarityPercentage(transMemoryQuery, textFlowTarget.getTextFlow().getContents());
+         item = new TransMemoryResultItem(textFlowContents, targetContents, score, percent);
+         matchesMap.put(key, item);
+      }
+      item.incMatchCount();
+      item.addSourceId(textFlowTarget.getTextFlow().getId());
+   }
+
+   private static boolean isInvalidResult(HTextFlowTarget textFlowTarget, HLocale hLocale)
+   {
+      if (textFlowTarget == null)
+      {
+         return true;
+      }
+      else
+      {
+         HProjectIteration projectIteration = textFlowTarget.getTextFlow().getDocument().getProjectIteration();
+         if (projectIteration.getStatus() == EntityStatus.OBSOLETE || projectIteration.getProject().getStatus() == EntityStatus.OBSOLETE)
+         {
+            return true;
+         }
+      }
+      HTextFlowTarget target = textFlowTarget.getTextFlow().getTargets().get(hLocale.getId());
+      // double check in case of caching issues
+      return target == null || target.getState() != ContentState.Approved;
+   }
+
 
    private static double calculateSimilarityPercentage(TransMemoryQuery query, List<String> sourceContents)
    {
