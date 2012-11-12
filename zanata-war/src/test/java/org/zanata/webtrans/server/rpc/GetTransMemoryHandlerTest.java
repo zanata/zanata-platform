@@ -76,10 +76,10 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: hibernate search finds 2 matches for query
       TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-      HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 60L).getTextFlow();
-      HTextFlow tmMatch2 = getEm().find(HTextFlowTarget.class, 62L).getTextFlow();
+      HTextFlowTarget tmMatch1 = getEm().find(HTextFlowTarget.class, 60L);
+      HTextFlowTarget tmMatch2 = getEm().find(HTextFlowTarget.class, 62L);
       List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, tmMatch2});
-      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(10));
+      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(25));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
@@ -94,23 +94,23 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
 
    // This does not apply to the current implementation, but is left in
    // case a return to the other implementation is required.
-//   @Test
-//   public void searchReturnNotApprovedResult() throws Exception
-//   {
-//      // Given: hibernate search finds 2 matches for query and they are not approved translation
-//      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-//      HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 61L).getTextFlow();
-//      List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
-//      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(10));
-//      GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
-//
-//      // When:
-//      GetTranslationMemoryResult result = handler.execute(action, null);
-//
-//      // Then:
-//      verify(identity).checkLoggedIn();
-//      assertThat(result.getMemories(), Matchers.hasSize(0));
-//   }
+   @Test
+   public void searchReturnNotApprovedResult() throws Exception
+   {
+      // Given: hibernate search finds 2 matches for query and they are not approved translation
+      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
+      HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 61L).getTextFlow();
+      List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
+      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(10));
+      GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
+
+      // When:
+      GetTranslationMemoryResult result = handler.execute(action, null);
+
+      // Then:
+      verify(identity).checkLoggedIn();
+      assertThat(result.getMemories(), Matchers.hasSize(0));
+   }
 
    @SuppressWarnings("unchecked")
    @Test
@@ -118,7 +118,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: hibernate search can not parse query
       TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-      doThrow(new ParseException("bad token")).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(10));
+      doThrow(new ParseException("bad token")).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(25));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
