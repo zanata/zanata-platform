@@ -35,6 +35,11 @@
 
         <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
         <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
+
+        <!-- Groovy and Gmaven properties -->
+        <gmavenVersion>1.4</gmavenVersion>
+        <gmavenProviderSelection>2.0</gmavenProviderSelection>
+        <groovyVersion>2.0.0</groovyVersion>
 	</properties>
 
 	<build>
@@ -452,6 +457,34 @@
 					</replacements>
 				</configuration>
 			</plugin>
+
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>${gmavenVersion}</version>
+                <configuration>
+                    <providerSelection>${gmavenProviderSelection}</providerSelection>
+                    <sourceEncoding>UTF-8</sourceEncoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- Uncomment to enable groovy in the main source -->
+                            <!--<goal>generateStubs</goal>-->
+                            <!--<goal>compile</goal>-->
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>${groovyVersion}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
 		</plugins>
 
@@ -1499,6 +1532,14 @@
 			<artifactId>testng</artifactId>
 			<!-- We use testng in DBUnitImporter so can't use test scope here -->
 		</dependency>
+
+        <!-- GMaven and Groovy (for groovy tests) -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovyVersion}</version>
+            <scope>test</scope>
+        </dependency>
 
 		<!-- GWT related dependencies -->
 
