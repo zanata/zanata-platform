@@ -140,6 +140,5 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
    @Override
    public void rollback(LoadOptionsAction action, LoadOptionsResult result, ExecutionContext context) throws ActionException
    {
-      //To change body of implemented methods use File | Settings | File Templates.
    }
 }

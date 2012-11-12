@@ -55,7 +55,7 @@ public class UserConfigHolderTest
 
       assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
       assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
-      assertThat(propertiesMap, Matchers.hasEntry("pageSize", "10"));
+      assertThat(propertiesMap, Matchers.hasEntry("pageSize", "25"));
       assertThat(propertiesMap, Matchers.hasEntry("showError", "false"));
    }
 

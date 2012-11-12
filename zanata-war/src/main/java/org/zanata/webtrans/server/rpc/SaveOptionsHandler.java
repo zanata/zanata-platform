@@ -84,7 +84,7 @@ public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction,
 
    private void setOrCreateOptionValue(HAccount account, OptionName name, String newVal)
    {
-      HAccountOption option = account.getEditorOptions().get(name);
+      HAccountOption option = account.getEditorOptions().get(name.getPersistentName());
 
       if( option == null )
       {
