@@ -63,9 +63,9 @@ public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction,
       this.setOrCreateOptionValue(account, EnterSavesApproved, Boolean.toString(config.isEnterSavesApproved()));
       this.setOrCreateOptionValue(account, PageSize, Integer.toString(config.getPageSize()));
       this.setOrCreateOptionValue(account, ShowErrors, Boolean.toString(config.isShowError()));
-      this.setOrCreateOptionValue(account, TranslatedMessageFilter, Boolean.toString(action.getFilterByTranslated()));
-      this.setOrCreateOptionValue(account, NeedReviewMessageFilter, Boolean.toString(action.getFilterByNeedReview()));
-      this.setOrCreateOptionValue(account, UntranslatedMessageFilter, Boolean.toString(action.getFilterByUntranslated()));
+      this.setOrCreateOptionValue(account, TranslatedMessageFilter, Boolean.toString(config.isFilterByTranslated()));
+      this.setOrCreateOptionValue(account, NeedReviewMessageFilter, Boolean.toString(config.isFilterByNeedReview()));
+      this.setOrCreateOptionValue(account, UntranslatedMessageFilter, Boolean.toString(config.isFilterByUntranslated()));
       this.setOrCreateOptionValue(account, Navigation, config.getNavOption().toString());
 
       accountDAO.makePersistent(account);

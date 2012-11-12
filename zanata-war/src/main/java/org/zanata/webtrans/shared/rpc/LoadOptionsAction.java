@@ -27,7 +27,7 @@ public class LoadOptionsAction implements DispatchAction<LoadOptionsResult>
 {
    public static final LoadOptionsAction ACTION = new LoadOptionsAction();
 
-   protected LoadOptionsAction()
+   public LoadOptionsAction()
    {
    }
 }

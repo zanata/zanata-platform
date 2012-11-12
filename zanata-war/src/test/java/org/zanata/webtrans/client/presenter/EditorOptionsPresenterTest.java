@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import javax.lang.model.util.Types;
-
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -28,9 +26,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 
 import net.customware.gwt.presenter.client.EventBus;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -262,9 +260,9 @@ public class EditorOptionsPresenterTest
 
       SaveOptionsAction action = actionCaptor.getValue();
       assertThat(action.getConfiguration(), Matchers.is(configHolder.getState()));
-      assertThat(action.getFilterByNeedReview(), Matchers.equalTo(true));
-      assertThat(action.getFilterByTranslated(), Matchers.equalTo(false));
-      assertThat(action.getFilterByUntranslated(), Matchers.equalTo(true));
+      assertThat(action.getConfiguration().isFilterByNeedReview(), Matchers.equalTo(true));
+      assertThat(action.getConfiguration().isFilterByTranslated(), Matchers.equalTo(false));
+      assertThat(action.getConfiguration().isFilterByUntranslated(), Matchers.equalTo(true));
 
       AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
       callback.onSuccess(new SaveOptionsResult());
@@ -275,11 +273,14 @@ public class EditorOptionsPresenterTest
    @Test
    public void onLoadSavedOption()
    {
+      UserConfigHolder configHolder = new UserConfigHolder();
+      configHolder.setEnterSavesApproved(true);
+      configHolder.setFilterByTranslated(true);
+      configHolder.setNavOption(NavOption.FUZZY);
+      configHolder.setPageSize(10);
+
       LoadOptionsResult result = new LoadOptionsResult();
-      result.setEnterKeySavesImmediately(true);
-      result.setFilterByTranslated(true);
-      result.setNavOption(NavOption.FUZZY);
-      result.setPageSize(10);
+      result.setConfiguration( configHolder.getState() );
 
       presenter.loadOptions();
 

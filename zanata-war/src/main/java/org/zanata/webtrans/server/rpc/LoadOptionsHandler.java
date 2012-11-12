@@ -30,6 +30,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
@@ -58,82 +59,52 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
    @Override
    public LoadOptionsResult execute(LoadOptionsAction action, ExecutionContext context) throws ActionException
    {
-      LoadOptionsResult result = new LoadOptionsResult();
+      UserConfigHolder configHolder = new UserConfigHolder();
       HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
       Map<String,HAccountOption> editorOptions = account.getEditorOptions();
 
       if( editorOptions.containsKey(DisplayButtons.getPersistentName()) )
       {
-         result.setShowEditorButtons( editorOptions.get( DisplayButtons.getPersistentName() ).getValueAsBoolean() );
-      }
-      else
-      {
-         result.setShowEditorButtons(true);
+         configHolder.setDisplayButtons(editorOptions.get(DisplayButtons.getPersistentName()).getValueAsBoolean());
       }
 
       if( editorOptions.containsKey(EnterSavesApproved.getPersistentName()) )
       {
-         result.setEnterKeySavesImmediately( editorOptions.get( EnterSavesApproved.getPersistentName() ).getValueAsBoolean() );
-      }
-      else
-      {
-         result.setEnterKeySavesImmediately(false);
+         configHolder.setEnterSavesApproved(editorOptions.get(EnterSavesApproved.getPersistentName()).getValueAsBoolean());
       }
 
       if( editorOptions.containsKey(Navigation.getPersistentName()) )
       {
-         result.setNavOption( NavOption.valueOf(editorOptions.get(Navigation.getPersistentName()).getValue()) );
-      }
-      else
-      {
-         result.setNavOption( NavOption.FUZZY_UNTRANSLATED );
+         configHolder.setNavOption( NavOption.valueOf(editorOptions.get(Navigation.getPersistentName()).getValue()) );
       }
 
       if( editorOptions.containsKey(PageSize.getPersistentName()) )
       {
-         result.setPageSize( editorOptions.get( PageSize.getPersistentName() ).getValueAsInt() );
-      }
-      else
-      {
-         result.setPageSize(25);
+         configHolder.setPageSize( editorOptions.get( PageSize.getPersistentName() ).getValueAsInt() );
       }
 
       if( editorOptions.containsKey(ShowErrors.getPersistentName()) )
       {
-         result.setShowErrors( editorOptions.get( ShowErrors.getPersistentName() ).getValueAsBoolean() );
-      }
-      else
-      {
-         result.setShowErrors(false);
+         configHolder.setShowError(editorOptions.get(ShowErrors.getPersistentName()).getValueAsBoolean());
       }
 
       if( editorOptions.containsKey(TranslatedMessageFilter.getPersistentName()) )
       {
-         result.setFilterByTranslated( editorOptions.get( TranslatedMessageFilter.getPersistentName() ).getValueAsBoolean() );
-      }
-      else
-      {
-         result.setFilterByTranslated(false);
+         configHolder.setFilterByTranslated( editorOptions.get( TranslatedMessageFilter.getPersistentName() ).getValueAsBoolean() );
       }
 
       if( editorOptions.containsKey(NeedReviewMessageFilter.getPersistentName()) )
       {
-         result.setFilterByNeedReview( editorOptions.get( NeedReviewMessageFilter.getPersistentName() ).getValueAsBoolean() );
-      }
-      else
-      {
-         result.setFilterByNeedReview(false);
+         configHolder.setFilterByNeedReview( editorOptions.get( NeedReviewMessageFilter.getPersistentName() ).getValueAsBoolean() );
       }
 
       if( editorOptions.containsKey(UntranslatedMessageFilter.getPersistentName()) )
       {
-         result.setFilterByUntraslated( editorOptions.get( UntranslatedMessageFilter.getPersistentName() ).getValueAsBoolean() );
-      }
-      else
-      {
-         result.setFilterByUntraslated(false);
+         configHolder.setFilterByUntranslated(editorOptions.get(UntranslatedMessageFilter.getPersistentName()).getValueAsBoolean());
       }
 
+      LoadOptionsResult result = new LoadOptionsResult();
+      result.setConfiguration( configHolder.getState() );
       return result;
    }
 

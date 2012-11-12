@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.rpc;
 
 import org.zanata.common.LocaleId;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -37,7 +38,7 @@ public class DummyActivateWorkspaceCommand implements Command
       userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(1), "Dummy doc", "Dummy path", LocaleId.EN_US, null));
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity));
+      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState()));
       Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }
 

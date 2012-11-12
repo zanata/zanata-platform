@@ -13,6 +13,7 @@ import org.zanata.webtrans.client.gin.WebTransGinjector;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
@@ -96,6 +97,7 @@ public class Application implements EntryPoint
             injector.getDispatcher().setIdentity(identity);
             injector.getDispatcher().setUserWorkspaceContext(userWorkspaceContext);
             injector.getDispatcher().setEventBus(injector.getEventBus());
+            injector.getUserConfig().setState( result.getStoredUserConfiguration() );
 
             startApp();
          }

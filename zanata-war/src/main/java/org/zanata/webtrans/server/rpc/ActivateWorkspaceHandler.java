@@ -55,6 +55,8 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
+import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
+import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
 @Name("webtrans.gwt.ActivateWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
@@ -79,6 +81,9 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
    @In
    private LocaleService localeServiceImpl;
+
+   @In(value = "webtrans.gwt.LoadOptionsHandler", create = true)
+   private LoadOptionsHandler loadOptionsHandler;
    
    private static long nextEditorClientIdNum = 0;
 
@@ -111,9 +116,11 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       boolean hasWriteAccess = hasPermission(project, locale);
       boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
 
+      LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(), context);
+
       Identity identity = new Identity(editorClientId, person);
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);
-      return new ActivateWorkspaceResult(userWorkspaceContext, identity);
+      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration());
    }
 
    protected String getHttpSessionId()

@@ -58,6 +58,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
          eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), false));
+         configHolder.setFilterByUntranslated( display.getUntranslatedChk().getValue() );
+         configHolder.setFilterByNeedReview( display.getNeedReviewChk().getValue() );
+         configHolder.setFilterByTranslated( display.getTranslatedChk().getValue() );
       }
    };
 
@@ -194,9 +197,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    {
       SaveOptionsAction action = new SaveOptionsAction();
       action.setConfiguration( this.configHolder.getState() );
-      action.setFilterByTranslated( this.display.getTranslatedChk().getValue() );
-      action.setFilterByNeedReview( this.display.getNeedReviewChk().getValue() );
-      action.setFilterByUntranslated( this.display.getUntranslatedChk().getValue() );
 
       dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>()
       {
@@ -228,14 +228,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
          @Override
          public void onSuccess(LoadOptionsResult result)
          {
-            configHolder.setDisplayButtons( result.getShowEditorButtons() );
-            configHolder.setEnterSavesApproved( result.getEnterKeySavesImmediately() );
-            configHolder.setNavOption( result.getNavOption() );
-            configHolder.setPageSize( result.getPageSize() );
-            configHolder.setShowError( result.getShowErrors() );
-            display.getTranslatedChk().setValue( result.getFilterByTranslated() );
-            display.getNeedReviewChk().setValue( result.getFilterByNeedReview() );
-            display.getUntranslatedChk().setValue( result.getFilterByUntraslated() );
+            configHolder.setState( result.getConfiguration() );
 
             display.setOptionsState(configHolder.getState());
             eventBus.fireEvent(UserConfigChangeEvent.EVENT);
@@ -251,9 +244,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       // default options
       configHolder.setDisplayButtons(true);
       configHolder.setEnterSavesApproved(false);
-      display.getNeedReviewChk().setValue(false);
-      display.getTranslatedChk().setValue(false);
-      display.getUntranslatedChk().setValue(false);
+      configHolder.setFilterByTranslated(false);
+      configHolder.setFilterByNeedReview(false);
+      configHolder.setFilterByUntranslated(false);
       configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
       configHolder.setPageSize(25);
       configHolder.setShowError(false);
