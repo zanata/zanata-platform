@@ -23,7 +23,7 @@ public interface EditorOptionsDisplay extends WidgetDisplay
 
    void setOptionsState(UserConfigHolder.ConfigurationState state);
 
-   interface Listener extends EnumRadioButtonGroup.SelectionChangeListener<NavOption>, OptionsDisplay.Listener
+   interface Listener extends EnumRadioButtonGroup.SelectionChangeListener<NavOption>
    {
       void onPageSizeClick(int pageSize);
 

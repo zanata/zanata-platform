@@ -18,8 +18,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
-import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
@@ -29,13 +27,9 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.view.SideMenuDisplay;
-import org.zanata.webtrans.shared.auth.EditorClientId;
-import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
-import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -53,7 +47,7 @@ public class SideMenuPresenterTest
    @Mock
    private CachingDispatchAsync dispatcher;
    @Mock
-   private EditorOptionsPresenter editorOptionsPresenter;
+   private OptionsPresenter optionsPresenter;
    @Mock
    private ValidationOptionsPresenter validationOptionsPresenter;
    @Mock
@@ -73,7 +67,7 @@ public class SideMenuPresenterTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new SideMenuPresenter(display, eventBus, dispatcher, editorOptionsPresenter, validationOptionsPresenter, workspaceUsersPresenter, notificationPresenter, sessionService, userWorkspaceContext);
+      presenter = new SideMenuPresenter(display, eventBus, dispatcher, optionsPresenter, validationOptionsPresenter, workspaceUsersPresenter, notificationPresenter, sessionService, userWorkspaceContext);
       verify(display).setListener(presenter);
    }
 
@@ -82,7 +76,7 @@ public class SideMenuPresenterTest
    {
       presenter.onBind();
 
-      verify(editorOptionsPresenter).bind();
+      verify(optionsPresenter).bind();
       verify(validationOptionsPresenter).bind();
       verify(workspaceUsersPresenter).bind();
       verify(notificationPresenter).bind();
@@ -104,7 +98,7 @@ public class SideMenuPresenterTest
       // Then:
       verify(userWorkspaceContext).setProjectActive(workspaceContextEvent.isProjectActive());
       verify(display).setChatTabVisible(false);
-      verify(display).setOptionsView(false);
+      verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
       verify(display).setValidationOptionsTabVisible(false);
    }
 
@@ -151,7 +145,7 @@ public class SideMenuPresenterTest
    {
       presenter.onUnbind();
 
-      verify(editorOptionsPresenter).unbind();
+      verify(optionsPresenter).unbind();
       verify(validationOptionsPresenter).unbind();
       verify(workspaceUsersPresenter).unbind();
       verify(notificationPresenter).unbind();
@@ -163,23 +157,21 @@ public class SideMenuPresenterTest
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
       presenter.expendSideMenu(true);
 
-      presenter.setOptionMenu(true);
+      presenter.setOptionMenu(MainView.Editor);
 
-      verify(display).setOptionsView(true);
-      verify(display).setValidationOptionsTabVisible(true);
-      verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+      verify(optionsPresenter).setOptionsView(MainView.Editor);
    }
 
    @Test
-   public void testHideEditorMenu()
+   public void testShowValidationOptions() throws Exception
    {
+      boolean visible = true;
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
+      presenter.expendSideMenu(true);
 
-      presenter.setOptionMenu(false);
+      presenter.showValidationOptions(visible);
 
-      verify(display).setOptionsView(false);
-      verify(display).setValidationOptionsTabVisible(false);
-      verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+      verify(display).setValidationOptionsTabVisible(visible);
    }
 
    @Test
@@ -230,7 +222,6 @@ public class SideMenuPresenterTest
       verify(display).getCurrentTab();
       verify(eventBus, times(2)).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(false));
-      verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
       verifyNoMoreInteractions(display);
    }
 
