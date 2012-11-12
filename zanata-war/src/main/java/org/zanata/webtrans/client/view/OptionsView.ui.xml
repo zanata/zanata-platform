@@ -2,52 +2,11 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client">
 
-	<ui:style field="style" type="org.zanata.webtrans.client.view.EditorOptionsView.Styles">
-        .mainPanel table td {
-            font-size: 13px;
-            padding: 2px;
-            border-radius: 5px;
-            color: #FFFFFF;
-        }
-
-        .mainPanel select {
-            color: #000000;
-        }
-
-        .translated {
-            border-left: 3px solid #099B09;
-            margin-left: 5px;
-        }
-
-        .needReview {
-            border-left: 3px solid #ffc000;
-            margin-left: 5px;
-        }
-
-        .untranslated {
-            border-left: 3px solid #e5e5e5;
-            margin-left: 5px;
-        }
-
-        .selectedPageSize {
-            background-color: #B62918;
-        }
-
-        .pageSizeContainer {
-            margin-left: 8px;
-            margin-top: 8px;
-        }
-
-        .pageSizeContainer span {
-            padding: 3px;
-            border: 1px solid #808080;
-            cursor: pointer;
-            display: block;
-            height: 15px;
-            width: 15px;
-            text-align: center;
-            float: left;
-            margin-right: 3px;
+	<ui:style field="style">
+        .mainPanel {
+            width:100%;
+            height:100%;
+            padding:5px;
         }
 
         .editorOptsButton {
@@ -59,18 +18,18 @@
 
     </ui:style>
 	
-    <g:VerticalPanel height="100%" width="100%">
+    <g:VerticalPanel height="100%" width="100%" styleName="{style.mainPanel}">
     	<g:cell>
-    		<g:LayoutPanel ui:field="optionsContainer"/>
+    		<g:HTMLPanel ui:field="optionsContainer"/>
     	</g:cell>
     	
-    	<g:cell verticalAlignment="ALIGN_BOTTOM">
+    	<g:cell verticalAlignment="ALIGN_TOP" height="50px">
     		<g:HTMLPanel>
 	    		<g:Label ui:field="advancedUserConfig" styleName="sideMenuHeader"/>
 	    		<g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
     		</g:HTMLPanel>
     	</g:cell>
-    	<g:cell verticalAlignment="ALIGN_BOTTOM">
+    	<g:cell verticalAlignment="ALIGN_BOTTOM" height="30px">
    		 <g:HTMLPanel>
              <g:PushButton ui:field="saveButton" addStyleNames="{style.editorOptsButton}"/>
              <g:PushButton ui:field="loadButton" addStyleNames="{style.editorOptsButton}" title=""/>

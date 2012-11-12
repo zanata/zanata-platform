@@ -31,8 +31,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,7 +47,7 @@ public class OptionsView extends Composite implements OptionsDisplay
    }
 
    @UiField
-   LayoutPanel optionsContainer;
+   HTMLPanel optionsContainer;
 
    @UiField
    Label advancedUserConfig;

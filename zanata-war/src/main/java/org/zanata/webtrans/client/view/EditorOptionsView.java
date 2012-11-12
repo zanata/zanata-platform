@@ -39,8 +39,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -49,9 +47,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 {
    private static EditorOptionsUiBinder uiBinder = GWT.create(EditorOptionsUiBinder.class);
    private final EnumRadioButtonGroup<NavOption> navOptionGroup;
-
-   @UiField
-   LayoutPanel container;
 
    @UiField
    CheckBox translatedChk, needReviewChk, untranslatedChk, enterChk, editorButtonsChk;
@@ -74,21 +69,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    @UiField
    Styles style;
    @UiField
-   Label otherConfigHeader;
-
-   @UiField
-   CheckBox showErrorChk;
-   @UiField
    CheckBox useCodeMirrorChk;
-
-   @UiField
-   PushButton saveButton;
-
-   @UiField
-   PushButton loadButton;
-
-   @UiField
-   PushButton restoreToDefaultsButton;
 
    private Listener listener;
 
@@ -103,14 +84,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
       pageSizeHeader.setText(messages.pageSize());
-      otherConfigHeader.setText(messages.otherConfiguration());
 
-      showErrorChk.setTitle(messages.showErrorsTooltip());
       useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
-
-      saveButton.setText(messages.save());
-      loadButton.setText(messages.load());
-      restoreToDefaultsButton.setText(messages.restoreDefaults());
    }
 
    @Override
@@ -209,12 +184,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onEnterSaveOptionChanged(enterChk.getValue());
    }
 
-   @UiHandler("showErrorChk")
-   public void onShowErrorOptionChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onShowErrorsOptionChanged(showErrorChk.getValue());
-   }
-
    @UiHandler("useCodeMirrorChk")
    public void onCodeMirrorOptionChanged(ValueChangeEvent<Boolean> event)
    {
@@ -236,26 +205,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
       navOptionGroup.setDefaultSelected(state.getNavOption());
       selectPageSize(state.getPageSize());
-      showErrorChk.setValue(state.isShowError());
+      // showErrorChk.setValue(state.isShowError());
       useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
-   }
-
-   @UiHandler("saveButton")
-   public void onSaveButtonClick( ClickEvent event )
-   {
-      listener.persistOptionChange();
-   }
-
-   @UiHandler("loadButton")
-   public void onLoadButtonClick( ClickEvent event )
-   {
-      listener.loadOptions();
-   }
-
-   @UiHandler("restoreToDefaultsButton")
-   public void onRestoreToDefaultsButtonClick( ClickEvent event )
-   {
-      listener.loadDefaultOptions();
    }
 
    private void selectPageSize(int pageSize)
@@ -278,7 +229,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       }
    }
 
-   interface EditorOptionsUiBinder extends UiBinder<LayoutPanel, EditorOptionsView>
+   interface EditorOptionsUiBinder extends UiBinder<VerticalPanel, EditorOptionsView>
    {
    }
 
@@ -296,7 +247,5 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       String untranslated();
 
       String pageSizeContainer();
-
-      String editorOptsButton();
    }
 }

@@ -3,15 +3,18 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client">
 
 	<ui:style field="style" type="org.zanata.webtrans.client.view.EditorOptionsView.Styles">
+        .mainPanel {
+			width:100%;
+		}
+		
+		.mainPanel td {
+			padding-bottom:10px;
+		}
+		
         .mainPanel table td {
             font-size: 13px;
-            padding: 2px;
-            border-radius: 5px;
+            padding: 1px;
             color: #FFFFFF;
-        }
-
-        .mainPanel select {
-            color: #000000;
         }
 
         .translated {
@@ -50,66 +53,47 @@
             margin-right: 3px;
         }
 
-        .editorOptsButton {
-            float: right;
-            color: #000000;
-            margin-right: 3px;
-            border-radius: 3px;
-        }
-
     </ui:style>
 	
-    <g:LayoutPanel>
-    	<g:layer top="0px" bottom="0" left="0" right="0">
-    		<g:LayoutPanel ui:field="container" styleName="{style.mainPanel}">
-                <g:layer top="5px" height="100px" left="5px" right="5px">
-	        		<g:VerticalPanel width="100%">
-	                    <g:Label ui:field="editorOptionHeader" styleName="sideMenuHeader"/>
-	                    <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
-	                    <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
-	                    <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
-	                </g:VerticalPanel>
-                </g:layer>
-                <g:layer top="110px" height="100px" left="5px" right="5px">
-                	<g:VerticalPanel width="100%">
-                		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
-                         <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
-                         <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
-                         <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
-                	</g:VerticalPanel>
-                </g:layer>
-                <g:layer top="220px" height="100px" left="5px" right="5px">
-                	<g:VerticalPanel width="100%">
-                	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
-                        <g:VerticalPanel ui:field="optionsContainer" />
-                    </g:VerticalPanel>
-                </g:layer>
-                <g:layer top="330px" height="70px" left="5px" right="5px">
-                    <g:VerticalPanel width="100%">
-                        <g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
-                        <g:HTMLPanel styleName="{style.pageSizeContainer}">
-                            <g:InlineLabel ui:field="five" >5</g:InlineLabel>
-                            <g:InlineLabel ui:field="ten" >10</g:InlineLabel>
-                            <g:InlineLabel ui:field="twentyFive" >25</g:InlineLabel>
-                            <g:InlineLabel ui:field="fifty" >50</g:InlineLabel>
-                        </g:HTMLPanel>
-                    </g:VerticalPanel>
-                </g:layer>
-                <g:layer top="410px" height="100px" left="5px" right="5px">
-                    <g:VerticalPanel width="100%">
-                        <g:Label ui:field="otherConfigHeader" styleName="sideMenuHeader"/>
-                        <g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
-                    </g:VerticalPanel>
-                </g:layer>
-                <g:layer bottom="2px" height="24px">
-                    <g:HTMLPanel>
-                        <g:PushButton ui:field="saveButton" addStyleNames="{style.editorOptsButton}"/>
-                        <g:PushButton ui:field="loadButton" addStyleNames="{style.editorOptsButton}" title=""/>
-                        <g:PushButton ui:field="restoreToDefaultsButton" addStyleNames="{style.editorOptsButton}"/>
-                    </g:HTMLPanel>
-                </g:layer>
-            </g:LayoutPanel>
-    	</g:layer>
-    </g:LayoutPanel>
+	<g:VerticalPanel styleName="{style.mainPanel}">
+		<g:cell>
+			<g:VerticalPanel width="100%">
+	            <g:Label ui:field="editorOptionHeader" styleName="sideMenuHeader"/>
+	            <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
+	            <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
+	            <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
+	        </g:VerticalPanel>
+        </g:cell>
+        
+        <g:cell>
+        	<g:VerticalPanel width="100%">
+        		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
+                 <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
+                 <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
+                 <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
+        	</g:VerticalPanel>
+        </g:cell>
+        
+        <g:cell>
+        	<g:VerticalPanel width="100%">
+        	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
+                <g:VerticalPanel ui:field="optionsContainer" />
+            </g:VerticalPanel>
+        </g:cell>
+        
+        <g:cell>
+        	<g:VerticalPanel width="100%">
+                <g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
+                <g:HTMLPanel styleName="{style.pageSizeContainer}">
+                    <g:InlineLabel ui:field="five" >5</g:InlineLabel>
+                    <g:InlineLabel ui:field="ten" >10</g:InlineLabel>
+                    <g:InlineLabel ui:field="twentyFive" >25</g:InlineLabel>
+                    <g:InlineLabel ui:field="fifty" >50</g:InlineLabel>
+                </g:HTMLPanel>
+            </g:VerticalPanel>
+        </g:cell>
+	                
+	</g:VerticalPanel>
+   
 
 </ui:UiBinder> 
