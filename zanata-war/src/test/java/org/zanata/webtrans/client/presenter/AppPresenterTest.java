@@ -250,7 +250,7 @@ public class AppPresenterTest
       // Then:
       verify(translationPresenter).revealDisplay();
       verify(searchResultPresenter).concealDisplay();
-      verify(sideMenuPresenter).showEditorMenu(true);
+      verify(sideMenuPresenter).setOptionMenu(true);
       verify(display).showInMainView(MainView.Editor);
       verify(display).setStats(statsCaptor.capture(), eq(true));
 
@@ -272,7 +272,7 @@ public class AppPresenterTest
       verify(display).setDocumentLabel("", "search and replace");
       verify(translationPresenter).concealDisplay();
       verify(searchResultPresenter).revealDisplay();
-      verify(sideMenuPresenter).showEditorMenu(false);
+      verify(sideMenuPresenter).setOptionMenu(false);
       verify(display).showInMainView(MainView.Search);
       verify(display).setStats(statsCaptor.capture(), eq(true));
 
@@ -295,7 +295,7 @@ public class AppPresenterTest
       verify(display).setDocumentLabel("", "Documents");
       verify(translationPresenter).concealDisplay();
       verify(searchResultPresenter).concealDisplay();
-      verify(sideMenuPresenter).showEditorMenu(false);
+      verify(sideMenuPresenter).setOptionMenu(false);
       verify(display).showInMainView(MainView.Documents);
       verify(display).setStats(statsCaptor.capture(), eq(true));
 

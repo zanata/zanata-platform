@@ -26,7 +26,6 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -225,7 +224,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          currentDisplayStats = selectedDocumentStats;
          translationPresenter.revealDisplay();
          searchResultsPresenter.concealDisplay();
-         sideMenuPresenter.showEditorMenu(true);
+         sideMenuPresenter.showValidationOptions(true);
+         sideMenuPresenter.setOptionMenu(MainView.Editor);
          break;
       case Search:
          // these two lines temporarily here until PresenterRevealedHandler
@@ -235,7 +235,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          currentDisplayStats = projectStats;
          translationPresenter.concealDisplay();
          searchResultsPresenter.revealDisplay();
-         sideMenuPresenter.showEditorMenu(false);
+         sideMenuPresenter.showValidationOptions(false);
+         sideMenuPresenter.setOptionMenu(MainView.Search);
          break;
       case Documents:
       default:
@@ -243,7 +244,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          currentDisplayStats = projectStats;
          translationPresenter.concealDisplay();
          searchResultsPresenter.concealDisplay();
-         sideMenuPresenter.showEditorMenu(false);
+         sideMenuPresenter.showValidationOptions(false);
+         sideMenuPresenter.setOptionMenu(MainView.Documents);
          break;
       }
       display.showInMainView(viewToShow);

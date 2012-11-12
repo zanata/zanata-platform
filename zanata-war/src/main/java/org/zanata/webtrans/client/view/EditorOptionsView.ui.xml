@@ -67,9 +67,10 @@
 	                    <g:Label ui:field="editorOptionHeader" styleName="sideMenuHeader"/>
 	                    <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
 	                    <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
+	                    <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
 	                </g:VerticalPanel>
                 </g:layer>
-                <g:layer top="108px" height="120px" left="5px" right="5px">
+                <g:layer top="110px" height="100px" left="5px" right="5px">
                 	<g:VerticalPanel width="100%">
                 		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
                          <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
@@ -77,13 +78,13 @@
                          <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
                 	</g:VerticalPanel>
                 </g:layer>
-                <g:layer top="210px" height="100px" left="5px" right="5px">
+                <g:layer top="220px" height="100px" left="5px" right="5px">
                 	<g:VerticalPanel width="100%">
                 	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
                         <g:VerticalPanel ui:field="optionsContainer" />
                     </g:VerticalPanel>
                 </g:layer>
-                <g:layer top="310px" height="70px" left="5px" right="5px">
+                <g:layer top="330px" height="70px" left="5px" right="5px">
                     <g:VerticalPanel width="100%">
                         <g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
                         <g:HTMLPanel styleName="{style.pageSizeContainer}">
@@ -94,11 +95,10 @@
                         </g:HTMLPanel>
                     </g:VerticalPanel>
                 </g:layer>
-                <g:layer top="380px" height="100px" left="5px" right="5px">
+                <g:layer top="410px" height="100px" left="5px" right="5px">
                     <g:VerticalPanel width="100%">
                         <g:Label ui:field="otherConfigHeader" styleName="sideMenuHeader"/>
                         <g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
-                        <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
                     </g:VerticalPanel>
                 </g:layer>
                 <g:layer bottom="2px" height="24px">

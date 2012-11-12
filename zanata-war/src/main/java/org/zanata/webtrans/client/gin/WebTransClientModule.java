@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.gin;
 import java.util.List;
 import java.util.Map;
 
-import de.novanic.eventservice.client.event.RemoteEventService;
-import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
@@ -48,6 +46,7 @@ import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
+import org.zanata.webtrans.client.presenter.OptionsPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SideMenuPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -82,6 +81,8 @@ import org.zanata.webtrans.client.view.GlossaryView;
 import org.zanata.webtrans.client.view.KeyShortcutView;
 import org.zanata.webtrans.client.view.NotificationDisplay;
 import org.zanata.webtrans.client.view.NotificationView;
+import org.zanata.webtrans.client.view.OptionsDisplay;
+import org.zanata.webtrans.client.view.OptionsView;
 import org.zanata.webtrans.client.view.SearchResultsView;
 import org.zanata.webtrans.client.view.SideMenuDisplay;
 import org.zanata.webtrans.client.view.SideMenuView;
@@ -124,6 +125,9 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+import de.novanic.eventservice.client.event.RemoteEventService;
+import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
+
 public class WebTransClientModule extends AbstractPresenterModule
 {
 
@@ -152,6 +156,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsDisplay.class, TransMemoryDetailsView.class);
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationDisplay.class, TransUnitNavigationView.class);
       bindPresenter(EditorOptionsPresenter.class, EditorOptionsDisplay.class, EditorOptionsView.class);
+      bindPresenter(OptionsPresenter.class, OptionsDisplay.class, OptionsView.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorDisplay.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationDisplay.class, NotificationView.class);

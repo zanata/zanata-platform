@@ -42,23 +42,25 @@ public class SideMenuView extends Composite implements SideMenuDisplay
    Styles style;
 
    @UiField
-   InlineLabel notificationTab, editorOptionsTab, validationOptionsTab, chatTab, notificationLabel;
+   InlineLabel notificationTab, optionsTab, validationOptionsTab, chatTab, notificationLabel;
    
    @UiField
    TabLayoutPanel container;
-
+   
    @Inject
-   public SideMenuView(final WebTransMessages messages, final EditorOptionsDisplay editorOptionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersDisplay workspaceUsersView, final NotificationDisplay notificationView)
+   public SideMenuView(final WebTransMessages messages, final OptionsDisplay optionView, final ValidationOptionsPresenter.Display validationOptionView, final WorkspaceUsersDisplay workspaceUsersView, final NotificationDisplay notificationView)
    {
       initWidget(uiBinder.createAndBindUi(this));
+
+
       notificationTab.setTitle(messages.notification());
-      editorOptionsTab.setTitle(messages.editorOptions());
+      optionsTab.setTitle(messages.options());
       validationOptionsTab.setTitle(messages.validationOptions());
       chatTab.setTitle(messages.chatRoom());
 
       container.add(notificationView.asWidget());
       container.add(workspaceUsersView.asWidget());
-      container.add(editorOptionView.asWidget());
+      container.add(optionView.asWidget());
       container.add(validationOptionView.asWidget());
    }
 
@@ -68,10 +70,10 @@ public class SideMenuView extends Composite implements SideMenuDisplay
       return this;
    }
 
-   @UiHandler("editorOptionsTab")
-   public void onEditorOptionsClick(ClickEvent event)
+   @UiHandler("optionsTab")
+   public void onOptionsClick(ClickEvent event)
    {
-      listener.onEditorOptionsClick();
+      listener.onOptionsClick();
    }
 
    @UiHandler("notificationTab")
@@ -95,16 +97,16 @@ public class SideMenuView extends Composite implements SideMenuDisplay
    @Override
    public void setSelectedTab(int view)
    {
-      editorOptionsTab.removeStyleName(style.selectedButton());
+      optionsTab.removeStyleName(style.selectedButton());
       validationOptionsTab.removeStyleName(style.selectedButton());
       chatTab.removeStyleName(style.selectedButton());
       notificationTab.removeStyleName(style.selectedButton());
       
       switch (view)
       {
-         case EDITOR_OPTION_VIEW: 
-            container.selectTab(EDITOR_OPTION_VIEW);
-            editorOptionsTab.addStyleName(style.selectedButton());
+         case OPTION_VIEW: 
+            container.selectTab(OPTION_VIEW);
+            optionsTab.addStyleName(style.selectedButton());
             break;
          case VALIDATION_OPTION_VIEW: 
             container.selectTab(VALIDATION_OPTION_VIEW);
@@ -162,14 +164,14 @@ public class SideMenuView extends Composite implements SideMenuDisplay
    }
 
    @Override
-   public void setEditorOptionsTabVisible(boolean visible)
-   {
-      editorOptionsTab.setVisible(visible);
-   }
-
-   @Override
    public void setValidationOptionsTabVisible(boolean visible)
    {
       validationOptionsTab.setVisible(visible);
+   }
+
+   @Override
+   public void setOptionsTabVisible(boolean visible)
+   {
+      optionsTab.setVisible(visible);
    }
 }

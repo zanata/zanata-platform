@@ -12,9 +12,9 @@ public interface SideMenuDisplay extends WidgetDisplay
    //Order of the tab
    static final int NOTIFICATION_VIEW = 0;
    static final int WORKSPACEUSER_VIEW = 1;
-   static final int EDITOR_OPTION_VIEW = 2;
+   static final int OPTION_VIEW = 2;
    static final int VALIDATION_OPTION_VIEW = 3;
-
+   
    void setSelectedTab(int view);
 
    void setChatTabAlert(boolean alert);
@@ -25,7 +25,7 @@ public interface SideMenuDisplay extends WidgetDisplay
 
    void setChatTabVisible(boolean visible);
 
-   void setEditorOptionsTabVisible(boolean visible);
+   void setOptionsTabVisible(boolean visible);
 
    void setValidationOptionsTabVisible(boolean visible);
 
@@ -34,7 +34,7 @@ public interface SideMenuDisplay extends WidgetDisplay
    interface Listener
    {
 
-      void onEditorOptionsClick();
+      void onOptionsClick();
 
       void onNotificationClick();
 

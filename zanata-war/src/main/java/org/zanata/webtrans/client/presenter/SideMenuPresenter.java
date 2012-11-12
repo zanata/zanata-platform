@@ -20,6 +20,10 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
@@ -32,13 +36,10 @@ import org.zanata.webtrans.client.view.SideMenuDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
  * @author aeng
@@ -47,7 +48,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implements NotificationLabelListener,
       SideMenuDisplay.Listener, PublishWorkspaceChatEventHandler
 {
-   private final EditorOptionsPresenter editorOptionsPresenter;
+   private final OptionsPresenter optionsPresenter;
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final NotificationPresenter notificationPresenter;
@@ -62,7 +63,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
    @Inject
    // @formatter:off
    public SideMenuPresenter(SideMenuDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher,
-                            EditorOptionsPresenter editorOptionsPresenter,
+         OptionsPresenter optionsPresenter,
                             ValidationOptionsPresenter validationOptionsPresenter,
                             WorkspaceUsersPresenter workspaceUsersPresenter,
                             NotificationPresenter notificationPresenter,
@@ -71,7 +72,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
    // @formatter:on
    {
       super(display, eventBus);
-      this.editorOptionsPresenter = editorOptionsPresenter;
+      this.optionsPresenter = optionsPresenter;
       this.validationOptionsPresenter = validationOptionsPresenter;
       this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.notificationPresenter = notificationPresenter;
@@ -85,7 +86,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
    @Override
    protected void onBind()
    {
-      editorOptionsPresenter.bind();
+      optionsPresenter.bind();
       validationOptionsPresenter.bind();
       workspaceUsersPresenter.bind();
       notificationPresenter.bind();
@@ -111,6 +112,8 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
       // EventProcessor.
       // Thus we load the translator list here.
       loadTranslatorList();
+
+      display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
    }
 
    private void loadTranslatorList()
@@ -144,14 +147,14 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
    private void setReadOnly(boolean isReadOnly)
    {
       display.setChatTabVisible(!isReadOnly);
-      display.setEditorOptionsTabVisible(!isReadOnly);
+      display.setOptionsTabVisible(!isReadOnly);
       display.setValidationOptionsTabVisible(!isReadOnly);
    }
 
    @Override
    protected void onUnbind()
    {
-      editorOptionsPresenter.unbind();
+      optionsPresenter.unbind();
       validationOptionsPresenter.unbind();
       workspaceUsersPresenter.unbind();
       notificationPresenter.unbind();
@@ -162,28 +165,27 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
    {
    }
 
-   public void showEditorMenu(boolean showEditorMenu)
+   public void setOptionMenu(MainView view)
    {
       if (!userWorkspaceContext.hasReadOnlyAccess())
       {
-         display.setEditorOptionsTabVisible(showEditorMenu);
-         display.setValidationOptionsTabVisible(showEditorMenu);
+         optionsPresenter.setOptionsView(view);
+      }
+   }
 
-         if (showEditorMenu && isExpended)
-         {
-            display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-         }
-         else
-         {
-            display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-         }
+   public void showValidationOptions(boolean showValidationMenu)
+   {
+      display.setValidationOptionsTabVisible(showValidationMenu);
+      if (!showValidationMenu && (display.getCurrentTab() == SideMenuDisplay.VALIDATION_OPTION_VIEW))
+      {
+         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
       }
    }
 
    @Override
-   public void onEditorOptionsClick()
+   public void onOptionsClick()
    {
-      showAndExpandOrCollapseTab(SideMenuDisplay.EDITOR_OPTION_VIEW);
+      showAndExpandOrCollapseTab(SideMenuDisplay.OPTION_VIEW);
    }
 
    @Override
@@ -228,10 +230,6 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
    {
       isExpended = isExpend;
       eventBus.fireEvent(new ShowSideMenuEvent(isExpended));
-      if (!isExpended)
-      {
-         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-      }
    }
 
    @Override

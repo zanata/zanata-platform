@@ -104,7 +104,7 @@ public class SideMenuPresenterTest
       // Then:
       verify(userWorkspaceContext).setProjectActive(workspaceContextEvent.isProjectActive());
       verify(display).setChatTabVisible(false);
-      verify(display).setEditorOptionsTabVisible(false);
+      verify(display).setOptionsView(false);
       verify(display).setValidationOptionsTabVisible(false);
    }
 
@@ -128,7 +128,7 @@ public class SideMenuPresenterTest
    @Test
    public void onPublishChatEventAndCurrentTabIsNotWorkspaceUserView()
    {
-      when(display.getCurrentTab()).thenReturn(SideMenuDisplay.EDITOR_OPTION_VIEW);
+      when(display.getCurrentTab()).thenReturn(SideMenuDisplay.OPTION_VIEW);
 
       presenter.onPublishWorkspaceChat(null);
 
@@ -163,9 +163,9 @@ public class SideMenuPresenterTest
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
       presenter.expendSideMenu(true);
 
-      presenter.showEditorMenu(true);
+      presenter.setOptionMenu(true);
 
-      verify(display).setEditorOptionsTabVisible(true);
+      verify(display).setOptionsView(true);
       verify(display).setValidationOptionsTabVisible(true);
       verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
    }
@@ -175,9 +175,9 @@ public class SideMenuPresenterTest
    {
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
 
-      presenter.showEditorMenu(false);
+      presenter.setOptionMenu(false);
 
-      verify(display).setEditorOptionsTabVisible(false);
+      verify(display).setOptionsView(false);
       verify(display).setValidationOptionsTabVisible(false);
       verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
    }
@@ -189,10 +189,10 @@ public class SideMenuPresenterTest
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
 
       // When:
-      presenter.onEditorOptionsClick();
+      presenter.onOptionsClick();
 
       // Then:
-      verify(display).setSelectedTab(SideMenuDisplay.EDITOR_OPTION_VIEW);
+      verify(display).setSelectedTab(SideMenuDisplay.OPTION_VIEW);
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().isShowing(), Matchers.equalTo(true));
       verifyNoMoreInteractions(display);
@@ -207,11 +207,11 @@ public class SideMenuPresenterTest
       when(display.getCurrentTab()).thenReturn(SideMenuDisplay.WORKSPACEUSER_VIEW);
 
       // When:
-      presenter.onEditorOptionsClick();
+      presenter.onOptionsClick();
 
       // Then:
       verify(display).getCurrentTab();
-      verify(display).setSelectedTab(SideMenuDisplay.EDITOR_OPTION_VIEW);
+      verify(display).setSelectedTab(SideMenuDisplay.OPTION_VIEW);
       verifyNoMoreInteractions(display);
    }
 
@@ -221,10 +221,10 @@ public class SideMenuPresenterTest
       // Given: initial side menu is expanded and current tab is editor option view
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
       presenter.expendSideMenu(true);
-      when(display.getCurrentTab()).thenReturn(SideMenuDisplay.EDITOR_OPTION_VIEW);
+      when(display.getCurrentTab()).thenReturn(SideMenuDisplay.OPTION_VIEW);
 
       // When:
-      presenter.onEditorOptionsClick();
+      presenter.onOptionsClick();
 
       // Then:
       verify(display).getCurrentTab();
@@ -308,7 +308,7 @@ public class SideMenuPresenterTest
       presenter.expendSideMenu(true);
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().isShowing(), Matchers.is(true));
-      when(display.getCurrentTab()).thenReturn(SideMenuDisplay.EDITOR_OPTION_VIEW);
+      when(display.getCurrentTab()).thenReturn(SideMenuDisplay.OPTION_VIEW);
 
       // When:
       presenter.showNotification();

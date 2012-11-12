@@ -62,7 +62,7 @@
 	    		<g:InlineLabel ui:field="notificationTab" styleName="icon-bell {style.menuButton}"/>
 	    		<g:InlineLabel ui:field="notificationLabel" addStyleNames="{style.notificationLabel}"/>
 	    		<g:InlineLabel ui:field="chatTab" styleName="icon-chat-1 {style.menuButton}"/>
-	    		<g:InlineLabel ui:field="editorOptionsTab" styleName="icon-cog {style.menuButton}"/>
+	    		<g:InlineLabel ui:field="optionsTab" styleName="icon-cog {style.menuButton}"/>
 	    		<g:InlineLabel ui:field="validationOptionsTab" styleName="icon-check {style.menuButton}"/>
 			</g:FlowPanel>
     	</g:layer>

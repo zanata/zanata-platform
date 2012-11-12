@@ -395,6 +395,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Close")
    String close();
 
+   @DefaultMessage("Options")
+   String options();
+
    @DefaultMessage("Editor options")
    String editorOptions();
 
