@@ -406,6 +406,24 @@ public class TransUnitsTablePresenterTest
    }
 
    @Test
+   public void onTableRowSelectingDifferentRowAndSuppressSavePending()
+   {
+      // Given: selecting id is on row index 2, and current selected row index is 3
+      TransUnitId selectingId = new TransUnitId(1);
+      when(navigationService.findRowIndexById(selectingId)).thenReturn(2);
+      when(navigationService.getCurrentRowIndexOnPage()).thenReturn(3);
+
+      // When:
+      presenter.onTableRowSelected(new TableRowSelectedEvent(selectingId).setSuppressSavePending(true));
+
+      // Then:
+      verify(navigationService, times(2)).getCurrentRowIndexOnPage();
+      verify(targetContentsPresenter, never()).savePendingChangesIfApplicable();
+      verify(navigationService).selectByRowIndex(2);
+      verify(display).applySelectedStyle(2);
+   }
+
+   @Test
    public void onLoadingEvent()
    {
       presenter.onLoading(LoadingEvent.START_EVENT);

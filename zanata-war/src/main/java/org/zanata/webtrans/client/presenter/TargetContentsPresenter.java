@@ -504,7 +504,17 @@ public class TargetContentsPresenter implements
       if (contentsDisplayOptional.isPresent())
       {
          TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
-         contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum(), updatedTU.getStatus());
+         if (contentsDisplay.getEditingState() == TargetContentsDisplay.EditingState.SAVED)
+         {
+            // If current display is in saved state, we update both in editor and cached value
+            contentsDisplay.setValue(updatedTU);
+            contentsDisplay.refresh();
+         }
+         else
+         {
+            // editor is in saving state or unsaved state, we don't want to update value in editor, just the cached value.
+            contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum(), updatedTU.getStatus());
+         }
          setEditingState(updatedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
       }
    }
