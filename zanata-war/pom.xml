@@ -37,9 +37,8 @@
         <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
         <!-- Groovy and Gmaven properties -->
-        <gmavenVersion>1.4</gmavenVersion>
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
-        <groovyVersion>2.0.0</groovyVersion>
+        <groovyVersion>2.0.5</groovyVersion>
 	</properties>
 
 	<build>
@@ -461,7 +460,7 @@
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
-                <version>${gmavenVersion}</version>
+                <version>1.4</version>
                 <configuration>
                     <providerSelection>${gmavenProviderSelection}</providerSelection>
                     <sourceEncoding>UTF-8</sourceEncoding>
@@ -478,6 +477,17 @@
                     </execution>
                 </executions>
                 <dependencies>
+			      <dependency>
+			          <groupId>org.codehaus.gmaven.runtime</groupId>
+			          <artifactId>gmaven-runtime-2.0</artifactId>
+			          <version>1.4</version>
+			          <exclusions>
+			            <exclusion>
+			              <groupId>org.codehaus.groovy</groupId>
+			              <artifactId>groovy-all</artifactId>
+			            </exclusion>
+			          </exclusions>
+			        </dependency>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-all</artifactId>
