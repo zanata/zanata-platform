@@ -29,11 +29,6 @@ public class SaveOptionsAction implements DispatchAction<SaveOptionsResult>
 {
    private UserConfigHolder.ConfigurationState configuration;
 
-   // Other options not contained in the configuration object
-   private boolean filterByTranslated;
-   private boolean filterByNeedReview;
-   private boolean  filterByUntranslated;
-
    public UserConfigHolder.ConfigurationState getConfiguration()
    {
       return configuration;
@@ -42,35 +37,5 @@ public class SaveOptionsAction implements DispatchAction<SaveOptionsResult>
    public void setConfiguration(UserConfigHolder.ConfigurationState configuration)
    {
       this.configuration = configuration;
-   }
-
-   public boolean getFilterByTranslated()
-   {
-      return filterByTranslated;
-   }
-
-   public void setFilterByTranslated(boolean filterByTranslated)
-   {
-      this.filterByTranslated = filterByTranslated;
-   }
-
-   public boolean getFilterByNeedReview()
-   {
-      return filterByNeedReview;
-   }
-
-   public void setFilterByNeedReview(boolean filterByNeedReview)
-   {
-      this.filterByNeedReview = filterByNeedReview;
-   }
-
-   public boolean getFilterByUntranslated()
-   {
-      return filterByUntranslated;
-   }
-
-   public void setFilterByUntranslated(boolean filterByUntranslated)
-   {
-      this.filterByUntranslated = filterByUntranslated;
    }
 }

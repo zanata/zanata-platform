@@ -202,6 +202,9 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    {
       enterChk.setValue(state.isEnterSavesApproved());
       editorButtonsChk.setValue(state.isDisplayButtons());
+      translatedChk.setValue(state.isFilterByTranslated());
+      needReviewChk.setValue(state.isFilterByNeedReview());
+      untranslatedChk.setValue(state.isFilterByUntranslated());
 
       navOptionGroup.setDefaultSelected(state.getNavOption());
       selectPageSize(state.getPageSize());

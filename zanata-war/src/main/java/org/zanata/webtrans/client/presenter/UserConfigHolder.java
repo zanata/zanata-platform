@@ -74,7 +74,7 @@ public class UserConfigHolder
       return state.isEnterSavesApproved();
    }
 
-   protected void setEnterSavesApproved(boolean enterSavesApproved)
+   public void setEnterSavesApproved(boolean enterSavesApproved)
    {
       state = new ConfigurationState(state);
       state.enterSavesApproved = enterSavesApproved;
@@ -85,13 +85,13 @@ public class UserConfigHolder
       return state.isDisplayButtons();
    }
 
-   protected void setDisplayButtons(boolean displayButtons)
+   public void setDisplayButtons(boolean displayButtons)
    {
       state = new ConfigurationState(state);
       state.displayButtons = displayButtons;
    }
 
-   protected void setNavOption(NavOption navOption)
+   public void setNavOption(NavOption navOption)
    {
       state = new ConfigurationState(state);
       state.navOption = navOption;
@@ -123,7 +123,7 @@ public class UserConfigHolder
       return state.getPageSize();
    }
 
-   protected void setPageSize(int pageSize)
+   public void setPageSize(int pageSize)
    {
       state = new ConfigurationState(state);
       state.pageSize = pageSize;
@@ -132,6 +132,16 @@ public class UserConfigHolder
    public ConfigurationState getState()
    {
       return state;
+   }
+
+   /**
+    * Sets all properties of the given state into this holder.
+    *
+    * @param state
+    */
+   public void setState( ConfigurationState state )
+   {
+      this.state = new ConfigurationState(state);
    }
 
    public boolean isShowError()
@@ -156,6 +166,24 @@ public class UserConfigHolder
       state.useCodeMirrorEditor = useCodeMirrorEditor;
    }
 
+   public void setFilterByUntranslated(boolean filterByUntranslated)
+   {
+      state = new ConfigurationState(state);
+      state.filterByUntranslated = filterByUntranslated;
+   }
+
+   public void setFilterByNeedReview(boolean filterByNeedReview)
+   {
+      state = new ConfigurationState(state);
+      state.filterByNeedReview = filterByNeedReview;
+   }
+
+   public void setFilterByTranslated(boolean filterByTranslated)
+   {
+      state = new ConfigurationState(state);
+      state.filterByTranslated = filterByTranslated;
+   }
+
    /**
     * Immutable object represents configuration state
     */
@@ -167,6 +195,10 @@ public class UserConfigHolder
       private NavOption navOption;
       private boolean showError;
       private boolean useCodeMirrorEditor;
+
+      private boolean filterByUntranslated;
+      private boolean filterByNeedReview;
+      private boolean filterByTranslated;
 
       // Needed for GWT serialization
       private ConfigurationState()
@@ -181,6 +213,9 @@ public class UserConfigHolder
          this.navOption = old.getNavOption();
          this.showError = old.isShowError();
          this.useCodeMirrorEditor = old.isUseCodeMirrorEditor();
+         this.filterByUntranslated = old.isFilterByUntranslated();
+         this.filterByNeedReview = old.isFilterByNeedReview();
+         this.filterByTranslated = old.isFilterByTranslated();
       }
 
       public boolean isEnterSavesApproved()
@@ -211,6 +246,21 @@ public class UserConfigHolder
       public boolean isUseCodeMirrorEditor()
       {
          return useCodeMirrorEditor;
+      }
+
+      public boolean isFilterByUntranslated()
+      {
+         return filterByUntranslated;
+      }
+
+      public boolean isFilterByNeedReview()
+      {
+         return filterByNeedReview;
+      }
+
+      public boolean isFilterByTranslated()
+      {
+         return filterByTranslated;
       }
    }
 }

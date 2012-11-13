@@ -90,6 +90,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
+   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In case of cancelling a filter
    private TransUnitId selectedId;
    private String findMessage;
 
@@ -165,7 +166,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void onFilterView(FilterViewEvent event)
    {
+      previousFilterOptions = filterOptions;
       filterOptions = event;
+
       if (!event.isCancelFilter())
       {
          if (targetContentsPresenter.currentEditorContentHasChanged())
@@ -217,7 +220,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void cancelFilter()
    {
-      eventBus.fireEvent(new FilterViewEvent(filterOptions.isFilterTranslated(), filterOptions.isFilterNeedReview(), filterOptions.isFilterUntranslated(), true));
+      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), true));
       display.hideFilterConfirmation();
    }
 
@@ -309,13 +312,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void onRowSelected(int rowIndexOnPage)
    {
-      if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage)
-      {
-         Log.info("current row:" + navigationService.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
-         targetContentsPresenter.savePendingChangesIfApplicable();
-         navigationService.selectByRowIndex(rowIndexOnPage);
-         display.applySelectedStyle(rowIndexOnPage);
-      }
+      onRowSelected(rowIndexOnPage, false);
    }
 
    @Override
@@ -325,7 +322,21 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       int rowIndex = navigationService.findRowIndexById(selectedId);
       if (rowIndex != NavigationService.UNSELECTED)
       {
-         onRowSelected(rowIndex);
+         onRowSelected(rowIndex, event.isSuppressSavePending());
+      }
+   }
+
+   private void onRowSelected(int rowIndexOnPage, boolean suppressSavePending)
+   {
+      if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage)
+      {
+         Log.info("current row:" + navigationService.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
+         if (!suppressSavePending)
+         {
+            targetContentsPresenter.savePendingChangesIfApplicable();
+         }
+         navigationService.selectByRowIndex(rowIndexOnPage);
+         display.applySelectedStyle(rowIndexOnPage);
       }
    }
 

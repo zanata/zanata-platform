@@ -142,7 +142,8 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
             if (!units.isEmpty())
             {
-               eventBus.fireEvent(new TableRowSelectedEvent(units.get(result.getGotoRow()).getId()));
+               // in case there is pending save (as fuzzy) happening, we do not want to trigger another pending save
+               eventBus.fireEvent(new TableRowSelectedEvent(units.get(result.getGotoRow()).getId()).setSuppressSavePending(true));
             }
             eventBus.fireEvent(new PageChangeEvent(navigationStateHolder.getCurrentPage()));
             isLoadingTU = false;
@@ -326,7 +327,12 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
          DocumentSelectionEvent documentSelectionEvent = (DocumentSelectionEvent) command;
          DocumentId documentId = documentSelectionEvent.getDocumentId();
-         init(new GetTransUnitActionContext(documentId).changeCount(configHolder.getPageSize()).changeFindMessage(documentSelectionEvent.getFindMessage()));
+         init(new GetTransUnitActionContext(documentId)
+                  .changeCount(configHolder.getPageSize())
+                  .changeFindMessage(documentSelectionEvent.getFindMessage())
+                  .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
+                  .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
+                  .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated()));
       }
       else
       {

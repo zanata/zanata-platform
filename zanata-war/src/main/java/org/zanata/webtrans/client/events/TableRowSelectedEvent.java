@@ -29,4 +29,15 @@ public class TableRowSelectedEvent extends GwtEvent<TableRowSelectedEventHandler
    {
       return selectedId;
    }
+
+   public TableRowSelectedEvent setSuppressSavePending(boolean suppressSavePending)
+   {
+      this.suppressSavePending = suppressSavePending;
+      return this;
+   }
+
+   public boolean isSuppressSavePending()
+   {
+      return suppressSavePending;
+   }
 }

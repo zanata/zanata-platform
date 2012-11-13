@@ -20,105 +20,22 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
+
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class LoadOptionsResult implements DispatchResult
 {
-   private boolean showEditorButtons;
+   private UserConfigHolder.ConfigurationState configuration;
 
-   private boolean enterKeySavesImmediately;
-
-   private boolean filterByTranslated;
-
-   private boolean filterByNeedReview;
-
-   private boolean filterByUntraslated;
-
-   private NavOption navOption;
-
-   private int pageSize;
-
-   private boolean showErrors;
-
-
-   public boolean getShowEditorButtons()
+   public UserConfigHolder.ConfigurationState getConfiguration()
    {
-      return showEditorButtons;
+      return configuration;
    }
 
-   public void setShowEditorButtons(boolean showEditorButtons)
+   public void setConfiguration(UserConfigHolder.ConfigurationState configuration)
    {
-      this.showEditorButtons = showEditorButtons;
-   }
-
-   public boolean getEnterKeySavesImmediately()
-   {
-      return enterKeySavesImmediately;
-   }
-
-   public void setEnterKeySavesImmediately(boolean enterKeySavesImmediately)
-   {
-      this.enterKeySavesImmediately = enterKeySavesImmediately;
-   }
-
-   public boolean getFilterByTranslated()
-   {
-      return filterByTranslated;
-   }
-
-   public void setFilterByTranslated(boolean filterByTranslated)
-   {
-      this.filterByTranslated = filterByTranslated;
-   }
-
-   public boolean getFilterByNeedReview()
-   {
-      return filterByNeedReview;
-   }
-
-   public void setFilterByNeedReview(boolean filterByNeedReview)
-   {
-      this.filterByNeedReview = filterByNeedReview;
-   }
-
-   public boolean getFilterByUntraslated()
-   {
-      return filterByUntraslated;
-   }
-
-   public void setFilterByUntraslated(boolean filterByUntraslated)
-   {
-      this.filterByUntraslated = filterByUntraslated;
-   }
-
-   public NavOption getNavOption()
-   {
-      return navOption;
-   }
-
-   public void setNavOption(NavOption navOption)
-   {
-      this.navOption = navOption;
-   }
-
-   public int getPageSize()
-   {
-      return pageSize;
-   }
-
-   public void setPageSize(int pageSize)
-   {
-      this.pageSize = pageSize;
-   }
-
-   public boolean getShowErrors()
-   {
-      return showErrors;
-   }
-
-   public void setShowErrors(boolean showErrors)
-   {
-      this.showErrors = showErrors;
+      this.configuration = configuration;
    }
 }
