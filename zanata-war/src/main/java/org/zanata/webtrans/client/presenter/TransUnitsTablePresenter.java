@@ -90,6 +90,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
+   private FilterViewEvent previousFilterOptions = null; // In case of cancelling a filter
    private TransUnitId selectedId;
    private String findMessage;
 
@@ -165,7 +166,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void onFilterView(FilterViewEvent event)
    {
+      previousFilterOptions = filterOptions;
       filterOptions = event;
+
       if (!event.isCancelFilter())
       {
          if (targetContentsPresenter.currentEditorContentHasChanged())
@@ -217,7 +220,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void cancelFilter()
    {
-      eventBus.fireEvent(new FilterViewEvent(filterOptions.isFilterTranslated(), filterOptions.isFilterNeedReview(), filterOptions.isFilterUntranslated(), true));
+      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), true));
       display.hideFilterConfirmation();
    }
 
