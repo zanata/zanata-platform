@@ -59,8 +59,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ImageResourceRenderer;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.DefaultSelectionEventManager.BlacklistEventTranslator;
 import com.google.gwt.view.client.DefaultSelectionEventManager.SelectAction;
+import com.google.gwt.view.client.DefaultSelectionEventManager.WhitelistEventTranslator;
 import com.google.gwt.view.client.SelectionModel;
 
 /**
@@ -71,8 +71,7 @@ import com.google.gwt.view.client.SelectionModel;
  */
 public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 {
-   private static final int PREVIEW_COLUMN_INDEX = 4;
-   private static final int REPLACE_COLUMN_INDEX = 5;
+   private static final int CHECKBOX_COLUMN_INDEX = 0;
 
    private static CellTableResources cellTableResources;
    private WebTransMessages messages;
@@ -551,16 +550,15 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
     */
    private static DefaultSelectionEventManager<TransUnitReplaceInfo> buildSelectionManager()
    {
-      BlacklistEventTranslator<TransUnitReplaceInfo> selectionEventTranslator = new BlacklistEventTranslator<TransUnitReplaceInfo>()
+      WhitelistEventTranslator<TransUnitReplaceInfo> selectionEventTranslator = new WhitelistEventTranslator<TransUnitReplaceInfo>()
       {
          @Override
          public SelectAction translateSelectionEvent(CellPreviewEvent<TransUnitReplaceInfo> event)
          {
-            return isColumnBlacklisted(event.getColumn()) ? SelectAction.IGNORE : SelectAction.TOGGLE;
+            return isColumnWhitelisted(event.getColumn()) ? SelectAction.TOGGLE : SelectAction.IGNORE;
          }
       };
-      selectionEventTranslator.setColumnBlacklisted(PREVIEW_COLUMN_INDEX, true);
-      selectionEventTranslator.setColumnBlacklisted(REPLACE_COLUMN_INDEX, true);
+      selectionEventTranslator.setColumnWhitelisted(CHECKBOX_COLUMN_INDEX, true);
       return DefaultSelectionEventManager.<TransUnitReplaceInfo> createCustomManager(selectionEventTranslator);
    }
 
