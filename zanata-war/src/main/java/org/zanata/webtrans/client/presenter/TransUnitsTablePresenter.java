@@ -90,7 +90,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-   private FilterViewEvent previousFilterOptions = null; // In case of cancelling a filter
+   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In case of cancelling a filter
    private TransUnitId selectedId;
    private String findMessage;
 

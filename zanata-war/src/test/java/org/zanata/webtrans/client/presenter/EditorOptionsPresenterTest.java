@@ -232,9 +232,9 @@ public class EditorOptionsPresenterTest
 
       presenter.loadDefaultOptions();
 
-      verify(needReviewChk).setValue(false);
-      verify(translatedChk).setValue(false);
-      verify(untranslatedChk).setValue(false);
+      assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.is(false));
+      assertThat(configHolder.getState().isFilterByTranslated(), Matchers.is(false));
+      assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.is(false));
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
       assertThat(configHolder.getPageSize(), Matchers.equalTo(25));
       assertThat(configHolder.isShowError(), Matchers.equalTo(false));
@@ -248,9 +248,9 @@ public class EditorOptionsPresenterTest
    @Test
    public void onPersistOption()
    {
-      when(needReviewChk.getValue()).thenReturn(true);
-      when(translatedChk.getValue()).thenReturn(false);
-      when(untranslatedChk.getValue()).thenReturn(true);
+      configHolder.setFilterByNeedReview(true);
+      configHolder.setFilterByTranslated(false);
+      configHolder.setFilterByUntranslated(true);
 
       presenter.persistOptionChange();
 
@@ -294,9 +294,6 @@ public class EditorOptionsPresenterTest
       when(translatedChk.getValue()).thenReturn(true);
       when(untranslatedChk.getValue()).thenReturn(false);
       callback.onSuccess(result);
-      verify(needReviewChk).setValue(false);
-      verify(untranslatedChk).setValue(false);
-      verify(translatedChk).setValue(true);
       assertThat(configHolder.getPageSize(), Matchers.equalTo(10));
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);

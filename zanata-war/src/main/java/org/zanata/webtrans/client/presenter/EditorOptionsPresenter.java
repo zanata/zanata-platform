@@ -251,9 +251,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       configHolder.setPageSize(25);
       configHolder.setShowError(false);
 
-      display.setOptionsState(configHolder.getState());
       eventBus.fireEvent(UserConfigChangeEvent.EVENT);
       filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
+      display.setOptionsState(configHolder.getState());
    }
 }
