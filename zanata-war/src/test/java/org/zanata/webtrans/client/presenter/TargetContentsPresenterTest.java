@@ -31,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -710,16 +711,33 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canConfirmSaved()
+   public void canConfirmSavedOnSavingState()
    {
       selectedTU = currentPageRows.get(1);
       when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditingState()).thenReturn(TargetContentsDisplay.EditingState.SAVING);
       presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
 
       presenter.confirmSaved(selectedTU);
 
       verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum(), selectedTU.getStatus());
       verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
+   }
+
+   @Test
+   public void canConfirmSavedOnSavedState()
+   {
+      selectedTU = currentPageRows.get(1);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditingState()).thenReturn(TargetContentsDisplay.EditingState.SAVED);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+
+      presenter.confirmSaved(selectedTU);
+
+      InOrder inOrder = Mockito.inOrder(display);
+      inOrder.verify(display).setValue(selectedTU);
+      inOrder.verify(display).refresh();
+      inOrder.verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
    }
 
    @Test

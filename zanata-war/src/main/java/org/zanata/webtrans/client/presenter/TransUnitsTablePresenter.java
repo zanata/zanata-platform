@@ -309,13 +309,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void onRowSelected(int rowIndexOnPage)
    {
-      if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage)
-      {
-         Log.info("current row:" + navigationService.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
-         targetContentsPresenter.savePendingChangesIfApplicable();
-         navigationService.selectByRowIndex(rowIndexOnPage);
-         display.applySelectedStyle(rowIndexOnPage);
-      }
+      onRowSelected(rowIndexOnPage, false);
    }
 
    @Override
@@ -325,7 +319,21 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       int rowIndex = navigationService.findRowIndexById(selectedId);
       if (rowIndex != NavigationService.UNSELECTED)
       {
-         onRowSelected(rowIndex);
+         onRowSelected(rowIndex, event.isSuppressSavePending());
+      }
+   }
+
+   private void onRowSelected(int rowIndexOnPage, boolean suppressSavePending)
+   {
+      if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage)
+      {
+         Log.info("current row:" + navigationService.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
+         if (!suppressSavePending)
+         {
+            targetContentsPresenter.savePendingChangesIfApplicable();
+         }
+         navigationService.selectByRowIndex(rowIndexOnPage);
+         display.applySelectedStyle(rowIndexOnPage);
       }
    }
 

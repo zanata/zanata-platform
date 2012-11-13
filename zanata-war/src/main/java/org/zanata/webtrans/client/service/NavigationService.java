@@ -142,7 +142,8 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
             if (!units.isEmpty())
             {
-               eventBus.fireEvent(new TableRowSelectedEvent(units.get(result.getGotoRow()).getId()));
+               // in case there is pending save (as fuzzy) happening, we do not want to trigger another pending save
+               eventBus.fireEvent(new TableRowSelectedEvent(units.get(result.getGotoRow()).getId()).setSuppressSavePending(true));
             }
             eventBus.fireEvent(new PageChangeEvent(navigationStateHolder.getCurrentPage()));
             isLoadingTU = false;

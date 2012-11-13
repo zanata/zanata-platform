@@ -215,6 +215,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
+   public EditingState getEditingState()
+   {
+      return editingState;
+   }
+
+   @Override
    public void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status)
    {
       cachedValue = TransUnit.Builder.from(cachedValue).setTargets(targets).setVerNum(verNum).setStatus(status).build();
