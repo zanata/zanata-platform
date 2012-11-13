@@ -216,7 +216,7 @@ public class SourceDocResourceService implements SourceDocResource
       resourceUtils.validateExtensions(extensions); //gettext, comment
 
       String resourceName = resource.getName();
-      if (!Pattern.matches(SourceDocResource.RESOURCE_SLUG_REGEX, resourceName))
+      if (!Pattern.matches(SourceDocResource.RESOURCE_NAME_REGEX, resourceName))
       {
          log.warn("bad resource name in post(): {0}", resourceName);
          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("not a legal resource name: " + resourceName).build());
