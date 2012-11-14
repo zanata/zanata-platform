@@ -65,9 +65,9 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
 
       LoadOptionsResult result = handler.execute(LoadOptionsAction.ACTION, null);
 
-      assertThat(result.getShowErrors(), Matchers.equalTo(true));
-      assertThat(result.getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      assertThat(result.getShowEditorButtons(), Matchers.equalTo(true));
+      assertThat(result.getConfiguration().isShowError(), Matchers.equalTo(true));
+      assertThat(result.getConfiguration().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
+      assertThat(result.getConfiguration().isDisplayButtons(), Matchers.equalTo(true));
    }
 
    @Test
@@ -80,9 +80,9 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
       LoadOptionsResult result = handler.execute(LoadOptionsAction.ACTION, null);
 
       // then: we get back default values
-      assertThat(result.getShowErrors(), Matchers.equalTo(false));
-      assertThat(result.getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      assertThat(result.getPageSize(), Matchers.equalTo(25));
+      assertThat(result.getConfiguration().isShowError(), Matchers.equalTo(false));
+      assertThat(result.getConfiguration().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
+      assertThat(result.getConfiguration().getPageSize(), Matchers.equalTo(25));
    }
 
    @Test
