@@ -26,8 +26,8 @@ import java.util.HashMap;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.DocumentListPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -86,7 +86,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
       if (configHolder.getDocumentListPageSize() != pageSize)
       {
          configHolder.setDocumentListPageSize(pageSize);
-         eventBus.fireEvent(new DocumentListPageSizeChangeEvent(pageSize));
+         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
       }
    }
 
@@ -158,6 +158,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
          {
             configHolder.setState(result.getConfiguration());
             display.setOptionsState(configHolder.getState());
+            eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded user options"));
          }
       });
@@ -169,8 +170,9 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
       // default options
       configHolder.setDocumentListPageSize(25);
       configHolder.setShowError(false);
-
       display.setOptionsState(configHolder.getState());
+
+      eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default user options."));
    }
 }

@@ -30,14 +30,14 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.events.DocumentListPageSizeChangeEvent;
-import org.zanata.webtrans.client.events.DocumentListPageSizeChangeEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -56,13 +56,14 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, DocumentListPageSizeChangeEventHandler, TransUnitUpdatedEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
 {
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
    private final History history;
+   private final UserConfigHolder configHolder;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
@@ -99,12 +100,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    };
 
    @Inject
-   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history)
+   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.userworkspaceContext = userworkspaceContext;
       this.messages = messages;
       this.history = history;
+      this.configHolder = configHolder;
 
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
@@ -132,7 +134,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
-      registerHandler(eventBus.addHandler(DocumentListPageSizeChangeEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
       display.setListener(this);
    }
@@ -439,9 +441,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    }
 
    @Override
-   public void onPageSizeChange(DocumentListPageSizeChangeEvent event)
+   public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      display.updatePageSize(event.getPageSize());
-
+      if (event.getView() == MainView.Documents)
+      {
+         display.updatePageSize(configHolder.getDocumentListPageSize());
+      }
    }
 }

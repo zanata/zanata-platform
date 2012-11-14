@@ -63,7 +63,7 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
       HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
       Map<String,HAccountOption> options = account.getEditorOptions();
 
-      if (!action.getPrefixes().isEmpty())
+      if (action.getPrefixes() != null && !action.getPrefixes().isEmpty())
       {
          for (String name : options.keySet())
          {

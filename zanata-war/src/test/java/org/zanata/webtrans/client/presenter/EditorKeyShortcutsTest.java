@@ -1,6 +1,17 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -11,7 +22,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
-import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
@@ -20,17 +31,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.event.dom.client.KeyCodes;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -60,7 +60,7 @@ public class EditorKeyShortcutsTest
       configHolder = new UserConfigHolder();
       keyShortcuts = new EditorKeyShortcuts(keyShortcutPresenter, eventBus, configHolder, messages);
 
-      verify(eventBus).addHandler(EditorConfigChangeEvent.getType(), keyShortcuts);
+      verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, keyShortcuts);
    }
 
    @Test
@@ -311,7 +311,7 @@ public class EditorKeyShortcutsTest
       configHolder.setEnterSavesApproved(true);
 
       // When:
-      keyShortcuts.onUserConfigChanged(EditorConfigChangeEvent.EVENT);
+      keyShortcuts.onUserConfigChanged(new UserConfigChangeEvent(MainView.Editor));
 
       // Then:
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
@@ -331,7 +331,7 @@ public class EditorKeyShortcutsTest
       configHolder.setNavOption(NavOption.FUZZY);
 
       // When:
-      keyShortcuts.onUserConfigChanged(EditorConfigChangeEvent.EVENT);
+      keyShortcuts.onUserConfigChanged(new UserConfigChangeEvent(MainView.Editor));
 
       // Then:
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());

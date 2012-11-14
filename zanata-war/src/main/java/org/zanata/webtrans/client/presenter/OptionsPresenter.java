@@ -23,13 +23,13 @@ package org.zanata.webtrans.client.presenter;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
-import org.zanata.webtrans.client.events.EditorConfigChangeHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 
 import com.google.inject.Inject;
 
-public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements OptionsDisplay.Listener, EditorConfigChangeHandler
+public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements OptionsDisplay.Listener, UserConfigChangeHandler
 {
    private final EditorOptionsPresenter editorOptionsPresenter;
    private final DocumentListOptionsPresenter documentListOptionsPresenter;
@@ -71,6 +71,8 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    {
       editorOptionsPresenter.onBind();
       documentListOptionsPresenter.onBind();
+
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
    }
 
    @Override
@@ -88,7 +90,6 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
          documentListOptionsPresenter.onShowErrorsOptionChanged(showErrorChkValue);
          break;
       }
-
    }
 
    @Override
@@ -155,7 +156,7 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    }
 
    @Override
-   public void onUserConfigChanged(EditorConfigChangeEvent event)
+   public void onUserConfigChanged(UserConfigChangeEvent event)
    {
       display.setShowErrorChk(configHolder.isShowError());
    }

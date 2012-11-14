@@ -26,12 +26,12 @@ import java.util.HashMap;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -56,7 +56,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    private final UserConfigHolder configHolder;
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
-
+   
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
    {
       @Override
@@ -113,7 +113,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       boolean displayButtons = !readOnly && configHolder.isDisplayButtons();
       configHolder.setDisplayButtons(displayButtons);
       display.setOptionsState(configHolder.getState());
-      eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
+      eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
    }
 
    @Override
@@ -135,7 +135,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.getNavOption() != navOption)
       {
          configHolder.setNavOption(navOption);
-         eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
+         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
    }
 
@@ -155,7 +155,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.isEnterSavesApproved() != enterSaveApproved)
       {
          configHolder.setEnterSavesApproved(enterSaveApproved);
-         eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
+         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
    }
 
@@ -165,7 +165,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.isDisplayButtons() != editorButtons)
       {
          configHolder.setDisplayButtons(editorButtons);
-         eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
+         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
    }
 
@@ -255,7 +255,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
             configHolder.setState( result.getConfiguration() );
 
             display.setOptionsState(configHolder.getState());
-            eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
+            eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
             filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded editor options"));
          }
@@ -275,7 +275,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       configHolder.setEditorPageSize(25);
       configHolder.setShowError(false);
 
-      eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
+      eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
       display.setOptionsState(configHolder.getState());

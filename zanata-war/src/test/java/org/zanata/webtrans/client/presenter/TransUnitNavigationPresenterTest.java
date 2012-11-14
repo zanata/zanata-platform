@@ -1,5 +1,16 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.FirstEntry;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.LastEntry;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -8,15 +19,9 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.shared.rpc.NavOption;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -50,7 +55,7 @@ public class TransUnitNavigationPresenterTest
    {
       presenter.onBind();
 
-      verify(eventBus).addHandler(EditorConfigChangeEvent.getType(), presenter);
+      verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
    }
 
    @Test
@@ -58,7 +63,7 @@ public class TransUnitNavigationPresenterTest
    {
       when(userConfigHolder.getNavOption()).thenReturn(NavOption.UNTRANSLATED);
 
-      presenter.onUserConfigChanged(EditorConfigChangeEvent.EVENT);
+      presenter.onUserConfigChanged(new UserConfigChangeEvent(MainView.Editor));
 
       verify(display).setNavModeTooltip(NavOption.UNTRANSLATED);
    }

@@ -1,29 +1,30 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
-import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
-import org.zanata.webtrans.client.events.EditorConfigChangeHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import net.customware.gwt.presenter.client.EventBus;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
-
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class EditorKeyShortcuts implements EditorConfigChangeHandler
+public class EditorKeyShortcuts implements UserConfigChangeHandler
 {
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final EventBus eventBus;
@@ -48,7 +49,7 @@ public class EditorKeyShortcuts implements EditorConfigChangeHandler
       this.messages = messages;
 
       configuration = configHolder.getState();
-      eventBus.addHandler(EditorConfigChangeEvent.getType(), this);
+      eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
    }
 
    public void registerKeys(TargetContentsPresenter targetContentsPresenter)
@@ -168,15 +169,18 @@ public class EditorKeyShortcuts implements EditorConfigChangeHandler
    }
 
    @Override
-   public void onUserConfigChanged(EditorConfigChangeEvent event)
+   public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      UserConfigHolder.ConfigurationState oldState = configuration;
-      configuration = configHolder.getState();
+      if (event.getView() == MainView.Editor)
+      {
+         UserConfigHolder.ConfigurationState oldState = configuration;
+         configuration = configHolder.getState();
 
-      // If some config hasn't changed or not relevant in
-      // this context, don't bother doing anything
-      changeEnterSavesApproved(oldState);
-      changeNavShortcutDescription(oldState);
+         // If some config hasn't changed or not relevant in
+         // this context, don't bother doing anything
+         changeEnterSavesApproved(oldState);
+         changeNavShortcutDescription(oldState);
+      }
    }
 
    private void changeEnterSavesApproved(UserConfigHolder.ConfigurationState oldState)

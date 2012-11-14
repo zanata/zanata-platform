@@ -20,9 +20,13 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import static com.google.common.base.Objects.equal;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
@@ -39,8 +43,8 @@ import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
-import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
-import org.zanata.webtrans.client.events.EditorConfigChangeHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -52,6 +56,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
@@ -62,15 +67,12 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import net.customware.gwt.presenter.client.EventBus;
-import static com.google.common.base.Objects.equal;
-
 @Singleton
 // @formatter:off
 public class TargetContentsPresenter implements
       TargetContentsDisplay.Listener,
       TransUnitEditEventHandler,
-      EditorConfigChangeHandler,
+      UserConfigChangeHandler,
       RequestValidationEventHandler,
       InsertStringInEditorHandler,
       CopyDataToEditorHandler,
@@ -127,7 +129,7 @@ public class TargetContentsPresenter implements
 
    private void bindEventHandlers()
    {
-      eventBus.addHandler(EditorConfigChangeEvent.getType(), this);
+      eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
@@ -376,16 +378,19 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void onUserConfigChanged(EditorConfigChangeEvent event)
+   public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      if (isDisplayButtons != configHolder.isDisplayButtons())
+      if (event.getView() == MainView.Editor)
       {
-         for (TargetContentsDisplay contentsDisplay : displayList)
+         if (isDisplayButtons != configHolder.isDisplayButtons())
          {
-            contentsDisplay.showButtons(configHolder.isDisplayButtons());
+            for (TargetContentsDisplay contentsDisplay : displayList)
+            {
+               contentsDisplay.showButtons(configHolder.isDisplayButtons());
+            }
          }
+         isDisplayButtons = configHolder.isDisplayButtons();
       }
-      isDisplayButtons = configHolder.isDisplayButtons();
    }
 
    @Override
