@@ -173,6 +173,8 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       // source strings, because there may not be HTextFlowTarget for the
       // HTextFlow.
 
+      // FIXME constrain to only non-obsolete documents
+
       HLocale loc = localeServiceImpl.getByLocaleId(validatedLocaleId);
       Long locId = loc.getId();
 
@@ -398,7 +400,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
             // manually check for case sensitive matches
             if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htft.getContents(), constraints)) )
             {
-               resultList.add(htft.getTextFlow());
+               if (!htft.getTextFlow().getDocument().isObsolete())
+               {
+                  resultList.add(htft.getTextFlow());
+               }
             }
          }
       }
@@ -451,7 +456,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
                // manually check for case sensitive matches
                if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htf.getContents(), constraints)) )
                {
-                  resultList.add(htf);
+                  if (!htf.getDocument().isObsolete())
+                  {
+                     resultList.add(htf);
+                  }
                }
             }
          }
