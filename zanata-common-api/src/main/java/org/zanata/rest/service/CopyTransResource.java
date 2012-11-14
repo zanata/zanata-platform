@@ -34,14 +34,14 @@ import org.zanata.rest.dto.CopyTransStatus;
 public interface CopyTransResource
 {
    @POST
-   @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}")
+   @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
    // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}
    public void startCopyTrans( @PathParam("projectSlug") String projectSlug,
                                @PathParam("iterationSlug") String iterationSlug,
                                @PathParam("docId") String docId );
 
    @GET
-   @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}")
+   @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
    // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}
    public CopyTransStatus getCopyTransStatus( @PathParam("projectSlug") String projectSlug,
                                               @PathParam("iterationSlug") String iterationSlug,
