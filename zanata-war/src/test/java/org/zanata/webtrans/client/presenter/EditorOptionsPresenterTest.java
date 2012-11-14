@@ -1,5 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -7,13 +15,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.PageSizeChangeEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
+import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
@@ -21,18 +30,10 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
+
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
-
-import net.customware.gwt.presenter.client.EventBus;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 @Test(groups = { "unit-tests" })
 public class EditorOptionsPresenterTest
@@ -131,7 +132,7 @@ public class EditorOptionsPresenterTest
       verify(userWorkspaceContext).setProjectActive(false);
       assertThat(configHolder.isDisplayButtons(), Matchers.is(false));
       verify(display).setOptionsState(configHolder.getState());
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+      verify(eventBus).fireEvent(EditorConfigChangeEvent.EVENT);
    }
 
    private static HasWorkspaceContextUpdateData workplaceContextData(final boolean projectActive)
@@ -173,8 +174,8 @@ public class EditorOptionsPresenterTest
    {
       presenter.onPageSizeClick(99);
 
-      assertThat(configHolder.getPageSize(), Matchers.equalTo(99));
-      ArgumentCaptor<PageSizeChangeEvent> eventCaptor = ArgumentCaptor.forClass(PageSizeChangeEvent.class);
+      assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(99));
+      ArgumentCaptor<EditorPageSizeChangeEvent> eventCaptor = ArgumentCaptor.forClass(EditorPageSizeChangeEvent.class);
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().getPageSize(), Matchers.equalTo(99));
    }
@@ -187,7 +188,7 @@ public class EditorOptionsPresenterTest
       presenter.onEnterSaveOptionChanged(true);
 
       assertThat(configHolder.isEnterSavesApproved(), Matchers.is(true));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+      verify(eventBus).fireEvent(EditorConfigChangeEvent.EVENT);
    }
 
    @Test
@@ -198,7 +199,7 @@ public class EditorOptionsPresenterTest
       presenter.onEditorButtonsOptionChanged(true);
 
       assertThat(configHolder.isDisplayButtons(), Matchers.is(true));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+      verify(eventBus).fireEvent(EditorConfigChangeEvent.EVENT);
    }
 
    @Test
@@ -209,7 +210,7 @@ public class EditorOptionsPresenterTest
       presenter.onSelectionChange("", NavOption.FUZZY);
 
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+      verify(eventBus).fireEvent(EditorConfigChangeEvent.EVENT);
    }
 
    @Test
@@ -236,12 +237,12 @@ public class EditorOptionsPresenterTest
       assertThat(configHolder.getState().isFilterByTranslated(), Matchers.is(false));
       assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.is(false));
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      assertThat(configHolder.getPageSize(), Matchers.equalTo(25));
+      assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(25));
       assertThat(configHolder.isShowError(), Matchers.equalTo(false));
       assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(true));
       assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(false));
       verify(display).setOptionsState(configHolder.getState());
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+      verify(eventBus).fireEvent(EditorConfigChangeEvent.EVENT);
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
    }
 
@@ -259,10 +260,13 @@ public class EditorOptionsPresenterTest
       verify(dispatcher).execute(actionCaptor.capture(), callbackCaptor.capture());
 
       SaveOptionsAction action = actionCaptor.getValue();
-      assertThat(action.getConfiguration(), Matchers.is(configHolder.getState()));
-      assertThat(action.getConfiguration().isFilterByNeedReview(), Matchers.equalTo(true));
-      assertThat(action.getConfiguration().isFilterByTranslated(), Matchers.equalTo(false));
-      assertThat(action.getConfiguration().isFilterByUntranslated(), Matchers.equalTo(true));
+      boolean isFilterByNeedReview = Boolean.valueOf(action.getConfigurationMap().get(UserOptions.NeedReviewMessageFilter));
+      boolean isFilterByTranslated = Boolean.valueOf(action.getConfigurationMap().get(UserOptions.TranslatedMessageFilter));
+      boolean isFilterByUntranslated = Boolean.valueOf(action.getConfigurationMap().get(UserOptions.UntranslatedMessageFilter));
+      
+      assertThat(isFilterByNeedReview, Matchers.equalTo(true));
+      assertThat(isFilterByTranslated, Matchers.equalTo(false));
+      assertThat(isFilterByUntranslated, Matchers.equalTo(true));
 
       AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
       callback.onSuccess(new SaveOptionsResult());
@@ -277,7 +281,7 @@ public class EditorOptionsPresenterTest
       configHolder.setEnterSavesApproved(true);
       configHolder.setFilterByTranslated(true);
       configHolder.setNavOption(NavOption.FUZZY);
-      configHolder.setPageSize(10);
+      configHolder.setEditorPageSize(10);
 
       LoadOptionsResult result = new LoadOptionsResult();
       result.setConfiguration( configHolder.getState() );
@@ -294,9 +298,9 @@ public class EditorOptionsPresenterTest
       when(translatedChk.getValue()).thenReturn(true);
       when(untranslatedChk.getValue()).thenReturn(false);
       callback.onSuccess(result);
-      assertThat(configHolder.getPageSize(), Matchers.equalTo(10));
+      assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(10));
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EVENT);
+      verify(eventBus).fireEvent(EditorConfigChangeEvent.EVENT);
 
       callback.onFailure(null);
       verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));

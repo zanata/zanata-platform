@@ -46,7 +46,7 @@ import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -125,7 +125,7 @@ public class TargetContentsPresenterTest
       userWorkspaceContext = TestFixture.userWorkspaceContext();
       presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, editorKeyShortcuts, historyPresenter);
 
-      verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
+      verify(eventBus).addHandler(EditorConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
       verify(eventBus).addHandler(InsertStringInEditorEvent.getType(), presenter);
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
@@ -459,7 +459,7 @@ public class TargetContentsPresenterTest
       configHolder.setDisplayButtons(false);
 
       // When:
-      presenter.onUserConfigChanged(UserConfigChangeEvent.EVENT);
+      presenter.onUserConfigChanged(EditorConfigChangeEvent.EVENT);
 
       // Then:
       verify(display, times(3)).showButtons(false);

@@ -20,22 +20,31 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import java.util.Map;
+
+import org.zanata.webtrans.shared.model.UserOptions;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class SaveOptionsAction implements DispatchAction<SaveOptionsResult>
 {
-   private UserConfigHolder.ConfigurationState configuration;
+   private static final long serialVersionUID = 1L;
 
-   public UserConfigHolder.ConfigurationState getConfiguration()
+   private Map<UserOptions, String> configurationMap;
+
+   @SuppressWarnings("unused")
+   public SaveOptionsAction()
    {
-      return configuration;
    }
 
-   public void setConfiguration(UserConfigHolder.ConfigurationState configuration)
+   public SaveOptionsAction(Map<UserOptions, String> configurationMap)
    {
-      this.configuration = configuration;
+      this.configurationMap = configurationMap;
+   }
+
+   public Map<UserOptions, String> getConfigurationMap()
+   {
+      return configurationMap;
    }
 }

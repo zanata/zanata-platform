@@ -116,7 +116,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       boolean hasWriteAccess = hasPermission(project, locale);
       boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
 
-      LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(), context);
+      LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(null), context);
 
       Identity identity = new Identity(editorClientId, person);
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);

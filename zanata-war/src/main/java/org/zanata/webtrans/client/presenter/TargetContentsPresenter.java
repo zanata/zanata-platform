@@ -39,8 +39,8 @@ import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorConfigChangeHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -70,7 +70,7 @@ import static com.google.common.base.Objects.equal;
 public class TargetContentsPresenter implements
       TargetContentsDisplay.Listener,
       TransUnitEditEventHandler,
-      UserConfigChangeHandler,
+      EditorConfigChangeHandler,
       RequestValidationEventHandler,
       InsertStringInEditorHandler,
       CopyDataToEditorHandler,
@@ -127,7 +127,7 @@ public class TargetContentsPresenter implements
 
    private void bindEventHandlers()
    {
-      eventBus.addHandler(UserConfigChangeEvent.getType(), this);
+      eventBus.addHandler(EditorConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
@@ -376,7 +376,7 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
+   public void onUserConfigChanged(EditorConfigChangeEvent event)
    {
       if (isDisplayButtons != configHolder.isDisplayButtons())
       {

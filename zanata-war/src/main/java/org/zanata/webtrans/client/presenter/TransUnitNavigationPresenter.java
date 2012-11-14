@@ -25,15 +25,15 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorConfigChangeHandler;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.inject.Inject;
 
-public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationDisplay> implements TransUnitNavigationDisplay.Listener, UserConfigChangeHandler
+public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationDisplay> implements TransUnitNavigationDisplay.Listener, EditorConfigChangeHandler
 {
 
    private UserConfigHolder configHolder;
@@ -51,7 +51,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    @Override
    protected void onBind()
    {
-      registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), this));
+      registerHandler(eventBus.addHandler(EditorConfigChangeEvent.getType(), this));
    }
 
    @Override
@@ -107,7 +107,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    }
 
    @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
+   public void onUserConfigChanged(EditorConfigChangeEvent event)
    {
       display.setNavModeTooltip(configHolder.getNavOption());
    }

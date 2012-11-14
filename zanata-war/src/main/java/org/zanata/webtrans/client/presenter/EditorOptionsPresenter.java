@@ -20,20 +20,24 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.PageSizeChangeEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
+import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
@@ -109,7 +113,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       boolean displayButtons = !readOnly && configHolder.isDisplayButtons();
       configHolder.setDisplayButtons(displayButtons);
       display.setOptionsState(configHolder.getState());
-      eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+      eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
    }
 
    @Override
@@ -131,17 +135,17 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.getNavOption() != navOption)
       {
          configHolder.setNavOption(navOption);
-         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+         eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
       }
    }
 
    @Override
    public void onPageSizeClick(int pageSize)
    {
-      if (configHolder.getPageSize() != pageSize)
+      if (configHolder.getEditorPageSize() != pageSize)
       {
-         configHolder.setPageSize(pageSize);
-         eventBus.fireEvent(new PageSizeChangeEvent(pageSize));
+         configHolder.setEditorPageSize(pageSize);
+         eventBus.fireEvent(new EditorPageSizeChangeEvent(pageSize));
       }
    }
 
@@ -151,7 +155,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.isEnterSavesApproved() != enterSaveApproved)
       {
          configHolder.setEnterSavesApproved(enterSaveApproved);
-         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+         eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
       }
    }
 
@@ -161,7 +165,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (configHolder.isDisplayButtons() != editorButtons)
       {
          configHolder.setDisplayButtons(editorButtons);
-         eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+         eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
       }
    }
 
@@ -193,11 +197,26 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    {
    }
 
+   private HashMap<UserOptions, String> generateConfigMap()
+   {
+      HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
+      configMap.put(UserOptions.DisplayButtons, Boolean.toString(configHolder.getState().isDisplayButtons()));
+      configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(configHolder.getState().isEnterSavesApproved()));
+      configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
+
+      configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
+      configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));
+      configMap.put(UserOptions.UntranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByUntranslated()));
+      configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
+
+      configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
+      return configMap;
+   }
+
    @Override
    public void persistOptionChange()
    {
-      SaveOptionsAction action = new SaveOptionsAction();
-      action.setConfiguration( this.configHolder.getState() );
+      SaveOptionsAction action = new SaveOptionsAction(generateConfigMap());
 
       dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>()
       {
@@ -218,7 +237,11 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void loadOptions()
    {
-      dispatcher.execute(LoadOptionsAction.ACTION, new AsyncCallback<LoadOptionsResult>()
+      ArrayList<String> prefixes = new ArrayList<String>();
+      prefixes.add(UserOptions.editor());
+      prefixes.add(UserOptions.common());
+
+      dispatcher.execute(new LoadOptionsAction(prefixes), new AsyncCallback<LoadOptionsResult>()
       {
          @Override
          public void onFailure(Throwable caught)
@@ -232,7 +255,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
             configHolder.setState( result.getConfiguration() );
 
             display.setOptionsState(configHolder.getState());
-            eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+            eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
             filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded editor options"));
          }
@@ -249,10 +272,10 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       configHolder.setFilterByNeedReview(false);
       configHolder.setFilterByUntranslated(false);
       configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
-      configHolder.setPageSize(25);
+      configHolder.setEditorPageSize(25);
       configHolder.setShowError(false);
 
-      eventBus.fireEvent(UserConfigChangeEvent.EVENT);
+      eventBus.fireEvent(EditorConfigChangeEvent.EVENT);
       filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
       display.setOptionsState(configHolder.getState());

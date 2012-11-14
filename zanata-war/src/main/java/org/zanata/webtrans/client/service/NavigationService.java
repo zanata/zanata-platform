@@ -35,8 +35,8 @@ import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
-import org.zanata.webtrans.client.events.PageSizeChangeEvent;
-import org.zanata.webtrans.client.events.PageSizeChangeEventHandler;
+import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
+import org.zanata.webtrans.client.events.EditorPageSizeChangeEventHandler;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -69,7 +69,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, PageSizeChangeEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNSELECTED = -1;
@@ -104,7 +104,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
-      eventBus.addHandler(PageSizeChangeEvent.TYPE, this);
+      eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
    }
 
    protected void init(GetTransUnitActionContext context)
@@ -313,7 +313,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    }
 
    @Override
-   public void onPageSizeChange(PageSizeChangeEvent pageSizeChangeEvent)
+   public void onPageSizeChange(EditorPageSizeChangeEvent pageSizeChangeEvent)
    {
       execute(pageSizeChangeEvent);
       navigationStateHolder.updatePageSize(pageSizeChangeEvent.getPageSize());
@@ -328,7 +328,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          DocumentSelectionEvent documentSelectionEvent = (DocumentSelectionEvent) command;
          DocumentId documentId = documentSelectionEvent.getDocumentId();
          init(new GetTransUnitActionContext(documentId)
-                  .changeCount(configHolder.getPageSize())
+                  .changeCount(configHolder.getEditorPageSize())
                   .changeFindMessage(documentSelectionEvent.getFindMessage())
                   .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
                   .changeFilterTranslated(configHolder.getState().isFilterByTranslated())

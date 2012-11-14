@@ -4,8 +4,8 @@ import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorConfigChangeHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
@@ -23,7 +23,7 @@ import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class EditorKeyShortcuts implements UserConfigChangeHandler
+public class EditorKeyShortcuts implements EditorConfigChangeHandler
 {
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final EventBus eventBus;
@@ -48,7 +48,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
       this.messages = messages;
 
       configuration = configHolder.getState();
-      eventBus.addHandler(UserConfigChangeEvent.getType(), this);
+      eventBus.addHandler(EditorConfigChangeEvent.getType(), this);
    }
 
    public void registerKeys(TargetContentsPresenter targetContentsPresenter)
@@ -168,7 +168,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
    }
 
    @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
+   public void onUserConfigChanged(EditorConfigChangeEvent event)
    {
       UserConfigHolder.ConfigurationState oldState = configuration;
       configuration = configHolder.getState();

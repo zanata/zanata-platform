@@ -20,6 +20,11 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import java.util.Map.Entry;
+
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -28,16 +33,10 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
-
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
-import static org.zanata.model.HAccountOption.OptionName;
-import static org.zanata.model.HAccountOption.OptionName.*;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -57,16 +56,11 @@ public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction,
    public SaveOptionsResult execute(SaveOptionsAction action, ExecutionContext context) throws ActionException
    {
       HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
-      UserConfigHolder.ConfigurationState config = action.getConfiguration();
 
-      this.setOrCreateOptionValue(account, DisplayButtons, Boolean.toString(config.isDisplayButtons()));
-      this.setOrCreateOptionValue(account, EnterSavesApproved, Boolean.toString(config.isEnterSavesApproved()));
-      this.setOrCreateOptionValue(account, PageSize, Integer.toString(config.getPageSize()));
-      this.setOrCreateOptionValue(account, ShowErrors, Boolean.toString(config.isShowError()));
-      this.setOrCreateOptionValue(account, TranslatedMessageFilter, Boolean.toString(config.isFilterByTranslated()));
-      this.setOrCreateOptionValue(account, NeedReviewMessageFilter, Boolean.toString(config.isFilterByNeedReview()));
-      this.setOrCreateOptionValue(account, UntranslatedMessageFilter, Boolean.toString(config.isFilterByUntranslated()));
-      this.setOrCreateOptionValue(account, Navigation, config.getNavOption().toString());
+      for (Entry<UserOptions, String> entry : action.getConfigurationMap().entrySet())
+      {
+         this.setOrCreateOptionValue(account, entry.getKey(), entry.getValue());
+      }
 
       accountDAO.makePersistent(account);
       accountDAO.flush();
@@ -82,13 +76,13 @@ public class SaveOptionsHandler extends AbstractActionHandler<SaveOptionsAction,
    {
    }
 
-   private void setOrCreateOptionValue(HAccount account, OptionName name, String newVal)
+   private void setOrCreateOptionValue(HAccount account, UserOptions name, String newVal)
    {
       HAccountOption option = account.getEditorOptions().get(name.getPersistentName());
 
       if( option == null )
       {
-         option = new HAccountOption(name, newVal);
+         option = new HAccountOption(name.getPersistentName(), newVal);
          option.setAccount(account);
          account.getEditorOptions().put(name.getPersistentName(), option);
       }

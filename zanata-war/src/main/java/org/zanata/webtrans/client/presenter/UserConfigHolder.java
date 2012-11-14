@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.presenter;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.rpc.NavOption;
+
 import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.inject.Singleton;
@@ -63,7 +64,8 @@ public class UserConfigHolder
       state = new ConfigurationState();
       state.displayButtons = true;
       state.enterSavesApproved = false;
-      state.pageSize = 25;
+      state.editorPageSize = 25;
+      state.documentListPageSize = 25;
       state.navOption = NavOption.FUZZY_UNTRANSLATED;
       state.showError =false;
       state.useCodeMirrorEditor = true;
@@ -118,15 +120,26 @@ public class UserConfigHolder
       }
    }
 
-   public int getPageSize()
+   public int getEditorPageSize()
    {
-      return state.getPageSize();
+      return state.getEditorPageSize();
    }
 
-   public void setPageSize(int pageSize)
+   public void setEditorPageSize(int editorPageSize)
    {
       state = new ConfigurationState(state);
-      state.pageSize = pageSize;
+      state.editorPageSize = editorPageSize;
+   }
+
+   public int getDocumentListPageSize()
+   {
+      return state.getDocumentListPageSize();
+   }
+
+   public void setDocumentListPageSize(int documentListPageSize)
+   {
+      state = new ConfigurationState(state);
+      state.documentListPageSize = documentListPageSize;
    }
 
    public ConfigurationState getState()
@@ -191,7 +204,8 @@ public class UserConfigHolder
    {
       private boolean enterSavesApproved;
       private boolean displayButtons;
-      private int pageSize;
+      private int editorPageSize;
+      private int documentListPageSize;
       private NavOption navOption;
       private boolean showError;
       private boolean useCodeMirrorEditor;
@@ -209,7 +223,8 @@ public class UserConfigHolder
       {
          this.enterSavesApproved = old.isEnterSavesApproved();
          this.displayButtons = old.isDisplayButtons();
-         this.pageSize = old.getPageSize();
+         this.editorPageSize = old.getEditorPageSize();
+         this.documentListPageSize = old.getDocumentListPageSize();
          this.navOption = old.getNavOption();
          this.showError = old.isShowError();
          this.useCodeMirrorEditor = old.isUseCodeMirrorEditor();
@@ -228,9 +243,14 @@ public class UserConfigHolder
          return displayButtons;
       }
 
-      public int getPageSize()
+      public int getEditorPageSize()
       {
-         return pageSize;
+         return editorPageSize;
+      }
+
+      public int getDocumentListPageSize()
+      {
+         return documentListPageSize;
       }
 
       public NavOption getNavOption()

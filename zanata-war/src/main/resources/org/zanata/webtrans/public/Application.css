@@ -732,6 +732,7 @@ td.ApprovedStateDecoration div div div
     padding:3px 0;
     border-radius:5px;
     border:1px dotted gray;
+    color:#FFFFFF;
 }
 
 /* -------------- GWT Dialog Box ----------------*/

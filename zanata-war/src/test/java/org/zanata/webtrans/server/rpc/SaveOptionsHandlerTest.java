@@ -1,13 +1,16 @@
 package org.zanata.webtrans.server.rpc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -15,12 +18,9 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
-
-import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -55,15 +55,19 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecute() throws Exception
    {
-      SaveOptionsAction action = new SaveOptionsAction();
-      action.setConfiguration(new UserConfigHolder().getState());
+      HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
+      configMap.put(UserOptions.DisplayButtons, Boolean.toString(true));
+      configMap.put(UserOptions.EditorPageSize, Integer.toString(25));
+      configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(true));
+      
+      SaveOptionsAction action = new SaveOptionsAction(configMap);
 
       SaveOptionsResult result = handler.execute(action, null);
 
       assertThat(result.isSuccess(), Matchers.equalTo(true));
       List<HAccountOption> accountOptions = getEm().createQuery("from HAccountOption").getResultList();
 
-      assertThat(accountOptions, Matchers.hasSize(8));
+      assertThat(accountOptions, Matchers.hasSize(configMap.size()));
       Map<String,HAccountOption> editorOptions = authenticatedAccount.getEditorOptions();
 
       assertThat(editorOptions.values(), Matchers.containsInAnyOrder(accountOptions.toArray()));
@@ -71,7 +75,7 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest
       handler.execute(action, null); // save again should override previous value
       accountOptions = getEm().createQuery("from HAccountOption").getResultList();
 
-      assertThat(accountOptions, Matchers.hasSize(8));
+      assertThat(accountOptions, Matchers.hasSize(configMap.size()));
       assertThat(editorOptions.values(), Matchers.containsInAnyOrder(accountOptions.toArray()));
    }
 

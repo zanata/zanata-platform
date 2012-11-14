@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
@@ -60,7 +60,7 @@ public class EditorKeyShortcutsTest
       configHolder = new UserConfigHolder();
       keyShortcuts = new EditorKeyShortcuts(keyShortcutPresenter, eventBus, configHolder, messages);
 
-      verify(eventBus).addHandler(UserConfigChangeEvent.getType(), keyShortcuts);
+      verify(eventBus).addHandler(EditorConfigChangeEvent.getType(), keyShortcuts);
    }
 
    @Test
@@ -311,7 +311,7 @@ public class EditorKeyShortcutsTest
       configHolder.setEnterSavesApproved(true);
 
       // When:
-      keyShortcuts.onUserConfigChanged(UserConfigChangeEvent.EVENT);
+      keyShortcuts.onUserConfigChanged(EditorConfigChangeEvent.EVENT);
 
       // Then:
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
@@ -331,7 +331,7 @@ public class EditorKeyShortcutsTest
       configHolder.setNavOption(NavOption.FUZZY);
 
       // When:
-      keyShortcuts.onUserConfigChanged(UserConfigChangeEvent.EVENT);
+      keyShortcuts.onUserConfigChanged(EditorConfigChangeEvent.EVENT);
 
       // Then:
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());

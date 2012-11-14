@@ -5,23 +5,23 @@ import org.zanata.webtrans.client.service.NavigationService;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class PageSizeChangeEvent extends GwtEvent<PageSizeChangeEventHandler> implements NavigationService.UpdateContextCommand
+public class EditorPageSizeChangeEvent extends GwtEvent<EditorPageSizeChangeEventHandler> implements NavigationService.UpdateContextCommand
 {
-   public static Type<PageSizeChangeEventHandler> TYPE = new Type<PageSizeChangeEventHandler>();
+   public static Type<EditorPageSizeChangeEventHandler> TYPE = new Type<EditorPageSizeChangeEventHandler>();
 
    private int pageSize;
 
-   public PageSizeChangeEvent(int pageSize)
+   public EditorPageSizeChangeEvent(int pageSize)
    {
       this.pageSize = pageSize;
    }
 
-   public Type<PageSizeChangeEventHandler> getAssociatedType()
+   public Type<EditorPageSizeChangeEventHandler> getAssociatedType()
    {
       return TYPE;
    }
 
-   protected void dispatch(PageSizeChangeEventHandler handler)
+   protected void dispatch(EditorPageSizeChangeEventHandler handler)
    {
       handler.onPageSizeChange(this);
    }

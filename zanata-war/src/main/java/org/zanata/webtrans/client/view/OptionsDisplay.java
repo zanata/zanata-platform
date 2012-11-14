@@ -16,6 +16,8 @@ public interface OptionsDisplay extends WidgetDisplay
 
    void setOptions(Widget optionWidget);
 
+   void setShowErrorChk(boolean showError);
+
    interface Listener
    {
       void onShowErrorsOptionChanged(Boolean showErrorChkValue);
@@ -25,6 +27,7 @@ public interface OptionsDisplay extends WidgetDisplay
       void loadOptions();
 
       void loadDefaultOptions();
+
    }
 
 }

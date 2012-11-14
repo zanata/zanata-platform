@@ -25,8 +25,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.StringUtils;
-
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -40,29 +38,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class HAccountOption extends ModelEntityBase
 {
-   public static enum OptionName
-   {
-      EnterSavesApproved("editor.EnterSavesApproved"),
-      DisplayButtons("editor.DisplayButtons"),
-      PageSize("editor.PageSize"),
-      ShowErrors("editor.ShowErrors"),
-      TranslatedMessageFilter("editor.TranslatedMessageFilter"),
-      NeedReviewMessageFilter("editor.NeedReviewMessageFilter"),
-      UntranslatedMessageFilter("editor.UntranslatedMessageFilter"),
-      Navigation("editor.Navigation");
-
-      private String persistentName;
-
-      OptionName(String persistentName)
-      {
-         this.persistentName = persistentName;
-      }
-
-      public String getPersistentName()
-      {
-         return persistentName;
-      }
-   }
+   private static final long serialVersionUID = 1L;
 
    private String name;
 
@@ -71,9 +47,9 @@ public class HAccountOption extends ModelEntityBase
    private HAccount account;
 
 
-   public HAccountOption(OptionName name, String value)
+   public HAccountOption(String name, String value)
    {
-      this.name = name.getPersistentName();
+      this.name = name;
       this.value = value;
    }
 
@@ -93,7 +69,7 @@ public class HAccountOption extends ModelEntityBase
    {
       return account;
    }
-
+   
    @Transient
    public Boolean getValueAsBoolean()
    {

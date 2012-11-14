@@ -30,6 +30,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.DocumentListPageSizeChangeEvent;
+import org.zanata.webtrans.client.events.DocumentListPageSizeChangeEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
@@ -54,7 +56,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, TransUnitUpdatedEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, DocumentListPageSizeChangeEventHandler, TransUnitUpdatedEventHandler
 {
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
@@ -130,9 +132,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
+      registerHandler(eventBus.addHandler(DocumentListPageSizeChangeEvent.TYPE, this));
 
       display.setListener(this);
-      display.onTwentyFiveDocClicked(null);
    }
 
    @Override
@@ -434,5 +436,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       unitCount.increment(updateInfo.getTransUnit().getStatus());
       wordCount.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
       wordCount.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());
+   }
+
+   @Override
+   public void onPageSizeChange(DocumentListPageSizeChangeEvent event)
+   {
+      display.updatePageSize(event.getPageSize());
+
    }
 }

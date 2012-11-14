@@ -25,7 +25,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -38,7 +37,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  */
 public interface DocumentListDisplay extends WidgetDisplay
 {
-   void onTwentyFiveDocClicked(ClickEvent event);
+   void updatePageSize(int pageSize);
 
    HasSelectionHandlers<DocumentInfo> getDocumentList();
 

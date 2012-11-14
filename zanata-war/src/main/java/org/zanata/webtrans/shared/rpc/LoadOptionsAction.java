@@ -20,14 +20,30 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.List;
+
+
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class LoadOptionsAction implements DispatchAction<LoadOptionsResult>
 {
-   public static final LoadOptionsAction ACTION = new LoadOptionsAction();
+   private static final long serialVersionUID = 1L;
 
-   public LoadOptionsAction()
+   private List<String> prefixes;
+
+   @SuppressWarnings("unused")
+   private LoadOptionsAction()
    {
+   }
+
+   public LoadOptionsAction(List<String> prefixes)
+   {
+      this.prefixes = prefixes;
+   }
+
+   public List<String> getPrefixes()
+   {
+      return prefixes;
    }
 }

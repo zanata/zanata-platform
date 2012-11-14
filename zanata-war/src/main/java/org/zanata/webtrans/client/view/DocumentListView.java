@@ -29,13 +29,11 @@ import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -43,7 +41,6 @@ import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
@@ -69,16 +66,10 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
    
    @UiField
-   InlineLabel twentyFiveDoc, fiftyDoc, hundredDoc, twoHundredFiftyDoc;
-   
-   @UiField
    RadioButton statsByMsg, statsByWord;
 
    @UiField(provided = true)
    DocumentListPager pager;
-
-   @UiField
-   Styles style;
 
    private DocumentListTable documentListTable;
 
@@ -86,11 +77,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    private final WebTransMessages messages;
    
    private ListDataProvider<DocumentNode> dataProvider;
-
-   interface Styles extends CssResource
-   {
-      String selectedDocCount();
-   }
 
    @Inject
    public DocumentListView(Resources resources, WebTransMessages messages)
@@ -117,11 +103,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
             listener.fireDocumentSelection(event.getSelectedItem());
          }
       });
-      
-      twentyFiveDoc.setText("25");
-      fiftyDoc.setText("50");
-      hundredDoc.setText("100");
-      twoHundredFiftyDoc.setText("250");
    }
 
    @Override
@@ -196,30 +177,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
          listener.statsOptionChange(HasStatsFilter.STATS_OPTION_WORDS);
       }
    }
-   
-   @UiHandler("twentyFiveDoc")
-   public void onTwentyFiveDocClicked(ClickEvent event)
-   {
-      onDocumentListCountChanged(twentyFiveDoc, 25);
-   }
-   
-   @UiHandler("fiftyDoc")
-   public void onFiftyDocClicked(ClickEvent event)
-   {
-      onDocumentListCountChanged(fiftyDoc, 50);
-   }
-   
-   @UiHandler("hundredDoc")
-   public void onHundredDocClicked(ClickEvent event)
-   {
-      onDocumentListCountChanged(hundredDoc, 100);
-   }
-   
-   @UiHandler("twoHundredFiftyDoc")
-   public void onTwoHundredFiftyDocClicked(ClickEvent event)
-   {
-      onDocumentListCountChanged(twoHundredFiftyDoc, 250);
-   }
 
    @Override
    public void setStatsFilter(String option)
@@ -257,19 +214,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       documentListContainer.add(documentListTable);
    }
 
-   private void onDocumentListCountChanged(InlineLabel selectedWidget, int pageSize)
-   {
-      documentListTable.setPageSize(pageSize);
-      pager.setDisplay(documentListTable);
-
-      twentyFiveDoc.removeStyleName(style.selectedDocCount());
-      fiftyDoc.removeStyleName(style.selectedDocCount());
-      hundredDoc.removeStyleName(style.selectedDocCount());
-      twoHundredFiftyDoc.removeStyleName(style.selectedDocCount());
-
-      selectedWidget.addStyleName(style.selectedDocCount());
-   }
-
    @Override
    public HasSelectionHandlers<DocumentInfo> getDocumentList()
    {
@@ -280,5 +224,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    public void setListener(Listener documentListPresenter)
    {
       this.listener = documentListPresenter;
+   }
+
+   @Override
+   public void updatePageSize(int pageSize)
+   {
+      documentListTable.setPageSize(pageSize);
+      pager.setDisplay(documentListTable);
    }
 }

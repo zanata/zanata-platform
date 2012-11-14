@@ -207,8 +207,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       untranslatedChk.setValue(state.isFilterByUntranslated());
 
       navOptionGroup.setDefaultSelected(state.getNavOption());
-      selectPageSize(state.getPageSize());
-      // showErrorChk.setValue(state.isShowError());
+      selectPageSize(state.getEditorPageSize());
       useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
    }
 

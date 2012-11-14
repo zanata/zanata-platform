@@ -102,7 +102,6 @@ public class DocumentListPresenterTest
 
       verify(mockDisplay).renderTable(isA(SingleSelectionModel.class));
       verify(mockDisplay).setStatsFilter("Words");
-      verify(mockDisplay).onTwentyFiveDocClicked(null);
       verify(mockDisplay).setListener(documentListPresenter);
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(TransUnitUpdatedEvent.getType(), documentListPresenter);

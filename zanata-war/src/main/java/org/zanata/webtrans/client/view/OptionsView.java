@@ -84,7 +84,10 @@ public class OptionsView extends Composite implements OptionsDisplay
    public void setOptions(Widget optionWidget)
    {
       optionsContainer.clear();
-      optionsContainer.add(optionWidget);
+      if (optionWidget != null)
+      {
+         optionsContainer.add(optionWidget);
+      }
    }
 
    @Override
@@ -121,5 +124,11 @@ public class OptionsView extends Composite implements OptionsDisplay
    public void onRestoreToDefaultsButtonClick( ClickEvent event )
    {
       listener.loadDefaultOptions();
+   }
+
+   @Override
+   public void setShowErrorChk(boolean showError)
+   {
+      showErrorChk.setValue(showError, true);
    }
 }

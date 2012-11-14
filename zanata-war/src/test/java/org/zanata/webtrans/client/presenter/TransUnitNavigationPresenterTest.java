@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
@@ -50,7 +50,7 @@ public class TransUnitNavigationPresenterTest
    {
       presenter.onBind();
 
-      verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
+      verify(eventBus).addHandler(EditorConfigChangeEvent.getType(), presenter);
    }
 
    @Test
@@ -58,7 +58,7 @@ public class TransUnitNavigationPresenterTest
    {
       when(userConfigHolder.getNavOption()).thenReturn(NavOption.UNTRANSLATED);
 
-      presenter.onUserConfigChanged(UserConfigChangeEvent.EVENT);
+      presenter.onUserConfigChanged(EditorConfigChangeEvent.EVENT);
 
       verify(display).setNavModeTooltip(NavOption.UNTRANSLATED);
    }

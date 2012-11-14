@@ -23,56 +23,79 @@ package org.zanata.webtrans.client.presenter;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.EditorConfigChangeEvent;
+import org.zanata.webtrans.client.events.EditorConfigChangeHandler;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 
 import com.google.inject.Inject;
 
-public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements OptionsDisplay.Listener
+public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements OptionsDisplay.Listener, EditorConfigChangeHandler
 {
    private final EditorOptionsPresenter editorOptionsPresenter;
+   private final DocumentListOptionsPresenter documentListOptionsPresenter;
+   private MainView currentOptionsView;
+   private final UserConfigHolder configHolder;
+
 
    @Inject
-   public OptionsPresenter(OptionsDisplay display, EventBus eventBus, EditorOptionsPresenter editorOptionsPresenter)
+   public OptionsPresenter(OptionsDisplay display, EventBus eventBus, EditorOptionsPresenter editorOptionsPresenter, DocumentListOptionsPresenter documentListOptionsPresenter, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.editorOptionsPresenter = editorOptionsPresenter;
+      this.documentListOptionsPresenter = documentListOptionsPresenter;
+      this.configHolder = configHolder;
       display.setListener(this);
    }
-   
+
    public void setOptionsView(MainView view)
    {
-      // optionContainer.clear();
-      // switch (view)
-      // {
-      // case Editor:
-      // optionContainer.add(editorOptionView.asWidget());
-      // break;
-      // case Search:
-      // break;
-      // case Documents:
-      // default:
-      // break;
-      // }
+      currentOptionsView = view;
+      switch (view)
+      {
+      case Editor:
+         display.setOptions(editorOptionsPresenter.getDisplay().asWidget());
+         break;
+      case Search:
+         display.setOptions(null);
+         break;
+      case Documents:
+      default:
+         display.setOptions(documentListOptionsPresenter.getDisplay().asWidget());
+         break;
+      }
 
-      display.setOptions(editorOptionsPresenter.getDisplay().asWidget());
    }
 
    @Override
    protected void onBind()
    {
       editorOptionsPresenter.onBind();
+      documentListOptionsPresenter.onBind();
    }
 
    @Override
    public void onShowErrorsOptionChanged(Boolean showErrorChkValue)
    {
-      editorOptionsPresenter.onShowErrorsOptionChanged(showErrorChkValue);
+      switch (currentOptionsView)
+      {
+      case Editor:
+         editorOptionsPresenter.onShowErrorsOptionChanged(showErrorChkValue);
+         break;
+      case Search:
+         break;
+      case Documents:
+      default:
+         documentListOptionsPresenter.onShowErrorsOptionChanged(showErrorChkValue);
+         break;
+      }
+
    }
 
    @Override
    protected void onUnbind()
    {
       editorOptionsPresenter.unbind();
+      documentListOptionsPresenter.unbind();
    }
 
    @Override
@@ -83,19 +106,57 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    @Override
    public void persistOptionChange()
    {
-      editorOptionsPresenter.persistOptionChange();
+      switch (currentOptionsView)
+      {
+      case Editor:
+         editorOptionsPresenter.persistOptionChange();
+         break;
+      case Search:
+         break;
+      case Documents:
+      default:
+         documentListOptionsPresenter.persistOptionChange();
+         break;
+      }
    }
 
    @Override
    public void loadOptions()
    {
-      editorOptionsPresenter.loadOptions();
+      switch (currentOptionsView)
+      {
+      case Editor:
+         editorOptionsPresenter.loadOptions();
+         break;
+      case Search:
+         break;
+      case Documents:
+      default:
+         documentListOptionsPresenter.loadOptions();
+         break;
+      }
    }
 
    @Override
    public void loadDefaultOptions()
    {
-      editorOptionsPresenter.loadDefaultOptions();
+      switch (currentOptionsView)
+      {
+      case Editor:
+         editorOptionsPresenter.loadDefaultOptions();
+         break;
+      case Search:
+         break;
+      case Documents:
+      default:
+         documentListOptionsPresenter.loadDefaultOptions();
+         break;
+      }
    }
 
+   @Override
+   public void onUserConfigChanged(EditorConfigChangeEvent event)
+   {
+      display.setShowErrorChk(configHolder.isShowError());
+   }
 }
