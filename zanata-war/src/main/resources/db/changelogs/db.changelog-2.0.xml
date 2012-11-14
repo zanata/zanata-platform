@@ -470,4 +470,9 @@
         <dropTable tableName="HTextFlowTargetContent" cascadeConstraints="false"/>
     </changeSet>
 
+    <changeSet id="16" author="camunoz@redhat.com">
+        <comment>Validate user account passwords.</comment>
+        <customChange class="org.zanata.liquibase.custom.ValidateAccountPasswords"/>
+    </changeSet>
+
 </databaseChangeLog>
