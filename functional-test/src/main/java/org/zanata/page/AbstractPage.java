@@ -74,7 +74,7 @@ public class AbstractPage
       if (pageContext == PageContext.jsf)
       {
          //webTran and jsp don't share same page layout
-         navMenuItems = driver.findElement(By.id("tabs-menu")).findElements(By.tagName("a"));
+         navMenuItems = driver.findElement(By.className("navBar")).findElements(By.tagName("a"));
       }
    }
 
@@ -91,6 +91,12 @@ public class AbstractPage
    public String getTitle()
    {
       return driver.getTitle();
+   }
+
+   public List<String> getBreadcrumbs()
+   {
+      List<WebElement> breadcrumbs = driver.findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_display"));
+      return WebElementUtil.elementsToText(breadcrumbs);
    }
 
    public List<String> getNavigationMenuItems()

@@ -59,8 +59,8 @@ public class CreateSampleProjectTest
 
       ProjectPage projectPage = projectWorkFlow.createNewProject(projectId, projectName);
 
-      assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: " + projectId));
-      assertThat(projectPage.getProjectName(), Matchers.equalTo("Name: plural project"));
+      assertThat(projectPage.getProjectId(), Matchers.equalTo(projectId));
+      assertThat(projectPage.getProjectName(), Matchers.equalTo(projectName));
 
       ProjectVersionPage projectVersionPage = projectWorkFlow.createNewProjectVersion(projectPage, projectVersion);
 

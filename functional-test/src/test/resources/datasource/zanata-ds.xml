@@ -7,7 +7,7 @@
         <jndi-name>${ds.jndi.name}</jndi-name>
         <connection-url>${ds.connection.url}</connection-url>
         <driver-class>${ds.driver.class}</driver-class>
-        <user-name>${ds.user.name}</user-name>
+        <user-name>${ds.username}</user-name>
         <password>${ds.password}</password>
     </local-tx-datasource>
 </datasources>
