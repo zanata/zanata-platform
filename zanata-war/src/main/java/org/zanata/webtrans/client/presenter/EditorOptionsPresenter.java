@@ -50,7 +50,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler
+public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler
 {
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final UserConfigHolder configHolder;
@@ -167,14 +167,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
          configHolder.setDisplayButtons(editorButtons);
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
-   }
-
-   @Override
-   public void onShowErrorsOptionChanged(Boolean showErrorChkValue)
-   {
-      // this config value is only used in org.zanata.webtrans.client.Application.registerUncaughtExceptionHandler
-      // therefore we don't need to broadcast the change event
-      configHolder.setShowError(showErrorChkValue);
    }
 
    @Override

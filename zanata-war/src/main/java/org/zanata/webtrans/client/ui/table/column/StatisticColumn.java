@@ -62,11 +62,11 @@ public class StatisticColumn extends Column<DocumentNode, TransUnitCountGraph> i
       {
          if (statsOption.equals(STATS_OPTION_MESSAGE))
          {
-            statsWidgets.get(id).setStats(docNode.getDocInfo().getStats(), true);
+            statsWidgets.get(id).setStats(docNode.getDocInfo().getStats(), false);
          }
          else
          {
-            statsWidgets.get(id).setStats(docNode.getDocInfo().getStats(), false);
+            statsWidgets.get(id).setStats(docNode.getDocInfo().getStats(), true);
          }
       }
       return statsWidgets.get(id);

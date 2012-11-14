@@ -73,23 +73,18 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
       documentListOptionsPresenter.onBind();
 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
+
+      onUserConfigChanged(null);
    }
 
    @Override
    public void onShowErrorsOptionChanged(Boolean showErrorChkValue)
    {
-      switch (currentOptionsView)
-      {
-      case Editor:
-         editorOptionsPresenter.onShowErrorsOptionChanged(showErrorChkValue);
-         break;
-      case Search:
-         break;
-      case Documents:
-      default:
-         documentListOptionsPresenter.onShowErrorsOptionChanged(showErrorChkValue);
-         break;
-      }
+      // this config value is only used in
+      // org.zanata.webtrans.client.Application.registerUncaughtExceptionHandler
+      // therefore we don't need to broadcast the change event
+
+      configHolder.setShowError(showErrorChkValue);
    }
 
    @Override
@@ -104,54 +99,52 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    {
    }
 
-   @Override
-   public void persistOptionChange()
+   private OptionsDisplay.CommonOptionsListener getCurrentListener()
    {
+      OptionsDisplay.CommonOptionsListener listener = null;
+            
       switch (currentOptionsView)
       {
       case Editor:
-         editorOptionsPresenter.persistOptionChange();
+         listener = editorOptionsPresenter;
          break;
       case Search:
          break;
       case Documents:
       default:
-         documentListOptionsPresenter.persistOptionChange();
+         listener = documentListOptionsPresenter;
          break;
+      }
+      return listener;
+   }
+
+   @Override
+   public void persistOptionChange()
+   {
+      OptionsDisplay.CommonOptionsListener listener = getCurrentListener();
+      if (listener != null)
+      {
+         listener.persistOptionChange();
       }
    }
 
    @Override
    public void loadOptions()
    {
-      switch (currentOptionsView)
+      OptionsDisplay.CommonOptionsListener listener = getCurrentListener();
+      if (listener != null)
       {
-      case Editor:
-         editorOptionsPresenter.loadOptions();
-         break;
-      case Search:
-         break;
-      case Documents:
-      default:
-         documentListOptionsPresenter.loadOptions();
-         break;
+         listener.loadOptions();
       }
    }
 
    @Override
    public void loadDefaultOptions()
    {
-      switch (currentOptionsView)
+      OptionsDisplay.CommonOptionsListener listener = getCurrentListener();
+      if (listener != null)
       {
-      case Editor:
-         editorOptionsPresenter.loadDefaultOptions();
-         break;
-      case Search:
-         break;
-      case Documents:
-      default:
-         documentListOptionsPresenter.loadDefaultOptions();
-         break;
+         listener.loadDefaultOptions();
       }
    }
 

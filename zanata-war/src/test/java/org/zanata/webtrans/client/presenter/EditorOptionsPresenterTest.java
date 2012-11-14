@@ -214,17 +214,6 @@ public class EditorOptionsPresenterTest
    }
 
    @Test
-   public void onShowErrorOptionChange()
-   {
-      configHolder.setShowError(false);
-
-      presenter.onShowErrorsOptionChanged(true);
-
-      assertThat(configHolder.isShowError(), Matchers.equalTo(true));
-      verifyZeroInteractions(eventBus);
-   }
-
-   @Test
    public void onLoadDefaultOptions()
    {
       when(needReviewChk.getValue()).thenReturn(false);

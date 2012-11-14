@@ -43,7 +43,7 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOptionsDisplay> implements DocumentListOptionsDisplay.Listener, OptionsDisplay.Listener, WorkspaceContextUpdateEventHandler
+public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOptionsDisplay> implements DocumentListOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler
 {
    private final UserConfigHolder configHolder;
    private final CachingDispatchAsync dispatcher;
@@ -65,6 +65,8 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    protected void onBind()
    {
       display.setListener(this);
+
+      // set options default values
       display.setOptionsState(configHolder.getState());
    }
 
@@ -88,15 +90,6 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
          configHolder.setDocumentListPageSize(pageSize);
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
       }
-   }
-
-   @Override
-   public void onShowErrorsOptionChanged(Boolean showErrorChkValue)
-   {
-      // this config value is only used in
-      // org.zanata.webtrans.client.Application.registerUncaughtExceptionHandler
-      // therefore we don't need to broadcast the change event
-      configHolder.setShowError(showErrorChkValue);
    }
 
    @Override
@@ -162,6 +155,8 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded user options"));
          }
       });
+
+
    }
 
    @Override

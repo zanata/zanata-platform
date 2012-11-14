@@ -18,10 +18,13 @@ public interface OptionsDisplay extends WidgetDisplay
 
    void setShowErrorChk(boolean showError);
 
-   interface Listener
+   interface Listener extends CommonOptionsListener
    {
       void onShowErrorsOptionChanged(Boolean showErrorChkValue);
+   }
 
+   interface CommonOptionsListener
+   {
       void persistOptionChange();
 
       void loadOptions();
