@@ -1,7 +1,10 @@
 package org.zanata.webtrans.server.rpc;
 
+import java.util.HashMap;
+
 import org.hamcrest.Matchers;
 import org.jboss.seam.web.ServletContexts;
+import org.jboss.security.AnybodyPrincipal;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -10,8 +13,11 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.EntityStatus;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.HAccount;
+import org.zanata.model.HAccountOption;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -60,12 +66,16 @@ public class ActivateWorkspaceHandlerTest
    @Mock
    private GravatarService gravatarServiceImpl;
    @Mock
+   private AccountDAO accountDAO;
+   @Mock
    private ProjectDAO projectDAO;
    @Mock
    private ProjectIterationDAO projectIterationDAO;
    @Mock
    private LocaleService localeServiceImpl;
    private Person person;
+   @Mock
+   private HAccount hAccount;
    @Captor
    private ArgumentCaptor<EnterWorkspace> enterWorkspaceEventCaptor;
    @Captor
@@ -79,6 +89,7 @@ public class ActivateWorkspaceHandlerTest
       ActivateWorkspaceHandler activateWorkspaceHandler = SeamAutowire.instance()
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
+            .use("accountDAO", accountDAO)
             .use("projectDAO", projectDAO)
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
@@ -106,6 +117,8 @@ public class ActivateWorkspaceHandlerTest
       when(projectIterationDAO.getBySlug(projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(hProjectIteration);
       when(identity.hasPermission("modify-translation", hProject, hLocale)).thenReturn(true);
       when(identity.hasPermission("glossary-update", "")).thenReturn(true);
+      when(accountDAO.findById(Mockito.anyLong(), Mockito.anyBoolean())).thenReturn(hAccount);
+      when(hAccount.getEditorOptions()).thenReturn(new HashMap<String, HAccountOption>());
 
       ActivateWorkspaceResult result = handler.execute(action, null);
 
