@@ -88,16 +88,16 @@ public class ValidateAccountPasswords implements CustomTaskChange
       {
          try
          {
-            if( rset != null && !rset.isClosed() )
+            if( rset != null)
             {
                rset.close();
             }
-            if( stmt != null && !stmt.isClosed() )
+            if( stmt != null)
             {
                stmt.close();
             }
          }
-         catch (SQLException e)
+         catch (Exception e)
          {
             // Ignore this one, already closed probably
          }

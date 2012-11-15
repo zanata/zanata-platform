@@ -297,10 +297,12 @@ public class SeamAutowire
          final CtClass booleanCls = pool.get("boolean");
          final CtClass objectCls = pool.get("java.lang.Object");
          final CtClass scopeTypeCls = pool.get("org.jboss.seam.ScopeType");
+         final CtClass classCls = pool.get("java.lang.Class");
 
          // Replace Component's method bodies with the ones in AutowireComponent
          replaceGetInstance(pool, componentCls, stringCls, booleanCls, booleanCls);
          replaceGetInstance(pool, componentCls, stringCls, scopeTypeCls, booleanCls, booleanCls);
+         replaceGetInstance(pool, componentCls, classCls);
          try
          {
             // Seam 2.2.2
@@ -326,11 +328,11 @@ public class SeamAutowire
    }
 
    /**
-    * Replace's Component.getInstance(params) method body with that of
+    * Replaces Component.getInstance(params) method body with that of
     * AutowireComponent.getInstance(params).
-    * @param pool
-    * @param componentCls
-    * @param params
+    * @param pool Class pool to get class instances.
+    * @param componentCls Class that represents the jboss Component class.
+    * @param params Parameters for the getComponent method that will be replaced
     * @throws NotFoundException
     * @throws CannotCompileException
     */

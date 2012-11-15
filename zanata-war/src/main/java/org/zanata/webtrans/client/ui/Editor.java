@@ -15,6 +15,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -55,14 +56,23 @@ public class Editor extends Composite implements ToggleEditor
    @UiField(provided = true)
    TextAreaWrapper textArea;
 
-   public Editor(String displayString, int index, final TargetContentsDisplay.Listener listener, TransUnitId id)
+   public Editor(String displayString, final int index, final TargetContentsDisplay.Listener listener, final TransUnitId id)
    {
       this.listener = listener;
       this.index = index;
       this.id = id;
       if (listener.isUsingCodeMirror())
       {
-         textArea = new CodeMirrorEditor();
+         Command onCodeMirrorFocusCallback = new Command()
+         {
+
+            @Override
+            public void execute()
+            {
+               listener.onEditorClicked(id, index);
+            }
+         };
+         textArea = new CodeMirrorEditor(onCodeMirrorFocusCallback);
       }
       else
       {
@@ -95,19 +105,13 @@ public class Editor extends Composite implements ToggleEditor
       listener.setEditingState(id, UNSAVED);
    }
 
-   @UiHandler("rootContainer")
-   public void onEditorClick(ClickEvent event)
-   {
-      listener.onEditorClicked(id, index);
-      textArea.setEditing(true);
-      fireValidationEvent();
-   }
-
    @UiHandler("textArea")
    public void onTextAreaFocus(FocusEvent event)
    {
+      listener.onEditorClicked(id, index);
       textArea.setFocus(true);
       textArea.setEditing(true);
+      fireValidationEvent();
    }
 
    @UiHandler("textArea")

@@ -48,6 +48,11 @@ public class AutowireComponent
       return SeamAutowire.instance().getComponent(name);
    }
 
+   private static Object getInstance(Class<?> clazz)
+   {
+      return SeamAutowire.instance().autowire(clazz);
+   }
+
    // Seam 2.2.0
    public static Object getInstance(String name, boolean create, boolean allowAutoCreation, Object result)
    {

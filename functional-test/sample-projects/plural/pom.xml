@@ -9,7 +9,6 @@
          <plugin>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-maven-plugin</artifactId>
-            <version>${zanata.client.version}</version>
             <configuration>
                <srcDir>pot</srcDir>
                <transDir>.</transDir>
@@ -17,51 +16,4 @@
          </plugin>
       </plugins>
    </build>
-   <!-- NB: this is not needed if you have the jboss 'public' repository group enabled -->
-   <pluginRepositories>
-      <pluginRepository>
-         <id>zanata-cloudbees-release</id>
-         <name>zanata-cloudbees-release</name>
-         <url>http://repository-zanata.forge.cloudbees.com/release/</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </pluginRepository>
-      <pluginRepository>
-         <id>zanata-cloudbees-snapshot</id>
-         <name>zanata-cloudbees-snapshot</name>
-         <url>http://repository-zanata.forge.cloudbees.com/snapshot/</url>
-         <releases>
-            <enabled>false</enabled>
-         </releases>
-         <snapshots>
-            <enabled>true</enabled>
-         </snapshots>
-      </pluginRepository>
-      <pluginRepository>
-         <id>jboss-releases</id>
-         <name>jboss-releases</name>
-         <url>http://repository.jboss.org/nexus/content/repositories/releases/</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </pluginRepository>
-      <pluginRepository>
-         <id>jboss-thirdparty-releases</id>
-         <name>jboss-thirdparty-releases</name>
-         <url>http://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </pluginRepository>
-   </pluginRepositories>
 </project>

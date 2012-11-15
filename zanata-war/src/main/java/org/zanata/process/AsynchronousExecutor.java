@@ -73,6 +73,9 @@ public class AsynchronousExecutor
 
    private void outjectProcessHandle(ProcessHandle handle)
    {
-      Contexts.getEventContext().set("asynchronousProcessHandle", handle);
+      if (Contexts.isEventContextActive())
+      {
+         Contexts.getEventContext().set("asynchronousProcessHandle", handle);
+      }
    }
 }

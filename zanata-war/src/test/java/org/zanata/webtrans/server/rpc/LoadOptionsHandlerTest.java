@@ -35,6 +35,8 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+
+      afterTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.DELETE_ALL));
    }
 
    @BeforeMethod
