@@ -27,7 +27,7 @@ import org.zanata.page.AbstractPage;
 
 public class AdministrationPage extends AbstractPage
 {
-   @FindBy(id = "Admin_Manage_languages_a_home")
+   @FindBy(id = "Admin_Manage_languages_home")
    private WebElement manageLanguagesLink;
 
    public AdministrationPage(WebDriver driver)

@@ -46,7 +46,6 @@ public class ProjectPage extends AbstractPage
    public static final String ACTIVE_VERSIONS_TABLE_ID = "main_content:activeIterations";
    @FindBy(id = "main_content")
    private WebElement mainContent;
-   private final List<WebElement> h1;
 
    @FindBy(linkText = "Create Version")
    private WebElement createVersionLink;
@@ -54,19 +53,17 @@ public class ProjectPage extends AbstractPage
    public ProjectPage(final WebDriver driver)
    {
       super(driver);
-      //TODO this is ugly and may change in the future
-      h1 = mainContent.findElements(By.tagName("h1"));
-      Preconditions.checkState(h1.size() >= 2, "should have at least 2 <h1> under main content");
    }
 
    public String getProjectId()
    {
-      return h1.get(0).getText();
+      List<String> breadcrumbs = getBreadcrumbs();
+      return breadcrumbs.get(breadcrumbs.size() - 1);
    }
 
    public String getProjectName()
    {
-      return h1.get(1).getText();
+      return getTitle().replaceAll("Zanata:", "");
    }
 
    public CreateVersionPage clickCreateVersionLink()

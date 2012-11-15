@@ -119,7 +119,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       {
          return false;
       }
-      Log.info(transUnit.getId() + " old contents: " + transUnit.getTargets() + " state: " + transUnit.getStatus());
+      Log.info("id:" + transUnit.getId() + " old contents: " + transUnit.getTargets() + " state: " + transUnit.getStatus());
       return Objects.equal(transUnit.getStatus(), event.getAdjustedStatus()) && Objects.equal(transUnit.getTargets(), event.getTargets());
    }
 

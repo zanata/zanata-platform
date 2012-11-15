@@ -33,7 +33,7 @@ public class VersionGroupsPage extends AbstractPage
          return Collections.emptyList();
       }
 
-      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.tagName("table"));
+      List<TableRow> tableRows = WebElementUtil.getTableRows(mainContentDiv.findElement(By.xpath(".//table")));
       return WebElementUtil.getColumnContents(tableRows, GROUP_NAME_COLUMN);
    }
 

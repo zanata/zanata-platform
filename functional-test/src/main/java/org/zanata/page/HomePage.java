@@ -42,8 +42,8 @@ public class HomePage extends AbstractPage
    @FindBy(id = "version-groups")
    private WebElement groupsLink;
 
-   @FindBy(id = "header_top_right")
-   private WebElement headerTopRightDiv;
+   @FindBy(id = "userCol")
+   private WebElement userColumn;
 
    public HomePage(final WebDriver driver)
    {
@@ -52,26 +52,22 @@ public class HomePage extends AbstractPage
 
    public SignInPage clickSignInLink()
    {
-      LOGGER.info("header text: {}", headerTopRightDiv.getText());
-      List<WebElement> links = headerTopRightDiv.findElements(By.tagName("a"));
-      WebElement firstLink = links.get(0);
-      if (firstLink.getText().equalsIgnoreCase("Sign In"))
-      {
-         firstLink.click();
-      }
+      LOGGER.info("header text: {}", userColumn.getText());
+      WebElement signInLink = userColumn.findElement(By.id("Sign_in"));
+      signInLink.click();
       // else already signed in, no op
       return new SignInPage(getDriver());
    }
 
    public boolean hasLoggedIn()
    {
-      LOGGER.info("header text: {}", headerTopRightDiv.getText());
-      return headerTopRightDiv.getText().contains("Sign Out");
+      List<WebElement> signOutLink = getDriver().findElements(By.id("Sign_out"));
+      return signOutLink.size() > 0;
    }
 
    public String loggedInAs()
    {
-      String[] parts = headerTopRightDiv.getText().split("\\s");
+      String[] parts = userColumn.getText().split("\\s");
       return parts[0];
    }
 

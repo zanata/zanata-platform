@@ -20,13 +20,21 @@
  */
 package org.zanata.page;
 
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.common.base.Predicate;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SignInPage extends AbstractPage
 {
    private static final Logger LOGGER = LoggerFactory.getLogger(SignInPage.class);
@@ -51,6 +59,23 @@ public class SignInPage extends AbstractPage
       usernameField.sendKeys(username);
       passwordField.sendKeys(password);
       signInButton.click();
+      try
+      {
+         waitForSeconds(getDriver(), 3).until(new Predicate<WebDriver>()
+         {
+            @Override
+            public boolean apply(WebDriver driver)
+            {
+               List<WebElement> signOutLink = driver.findElements(By.id("Sign_out"));
+               return signOutLink.size() == 1;
+            }
+         });
+      }
+      catch (TimeoutException e)
+      {
+         log.error("timeout on login. If you are running tests manually with cargo.wait, you probably forget to create the user admin/admin. See ManualRunHelper.");
+         throw e;
+      }
       return PageFactory.initElements(getDriver(), pageClass);
    }
 }
