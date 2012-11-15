@@ -90,7 +90,11 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithNoOptionsInDatabase() throws Exception
    {
-      // given: no options in database
+      //clear data result from testExecuteWithOptionsInDatabase()
+      getEm().createQuery("Delete from HAccountOption").executeUpdate();
+      
+      
+   // given: no options in database
       List<HAccountOption> options = getEm().createQuery("from HAccountOption").getResultList();
       assertThat(options, Matchers.<HAccountOption>empty());
 

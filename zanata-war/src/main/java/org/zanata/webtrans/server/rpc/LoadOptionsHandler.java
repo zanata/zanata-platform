@@ -20,7 +20,9 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -62,65 +64,66 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
       UserConfigHolder configHolder = new UserConfigHolder();
       HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
       Map<String,HAccountOption> options = account.getEditorOptions();
+      HashMap<String, HAccountOption> filteredOptions = new HashMap<String, HAccountOption>();
 
       if (action.getPrefixes() != null && !action.getPrefixes().isEmpty())
       {
-         for (String name : options.keySet())
+         for (Entry<String, HAccountOption> entry : options.entrySet())
          {
             for (String prefix : action.getPrefixes())
             {
-               if (name.startsWith(prefix))
+               if (entry.getKey().startsWith(prefix))
                {
                   // filter config according to prefix
-                  // editorOptions.remove(name);
+                  filteredOptions.put(entry.getKey(), entry.getValue());
                }
             }
          }
       }
 
-      if (options.containsKey(UserOptions.DisplayButtons.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.DisplayButtons.getPersistentName()))
       {
-         configHolder.setDisplayButtons(options.get(UserOptions.DisplayButtons.getPersistentName()).getValueAsBoolean());
+         configHolder.setDisplayButtons(filteredOptions.get(UserOptions.DisplayButtons.getPersistentName()).getValueAsBoolean());
       }
 
-      if (options.containsKey(UserOptions.EnterSavesApproved.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.EnterSavesApproved.getPersistentName()))
       {
-         configHolder.setEnterSavesApproved(options.get(UserOptions.EnterSavesApproved.getPersistentName()).getValueAsBoolean());
+         configHolder.setEnterSavesApproved(filteredOptions.get(UserOptions.EnterSavesApproved.getPersistentName()).getValueAsBoolean());
       }
 
-      if (options.containsKey(UserOptions.Navigation.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.Navigation.getPersistentName()))
       {
-         configHolder.setNavOption(NavOption.valueOf(options.get(UserOptions.Navigation.getPersistentName()).getValue()));
+         configHolder.setNavOption(NavOption.valueOf(filteredOptions.get(UserOptions.Navigation.getPersistentName()).getValue()));
       }
 
-      if (options.containsKey(UserOptions.EditorPageSize.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.EditorPageSize.getPersistentName()))
       {
-         configHolder.setEditorPageSize(options.get(UserOptions.EditorPageSize.getPersistentName()).getValueAsInt());
+         configHolder.setEditorPageSize(filteredOptions.get(UserOptions.EditorPageSize.getPersistentName()).getValueAsInt());
       }
 
-      if (options.containsKey(UserOptions.ShowErrors.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.ShowErrors.getPersistentName()))
       {
-         configHolder.setShowError(options.get(UserOptions.ShowErrors.getPersistentName()).getValueAsBoolean());
+         configHolder.setShowError(filteredOptions.get(UserOptions.ShowErrors.getPersistentName()).getValueAsBoolean());
       }
 
-      if (options.containsKey(UserOptions.TranslatedMessageFilter.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.TranslatedMessageFilter.getPersistentName()))
       {
-         configHolder.setFilterByTranslated(options.get(UserOptions.TranslatedMessageFilter.getPersistentName()).getValueAsBoolean());
+         configHolder.setFilterByTranslated(filteredOptions.get(UserOptions.TranslatedMessageFilter.getPersistentName()).getValueAsBoolean());
       }
 
-      if (options.containsKey(UserOptions.NeedReviewMessageFilter.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.NeedReviewMessageFilter.getPersistentName()))
       {
-         configHolder.setFilterByNeedReview(options.get(UserOptions.NeedReviewMessageFilter.getPersistentName()).getValueAsBoolean());
+         configHolder.setFilterByNeedReview(filteredOptions.get(UserOptions.NeedReviewMessageFilter.getPersistentName()).getValueAsBoolean());
       }
 
-      if (options.containsKey(UserOptions.UntranslatedMessageFilter.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.UntranslatedMessageFilter.getPersistentName()))
       {
-         configHolder.setFilterByUntranslated(options.get(UserOptions.UntranslatedMessageFilter.getPersistentName()).getValueAsBoolean());
+         configHolder.setFilterByUntranslated(filteredOptions.get(UserOptions.UntranslatedMessageFilter.getPersistentName()).getValueAsBoolean());
       }
 
-      if (options.containsKey(UserOptions.DocumentListPageSize.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.DocumentListPageSize.getPersistentName()))
       {
-         configHolder.setDocumentListPageSize(options.get(UserOptions.DocumentListPageSize.getPersistentName()).getValueAsInt());
+         configHolder.setDocumentListPageSize(filteredOptions.get(UserOptions.DocumentListPageSize.getPersistentName()).getValueAsInt());
       }
 
       LoadOptionsResult result = new LoadOptionsResult();

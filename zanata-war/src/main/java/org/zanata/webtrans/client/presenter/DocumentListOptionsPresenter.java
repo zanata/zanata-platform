@@ -64,10 +64,18 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    @Override
    protected void onBind()
    {
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       display.setListener(this);
+      
+      if(userWorkspaceContext.hasReadOnlyAccess())
+      {
+         setReadOnly(true);
+      }
 
       // set options default values
       display.setOptionsState(configHolder.getState());
+      
+     
    }
 
    @Override
@@ -79,7 +87,10 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
 
    private void setReadOnly(boolean readOnly)
    {
-      loadDefaultOptions();
+      if(readOnly)
+      {
+         loadDefaultOptions();
+      }
    }
 
    @Override
@@ -88,6 +99,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
       if (configHolder.getDocumentListPageSize() != pageSize)
       {
          configHolder.setDocumentListPageSize(pageSize);
+         System.out.println("==================" + configHolder.getDocumentListPageSize());
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
       }
    }
