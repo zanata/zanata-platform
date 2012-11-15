@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This component executes {@link RunnableProcess} objects.
- * This class should be used instead of {@link BackgroundProcess}
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */

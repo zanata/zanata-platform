@@ -31,6 +31,7 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.ProcessManagerServiceImpl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -64,6 +65,7 @@ public class CopyTransRestTest extends ZanataRestTest
             .use("session", getSession())
             .use("identity", mockIdentity)
             .useImpl(CopyTransServiceImpl.class)
+            .useImpl(ProcessManagerServiceImpl.class)
             .useImpl(LocaleServiceImpl.class);
 
       CopyTransResource copyTransResource = seam.autowire(CopyTransResourceService.class);
