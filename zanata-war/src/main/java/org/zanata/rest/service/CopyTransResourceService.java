@@ -58,8 +58,8 @@ public class CopyTransResourceService implements CopyTransResource
     * @param docId Document Id to copy translations into.
     * @return The following response status codes will be returned from this
     *         operation:<br>
-    *         NO CONTENT(204) - Translation copy was started for the given document.
-    *         locale. <br>
+    *         OK(200) - Translation copy was started for the given document. The status of the
+    *         process is also returned in the response contents.<br>
     *         UNAUTHORIZED(401) - If the user does not have the proper
     *         permissions to perform this operation.<br>
     *         INTERNAL SERVER ERROR(500) - If there is an unexpected
@@ -67,7 +67,7 @@ public class CopyTransResourceService implements CopyTransResource
     *         not start in this case.
     */
    @Override
-   public void startCopyTrans(@PathParam("projectSlug") String projectSlug,
+   public CopyTransStatus startCopyTrans(@PathParam("projectSlug") String projectSlug,
                               @PathParam("iterationSlug") String iterationSlug,
                               @PathParam("docId") String docId)
    {
@@ -77,7 +77,10 @@ public class CopyTransResourceService implements CopyTransResource
          throw new NoSuchEntityException("Could not find document: " + projectSlug + "/" + iterationSlug + "/" + docId);
       }
 
+      // NB: Permission check happens in the Copy Trans service itself.
+
       copyTransManager.startCopyTrans(document, null); // TODO allow options from the Rest endpoint
+      return this.getCopyTransStatus(projectSlug, iterationSlug, docId);
    }
 
    /**
