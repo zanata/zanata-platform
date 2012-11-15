@@ -285,8 +285,7 @@ public class EditorOptionsPresenterTest
       configHolder.setNavOption(NavOption.FUZZY);
       configHolder.setEditorPageSize(10);
 
-      LoadOptionsResult result = new LoadOptionsResult();
-      result.setConfiguration( configHolder.getState() );
+      LoadOptionsResult result = new LoadOptionsResult(configHolder.getState());
 
       presenter.loadOptions();
 

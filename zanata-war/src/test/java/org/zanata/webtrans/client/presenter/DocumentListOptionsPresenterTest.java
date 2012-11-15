@@ -166,8 +166,7 @@ public class DocumentListOptionsPresenterTest
       configHolder.setDocumentListPageSize(100);
       configHolder.setShowError(true);
 
-      LoadOptionsResult result = new LoadOptionsResult();
-      result.setConfiguration( configHolder.getState() );
+      LoadOptionsResult result = new LoadOptionsResult(configHolder.getState());
 
       presenter.loadOptions();
 

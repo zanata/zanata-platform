@@ -29,13 +29,19 @@ public class LoadOptionsResult implements DispatchResult
 {
    private UserConfigHolder.ConfigurationState configuration;
 
+   public LoadOptionsResult(UserConfigHolder.ConfigurationState state)
+   {
+      configuration = state;
+   }
+
+   @SuppressWarnings("unused")
+   private LoadOptionsResult()
+   {
+   }
+
    public UserConfigHolder.ConfigurationState getConfiguration()
    {
       return configuration;
    }
 
-   public void setConfiguration(UserConfigHolder.ConfigurationState configuration)
-   {
-      this.configuration = configuration;
-   }
 }

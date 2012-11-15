@@ -129,9 +129,7 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setDocumentListPageSize(filteredOptions.get(UserOptions.DocumentListPageSize.getPersistentName()).getValueAsInt());
       }
 
-      LoadOptionsResult result = new LoadOptionsResult();
-      result.setConfiguration(configHolder.getState());
-      return result;
+      return new LoadOptionsResult(configHolder.getState());
    }
 
    @Override
