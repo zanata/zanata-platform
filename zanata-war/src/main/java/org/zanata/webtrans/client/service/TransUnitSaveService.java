@@ -146,7 +146,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       public void onFailure(Throwable e)
       {
          Log.error("UpdateTransUnit failure ", e);
-         saveFailure("id " + id);
+         saveFailure();
       }
 
       @Override
@@ -172,7 +172,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          }
          else
          {
-            saveFailure("id " + id);
+            saveFailure();
          }
          if (queue.hasPending())
          {
@@ -180,11 +180,11 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
          }
       }
 
-      private void saveFailure(String message)
+      private void saveFailure()
       {
          queue.removeAllPending(event.getTransUnitId());
          targetContentsPresenter.setEditingState(event.getTransUnitId(), TargetContentsDisplay.EditingState.UNSAVED);
-         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message), goToRowLink));
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed("id " + id), goToRowLink));
       }
    }
 }
