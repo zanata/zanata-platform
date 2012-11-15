@@ -17,6 +17,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -31,10 +32,12 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
    private JavaScriptObject codeMirror;
    private boolean valueChangeHandlerInitialized;
    private boolean editing;
+   private final Command onFocusCallback;
 
 
-   public CodeMirrorEditor()
+   public CodeMirrorEditor(Command onFocusCallback)
    {
+      this.onFocusCallback = onFocusCallback;
       initWidget(ourUiBinder.createAndBindUi(this));
    }
 
@@ -97,6 +100,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
 //      NativeEvent focusEvent = Document.get().createFocusEvent();
 //      FocusEvent.fireNativeEvent(focusEvent, this, this.getElement());
       editing = true;
+      // this is to ensure row selection (on right click)
+      onFocusCallback.execute();
    }
 
    // callback function for the code mirror instance. Gets called when code mirror editor is on blur.
