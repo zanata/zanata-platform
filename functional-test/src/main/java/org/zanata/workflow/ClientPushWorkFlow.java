@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.util.Constants;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -61,7 +62,8 @@ public class ClientPushWorkFlow
       try
       {
          List<String> command = zanataMavenPushCommand(extraPushOptions);
-         log.info("execute command: {}", command);
+         Joiner joiner = Joiner.on(" ");
+         log.info("execute command: \n{}\n", joiner.join(command));
 
          process = invokeMaven(projectDir, command);
          process.waitFor();
@@ -106,7 +108,7 @@ public class ClientPushWorkFlow
       // mvn and java home
       log.info("M2: {}", env.get("M2"));
       log.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
-      log.debug("env: {}", env);
+//      log.debug("env: {}", env);
       processBuilder.directory(projectDir);
       return processBuilder.start();
    }
