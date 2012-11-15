@@ -36,7 +36,7 @@ public interface CopyTransResource
    @POST
    @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
    // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}
-   public void startCopyTrans( @PathParam("projectSlug") String projectSlug,
+   public CopyTransStatus startCopyTrans( @PathParam("projectSlug") String projectSlug,
                                @PathParam("iterationSlug") String iterationSlug,
                                @PathParam("docId") String docId );
 
