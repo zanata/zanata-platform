@@ -4,6 +4,7 @@
     <HAccount/>
     <HAccountActivationKey/>
     <HAccountMembership/>
+    <HAccountOption/>
     <HAccountResetPasswordKey/>
     <HAccountRole/>
     <HAccountRoleGroup/>
