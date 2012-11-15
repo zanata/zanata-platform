@@ -42,9 +42,9 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("webtrans.gwt.LoadOptionsHandler")
 @Scope(ScopeType.STATELESS)
@@ -57,27 +57,30 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
    @In
    private AccountDAO accountDAO;
 
-
    @Override
    public LoadOptionsResult execute(LoadOptionsAction action, ExecutionContext context) throws ActionException
    {
       UserConfigHolder configHolder = new UserConfigHolder();
       HAccount account = accountDAO.findById(authenticatedAccount.getId(), true);
-      Map<String,HAccountOption> options = account.getEditorOptions();
+      Map<String, HAccountOption> options = account.getEditorOptions();
       HashMap<String, HAccountOption> filteredOptions = new HashMap<String, HAccountOption>();
 
-      if (action.getPrefixes() != null && !action.getPrefixes().isEmpty())
+      for (Entry<String, HAccountOption> entry : options.entrySet())
       {
-         for (Entry<String, HAccountOption> entry : options.entrySet())
+         // filter config according to prefix
+         if (action.getPrefixes() != null && !action.getPrefixes().isEmpty())
          {
             for (String prefix : action.getPrefixes())
             {
                if (entry.getKey().startsWith(prefix))
                {
-                  // filter config according to prefix
                   filteredOptions.put(entry.getKey(), entry.getValue());
                }
             }
+         }
+         else
+         {
+            filteredOptions.put(entry.getKey(), entry.getValue());
          }
       }
 
@@ -127,7 +130,7 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
       }
 
       LoadOptionsResult result = new LoadOptionsResult();
-      result.setConfiguration( configHolder.getState() );
+      result.setConfiguration(configHolder.getState());
       return result;
    }
 
