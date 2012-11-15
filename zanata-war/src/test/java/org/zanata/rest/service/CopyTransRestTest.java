@@ -21,6 +21,8 @@
 package org.zanata.rest.service;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.resteasy.client.ClientResponseFailure;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Credentials;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -34,10 +36,14 @@ import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.service.impl.ProcessManagerServiceImpl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -103,7 +109,7 @@ public class CopyTransRestTest extends ZanataRestTest
 
       CopyTransStatus status = copyTransResource.getCopyTransStatus("sample-project", "1.0", "/my/path/document.txt");
       assertThat(status, notNullValue());
-      verify(mockIdentity).checkPermission(eq("copy-trans"), anyVararg());
+      verify(mockIdentity, atLeast(1)).checkPermission(eq("copy-trans"), anyVararg());
    }
 
    @Test
@@ -111,10 +117,49 @@ public class CopyTransRestTest extends ZanataRestTest
    {
       CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
 
-      // NB: This should throw a ClientResponseException (404), but because of
-      // https://issues.jboss.org/browse/RESTEASY-530
-      // it just fails silently. Upgrading to resteasy 2.2.3 solves the issue.
-      copyTransResource.startCopyTrans("sample-project", "1.0", "/an/inexisting/document.txt");
+      try
+      {
+         copyTransResource.startCopyTrans("sample-project", "1.0", "/an/inexisting/document.txt");
+         assertThat("startCopyTrans should have returned 404 in the form of an exception.", false);
+      }
+      catch (ClientResponseFailure failure)
+      {
+         assertThat(failure.getResponse().getStatus(), is(404));
+      }
+   }
+
+   @Test
+   public void unauthorizedStartCopyTrans()
+   {
+      CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
+      doThrow(new AuthorizationException("Expected Exception")).when(mockIdentity).checkPermission(eq("copy-trans"), anyVararg());
+
+      try
+      {
+         copyTransResource.startCopyTrans("sample-project", "1.0", "/my/path/document.txt");
+         assertThat("startCopyTrans should have returned 401 in the form of an exception.", false);
+      }
+      catch (ClientResponseFailure failure)
+      {
+         assertThat(failure.getResponse().getStatus(), is(401));
+      }
+   }
+
+   @Test
+   public void unauthorizedCopyTransStatus()
+   {
+      CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
+      doThrow(new AuthorizationException("Expected Exception")).when(mockIdentity).checkPermission(eq("copy-trans"), anyVararg());
+
+      try
+      {
+         copyTransResource.getCopyTransStatus("sample-project", "1.0", "/my/path/document.txt");
+         assertThat("getCopyTransStatus should have returned 401 in the form of an exception.", false);
+      }
+      catch (ClientResponseFailure failure)
+      {
+         assertThat(failure.getResponse().getStatus(), is(401));
+      }
    }
    
 }
