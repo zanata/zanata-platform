@@ -22,7 +22,7 @@
         <cargo.host>localhost</cargo.host>
         <cargo.container>jboss51x</cargo.container>
         <cargo.servlet.port>9898</cargo.servlet.port>
-        <cargo.installation>http://downloads.sourceforge.net/jboss/jboss-5.1.0.GA.zip?big_mirror=1</cargo.installation>
+        <cargo.installation>http://aarnet.dl.sourceforge.net/project/jboss/JBoss/JBoss-5.1.0.GA/jboss-5.1.0.GA-jdk6.zip</cargo.installation>
         <cargo.home>${java.io.tmpdir}/cargo/installs/jboss-ewp-5.1.2/jboss-ewp-5.1/jboss-as-web</cargo.home>
         <context.path>zanata</context.path>
 
