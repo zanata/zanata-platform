@@ -146,7 +146,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       public void onFailure(Throwable e)
       {
          Log.error("UpdateTransUnit failure ", e);
-         saveFailure(e.getMessage());
+         saveFailure("id " + id);
       }
 
       @Override
