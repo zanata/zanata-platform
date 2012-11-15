@@ -30,16 +30,19 @@
         <jdbc.groupId>com.h2database</jdbc.groupId>
         <jdbc.artifactId>h2</jdbc.artifactId>
         <jdbc.version>1.2.144</jdbc.version>
-        <ds.jndi.name>zanataTestDatasource</ds.jndi.name>
+        <ds.jndi.name>zanataDatasource</ds.jndi.name>
         <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
         <ds.driver.class>org.h2.Driver</ds.driver.class>
-        <ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1</ds.connection.url>
-        <ds.user.name>sa</ds.user.name>
+        <!--<ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1;</ds.connection.url>-->
+        <!--<ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '${project.build.testOutputDirectory}/init.sql'</ds.connection.url>-->
+        <!--<ds.connection.url>jdbc:h2:tcp://localhost${project.build.directory}/h2/zanata;AUTO_RECONNECT=TRUE</ds.connection.url>-->
+        <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE</ds.connection.url>
+        <ds.username>sa</ds.username>
         <ds.password />
 
         <!--target zanata instance-->
         <zanata.target.version>${project.parent.version}</zanata.target.version>
-        <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}-autotest.war</zanata.target.war>
+        <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war</zanata.target.war>
         <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}</zanata.instance.url>
         <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
@@ -135,6 +138,7 @@
             <groupId>${jdbc.groupId}</groupId>
             <artifactId>${jdbc.artifactId}</artifactId>
             <version>1.2.144</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -194,10 +198,20 @@
                                 <!--<type>existing</type>-->
                                 <type>standalone</type>
                                 <home>${cargo.home}/server/default</home>
+                                <configfiles>
+                                    <configfile>
+                                        <file>${project.basedir}/src/test/resources/conf/zanata.properties</file>
+                                        <todir>conf</todir>
+                                    </configfile>
+                                    <configfile>
+                                        <file>${project.basedir}/src/test/resources/conf/login-config.xml</file>
+                                        <todir>conf</todir>
+                                    </configfile>
+                                </configfiles>
                                 <deployables>
                                     <deployable>
                                         <type>file</type>
-                                        <location>${project.build.testOutputDirectory}/datasource</location>
+                                        <location>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</location>
                                     </deployable>
                                     <deployable>
                                         <!--<groupId>${project.groupId}</groupId>-->
@@ -217,9 +231,8 @@
                                     <cargo.servlet.port>9898</cargo.servlet.port>
 
                                     <cargo.jvmargs>
-                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled
                                         <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                                        <!-- # -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788 -Xnoagent -Djava.compiler=NONE-->
+                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE
                                     </cargo.jvmargs>
                                 </properties>
                             </configuration>
@@ -238,6 +251,46 @@
                                 <goals>
                                     <goal>stop</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <!-- specify the dependent JDBC driver here -->
+                            <dependency>
+                                <groupId>${jdbc.groupId}</groupId>
+                                <artifactId>${jdbc.artifactId}</artifactId>
+                                <version>${jdbc.version}</version>
+                            </dependency>
+                        </dependencies>
+
+                        <!-- common configuration shared by all executions -->
+                        <configuration>
+                            <driver>${ds.driver.class}</driver>
+                            <url>${ds.connection.url}</url>
+                            <username>${ds.username}</username>
+                            <password>${ds.password}</password>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <!-- specific configuration for this execution -->
+                                <configuration>
+                                    <!-- specify your SQL commands, can be all of the following configurations -->
+                                    <srcFiles>
+                                        <srcFile>${project.build.testOutputDirectory}/init.sql</srcFile>
+                                    </srcFiles>
+                                    <autocommit>true</autocommit>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -280,6 +333,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>**/*.properties</include>
+                    <include>**/*.sql</include>
                     <include>**/log4j.xml</include>
                     <include>**/zanata-ds.xml</include>
                     <include>**/zanata-autotest.ini</include>

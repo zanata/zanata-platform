@@ -1439,8 +1439,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<!-- we should probably use scope test -->
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- <dependency>

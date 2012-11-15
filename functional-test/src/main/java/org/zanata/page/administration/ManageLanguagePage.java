@@ -26,6 +26,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
@@ -41,10 +42,14 @@ public class ManageLanguagePage extends AbstractPage
 {
 
    public static final int LOCALE_COLUMN = 0;
+   @FindBy(id = "main_body_content")
+   private WebElement mainBody;
+   private final WebElement languageTable;
 
    public ManageLanguagePage(WebDriver driver)
    {
       super(driver);
+      languageTable = mainBody.findElement(By.xpath(".//table"));
    }
 
    public AddLanguagePage addNewLanguage()
@@ -68,13 +73,12 @@ public class ManageLanguagePage extends AbstractPage
 
    private TableRow findRowByLocale(final String localeId)
    {
-
       TableRow matchedRow = waitForSeconds(getDriver(), 20).until(new Function<WebDriver, TableRow>()
       {
          @Override
          public TableRow apply(WebDriver driver)
          {
-            List<TableRow> tableRows = WebElementUtil.getTableRows(driver, By.xpath("//table"));
+            List<TableRow> tableRows = WebElementUtil.getTableRows(languageTable);
             Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
             {
                @Override
@@ -125,7 +129,7 @@ public class ManageLanguagePage extends AbstractPage
 
    public List<String> getLanguageLocales()
    {
-      List<TableRow> languageTable = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
-      return WebElementUtil.getColumnContents(languageTable, LOCALE_COLUMN);
+      List<TableRow> languages = WebElementUtil.getTableRows(languageTable);
+      return WebElementUtil.getColumnContents(languages, LOCALE_COLUMN);
    }
 }

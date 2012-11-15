@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ManageLanguageTeamMemberPage extends AbstractPage
 {
-   @FindBy(xpath = "//div[contains(@id, 'memberPanel_body')]")
+   @FindBy(id = "main_body_content")
    private WebElement memberPanelBody;
 
    public static final int USERNAME_COLUMN = 0;
@@ -27,12 +27,6 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
    public ManageLanguageTeamMemberPage(WebDriver driver)
    {
       super(driver);
-   }
-
-   public String getLanguage()
-   {
-      WebElement language = memberPanelBody.findElement(By.xpath(".//h1"));
-      return language.getText();
    }
 
    public String getMembersInfo()
@@ -48,7 +42,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
          ManageLanguageTeamMemberPage.log.info("no members yet for this language");
          return Collections.emptyList();
       }
-      List<TableRow> languageMembersTable = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
+      List<TableRow> languageMembersTable = WebElementUtil.getTableRows(memberPanelBody.findElement(By.xpath(".//table")));
       return WebElementUtil.getColumnContents(languageMembersTable, USERNAME_COLUMN);
    }
 }

@@ -77,7 +77,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          @Override
          public void onSuccess(GetTranslationHistoryResult result)
          {
-            Log.info("get back " + result.getHistoryItems().size() + " items for " + transUnitId);
+            Log.info("get back " + result.getHistoryItems().size() + " trans history for id:" + transUnitId);
             displayEntries(result.getLatest(), result.getHistoryItems());
          }
       });
