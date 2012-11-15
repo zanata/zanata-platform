@@ -10,6 +10,7 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -443,6 +444,34 @@ public class DocumentListPresenterTest
 
       docInfo = documentListPresenter.getDocumentInfo(new DocumentId(3333L));
       assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats()))));
+   }
+
+   @Test
+   public void onUserConfigChangedDocument()
+   {
+      int pageSize = 25;
+      UserConfigChangeEvent mockEvent = mock(UserConfigChangeEvent.class);
+      when(mockEvent.getView()).thenReturn(MainView.Documents);
+      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(pageSize);
+
+      documentListPresenter.bind();
+
+      documentListPresenter.onUserConfigChanged(mockEvent);
+
+      verify(mockDisplay).updatePageSize(pageSize);
+   }
+
+   @Test
+   public void onUserConfigChangedEditor()
+   {
+      UserConfigChangeEvent mockEvent = mock(UserConfigChangeEvent.class);
+      when(mockEvent.getView()).thenReturn(MainView.Editor);
+
+      documentListPresenter.bind();
+
+      documentListPresenter.onUserConfigChanged(mockEvent);
+
+      verifyZeroInteractions(mockConfigHolder);
    }
 
    private ArrayList<DocumentInfo> buildSampleDocumentArray()

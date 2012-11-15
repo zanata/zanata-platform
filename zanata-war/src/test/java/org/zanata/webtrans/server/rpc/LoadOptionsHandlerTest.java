@@ -1,5 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.HashMap;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -13,13 +16,11 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
-import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
-
-import static org.hamcrest.MatcherAssert.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -54,16 +55,32 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
       // @formatter:on
    }
 
+   private HashMap<UserOptions, String> generateConfigMap(UserConfigHolder configHolder)
+   {
+      HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
+      configMap.put(UserOptions.DisplayButtons, Boolean.toString(configHolder.getState().isDisplayButtons()));
+      configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(configHolder.getState().isEnterSavesApproved()));
+      configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
+      configMap.put(UserOptions.DocumentListPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
+
+      configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
+      configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));
+      configMap.put(UserOptions.UntranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByUntranslated()));
+      configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
+
+      configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
+      return configMap;
+   }
+
    @Test
    public void testExecuteWithOptionsInDatabase() throws Exception
    {
-      SaveOptionsAction action = new SaveOptionsAction();
       UserConfigHolder configHolder = new UserConfigHolder();
       configHolder.setShowError(true); // we change one default value
-      action.setConfiguration(configHolder.getState());
+      SaveOptionsAction action = new SaveOptionsAction(generateConfigMap(configHolder));
       saveHandler.execute(action, null); // save some options first
 
-      LoadOptionsResult result = handler.execute(LoadOptionsAction.ACTION, null);
+      LoadOptionsResult result = handler.execute(new LoadOptionsAction(null), null);
 
       assertThat(result.getConfiguration().isShowError(), Matchers.equalTo(true));
       assertThat(result.getConfiguration().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
@@ -77,12 +94,12 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
       List<HAccountOption> options = getEm().createQuery("from HAccountOption").getResultList();
       assertThat(options, Matchers.<HAccountOption>empty());
 
-      LoadOptionsResult result = handler.execute(LoadOptionsAction.ACTION, null);
+      LoadOptionsResult result = handler.execute(new LoadOptionsAction(null), null);
 
       // then: we get back default values
       assertThat(result.getConfiguration().isShowError(), Matchers.equalTo(false));
       assertThat(result.getConfiguration().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      assertThat(result.getConfiguration().getPageSize(), Matchers.equalTo(25));
+      assertThat(result.getConfiguration().getEditorPageSize(), Matchers.equalTo(25));
    }
 
    @Test

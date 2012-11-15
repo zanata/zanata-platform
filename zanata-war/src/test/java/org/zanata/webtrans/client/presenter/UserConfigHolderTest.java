@@ -20,20 +20,17 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.rpc.NavOption;
-import com.google.common.base.Predicate;
-
-import static org.hamcrest.MatcherAssert.*;
 
 @Test(groups = {"unit-tests"})
 public class UserConfigHolderTest
@@ -55,7 +52,7 @@ public class UserConfigHolderTest
 
       assertThat(propertiesMap, Matchers.hasEntry("enterSavesApproved", "false"));
       assertThat(propertiesMap, Matchers.hasEntry("displayButtons", "true"));
-      assertThat(propertiesMap, Matchers.hasEntry("pageSize", "25"));
+      assertThat(propertiesMap, Matchers.hasEntry("editorPageSize", "25"));
       assertThat(propertiesMap, Matchers.hasEntry("showError", "false"));
    }
 

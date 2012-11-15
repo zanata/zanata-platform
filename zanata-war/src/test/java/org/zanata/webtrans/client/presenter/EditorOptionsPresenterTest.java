@@ -58,6 +58,8 @@ public class EditorOptionsPresenterTest
    private ArgumentCaptor<ValueChangeHandler<Boolean>> filterChangeHandlerCaptor;
    @Mock
    private CachingDispatchAsync dispatcher;
+   @Captor
+   private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
 
    @BeforeMethod
    public void beforeMethod()
@@ -132,7 +134,11 @@ public class EditorOptionsPresenterTest
       verify(userWorkspaceContext).setProjectActive(false);
       assertThat(configHolder.isDisplayButtons(), Matchers.is(false));
       verify(display).setOptionsState(configHolder.getState());
-      verify(eventBus).fireEvent(new UserConfigChangeEvent(MainView.Editor));
+      verify(eventBus).fireEvent(eventCaptor.capture());
+
+      UserConfigChangeEvent event = eventCaptor.getValue();
+      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
+
    }
 
    private static HasWorkspaceContextUpdateData workplaceContextData(final boolean projectActive)
@@ -188,7 +194,9 @@ public class EditorOptionsPresenterTest
       presenter.onEnterSaveOptionChanged(true);
 
       assertThat(configHolder.isEnterSavesApproved(), Matchers.is(true));
-      verify(eventBus).fireEvent(new UserConfigChangeEvent(MainView.Editor));
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      UserConfigChangeEvent event = eventCaptor.getValue();
+      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
    }
 
    @Test
@@ -199,7 +207,10 @@ public class EditorOptionsPresenterTest
       presenter.onEditorButtonsOptionChanged(true);
 
       assertThat(configHolder.isDisplayButtons(), Matchers.is(true));
-      verify(eventBus).fireEvent(new UserConfigChangeEvent(MainView.Editor));
+
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      UserConfigChangeEvent event = eventCaptor.getValue();
+      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
    }
 
    @Test
@@ -210,7 +221,9 @@ public class EditorOptionsPresenterTest
       presenter.onSelectionChange("", NavOption.FUZZY);
 
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
-      verify(eventBus).fireEvent(new UserConfigChangeEvent(MainView.Editor));
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      UserConfigChangeEvent event = eventCaptor.getValue();
+      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
    }
 
    @Test
@@ -231,7 +244,7 @@ public class EditorOptionsPresenterTest
       assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(true));
       assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(false));
       verify(display).setOptionsState(configHolder.getState());
-      verify(eventBus).fireEvent(new UserConfigChangeEvent(MainView.Editor));
+      verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
    }
 
@@ -289,7 +302,8 @@ public class EditorOptionsPresenterTest
       callback.onSuccess(result);
       assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(10));
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
-      verify(eventBus).fireEvent(new UserConfigChangeEvent(MainView.Editor));
+
+      verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
 
       callback.onFailure(null);
       verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
