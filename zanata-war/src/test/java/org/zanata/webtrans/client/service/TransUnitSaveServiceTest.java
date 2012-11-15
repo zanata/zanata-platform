@@ -283,7 +283,7 @@ public class TransUnitSaveServiceTest
 
       // Then: will reset value back
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
-      when(messages.notifyUpdateFailed("doh")).thenReturn("update failed");
+      when(messages.notifyUpdateFailed("id " + TRANS_UNIT_ID)).thenReturn("update failed");
       callback.onFailure(new RuntimeException("doh"));
       verify(targetContentsPresenter).setEditingState(saveEvent.getTransUnitId(), TargetContentsDisplay.EditingState.UNSAVED);
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
