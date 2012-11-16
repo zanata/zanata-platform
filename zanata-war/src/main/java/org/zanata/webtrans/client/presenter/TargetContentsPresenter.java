@@ -48,6 +48,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -89,6 +90,7 @@ public class TargetContentsPresenter implements
    private final UserConfigHolder configHolder;
    private final EditorKeyShortcuts editorKeyShortcuts;
    private final UserWorkspaceContext userWorkspaceContext;
+   private final TransUnitSaveService transUnitSaveService;
 
    private TargetContentsDisplay display;
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
@@ -108,7 +110,7 @@ public class TargetContentsPresenter implements
                                   final UserConfigHolder configHolder,
                                   UserWorkspaceContext userWorkspaceContext,
                                   EditorKeyShortcuts editorKeyShortcuts,
-                                  TranslationHistoryPresenter historyPresenter)
+                                  TranslationHistoryPresenter historyPresenter, TransUnitSaveService transUnitSaveService)
    // @formatter:on
    {
       this.displayProvider = displayProvider;
@@ -122,6 +124,7 @@ public class TargetContentsPresenter implements
       isDisplayButtons = configHolder.isDisplayButtons();
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
+      this.transUnitSaveService = transUnitSaveService;
       editorKeyShortcuts.registerKeys(this);
 
       bindEventHandlers();
@@ -240,7 +243,7 @@ public class TargetContentsPresenter implements
     * @param transUnitId the state variable of the display that user has clicked on
     */
    @Override
-   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId)
+   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId, boolean displayConfirmation)
    {
       ensureRowSelection(transUnitId);
       if (currentEditorIndex + 1 < currentEditors.size())
@@ -250,9 +253,18 @@ public class TargetContentsPresenter implements
       }
       else
       {
-         currentEditorIndex = 0;
-         saveCurrent(ContentState.Approved);
-         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+         TransUnitSaveEvent event = new TransUnitSaveEvent(getNewTargets(), ContentState.Approved, display.getId(), display.getVerNum(), display.getCachedTargets());
+         
+         if(displayConfirmation && transUnitSaveService.stateHasChangedToApproved(event))
+         {
+            display.showConfirmation(transUnitId);
+         }
+         else
+         {
+            currentEditorIndex = 0;
+            saveCurrent(ContentState.Approved);
+            eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+         }
       }
    }
 
@@ -617,5 +629,12 @@ public class TargetContentsPresenter implements
          this.display = display;
          this.currentEditors = currentEditors;
       }
+   }
+
+   @Override
+   public void saveUserDecision(Boolean value)
+   {
+      // TODO Auto-generated method stub
+      
    }
 }

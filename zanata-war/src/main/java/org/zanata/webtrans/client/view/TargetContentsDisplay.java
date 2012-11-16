@@ -69,12 +69,14 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
    EditingState getEditingState();
 
    void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status);
+   
+   void showConfirmation(TransUnitId transUnitId);
 
    interface Listener
    {
       void validate(ToggleEditor editor);
 
-      void saveAsApprovedAndMoveNext(TransUnitId transUnitId);
+      void saveAsApprovedAndMoveNext(TransUnitId transUnitId, boolean displayConfirmation);
 
       void copySource(ToggleEditor editor, TransUnitId id);
 
@@ -93,6 +95,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
       boolean isUsingCodeMirror();
 
       void setEditingState(TransUnitId transUnitId, EditingState editingState);
+
+      void saveUserDecision(Boolean value);
    }
 
    enum EditingState

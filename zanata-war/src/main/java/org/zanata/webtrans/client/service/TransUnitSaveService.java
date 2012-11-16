@@ -112,6 +112,22 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       dispatcher.execute(updateTransUnit, new UpdateTransUnitCallback(forSaving, idToSave));
    }
 
+   // true if state has changed to approved without any content changes.
+   public boolean stateHasChangedToApproved(TransUnitSaveEvent event)
+   {
+      TransUnit transUnit = navigationService.getByIdOrNull(event.getTransUnitId());
+      if (transUnit == null)
+      {
+         return false;
+      }
+      if(!Objects.equal(transUnit.getTargets(), event.getTargets()))
+      {
+         return false;
+      }
+      return (event.getAdjustedStatus() == ContentState.Approved) && !Objects.equal(transUnit.getStatus(), event.getAdjustedStatus());
+      
+   }
+   
    private boolean stateHasNotChanged(TransUnitSaveEvent event)
    {
       TransUnit transUnit = navigationService.getByIdOrNull(event.getTransUnitId());

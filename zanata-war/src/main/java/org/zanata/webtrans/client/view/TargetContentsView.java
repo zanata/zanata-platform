@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.ui.Editor;
+import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationPanel;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
@@ -78,6 +79,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    SimplePanel undoContainer;
    @UiField
    Label savingIndicator;
+   
+   private final SaveAsApprovedConfirmationPanel saveAsApprovedConfirmationPanel;
 
    private HorizontalPanel rootPanel;
    private ArrayList<ToggleEditor> editors;
@@ -87,7 +90,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private TransUnit cachedValue;
 
    @Inject
-   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
+   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider, SaveAsApprovedConfirmationPanel saveAsApprovedConfirmationPanel)
    {
       validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);
@@ -95,6 +98,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       editorGrid.ensureDebugId("target-contents-grid");
       editorGrid.setWidth("100%");
       editors = Lists.newArrayList();
+      this.saveAsApprovedConfirmationPanel= saveAsApprovedConfirmationPanel;
+   }
+   
+   @Override
+   public void showConfirmation(TransUnitId transUnitId)
+   {
+      saveAsApprovedConfirmationPanel.center(transUnitId);
    }
 
    @Override
@@ -230,7 +240,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiHandler("saveIcon")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApprovedAndMoveNext(cachedValue.getId());
+      listener.saveAsApprovedAndMoveNext(cachedValue.getId(), false);
       event.stopPropagation();
    }
 

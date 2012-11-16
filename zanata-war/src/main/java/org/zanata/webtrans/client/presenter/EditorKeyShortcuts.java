@@ -131,7 +131,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            targetContentsPresenter.saveAsApprovedAndMoveNext(targetContentsPresenter.getCurrentTransUnitIdOrNull());
+            targetContentsPresenter.saveAsApprovedAndMoveNext(targetContentsPresenter.getCurrentTransUnitIdOrNull(), true);
          }
       };
 
