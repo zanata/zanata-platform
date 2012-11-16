@@ -66,7 +66,6 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
-import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;

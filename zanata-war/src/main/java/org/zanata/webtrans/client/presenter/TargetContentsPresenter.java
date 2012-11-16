@@ -90,7 +90,6 @@ public class TargetContentsPresenter implements
    private final UserConfigHolder configHolder;
    private final EditorKeyShortcuts editorKeyShortcuts;
    private final UserWorkspaceContext userWorkspaceContext;
-   private final TransUnitSaveService transUnitSaveService;
 
    private TargetContentsDisplay display;
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
@@ -110,7 +109,7 @@ public class TargetContentsPresenter implements
                                   final UserConfigHolder configHolder,
                                   UserWorkspaceContext userWorkspaceContext,
                                   EditorKeyShortcuts editorKeyShortcuts,
-                                  TranslationHistoryPresenter historyPresenter, TransUnitSaveService transUnitSaveService)
+                                  TranslationHistoryPresenter historyPresenter)
    // @formatter:on
    {
       this.displayProvider = displayProvider;
@@ -124,7 +123,6 @@ public class TargetContentsPresenter implements
       isDisplayButtons = configHolder.isDisplayButtons();
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
-      this.transUnitSaveService = transUnitSaveService;
       editorKeyShortcuts.registerKeys(this);
 
       bindEventHandlers();

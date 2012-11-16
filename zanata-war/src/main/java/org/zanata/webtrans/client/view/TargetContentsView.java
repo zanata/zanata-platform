@@ -99,6 +99,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       editorGrid.setWidth("100%");
       editors = Lists.newArrayList();
       this.saveAsApprovedConfirmationPanel= saveAsApprovedConfirmationPanel;
+      saveAsApprovedConfirmationPanel.setListener(listener);
    }
    
    @Override
