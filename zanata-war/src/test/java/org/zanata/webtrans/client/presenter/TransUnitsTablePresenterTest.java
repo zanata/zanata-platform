@@ -493,12 +493,15 @@ public class TransUnitsTablePresenterTest
    {
       List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1));
       when(navigationService.getCurrentPageValues()).thenReturn(transUnits);
-      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(transUnits.get(0).getId());
+      TransUnitId selectedId = transUnits.get(0).getId();
+      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedId);
 
       presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
 
+      verify(targetContentsPresenter).savePendingChangesIfApplicable();
       verify(targetContentsPresenter).showData(transUnits);
-      verify(targetContentsPresenter).setSelected(transUnits.get(0).getId());
+      verify(sourceContentsPresenter).setSelectedSource(selectedId);
+      verify(targetContentsPresenter).setSelected(selectedId);
       verify(display).buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
    }
 
@@ -511,6 +514,7 @@ public class TransUnitsTablePresenterTest
 
       presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
 
+      verify(targetContentsPresenter).savePendingChangesIfApplicable();
       verify(targetContentsPresenter).showData(transUnits);
       verify(targetContentsPresenter).getCurrentTransUnitIdOrNull();
       verify(display).buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
