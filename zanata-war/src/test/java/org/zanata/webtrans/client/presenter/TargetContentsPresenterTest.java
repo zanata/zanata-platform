@@ -416,7 +416,7 @@ public class TargetContentsPresenterTest
    @Test
    public void isUsingCodeMirror()
    {
-      assertThat(presenter.isUsingCodeMirror(), Matchers.is(true));
+      assertThat(presenter.isUsingCodeMirror(), Matchers.is(false));
    }
 
    @Test
