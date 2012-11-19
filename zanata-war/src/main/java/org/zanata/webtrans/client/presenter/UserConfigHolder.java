@@ -55,7 +55,7 @@ public class UserConfigHolder
    };
    
    // default state
-   private ConfigurationState state = new ConfigurationState(false, true, 10, NavOption.FUZZY_UNTRANSLATED, false, true);
+   private ConfigurationState state = new ConfigurationState(false, true, 10, NavOption.FUZZY_UNTRANSLATED, false, false);
 
    public boolean isEnterSavesApproved()
    {
