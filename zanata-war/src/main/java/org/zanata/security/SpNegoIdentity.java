@@ -81,6 +81,8 @@ public class SpNegoIdentity implements Serializable
          field.setAccessible(true);
          field.set(identity, SecurityAssociation.getSubject());
 
+         identity.setAuthenticationType(AuthenticationType.KERBEROS);
+
          if (Events.exists())
          {
             Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
