@@ -21,7 +21,11 @@
 
 package org.zanata.webtrans.client.service;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
+import org.zanata.webtrans.client.events.CheckStateHasChangedHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
@@ -37,6 +41,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -44,13 +49,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TransUnitSaveService implements TransUnitSaveEventHandler
+public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckStateHasChangedHandler
 {
    private final TableEditorMessages messages;
    private final EventBus eventBus;
@@ -112,20 +115,22 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler
       dispatcher.execute(updateTransUnit, new UpdateTransUnitCallback(forSaving, idToSave));
    }
 
-   // true if state has changed to approved without any content changes.
-   public boolean stateHasChangedToApproved(TransUnitSaveEvent event)
+   /**
+    * Display confirmation dialog box if new status of TU has been changed to
+    * approved without any content changes.
+    */
+   @Override
+   public void onCheckStateHasChanged(CheckStateHasChangedEvent event)
    {
       TransUnit transUnit = navigationService.getByIdOrNull(event.getTransUnitId());
-      if (transUnit == null)
+      if (transUnit != null && !Objects.equal(transUnit.getTargets(), event.getTargets()))
       {
-         return false;
+         targetContentsPresenter.saveAsApprovedAndMoveNext(event.getTransUnitId());
       }
-      if(!Objects.equal(transUnit.getTargets(), event.getTargets()))
+      else if ((event.getAdjustedState() == ContentState.Approved) && !Objects.equal(transUnit.getStatus(), event.getAdjustedState()))
       {
-         return false;
+         targetContentsPresenter.showSaveAsApprovedConfirmation(event.getTransUnitId());
       }
-      return (event.getAdjustedStatus() == ContentState.Approved) && !Objects.equal(transUnit.getStatus(), event.getAdjustedStatus());
-      
    }
    
    private boolean stateHasNotChanged(TransUnitSaveEvent event)

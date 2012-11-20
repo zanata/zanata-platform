@@ -425,6 +425,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Switch between CodeMirror Editor (supports syntax highlight but no spell check) and plain textarea (no syntax highlight but with spell check)")
    String useCodeMirrorEditorTooltip();
 
+   @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
+   String showSaveApprovedWarningTooltip();
+
    @DefaultMessage("Go to row if on current page")
    String goToRowOnCurrentPage();
 

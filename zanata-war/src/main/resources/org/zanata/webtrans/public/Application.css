@@ -639,13 +639,41 @@ td.ApprovedStateDecoration div div div
 	border-radius: 20px;
 }
 
-.filterConfirmationPanel {
+.confirmationDialogPanel {
 	background: #4C4C4C;
 	padding: 5px 20px 0px 20px;
 	color: #FFFFFF;
 	border-radius: 20px;
 	font-weight: bold;
 }
+
+.confirmationDialogPanel .message {
+	text-align:left;
+}
+
+.confirmationDialogPanel table {
+	color: #FFFFFF;
+}
+
+.confirmationDialogPanel .info {
+	color: #FFFFFF;
+	font-weight: normal;
+	font-size:12px;
+	padding:5px;
+	border:1px dotted #808080;
+	border-radius:5px;
+	text-align:left;
+}
+
+.confirmationDialogPanel .info .infoIcon {
+	color: lightblue;
+	font-size:16px;
+}
+
+.confirmationDialogPanel .info .centerAlign {
+	text-align:center;
+}
+
 .sourceTable {
 	border-spacing:5px;
 	width:100%;

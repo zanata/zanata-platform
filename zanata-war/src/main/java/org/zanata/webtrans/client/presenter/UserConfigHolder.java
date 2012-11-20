@@ -69,6 +69,7 @@ public class UserConfigHolder
       state.navOption = NavOption.FUZZY_UNTRANSLATED;
       state.showError =false;
       state.useCodeMirrorEditor = true;
+      state.showSaveApprovedWarning = true;
    }
 
    public boolean isEnterSavesApproved()
@@ -197,6 +198,17 @@ public class UserConfigHolder
       state.filterByTranslated = filterByTranslated;
    }
 
+   public void setShowSaveApprovedWarning(boolean showSaveApprovedWarning)
+   {
+      state = new ConfigurationState(state);
+      state.showSaveApprovedWarning = showSaveApprovedWarning;
+   }
+
+   public boolean isShowSaveApprovedWarning()
+   {
+      return state.isShowSaveApprovedWarning();
+   }
+
    /**
     * Immutable object represents configuration state
     */
@@ -213,6 +225,8 @@ public class UserConfigHolder
       private boolean filterByUntranslated;
       private boolean filterByNeedReview;
       private boolean filterByTranslated;
+
+      private boolean showSaveApprovedWarning;
 
       // Needed for GWT serialization
       private ConfigurationState()
@@ -231,6 +245,7 @@ public class UserConfigHolder
          this.filterByUntranslated = old.isFilterByUntranslated();
          this.filterByNeedReview = old.isFilterByNeedReview();
          this.filterByTranslated = old.isFilterByTranslated();
+         this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
       }
 
       public boolean isEnterSavesApproved()
@@ -281,6 +296,11 @@ public class UserConfigHolder
       public boolean isFilterByTranslated()
       {
          return filterByTranslated;
+      }
+
+      public boolean isShowSaveApprovedWarning()
+      {
+         return showSaveApprovedWarning;
       }
    }
 }

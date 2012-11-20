@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -35,6 +34,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.SaveOptionsService;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 import org.zanata.webtrans.shared.model.UserOptions;
@@ -42,8 +42,6 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
-import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
-import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -56,6 +54,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    private final UserConfigHolder configHolder;
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
+   private final SaveOptionsService saveOptionsService;
    
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
    {
@@ -72,13 +71,14 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Inject
    public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
                                  ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder,
-                                 CachingDispatchAsync dispatcher)
+ CachingDispatchAsync dispatcher, SaveOptionsService saveOptionsService)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
       this.configHolder = configHolder;
       this.userWorkspaceContext = userWorkspaceContext;
       this.dispatcher = dispatcher;
+      this.saveOptionsService = saveOptionsService;
       display.setListener(this);
    }
 
@@ -170,6 +170,16 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    }
 
    @Override
+   public void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning)
+   {
+      if (configHolder.isShowSaveApprovedWarning() != showSaveApprovedWarning)
+      {
+         configHolder.setShowSaveApprovedWarning(showSaveApprovedWarning);
+         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
+      }
+   }
+
+   @Override
    public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue)
    {
       if (configHolder.isUseCodeMirrorEditor() != useCodeMirrorChkValue)
@@ -189,41 +199,10 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    {
    }
 
-   private HashMap<UserOptions, String> generateConfigMap()
-   {
-      HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
-      configMap.put(UserOptions.DisplayButtons, Boolean.toString(configHolder.getState().isDisplayButtons()));
-      configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(configHolder.getState().isEnterSavesApproved()));
-      configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
-
-      configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
-      configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));
-      configMap.put(UserOptions.UntranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByUntranslated()));
-      configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
-
-      configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
-      return configMap;
-   }
-
    @Override
    public void persistOptionChange()
    {
-      SaveOptionsAction action = new SaveOptionsAction(generateConfigMap());
-
-      dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Could not Save editor Options"));
-         }
-
-         @Override
-         public void onSuccess(SaveOptionsResult result)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "Saved editor Options"));
-         }
-      });
+      saveOptionsService.persistOptionChange(saveOptionsService.getEditorOptions());
    }
 
    @Override
@@ -257,19 +236,11 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void loadDefaultOptions()
    {
-      // default options
-      configHolder.setDisplayButtons(true);
-      configHolder.setEnterSavesApproved(false);
-      configHolder.setFilterByTranslated(false);
-      configHolder.setFilterByNeedReview(false);
-      configHolder.setFilterByUntranslated(false);
-      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
-      configHolder.setEditorPageSize(25);
-      configHolder.setShowError(false);
+      saveOptionsService.loadEditorDefaultOptions();
+      display.setOptionsState(configHolder.getState());
 
       eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
-      display.setOptionsState(configHolder.getState());
    }
 }

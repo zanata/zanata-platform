@@ -27,7 +27,6 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 
 public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements OptionsDisplay.Listener, UserConfigChangeHandler
@@ -121,6 +120,7 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    @Override
    public void persistOptionChange()
    {
+
       OptionsDisplay.CommonOptionsListener listener = getCurrentListener();
       if (listener != null)
       {

@@ -25,14 +25,15 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -43,9 +44,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  **/
 public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel
 {
-   private Button saveAsApproved= new Button("Save as approved");
-   private CheckBox rememberDecision = new CheckBox("Remember my decision");
+   private Button saveAsApproved = new Button("Save as Approved");
    private Button cancel = new Button("Cancel");
+   private CheckBox rememberDecision = new CheckBox("I understand these keys is Save as Approved.  Don't ask me again.");
    private TransUnitId transUnitId;
 
    private TargetContentsDisplay.Listener listener;
@@ -57,22 +58,48 @@ public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel
       vp.setSpacing(10);
       vp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
-      Label message = new Label("Save changes before filtering view?");
+
+      Label message = new Label("Warning! You are saving a Fuzzy translation as Approved without content changes.");
+      Label message2 = new Label("Proceed with one of the following actions:");
+
+      FlowPanel panel = new FlowPanel();
+      panel.addStyleName("message");
+
+      panel.add(message);
+      panel.add(message2);
+
+      InlineLabel info = new InlineLabel();
+      info.setStyleName("icon-info-circle-2 infoIcon");
+      InlineLabel message3 = new InlineLabel("For navigation only, please use: ");
+      Label message4 = new Label("ALT+Up or ALT+J:  Move to previous row");
+      Label message5 = new Label("ALT+Down or ALT+K:  Move to next row");
+      message4.addStyleName("centerAlign");
+      message5.addStyleName("centerAlign");
+
+      FlowPanel panel2 = new FlowPanel();
+      panel2.addStyleName("info");
+
+      panel2.add(info);
+      panel2.add(message3);
+      panel2.add(message4);
+      panel2.add(message5);
+
       HorizontalPanel buttonPanel = new HorizontalPanel();
       buttonPanel.setSpacing(5);
-      buttonPanel.setSize("100%", "100%");
+      buttonPanel.setHeight("100%");
       buttonPanel.add(saveAsApproved);
       buttonPanel.add(cancel);
-      buttonPanel.add(rememberDecision);
-      setStyleName("filterConfirmationPanel");
+      setStyleName("confirmationDialogPanel");
 
-      vp.add(message);
+      vp.add(panel);
+      vp.add(panel2);
       vp.add(buttonPanel);
+      vp.add(rememberDecision);
       add(vp);
 
       hide();
    }
-   
+
    public void setListener(TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
@@ -86,7 +113,8 @@ public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel
          @Override
          public void onClick(ClickEvent event)
          {
-            listener.saveAsApprovedAndMoveNext(transUnitId, false);
+            listener.saveAsApprovedAndMoveNext(transUnitId);
+            hide();
          }
       });
       cancel.addClickHandler(new ClickHandler()
@@ -102,7 +130,7 @@ public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            listener.saveUserDecision(event.getValue());
+            listener.saveUserDecision(!event.getValue());
          }
       });
    }
@@ -111,6 +139,11 @@ public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel
    {
       this.transUnitId = transUnitId;
       center();
+   }
+
+   public void setRememberUserDecision(boolean value)
+   {
+      rememberDecision.setValue(value);
    }
 }
 

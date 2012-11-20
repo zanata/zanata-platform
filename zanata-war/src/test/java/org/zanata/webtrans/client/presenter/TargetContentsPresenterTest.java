@@ -69,6 +69,7 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.service.SaveOptionsService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
@@ -118,6 +119,8 @@ public class TargetContentsPresenterTest
    private EditorTranslators editorTranslators;
    @Mock
    private EditorKeyShortcuts editorKeyShortcuts;
+   @Mock
+   private SaveOptionsService saveOptionsService;
 
    @BeforeMethod
    public void beforeMethod()
@@ -125,7 +128,7 @@ public class TargetContentsPresenterTest
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
       userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, editorKeyShortcuts, historyPresenter);
+      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, editorKeyShortcuts, historyPresenter, saveOptionsService);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);

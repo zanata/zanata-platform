@@ -18,7 +18,8 @@ public enum UserOptions implements IsSerializable
    NeedReviewMessageFilter(editor()+ ".NeedReviewMessageFilter"), 
    UntranslatedMessageFilter(editor()+ ".UntranslatedMessageFilter"), 
    Navigation(editor()+ ".Navigation"),
-   DocumentListPageSize(doc() + ".PageSize");
+   DocumentListPageSize(doc() + ".PageSize"),
+   ShowSaveApprovedWarning(editor() + ".ShowSaveApprovedWarning");
    // @formatter:on
 
    private String persistentName;

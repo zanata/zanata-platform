@@ -33,7 +33,6 @@ import org.zanata.webtrans.shared.model.HasTransUnitId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTransUnitId, HasUpdateValidationWarning
@@ -72,11 +71,15 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
    
    void showConfirmation(TransUnitId transUnitId);
 
+   void setShowSaveApprovedWarning(boolean showSaveApprovedWarning);
+
    interface Listener
    {
       void validate(ToggleEditor editor);
 
-      void saveAsApprovedAndMoveNext(TransUnitId transUnitId, boolean displayConfirmation);
+      void saveAsApprovedAndMoveNext(TransUnitId transUnitId);
+
+      void saveAsApprovedAndMoveNext(TransUnitId transUnitId, boolean checkForConfirmation);
 
       void copySource(ToggleEditor editor, TransUnitId id);
 
@@ -103,4 +106,5 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
    {
       SAVING, UNSAVED, SAVED
    }
+
 }

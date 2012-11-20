@@ -30,6 +30,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
@@ -123,6 +124,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       // references TargetContentsPresenter). And if it's not eagerly created,
       // it won't get created at all!!
       eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
+      eventBus.addHandler(CheckStateHasChangedEvent.TYPE, transUnitSaveService);
    }
 
    @Override

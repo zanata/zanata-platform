@@ -70,6 +70,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    Styles style;
    @UiField
    CheckBox useCodeMirrorChk;
+   @UiField
+   CheckBox showSaveApprovedWarningChk;
 
    private Listener listener;
 
@@ -86,6 +88,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       pageSizeHeader.setText(messages.pageSize());
 
       useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
+      showSaveApprovedWarningChk.setTitle(messages.showSaveApprovedWarningTooltip());
    }
 
    @Override
@@ -189,6 +192,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    {
       listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue());
    }
+   
+   @UiHandler("showSaveApprovedWarningChk")
+   public void onShowSaveApprovedWarningChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onShowSaveApprovedWarningChanged(showSaveApprovedWarningChk.getValue());
+   }
 
    @Override
    public void setListener(Listener listener)
@@ -209,6 +218,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       navOptionGroup.setDefaultSelected(state.getNavOption());
       selectPageSize(state.getEditorPageSize());
       useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
+      showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
    }
 
    private void selectPageSize(int pageSize)

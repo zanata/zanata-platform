@@ -60,7 +60,7 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel implements 
       buttonPanel.add(saveFuzzy);
       buttonPanel.add(discardChanges);
       buttonPanel.add(cancelFilter);
-      setStyleName("filterConfirmationPanel");
+      setStyleName("confirmationDialogPanel");
 
       vp.add(message);
       vp.add(buttonPanel);

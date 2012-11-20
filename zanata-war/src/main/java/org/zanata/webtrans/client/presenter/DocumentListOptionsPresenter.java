@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -31,14 +30,13 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.SaveOptionsService;
 import org.zanata.webtrans.client.view.DocumentListOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
-import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
-import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -48,16 +46,18 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    private final UserConfigHolder configHolder;
    private final CachingDispatchAsync dispatcher;
    private final UserWorkspaceContext userWorkspaceContext;
+   private final SaveOptionsService saveOptionsService;
 
 
    @Inject
    public DocumentListOptionsPresenter(DocumentListOptionsDisplay display, EventBus eventBus, UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext,
-                                 CachingDispatchAsync dispatcher)
+ CachingDispatchAsync dispatcher, SaveOptionsService saveOptionsService)
    {
       super(display, eventBus);
       this.configHolder = configHolder;
       this.userWorkspaceContext = userWorkspaceContext;
       this.dispatcher = dispatcher;
+      this.saveOptionsService = saveOptionsService;
 
    }
 
@@ -99,7 +99,6 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
       if (configHolder.getDocumentListPageSize() != pageSize)
       {
          configHolder.setDocumentListPageSize(pageSize);
-         System.out.println("==================" + configHolder.getDocumentListPageSize());
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
       }
    }
@@ -114,33 +113,10 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    {
    }
 
-   private HashMap<UserOptions, String> generateConfigMap()
-   {
-      HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
-      configMap.put(UserOptions.DocumentListPageSize, Integer.toString(configHolder.getState().getDocumentListPageSize()));
-      configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
-      return configMap;
-   }
-
    @Override
    public void persistOptionChange()
    {
-      SaveOptionsAction action = new SaveOptionsAction(generateConfigMap());
-
-      dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Could not save user options"));
-         }
-
-         @Override
-         public void onSuccess(SaveOptionsResult result)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "Saved user options"));
-         }
-      });
+      saveOptionsService.persistOptionChange(saveOptionsService.getDocumentListOptions());
    }
 
    @Override
@@ -167,16 +143,12 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded user options"));
          }
       });
-
-
    }
 
    @Override
    public void loadDefaultOptions()
    {
-      // default options
-      configHolder.setDocumentListPageSize(25);
-      configHolder.setShowError(false);
+      saveOptionsService.loadDocumentListDefaultOptions();
       display.setOptionsState(configHolder.getState());
 
       eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));

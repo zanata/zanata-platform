@@ -21,6 +21,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.SaveOptionsService;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -60,6 +61,8 @@ public class EditorOptionsPresenterTest
    private CachingDispatchAsync dispatcher;
    @Captor
    private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
+   @Mock
+   private SaveOptionsService saveOptionsService;
 
    @BeforeMethod
    public void beforeMethod()
@@ -69,7 +72,7 @@ public class EditorOptionsPresenterTest
       when(display.getTranslatedChk()).thenReturn(translatedChk);
       when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
 
-      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, configHolder, dispatcher);
+      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, configHolder, dispatcher, saveOptionsService);
       verify(display).setListener(presenter);
    }
 

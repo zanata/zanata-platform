@@ -90,7 +90,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private TransUnit cachedValue;
 
    @Inject
-   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider, SaveAsApprovedConfirmationPanel saveAsApprovedConfirmationPanel)
+   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
    {
       validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);
@@ -98,8 +98,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       editorGrid.ensureDebugId("target-contents-grid");
       editorGrid.setWidth("100%");
       editors = Lists.newArrayList();
-      this.saveAsApprovedConfirmationPanel= saveAsApprovedConfirmationPanel;
-      saveAsApprovedConfirmationPanel.setListener(listener);
+      saveAsApprovedConfirmationPanel = new SaveAsApprovedConfirmationPanel();
    }
    
    @Override
@@ -241,7 +240,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiHandler("saveIcon")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApprovedAndMoveNext(cachedValue.getId(), false);
+      listener.saveAsApprovedAndMoveNext(cachedValue.getId());
       event.stopPropagation();
    }
 
@@ -308,6 +307,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setListener(Listener listener)
    {
       this.listener = listener;
+      saveAsApprovedConfirmationPanel.setListener(listener);
    }
 
    @Override
@@ -381,5 +381,11 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
 
    interface Binder extends UiBinder<HorizontalPanel, TargetContentsView>
    {
+   }
+
+   @Override
+   public void setShowSaveApprovedWarning(boolean showSaveApprovedWarning)
+   {
+      saveAsApprovedConfirmationPanel.setRememberUserDecision(!showSaveApprovedWarning);
    }
 }

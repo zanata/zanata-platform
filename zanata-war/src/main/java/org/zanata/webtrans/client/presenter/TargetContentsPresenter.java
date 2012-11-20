@@ -29,6 +29,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -48,7 +49,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.service.TransUnitSaveService;
+import org.zanata.webtrans.client.service.SaveOptionsService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -90,6 +91,7 @@ public class TargetContentsPresenter implements
    private final UserConfigHolder configHolder;
    private final EditorKeyShortcuts editorKeyShortcuts;
    private final UserWorkspaceContext userWorkspaceContext;
+   private final SaveOptionsService saveOptionsService;
 
    private TargetContentsDisplay display;
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
@@ -109,7 +111,8 @@ public class TargetContentsPresenter implements
                                   final UserConfigHolder configHolder,
                                   UserWorkspaceContext userWorkspaceContext,
                                   EditorKeyShortcuts editorKeyShortcuts,
-                                  TranslationHistoryPresenter historyPresenter)
+                                  TranslationHistoryPresenter historyPresenter,
+                                  SaveOptionsService saveOptionsService)
    // @formatter:on
    {
       this.displayProvider = displayProvider;
@@ -123,6 +126,7 @@ public class TargetContentsPresenter implements
       isDisplayButtons = configHolder.isDisplayButtons();
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
+      this.saveOptionsService = saveOptionsService;
       editorKeyShortcuts.registerKeys(this);
 
       bindEventHandlers();
@@ -241,7 +245,7 @@ public class TargetContentsPresenter implements
     * @param transUnitId the state variable of the display that user has clicked on
     */
    @Override
-   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId, boolean displayConfirmation)
+   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId)
    {
       ensureRowSelection(transUnitId);
       if (currentEditorIndex + 1 < currentEditors.size())
@@ -251,18 +255,36 @@ public class TargetContentsPresenter implements
       }
       else
       {
-         TransUnitSaveEvent event = new TransUnitSaveEvent(getNewTargets(), ContentState.Approved, display.getId(), display.getVerNum(), display.getCachedTargets());
-         
-         if(displayConfirmation && transUnitSaveService.stateHasChangedToApproved(event))
-         {
-            display.showConfirmation(transUnitId);
-         }
-         else
-         {
-            currentEditorIndex = 0;
-            saveCurrent(ContentState.Approved);
-            eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
-         }
+         currentEditorIndex = 0;
+         saveCurrent(ContentState.Approved);
+         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+      }
+   }
+
+   public void showSaveAsApprovedConfirmation(TransUnitId transUnitId)
+   {
+      display.showConfirmation(transUnitId);
+   }
+
+   /*
+    * Show of confirmation dialog save as approved.
+    * 
+    * @see org.zanata.webtrans.client.view.TargetContentsDisplay.Listener#
+    * saveAsApprovedAndMoveNext(org.zanata.webtrans.shared.model.TransUnitId,
+    * boolean)
+    */
+   @Override
+   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId, boolean checkForConfirmation)
+   {
+      ensureRowSelection(transUnitId);
+
+      if (checkForConfirmation && configHolder.isShowSaveApprovedWarning())
+      {
+         eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId, getNewTargets(), ContentState.Approved));
+      }
+      else
+      {
+         saveAsApprovedAndMoveNext(transUnitId);
       }
    }
 
@@ -400,6 +422,7 @@ public class TargetContentsPresenter implements
             }
          }
          isDisplayButtons = configHolder.isDisplayButtons();
+         display.setShowSaveApprovedWarning(configHolder.isShowSaveApprovedWarning());
       }
    }
 
@@ -611,6 +634,13 @@ public class TargetContentsPresenter implements
       return display;
    }
 
+   @Override
+   public void saveUserDecision(Boolean value)
+   {
+      configHolder.setShowSaveApprovedWarning(value);
+      saveOptionsService.persistOptionChange(saveOptionsService.getEditorOptions());
+   }
+
    /**
     * For testing only
     * @param currentTransUnitId current trans unit id
@@ -627,12 +657,5 @@ public class TargetContentsPresenter implements
          this.display = display;
          this.currentEditors = currentEditors;
       }
-   }
-
-   @Override
-   public void saveUserDecision(Boolean value)
-   {
-      // TODO Auto-generated method stub
-      
    }
 }
