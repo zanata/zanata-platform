@@ -26,6 +26,7 @@ import java.util.List;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -43,7 +44,6 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
-import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -68,7 +68,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -100,16 +100,14 @@ public class NavigationServiceIntegrationTest
    private DocumentId documentId = new DocumentId(1L);
 
    @Captor
-   private ArgumentCaptor<AbstractWorkspaceAction> actionCaptor;
+   private ArgumentCaptor<GetTransUnitList> actionCaptor;
 
    @Captor
-   private ArgumentCaptor<AsyncCallback> asyncCallbackCaptor;
+   private ArgumentCaptor<AsyncCallback<GetTransUnitListResult>> asyncCallbackCaptor;
 
    //captured dispatcher arguments
    private GetTransUnitList getTransUnitList;
-   private GetTransUnitsNavigation getTransUnitsNavigation;
    private AsyncCallback<GetTransUnitListResult> getTransUnitListCallback;
-   private AsyncCallback<GetTransUnitsNavigationResult> getTransUnitsNavigationCallback;
 
    private GetTransUnitActionContext context;
    @Mock
@@ -142,24 +140,10 @@ public class NavigationServiceIntegrationTest
    {
       verify(dispatcher, atLeastOnce()).execute(actionCaptor.capture(), asyncCallbackCaptor.capture());
 
-      List<AbstractWorkspaceAction> actions = actionCaptor.getAllValues();
-      List<AsyncCallback> callbacks = asyncCallbackCaptor.getAllValues();
+      getTransUnitList = actionCaptor.getValue();
+      getTransUnitList.setWorkspaceId(workspaceId);
 
-      for (int i = 0, allValuesSize = actions.size(); i < allValuesSize; i++)
-      {
-         if (actions.get(i) instanceof GetTransUnitList)
-         {
-            getTransUnitList = (GetTransUnitList) actions.get(i);
-            getTransUnitList.setWorkspaceId(workspaceId);
-            getTransUnitListCallback = (AsyncCallback<GetTransUnitListResult>) callbacks.get(i);
-         }
-         else
-         {
-            getTransUnitsNavigation = (GetTransUnitsNavigation) actions.get(i);
-            getTransUnitsNavigation.setWorkspaceId(workspaceId);
-            getTransUnitsNavigationCallback = (AsyncCallback<GetTransUnitsNavigationResult>) callbacks.get(i);
-         }
-      }
+      getTransUnitListCallback = asyncCallbackCaptor.getValue();
    }
 
    //look at this AWESOME generic work ;)
@@ -183,10 +167,8 @@ public class NavigationServiceIntegrationTest
    {
       verifyDispatcherAndCaptureArguments();
       GetTransUnitListHandler handler = handlerFactory.createGetTransUnitListHandlerWithBehavior(documentId, hTextFlows, hLocale, getTransUnitList.getOffset(), getTransUnitList.getCount());
-      GetTransUnitsNavigationHandler indexHandler = handlerFactory.createGetTransUnitsNavigationHandlerWithBehavior(documentId, hTextFlows, hLocale);
 
       getTransUnitListCallback.onSuccess(callHandler(handler, getTransUnitList));
-      getTransUnitsNavigationCallback.onSuccess(callHandler(indexHandler, getTransUnitsNavigation));
    }
 
    @Test
@@ -201,10 +183,7 @@ public class NavigationServiceIntegrationTest
       assertThat(getTransUnitListResult.getDocumentId(), equalTo(documentId));
       assertThat(TestFixture.asIds(getTransUnitListResult.getUnits()), contains(0, 1, 2, 3, 4, 5));
 
-      GetTransUnitsNavigationHandler indexHandler = handlerFactory.createGetTransUnitsNavigationHandlerWithBehavior(documentId, hTextFlows, hLocale);
-
-      GetTransUnitsNavigationResult navigationResult = callHandler(indexHandler, getTransUnitsNavigation);
-      assertThat(navigationResult.getDocumentId(), equalTo(documentId));
+      GetTransUnitsNavigationResult navigationResult = getTransUnitListResult.getNavigationIndex();
       assertThat(navigationResult.getIdIndexList(), contains(0L, 1L, 2L, 3L, 4L, 5L));
       assertThat(navigationResult.getTransIdStateList(), hasEntry(0L, ContentState.New));
       assertThat(navigationResult.getTransIdStateList(), hasEntry(1L, ContentState.New));
@@ -361,14 +340,14 @@ public class NavigationServiceIntegrationTest
    public void onRPCSuccess()
    {
       service.init(context.changeCount(3));
-      verify(eventBus, times(2)).fireEvent(LoadingEvent.START_EVENT);
+      InOrder inOrder = inOrder(eventBus, transUnitsTablePresenter);
+      inOrder.verify(eventBus).fireEvent(LoadingEvent.START_EVENT);
       simulateRPCCallbackOnSuccess();
-      verify(eventBus).fireEvent(LoadingEvent.FINISH_EVENT);
 
       // behaviour on GetTransUnitList success
-      verify(transUnitsTablePresenter).showDataForCurrentPage(service.getCurrentPageValues());
-      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+      inOrder.verify(transUnitsTablePresenter).showDataForCurrentPage(service.getCurrentPageValues());
 
+      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
       TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
       TransUnitId firstItem = new TransUnitId(hTextFlows.get(0).getId());
       assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(firstItem));
@@ -376,6 +355,6 @@ public class NavigationServiceIntegrationTest
       // behaviour on GetTransUnitNavigation success
       PageCountChangeEvent pageCountChangeEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), PageCountChangeEvent.class);
       assertThat(pageCountChangeEvent.getPageCount(), Matchers.is(2));
+      inOrder.verify(eventBus).fireEvent(LoadingEvent.FINISH_EVENT);
    }
-
 }

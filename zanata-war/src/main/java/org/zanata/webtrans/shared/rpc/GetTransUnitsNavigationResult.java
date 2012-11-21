@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.shared.model.DocumentId;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 
-public class GetTransUnitsNavigationResult implements DispatchResult
+public class GetTransUnitsNavigationResult implements IsSerializable
 {
 
-   private static final long serialVersionUID = 1L;
-
-   private DocumentId documentId;
    private ArrayList<Long> idIndexList;
    private Map<Long, ContentState> transIdStateList;
 
@@ -22,16 +19,10 @@ public class GetTransUnitsNavigationResult implements DispatchResult
    {
    }
 
-   public GetTransUnitsNavigationResult(DocumentId documentId, ArrayList<Long> idIndexList, Map<Long, ContentState> transIdStateList)
+   public GetTransUnitsNavigationResult(ArrayList<Long> idIndexList, Map<Long, ContentState> transIdStateList)
    {
-      this.documentId = documentId;
       this.idIndexList = idIndexList;
       this.transIdStateList = transIdStateList;
-   }
-
-   public DocumentId getDocumentId()
-   {
-      return documentId;
    }
 
    public ArrayList<Long> getIdIndexList()

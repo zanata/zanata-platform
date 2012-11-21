@@ -14,6 +14,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    private String phrase;
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
    private TransUnitId targetTransUnitId;
+   private boolean needReloadIndex = false;
 
    @SuppressWarnings("unused")
    private GetTransUnitList()
@@ -36,6 +37,17 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    public static GetTransUnitList newAction(GetTransUnitActionContext context)
    {
       return new GetTransUnitList(context.getDocumentId(), context.getOffset(), context.getCount(), context.getFindMessage(), context.isFilterTranslated(), context.isFilterNeedReview(), context.isFilterUntranslated(), context.getTargetTransUnitId());
+   }
+
+   public boolean isNeedReloadIndex()
+   {
+      return needReloadIndex;
+   }
+
+   public GetTransUnitList setNeedReloadIndex(boolean needReloadIndex)
+   {
+      this.needReloadIndex = needReloadIndex;
+      return this;
    }
 
    public int getOffset()
@@ -97,6 +109,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
             add("filterNeedReview", filterNeedReview).
             add("filterUntranslated", filterUntranslated).
             add("targetTransUnitId", targetTransUnitId).
+            add("needReloadIndex", needReloadIndex).
             toString();
       // @formatter:on
    }

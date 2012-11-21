@@ -41,6 +41,8 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
+import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
+import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 
 import com.google.common.base.Function;
@@ -66,33 +68,57 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    @In
    private ZanataIdentity identity;
 
+   @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true)
+   private GetTransUnitsNavigationService getTransUnitsNavigationService;
+
    @Override
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
    {
       identity.checkLoggedIn();
-      log.debug("action: {}", action);
-
       HLocale hLocale = validateAndGetLocale(action);
 
-      List<HTextFlow> textFlows;
+      log.debug("action: {}", action);
+      int targetOffset = action.getOffset();
+      int targetPage = action.getOffset() / action.getCount();
+      GetTransUnitsNavigationResult navigationResult = null;
+      if (action.isNeedReloadIndex())
+      {
+         GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
+         log.debug("get trans unit navigation action: {}", getTransUnitsNavigation);
+         navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
+         if (action.getTargetTransUnitId() != null)
+         {
+            int targetIndexInDoc = navigationResult.getIdIndexList().indexOf(action.getTargetTransUnitId().getId());
+            targetPage = targetIndexInDoc / action.getCount();
+            targetOffset = action.getCount() * targetPage;
+         }
+      }
 
+      List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
+      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage);
+      result.setNavigationIndex(navigationResult);
+      return result;
+   }
+
+   private List<HTextFlow> getTextFlows(GetTransUnitList action, HLocale hLocale, int offset)
+   {
+      List<HTextFlow> textFlows;
       if (action.isAcceptAllStatus() && !hasSearchPhrase(action.getPhrase()))
       {
          log.debug("Fetch TransUnits:*");
-         textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), action.getOffset(), action.getCount());
+         textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), offset, action.getCount());
       }
       else
       {
          // @formatter:off
          FilterConstraints constraints = FilterConstraints
-               .filterBy(action.getPhrase())
-               .ignoreCase().filterSource().filterTarget()
+               .filterBy(action.getPhrase()).ignoreCase().filterSource().filterTarget()
                .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
-         textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, action.getOffset(), action.getCount());
+         textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
       }
-      return transformToTransUnits(action, hLocale, textFlows);
+      return textFlows;
    }
 
    private HLocale validateAndGetLocale(GetTransUnitList action) throws ActionException
@@ -112,7 +138,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       return !Strings.isNullOrEmpty(phrase) && phrase.trim().length() != 0;
    }
 
-   private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows)
+   private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows, int targetOffset, int targetPage)
    {
       List<TransUnit> units = Lists.transform(textFlows, new HTextFlowToTransUnitFunction(hLocale, transUnitTransformer));
 
@@ -126,7 +152,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          }
       }
       // stupid GWT RPC can't handle com.google.common.collect.Lists$TransformingRandomAccessList
-      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow);
+      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow, targetOffset, targetPage);
    }
 
    @Override

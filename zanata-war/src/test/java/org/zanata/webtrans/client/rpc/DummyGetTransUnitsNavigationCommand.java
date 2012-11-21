@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
@@ -35,7 +34,7 @@ final class DummyGetTransUnitsNavigationCommand implements Command
       HashMap<Long, ContentState> transIdStateList = new HashMap<Long, ContentState>();
       
       
-      GetTransUnitsNavigationResult result = new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateList);
+      GetTransUnitsNavigationResult result = new GetTransUnitsNavigationResult(idIndexList, transIdStateList);
       callback.onSuccess(result);
       Log.info("EXIT DummyGetTransUnitCommand.execute()");
    }

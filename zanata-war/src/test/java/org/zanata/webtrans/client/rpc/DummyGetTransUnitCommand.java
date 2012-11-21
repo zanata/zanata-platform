@@ -37,7 +37,7 @@ final class DummyGetTransUnitCommand implements Command
       int count = action.getCount();
       int offset = action.getOffset();
       int totalCount = count * 5;
-      GetTransUnitListResult result = new GetTransUnitListResult(documentId, generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset), 1);
+      GetTransUnitListResult result = new GetTransUnitListResult(documentId, generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset), 1, offset, offset / count);
       callback.onSuccess(result);
       Log.info("EXIT DummyGetTransUnitCommand.execute()");
    }

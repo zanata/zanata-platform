@@ -29,6 +29,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
+import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -42,6 +43,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -66,9 +68,9 @@ public class NavigationServiceUnitTest
    @Captor
    private ArgumentCaptor<GwtEvent> eventCaptor;
    @Captor
-   private ArgumentCaptor<AbstractWorkspaceAction> actionCaptor;
+   private ArgumentCaptor<GetTransUnitList> actionCaptor;
    @Captor
-   private ArgumentCaptor<AbstractAsyncCallback> resultCaptor;
+   private ArgumentCaptor<AbstractAsyncCallback<GetTransUnitListResult>> resultCaptor;
    @Mock
    private NavigationService.PageDataChangeListener pageDataChangeListener;
 
@@ -117,6 +119,7 @@ public class NavigationServiceUnitTest
    @Test
    public void onNavigationEventOnSamePage()
    {
+      service.init(initContext);
       service.selectByRowIndex(0);
 
       service.onNavTransUnit(NavTransUnitEvent.FIRST_ENTRY_EVENT);
@@ -134,8 +137,8 @@ public class NavigationServiceUnitTest
 
       service.onNavTransUnit(NavTransUnitEvent.LAST_ENTRY_EVENT);
 
-      verify(dispatcher, atMost(3)).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList action = (GetTransUnitList) actionCaptor.getAllValues().get(2);
+      verify(dispatcher, times(2)).execute(actionCaptor.capture(), resultCaptor.capture());
+      GetTransUnitList action = actionCaptor.getValue();
       assertThat(action.getOffset(), Matchers.equalTo(3));
       assertThat(action.getCount(), Matchers.equalTo(EDITOR_PAGE_SIZE));
       assertThat(action.getTargetTransUnitId(), Matchers.equalTo(data.get(data.size() - 1).getId()));
@@ -144,6 +147,7 @@ public class NavigationServiceUnitTest
    @Test
    public void onNextEntry()
    {
+      service.init(initContext);
       service.selectByRowIndex(0);
 
       service.onNavTransUnit(NavTransUnitEvent.NEXT_ENTRY_EVENT);
@@ -156,6 +160,7 @@ public class NavigationServiceUnitTest
    @Test
    public void onPreviousEntry()
    {
+      service.init(initContext);
       service.selectByRowIndex(2);
       service.onNavTransUnit(NavTransUnitEvent.PREV_ENTRY_EVENT);
 
@@ -167,6 +172,7 @@ public class NavigationServiceUnitTest
    @Test
    public void onNextState()
    {
+      service.init(initContext);
       service.selectByRowIndex(0);
 
       service.onNavTransUnit(NavTransUnitEvent.NEXT_STATE_EVENT);
@@ -179,6 +185,7 @@ public class NavigationServiceUnitTest
    @Test
    public void onPreviousState()
    {
+      service.init(initContext);
       service.selectByRowIndex(2);
 
       service.onNavTransUnit(NavTransUnitEvent.PREV_STATE_EVENT);
@@ -264,11 +271,9 @@ public class NavigationServiceUnitTest
 
       service.onFindMessage(new FindMessageEvent("search"));
 
-      verify(dispatcher, atMost(4)).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList getTransUnitList = (GetTransUnitList) actionCaptor.getAllValues().get(2);
+      verify(dispatcher, times(2)).execute(actionCaptor.capture(), resultCaptor.capture());
+      GetTransUnitList getTransUnitList = actionCaptor.getValue();
       assertThat(getTransUnitList.getPhrase(), Matchers.equalTo("search"));
-      GetTransUnitsNavigation getTransUnitsNavigation = (GetTransUnitsNavigation) actionCaptor.getAllValues().get(3);
-      assertThat(getTransUnitsNavigation.getPhrase(), Matchers.equalTo("search"));
    }
 
    @Test
@@ -277,11 +282,9 @@ public class NavigationServiceUnitTest
       DocumentId documentId = new DocumentId(2);
       service.onDocumentSelected(new DocumentSelectionEvent(documentId));
 
-      verify(dispatcher, atMost(2)).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList getTransUnitList = TestFixture.extractFromActions(actionCaptor.getAllValues(), GetTransUnitList.class);
+      verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
+      GetTransUnitList getTransUnitList = actionCaptor.getValue();
       assertThat(getTransUnitList.getDocumentId(), Matchers.equalTo(documentId));
-      GetTransUnitsNavigation getTransUnitsNavigation = TestFixture.extractFromActions(actionCaptor.getAllValues(), GetTransUnitsNavigation.class);
-      assertThat(getTransUnitsNavigation.getId(), Matchers.equalTo(documentId.getId()));
    }
 
    @Test
@@ -291,8 +294,8 @@ public class NavigationServiceUnitTest
 
       service.onPageSizeChange(new EditorPageSizeChangeEvent(5));
 
-      verify(dispatcher, atMost(3)).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList getTransUnitList = (GetTransUnitList) actionCaptor.getAllValues().get(2);
+      verify(dispatcher, times(2)).execute(actionCaptor.capture(), resultCaptor.capture());
+      GetTransUnitList getTransUnitList = actionCaptor.getValue();
       assertThat(getTransUnitList.getCount(), Matchers.equalTo(5));
 
    }
@@ -300,6 +303,7 @@ public class NavigationServiceUnitTest
    @Test
    public void testSelectByRowIndex() throws Exception
    {
+      service.init(initContext);
       service.selectByRowIndex(1);
 
       assertThat(service.getCurrentRowIndexOnPage(), Matchers.equalTo(1));
@@ -318,6 +322,8 @@ public class NavigationServiceUnitTest
    @Test
    public void testGetSelectedOrNull() throws Exception
    {
+      service.init(initContext);
+
       assertThat(service.getSelectedOrNull(), Matchers.nullValue());
 
       service.selectByRowIndex(1);

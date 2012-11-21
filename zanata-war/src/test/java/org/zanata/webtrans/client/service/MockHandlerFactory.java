@@ -17,7 +17,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
-import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class MockHandlerFactory
 {
 
-   //used by GetTransUnitListHandler and GetTransUnitsNavigationHandler
+   //used by GetTransUnitListHandler
    @Mock
    private TextFlowDAO textFlowDAO;
    @Mock
@@ -67,22 +66,9 @@ public class MockHandlerFactory
       when(textFlowDAO.getTextFlows(documentId, startIndex, count)).thenReturn(hTextFlows.subList(startIndex, maxSize));
       when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
       when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
-      return handler;
-   }
 
-
-   public GetTransUnitsNavigationHandler createGetTransUnitsNavigationHandlerWithBehavior(DocumentId documentId, List<HTextFlow> hTextFlows, HLocale hLocale)
-   {
-      // @formatter:off
-      GetTransUnitsNavigationHandler handler = SeamAutowire.instance()
-            .use("identity", identity)
-            .use("textFlowDAO", textFlowDAO)
-            .use("localeServiceImpl", localeServiceImpl)
-            .autowire(GetTransUnitsNavigationHandler.class);
-      // @formatter:on
+      // trans unit navigation index handler
       when(textFlowDAO.getNavigationByDocumentId(eq(documentId.getId()), eq(hLocale), isA(ResultTransformer.class), isA(FilterConstraints.class))).thenReturn(hTextFlows);
-      when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
-
       return handler;
    }
 }
