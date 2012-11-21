@@ -13,7 +13,6 @@
 		
         .mainPanel table td {
             font-size: 13px;
-            padding: 1px;
             color: #FFFFFF;
         }
 

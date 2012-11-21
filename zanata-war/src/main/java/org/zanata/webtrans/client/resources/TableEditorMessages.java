@@ -65,10 +65,10 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Save as Fuzzy (Ctrl+S)")
    String editSaveAsFuzzyShortcut();
 
-   @DefaultMessage("Save as fuzzy")
+   @DefaultMessage("Save as Fuzzy")
    String saveAsFuzzy();
 
-   @DefaultMessage("Save as approved")
+   @DefaultMessage("Save as Approved")
    String saveAsApproved();
 
    @DefaultMessage("Cancel (Esc)")
@@ -88,4 +88,22 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Cancel changes")
    String cancelChanges();
+
+   @DefaultMessage("Cancel")
+   String cancel();
+
+   @DefaultMessage("Don''t show this warning again.")
+   String saveAsApprovedDialogRememberDecision();
+
+   @DefaultMessage("Warning! Saving a ''Need Review'' translation as ''Approved'' without changes.")
+   String saveAsApprovedDialogWarning1();
+
+   @DefaultMessage("For navigation only, please use:")
+   String saveAsApprovedDialogInfo1();
+
+   @DefaultMessage("ALT+Up or ALT+J:  Move to previous row")
+   String saveAsApprovedDialogInfo2();
+
+   @DefaultMessage("ALT+Down or ALT+K:  Move to next row")
+   String saveAsApprovedDialogInfo3();
 }

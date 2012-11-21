@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
@@ -36,65 +37,66 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.inject.Inject;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel
+public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel implements SaveAsApprovedConfirmationDisplay
 {
-   private Button saveAsApproved = new Button("Save as Approved");
-   private Button cancel = new Button("Cancel");
-   private CheckBox rememberDecision = new CheckBox("I understand these keys is Save as Approved.  Don't ask me again.");
+   private final Button saveAsApproved;
+   private final Button cancel;
+   private final CheckBox rememberDecision;
    private TransUnitId transUnitId;
 
    private TargetContentsDisplay.Listener listener;
 
-   public SaveAsApprovedConfirmationPanel()
+   @Inject
+   public SaveAsApprovedConfirmationPanel(TableEditorMessages messages)
    {
       super(false, true);
+
+      saveAsApproved = new Button(messages.saveAsApproved());
+      cancel = new Button(messages.cancel());
+      rememberDecision = new CheckBox(messages.saveAsApprovedDialogRememberDecision());
+
       VerticalPanel vp = new VerticalPanel();
       vp.setSpacing(10);
       vp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
+      Label message = new Label(messages.saveAsApprovedDialogWarning1());
+      message.addStyleName("message");
 
-      Label message = new Label("Warning! You are saving a Fuzzy translation as Approved without content changes.");
-      Label message2 = new Label("Proceed with one of the following actions:");
-
-      FlowPanel panel = new FlowPanel();
-      panel.addStyleName("message");
-
-      panel.add(message);
-      panel.add(message2);
 
       InlineLabel info = new InlineLabel();
       info.setStyleName("icon-info-circle-2 infoIcon");
-      InlineLabel message3 = new InlineLabel("For navigation only, please use: ");
-      Label message4 = new Label("ALT+Up or ALT+J:  Move to previous row");
-      Label message5 = new Label("ALT+Down or ALT+K:  Move to next row");
-      message4.addStyleName("centerAlign");
-      message5.addStyleName("centerAlign");
+      InlineLabel message3 = new InlineLabel(messages.saveAsApprovedDialogInfo1());
+      Label message4 = new Label(messages.saveAsApprovedDialogInfo2());
+      Label message5 = new Label(messages.saveAsApprovedDialogInfo3());
+      message4.addStyleName("subInfo");
+      message5.addStyleName("subInfo");
 
-      FlowPanel panel2 = new FlowPanel();
-      panel2.addStyleName("info");
+      FlowPanel infoPanel = new FlowPanel();
+      infoPanel.addStyleName("info");
 
-      panel2.add(info);
-      panel2.add(message3);
-      panel2.add(message4);
-      panel2.add(message5);
+      infoPanel.add(info);
+      infoPanel.add(message3);
+      infoPanel.add(message4);
+      infoPanel.add(message5);
 
       HorizontalPanel buttonPanel = new HorizontalPanel();
       buttonPanel.setSpacing(5);
       buttonPanel.setHeight("100%");
       buttonPanel.add(saveAsApproved);
       buttonPanel.add(cancel);
+      buttonPanel.add(rememberDecision);
       setStyleName("confirmationDialogPanel");
 
-      vp.add(panel);
-      vp.add(panel2);
+      vp.add(message);
+      vp.add(infoPanel);
       vp.add(buttonPanel);
-      vp.add(rememberDecision);
       add(vp);
 
       hide();
@@ -141,9 +143,10 @@ public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel
       center();
    }
 
-   public void setRememberUserDecision(boolean value)
+   @Override
+   public void setShowSaveApprovedWarning(boolean value)
    {
-      rememberDecision.setValue(value);
+      rememberDecision.setValue(!value);
    }
 }
 

@@ -1,9 +1,15 @@
 package org.zanata.webtrans.client.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.InOrder;
@@ -17,17 +23,11 @@ import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

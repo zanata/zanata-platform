@@ -69,10 +69,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status);
    
-   void showConfirmation(TransUnitId transUnitId);
-
-   void setShowSaveApprovedWarning(boolean showSaveApprovedWarning);
-
    interface Listener
    {
       void validate(ToggleEditor editor);

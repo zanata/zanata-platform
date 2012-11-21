@@ -37,7 +37,7 @@ public class DocumentListOptionsPresenterTest
    private EventBus eventBus;
    @Mock
    private UserWorkspaceContext userWorkspaceContext;
-   private UserConfigHolder configHolder = new UserConfigHolder();
+   private UserConfigHolder configHolder;
    @Mock
    private CachingDispatchAsync dispatcher;
    @Mock
@@ -48,6 +48,7 @@ public class DocumentListOptionsPresenterTest
    @BeforeMethod
    public void beforeMethod()
    {
+      configHolder = new UserConfigHolder();
       MockitoAnnotations.initMocks(this);
 
       presenter = new DocumentListOptionsPresenter(display, eventBus, userWorkspaceContext, dispatcher, userOptionsService);
@@ -132,27 +133,6 @@ public class DocumentListOptionsPresenterTest
       presenter.persistOptionChange();
 
       verify(userOptionsService).persistOptionChange(userOptionsService.getDocumentListOptions());
-
-      // ArgumentCaptor<SaveOptionsAction> actionCaptor =
-      // ArgumentCaptor.forClass(SaveOptionsAction.class);
-      // ArgumentCaptor<AsyncCallback> callbackCaptor =
-      // ArgumentCaptor.forClass(AsyncCallback.class);
-      // verify(dispatcher).execute(actionCaptor.capture(),
-      // callbackCaptor.capture());
-      //
-      // SaveOptionsAction action = actionCaptor.getValue();
-      // int docListSize =
-      // Integer.parseInt(action.getConfigurationMap().get(UserOptions.DocumentListPageSize));
-      // boolean showError =
-      // Boolean.parseBoolean(action.getConfigurationMap().get(UserOptions.ShowErrors));
-      //
-      // assertThat(docListSize, Matchers.equalTo(50));
-      // assertThat(showError, Matchers.equalTo(true));
-      //
-      // AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
-      // callback.onSuccess(new SaveOptionsResult());
-      // callback.onFailure(null);
-      // verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
    }
    
    @Test

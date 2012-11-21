@@ -51,6 +51,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationDisplay;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -92,6 +93,7 @@ public class TargetContentsPresenter implements
    private final EditorKeyShortcuts editorKeyShortcuts;
    private final UserWorkspaceContext userWorkspaceContext;
    private final UserOptionsService userOptionsService;
+   private final SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation;
 
    private TargetContentsDisplay display;
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
@@ -111,7 +113,8 @@ public class TargetContentsPresenter implements
                                   UserWorkspaceContext userWorkspaceContext,
                                   EditorKeyShortcuts editorKeyShortcuts,
                                   TranslationHistoryPresenter historyPresenter,
-                                  UserOptionsService userOptionsService)
+                                  UserOptionsService userOptionsService, 
+                                  SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation)
    // @formatter:on
    {
       this.displayProvider = displayProvider;
@@ -124,8 +127,10 @@ public class TargetContentsPresenter implements
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
       this.userOptionsService = userOptionsService;
+      this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
       isDisplayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
       editorKeyShortcuts.registerKeys(this);
+      saveAsApprovedConfirmation.setListener(this);
 
       bindEventHandlers();
    }
@@ -261,7 +266,7 @@ public class TargetContentsPresenter implements
 
    public void showSaveAsApprovedConfirmation(TransUnitId transUnitId)
    {
-      display.showConfirmation(transUnitId);
+      saveAsApprovedConfirmation.center(transUnitId);
    }
 
    /*
@@ -418,9 +423,9 @@ public class TargetContentsPresenter implements
             for (TargetContentsDisplay contentsDisplay : displayList)
             {
                contentsDisplay.showButtons(userOptionsService.getConfigHolder().isDisplayButtons());
-               contentsDisplay.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
             }
          }
+         saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
          isDisplayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
       }
    }

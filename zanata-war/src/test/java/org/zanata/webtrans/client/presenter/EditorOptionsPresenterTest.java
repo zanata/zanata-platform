@@ -243,20 +243,6 @@ public class EditorOptionsPresenterTest
       verify(display).setOptionsState(isA(UserConfigHolder.ConfigurationState.class));
       verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
-
-      // assertThat(configHolder.getState().isFilterByNeedReview(),
-      // Matchers.is(false));
-      // assertThat(configHolder.getState().isFilterByTranslated(),
-      // Matchers.is(false));
-      // assertThat(configHolder.getState().isFilterByUntranslated(),
-      // Matchers.is(false));
-      // assertThat(configHolder.getNavOption(),
-      // Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      // assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(25));
-      // assertThat(configHolder.isShowError(), Matchers.equalTo(false));
-      // assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(true));
-      // assertThat(configHolder.isEnterSavesApproved(),
-      // Matchers.equalTo(false));
    }
 
    @Test
@@ -269,30 +255,6 @@ public class EditorOptionsPresenterTest
       presenter.persistOptionChange();
 
       verify(userOptionsService).persistOptionChange(userOptionsService.getEditorOptions());
-
-      // ArgumentCaptor<SaveOptionsAction> actionCaptor =
-      // ArgumentCaptor.forClass(SaveOptionsAction.class);
-      // ArgumentCaptor<AsyncCallback> callbackCaptor =
-      // ArgumentCaptor.forClass(AsyncCallback.class);
-      // verify(dispatcher).execute(actionCaptor.capture(),
-      // callbackCaptor.capture());
-      //
-      // SaveOptionsAction action = actionCaptor.getValue();
-      // boolean isFilterByNeedReview =
-      // Boolean.valueOf(action.getConfigurationMap().get(UserOptions.NeedReviewMessageFilter));
-      // boolean isFilterByTranslated =
-      // Boolean.valueOf(action.getConfigurationMap().get(UserOptions.TranslatedMessageFilter));
-      // boolean isFilterByUntranslated =
-      // Boolean.valueOf(action.getConfigurationMap().get(UserOptions.UntranslatedMessageFilter));
-      //
-      // assertThat(isFilterByNeedReview, Matchers.equalTo(true));
-      // assertThat(isFilterByTranslated, Matchers.equalTo(false));
-      // assertThat(isFilterByUntranslated, Matchers.equalTo(true));
-      //
-      // AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
-      // callback.onSuccess(new SaveOptionsResult());
-      // callback.onFailure(null);
-      // verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
    }
 
    @Test

@@ -27,6 +27,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -85,6 +86,7 @@ public class TransUnitsTablePresenterTest
       verify(display).addFilterConfirmationHandler(presenter);
       verify(navigationService).addPageDataChangeListener(presenter);
       verify(eventBus).addHandler(TransUnitSaveEvent.TYPE, saveService);
+      verify(eventBus).addHandler(CheckStateHasChangedEvent.TYPE, saveService);
    }
 
    @Test

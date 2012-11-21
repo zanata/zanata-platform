@@ -58,20 +58,31 @@ public class UserConfigHolder
    
    private ConfigurationState state;
 
+   public static final int DEFAULT_DOC_LIST_PAGE_SIZE = 25;
+   public static final int DEFAULT_EDITOR_PAGE_SIZE = 25;
+   public static final boolean DEFAULT_SHOW_ERROR = false;
+   public static final boolean DEFAULT_SHOW_SAVE_APPROVED_WARNING = true;
+   public static final boolean DEFAULT_FILTER = false;
+   public static final boolean DEFAULT_DISPLAY_BUTTONS = true;
+   public static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
+   public static final boolean DEFAULT_USE_CODE_MIRROR = false;
+
    public UserConfigHolder()
    {
       // default state
       state = new ConfigurationState();
-      state.displayButtons = true;
-      state.enterSavesApproved = false;
-      state.editorPageSize = 25;
-      state.documentListPageSize = 25;
+      state.displayButtons = DEFAULT_DISPLAY_BUTTONS;
+      state.enterSavesApproved = DEFAULT_ENTER_SAVES_APPROVED;
+      state.editorPageSize = DEFAULT_EDITOR_PAGE_SIZE;
+      state.documentListPageSize = DEFAULT_DOC_LIST_PAGE_SIZE;
       state.navOption = NavOption.FUZZY_UNTRANSLATED;
-      state.showError =false;
-	 state.useCodeMirrorEditor = false;
-      state.showSaveApprovedWarning = true;
+      state.showError = DEFAULT_SHOW_ERROR;
+      state.useCodeMirrorEditor = DEFAULT_USE_CODE_MIRROR;
+      state.showSaveApprovedWarning = DEFAULT_SHOW_SAVE_APPROVED_WARNING;
 
-      
+      state.filterByNeedReview = DEFAULT_FILTER;
+      state.filterByTranslated = DEFAULT_FILTER;
+      state.filterByUntranslated = DEFAULT_FILTER;
    }
 
    public boolean isEnterSavesApproved()

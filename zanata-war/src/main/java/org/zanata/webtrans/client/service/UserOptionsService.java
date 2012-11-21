@@ -47,14 +47,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class UserOptionsService
 {
-   private static final int DEFAULT_DOC_LIST_PAGE_SIZE = 25;
-   private static final int DEFAULT_EDITOR_PAGE_SIZE = 25;
-   private static final boolean DEFAULT_SHOW_ERROR = false;
-   private static final boolean DEFAULT_SHOW_SAVE_APPROVED_WARNING = true;
-   private static final boolean DEFAULT_FILTER = false;
-   private static final boolean DEFAULT_DISPLAY_BUTTONS = true;
-   private static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
-
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final UserConfigHolder configHolder;
@@ -124,7 +116,7 @@ public class UserOptionsService
 
    public void loadCommonOptions()
    {
-      configHolder.setShowError(DEFAULT_SHOW_ERROR);
+      configHolder.setShowError(UserConfigHolder.DEFAULT_SHOW_ERROR);
    }
 
    public void loadDocumentListDefaultOptions()
@@ -132,7 +124,7 @@ public class UserOptionsService
       // default options
       loadCommonOptions();
 
-      configHolder.setDocumentListPageSize(DEFAULT_DOC_LIST_PAGE_SIZE);
+      configHolder.setDocumentListPageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
    }
 
    public void loadEditorDefaultOptions()
@@ -141,14 +133,15 @@ public class UserOptionsService
       loadCommonOptions();
 
       // default options
-      configHolder.setDisplayButtons(DEFAULT_DISPLAY_BUTTONS);
-      configHolder.setEnterSavesApproved(DEFAULT_ENTER_SAVES_APPROVED);
-      configHolder.setFilterByTranslated(DEFAULT_FILTER);
-      configHolder.setFilterByNeedReview(DEFAULT_FILTER);
-      configHolder.setFilterByUntranslated(DEFAULT_FILTER);
+      configHolder.setDisplayButtons(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS);
+      configHolder.setEnterSavesApproved(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED);
+      configHolder.setFilterByTranslated(UserConfigHolder.DEFAULT_FILTER);
+      configHolder.setFilterByNeedReview(UserConfigHolder.DEFAULT_FILTER);
+      configHolder.setFilterByUntranslated(UserConfigHolder.DEFAULT_FILTER);
       configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
-      configHolder.setEditorPageSize(DEFAULT_EDITOR_PAGE_SIZE);
-      configHolder.setShowSaveApprovedWarning(DEFAULT_SHOW_SAVE_APPROVED_WARNING);
+      configHolder.setEditorPageSize(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE);
+      configHolder.setShowSaveApprovedWarning(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING);
+      configHolder.setUseCodeMirrorEditor(UserConfigHolder.DEFAULT_USE_CODE_MIRROR);
    }
 
    public UserConfigHolder getConfigHolder()

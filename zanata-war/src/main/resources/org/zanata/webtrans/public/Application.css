@@ -649,6 +649,9 @@ td.ApprovedStateDecoration div div div
 
 .confirmationDialogPanel .message {
 	text-align:left;
+	font-size:14px;
+	font-weight:bold;
+	color:#FFC000;
 }
 
 .confirmationDialogPanel table {
@@ -667,11 +670,11 @@ td.ApprovedStateDecoration div div div
 
 .confirmationDialogPanel .info .infoIcon {
 	color: lightblue;
-	font-size:16px;
+	font-size:18px;
 }
 
-.confirmationDialogPanel .info .centerAlign {
-	text-align:center;
+.confirmationDialogPanel .info .subInfo {
+	padding-left:50px;
 }
 
 .sourceTable {

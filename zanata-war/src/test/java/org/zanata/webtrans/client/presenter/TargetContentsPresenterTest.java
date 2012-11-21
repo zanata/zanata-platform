@@ -70,6 +70,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationDisplay;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
@@ -121,6 +122,8 @@ public class TargetContentsPresenterTest
    private EditorKeyShortcuts editorKeyShortcuts;
    @Mock
    private UserOptionsService userOptionsService;
+   @Mock
+   private SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation;
 
    @BeforeMethod
    public void beforeMethod()
@@ -131,7 +134,7 @@ public class TargetContentsPresenterTest
       when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
       userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts, historyPresenter, userOptionsService);
+      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts, historyPresenter, userOptionsService, saveAsApprovedConfirmation);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -140,6 +143,7 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
+      verify(saveAsApprovedConfirmation).setListener(presenter);
 
       when(displayProvider.get()).thenReturn(display);
       presenter.showData(currentPageRows);
@@ -471,7 +475,7 @@ public class TargetContentsPresenterTest
 
       // Then:
       verify(display, times(3)).showButtons(false);
-      verify(display, times(3)).setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
+      saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
    }
 
    @Test

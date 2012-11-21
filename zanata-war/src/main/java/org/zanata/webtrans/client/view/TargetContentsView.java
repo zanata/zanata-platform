@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.Editor;
-import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationPanel;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
@@ -35,13 +35,11 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -80,8 +78,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @UiField
    Label savingIndicator;
    
-   private final SaveAsApprovedConfirmationPanel saveAsApprovedConfirmationPanel;
-
    private HorizontalPanel rootPanel;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
@@ -90,7 +86,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private TransUnit cachedValue;
 
    @Inject
-   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
+   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider, TableEditorMessages messages)
    {
       validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);
@@ -98,13 +94,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       editorGrid.ensureDebugId("target-contents-grid");
       editorGrid.setWidth("100%");
       editors = Lists.newArrayList();
-      saveAsApprovedConfirmationPanel = new SaveAsApprovedConfirmationPanel();
-   }
-   
-   @Override
-   public void showConfirmation(TransUnitId transUnitId)
-   {
-      saveAsApprovedConfirmationPanel.center(transUnitId);
    }
 
    @Override
@@ -307,7 +296,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setListener(Listener listener)
    {
       this.listener = listener;
-      saveAsApprovedConfirmationPanel.setListener(listener);
    }
 
    @Override
@@ -381,11 +369,5 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
 
    interface Binder extends UiBinder<HorizontalPanel, TargetContentsView>
    {
-   }
-
-   @Override
-   public void setShowSaveApprovedWarning(boolean showSaveApprovedWarning)
-   {
-      saveAsApprovedConfirmationPanel.setRememberUserDecision(!showSaveApprovedWarning);
    }
 }
