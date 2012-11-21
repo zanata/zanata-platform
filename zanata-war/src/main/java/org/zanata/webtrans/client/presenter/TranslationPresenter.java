@@ -102,6 +102,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       registerHandler(eventBus.addHandler(DisplaySouthPanelEvent.TYPE, this));
       setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
+      // @formatter:off
+      // navigate to previous row shortcut
       KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
       {
          @Override
@@ -111,7 +113,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
          }
       };
+      KeyShortcut movePreviousShortcut = KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP)).addKey(new Keys(Keys.ALT_KEY, 'J'))
+            .setContext(ShortcutContext.Navigation).setDescription(messages.navigateToPreviousRow())
+            .setPreventDefault(true).setStopPropagation(true)
+            .setHandler(gotoPreRowHandler).build();
+      keyShortcutPresenter.register(movePreviousShortcut);
 
+      // navigate to next row shortcut
       KeyShortcutEventHandler gotoNextRowHandler = new KeyShortcutEventHandler()
       {
          @Override
@@ -121,28 +130,33 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
          }
       };
-
-      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
-            new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J')),
-            ShortcutContext.Navigation, messages.navigateToPreviousRow(), KeyEvent.KEY_DOWN, true, true, gotoPreRowHandler));
-
-      keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(
-            new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K')),
-            ShortcutContext.Navigation, messages.navigateToNextRow(), KeyEvent.KEY_DOWN, true, true, gotoNextRowHandler));
+      KeyShortcut moveNextShortcut = KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN)).addKey(new Keys(Keys.ALT_KEY, 'K'))
+            .setContext(ShortcutContext.Navigation).setDescription(messages.navigateToNextRow())
+            .setPreventDefault(true).setStopPropagation(true)
+            .setHandler(gotoNextRowHandler).build();
+      keyShortcutPresenter.register(moveNextShortcut);
 
       // Register shortcut Enter to open editor in selected row - if no other input field is in focus
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Navigation, messages.openEditorInSelectedRow(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            if (!isOtherInputFieldFocused() && userWorkspaceContext.hasWriteAccess())
+      KeyShortcut startEditingShortcut = KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
+            .setContext(ShortcutContext.Navigation)
+            .setDescription(messages.openEditorInSelectedRow())
+            .setKeyEvent(KeyEvent.KEY_UP)
+            .setHandler(new KeyShortcutEventHandler()
             {
-               targetContentsPresenter.setFocus();
-               targetContentsPresenter.revealDisplay();
-            }
-         }
-      }));
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  if (!isOtherInputFieldFocused() && userWorkspaceContext.hasWriteAccess())
+                  {
+                     targetContentsPresenter.setFocus();
+                     targetContentsPresenter.revealDisplay();
+                  }
+               }
+            }).build();
+      // @formatter:on
+      keyShortcutPresenter.register(startEditingShortcut);
    }
 
    private boolean isOtherInputFieldFocused()

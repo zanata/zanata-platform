@@ -292,6 +292,7 @@ public class TargetContentsPresenter implements
          currentEditorIndex = 0;
          savePendingChangesIfApplicable();
          eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+         Log.info("fired nav to next event");
       }
    }
 

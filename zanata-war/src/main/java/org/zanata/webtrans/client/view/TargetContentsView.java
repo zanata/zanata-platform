@@ -110,17 +110,17 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void focusEditor(final int currentEditorIndex)
    {
-      Scheduler.get().scheduleDeferred(new Command()
-      {
-         @Override
-         public void execute()
-         {
+//      Scheduler.get().scheduleDeferred(new Command()
+//      {
+//         @Override
+//         public void execute()
+//         {
             if (currentEditorIndex >= 0 && currentEditorIndex < editors.size())
             {
                editors.get(currentEditorIndex).setFocus();
             }
-         }
-      });
+//         }
+//      });
    }
 
    @Override

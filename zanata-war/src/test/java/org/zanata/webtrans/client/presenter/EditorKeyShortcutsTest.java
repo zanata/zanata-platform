@@ -126,10 +126,10 @@ public class EditorKeyShortcutsTest
 
       verify(keyShortcutPresenter, times(4)).register(keyShortcutCaptor.capture());
       List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
-      assertKeys(keys.get(0), "next entry", false, false, new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K'));
-      assertKeys(keys.get(1), "previous entry", false, false, new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J'));
-      assertKeys(keys.get(2), "next fuzzy or untranslated", false, false, new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN));
-      assertKeys(keys.get(3), "previous fuzzy or untranslated", false, false, new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP));
+      assertKeys(keys.get(0), "next entry", true, true, new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN), new Keys(Keys.ALT_KEY, 'K'));
+      assertKeys(keys.get(1), "previous entry", true, true, new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP), new Keys(Keys.ALT_KEY, 'J'));
+      assertKeys(keys.get(2), "next fuzzy or untranslated", true, true, new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN));
+      assertKeys(keys.get(3), "previous fuzzy or untranslated", true, true, new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP));
    }
 
    @Test

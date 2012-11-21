@@ -100,6 +100,7 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
       if (isEditing)
       {
          typingTimer.scheduleRepeating(CHECK_INTERVAL);
+         setFocus(true);
       }
       else
       {

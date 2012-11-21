@@ -119,30 +119,40 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
-      register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE), ShortcutContext.Application,
-            messages.closeShortcutView(), KeyEvent.KEY_UP, true, true, new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            if (display.isShowing())
+      // @formatter:off
+      KeyShortcut escKeyShortcut = KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.closeShortcutView())
+            .setKeyEvent(KeyEvent.KEY_UP)
+            .setPreventDefault(true)
+            .setStopPropagation(true)
+            .setHandler(new KeyShortcutEventHandler()
             {
-               display.hide(true);
-            }
-         }
-      }));
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  if (display.isShowing())
+                  {
+                     display.hide(true);
+                  }
+               }
+            }).build();
+      // @formatter:on
+      register(escKeyShortcut);
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
-      register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'Y'), ShortcutContext.Application,
-            messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            showShortcuts();
-         }
-      }));
+      KeyShortcut availableKeysShortcut = KeyShortcut.Builder.builder().addKey(new Keys(Keys.ALT_KEY, 'Y')).setContext(ShortcutContext.Application)
+            .setDescription(messages.showAvailableKeyShortcuts()).setHandler(new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  showShortcuts();
+               }
+            }).build();
+      register(availableKeysShortcut);
    }
 
    @Override

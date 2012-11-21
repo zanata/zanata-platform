@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface TextAreaWrapper extends IsWidget, HasText, HasValueChangeHandlers<String>, HasBlurHandlers, HasChangeHandlers, HasFocusHandlers
 {
-   void setFocus(boolean focused);
 
    void setReadOnly(boolean readOnly);
 
