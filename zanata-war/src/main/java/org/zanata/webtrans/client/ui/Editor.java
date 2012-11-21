@@ -76,7 +76,7 @@ public class Editor extends Composite implements ToggleEditor
       }
       else
       {
-         textArea = new EditorTextArea();
+         textArea = new EditorTextArea(displayString);
       }
 
       initWidget(uiBinder.createAndBindUi(this));
