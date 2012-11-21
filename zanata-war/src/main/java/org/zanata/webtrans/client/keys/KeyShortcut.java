@@ -24,6 +24,9 @@ import java.util.Set;
 
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
 /**
  * Represents a key shortcut for registration with {@link KeyShortcutPresenter}.
@@ -60,76 +63,32 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    private final boolean stopPropagation;
    private final boolean preventDefault;
 
-
    /**
     * Construct a KeyShortcut.
-    * 
-    * @param modifiers keys such as Shift and Alt that must be depressed for the
-    *           shortcut to fire.
-    *           <p>
-    *           Use {@link Keys#ALT_KEY}, {@link Keys#SHIFT_KEY},
-    *           {@link Keys#SHIFT_ALT_KEYS}, {@link Keys#META_KEY} and {@link Keys#CTRL_KEY}
-    *           to generate this. ( e.g. {@code CTRL_KEY | ALT_KEY} )
-    *           </p>
-    * @param keyCode the integer code for the key.
-    *           <p>
-    *           This may be an uppercase character, but results may vary so test
-    *           thoroughly in the targeted browsers.
-    *           </p>
-    *           <p>
-    *           Note that for keypress events, the key code depends on Shift and
-    *           CapsLock and will give the lowercase or uppercase ASCII code as
-    *           expected. keydown and keyup events appear always to give the
-    *           uppercase key code.
-    *           </p>
-    * @param context see
-    *           {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
-    * @param description shown to the user in the key shortcut summary pane.
-    *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being
-    *        displayed in the summary pane.
-    * @param keyEvent determines which type of key event will trigger this shortcut.
-    * @param stopPropagation {@see NativeEvent#stopPropagation()}
-    * @param preventDefault {@see NativeEvent#preventDefault()}
-    * @param handler activated for a registered {@link KeyShortcut} when context is active
-    *        and a user inputs the correct key combination
+    *
+    * @param builder key shortcut builder
     */
-   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description,
-         KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
+   public KeyShortcut(Builder builder)
+   {
+      this.keys = builder.keys;
+      this.context = builder.context;
+      this.description = builder.description;
+      this.handler = builder.handler;
+      this.keyEvent = builder.keyEvent;
+      this.stopPropagation = builder.stopPropagation;
+      this.preventDefault = builder.preventDefault;
+   }
+
+   // TODO migrate all code to use Builder
+   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description, KeyShortcutEventHandler handler)
    {
       this.keys = Keys.setOf(shortcutKeys);
       this.context = context;
       this.description = description;
       this.handler = handler;
-      this.keyEvent = keyEvent;
-      this.stopPropagation = stopPropagation;
-      this.preventDefault = preventDefault;
-   }
-
-   /**
-    * Create a key-down key shortcut that does not stop propagation or prevent default actions.
-    * 
-    * @see #KeyShortcut(int, int, ShortcutContext, String, KeyShortcutEventHandler, String, boolean, boolean, boolean)
-    */
-   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description, KeyShortcutEventHandler handler)
-   {
-      this(shortcutKeys, context, description, KeyEvent.KEY_DOWN, false, false, handler);
-   }
-
-   public KeyShortcut(Set<Keys> shortcutKeySet, ShortcutContext context, String description, KeyShortcutEventHandler handler)
-   {
-      this(shortcutKeySet, context, description, KeyEvent.KEY_DOWN, false, false, handler);
-   }
-
-   public KeyShortcut(Set<Keys> shortcutKeySet, ShortcutContext context, String description,
-         KeyEvent keyEvent, boolean stopPropagation, boolean preventDefault, KeyShortcutEventHandler handler)
-   {
-      this.keys = shortcutKeySet;
-      this.context = context;
-      this.description = description;
-      this.handler = handler;
-      this.keyEvent = keyEvent;
-      this.stopPropagation = stopPropagation;
-      this.preventDefault = preventDefault;
+      this.keyEvent = KeyEvent.KEY_DOWN;
+      this.stopPropagation = false;
+      this.preventDefault = false;
    }
 
    public Set<Keys> getAllKeys()
@@ -218,6 +177,113 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public void setDescription(String description)
    {
       this.description = description;
+   }
+
+   public static class Builder
+   {
+      private Set<Keys> keys = Sets.newHashSet();
+      private ShortcutContext context;
+      private String description;
+      private KeyShortcutEventHandler handler;
+      private KeyEvent keyEvent = KeyEvent.KEY_DOWN;
+      private boolean stopPropagation = false;
+      private boolean preventDefault = false;
+
+      private Builder(KeyShortcut shortcut)
+      {
+         this.keys = shortcut.getAllKeys();
+         this.context = shortcut.getContext();
+         this.description = shortcut.getDescription();
+         this.handler = shortcut.getHandler();
+         this.keyEvent = shortcut.getKeyEvent();
+         this.stopPropagation = shortcut.isStopPropagation();
+         this.preventDefault = shortcut.isPreventDefault();
+      }
+
+      private Builder()
+      {
+      }
+
+      public static Builder builder()
+      {
+         return new Builder();
+      }
+
+      public KeyShortcut build()
+      {
+         Preconditions.checkNotNull(keys);
+         Preconditions.checkNotNull(context);
+         Preconditions.checkNotNull(handler);
+         Preconditions.checkNotNull(keyEvent);
+         return new KeyShortcut(this);
+      }
+
+      public Builder addKey(Keys key)
+      {
+         keys.add(key);
+         return this;
+      }
+
+      /**
+       * @param context see {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
+       * @return builder itself
+       */
+      public Builder setContext(ShortcutContext context)
+      {
+         this.context = context;
+         return this;
+      }
+
+      /**
+       * @param description shown to the user in the key shortcut summary pane.
+       *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being
+       * @return builder itself
+       */
+      public Builder setDescription(String description)
+      {
+         this.description = description;
+         return this;
+      }
+
+      /**
+       * @param handler activated for a registered {@link KeyShortcut} when context is active and a user inputs the correct key combination
+       * @return builder itself
+       */
+      public Builder setHandler(KeyShortcutEventHandler handler)
+      {
+         this.handler = handler;
+         return this;
+      }
+
+      /**
+       * @param keyEvent determines which type of key event will trigger this shortcut.
+       * @return builder itself
+       */
+      public Builder setKeyEvent(KeyEvent keyEvent)
+      {
+         this.keyEvent = keyEvent;
+         return this;
+      }
+
+      /**
+       * @param stopPropagation {@see NativeEvent#stopPropagation()}
+       * @return builder itself
+       */
+      public Builder setStopPropagation(boolean stopPropagation)
+      {
+         this.stopPropagation = stopPropagation;
+         return this;
+      }
+
+      /**
+       * @param preventDefault {@see NativeEvent#preventDefault()}
+       * @return builder itself
+       */
+      public Builder setPreventDefault(boolean preventDefault)
+      {
+         this.preventDefault = preventDefault;
+         return this;
+      }
    }
 
 }

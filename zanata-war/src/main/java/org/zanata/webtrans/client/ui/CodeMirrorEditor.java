@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -97,11 +98,12 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
    // callback function for the code mirror instance. Gets called when code mirror editor is on focus.
    private void onFocus()
    {
-//      NativeEvent focusEvent = Document.get().createFocusEvent();
-//      FocusEvent.fireNativeEvent(focusEvent, this, this.getElement());
-      editing = true;
-      // this is to ensure row selection (on right click)
-      onFocusCallback.execute();
+      if (!editing)
+      {
+         editing = true;
+         // this is to ensure row selection (on right click)
+         onFocusCallback.execute();
+      }
    }
 
    // callback function for the code mirror instance. Gets called when code mirror editor is on blur.
@@ -129,15 +131,6 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
          editor.setValue(text);
       }
    }-*/;
-
-   @Override
-   public void setFocus(boolean focused)
-   {
-      if (focused)
-      {
-         focusEditor();
-      }
-   }
 
    private native void focusEditor() /*-{
       var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
@@ -261,6 +254,11 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
    @Override
    public void setEditing(boolean isEditing)
    {
+      // if set for editing and is not already editing, we want to focus code mirror editor
+      if (isEditing && !editing)
+      {
+         focusEditor();
+      }
       editing = isEditing;
    }
 

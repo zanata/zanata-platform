@@ -105,11 +105,18 @@ public class Editor extends Composite implements ToggleEditor
       listener.setEditingState(id, UNSAVED);
    }
 
+//   @UiHandler("rootContainer")
+//   public void onEditorClicked(ClickEvent event)
+//   {
+//      listener.onEditorClicked(id, index);
+//      textArea.setEditing(true);
+//      fireValidationEvent();
+//   }
+
    @UiHandler("textArea")
    public void onTextAreaFocus(FocusEvent event)
    {
       listener.onEditorClicked(id, index);
-      textArea.setFocus(true);
       textArea.setEditing(true);
       fireValidationEvent();
    }
@@ -176,7 +183,7 @@ public class Editor extends Composite implements ToggleEditor
    public void setFocus()
    {
       textArea.setEditing(true);
-      textArea.setFocus(true);
+//      textArea.setFocus(true);
    }
 
    @Override
