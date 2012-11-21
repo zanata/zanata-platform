@@ -21,16 +21,13 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.SaveOptionsService;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
-import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
-import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
-import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -48,7 +45,6 @@ public class EditorOptionsPresenterTest
    private UserWorkspaceContext userWorkspaceContext;
    @Mock
    private ValidationOptionsPresenter validationDetailsPresenter;
-   private UserConfigHolder configHolder = new UserConfigHolder();
    @Mock
    private HasValue<Boolean> needReviewChk;
    @Mock
@@ -62,7 +58,9 @@ public class EditorOptionsPresenterTest
    @Captor
    private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
    @Mock
-   private SaveOptionsService saveOptionsService;
+   private UserOptionsService userOptionsService;
+
+   private UserConfigHolder configHolder = new UserConfigHolder();
 
    @BeforeMethod
    public void beforeMethod()
@@ -71,8 +69,9 @@ public class EditorOptionsPresenterTest
       when(display.getNeedReviewChk()).thenReturn(needReviewChk);
       when(display.getTranslatedChk()).thenReturn(translatedChk);
       when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
+      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
-      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, configHolder, dispatcher, saveOptionsService);
+      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, dispatcher, userOptionsService);
       verify(display).setListener(presenter);
    }
 
@@ -96,7 +95,7 @@ public class EditorOptionsPresenterTest
 
       verify(eventBus).addHandler(FilterViewEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
-      verify(display).setOptionsState(configHolder.getState());
+      verify(display).setOptionsState(userOptionsService.getConfigHolder().getState());
    }
 
    @Test
@@ -129,6 +128,7 @@ public class EditorOptionsPresenterTest
       // Given: project become inactive
       WorkspaceContextUpdateEvent workspaceContextUpdateEvent = new WorkspaceContextUpdateEvent(workplaceContextData(false));
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(true);
+      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
       // When:
       presenter.onWorkspaceContextUpdated(workspaceContextUpdateEvent);
@@ -238,17 +238,25 @@ public class EditorOptionsPresenterTest
 
       presenter.loadDefaultOptions();
 
-      assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.is(false));
-      assertThat(configHolder.getState().isFilterByTranslated(), Matchers.is(false));
-      assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.is(false));
-      assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(25));
-      assertThat(configHolder.isShowError(), Matchers.equalTo(false));
-      assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(true));
-      assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(false));
-      verify(display).setOptionsState(configHolder.getState());
+      verify(userOptionsService).loadEditorDefaultOptions();
+
+      verify(display).setOptionsState(isA(UserConfigHolder.ConfigurationState.class));
       verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
+
+      // assertThat(configHolder.getState().isFilterByNeedReview(),
+      // Matchers.is(false));
+      // assertThat(configHolder.getState().isFilterByTranslated(),
+      // Matchers.is(false));
+      // assertThat(configHolder.getState().isFilterByUntranslated(),
+      // Matchers.is(false));
+      // assertThat(configHolder.getNavOption(),
+      // Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
+      // assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(25));
+      // assertThat(configHolder.isShowError(), Matchers.equalTo(false));
+      // assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(true));
+      // assertThat(configHolder.isEnterSavesApproved(),
+      // Matchers.equalTo(false));
    }
 
    @Test
@@ -260,23 +268,31 @@ public class EditorOptionsPresenterTest
 
       presenter.persistOptionChange();
 
-      ArgumentCaptor<SaveOptionsAction> actionCaptor = ArgumentCaptor.forClass(SaveOptionsAction.class);
-      ArgumentCaptor<AsyncCallback> callbackCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
-      verify(dispatcher).execute(actionCaptor.capture(), callbackCaptor.capture());
+      verify(userOptionsService).persistOptionChange(userOptionsService.getEditorOptions());
 
-      SaveOptionsAction action = actionCaptor.getValue();
-      boolean isFilterByNeedReview = Boolean.valueOf(action.getConfigurationMap().get(UserOptions.NeedReviewMessageFilter));
-      boolean isFilterByTranslated = Boolean.valueOf(action.getConfigurationMap().get(UserOptions.TranslatedMessageFilter));
-      boolean isFilterByUntranslated = Boolean.valueOf(action.getConfigurationMap().get(UserOptions.UntranslatedMessageFilter));
-      
-      assertThat(isFilterByNeedReview, Matchers.equalTo(true));
-      assertThat(isFilterByTranslated, Matchers.equalTo(false));
-      assertThat(isFilterByUntranslated, Matchers.equalTo(true));
-
-      AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
-      callback.onSuccess(new SaveOptionsResult());
-      callback.onFailure(null);
-      verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
+      // ArgumentCaptor<SaveOptionsAction> actionCaptor =
+      // ArgumentCaptor.forClass(SaveOptionsAction.class);
+      // ArgumentCaptor<AsyncCallback> callbackCaptor =
+      // ArgumentCaptor.forClass(AsyncCallback.class);
+      // verify(dispatcher).execute(actionCaptor.capture(),
+      // callbackCaptor.capture());
+      //
+      // SaveOptionsAction action = actionCaptor.getValue();
+      // boolean isFilterByNeedReview =
+      // Boolean.valueOf(action.getConfigurationMap().get(UserOptions.NeedReviewMessageFilter));
+      // boolean isFilterByTranslated =
+      // Boolean.valueOf(action.getConfigurationMap().get(UserOptions.TranslatedMessageFilter));
+      // boolean isFilterByUntranslated =
+      // Boolean.valueOf(action.getConfigurationMap().get(UserOptions.UntranslatedMessageFilter));
+      //
+      // assertThat(isFilterByNeedReview, Matchers.equalTo(true));
+      // assertThat(isFilterByTranslated, Matchers.equalTo(false));
+      // assertThat(isFilterByUntranslated, Matchers.equalTo(true));
+      //
+      // AsyncCallback<SaveOptionsResult> callback = callbackCaptor.getValue();
+      // callback.onSuccess(new SaveOptionsResult());
+      // callback.onFailure(null);
+      // verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
    }
 
    @Test
@@ -288,8 +304,7 @@ public class EditorOptionsPresenterTest
       configHolder.setNavOption(NavOption.FUZZY);
       configHolder.setEditorPageSize(10);
 
-      LoadOptionsResult result = new LoadOptionsResult();
-      result.setConfiguration( configHolder.getState() );
+      LoadOptionsResult result = new LoadOptionsResult(configHolder.getState());
 
       presenter.loadOptions();
 

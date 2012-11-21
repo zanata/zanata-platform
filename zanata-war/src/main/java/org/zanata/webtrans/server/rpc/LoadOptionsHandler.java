@@ -134,9 +134,7 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setShowSaveApprovedWarning(filteredOptions.get(UserOptions.ShowSaveApprovedWarning.getPersistentName()).getValueAsBoolean());
       }
 
-      LoadOptionsResult result = new LoadOptionsResult();
-      result.setConfiguration(configHolder.getState());
-      return result;
+      return new LoadOptionsResult(configHolder.getState());
    }
 
    @Override

@@ -243,6 +243,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       }
       else if (event == RefreshPageEvent.REDRAW_PAGE_EVENT)
       {
+         targetContentsPresenter.savePendingChangesIfApplicable();
          List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
          sourceContentsPresenter.showData(currentPageValues);
          targetContentsPresenter.showData(currentPageValues);

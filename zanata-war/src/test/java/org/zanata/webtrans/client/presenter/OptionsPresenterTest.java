@@ -1,14 +1,10 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
-import static org.mockito.Mockito.mock;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -17,27 +13,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.DocumentListOptionsDisplay;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
-import org.zanata.webtrans.shared.model.UserOptions;
-import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
-import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
-import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
-import org.zanata.webtrans.shared.rpc.NavOption;
-import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
-import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
-
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
 
 @Test(groups = { "unit-tests" })
 public class OptionsPresenterTest
@@ -52,6 +32,8 @@ public class OptionsPresenterTest
    private OptionsDisplay display;
    @Mock
    private EventBus eventBus;
+   @Mock
+   private UserOptionsService userOptionsService;
    
    private UserConfigHolder configHolder = new UserConfigHolder();
    
@@ -62,8 +44,9 @@ public class OptionsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
+      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
-     presenter = new OptionsPresenter(display, eventBus, editorOptionsPresenter, documentListOptionsPresenter, configHolder);
+      presenter = new OptionsPresenter(display, eventBus, editorOptionsPresenter, documentListOptionsPresenter, userOptionsService);
      verify(display).setListener(presenter);
    }
 

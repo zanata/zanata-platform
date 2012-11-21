@@ -30,11 +30,13 @@ import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.ReloadUserConfigUIEvent;
+import org.zanata.webtrans.client.events.ReloadUserConfigUIHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.SaveOptionsService;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 import org.zanata.webtrans.shared.model.UserOptions;
@@ -48,13 +50,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler
+public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler, ReloadUserConfigUIHandler
 {
    private final ValidationOptionsPresenter validationOptionsPresenter;
-   private final UserConfigHolder configHolder;
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
-   private final SaveOptionsService saveOptionsService;
+   private final UserOptionsService userOptionsService;
    
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
    {
@@ -62,23 +63,22 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
          eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), false));
-         configHolder.setFilterByUntranslated( display.getUntranslatedChk().getValue() );
-         configHolder.setFilterByNeedReview( display.getNeedReviewChk().getValue() );
-         configHolder.setFilterByTranslated( display.getTranslatedChk().getValue() );
+         userOptionsService.getConfigHolder().setFilterByUntranslated(display.getUntranslatedChk().getValue());
+         userOptionsService.getConfigHolder().setFilterByNeedReview(display.getNeedReviewChk().getValue());
+         userOptionsService.getConfigHolder().setFilterByTranslated(display.getTranslatedChk().getValue());
       }
    };
 
    @Inject
    public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
-                                 ValidationOptionsPresenter validationDetailsPresenter, UserConfigHolder configHolder,
- CachingDispatchAsync dispatcher, SaveOptionsService saveOptionsService)
+ ValidationOptionsPresenter validationDetailsPresenter,
+ CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
-      this.configHolder = configHolder;
       this.userWorkspaceContext = userWorkspaceContext;
       this.dispatcher = dispatcher;
-      this.saveOptionsService = saveOptionsService;
+      this.userOptionsService = userOptionsService;
       display.setListener(this);
    }
 
@@ -96,9 +96,10 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       registerHandler(display.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
       registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+      registerHandler(eventBus.addHandler(ReloadUserConfigUIEvent.TYPE, this));
 
       //set options default values
-      display.setOptionsState(configHolder.getState());
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
    }
 
    @Override
@@ -110,9 +111,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
 
    private void setReadOnly(boolean readOnly)
    {
-      boolean displayButtons = !readOnly && configHolder.isDisplayButtons();
-      configHolder.setDisplayButtons(displayButtons);
-      display.setOptionsState(configHolder.getState());
+      boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().isDisplayButtons();
+      userOptionsService.getConfigHolder().setDisplayButtons(displayButtons);
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
       eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
    }
 
@@ -132,9 +133,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onSelectionChange(String groupName, NavOption navOption)
    {
-      if (configHolder.getNavOption() != navOption)
+      if (userOptionsService.getConfigHolder().getNavOption() != navOption)
       {
-         configHolder.setNavOption(navOption);
+         userOptionsService.getConfigHolder().setNavOption(navOption);
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
    }
@@ -142,9 +143,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onPageSizeClick(int pageSize)
    {
-      if (configHolder.getEditorPageSize() != pageSize)
+      if (userOptionsService.getConfigHolder().getEditorPageSize() != pageSize)
       {
-         configHolder.setEditorPageSize(pageSize);
+         userOptionsService.getConfigHolder().setEditorPageSize(pageSize);
          eventBus.fireEvent(new EditorPageSizeChangeEvent(pageSize));
       }
    }
@@ -152,9 +153,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onEnterSaveOptionChanged(Boolean enterSaveApproved)
    {
-      if (configHolder.isEnterSavesApproved() != enterSaveApproved)
+      if (userOptionsService.getConfigHolder().isEnterSavesApproved() != enterSaveApproved)
       {
-         configHolder.setEnterSavesApproved(enterSaveApproved);
+         userOptionsService.getConfigHolder().setEnterSavesApproved(enterSaveApproved);
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
    }
@@ -162,9 +163,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onEditorButtonsOptionChanged(Boolean editorButtons)
    {
-      if (configHolder.isDisplayButtons() != editorButtons)
+      if (userOptionsService.getConfigHolder().isDisplayButtons() != editorButtons)
       {
-         configHolder.setDisplayButtons(editorButtons);
+         userOptionsService.getConfigHolder().setDisplayButtons(editorButtons);
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
    }
@@ -172,9 +173,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning)
    {
-      if (configHolder.isShowSaveApprovedWarning() != showSaveApprovedWarning)
+      if (userOptionsService.getConfigHolder().isShowSaveApprovedWarning() != showSaveApprovedWarning)
       {
-         configHolder.setShowSaveApprovedWarning(showSaveApprovedWarning);
+         userOptionsService.getConfigHolder().setShowSaveApprovedWarning(showSaveApprovedWarning);
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
       }
    }
@@ -182,9 +183,9 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue)
    {
-      if (configHolder.isUseCodeMirrorEditor() != useCodeMirrorChkValue)
+      if (userOptionsService.getConfigHolder().isUseCodeMirrorEditor() != useCodeMirrorChkValue)
       {
-         configHolder.setUseCodeMirrorEditor(useCodeMirrorChkValue);
+         userOptionsService.getConfigHolder().setUseCodeMirrorEditor(useCodeMirrorChkValue);
          eventBus.fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);
       }
    }
@@ -202,7 +203,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void persistOptionChange()
    {
-      saveOptionsService.persistOptionChange(saveOptionsService.getEditorOptions());
+      userOptionsService.persistOptionChange(userOptionsService.getEditorOptions());
    }
 
    @Override
@@ -223,12 +224,8 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
          @Override
          public void onSuccess(LoadOptionsResult result)
          {
-            configHolder.setState( result.getConfiguration() );
-
-            display.setOptionsState(configHolder.getState());
-            eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
-            filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded editor options"));
+            userOptionsService.getConfigHolder().setState(result.getConfiguration());
+            refreshOptions();
          }
       });
    }
@@ -236,11 +233,25 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void loadDefaultOptions()
    {
-      saveOptionsService.loadEditorDefaultOptions();
-      display.setOptionsState(configHolder.getState());
+      userOptionsService.loadEditorDefaultOptions();
+      refreshOptions();
+   }
 
+   @Override
+   public void onReloadUserConfigUI(ReloadUserConfigUIEvent event)
+   {
+      if (event.getView() == MainView.Editor)
+      {
+         display.setOptionsState(userOptionsService.getConfigHolder().getState());
+      }
+   }
+
+   private void refreshOptions()
+   {
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
+      filterChangeHandler.onValueChange(null); // NB: Null event is valid
+                                               // because it's not being used
       eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
-      filterChangeHandler.onValueChange(null); //NB: Null event is valid because it's not being used
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
    }
 }

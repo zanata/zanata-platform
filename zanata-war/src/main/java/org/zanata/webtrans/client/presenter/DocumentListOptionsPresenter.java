@@ -30,7 +30,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.SaveOptionsService;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.DocumentListOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 import org.zanata.webtrans.shared.model.UserOptions;
@@ -43,21 +43,19 @@ import com.google.inject.Inject;
 
 public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOptionsDisplay> implements DocumentListOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler
 {
-   private final UserConfigHolder configHolder;
    private final CachingDispatchAsync dispatcher;
    private final UserWorkspaceContext userWorkspaceContext;
-   private final SaveOptionsService saveOptionsService;
+   private final UserOptionsService userOptionsService;
 
 
    @Inject
-   public DocumentListOptionsPresenter(DocumentListOptionsDisplay display, EventBus eventBus, UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext,
- CachingDispatchAsync dispatcher, SaveOptionsService saveOptionsService)
+   public DocumentListOptionsPresenter(DocumentListOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
+ CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
-      this.configHolder = configHolder;
       this.userWorkspaceContext = userWorkspaceContext;
       this.dispatcher = dispatcher;
-      this.saveOptionsService = saveOptionsService;
+      this.userOptionsService = userOptionsService;
 
    }
 
@@ -73,9 +71,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
       }
 
       // set options default values
-      display.setOptionsState(configHolder.getState());
-      
-     
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
    }
 
    @Override
@@ -96,9 +92,9 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    @Override
    public void onPageSizeClick(int pageSize)
    {
-      if (configHolder.getDocumentListPageSize() != pageSize)
+      if (userOptionsService.getConfigHolder().getDocumentListPageSize() != pageSize)
       {
-         configHolder.setDocumentListPageSize(pageSize);
+         userOptionsService.getConfigHolder().setDocumentListPageSize(pageSize);
          eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
       }
    }
@@ -116,7 +112,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    @Override
    public void persistOptionChange()
    {
-      saveOptionsService.persistOptionChange(saveOptionsService.getDocumentListOptions());
+      userOptionsService.persistOptionChange(userOptionsService.getDocumentListOptions());
    }
 
    @Override
@@ -137,8 +133,8 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
          @Override
          public void onSuccess(LoadOptionsResult result)
          {
-            configHolder.setState(result.getConfiguration());
-            display.setOptionsState(configHolder.getState());
+            userOptionsService.getConfigHolder().setState(result.getConfiguration());
+            display.setOptionsState(userOptionsService.getConfigHolder().getState());
             eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded user options"));
          }
@@ -148,8 +144,8 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    @Override
    public void loadDefaultOptions()
    {
-      saveOptionsService.loadDocumentListDefaultOptions();
-      display.setOptionsState(configHolder.getState());
+      userOptionsService.loadDocumentListDefaultOptions();
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
 
       eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default user options."));

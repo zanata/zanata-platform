@@ -69,7 +69,7 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.service.SaveOptionsService;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
@@ -120,15 +120,18 @@ public class TargetContentsPresenterTest
    @Mock
    private EditorKeyShortcuts editorKeyShortcuts;
    @Mock
-   private SaveOptionsService saveOptionsService;
+   private UserOptionsService userOptionsService;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
+
+      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
+
       userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, userWorkspaceContext, editorKeyShortcuts, historyPresenter, saveOptionsService);
+      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts, historyPresenter, userOptionsService);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -419,7 +422,7 @@ public class TargetContentsPresenterTest
    @Test
    public void isUsingCodeMirror()
    {
-      assertThat(presenter.isUsingCodeMirror(), Matchers.is(true));
+      assertThat(presenter.isUsingCodeMirror(), Matchers.is(false));
    }
 
    @Test
@@ -468,6 +471,7 @@ public class TargetContentsPresenterTest
 
       // Then:
       verify(display, times(3)).showButtons(false);
+      verify(display, times(3)).setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
    }
 
    @Test

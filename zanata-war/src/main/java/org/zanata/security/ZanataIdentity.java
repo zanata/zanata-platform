@@ -93,6 +93,11 @@ public class ZanataIdentity extends Identity
       return authenticationType;
    }
 
+   protected void setAuthenticationType(AuthenticationType authenticationType)
+   {
+      this.authenticationType = authenticationType;
+   }
+
    public static ZanataIdentity instance()
    {
       if (!Contexts.isSessionContextActive())

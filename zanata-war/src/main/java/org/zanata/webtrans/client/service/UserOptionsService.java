@@ -45,7 +45,7 @@ import com.google.inject.Singleton;
  *
  */
 @Singleton
-public class SaveOptionsService
+public class UserOptionsService
 {
    private static final int DEFAULT_DOC_LIST_PAGE_SIZE = 25;
    private static final int DEFAULT_EDITOR_PAGE_SIZE = 25;
@@ -60,7 +60,7 @@ public class SaveOptionsService
    private final UserConfigHolder configHolder;
 
    @Inject
-   public SaveOptionsService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder)
+   public UserOptionsService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
@@ -149,6 +149,11 @@ public class SaveOptionsService
       configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
       configHolder.setEditorPageSize(DEFAULT_EDITOR_PAGE_SIZE);
       configHolder.setShowSaveApprovedWarning(DEFAULT_SHOW_SAVE_APPROVED_WARNING);
+   }
+
+   public UserConfigHolder getConfigHolder()
+   {
+      return configHolder;
    }
 
 

@@ -68,8 +68,10 @@ public class UserConfigHolder
       state.documentListPageSize = 25;
       state.navOption = NavOption.FUZZY_UNTRANSLATED;
       state.showError =false;
-      state.useCodeMirrorEditor = true;
+	 state.useCodeMirrorEditor = false;
       state.showSaveApprovedWarning = true;
+
+      
    }
 
    public boolean isEnterSavesApproved()
@@ -151,7 +153,7 @@ public class UserConfigHolder
    /**
     * Sets all properties of the given state into this holder.
     *
-    * @param state
+    * @param state configuration state holder
     */
    public void setState( ConfigurationState state )
    {

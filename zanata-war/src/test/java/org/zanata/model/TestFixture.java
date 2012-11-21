@@ -34,6 +34,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -134,6 +135,19 @@ public class TestFixture
          }
       });
       return (E) gwtEvent;
+   }
+
+   public static <E extends AbstractWorkspaceAction<?>> E extractFromActions(List<? extends AbstractWorkspaceAction> events, final Class<E> eventType)
+   {
+      AbstractWorkspaceAction action = Iterables.find(events, new Predicate<AbstractWorkspaceAction>()
+      {
+         @Override
+         public boolean apply(AbstractWorkspaceAction input)
+         {
+            return eventType.isAssignableFrom(input.getClass());
+         }
+      });
+      return (E) action;
    }
 
    public static List<Integer> asIds(List<TransUnit> transUnits)

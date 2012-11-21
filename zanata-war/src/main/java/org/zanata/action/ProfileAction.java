@@ -230,8 +230,17 @@ public class ProfileAction implements Serializable
       }
       else
       {
-         String key = registerServiceImpl.register(this.username, zanataOpenId.getAuthResult().getAuthenticatedId(),
-               AuthenticationType.OPENID, this.name, this.email);
+
+         String key;
+         if (identity.getAuthenticationType() == AuthenticationType.KERBEROS)
+         {
+            key = registerServiceImpl.register(this.username, "", this.username, this.email);
+         }
+         else
+         {
+            key = registerServiceImpl.register(this.username, zanataOpenId.getAuthResult().getAuthenticatedId(),
+                  AuthenticationType.OPENID, this.name, this.email);
+         }
          setActivationKey(key);
          renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
          FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");

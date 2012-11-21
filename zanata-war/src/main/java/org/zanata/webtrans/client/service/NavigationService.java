@@ -327,12 +327,14 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
          DocumentSelectionEvent documentSelectionEvent = (DocumentSelectionEvent) command;
          DocumentId documentId = documentSelectionEvent.getDocumentId();
+         // @formatter:off
          init(new GetTransUnitActionContext(documentId)
                   .changeCount(configHolder.getEditorPageSize())
                   .changeFindMessage(documentSelectionEvent.getFindMessage())
                   .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
                   .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
                   .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated()));
+         // @formatter:on
       }
       else
       {
@@ -402,6 +404,15 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    protected ModalNavigationStateHolder getNavigationStateHolder()
    {
       return navigationStateHolder;
+   }
+
+   /**
+    * for testing only.
+    * @return page model
+    */
+   protected SinglePageDataModelImpl getPageModel()
+   {
+      return pageModel;
    }
 
    public static interface UpdateContextCommand

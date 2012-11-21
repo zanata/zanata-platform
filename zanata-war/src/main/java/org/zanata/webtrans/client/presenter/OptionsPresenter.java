@@ -25,6 +25,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 
 import com.google.inject.Inject;
@@ -34,16 +35,16 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    private final EditorOptionsPresenter editorOptionsPresenter;
    private final DocumentListOptionsPresenter documentListOptionsPresenter;
    private MainView currentOptionsView;
-   private final UserConfigHolder configHolder;
+   private final UserOptionsService userOptionsService;
 
 
    @Inject
-   public OptionsPresenter(OptionsDisplay display, EventBus eventBus, EditorOptionsPresenter editorOptionsPresenter, DocumentListOptionsPresenter documentListOptionsPresenter, UserConfigHolder configHolder)
+   public OptionsPresenter(OptionsDisplay display, EventBus eventBus, EditorOptionsPresenter editorOptionsPresenter, DocumentListOptionsPresenter documentListOptionsPresenter, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
       this.editorOptionsPresenter = editorOptionsPresenter;
       this.documentListOptionsPresenter = documentListOptionsPresenter;
-      this.configHolder = configHolder;
+      this.userOptionsService = userOptionsService;
       display.setListener(this);
    }
 
@@ -83,7 +84,7 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
       // org.zanata.webtrans.client.Application.registerUncaughtExceptionHandler
       // therefore we don't need to broadcast the change event
 
-      configHolder.setShowError(showErrorChkValue);
+      userOptionsService.getConfigHolder().setShowError(showErrorChkValue);
    }
 
    @Override
@@ -151,6 +152,6 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      display.setShowErrorChk(configHolder.isShowError());
+      display.setShowErrorChk(userOptionsService.getConfigHolder().isShowError());
    }
 }

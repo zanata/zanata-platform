@@ -34,10 +34,10 @@ import org.zanata.common.ContentState;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
-import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitsTablePresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -67,8 +67,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -121,6 +119,8 @@ public class NavigationServiceIntegrationTest
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
    private MockHandlerFactory handlerFactory;
+   @Captor
+   private ArgumentCaptor<GwtEvent> eventCaptor;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -367,7 +367,6 @@ public class NavigationServiceIntegrationTest
 
       // behaviour on GetTransUnitList success
       verify(transUnitsTablePresenter).showDataForCurrentPage(service.getCurrentPageValues());
-      ArgumentCaptor<GwtEvent> eventCaptor = ArgumentCaptor.forClass(GwtEvent.class);
       verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
 
       TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);

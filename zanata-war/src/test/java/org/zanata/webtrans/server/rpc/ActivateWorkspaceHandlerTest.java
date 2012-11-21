@@ -29,6 +29,7 @@ import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -40,10 +41,15 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
+import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
+import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
+import net.customware.gwt.dispatch.server.ExecutionContext;
 import static org.hamcrest.MatcherAssert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -80,6 +86,8 @@ public class ActivateWorkspaceHandlerTest
    private ArgumentCaptor<EnterWorkspace> enterWorkspaceEventCaptor;
    @Captor
    private ArgumentCaptor<EditorClientId> editorClientIdCaptor;
+   @Mock
+   private LoadOptionsHandler loadOptionsHandler;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -93,6 +101,7 @@ public class ActivateWorkspaceHandlerTest
             .use("projectDAO", projectDAO)
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
+            .use("webtrans.gwt.LoadOptionsHandler", loadOptionsHandler)
             .ignoreNonResolvable()
             .autowire(ActivateWorkspaceHandler.class);
       // @formatter:on
@@ -117,8 +126,8 @@ public class ActivateWorkspaceHandlerTest
       when(projectIterationDAO.getBySlug(projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(hProjectIteration);
       when(identity.hasPermission("modify-translation", hProject, hLocale)).thenReturn(true);
       when(identity.hasPermission("glossary-update", "")).thenReturn(true);
-      when(accountDAO.findById(Mockito.anyLong(), Mockito.anyBoolean())).thenReturn(hAccount);
-      when(hAccount.getEditorOptions()).thenReturn(new HashMap<String, HAccountOption>());
+      LoadOptionsResult optionsResult = new LoadOptionsResult(new UserConfigHolder().getState());
+      when(loadOptionsHandler.execute(isA(LoadOptionsAction.class), any(ExecutionContext.class))).thenReturn(optionsResult);
 
       ActivateWorkspaceResult result = handler.execute(action, null);
 
@@ -140,6 +149,8 @@ public class ActivateWorkspaceHandlerTest
       assertThat(userWorkspaceContext.hasGlossaryUpdateAccess(), Matchers.equalTo(true));
       assertThat(userWorkspaceContext.isProjectActive(), Matchers.equalTo(true));
       assertThat(userWorkspaceContext.hasWriteAccess(), Matchers.equalTo(true));
+
+      assertThat(result.getStoredUserConfiguration(), Matchers.sameInstance(optionsResult.getConfiguration()));
    }
 
    @Test

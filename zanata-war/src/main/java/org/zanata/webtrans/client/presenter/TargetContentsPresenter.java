@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.ReloadUserConfigUIEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
@@ -49,7 +50,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.service.SaveOptionsService;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.UndoLink;
@@ -88,10 +89,9 @@ public class TargetContentsPresenter implements
    private final TranslationHistoryPresenter historyPresenter;
    private final Provider<TargetContentsDisplay> displayProvider;
    private final EditorTranslators editorTranslators;
-   private final UserConfigHolder configHolder;
    private final EditorKeyShortcuts editorKeyShortcuts;
    private final UserWorkspaceContext userWorkspaceContext;
-   private final SaveOptionsService saveOptionsService;
+   private final UserOptionsService userOptionsService;
 
    private TargetContentsDisplay display;
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
@@ -108,11 +108,10 @@ public class TargetContentsPresenter implements
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EditorTranslators editorTranslators, final EventBus eventBus,
                                   TableEditorMessages messages,
                                   SourceContentsPresenter sourceContentsPresenter,
-                                  final UserConfigHolder configHolder,
                                   UserWorkspaceContext userWorkspaceContext,
                                   EditorKeyShortcuts editorKeyShortcuts,
                                   TranslationHistoryPresenter historyPresenter,
-                                  SaveOptionsService saveOptionsService)
+                                  UserOptionsService userOptionsService)
    // @formatter:on
    {
       this.displayProvider = displayProvider;
@@ -121,12 +120,11 @@ public class TargetContentsPresenter implements
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
-      this.configHolder = configHolder;
       this.editorKeyShortcuts = editorKeyShortcuts;
-      isDisplayButtons = configHolder.isDisplayButtons();
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
-      this.saveOptionsService = saveOptionsService;
+      this.userOptionsService = userOptionsService;
+      isDisplayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
       editorKeyShortcuts.registerKeys(this);
 
       bindEventHandlers();
@@ -278,7 +276,7 @@ public class TargetContentsPresenter implements
    {
       ensureRowSelection(transUnitId);
 
-      if (checkForConfirmation && configHolder.isShowSaveApprovedWarning())
+      if (checkForConfirmation && userOptionsService.getConfigHolder().isShowSaveApprovedWarning())
       {
          eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId, getNewTargets(), ContentState.Approved));
       }
@@ -338,7 +336,7 @@ public class TargetContentsPresenter implements
    @Override
    public boolean isDisplayButtons()
    {
-      return configHolder.isDisplayButtons() && !userWorkspaceContext.hasReadOnlyAccess();
+      return userOptionsService.getConfigHolder().isDisplayButtons() && !userWorkspaceContext.hasReadOnlyAccess();
    }
 
    @Override
@@ -364,7 +362,7 @@ public class TargetContentsPresenter implements
    @Override
    public boolean isUsingCodeMirror()
    {
-      return configHolder.isUseCodeMirrorEditor();
+      return userOptionsService.getConfigHolder().isUseCodeMirrorEditor();
    }
 
    @Override
@@ -414,15 +412,15 @@ public class TargetContentsPresenter implements
    {
       if (event.getView() == MainView.Editor)
       {
-         if (isDisplayButtons != configHolder.isDisplayButtons())
+         if (isDisplayButtons != userOptionsService.getConfigHolder().isDisplayButtons())
          {
             for (TargetContentsDisplay contentsDisplay : displayList)
             {
-               contentsDisplay.showButtons(configHolder.isDisplayButtons());
+               contentsDisplay.showButtons(userOptionsService.getConfigHolder().isDisplayButtons());
+               contentsDisplay.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
             }
          }
-         isDisplayButtons = configHolder.isDisplayButtons();
-         display.setShowSaveApprovedWarning(configHolder.isShowSaveApprovedWarning());
+         isDisplayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
       }
    }
 
@@ -637,8 +635,9 @@ public class TargetContentsPresenter implements
    @Override
    public void saveUserDecision(Boolean value)
    {
-      configHolder.setShowSaveApprovedWarning(value);
-      saveOptionsService.persistOptionChange(saveOptionsService.getEditorOptions());
+      userOptionsService.getConfigHolder().setShowSaveApprovedWarning(value);
+      userOptionsService.persistOptionChange(userOptionsService.getEditorOptions());
+      eventBus.fireEvent(new ReloadUserConfigUIEvent(MainView.Editor));
    }
 
    /**
