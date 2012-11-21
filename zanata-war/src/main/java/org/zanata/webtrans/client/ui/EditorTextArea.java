@@ -33,6 +33,7 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
 {
    private static final int INITIAL_LINE_NUMBER = 2;
    private static final int CHECK_INTERVAL = 50;
+   private String oldValue;
    // this timer is used to fire validation and change editing state in a 50 millisecond interval
    // @see setEditing(boolean)
    private final Timer typingTimer = new Timer()
@@ -40,15 +41,16 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
       @Override
       public void run()
       {
-         ValueChangeEvent.fire(EditorTextArea.this, getText());
+         ValueChangeEvent.fireIfNotEqual(EditorTextArea.this, oldValue, getText());
+         oldValue = getText();
       }
    };
    private boolean editing;
 
-   public EditorTextArea()
+   public EditorTextArea(String displayString)
    {
       super();
-
+      oldValue = displayString;
       addKeyDownHandler(new KeyDownHandler()
       {
          @Override
