@@ -125,12 +125,22 @@ public class RawPullCommand extends PushPullCommand<PullOptions>
 
          if(pullTarget)
          {
+            String fileExtension;
+            if (getOpts().getIncludeFuzzy())
+            {
+               fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED_AND_FUZZY;
+            }
+            else
+            {
+               fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED;
+            }
+
             for (LocaleMapping locMapping : locales)
             {
                LocaleId locale = new LocaleId(locMapping.getLocale());
                ClientResponse response = fileResource.downloadTranslationFile(getOpts().getProj(),
                      getOpts().getProjectVersion(), locale.getId(),
-                     FileResource.FILETYPE_TRANSLATED_APPROVED, qualifiedDocName);
+                     fileExtension, qualifiedDocName);
                if (response.getResponseStatus() == Response.Status.NOT_FOUND)
                {
                      log.info("No raw translation document found in locale {} for document [{}]", locale, qualifiedDocName);

@@ -55,6 +55,15 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    private boolean createSkeletons;
 
    /**
+    * Whether to include fuzzy translations in translation files when using project type 'raw'.
+    * If this option is false, source text will be used for any string that does not have an
+    * approved translation.
+    * 
+    * @parameter expression="${zanata.includeFuzzy}" default-value="false"
+    */
+   private boolean includeFuzzy = false;
+
+   /**
     * Type of pull to perform from the server: "source" pulls source documents only.
     * "trans" pulls translation documents only.
     * "both" pulls both source and translation documents.
@@ -97,6 +106,12 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    public boolean getCreateSkeletons()
    {
       return createSkeletons;
+   }
+
+   @Override
+   public boolean getIncludeFuzzy()
+   {
+      return includeFuzzy;
    }
 
    @Override
@@ -164,5 +179,5 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    {
       return "pull";
    }
-   
+
 }
