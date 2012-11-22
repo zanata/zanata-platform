@@ -48,7 +48,7 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> ext
 
    /**
     * Type of project ("properties" = Java .properties, "podir" = publican-style
-    * gettext directories).
+    * gettext directories, "raw" = EXPERIMENTAL raw documents of various types).
     * 
     * @parameter expression="${zanata.projectType}"
     */
