@@ -173,19 +173,20 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       // source strings, because there may not be HTextFlowTarget for the
       // HTextFlow.
 
-      // FIXME constrain to only non-obsolete documents
+      // FIXME constrain to only non-obsolete documents?
+      // check that this is not already handled by id list retrieval
 
       HLocale loc = localeServiceImpl.getByLocaleId(validatedLocaleId);
       Long locId = loc.getId();
 
-      ArrayList<String> projectDpcStateConstraints = new ArrayList<String>();
-      projectDpcStateConstraints.add("tf.document.projectIteration.project.slug = :project");
-      projectDpcStateConstraints.add("tf.document.projectIteration.slug = :iteration");
+      ArrayList<String> projectDocStateConstraints = new ArrayList<String>();
+      projectDocStateConstraints.add("tf.document.projectIteration.project.slug = :project");
+      projectDocStateConstraints.add("tf.document.projectIteration.slug = :iteration");
 
       boolean hasDocumentPaths = documentPaths != null && !documentPaths.isEmpty();
       if (hasDocumentPaths)
       {
-         projectDpcStateConstraints.add("tf.document.docId in ( :doclist )");
+         projectDocStateConstraints.add("tf.document.docId in ( :doclist )");
       }
 
       ArrayList<ContentState> stateList = new ArrayList<ContentState>(2);
@@ -197,7 +198,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          if (constraints.isIncludeNew())
          {
             // exclude non-matching states (so that flows with no target will match)
-            projectDpcStateConstraints.add("tf.targets[" + locId + "].state not in ( :statelist )");
+            projectDocStateConstraints.add("tf.targets[" + locId + "].state not in ( :statelist )");
             if (!constraints.isIncludeFuzzy())
             {
                stateList.add(ContentState.NeedReview);
@@ -210,7 +211,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          else
          {
             // include matching states (so that flows with no target will not match)
-            projectDpcStateConstraints.add("tf.targets[" + locId + "].state in ( :statelist )");
+            projectDocStateConstraints.add("tf.targets[" + locId + "].state in ( :statelist )");
             if (constraints.isIncludeFuzzy())
             {
                stateList.add(ContentState.NeedReview);
@@ -240,7 +241,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       }
 
       String[] contentChecks = contentCheckList.toArray(new String[contentCheckList.size()]);
-      String[] projectDocStateChecks = projectDpcStateConstraints.toArray(new String[projectDpcStateConstraints.size()]);
+      String[] projectDocStateChecks = projectDocStateConstraints.toArray(new String[projectDocStateConstraints.size()]);
 
       String queryStr = select("tf").from("HTextFlow tf")
             .where(and(and(projectDocStateChecks), or(contentChecks)))
