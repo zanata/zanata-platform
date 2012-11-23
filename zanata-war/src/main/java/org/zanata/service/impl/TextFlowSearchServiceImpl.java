@@ -94,7 +94,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    private FullTextSession session;
 
    // Disabled for now, due to the need for a left join
-   private static final boolean ENABLE_HQL_SEARCH = false;
+   private static final boolean ENABLE_HQL_SEARCH = true;
 
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints)
@@ -169,19 +169,13 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       // TODO wrap in method for batching list of documents
       // assuming doclist has already been batched before this method call
 
-      // FIXME this query needs to use a left join, at least when searching
-      // source strings, because there may not be HTextFlowTarget for the
-      // HTextFlow.
-
-      // FIXME constrain to only non-obsolete documents?
-      // check that this is not already handled by id list retrieval
-
       HLocale loc = localeServiceImpl.getByLocaleId(validatedLocaleId);
       Long locId = loc.getId();
 
       ArrayList<String> projectDocStateConstraints = new ArrayList<String>();
       projectDocStateConstraints.add("tf.document.projectIteration.project.slug = :project");
       projectDocStateConstraints.add("tf.document.projectIteration.slug = :iteration");
+      projectDocStateConstraints.add("tf.document.obsolete = false");
 
       boolean hasDocumentPaths = documentPaths != null && !documentPaths.isEmpty();
       if (hasDocumentPaths)
@@ -243,7 +237,8 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       String[] contentChecks = contentCheckList.toArray(new String[contentCheckList.size()]);
       String[] projectDocStateChecks = projectDocStateConstraints.toArray(new String[projectDocStateConstraints.size()]);
 
-      String queryStr = select("tf").from("HTextFlow tf")
+      String queryStr = select("distinct tf").from("HTextFlow tf")
+            .leftJoin("tf.targets tfts")
             .where(and(and(projectDocStateChecks), or(contentChecks)))
             .toQueryString();
 
