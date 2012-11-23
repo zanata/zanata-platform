@@ -249,9 +249,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       setUiForNothingSelected();
       display.setReplaceAllButtonVisible(!userWorkspaceContext.hasReadOnlyAccess());
 
+      display.addSearchFieldsSelect("search both", "both");
       display.addSearchFieldsSelect("search target", "target");
       display.addSearchFieldsSelect("search source", "source");
-      display.addSearchFieldsSelect("search both", "both");
       
       registerHandler(display.getSearchButton().addClickHandler(new ClickHandler()
       {
