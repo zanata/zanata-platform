@@ -108,7 +108,7 @@ public class MigrateDataToHCredentials implements CustomTaskChange
    {
       // Get the zanata.properties file from the classpath
       Properties zanataProperties = new Properties();
-      InputStream iStream = this.getClass().getClassLoader().getResourceAsStream("zanata.properties");
+      InputStream iStream = this.getClass().getClassLoader().getResourceAsStream("/zanata.properties");
       try
       {
          zanataProperties.load(iStream);

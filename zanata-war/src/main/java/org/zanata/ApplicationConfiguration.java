@@ -20,7 +20,20 @@
  */
 package org.zanata;
 
-import org.apache.log4j.HTMLLayout;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jboss.seam.Component;
@@ -39,21 +52,6 @@ import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.AuthenticationType;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListResourceBundle;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Set;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -85,9 +83,8 @@ public class ApplicationConfiguration implements Serializable
          HApplicationConfiguration.KEY_REGISTER
       };
 
-   // Resource Bundles
-   private static ResourceBundle externalConfig;
-   private static ResourceBundle defaultConfig;
+   // Property files
+   private static Properties externalConfig;
 
    private static final ZanataSMTPAppender smtpAppenderInstance = new ZanataSMTPAppender();
 
@@ -107,7 +104,7 @@ public class ApplicationConfiguration implements Serializable
    {
       log.info("Reloading configuration");
       Map<String, String> configValues = new HashMap<String, String>();
-      setDefaults(configValues);
+      //setDefaults(configValues);
 
       ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
       List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
@@ -125,7 +122,7 @@ public class ApplicationConfiguration implements Serializable
 
    private void loadExternalConfig()
    {
-      ResourceBundle config = getExternalConfig();
+      Properties config = getExternalConfig();
 
       // Authentication policies
       for( AuthenticationType authType : AuthenticationType.values() )
@@ -133,14 +130,14 @@ public class ApplicationConfiguration implements Serializable
          String key = KEY_AUTH_POLICY + "." + authType.name().toLowerCase();
          if( config.containsKey( key ) )
          {
-            loginModuleNames.put( authType, config.getString(key) );
+            loginModuleNames.put( authType, config.getProperty(key) );
          }
       }
 
       // Admin users
       if( config.containsKey( KEY_ADMIN_USERS ) )
       {
-         String userList = config.getString( KEY_ADMIN_USERS );
+         String userList = config.getProperty(KEY_ADMIN_USERS);
 
          for( String userName : userList.split(",") )
          {
@@ -173,24 +170,25 @@ public class ApplicationConfiguration implements Serializable
       }
    }
 
-   private static final ResourceBundle getExternalConfig()
+   private static final Properties getExternalConfig()
    {
       if( externalConfig == null )
       {
          try
          {
-            externalConfig = ResourceBundle.getBundle("zanata");
+            externalConfig = new Properties();
+            externalConfig.load(ApplicationConfiguration.class.getResourceAsStream("/zanata.properties"));
          }
-         catch (MissingResourceException e)
+         catch (IOException e)
          {
-            log.error("zanata.properties file not found.");
-            throw e;
+            log.error("Error while loading zanata.properties: " + e.getMessage());
+            throw new RuntimeException(e);
          }
       }
       return externalConfig;
    }
 
-   private static final ResourceBundle getDefaultConfig()
+/*   private static final ResourceBundle getDefaultConfig()
    {
       if( defaultConfig == null )
       {
@@ -223,7 +221,7 @@ public class ApplicationConfiguration implements Serializable
             map.put(key, getDefaultConfig().getString(key));
          }
       }
-   }
+   }*/
 
    /**
     * Apply logging configuration.
