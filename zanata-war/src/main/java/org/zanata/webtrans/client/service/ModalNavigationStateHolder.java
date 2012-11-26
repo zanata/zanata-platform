@@ -119,7 +119,7 @@ class ModalNavigationStateHolder
 
    protected int lastPage()
    {
-      return pageCount - 1;
+      return pageCount == 0 ? 0 : pageCount - 1;
    }
 
    protected int getPageCount()
