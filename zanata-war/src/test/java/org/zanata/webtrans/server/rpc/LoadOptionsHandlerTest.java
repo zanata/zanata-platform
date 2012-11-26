@@ -71,6 +71,7 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
       configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
 
       configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
+      configMap.put(UserOptions.UseCodeMirrorEditor, Boolean.toString(configHolder.getState().isUseCodeMirrorEditor()));
       return configMap;
    }
 
