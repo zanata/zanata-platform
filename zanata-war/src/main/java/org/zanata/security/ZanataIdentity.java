@@ -261,6 +261,10 @@ public class ZanataIdentity extends Identity
       {
          this.preAuthenticated = true;
       }
+      else
+      {
+         this.getCredentials().clear();
+      }
       return result;
    }
 }
