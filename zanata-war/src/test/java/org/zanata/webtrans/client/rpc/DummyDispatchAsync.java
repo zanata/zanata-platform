@@ -132,12 +132,12 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          Scheduler.get().scheduleDeferred(new DummyEventServiceConnectedCommand(_action, _callback));
       }
 
-      else if (action instanceof GetTransUnitsNavigation)
-      {
-         final GetTransUnitsNavigation _action = (GetTransUnitsNavigation) action;
-         AsyncCallback<GetTransUnitsNavigationResult> _callback = (AsyncCallback<GetTransUnitsNavigationResult>) callback;
-         Scheduler.get().scheduleDeferred(new DummyGetTransUnitsNavigationCommand(_action, _callback));
-      }
+//      else if (action instanceof GetTransUnitsNavigation)
+//      {
+//         final GetTransUnitsNavigation _action = (GetTransUnitsNavigation) action;
+//         AsyncCallback<GetTransUnitsNavigationResult> _callback = (AsyncCallback<GetTransUnitsNavigationResult>) callback;
+//         Scheduler.get().scheduleDeferred(new DummyGetTransUnitsNavigationCommand(_action, _callback));
+//      }
       else
       {
          Log.warn("DummyDispatchAsync: ignoring action of " + action.getClass());

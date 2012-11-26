@@ -103,6 +103,7 @@ public class UserOptionsService
       configMap.put(UserOptions.DisplayButtons, Boolean.toString(configHolder.getState().isDisplayButtons()));
       configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(configHolder.getState().isEnterSavesApproved()));
       configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
+      configMap.put(UserOptions.UseCodeMirrorEditor, Boolean.toString(configHolder.getState().isUseCodeMirrorEditor()));
 
       configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
       configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));

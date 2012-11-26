@@ -24,11 +24,8 @@ package org.zanata.webtrans.shared.rpc;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import com.google.common.base.Objects;
 
-public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUnitsNavigationResult>
+public class GetTransUnitsNavigation
 {
-
-   private static final long serialVersionUID = 1L;
-
    private Long id;
    private String phrase;
    private boolean isFuzzyState, isNewState, isApprovedState;
@@ -38,7 +35,7 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    {
    }
 
-   private GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isApprovedState)
+   public GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isApprovedState)
    {
       this.id = id;
       this.phrase = phrase;

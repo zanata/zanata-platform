@@ -21,7 +21,6 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,46 +42,21 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
-import org.zanata.service.TextFlowSearchService;
-import org.zanata.util.HTextFlowPosComparator;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
-import com.google.common.base.Strings;
 
 @Name("webtrans.gwt.GetTransUnitsNavigationHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(GetTransUnitsNavigation.class)
 @Slf4j
-public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTransUnitsNavigation, GetTransUnitsNavigationResult>
+public class GetTransUnitsNavigationService
 {
 
    @In
    private TextFlowDAO textFlowDAO;
 
-   @In
-   private LocaleService localeServiceImpl;
-
-   @In
-   ZanataIdentity identity;
-
-
-   @Override
-   public GetTransUnitsNavigationResult execute(GetTransUnitsNavigation action, ExecutionContext context) throws ActionException
+   protected GetTransUnitsNavigationResult getNavigationIndexes(GetTransUnitsNavigation action, HLocale hLocale)
    {
-
-      identity.checkLoggedIn();
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e);
-      }
-
       FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getPhrase()).filterSource().filterTarget().filterByStatus(action.isNewState(), action.isFuzzyState(), action.isApprovedState());
       ArrayList<Long> idIndexList = new ArrayList<Long>();
       HashMap<Long, ContentState> transIdStateMap = new HashMap<Long, ContentState>();
@@ -97,14 +71,8 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
          transIdStateMap.put(textFlow.getId(), textFlow.getTargets().get(hLocale.getId()).getState());
       }
 
-      log.debug("for action {} returned size: ", action, idIndexList.size());
-      return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateMap);
-
-   }
-
-   @Override
-   public void rollback(GetTransUnitsNavigation action, GetTransUnitsNavigationResult result, ExecutionContext context) throws ActionException
-   {
+      GetTransUnitsNavigationService.log.debug("for action {} returned size: ", action, idIndexList.size());
+      return new GetTransUnitsNavigationResult(idIndexList, transIdStateMap);
    }
 
    /**
@@ -151,7 +119,7 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
                state = index == null ? ContentState.New : ContentState.values() [index];
             }
          }
-         log.debug(" {} - {}", id, state);
+         GetTransUnitsNavigationService.log.debug(" {} - {}", id, state);
          return new SimpleHTextFlow(id, state, hLocale);
       }
 
