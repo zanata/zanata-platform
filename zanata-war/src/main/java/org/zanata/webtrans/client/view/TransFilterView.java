@@ -20,18 +20,16 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.SearchField;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -41,8 +39,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
 
    // TODO deal with showing greyed-out text
 
-   @UiField
-   TextBox filterTextBox;
+   @UiField(provided = true)
+   SearchField searchField;
+
    @UiField
    Styles style;
 
@@ -51,9 +50,19 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    private boolean focused = false;
    private Listener listener;
 
-   @Inject
-   public TransFilterView(TransFilterMessages messages)
+   interface TransFilterViewUiBinder extends UiBinder<Widget, TransFilterView>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+      String transFilterTextBoxEmpty();
+   }
+
+   @Inject
+   public TransFilterView(UiMessages messages)
+   {
+      searchField = new SearchField(this);
       hintMessage = messages.findSourceOrTargetString();
       initWidget(uiBinder.createAndBindUi(this));
       getElement().setId("TransFilterView");
@@ -63,34 +72,6 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    public Widget asWidget()
    {
       return this;
-   }
-
-   @UiHandler("filterTextBox")
-   public void onFilterTextBoxValueChange(ValueChangeEvent<String> event)
-   {
-      listener.searchTerm(event.getValue());
-   }
-
-   @UiHandler("filterTextBox")
-   public void onFilterTextBoxClick(ClickEvent event)
-   {
-      focused = true;
-      if (filterTextBox.getStyleName().contains(style.transFilterTextBoxEmpty()))
-      {
-         filterTextBox.setValue("");
-         filterTextBox.removeStyleName(style.transFilterTextBoxEmpty());
-      }
-   }
-
-   @UiHandler("filterTextBox")
-   public void onFilterTextBoxBlur(BlurEvent event)
-   {
-      focused = false;
-      if (filterTextBox.getText().isEmpty())
-      {
-         filterTextBox.addStyleName(style.transFilterTextBoxEmpty());
-         filterTextBox.setValue(hintMessage);
-      }
    }
 
    @Override
@@ -111,24 +92,57 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       Log.info("setting search term:[" + searchTerm + "]");
       if (Strings.isNullOrEmpty(searchTerm))
       {
-         filterTextBox.setText(hintMessage);
-         filterTextBox.addStyleName(style.transFilterTextBoxEmpty());
+         searchField.setText(hintMessage);
+         searchField.addStyleName(style.transFilterTextBoxEmpty());
       }
       else
       {
-         filterTextBox.removeStyleName(style.transFilterTextBoxEmpty());
+         searchField.removeStyleName(style.transFilterTextBoxEmpty());
       }
-      filterTextBox.setText(searchTerm);
+      searchField.setValue(searchTerm);
    }
 
-   interface TransFilterViewUiBinder extends UiBinder<Widget, TransFilterView>
+   @Override
+   public void onSearchFieldValueChange(String value)
    {
+      listener.searchTerm(value);
    }
 
-   interface Styles extends CssResource
+   @Override
+   public void onSearchFieldBlur()
    {
-      String transFilterTextBox();
+      focused = false;
+      if (searchField.getText().isEmpty())
+      {
+         searchField.addStyleName(style.transFilterTextBoxEmpty());
+         searchField.setText(hintMessage);
+      }
+   }
 
-      String transFilterTextBoxEmpty();
+   @Override
+   public void onSearchFieldFocus()
+   {
+      focused = true;
+   }
+
+   @Override
+   public void onSearchFieldClick()
+   {
+      focused = true;
+      if (searchField.containStyleName(style.transFilterTextBoxEmpty()))
+      {
+         searchField.setText("");
+         searchField.removeStyleName(style.transFilterTextBoxEmpty());
+      }
+   }
+
+   @Override
+   public void onSearchFieldCancel()
+   {
+      if (!searchField.containStyleName(style.transFilterTextBoxEmpty()))
+      {
+         searchField.setText("");
+         searchField.addStyleName(style.transFilterTextBoxEmpty());
+      }
    }
 }

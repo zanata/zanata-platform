@@ -171,5 +171,7 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Color legend")
    String colorLegend();
-   
+
+   @DefaultMessage("Search Source or Target content")
+   String findSourceOrTargetString();
 }

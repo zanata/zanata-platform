@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
+import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
@@ -43,7 +44,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -56,11 +56,14 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
 
    private DocumentListDisplay.Listener listener;
 
+   @UiField(provided = true)
+   SearchField searchField;
+
    @UiField
    FlowPanel documentListContainer;
 
-   @UiField
-   TextBox filterTextBox;
+   // @UiField
+   // TextBox filterTextBox;
    
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
@@ -87,9 +90,10 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       dataProvider = new ListDataProvider<DocumentNode>();
 
       pager = new DocumentListPager(TextLocation.CENTER, false, true);
+      searchField = new SearchField(this);
+      searchField.setTextBoxTitle(messages.docListFilterDescription());
 
       initWidget(uiBinder.createAndBindUi(this));
-      filterTextBox.setTitle(messages.docListFilterDescription());
       
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
@@ -128,12 +132,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    public HasData<DocumentNode> getDocumentListTable()
    {
       return documentListTable;
-   }
-
-   @UiHandler("filterTextBox")
-   public void onFilterTextBox(ValueChangeEvent<String> event)
-   {
-      listener.fireFilterToken(event.getValue());
    }
 
    @Override
@@ -201,7 +199,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    {
       caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);
       exactSearchCheckBox.setValue(docFilterExact, false);
-      filterTextBox.setValue(docFilterText, false);
+      searchField.setText(docFilterText);
    }
 
    @Override
@@ -231,5 +229,35 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    {
       documentListTable.setPageSize(pageSize);
       pager.setDisplay(documentListTable);
+   }
+
+   @Override
+   public void onSearchFieldValueChange(String value)
+   {
+      listener.fireFilterToken(value);
+   }
+
+   @Override
+   public void onSearchFieldBlur()
+   {
+      // TODO Auto-generated method stub
+   }
+
+   @Override
+   public void onSearchFieldFocus()
+   {
+      // TODO Auto-generated method stub
+   }
+
+   @Override
+   public void onSearchFieldClick()
+   {
+      // TODO Auto-generated method stub
+   }
+
+   @Override
+   public void onSearchFieldCancel()
+   {
+      searchField.setValue("");
    }
 }

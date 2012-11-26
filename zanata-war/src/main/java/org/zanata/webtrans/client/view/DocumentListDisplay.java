@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.SearchFieldListener;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -35,7 +36,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface DocumentListDisplay extends WidgetDisplay
+public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 {
    void updatePageSize(int pageSize);
 
