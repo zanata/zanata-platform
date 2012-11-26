@@ -140,10 +140,12 @@ public class NavigationServiceIntegrationTest
    {
       verify(dispatcher, atLeastOnce()).execute(actionCaptor.capture(), asyncCallbackCaptor.capture());
 
-      getTransUnitList = actionCaptor.getValue();
+      List<GetTransUnitList> allValues = actionCaptor.getAllValues();
+      getTransUnitList = allValues.get(allValues.size() - 1);
       getTransUnitList.setWorkspaceId(workspaceId);
 
-      getTransUnitListCallback = asyncCallbackCaptor.getValue();
+      List<AsyncCallback<GetTransUnitListResult>> allCallbacks = asyncCallbackCaptor.getAllValues();
+      getTransUnitListCallback = allCallbacks.get(allCallbacks.size() - 1);
    }
 
    //look at this AWESOME generic work ;)

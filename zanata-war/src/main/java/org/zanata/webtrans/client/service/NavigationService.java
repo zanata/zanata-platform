@@ -126,7 +126,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          public void onSuccess(GetTransUnitListResult result)
          {
             List<TransUnit> units = result.getUnits();
-            Log.info("result: " + units);
+            Log.info("result size: " + units.size());
             context = context.changeOffset(result.getTargetOffset());
             pageModel.setData(units);
             pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
