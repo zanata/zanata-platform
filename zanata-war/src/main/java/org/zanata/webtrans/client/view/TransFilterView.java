@@ -64,6 +64,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    {
       searchField = new SearchField(this);
       hintMessage = messages.findSourceOrTargetString();
+      searchField.setTextBoxTitle(hintMessage);
       initWidget(uiBinder.createAndBindUi(this));
       getElement().setId("TransFilterView");
    }

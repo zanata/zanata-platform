@@ -20,12 +20,12 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.TextArea;
 
@@ -34,7 +34,8 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
    private static final int INITIAL_LINE_NUMBER = 2;
    private static final int CHECK_INTERVAL = 50;
    private String oldValue;
-   // this timer is used to fire validation and change editing state in a 50 millisecond interval
+   // this timer is used to fire validation and change editing state in a 50
+   // millisecond interval
    // @see setEditing(boolean)
    private final Timer typingTimer = new Timer()
    {
@@ -68,7 +69,7 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
    private void autoSize()
    {
       setVisibleLines(INITIAL_LINE_NUMBER);
-      while (getElement().getScrollHeight() > getElement().getClientHeight())
+      while (getElement().getClientHeight() < getElement().getScrollHeight())
       {
          setVisibleLines(getVisibleLines() + 1);
       }
@@ -78,9 +79,15 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper
    public void setText(String text)
    {
       super.setText(text);
-      Splitter splitter = Splitter.on("\n");
-      Iterable<String> lines = splitter.split(text);
-      setVisibleLines(Iterables.size(lines));
+
+      Scheduler.get().scheduleDeferred(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            autoSize();
+         }
+      });
    }
 
    @Override
