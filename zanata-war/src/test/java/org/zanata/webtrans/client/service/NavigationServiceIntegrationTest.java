@@ -77,15 +77,7 @@ public class NavigationServiceIntegrationTest
    private WorkspaceId workspaceId = TestFixture.workspaceId();
    private HLocale hLocale = new HLocale(workspaceId.getLocaleId());
 
-   // @formatter:off
-   private final List<HTextFlow> hTextFlows = Lists.newArrayList(
-         TestFixture.makeHTextFlow(0, hLocale, ContentState.New),
-         TestFixture.makeHTextFlow(1, hLocale, ContentState.New),
-         TestFixture.makeHTextFlow(2, hLocale, ContentState.NeedReview),
-         TestFixture.makeHTextFlow(3, hLocale, ContentState.Approved),
-         TestFixture.makeHTextFlow(4, hLocale, ContentState.NeedReview),
-         TestFixture.makeHTextFlow(5, hLocale, ContentState.New)
-   );
+   private List<HTextFlow> hTextFlows;
 
    private NavigationService service;
    @Mock
@@ -131,6 +123,16 @@ public class NavigationServiceIntegrationTest
       navigationStateHolder = service.getNavigationStateHolder();
 
       context = new GetTransUnitActionContext(documentId);
+      // @formatter:off
+      hTextFlows = Lists.newArrayList(
+            TestFixture.makeHTextFlow(0, hLocale, ContentState.New),
+            TestFixture.makeHTextFlow(1, hLocale, ContentState.New),
+            TestFixture.makeHTextFlow(2, hLocale, ContentState.NeedReview),
+            TestFixture.makeHTextFlow(3, hLocale, ContentState.Approved),
+            TestFixture.makeHTextFlow(4, hLocale, ContentState.NeedReview),
+            TestFixture.makeHTextFlow(5, hLocale, ContentState.New)
+      );
+      // @formatter:on
    }
 
    @SuppressWarnings("unchecked")
