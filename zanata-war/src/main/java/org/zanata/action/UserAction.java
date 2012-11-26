@@ -20,16 +20,12 @@
  */
 package org.zanata.action;
 
-import static org.jboss.seam.ScopeType.CONVERSATION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
-import java.io.Serializable;
 import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -37,8 +33,12 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
-import org.zanata.annotation.CachedMethodResult;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.model.HAccount;
+
+import static org.jboss.seam.ScopeType.CONVERSATION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
@@ -49,7 +49,7 @@ import org.zanata.dao.PersonDAO;
 @Name("org.jboss.seam.security.management.userAction")
 @Scope(CONVERSATION)
 @Install(precedence = APPLICATION)
-public class UserAction extends org.jboss.seam.security.management.action.UserAction implements Serializable
+public class UserAction extends org.jboss.seam.security.management.action.UserAction
 {
    private static final long serialVersionUID = 1L;
 
@@ -64,6 +64,14 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
 
    @In
    private PersonDAO personDAO;
+
+   @In
+   private AccountDAO accountDAO;
+
+   private boolean newUserFlag;
+
+   private String originalUsername;
+
 
    public void deleteUser( String userName )
    {
@@ -82,9 +90,39 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
       }
    }
 
-   @CachedMethodResult
    public String getEmail(String username)
    {
       return personDAO.findEmail(username);
+   }
+
+   @Override
+   @Begin
+   public void createUser()
+   {
+      super.createUser();
+      newUserFlag = true;
+   }
+
+   @Override
+   @Begin
+   public void editUser(String username)
+   {
+      super.editUser(username);
+      newUserFlag = false;
+      originalUsername = username;
+   }
+
+   @Override
+   public String save()
+   {
+      // Allow user name changes
+      if( !newUserFlag )
+      {
+         HAccount account = accountDAO.getByUsername(originalUsername);
+         account.setUsername( getUsername() );
+         accountDAO.makePersistent(account);
+      }
+
+      return super.save();
    }
 }

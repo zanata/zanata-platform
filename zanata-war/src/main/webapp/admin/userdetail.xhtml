@@ -17,7 +17,7 @@
           
           <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-            <h:inputText id="username" value="#{userAction.username}" readonly="#{identityManager.userExists(userAction.username)}"/>
+            <h:inputText id="username" value="#{userAction.username}" readonly="#{not s:hasRole('admin')}"/>
           </s:decorate>
           <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Email']}</ui:define>

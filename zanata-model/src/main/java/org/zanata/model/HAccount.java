@@ -109,8 +109,8 @@ public class HAccount extends ModelEntityBase implements Serializable
       return person;
    }
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
+   // NB PERF @NaturalId(mutable=false) for better criteria caching. Mutable = true as user names can be changed.
+   @NaturalId(mutable = true)
    @UserPrincipal
    @Field(index = Index.TOKENIZED)
    public String getUsername()

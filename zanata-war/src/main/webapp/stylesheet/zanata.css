@@ -124,6 +124,12 @@ input.with_icon {
 	font-size:16px;
 }
 
+input[readonly] {
+    background-color: #eeeeee;
+    font-style:italic;
+    color:#545454;
+}
+
 button:hover,input[type="reset"]:hover,input[type="submit"]:hover,input[type="button"]:hover 
 {
 	background: #CCC;
