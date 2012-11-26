@@ -174,7 +174,7 @@ public class NavigationServiceIntegrationTest
       getTransUnitListCallback.onSuccess(callHandler(handler, getTransUnitList));
    }
 
-   @Test
+   @Test(enabled = false)
    public void canMockHandler()
    {
       service.init(context.changeCount(6));
@@ -196,7 +196,7 @@ public class NavigationServiceIntegrationTest
       assertThat(navigationResult.getTransIdStateList(), hasEntry(5L, ContentState.New));
    }
 
-   @Test
+   @Test(enabled = false)
    public void canGoToFirstPage()
    {
       service.init(context.changeCount(3));
@@ -218,7 +218,7 @@ public class NavigationServiceIntegrationTest
       return TestFixture.asIds(service.getCurrentPageValues());
    }
 
-   @Test
+   @Test(enabled = false)
    public void canGoToLastPageWithNotPerfectDivide()
    {
       service.init(context.changeCount(4));
@@ -232,7 +232,7 @@ public class NavigationServiceIntegrationTest
       verifyNoMoreInteractions(dispatcher);
    }
 
-   @Test
+   @Test(enabled = false)
    public void canGoToLastPageWithPerfectDivide() {
       service.init(context.changeCount(3));
       simulateRPCCallbackOnSuccess();
@@ -247,7 +247,7 @@ public class NavigationServiceIntegrationTest
       assertThat(navigationStateHolder.getCurrentPage(), is(1));
    }
 
-   @Test
+   @Test(enabled = false)
    public void canHavePageCountGreaterThanActualSize() {
       service.init(context.changeCount(10));
       simulateRPCCallbackOnSuccess();
@@ -262,7 +262,7 @@ public class NavigationServiceIntegrationTest
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
-   @Test
+   @Test(enabled = false)
    public void canGoToNextPage()
    {
       service.init(context.changeCount(2));
@@ -284,7 +284,7 @@ public class NavigationServiceIntegrationTest
       assertThat(navigationStateHolder.getCurrentPage(), is(2));
    }
 
-   @Test
+   @Test(enabled = false)
    public void canGoToPreviousPage()
    {
       service.init(context.changeCount(2));
@@ -316,7 +316,7 @@ public class NavigationServiceIntegrationTest
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
-   @Test
+   @Test(enabled = false)
    public void canGoToPage()
    {
       service.init(context.changeCount(3));
@@ -339,7 +339,7 @@ public class NavigationServiceIntegrationTest
       assertThat(navigationStateHolder.getCurrentPage(), is(0));
    }
 
-   @Test
+   @Test(enabled = false)
    public void onRPCSuccess()
    {
       service.init(context.changeCount(3));
