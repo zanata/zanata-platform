@@ -142,7 +142,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    {
       if (!searchField.containStyleName(style.transFilterTextBoxEmpty()))
       {
-         searchField.setText("");
+         searchField.setValue("");
          searchField.addStyleName(style.transFilterTextBoxEmpty());
       }
    }
