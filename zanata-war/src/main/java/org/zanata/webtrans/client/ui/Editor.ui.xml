@@ -53,7 +53,7 @@
                 	<g:HTMLPanel ui:field="targetWrapper" styleName="TableEditorCell-Target {style.textAreaWrapper}">
 	                	<g:HorizontalPanel width="100%" height="100%" ui:field="textAreaTable">
                             <g:cell width="100%">
-                            	<fui:TextAreaWrapper ui:field="textArea"/>
+                                <fui:TextAreaWrapper ui:field="textArea"/>
                             </g:cell>
                             <g:cell>
                             	<fui:TranslatorListWidget ui:field="translatorList" />

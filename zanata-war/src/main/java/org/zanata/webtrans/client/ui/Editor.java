@@ -81,6 +81,8 @@ public class Editor extends Composite implements ToggleEditor
       }
 
       initWidget(uiBinder.createAndBindUi(this));
+      targetWrapper.getElement().setAttribute("contenteditable", "true");
+      targetWrapper.getElement().setAttribute("spellcheck", "true");
       // determine whether to show or hide buttons
       showCopySourceButton(listener.isDisplayButtons());
 
