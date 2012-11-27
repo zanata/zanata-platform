@@ -71,7 +71,7 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Save as Approved")
    String saveAsApproved();
 
-   @DefaultMessage("Cancel (Esc)")
+   @DefaultMessage("Cancel")
    String editCancelShortcut();
 
    @DefaultMessage("History")

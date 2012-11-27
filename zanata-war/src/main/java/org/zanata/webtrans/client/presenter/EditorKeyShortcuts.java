@@ -201,23 +201,24 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
          enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
       }
 
-      // @formatter:off
-      KeyShortcut escClosesEditorShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
-            .setContext(ShortcutContext.Edit).setDescription(messages.cancelChanges())
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  if (!keyShortcutPresenter.getDisplay().isShowing())
-                  {
-                     targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-                  }
-               }
-            }).build();
-      // @formatter:on
-      keyShortcutPresenter.register(escClosesEditorShortcut);
+      // Remove esc key
+//      // @formatter:off
+//      KeyShortcut escClosesEditorShortcut = KeyShortcut.Builder.builder()
+//            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
+//            .setContext(ShortcutContext.Edit).setDescription(messages.cancelChanges())
+//            .setHandler(new KeyShortcutEventHandler()
+//            {
+//               @Override
+//               public void onKeyShortcut(KeyShortcutEvent event)
+//               {
+//                  if (!keyShortcutPresenter.getDisplay().isShowing())
+//                  {
+//                     targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
+//                  }
+//               }
+//            }).build();
+//      // @formatter:on
+      // keyShortcutPresenter.register(escClosesEditorShortcut);
 
       // @formatter:off
       KeyShortcut copySourceShortcut = KeyShortcut.Builder.builder()
