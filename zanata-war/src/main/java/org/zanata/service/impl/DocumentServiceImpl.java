@@ -153,6 +153,16 @@ public class DocumentServiceImpl implements DocumentService
       return document;
    }
 
+   @Override
+   @Transactional
+   public void makeObsolete(HDocument document)
+   {
+      // Simply make it obsolete. This method is here in case this logic is expanded.
+      document.setObsolete(true);
+      documentDAO.makePersistent(document);
+      documentDAO.flush();
+   }
+
    /**
     * Invoke the copy trans function for a document.
     *

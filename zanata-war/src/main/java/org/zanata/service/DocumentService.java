@@ -60,4 +60,11 @@ public interface DocumentService
     */
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
                                   Set<String> extensions, boolean copyTrans);
+
+   /**
+    * Makes a document obsolete.
+    *
+    * @param document The document to make obsolete.
+    */
+   public void makeObsolete( HDocument document );
 }
