@@ -202,8 +202,7 @@ public class ProjectIterationFilesAction implements Serializable
    public void deleteDocument( HDocument doc )
    {
       doc = documentDAO.getById( doc.getId() ); // refresh the instance
-      doc.setObsolete(true);
-      documentDAO.makePersistent(doc);
+      documentServiceImpl.makeObsolete(doc);
    }
 
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")

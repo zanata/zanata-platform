@@ -390,8 +390,7 @@ public class SourceDocResourceService implements SourceDocResource
       }
 
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-      document.setObsolete(true);
-      documentDAO.flush();
+      documentServiceImpl.makeObsolete(document);
       return Response.ok().build();
    }
 
