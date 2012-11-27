@@ -20,11 +20,15 @@
             cursor: pointer;
         }
 
-        .targetWrapper {
-            padding: 2px;
-        }
-
-        .targetWrapper textarea {
+		.textAreaWrapper
+		{
+		}
+		
+		.textAreaWrapper table
+		{
+			table-layout:fixed;
+		}
+        .textAreaWrapper textArea {
             width: 100%;
             min-height: 3em;
         }
@@ -46,13 +50,15 @@
                 </g:cell>
                 <g:cell>
                     <!-- this extra wrapper is needed to make the validation error border around editor and remove (magically) a scrollbar from who-knows-what-->
-                	<g:HTMLPanel ui:field="targetWrapper" styleName="{style.targetWrapper}">
-	                	<g:HTMLPanel styleName="TableEditorCell-Target">
-                            <fui:TranslatorListWidget ui:field="translatorList" />
-                            <div>
-                                <fui:TextAreaWrapper ui:field="textArea" />
-                            </div>
-                        </g:HTMLPanel>
+                	<g:HTMLPanel ui:field="targetWrapper" styleName="TableEditorCell-Target {style.textAreaWrapper}">
+	                	<g:HorizontalPanel width="100%" height="100%" ui:field="textAreaTable">
+                            <g:cell width="100%">
+                            	<fui:TextAreaWrapper ui:field="textArea"/>
+                            </g:cell>
+                            <g:cell>
+                            	<fui:TranslatorListWidget ui:field="translatorList" />
+                            </g:cell>
+                        </g:HorizontalPanel>
 	                </g:HTMLPanel>
                 </g:cell>
 			</g:HorizontalPanel>

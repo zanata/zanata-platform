@@ -43,7 +43,7 @@ public class Editor extends Composite implements ToggleEditor
    FocusPanel rootContainer;
 
    @UiField
-   HorizontalPanel topContainer;
+   HorizontalPanel topContainer, textAreaTable;
 
    @UiField
    TranslatorListWidget translatorList;
@@ -106,14 +106,6 @@ public class Editor extends Composite implements ToggleEditor
       listener.setEditingState(id, UNSAVED);
    }
 
-//   @UiHandler("rootContainer")
-//   public void onEditorClicked(ClickEvent event)
-//   {
-//      listener.onEditorClicked(id, index);
-//      textArea.setEditing(true);
-//      fireValidationEvent();
-//   }
-
    @UiHandler("textArea")
    public void onTextAreaFocus(FocusEvent event)
    {
@@ -152,6 +144,19 @@ public class Editor extends Composite implements ToggleEditor
    {
       textArea.setReadOnly(viewMode == ViewMode.VIEW);
       translatorList.setVisible(viewMode == ViewMode.EDIT);
+      toggleTranslatorList();
+   }
+
+   public void toggleTranslatorList()
+   {
+      if (translatorList.isVisible() && !translatorList.isEmpty())
+      {
+         textAreaTable.setCellWidth(translatorList, "60px");
+      }
+      else
+      {
+         textAreaTable.setCellWidth(translatorList, "0");
+      }
    }
 
    @Override
@@ -184,7 +189,6 @@ public class Editor extends Composite implements ToggleEditor
    public void setFocus()
    {
       textArea.setEditing(true);
-//      textArea.setFocus(true);
    }
 
    @Override
@@ -239,12 +243,14 @@ public class Editor extends Composite implements ToggleEditor
    public void addTranslator(String name, String color)
    {
       translatorList.addTranslator(name, color);
+      toggleTranslatorList();
    }
 
    @Override
    public void clearTranslatorList()
    {
       translatorList.clearTranslatorList();
+      toggleTranslatorList();
    }
 
    @Override
@@ -263,6 +269,7 @@ public class Editor extends Composite implements ToggleEditor
    public void removeTranslator(String name, String color)
    {
       translatorList.removeTranslator(name, color);
+      toggleTranslatorList();
    }
 
    @Override
@@ -283,8 +290,6 @@ public class Editor extends Composite implements ToggleEditor
       String hasValidationError();
 
       String copyButton();
-
-      String targetWrapper();
 
       String targetContainer();
    }

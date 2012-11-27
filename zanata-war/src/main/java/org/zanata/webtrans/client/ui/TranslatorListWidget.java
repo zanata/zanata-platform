@@ -17,6 +17,8 @@ public class TranslatorListWidget extends Composite
    @UiField
    HTMLPanel container;
 
+   private boolean isEmpty = true;
+
 
    public TranslatorListWidget()
    {
@@ -35,11 +37,13 @@ public class TranslatorListWidget extends Composite
       nameLabel.getElement().getStyle().setProperty("borderStyle", "solid");
 
       container.add(nameLabel);
+      isEmpty = false;
    }
 
    public void clearTranslatorList()
    {
       container.clear();
+      isEmpty = true;
    }
 
    public void removeTranslator(String name, String color)
@@ -54,6 +58,13 @@ public class TranslatorListWidget extends Composite
             container.remove(i);
          }
       }
+
+      isEmpty = container.getWidgetCount() == 0;
+   }
+
+   public boolean isEmpty()
+   {
+      return isEmpty;
    }
 
    /**
