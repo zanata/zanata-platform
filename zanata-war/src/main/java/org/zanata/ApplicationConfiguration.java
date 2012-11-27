@@ -66,8 +66,10 @@ public class ApplicationConfiguration implements Serializable
    private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
 
+   // Property file key names
    private static final String KEY_AUTH_POLICY = "zanata.security.auth.policy";
    private static final String KEY_ADMIN_USERS = "zanata.security.admin.users";
+   private static final String KEY_DEFAULT_FROM_ADDRESS = "zanata.email.default.from";
 
    private static final String[] allConfigKeys = new String[]
       {
@@ -296,17 +298,24 @@ public class ApplicationConfiguration implements Serializable
 
    public String getFromEmailAddr()
    {
-      String emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+      String emailAddr = null;
+
+      // Look in the properties file first
+      if( externalConfig.containsKey(KEY_DEFAULT_FROM_ADDRESS) )
+      {
+         emailAddr = externalConfig.getProperty(KEY_DEFAULT_FROM_ADDRESS);
+      }
+
+      // Look in the database next
       if( emailAddr == null )
       {
-         try
-         {
-            emailAddr = "no-reply@" + InetAddress.getLocalHost().getHostName();
-         }
-         catch (UnknownHostException e)
-         {
-            emailAddr = "no-reply@zanatainstance.org";
-         }
+         emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+      }
+
+      // Finally, just throw an Exception
+      if( emailAddr == null )
+      {
+         throw new RuntimeException("'From' email address has not been defined in either zanata.properties or Zanata setup");
       }
       return emailAddr;
    }
