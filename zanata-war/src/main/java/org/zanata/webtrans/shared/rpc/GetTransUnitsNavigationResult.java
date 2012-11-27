@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
+import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 
@@ -35,4 +36,12 @@ public class GetTransUnitsNavigationResult implements IsSerializable
       return transIdStateList;
    }
 
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("idIndexList", idIndexList).
+            add("transIdStateList", transIdStateList).
+            toString();
+   }
 }

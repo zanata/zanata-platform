@@ -71,7 +71,7 @@ public class GetTransUnitsNavigationService
          transIdStateMap.put(textFlow.getId(), textFlow.getTargets().get(hLocale.getId()).getState());
       }
 
-      GetTransUnitsNavigationService.log.debug("for action {} returned size: ", action, idIndexList.size());
+      log.info("for action {} returned size: {}", action, idIndexList.size());
       return new GetTransUnitsNavigationResult(idIndexList, transIdStateMap);
    }
 
