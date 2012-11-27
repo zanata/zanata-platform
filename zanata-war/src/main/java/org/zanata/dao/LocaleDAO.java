@@ -52,6 +52,7 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
       return (HLocale) getSession().createCriteria(HLocale.class).add(Restrictions.naturalId().set("localeId", locale)).setCacheable(true).uniqueResult();
    }
 
+   @SuppressWarnings("unchecked")
    public List<HLocale> findBySimilarLocaleId(LocaleId localeId)
    {
       return (List<HLocale>) getSession().createQuery("from HLocale l where lower(l.localeId) = :id ")
