@@ -103,6 +103,15 @@
                     </a>
                 </rich:column>
 
+                <rich:column rendered="#{projectIterationFilesAction.documentRemovalAllowed}" styleClass="centered">
+                    <f:facet name="header">
+                        #{messages['jsf.Actions']}
+                    </f:facet>
+                    <h:commandButton value="#{messages['jsf.Delete']}"
+                                     action="#{projectIterationFilesAction.deleteDocument(doc)}"
+                                     onclick="return confirm('#{messages['jsf.iteration.files.ConfirmDocDeletion']}')"/>
+                </rich:column>
+
                 <!-- TODO show stats for document across locales -->
 
             </rich:dataTable>

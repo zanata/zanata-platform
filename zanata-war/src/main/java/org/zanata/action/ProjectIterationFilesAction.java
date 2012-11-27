@@ -198,6 +198,14 @@ public class ProjectIterationFilesAction implements Serializable
       }
    }
 
+   @Restrict("#{projectIterationFilesAction.documentRemovalAllowed}")
+   public void deleteDocument( HDocument doc )
+   {
+      doc = documentDAO.getById( doc.getId() ); // refresh the instance
+      doc.setObsolete(true);
+      documentDAO.makePersistent(doc);
+   }
+
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
    public String uploadTranslationFile()
    {
@@ -408,6 +416,12 @@ public class ProjectIterationFilesAction implements Serializable
    {
       HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       return isIterationActive() && identity != null && identity.hasPermission("import-template", projectIteration);
+   }
+
+   public boolean isDocumentRemovalAllowed()
+   {
+      // currently same permissions as uploading a document
+      return this.isDocumentUploadAllowed();
    }
 
    public List<HDocument> getIterationDocuments()

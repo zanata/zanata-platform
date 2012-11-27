@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pages xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd"
+  xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
   no-conversation-view-id="/home.xhtml" login-view-id="/account/login.xhtml">
 
   <page view-id="*">
@@ -631,6 +631,14 @@
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SourceDocuments'])}"/>
+
+    <navigation from-action="#{projectIterationFilesAction.deleteDocument(doc)}">
+      <redirect view-id="/iteration/source_files.xhtml">
+        <message severity="INFO">#{messages['jsf.iteration.files.DocumentDeleted']}</message>
+        <param name="project" value="#{projectIterationFilesAction.projectSlug}"/>
+        <param name="iteration" value="#{projectIterationFilesAction.iterationSlug}"/>
+      </redirect>
+    </navigation>
   </page>
 
   <page view-id="/iteration/files.xhtml">
