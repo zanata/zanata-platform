@@ -123,14 +123,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return query.list();
    }
 
-   public HTextFlow getObsoleteById(HDocument document, String id)
-   {
-      Criteria cr = getSession().createCriteria(HTextFlow.class);
-      cr.add(Restrictions.naturalId().set("resId", id).set("document", document)).add(Restrictions.eq("obsolete", true));
-      cr.setCacheable(true).setComment("TextFlowDAO.getObsoleteById");
-      return (HTextFlow) cr.uniqueResult();
-   }
-
    @SuppressWarnings("unchecked")
    public List<HTextFlow> getNavigationByDocumentId(Long documentId, HLocale hLocale, ResultTransformer resultTransformer, FilterConstraints filterConstraints)
    {

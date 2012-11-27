@@ -1,6 +1,7 @@
 package org.zanata.dao;
 
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -27,7 +28,10 @@ public class ApplicationConfigurationDAO extends AbstractDAOImpl<HApplicationCon
 
    public HApplicationConfiguration findByKey(String key)
    {
-      return (HApplicationConfiguration) getSession().createCriteria(HApplicationConfiguration.class).add(Restrictions.naturalId().set("key", key)).uniqueResult();
+      Criteria cr = getSession().createCriteria(HApplicationConfiguration.class);
+      cr.add(Restrictions.naturalId().set("key", key));
+      cr.setCacheable(true).setComment("ApplicationConfigurationDAO.findByKey");
+      return (HApplicationConfiguration) cr.uniqueResult();
    }
 
 }
