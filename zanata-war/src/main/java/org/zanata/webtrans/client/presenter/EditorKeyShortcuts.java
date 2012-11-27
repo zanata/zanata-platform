@@ -1,5 +1,9 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -10,14 +14,11 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -200,23 +201,24 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
          enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
       }
 
-      // @formatter:off
-      KeyShortcut escClosesEditorShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
-            .setContext(ShortcutContext.Edit).setDescription(messages.cancelChanges())
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  if (!keyShortcutPresenter.getDisplay().isShowing())
-                  {
-                     targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-                  }
-               }
-            }).build();
-      // @formatter:on
-      keyShortcutPresenter.register(escClosesEditorShortcut);
+      // Remove esc key
+//      // @formatter:off
+//      KeyShortcut escClosesEditorShortcut = KeyShortcut.Builder.builder()
+//            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
+//            .setContext(ShortcutContext.Edit).setDescription(messages.cancelChanges())
+//            .setHandler(new KeyShortcutEventHandler()
+//            {
+//               @Override
+//               public void onKeyShortcut(KeyShortcutEvent event)
+//               {
+//                  if (!keyShortcutPresenter.getDisplay().isShowing())
+//                  {
+//                     targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
+//                  }
+//               }
+//            }).build();
+//      // @formatter:on
+      // keyShortcutPresenter.register(escClosesEditorShortcut);
 
       // @formatter:off
       KeyShortcut copySourceShortcut = KeyShortcut.Builder.builder()
