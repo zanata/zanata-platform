@@ -25,6 +25,7 @@ import java.util.List;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -65,7 +66,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    protected HIterationGroup loadInstance()
    {
       Session session = (Session) getEntityManager().getDelegate();
-      return (HIterationGroup) session.createCriteria(getEntityClass()).add(Restrictions.naturalId().set("slug", getSlug())).setCacheable(true).uniqueResult();
+      Criteria cr = session.createCriteria(getEntityClass());
+      cr.add(Restrictions.naturalId().set("slug", getSlug()));
+      cr.setCacheable(true);
+      return (HIterationGroup) cr.uniqueResult();
    }
 
    public List<HProjectIteration> getInstanceProjectIterations()
