@@ -1,6 +1,16 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -16,21 +26,9 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.event.dom.client.KeyCodes;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -192,17 +190,15 @@ public class EditorKeyShortcutsTest
       // by default user config settings
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
-      when(messages.cancelChanges()).thenReturn("cancel");
       when(messages.copyFromSource()).thenReturn("copy from source");
       
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
-      verify(keyShortcutPresenter, times(4)).register(keyShortcutCaptor.capture());
+      verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());
       List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(2), "cancel", false, false, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE));
-      assertKeys(keys.get(3), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
+      assertKeys(keys.get(2), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
    }
 
    @Test
@@ -212,19 +208,17 @@ public class EditorKeyShortcutsTest
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
       when(messages.copyFromSource()).thenReturn("copy from source");
-      when(messages.cancelChanges()).thenReturn("cancel");
       
       configHolder.setEnterSavesApproved(true);
 
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
-      verify(keyShortcutPresenter, times(5)).register(keyShortcutCaptor.capture());
+      verify(keyShortcutPresenter, times(4)).register(keyShortcutCaptor.capture());
       List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
       assertKeys(keys.get(2), "save approved", true, true, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(3), "cancel", false, false, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE));
-      assertKeys(keys.get(4), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
+      assertKeys(keys.get(3), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
    }
 
    @Test
@@ -256,7 +250,7 @@ public class EditorKeyShortcutsTest
    {
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
-      KeyShortcut keys = keyShortcutCaptor.getAllValues().get(3);
+      KeyShortcut keys = keyShortcutCaptor.getAllValues().get(2);
 
       keys.getHandler().onKeyShortcut(null);
 
@@ -274,32 +268,6 @@ public class EditorKeyShortcutsTest
       keys.getHandler().onKeyShortcut(null);
 
       verify(targetContentsPresenter).saveAsApprovedAndMoveNext(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-   }
-
-   @Test
-   public void testEscKeyHandler()
-   {
-      when(keyShortcutPresenter.getDisplay()).thenReturn(keyShortcutDisplay);
-      TransUnitId transUnitId = new TransUnitId(1);
-      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(transUnitId);
-      keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
-      verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
-      KeyShortcut keys = keyShortcutCaptor.getAllValues().get(2);
-
-      // when key shortcut display is not showing
-      when(keyShortcutDisplay.isShowing()).thenReturn(false);
-
-      keys.getHandler().onKeyShortcut(null);
-
-      verify(targetContentsPresenter).getCurrentTransUnitIdOrNull();
-      verify(targetContentsPresenter).onCancel(transUnitId);
-
-      // when key shortcut display is showing, don't do anything
-      when(keyShortcutDisplay.isShowing()).thenReturn(true);
-
-      keys.getHandler().onKeyShortcut(null);
-
-      verifyNoMoreInteractions(targetContentsPresenter);
    }
 
    @Test
