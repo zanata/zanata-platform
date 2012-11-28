@@ -1,5 +1,7 @@
 package org.zanata.search;
 
+import java.util.Collection;
+
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Disjunction;
@@ -7,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import org.zanata.model.HLocale;
 import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import static org.hibernate.criterion.Restrictions.eq;
@@ -22,14 +25,30 @@ public class FilterConstraintToQuery
    protected static final String STATE_LIST_NAMED_PARAM = "contentStateList";
    protected static final String LOCALE_NAMED_PARAM = "locale";
    protected static final String DOC_ID_NAMED_PARAM = "docId";
+   protected static final String DOC_IDS_LIST_NAMED_PARAM = "docIdList";
    private static final String SEARCH_PLACEHOLDER = ":" + SEARCH_NAMED_PARAM;
    private static final String STATE_LIST_PLACEHOLDER = ":" + STATE_LIST_NAMED_PARAM;
    private static final String LOCALE_PLACEHOLDER = ":" + LOCALE_NAMED_PARAM;
    private static final String DOC_ID_PLACEHOLDER = ":" + DOC_ID_NAMED_PARAM;
+   private static final String DOC_IDS_LIST_PLACEHOLDER = ":" + DOC_IDS_LIST_NAMED_PARAM;
 
    private final FilterConstraints constraints;
    private final boolean hasSearch;
    private String searchString;
+   private DocumentId documentId;
+   private Collection<String> docIdList;
+
+   private FilterConstraintToQuery(FilterConstraints constraints, DocumentId documentId)
+   {
+      this(constraints);
+      this.documentId = documentId;
+   }
+
+   public FilterConstraintToQuery(FilterConstraints constraints, Collection<String> docIdList)
+   {
+      this(constraints);
+      this.docIdList = docIdList;
+   }
 
    private FilterConstraintToQuery(FilterConstraints constraints)
    {
@@ -42,15 +61,31 @@ public class FilterConstraintToQuery
       }
    }
 
-   public static FilterConstraintToQuery from(FilterConstraints constraints)
+   public static FilterConstraintToQuery filterInSingleDocument(FilterConstraints constraints, DocumentId documentId)
    {
-      return new FilterConstraintToQuery(constraints);
+      Preconditions.checkNotNull(documentId);
+      return new FilterConstraintToQuery(constraints, documentId);
+   }
+
+   public static FilterConstraintToQuery filterInMultipleDocuments(FilterConstraints constraints, Collection<String> docIdList)
+   {
+      Preconditions.checkNotNull(docIdList);
+      Preconditions.checkState(!docIdList.isEmpty());
+      return new FilterConstraintToQuery(constraints, docIdList);
    }
 
    public String toHQL()
    {
+      String docIdCondition;
+      if (documentId != null)
+      {
+         docIdCondition = eq("tf.document.id", DOC_ID_PLACEHOLDER).toString();
+      }
+      else
+      {
+         docIdCondition = "tf.document.docId in (" + DOC_IDS_LIST_PLACEHOLDER + ")";
+      }
       String obsoleteCondition = eq("tf.obsolete", "0").toString();
-      String docIdCondition = eq("tf.document.id", DOC_ID_PLACEHOLDER).toString();
       String searchCondition = buildSearchCondition();
       String stateCondition = buildStateCondition();
 
@@ -124,9 +159,16 @@ public class FilterConstraintToQuery
       return stateInListCondition;
    }
 
-   public Query setQueryParameters(Query textFlowQuery, DocumentId documentId, HLocale hLocale)
+   public Query setQueryParameters(Query textFlowQuery, HLocale hLocale)
    {
-      textFlowQuery.setParameter(DOC_ID_NAMED_PARAM, documentId.getId());
+      if (documentId != null)
+      {
+         textFlowQuery.setParameter(DOC_ID_NAMED_PARAM, documentId.getId());
+      }
+      else
+      {
+         textFlowQuery.setParameterList(DOC_IDS_LIST_NAMED_PARAM, docIdList);
+      }
       textFlowQuery.setParameter(LOCALE_NAMED_PARAM, hLocale.getId());
       if (hasSearch)
       {

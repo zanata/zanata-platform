@@ -447,12 +447,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     */
    public List<HTextFlow> getTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints, int firstResult, int maxResult)
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(constraints);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
       String queryString = constraintToQuery.toHQL();
       log.debug("\n query {}\n", queryString);
 
       Query textFlowQuery = getSession().createQuery(queryString);
-      constraintToQuery.setQueryParameters(textFlowQuery, documentId, hLocale);
+      constraintToQuery.setQueryParameters(textFlowQuery, hLocale);
       textFlowQuery.setFirstResult(firstResult).setMaxResults(maxResult);
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getTextFlowByDocumentIdWithConstraint");
 
