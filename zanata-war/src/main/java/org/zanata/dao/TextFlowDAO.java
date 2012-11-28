@@ -307,12 +307,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       FullTextQuery ftQuery;
       if (useTargetIndex)
       {
-         org.apache.lucene.search.Query textQuery = generateTargetQuery(query, sourceLocale, targetLocale, queryText, multiQueryText);
+         org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS, useTargetIndex);
          ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
       }
       else
       {
-         org.apache.lucene.search.Query textQuery = generateTextFlowQuery(query, sourceLocale, targetLocale, queryText, multiQueryText);
+         org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.CONTENT_FIELDS, useTargetIndex);
          ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
          ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
       }
@@ -337,7 +337,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * @return
     * @throws ParseException
     */
-   private org.apache.lucene.search.Query generateTargetQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText) throws ParseException
+   private org.apache.lucene.search.Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[], boolean useTargetIndex) throws ParseException
    {
       org.apache.lucene.search.Query contentQuery;
       // Analyzer determined by the language
@@ -347,58 +347,37 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;
-         if (queriesSize > IndexFieldLabels.TF_CONTENT_FIELDS.length)
+         if (queriesSize > contentFields.length)
          {
-            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.TF_CONTENT_FIELDS.length);
+            log.warn("query contains {} fields, but we only index {}", queriesSize, contentFields.length);
          }
          String[] searchFields = new String[queriesSize];
-         System.arraycopy(IndexFieldLabels.TF_CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
+         System.arraycopy(contentFields, 0, searchFields, 0, queriesSize);
 
          contentQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
-         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.TF_CONTENT_FIELDS, analyzer);
+         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, contentFields, analyzer);
          contentQuery = parser.parse(queryText);
       }
 
-      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
-      TermQuery stateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
-
-      BooleanQuery targetQuery = new BooleanQuery();
-      targetQuery.add(contentQuery, Occur.MUST);
-      targetQuery.add(localeQuery, Occur.MUST);
-      targetQuery.add(stateQuery, Occur.MUST);
-
-      return targetQuery;
-   }
-
-   private org.apache.lucene.search.Query generateTextFlowQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText) throws ParseException
-   {
-      org.apache.lucene.search.Query contentQuery;
-      // Analyzer determined by the language
-      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
-      Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
-
-      if (query.getSearchType() == SearchType.FUZZY_PLURAL)
+      if (useTargetIndex)
       {
-         int queriesSize = multiQueryText.length;
-         if (queriesSize > IndexFieldLabels.CONTENT_FIELDS.length)
-         {
-            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.CONTENT_FIELDS.length);
-         }
-         String[] searchFields = new String[queriesSize];
-         System.arraycopy(IndexFieldLabels.CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
+         TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
+         TermQuery stateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
 
-         contentQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
+         BooleanQuery targetQuery = new BooleanQuery();
+         targetQuery.add(contentQuery, Occur.MUST);
+         targetQuery.add(localeQuery, Occur.MUST);
+         targetQuery.add(stateQuery, Occur.MUST);
+
+         return targetQuery;
       }
       else
       {
-         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.CONTENT_FIELDS, analyzer);
-         contentQuery = parser.parse(queryText);
+         return contentQuery;
       }
-
-      return contentQuery;
    }
 
    public int getTotalWords()
