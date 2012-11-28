@@ -36,7 +36,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
@@ -102,13 +101,13 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          List<Object[]> matches;
          if (useTargetIndex)
          {
-            matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocaleId, MAX_RESULTS);
+            matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
          }
          else
          {
             // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
             List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(targetLocale.getLocaleId());
-            matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, sourceLocaleId, MAX_RESULTS);
+            matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
          }
 
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
@@ -116,7 +115,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          {
             if (useTargetIndex)
             {
-               processTargetIndexMatch(targetLocale, transMemoryQuery, matchesMap, match);
+               processTargetIndexMatch(transMemoryQuery, matchesMap, match);
             }
             else
             {
@@ -143,15 +142,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       return results;
    }
 
-   private void processTargetIndexMatch(HLocale targetLocale, TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
+   private void processTargetIndexMatch(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
    {
       HTextFlowTarget textFlowTarget = (HTextFlowTarget) match[1];
-      if (isInvalidResult(textFlowTarget, targetLocale))
+      if (!isValidResult(textFlowTarget))
       {
          return;
       }
       ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
-      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getTextFlow().getTargets().get(targetLocale.getId()).getContents());
+      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
       addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget, textFlowContents, targetContents);
    }
 
@@ -186,23 +185,21 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       item.addSourceId(textFlowTarget.getTextFlow().getId());
    }
 
-   private static boolean isInvalidResult(HTextFlowTarget textFlowTarget, HLocale hLocale)
+   private static boolean isValidResult(HTextFlowTarget textFlowTarget)
    {
       if (textFlowTarget == null)
       {
-         return true;
+         return false;
       }
       else
       {
          HProjectIteration projectIteration = textFlowTarget.getTextFlow().getDocument().getProjectIteration();
          if (projectIteration.getStatus() == EntityStatus.OBSOLETE || projectIteration.getProject().getStatus() == EntityStatus.OBSOLETE)
          {
-            return true;
+            return false;
          }
       }
-      HTextFlowTarget target = textFlowTarget.getTextFlow().getTargets().get(hLocale.getId());
-      // double check in case of caching issues
-      return target == null || target.getState() != ContentState.Approved;
+      return true;
    }
 
 

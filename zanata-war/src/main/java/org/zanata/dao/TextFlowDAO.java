@@ -23,16 +23,17 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import org.apache.lucene.analysis.Analyzer;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
-
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -47,6 +48,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
@@ -229,30 +231,30 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    /**
     * Using id list and source index
     */
-   public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId locale, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult) throws ParseException
    {
-      return getSearchResult(query, translatedIds, locale, maxResult, false);
+      return getSearchResult(query, translatedIds, sourceLocale, targetLocale, maxResult, false);
    }
 
    /**
     * Using target index (to be phased out)
     */
-   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId locale, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult) throws ParseException
    {
-      return getSearchResult(query, null, locale, maxResult, true);
+      return getSearchResult(query, null, sourceLocale, targetLocale, maxResult, true);
    }
 
    /**
     * 
     * @param query
     * @param translatedIds ignored if useTargetIndex is true
-    * @param locale
+    * @param sourceLocale
     * @param maxResult
     * @param useTargetIndex
     * @return
     * @throws ParseException
     */
-   private List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId locale, final int maxResult, boolean useTargetIndex) throws ParseException
+   private List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult, boolean useTargetIndex) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -305,12 +307,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       FullTextQuery ftQuery;
       if (useTargetIndex)
       {
-         org.apache.lucene.search.Query textQuery = generateTextQuery(query, locale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
+         org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS, useTargetIndex);
          ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
       }
       else
       {
-         org.apache.lucene.search.Query textQuery = generateTextQuery(query, locale, queryText, multiQueryText, IndexFieldLabels.CONTENT_FIELDS);
+         org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.CONTENT_FIELDS, useTargetIndex);
          ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
          ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
       }
@@ -322,11 +324,24 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return matches;
    }
 
-   private org.apache.lucene.search.Query generateTextQuery(TransMemoryQuery query, LocaleId locale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
+   /**
+    * Generate HTextFlowTarget query with matching HTextFlow contents,
+    * HTextFlowTarget locale, HTextFlowTarget state = Approved
+    * 
+    * @param query
+    * @param sourceLocale
+    * @param targetLocale
+    * @param queryText
+    * @param multiQueryText
+    * @param contentFields
+    * @return
+    * @throws ParseException
+    */
+   private org.apache.lucene.search.Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[], boolean useTargetIndex) throws ParseException
    {
-      org.apache.lucene.search.Query textQuery;
+      org.apache.lucene.search.Query contentQuery;
       // Analyzer determined by the language
-      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName( locale.getId() );
+      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
       Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
 
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
@@ -339,14 +354,30 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          String[] searchFields = new String[queriesSize];
          System.arraycopy(contentFields, 0, searchFields, 0, queriesSize);
 
-         textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
+         contentQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
          MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, contentFields, analyzer);
-         textQuery = parser.parse(queryText);
+         contentQuery = parser.parse(queryText);
       }
-      return textQuery;
+
+      if (useTargetIndex)
+      {
+         TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
+         TermQuery stateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
+
+         BooleanQuery targetQuery = new BooleanQuery();
+         targetQuery.add(contentQuery, Occur.MUST);
+         targetQuery.add(localeQuery, Occur.MUST);
+         targetQuery.add(stateQuery, Occur.MUST);
+
+         return targetQuery;
+      }
+      else
+      {
+         return contentQuery;
+      }
    }
 
    public int getTotalWords()
