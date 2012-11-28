@@ -23,7 +23,9 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -54,6 +56,9 @@ public class UserAccountServiceImpl implements UserAccountService
 
    @In
    private Session session;
+
+   @In
+   private SessionFactory sessionFactory;
 
    @In
    private AccountDAO accountDAO;
@@ -130,5 +135,15 @@ public class UserAccountServiceImpl implements UserAccountService
       HAccount persistedAcc = accountDAO.makePersistent( account );
       accountDAO.flush();
       return persistedAcc;
+   }
+
+   public void editUsername( String currentUsername, String newUsername )
+   {
+      Query updateQuery = session
+            .createQuery("update HAccount set username = :newUsername where username = :currentUsername")
+            .setParameter("newUsername", newUsername)
+            .setParameter("currentUsername", currentUsername);
+      updateQuery.executeUpdate();
+      sessionFactory.evictQueries(); // Because a Natural Id was modified
    }
 }

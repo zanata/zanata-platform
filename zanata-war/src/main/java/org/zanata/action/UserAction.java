@@ -30,12 +30,14 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
+import org.zanata.service.UserAccountService;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -66,7 +68,7 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
    private PersonDAO personDAO;
 
    @In
-   private AccountDAO accountDAO;
+   private UserAccountService userAccountServiceImpl;
 
    private boolean newUserFlag;
 
@@ -118,9 +120,7 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
       // Allow user name changes
       if( !newUserFlag )
       {
-         HAccount account = accountDAO.getByUsername(originalUsername);
-         account.setUsername( getUsername() );
-         accountDAO.makePersistent(account);
+         userAccountServiceImpl.editUsername(originalUsername, getUsername());
       }
 
       return super.save();

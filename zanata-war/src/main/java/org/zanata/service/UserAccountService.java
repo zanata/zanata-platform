@@ -44,4 +44,6 @@ public interface UserAccountService
     * @return The updated account object, which will be persistent in the databse.
     */
    HAccount runRoleAssignmentRules(HAccount account, HCredentials credentials, String policyName);
+
+   public void editUsername( String currentUsername, String newUsername );
 }
