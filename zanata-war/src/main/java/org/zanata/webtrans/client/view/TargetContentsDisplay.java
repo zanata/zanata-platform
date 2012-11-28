@@ -43,7 +43,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
 
    void addUndo(UndoLink undoLink);
 
-   void setValue(TransUnit transUnit);
+   void setValueAndCreateNewEditors(TransUnit transUnit);
 
    Integer getVerNum();
 

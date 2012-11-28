@@ -40,7 +40,6 @@ import static org.zanata.model.TestFixture.makeTransUnit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -175,7 +174,7 @@ public class TargetContentsPresenterTest
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
       presenter.saveAsFuzzy(selectedTU.getId());
@@ -196,7 +195,7 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.setSelected(selectedTU.getId());
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
 
       presenter.copySource(editor, selectedTU.getId());
@@ -212,7 +211,7 @@ public class TargetContentsPresenterTest
    {
       selectedTU = currentPageRows.get(0);
       when(display.getNewTargets()).thenReturn(NEW_TARGETS);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       List<String> result = presenter.getNewTargets();
 
@@ -236,7 +235,7 @@ public class TargetContentsPresenterTest
    {
       //given current display has one editor and current editor has target content
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
       when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedTU.getId());
@@ -258,7 +257,7 @@ public class TargetContentsPresenterTest
       when(display.getId()).thenReturn(selectedTU.getId());
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
       when(display.getEditors()).thenReturn(currentEditors);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
       presenter.onCancel(selectedTU.getId());
@@ -279,7 +278,7 @@ public class TargetContentsPresenterTest
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source content");
-      presenter.setSelected(selectedTU.getId());
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
       presenter.onInsertString(new InsertStringInEditorEvent("", "suggestion"));
@@ -302,7 +301,7 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.setSelected(selectedTU.getId());
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       presenter.onDataCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
@@ -319,7 +318,7 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor, editor2));
-      presenter.setSelected(selectedTU.getId());
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
       presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
@@ -337,7 +336,7 @@ public class TargetContentsPresenterTest
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
-      presenter.setSelected(selectedTU.getId());
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
       presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
@@ -359,7 +358,7 @@ public class TargetContentsPresenterTest
    {
       // Given:
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
       presenter.showHistory(selectedTU.getId());
@@ -373,7 +372,7 @@ public class TargetContentsPresenterTest
    {
       // Given:
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getNewTargets()).thenReturn(NEW_TARGETS);
       when(display.getId()).thenReturn(selectedTU.getId());
@@ -391,7 +390,7 @@ public class TargetContentsPresenterTest
    {
       // Given: display new targets is equal to cached targets
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
       when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
       when(display.getNewTargets()).thenReturn(CACHED_TARGETS);
 
@@ -407,7 +406,7 @@ public class TargetContentsPresenterTest
    public void canGetCurrentTransUnitId()
    {
       selectedTU = currentPageRows.get(0);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       TransUnitId result = presenter.getCurrentTransUnitIdOrNull();
       assertThat(result, Matchers.sameInstance(selectedTU.getId()));
@@ -444,7 +443,7 @@ public class TargetContentsPresenterTest
    {
       selectedTU = currentPageRows.get(0);
       TransUnitId oldSelection = currentPageRows.get(1).getId();
-      presenter.setStatesForTesting(oldSelection, 0, display, null);
+      presenter.setStatesForTesting(oldSelection, 0, display);
 
       presenter.onEditorClicked(selectedTU.getId(), 1);
 
@@ -456,7 +455,7 @@ public class TargetContentsPresenterTest
    @Test
    public void testSetFocus()
    {
-      presenter.setStatesForTesting(selectedTU.getId(), 99, display, Collections.<ToggleEditor>emptyList());
+      presenter.setStatesForTesting(selectedTU.getId(), 99, display);
 
       presenter.setFocus();
 
@@ -519,7 +518,24 @@ public class TargetContentsPresenterTest
 
       presenter.updateRow(updatedTransUnit);
 
-      verify(display).setValue(updatedTransUnit);
+      verify(display).setValueAndCreateNewEditors(updatedTransUnit);
+      verify(display).refresh();
+   }
+
+   @Test
+   public void canUpdateRowIfInCurrentDisplaysAndIsCurrentRow()
+   {
+      selectedTU = currentPageRows.get(2);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      TransUnit updatedTransUnit = TestFixture.makeTransUnit(selectedTU.getId().getId());
+
+      presenter.updateRow(updatedTransUnit);
+
+      verify(display).setValueAndCreateNewEditors(updatedTransUnit);
+      verify(display).refresh();
+      verify(display).getEditors();
+      verify(editorTranslators).updateTranslator(display.getEditors(), selectedTU.getId());
    }
 
    @Test
@@ -531,7 +547,7 @@ public class TargetContentsPresenterTest
 
       presenter.updateRow(updatedTransUnit);
 
-      verify(display, never()).setValue(updatedTransUnit);
+      verify(display, never()).setValueAndCreateNewEditors(updatedTransUnit);
    }
 
    @Test
@@ -574,7 +590,8 @@ public class TargetContentsPresenterTest
       TransUnitEditEvent event = mock(TransUnitEditEvent.class);
       when(event.getSelectedTransUnitId()).thenReturn(selectedTU.getId());
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, currentEditors);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+      when(display.getEditors()).thenReturn(currentEditors);
 
       presenter.onTransUnitEdit(event);
 
@@ -588,7 +605,7 @@ public class TargetContentsPresenterTest
    public void canMoveToPreviousEditorInPluralForm()
    {
       // Given: current editor index is 1
-      presenter.setStatesForTesting(selectedTU.getId(), 1, display, Lists.newArrayList(editor, editor2));
+      presenter.setStatesForTesting(selectedTU.getId(), 1, display);
 
       // When:
       presenter.moveToPreviousEntry();
@@ -617,7 +634,8 @@ public class TargetContentsPresenterTest
    public void canMoveToNextEditorInPluralForm()
    {
       // Given: current editor index is 0
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, Lists.newArrayList(editor, editor2));
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor, editor2));
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
       presenter.moveToNextEntry();
@@ -631,7 +649,8 @@ public class TargetContentsPresenterTest
    public void canMoveToNextEditorInPluralFormOnFirstRow()
    {
       // Given: current editor index is last index (represent last entry from move to previous)
-      presenter.setStatesForTesting(selectedTU.getId(), TargetContentsPresenter.LAST_INDEX, display, Lists.newArrayList(editor, editor2));
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor, editor2));
+      presenter.setStatesForTesting(selectedTU.getId(), TargetContentsPresenter.LAST_INDEX, display);
 
       // When:
       presenter.moveToNextEntry();
@@ -646,7 +665,7 @@ public class TargetContentsPresenterTest
    {
       // Given: current editor index is 1
       TargetContentsPresenter spyPresenter = spy(presenter);
-      spyPresenter.setStatesForTesting(selectedTU.getId(), 1, display, Lists.newArrayList(editor, editor2));
+      spyPresenter.setStatesForTesting(selectedTU.getId(), 1, display);
       doNothing().when(spyPresenter).savePendingChangesIfApplicable();
 
       // When:
@@ -663,9 +682,10 @@ public class TargetContentsPresenterTest
       // Given: current editor is focused
       TargetContentsPresenter spyPresenter = spy(presenter);
       selectedTU = currentPageRows.get(0);
-      spyPresenter.setStatesForTesting(selectedTU.getId(), 0, display, Lists.newArrayList(editor, editor2));
+      spyPresenter.setStatesForTesting(selectedTU.getId(), 0, display);
       doNothing().when(spyPresenter).copySource(editor, selectedTU.getId());
       when(editor.isFocused()).thenReturn(true);
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
 
       // When:
       spyPresenter.copySourceForActiveRow();
@@ -729,7 +749,7 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(1);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditingState()).thenReturn(TargetContentsDisplay.EditingState.SAVING);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       presenter.confirmSaved(selectedTU);
 
@@ -743,12 +763,12 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(1);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditingState()).thenReturn(TargetContentsDisplay.EditingState.SAVED);
-      presenter.setStatesForTesting(selectedTU.getId(), 0, display, null);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       presenter.confirmSaved(selectedTU);
 
       InOrder inOrder = Mockito.inOrder(display);
-      inOrder.verify(display).setValue(selectedTU);
+      inOrder.verify(display).setValueAndCreateNewEditors(selectedTU);
       inOrder.verify(display).refresh();
       inOrder.verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
    }
@@ -761,9 +781,9 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
       ArrayList<ToggleEditor> previousEditors = Lists.newArrayList(editor2);
-      presenter.setStatesForTesting(null, 0, display, previousEditors);
+      presenter.setStatesForTesting(null, 0, display);
       when(display.getId()).thenReturn(selectedTU.getId());
-      when(display.getEditors()).thenReturn(currentEditors);
+      when(display.getEditors()).thenReturn(previousEditors, currentEditors);
 
       // When:
       presenter.setSelected(selectedTU.getId());

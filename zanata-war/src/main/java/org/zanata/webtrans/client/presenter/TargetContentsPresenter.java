@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.presenter;
 
 import static com.google.common.base.Objects.equal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -99,7 +100,6 @@ public class TargetContentsPresenter implements
    private List<TargetContentsDisplay> displayList = Collections.emptyList();
    private int currentEditorIndex = 0;
    private TransUnitId currentTransUnitId;
-   private List<ToggleEditor> currentEditors = Collections.emptyList();
 
    // cached state
    private String findMessage;
@@ -165,19 +165,20 @@ public class TargetContentsPresenter implements
 
    private ToggleEditor getCurrentEditor()
    {
-      return currentEditors.get(currentEditorIndex);
+      return display.getEditors().get(currentEditorIndex);
    }
 
    public void setSelected(final TransUnitId currentTransUnitId)
    {
       this.currentTransUnitId = currentTransUnitId;
 
-      editorTranslators.clearTranslatorList(currentEditors); // clear previous selection's translator list
+      if (display != null)
+      {
+         editorTranslators.clearTranslatorList(display.getEditors()); // clear previous selection's translator list
+      }
 
       display = findDisplayById(currentTransUnitId).get();
       Log.info("selecting id:" + currentTransUnitId + " version: " + display.getVerNum());
-
-      currentEditors = display.getEditors();
 
       normaliseCurrentEditorIndex();
 
@@ -196,7 +197,7 @@ public class TargetContentsPresenter implements
       else
       {
          display.focusEditor(currentEditorIndex);
-         editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
+         editorTranslators.updateTranslator(display.getEditors(), currentTransUnitId);
          revealDisplay();
       }
    }
@@ -208,6 +209,7 @@ public class TargetContentsPresenter implements
 
    private void normaliseCurrentEditorIndex()
    {
+      ArrayList<ToggleEditor> currentEditors = display.getEditors();
       if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;
@@ -224,8 +226,9 @@ public class TargetContentsPresenter implements
    {
       if (event.getSelectedTransUnitId() != null)
       {
-         editorTranslators.clearTranslatorList(currentEditors);
-         editorTranslators.updateTranslator(currentEditors, currentTransUnitId);
+         ArrayList<ToggleEditor> editors = display.getEditors();
+         editorTranslators.clearTranslatorList(editors);
+         editorTranslators.updateTranslator(editors, currentTransUnitId);
       }
    }
 
@@ -251,7 +254,7 @@ public class TargetContentsPresenter implements
    public void saveAsApprovedAndMoveNext(TransUnitId transUnitId)
    {
       ensureRowSelection(transUnitId);
-      if (currentEditorIndex + 1 < currentEditors.size())
+      if (currentEditorIndex + 1 < display.getEditors().size())
       {
          display.focusEditor(currentEditorIndex + 1);
          currentEditorIndex++;
@@ -319,7 +322,7 @@ public class TargetContentsPresenter implements
       {
          currentEditorIndex = 0;
       }
-      if (currentEditorIndex + 1 < currentEditors.size())
+      if (currentEditorIndex + 1 < display.getEditors().size())
       {
          display.focusEditor(currentEditorIndex + 1);
          currentEditorIndex++;
@@ -463,9 +466,10 @@ public class TargetContentsPresenter implements
       }
       else
       {
+         ArrayList<ToggleEditor> editors = display.getEditors();
          for (int i = 0; i < contents.size(); i++)
          {
-            ToggleEditor editor = currentEditors.get(i);
+            ToggleEditor editor = editors.get(i);
             editor.setTextAndValidate(contents.get(i));
          }
       }
@@ -495,7 +499,7 @@ public class TargetContentsPresenter implements
       {
          TargetContentsDisplay display = displayProvider.get();
          display.setListener(this);
-         display.setValue(transUnit);
+         display.setValueAndCreateNewEditors(transUnit);
          if (userWorkspaceContext.hasReadOnlyAccess())
          {
             display.setToMode(ViewMode.VIEW);
@@ -530,8 +534,13 @@ public class TargetContentsPresenter implements
       if (contentsDisplayOptional.isPresent())
       {
          TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
-         contentsDisplay.setValue(updatedTransUnit);
          contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
+         contentsDisplay.setValueAndCreateNewEditors(updatedTransUnit);
+         contentsDisplay.refresh();
+         if (equal(updatedTransUnit.getId(), currentTransUnitId))
+         {
+            editorTranslators.updateTranslator(display.getEditors(), currentTransUnitId);
+         }
       }
    }
 
@@ -549,7 +558,7 @@ public class TargetContentsPresenter implements
          if (contentsDisplay.getEditingState() == TargetContentsDisplay.EditingState.SAVED)
          {
             // If current display is in saved state, we update both in editor and cached value
-            contentsDisplay.setValue(updatedTU);
+            contentsDisplay.setValueAndCreateNewEditors(updatedTU);
             contentsDisplay.refresh();
          }
          else
@@ -651,16 +660,14 @@ public class TargetContentsPresenter implements
     * @param currentTransUnitId current trans unit id
     * @param currentEditorIndex current editor index
     * @param display current display
-    * @param currentEditors current editors
     */
-   protected void setStatesForTesting(TransUnitId currentTransUnitId, int currentEditorIndex, TargetContentsDisplay display, List<ToggleEditor> currentEditors)
+   protected void setStatesForTesting(TransUnitId currentTransUnitId, int currentEditorIndex, TargetContentsDisplay display)
    {
       if (!GWT.isClient())
       {
          this.currentTransUnitId = currentTransUnitId;
          this.currentEditorIndex = currentEditorIndex;
          this.display = display;
-         this.currentEditors = currentEditors;
       }
    }
 }

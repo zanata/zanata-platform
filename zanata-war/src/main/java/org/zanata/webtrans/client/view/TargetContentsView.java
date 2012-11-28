@@ -144,7 +144,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void setValue(TransUnit transUnit)
+   public void setValueAndCreateNewEditors(TransUnit transUnit)
    {
       cachedValue = transUnit;
 
@@ -209,7 +209,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       {
          editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
          savingIndicator.setVisible(false);
-         refresh();
       }
    }
 
