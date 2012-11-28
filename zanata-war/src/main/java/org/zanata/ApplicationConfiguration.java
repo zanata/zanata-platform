@@ -70,6 +70,12 @@ public class ApplicationConfiguration implements Serializable
    private static final String KEY_AUTH_POLICY = "zanata.security.auth.policy";
    private static final String KEY_ADMIN_USERS = "zanata.security.admin.users";
    private static final String KEY_DEFAULT_FROM_ADDRESS = "zanata.email.default.from";
+   private static final String KEY_EMAIL_HOST = "zanata.smtp.host";
+   private static final String KEY_EMAIL_PORT = "zanata.smtp.port";
+   private static final String KEY_EMAIL_USERNAME = "zanata.smtp.username";
+   private static final String KEY_EMAIL_PASSWORD = "zanata.smtp.password";
+   private static final String KEY_EMAIL_TLS = "zanata.smtp.tls";
+   private static final String KEY_EMAIL_SSL = "zanata.smtp.ssl";
 
    private static final String[] allConfigKeys = new String[]
       {
@@ -433,5 +439,57 @@ public class ApplicationConfiguration implements Serializable
    public String getPiwikIdSite()
    {
       return configValues.get(HApplicationConfiguration.KEY_PIWIK_IDSITE);
+   }
+
+   public String getEmailServerHost()
+   {
+      String host = externalConfig.getProperty(KEY_EMAIL_HOST);
+
+      // Default to localhost
+      if( host == null )
+      {
+         host = "localhost";
+      }
+      return host;
+   }
+
+   public int getEmailServerPort()
+   {
+      String port = externalConfig.getProperty(KEY_EMAIL_PORT);
+
+      // Default to 25
+      if( port == null )
+      {
+         port = "25";
+      }
+      return Integer.parseInt(port);
+   }
+
+   public String getEmailServerUsername()
+   {
+      return externalConfig.getProperty(KEY_EMAIL_USERNAME);
+   }
+
+   public String getEmailServerPassword()
+   {
+      return externalConfig.getProperty(KEY_EMAIL_PASSWORD);
+   }
+
+   public boolean useEmailServerTls()
+   {
+      if(externalConfig.containsKey(KEY_EMAIL_TLS))
+      {
+         return Boolean.parseBoolean( externalConfig.getProperty(KEY_EMAIL_TLS) );
+      }
+      return false;
+   }
+
+   public boolean useEmailServerSsl()
+   {
+      if(externalConfig.containsKey(KEY_EMAIL_SSL))
+      {
+         return Boolean.parseBoolean( externalConfig.getProperty(KEY_EMAIL_SSL) );
+      }
+      return false;
    }
 }

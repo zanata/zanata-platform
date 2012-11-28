@@ -144,6 +144,11 @@ public class ZanataInit
       {
          checkLuceneLocks(new File(indexBase));
       }
+
+      // Email server information
+      log.info("Notification Email Host: " + this.applicationConfiguration.getEmailServerHost() + ":" +
+                  this.applicationConfiguration.getEmailServerPort());
+
       Events.instance().raiseEvent(EVENT_Zanata_Startup);
 
       log.info("Started Zanata...");
