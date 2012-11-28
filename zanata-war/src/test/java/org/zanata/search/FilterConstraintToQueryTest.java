@@ -1,5 +1,9 @@
 package org.zanata.search;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.hibernate.Query;
 import org.mockito.Mock;
@@ -8,6 +12,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.model.HLocale;
 import org.zanata.webtrans.shared.model.DocumentId;
+
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,7 +49,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildSearchConditionWithNothingToSearch()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.keepAll());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.keepAll(), documentId);
 
       String result = constraintToQuery.buildSearchCondition();
 
@@ -53,7 +59,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildSearchConditionInSource()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.filterBy("FiLe").ignoreTarget().filterSource());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("FiLe").ignoreTarget().filterSource(), documentId);
 
       String result = constraintToQuery.buildSearchCondition();
 
@@ -63,7 +69,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildSearchConditionInTarget()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.filterBy("FiLe").ignoreSource().filterTarget());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("FiLe").ignoreSource().filterTarget(), documentId);
 
       String result = constraintToQuery.buildSearchCondition();
 
@@ -74,7 +80,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildSearchConditionInBoth()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.filterBy("FiLe"));
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("FiLe"), documentId);
 
       String result = constraintToQuery.buildSearchCondition();
 
@@ -84,7 +90,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testCaseSensitiveSearch()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.filterBy("FiLe").caseSensitive(true));
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("FiLe").caseSensitive(true), documentId);
 
       String result = constraintToQuery.buildSearchCondition();
 
@@ -94,7 +100,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildStateConditionWithAllState()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.keepAll());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.keepAll(), documentId);
 
       String result = constraintToQuery.buildSearchCondition();
 
@@ -104,7 +110,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildStateConditionWithoutUntranslatedState()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.keepAll().excludeNew());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.keepAll().excludeNew(), documentId);
 
       String result = constraintToQuery.buildStateCondition();
 
@@ -114,7 +120,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildStateConditionWithUntranslatedStateButNoSearch()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.keepAll().excludeApproved());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.keepAll().excludeApproved(), documentId);
 
       String result = constraintToQuery.buildStateCondition();
 
@@ -131,7 +137,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildStateConditionWithUntranslatedStateAndSearch()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.filterBy("blah").excludeApproved());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("blah").excludeApproved(), documentId);
 
       String result = constraintToQuery.buildStateCondition();
 
@@ -149,7 +155,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testToHQLWithNoCondition()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.keepAll());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.keepAll(), documentId);
 
       String result = constraintToQuery.toHQL();
 
@@ -157,9 +163,19 @@ public class FilterConstraintToQueryTest
    }
 
    @Test
+   public void testToHQLWithNoConditionForMultipleDocuments()
+   {
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInMultipleDocuments(FilterConstraints.keepAll(), Lists.newArrayList("doc.po"));
+
+      String result = constraintToQuery.toHQL();
+
+      assertThat(result, Matchers.equalToIgnoringCase(QUERY_BEFORE_WHERE + "WHERE (tf.obsolete=0 AND tf.document.docId in (:docIdList)) ORDER BY tf.pos"));
+   }
+
+   @Test
    public void testToHQLWithSearchAndStateCondition()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(FilterConstraints.filterBy("FiLe").excludeApproved());
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("FiLe").excludeApproved(), documentId);
 
       String result = constraintToQuery.toHQL();
       log.info("hql: {}", result);
@@ -187,11 +203,27 @@ public class FilterConstraintToQueryTest
    public void testSetParametersForQuery()
    {
       FilterConstraints constraints = FilterConstraints.filterBy("file").excludeApproved();
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(constraints);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
 
-      constraintToQuery.setQueryParameters(query, documentId, hLocale);
+      constraintToQuery.setQueryParameters(query, hLocale);
 
       verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM, documentId.getId());
+      verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM, hLocale.getId());
+      verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM, "%file%");
+      verify(query).setParameterList(FilterConstraintToQuery.STATE_LIST_NAMED_PARAM, constraints.getContentStateAsList());
+      verifyNoMoreInteractions(query);
+   }
+
+   @Test
+   public void testSetParametersForQueryWithMultipleDocuments()
+   {
+      FilterConstraints constraints = FilterConstraints.filterBy("file").excludeApproved();
+      List<String> docIdList = Lists.newArrayList("doc1.po", "doc2.po");
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInMultipleDocuments(constraints, docIdList);
+
+      constraintToQuery.setQueryParameters(query, hLocale);
+
+      verify(query).setParameterList(FilterConstraintToQuery.DOC_IDS_LIST_NAMED_PARAM, docIdList);
       verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM, hLocale.getId());
       verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM, "%file%");
       verify(query).setParameterList(FilterConstraintToQuery.STATE_LIST_NAMED_PARAM, constraints.getContentStateAsList());
@@ -202,9 +234,9 @@ public class FilterConstraintToQueryTest
    public void testSetParametersForQueryWithNoSearch()
    {
       FilterConstraints constraints = FilterConstraints.keepAll().excludeApproved();
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(constraints);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
 
-      constraintToQuery.setQueryParameters(query, documentId, hLocale);
+      constraintToQuery.setQueryParameters(query, hLocale);
 
       verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM, documentId.getId());
       verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM, hLocale.getId());
@@ -216,9 +248,9 @@ public class FilterConstraintToQueryTest
    public void testSetParametersForQueryWithNoStateFilter()
    {
       FilterConstraints constraints = FilterConstraints.filterBy("FiLe");
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(constraints);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
 
-      constraintToQuery.setQueryParameters(query, documentId, hLocale);
+      constraintToQuery.setQueryParameters(query, hLocale);
 
       verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM, documentId.getId());
       verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM, hLocale.getId());
@@ -230,9 +262,9 @@ public class FilterConstraintToQueryTest
    public void testSetParametersForQueryWithSearchCaseSensitive()
    {
       FilterConstraints constraints = FilterConstraints.filterBy("FiLe").caseSensitive(true);
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.from(constraints);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
 
-      constraintToQuery.setQueryParameters(query, documentId, hLocale);
+      constraintToQuery.setQueryParameters(query, hLocale);
 
       verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM, documentId.getId());
       verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM, hLocale.getId());

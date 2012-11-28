@@ -56,17 +56,17 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
-import static org.zanata.util.QueryBuilder.select;
-import static org.zanata.util.QueryBuilder.and;
-import static org.zanata.util.QueryBuilder.or;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -93,7 +93,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    @In
    private FullTextSession session;
 
-   // Disabled for now, due to the need for a left join
    private static final boolean ENABLE_HQL_SEARCH = true;
 
    @Override
@@ -109,11 +108,11 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    }
 
    /**
-    * @param workspace
+    * @param workspace workspace
     * @param documentPaths null or empty to search entire project, otherwise
     *           only results for the given document paths will be returned
-    * @param constraints
-    * @return
+    * @param constraints filter constraints
+    * @return list of matching text flows
     */
    private List<HTextFlow> findTextFlowsByDocumentPaths(WorkspaceId workspace, List<String> documentPaths, FilterConstraints constraints)
    {
@@ -126,9 +125,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       // empty targets are required.
 
       // check that locale is valid for the workspace
+      HLocale hLocale;
       try
       {
-         localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug);
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug);
       }
       catch (ZanataServiceException e)
       {
@@ -151,7 +151,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       // decisions is made on which option to use. Remove before signing off on this.
       if (ENABLE_HQL_SEARCH)
       {
-         return findTextFlowsWithDatabaseSearch(projectSlug, iterationSlug, localeId, documentPaths, constraints);
+         return findTextFlowsWithDatabaseSearch(projectSlug, iterationSlug, documentPaths, constraints, hLocale);
       }
       else
       {
@@ -163,108 +163,29 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
     *
     * @see org.zanata.dao.TextFlowDAO#getTextFlowByDocumentIdWithConstraint(org.zanata.webtrans.shared.model.DocumentId, org.zanata.model.HLocale, org.zanata.search.FilterConstraints, int, int)
     */
-   private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug, String iterationSlug,
-         LocaleId validatedLocaleId, List<String> documentPaths, FilterConstraints constraints)
+   private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug, String iterationSlug, List<String> documentPaths, FilterConstraints constraints, HLocale hLocale)
    {
-      // TODO wrap in method for batching list of documents
-      // assuming doclist has already been batched before this method call
-
-      HLocale loc = localeServiceImpl.getByLocaleId(validatedLocaleId);
-      Long locId = loc.getId();
-
-      ArrayList<String> projectDocStateConstraints = new ArrayList<String>();
-      projectDocStateConstraints.add("tf.document.projectIteration.project.slug = :project");
-      projectDocStateConstraints.add("tf.document.projectIteration.slug = :iteration");
-      projectDocStateConstraints.add("tf.document.obsolete = false");
-
       boolean hasDocumentPaths = documentPaths != null && !documentPaths.isEmpty();
+      log.info("document paths: {}", documentPaths); //FIXME reduce log level
+      List<String> docPaths;
       if (hasDocumentPaths)
       {
-         projectDocStateConstraints.add("tf.document.docId in ( :doclist )");
+         docPaths = documentPaths;
       }
-
-      ArrayList<ContentState> stateList = new ArrayList<ContentState>(2);
-      boolean includeAllStates = constraints.isIncludeNew() && constraints.isIncludeFuzzy() && constraints.isIncludeApproved();
-      if (!includeAllStates)
+      else
       {
-         // a different approach is required to ensure that text flows with no
-         // target are returned iff new state is included.
-         if (constraints.isIncludeNew())
-         {
-            // exclude non-matching states (so that flows with no target will match)
-            projectDocStateConstraints.add("tf.targets[" + locId + "].state not in ( :statelist )");
-            if (!constraints.isIncludeFuzzy())
-            {
-               stateList.add(ContentState.NeedReview);
-            }
-            if (!constraints.isIncludeApproved())
-            {
-               stateList.add(ContentState.Approved);
-            }
-         }
-         else
-         {
-            // include matching states (so that flows with no target will not match)
-            projectDocStateConstraints.add("tf.targets[" + locId + "].state in ( :statelist )");
-            if (constraints.isIncludeFuzzy())
-            {
-               stateList.add(ContentState.NeedReview);
-            }
-            if (constraints.isIncludeApproved())
-            {
-               stateList.add(ContentState.Approved);
-            }
-         }
+         List<HDocument> allDocuments = documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
+         docPaths = Lists.transform(allDocuments, HDocumentToDocId.FUNCTION);
       }
 
-      ArrayList<String> contentCheckList = new ArrayList<String>(12);
-      if (constraints.isSearchInSource())
-      {
-         for (int i = 0; i < 6; i++)
-         {
-            contentCheckList.add("tf.content" + i + " like :searchString");
-         }
-      }
-      if (constraints.isSearchInTarget())
-      {
-         String contentPrefix = "tf.targets[" + locId + "].content";
-         for (int i = 0; i < 6; i++)
-         {
-            contentCheckList.add(contentPrefix + i + " like :searchString");
-         }
-      }
-
-      String[] contentChecks = contentCheckList.toArray(new String[contentCheckList.size()]);
-      String[] projectDocStateChecks = projectDocStateConstraints.toArray(new String[projectDocStateConstraints.size()]);
-
-      String queryStr = select("distinct tf").from("HTextFlow tf")
-            .leftJoin("tf.targets tfts")
-            .where(and(and(projectDocStateChecks), or(contentChecks)))
-            .toQueryString();
-
-      String searchString = constraints.getSearchString();
-      searchString = "%" + searchString + "%";
-
-      org.hibernate.Query query = session.createQuery(queryStr)
-            .setParameter("searchString", searchString)
-            .setParameter("project", projectSlug)
-            .setParameter("iteration", iterationSlug);
-      if (hasDocumentPaths)
-      {
-         query.setParameterList("doclist", documentPaths);
-      }
-      if (!includeAllStates)
-      {
-         query.setParameterList("statelist", stateList);
-      }
-
+      FilterConstraintToQuery toQuery = FilterConstraintToQuery.filterInMultipleDocuments(constraints, docPaths);
+      String hql = toQuery.toHQL();
+      log.debug("hql for searching: {}", hql);
+      org.hibernate.Query query = session.createQuery(hql);
+      toQuery.setQueryParameters(query, hLocale);
       @SuppressWarnings("unchecked")
-      List<HTextFlow> results = query.list();
-      if (constraints.isCaseSensitive())
-      {
-         results = filterCaseSensitive(results, constraints, locId);
-      }
-      return results;
+      List<HTextFlow> result = query.list();
+      return result;
    }
 
    /**
@@ -520,4 +441,14 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       return valid;
    }
 
+   private static enum HDocumentToDocId implements Function<HDocument, String>
+   {
+      FUNCTION;
+
+      @Override
+      public String apply(HDocument input)
+      {
+         return input.getDocId();
+      }
+   }
 }
