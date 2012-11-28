@@ -467,10 +467,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Color legend")
    String colorLegend();
 
-   @DefaultMessage("Concurrent edit detected. Reset value for current row. Your change will be lost.")
+   @DefaultMessage("Concurrent edit detected. Reset value for current row.")
    String concurrentEdit();
 
-   @DefaultMessage("Other user has saved newer version (Latest) while you are editing (Unsaved). Please resolve conflicts.")
+   @DefaultMessage("Other user has saved a newer version (Latest) while you are editing (Unsaved). Please resolve conflicts.")
    String concurrentEditTitle();
 
    @DefaultMessage("Editor")
