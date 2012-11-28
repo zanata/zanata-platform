@@ -1,5 +1,14 @@
 package org.zanata.webtrans.server.rpc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import org.apache.lucene.queryParser.ParseException;
@@ -25,9 +34,6 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 
 import com.google.common.collect.Lists;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -79,7 +85,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       HTextFlowTarget tmMatch1 = getEm().find(HTextFlowTarget.class, 60L);
       HTextFlowTarget tmMatch2 = getEm().find(HTextFlowTarget.class, 62L);
       List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, tmMatch2});
-      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(25));
+      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(25));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
@@ -101,7 +107,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
       HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 61L).getTextFlow();
       List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
-      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(10));
+      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(targetLocaleId), eq(10));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
@@ -118,7 +124,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: hibernate search can not parse query
       TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-      doThrow(new ParseException("bad token")).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(25));
+      doThrow(new ParseException("bad token")).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(25));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
