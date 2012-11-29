@@ -212,7 +212,8 @@ public class ProjectIterationService implements ProjectIterationResource
          }
          hProjectIteration = new HProjectIteration();
          hProjectIteration.setSlug(iterationSlug);
-         hProjectIteration.setProject((HIterationProject) hProject);
+         HIterationProject hIterProject = (HIterationProject) hProject;
+         hIterProject.addIteration(hProjectIteration);
          // pre-emptive entity permission check
          // identity.checkPermission(hProject, "add-iteration");
          identity.checkPermission(hProjectIteration, "insert");

@@ -27,6 +27,8 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.Indexed;
 
 import lombok.Setter;
@@ -45,9 +47,16 @@ public class HIterationProject extends HProject
    private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
 
    @OneToMany(mappedBy = "project")
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    public List<HProjectIteration> getProjectIterations()
    {
       return projectIterations;
+   }
+
+   public void addIteration(HProjectIteration iteration)
+   {
+      projectIterations.add(iteration);
+      iteration.setProject(this);
    }
 
 }
