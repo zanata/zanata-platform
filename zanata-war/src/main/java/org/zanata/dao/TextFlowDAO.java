@@ -96,8 +96,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    {
       Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
       q.setParameter("locale", locale);
-      // TextFlowFilter does its own caching, no need for double caching
-      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
+      // may be lots of cache misses because HTextFlowTarget table is always changing
+      // TODO maintain a map (locale -> translatedIDs) in memory?
+      q.setCacheable(true).setComment("TextFlowDAO.findIdsWithTranslations");
       return q.list();
    }
 
