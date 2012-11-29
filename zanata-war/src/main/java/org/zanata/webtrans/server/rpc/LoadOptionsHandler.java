@@ -114,6 +114,11 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setUseCodeMirrorEditor(filteredOptions.get(UserOptions.UseCodeMirrorEditor.getPersistentName()).getValueAsBoolean());
       }
 
+      if (filteredOptions.containsKey(UserOptions.EnableSpellCheck.getPersistentName()))
+      {
+         configHolder.setSpellCheckEnabled(filteredOptions.get(UserOptions.EnableSpellCheck.getPersistentName()).getValueAsBoolean());
+      }
+
       if (filteredOptions.containsKey(UserOptions.TranslatedMessageFilter.getPersistentName()))
       {
          configHolder.setFilterByTranslated(filteredOptions.get(UserOptions.TranslatedMessageFilter.getPersistentName()).getValueAsBoolean());

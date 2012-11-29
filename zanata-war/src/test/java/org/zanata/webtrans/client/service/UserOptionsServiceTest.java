@@ -129,7 +129,7 @@ public class UserOptionsServiceTest
    {
       Map<UserOptions, String> map = service.getEditorOptions();
 
-      assertThat(map.size(), Matchers.equalTo(10));
+      assertThat(map.size(), Matchers.equalTo(11));
       
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.DisplayButtons), Matchers.equalTo(true));
@@ -137,6 +137,7 @@ public class UserOptionsServiceTest
       assertThat(map.containsKey(UserOptions.EditorPageSize), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.TranslatedMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.UseCodeMirrorEditor), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.EnableSpellCheck), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.NeedReviewMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.UntranslatedMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.Navigation), Matchers.equalTo(true));

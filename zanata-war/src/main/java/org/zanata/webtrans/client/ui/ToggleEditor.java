@@ -26,6 +26,8 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
 
    void refresh();
 
+   void setEnableSpellCheck(Boolean enabled);
+
    static enum ViewMode
    {
       VIEW, EDIT

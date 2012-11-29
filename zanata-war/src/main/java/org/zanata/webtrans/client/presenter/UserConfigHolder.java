@@ -66,6 +66,7 @@ public class UserConfigHolder
    public static final boolean DEFAULT_DISPLAY_BUTTONS = true;
    public static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
    public static final boolean DEFAULT_USE_CODE_MIRROR = false;
+   public static final boolean DEFAULT_SPELL_CHECK = true;
 
    public UserConfigHolder()
    {
@@ -83,6 +84,8 @@ public class UserConfigHolder
       state.filterByNeedReview = DEFAULT_FILTER;
       state.filterByTranslated = DEFAULT_FILTER;
       state.filterByUntranslated = DEFAULT_FILTER;
+
+      state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
    }
 
    public boolean isEnterSavesApproved()
@@ -222,6 +225,17 @@ public class UserConfigHolder
       return state.isShowSaveApprovedWarning();
    }
 
+   public void setSpellCheckEnabled(boolean spellCheckEnabled)
+   {
+      state = new ConfigurationState(state);
+      state.spellCheckEnabled = spellCheckEnabled;
+   }
+
+   public boolean isSpellCheckEnabled()
+   {
+      return state.isSpellCheckEnabled();
+   }
+
    /**
     * Immutable object represents configuration state
     */
@@ -240,6 +254,7 @@ public class UserConfigHolder
       private boolean filterByTranslated;
 
       private boolean showSaveApprovedWarning;
+      private boolean spellCheckEnabled;
 
       // Needed for GWT serialization
       private ConfigurationState()
@@ -259,6 +274,7 @@ public class UserConfigHolder
          this.filterByNeedReview = old.isFilterByNeedReview();
          this.filterByTranslated = old.isFilterByTranslated();
          this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
+         this.spellCheckEnabled = old.isSpellCheckEnabled();
       }
 
       public boolean isEnterSavesApproved()
@@ -314,6 +330,11 @@ public class UserConfigHolder
       public boolean isShowSaveApprovedWarning()
       {
          return showSaveApprovedWarning;
+      }
+
+      public boolean isSpellCheckEnabled()
+      {
+         return spellCheckEnabled;
       }
    }
 }

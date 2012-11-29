@@ -95,7 +95,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
       if (userOptionsService.getConfigHolder().getDocumentListPageSize() != pageSize)
       {
          userOptionsService.getConfigHolder().setDocumentListPageSize(pageSize);
-         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
+         eventBus.fireEvent(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
       }
    }
 
@@ -135,7 +135,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
          {
             userOptionsService.getConfigHolder().setState(result.getConfiguration());
             display.setOptionsState(userOptionsService.getConfigHolder().getState());
-            eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
+            eventBus.fireEvent(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded user options"));
          }
       });
@@ -147,7 +147,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
       userOptionsService.loadDocumentListDefaultOptions();
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
 
-      eventBus.fireEvent(new UserConfigChangeEvent(MainView.Documents));
+      eventBus.fireEvent(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default user options."));
    }
 }

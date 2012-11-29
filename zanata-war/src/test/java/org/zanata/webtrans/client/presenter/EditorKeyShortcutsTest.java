@@ -279,7 +279,7 @@ public class EditorKeyShortcutsTest
       configHolder.setEnterSavesApproved(true);
 
       // When:
-      keyShortcuts.onUserConfigChanged(new UserConfigChangeEvent(MainView.Editor));
+      keyShortcuts.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
       // Then:
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());
@@ -299,7 +299,7 @@ public class EditorKeyShortcutsTest
       configHolder.setNavOption(NavOption.FUZZY);
 
       // When:
-      keyShortcuts.onUserConfigChanged(new UserConfigChangeEvent(MainView.Editor));
+      keyShortcuts.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
       // Then:
       verify(keyShortcutPresenter, atLeastOnce()).register(keyShortcutCaptor.capture());

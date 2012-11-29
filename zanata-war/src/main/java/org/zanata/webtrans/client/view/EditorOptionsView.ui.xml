@@ -62,6 +62,7 @@
 	            <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
 	            <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
 	            <g:CheckBox ui:field="showSaveApprovedWarningChk" ><ui:msg>Show 'Save as Approved' warning</ui:msg></g:CheckBox>
+	            <g:CheckBox ui:field="spellCheckChk" ><ui:msg>Enable Spell Check</ui:msg></g:CheckBox>
 	        </g:VerticalPanel>
         </g:cell>
         

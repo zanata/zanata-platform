@@ -104,6 +104,7 @@ public class TargetContentsPresenter implements
    // cached state
    private String findMessage;
    private boolean isDisplayButtons;
+   private boolean spellCheckEnabled;
 
    @Inject
    // @formatter:off
@@ -129,6 +130,7 @@ public class TargetContentsPresenter implements
       this.userOptionsService = userOptionsService;
       this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
       isDisplayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
+      spellCheckEnabled = userOptionsService.getConfigHolder().isSpellCheckEnabled();
       editorKeyShortcuts.registerKeys(this);
       saveAsApprovedConfirmation.setListener(this);
 
@@ -369,12 +371,6 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public boolean isUsingCodeMirror()
-   {
-      return userOptionsService.getConfigHolder().isUseCodeMirrorEditor();
-   }
-
-   @Override
    public void onCancel(TransUnitId transUnitId)
    {
       ensureRowSelection(transUnitId);
@@ -417,20 +413,27 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
+   public void  onUserConfigChanged(UserConfigChangeEvent event)
    {
-      if (event.getView() == MainView.Editor)
+      if (event.getView() != MainView.Editor)
       {
-         if (isDisplayButtons != userOptionsService.getConfigHolder().isDisplayButtons())
-         {
-            for (TargetContentsDisplay contentsDisplay : displayList)
-            {
-               contentsDisplay.showButtons(userOptionsService.getConfigHolder().isDisplayButtons());
-            }
-         }
-         saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
-         isDisplayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
+         return;
       }
+      boolean displayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
+      boolean isSpellCheckEnabled = userOptionsService.getConfigHolder().isSpellCheckEnabled();
+
+      if (isDisplayButtons != displayButtons || spellCheckEnabled != isSpellCheckEnabled)
+      {
+         for (TargetContentsDisplay contentsDisplay : displayList)
+         {
+            contentsDisplay.showButtons(displayButtons);
+            contentsDisplay.setEnableSpellCheck(isSpellCheckEnabled);
+         }
+      }
+
+      saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
+      isDisplayButtons = displayButtons;
+      spellCheckEnabled = isSpellCheckEnabled;
    }
 
    @Override
@@ -653,6 +656,12 @@ public class TargetContentsPresenter implements
       userOptionsService.getConfigHolder().setShowSaveApprovedWarning(value);
       userOptionsService.persistOptionChange(userOptionsService.getEditorOptions());
       eventBus.fireEvent(new ReloadUserConfigUIEvent(MainView.Editor));
+   }
+
+   @Override
+   public UserConfigHolder.ConfigurationState getConfigState()
+   {
+      return userOptionsService.getConfigHolder().getState();
    }
 
    /**

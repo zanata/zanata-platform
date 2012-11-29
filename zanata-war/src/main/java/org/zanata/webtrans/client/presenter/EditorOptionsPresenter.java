@@ -71,8 +71,8 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
 
    @Inject
    public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
- ValidationOptionsPresenter validationDetailsPresenter,
- CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
+                                 ValidationOptionsPresenter validationDetailsPresenter,
+                                 CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
@@ -114,7 +114,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().isDisplayButtons();
       userOptionsService.getConfigHolder().setDisplayButtons(displayButtons);
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
-      eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
    @Override
@@ -136,7 +136,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (userOptionsService.getConfigHolder().getNavOption() != navOption)
       {
          userOptionsService.getConfigHolder().setNavOption(navOption);
-         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       }
    }
 
@@ -156,7 +156,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (userOptionsService.getConfigHolder().isEnterSavesApproved() != enterSaveApproved)
       {
          userOptionsService.getConfigHolder().setEnterSavesApproved(enterSaveApproved);
-         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       }
    }
 
@@ -166,7 +166,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (userOptionsService.getConfigHolder().isDisplayButtons() != editorButtons)
       {
          userOptionsService.getConfigHolder().setDisplayButtons(editorButtons);
-         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       }
    }
 
@@ -176,7 +176,17 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (userOptionsService.getConfigHolder().isShowSaveApprovedWarning() != showSaveApprovedWarning)
       {
          userOptionsService.getConfigHolder().setShowSaveApprovedWarning(showSaveApprovedWarning);
-         eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
+
+   @Override
+   public void onSpellCheckOptionChanged(Boolean spellCheckChkValue)
+   {
+      if (userOptionsService.getConfigHolder().isSpellCheckEnabled() != spellCheckChkValue)
+      {
+         userOptionsService.getConfigHolder().setSpellCheckEnabled(spellCheckChkValue);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       }
    }
 
@@ -251,7 +261,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
       filterChangeHandler.onValueChange(null); // NB: Null event is valid
                                                // because it's not being used
-      eventBus.fireEvent(new UserConfigChangeEvent(MainView.Editor));
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
    }
 }

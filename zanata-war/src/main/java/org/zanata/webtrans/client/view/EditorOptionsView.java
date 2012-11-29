@@ -72,6 +72,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    CheckBox useCodeMirrorChk;
    @UiField
    CheckBox showSaveApprovedWarningChk;
+   @UiField
+   CheckBox spellCheckChk;
 
    private Listener listener;
 
@@ -199,6 +201,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onShowSaveApprovedWarningChanged(showSaveApprovedWarningChk.getValue());
    }
 
+   @UiHandler("spellCheckChk")
+   public void onSpellCheckChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onSpellCheckOptionChanged(spellCheckChk.getValue());
+   }
+
    @Override
    public void setListener(Listener listener)
    {
@@ -219,6 +227,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       selectPageSize(state.getEditorPageSize());
       useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
       showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
+      spellCheckChk.setValue(state.isSpellCheckEnabled());
    }
 
    private void selectPageSize(int pageSize)

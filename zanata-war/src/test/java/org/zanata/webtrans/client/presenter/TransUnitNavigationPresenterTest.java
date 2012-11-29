@@ -63,7 +63,7 @@ public class TransUnitNavigationPresenterTest
    {
       when(userConfigHolder.getNavOption()).thenReturn(NavOption.UNTRANSLATED);
 
-      presenter.onUserConfigChanged(new UserConfigChangeEvent(MainView.Editor));
+      presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
       verify(display).setNavModeTooltip(NavOption.UNTRANSLATED);
    }

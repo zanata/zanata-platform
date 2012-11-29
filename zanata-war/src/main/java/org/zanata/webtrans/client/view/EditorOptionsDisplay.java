@@ -34,5 +34,7 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue);
 
       void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning);
+
+      void onSpellCheckOptionChanged(Boolean spellCheckChkValue);
    }
 }

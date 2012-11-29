@@ -423,9 +423,9 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void isUsingCodeMirror()
+   public void canGetConfigState()
    {
-      assertThat(presenter.isUsingCodeMirror(), Matchers.is(false));
+      assertThat(presenter.getConfigState(), Matchers.equalTo(configHolder.getState()));
    }
 
    @Test
@@ -468,13 +468,15 @@ public class TargetContentsPresenterTest
    {
       // Given: change default settings in config
       configHolder.setDisplayButtons(false);
+      configHolder.setSpellCheckEnabled(false);
 
       // When:
-      presenter.onUserConfigChanged(new UserConfigChangeEvent(MainView.Editor));
+      presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
       // Then:
       verify(display, times(3)).showButtons(false);
-      saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
+      verify(saveAsApprovedConfirmation).setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
+      verify(display, times(3)).setEnableSpellCheck(false);
    }
 
    @Test

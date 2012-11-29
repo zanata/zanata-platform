@@ -62,7 +62,7 @@ public class Editor extends Composite implements ToggleEditor
       this.listener = listener;
       this.index = index;
       this.id = id;
-      if (listener.isUsingCodeMirror())
+      if (listener.getConfigState().isUseCodeMirrorEditor())
       {
          Command onCodeMirrorFocusCallback = new Command()
          {
@@ -81,8 +81,6 @@ public class Editor extends Composite implements ToggleEditor
       }
 
       initWidget(uiBinder.createAndBindUi(this));
-      targetWrapper.getElement().setAttribute("contenteditable", "true");
-      targetWrapper.getElement().setAttribute("spellcheck", "true");
       // determine whether to show or hide buttons
       showCopySourceButton(listener.isDisplayButtons());
 
@@ -91,6 +89,13 @@ public class Editor extends Composite implements ToggleEditor
          setViewMode(ViewMode.EDIT);
       }
       setText(displayString);
+   }
+
+   @Override
+   public void setEnableSpellCheck(Boolean enabled)
+   {
+      targetWrapper.getElement().setAttribute("contenteditable", enabled.toString());
+      targetWrapper.getElement().setAttribute("spellcheck", enabled.toString());
    }
 
    private void fireValidationEvent()

@@ -107,19 +107,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void focusEditor(final int currentEditorIndex)
+   public void focusEditor(int currentEditorIndex)
    {
-//      Scheduler.get().scheduleDeferred(new Command()
-//      {
-//         @Override
-//         public void execute()
-//         {
-            if (currentEditorIndex >= 0 && currentEditorIndex < editors.size())
-            {
-               editors.get(currentEditorIndex).setFocus();
-            }
-//         }
-//      });
+      if (currentEditorIndex >= 0 && currentEditorIndex < editors.size())
+      {
+         editors.get(currentEditorIndex).setFocus();
+      }
    }
 
    @Override
@@ -159,6 +152,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       for (String target : cachedTargets)
       {
          Editor editor = new Editor(target, rowIndex, listener, transUnit.getId());
+         editor.setEnableSpellCheck(listener.getConfigState().isSpellCheckEnabled());
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);
          rowIndex++;
@@ -223,6 +217,15 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    {
       cachedValue = TransUnit.Builder.from(cachedValue).setTargets(targets).setVerNum(verNum).setStatus(status).build();
       editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
+   }
+
+   @Override
+   public void setEnableSpellCheck(boolean spellCheckEnabled)
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.setEnableSpellCheck(spellCheckEnabled);
+      }
    }
 
    @UiHandler("saveIcon")

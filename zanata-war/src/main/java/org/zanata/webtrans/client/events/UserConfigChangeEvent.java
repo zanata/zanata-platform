@@ -12,10 +12,13 @@ import com.google.gwt.event.shared.GwtEvent;
 public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
 {
    public static Type<UserConfigChangeHandler> TYPE = new Type<UserConfigChangeHandler>();
+   public static final UserConfigChangeEvent EDITOR_CONFIG_CHANGE_EVENT = new UserConfigChangeEvent(MainView.Editor);
+   public static final UserConfigChangeEvent DOCUMENT_CONFIG_CHANGE_EVENT = new UserConfigChangeEvent(MainView.Documents);
 
    private final MainView view;
 
-   public UserConfigChangeEvent(MainView view)
+   // user constant fields
+   private UserConfigChangeEvent(MainView view)
    {
       this.view = view;
    }
