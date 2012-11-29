@@ -317,6 +317,21 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       final HDocument doc = (HDocument) q.uniqueResult();
       return doc;
    }
+
+   public List<HDocument> getByProjectIterationAndDocIdList(final String projectSlug, final String iterationSlug, List<String> docIdList)
+   {
+      Session session = getSession();
+      Query q = session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
+            "and d.projectIteration.project.slug = :projectSlug " +
+            "and d.docId in (:docIdList) " +
+            "and d.obsolete = false");
+      q.setParameter("iterationSlug", iterationSlug)
+            .setParameter("projectSlug", projectSlug)
+            .setParameterList("docIdList", docIdList);
+      q.setCacheable(true);
+      List<HDocument> docs = q.list();
+      return docs;
+   }
    
    public List<HDocument> getAllByProjectIteration(final String projectSlug, final String iterationSlug)
    {

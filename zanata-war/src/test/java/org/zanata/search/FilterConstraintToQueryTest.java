@@ -165,11 +165,11 @@ public class FilterConstraintToQueryTest
    @Test
    public void testToHQLWithNoConditionForMultipleDocuments()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInMultipleDocuments(FilterConstraints.keepAll(), Lists.newArrayList("doc.po"));
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInMultipleDocuments(FilterConstraints.keepAll(), Lists.newArrayList(1L));
 
       String result = constraintToQuery.toHQL();
 
-      assertThat(result, Matchers.equalToIgnoringCase(QUERY_BEFORE_WHERE + "WHERE (tf.obsolete=0 AND tf.document.docId in (:docIdList)) ORDER BY tf.pos"));
+      assertThat(result, Matchers.equalToIgnoringCase(QUERY_BEFORE_WHERE + "WHERE (tf.obsolete=0 AND tf.document.id in (:documentIds)) ORDER BY tf.pos"));
    }
 
    @Test
@@ -218,7 +218,7 @@ public class FilterConstraintToQueryTest
    public void testSetParametersForQueryWithMultipleDocuments()
    {
       FilterConstraints constraints = FilterConstraints.filterBy("file").excludeApproved();
-      List<String> docIdList = Lists.newArrayList("doc1.po", "doc2.po");
+      List<Long> docIdList = Lists.newArrayList(1L, 2L);
       FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInMultipleDocuments(constraints, docIdList);
 
       constraintToQuery.setQueryParameters(query, hLocale);

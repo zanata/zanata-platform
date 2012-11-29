@@ -166,19 +166,20 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug, String iterationSlug, List<String> documentPaths, FilterConstraints constraints, HLocale hLocale)
    {
       boolean hasDocumentPaths = documentPaths != null && !documentPaths.isEmpty();
-      log.info("document paths: {}", documentPaths); //FIXME reduce log level
-      List<String> docPaths;
+      log.debug("document paths: {}", documentPaths);
+      List<HDocument> documents;
       if (hasDocumentPaths)
       {
-         docPaths = documentPaths;
+         // TODO this won't scale. But looks like at the moment documentPaths is sourced from url in org.zanata.webtrans.client.presenter.SearchResultsPresenter.updateViewAndRun so it should be ok.
+         documents = documentDAO.getByProjectIterationAndDocIdList(projectSlug, iterationSlug, documentPaths);
       }
       else
       {
-         List<HDocument> allDocuments = documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
-         docPaths = Lists.transform(allDocuments, HDocumentToDocId.FUNCTION);
+         documents = documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
       }
+      List<Long> documentIds = Lists.transform(documents, HDocumentToId.FUNCTION);
 
-      FilterConstraintToQuery toQuery = FilterConstraintToQuery.filterInMultipleDocuments(constraints, docPaths);
+      FilterConstraintToQuery toQuery = FilterConstraintToQuery.filterInMultipleDocuments(constraints, documentIds);
       String hql = toQuery.toHQL();
       log.debug("hql for searching: {}", hql);
       org.hibernate.Query query = session.createQuery(hql);
@@ -441,14 +442,14 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       return valid;
    }
 
-   private static enum HDocumentToDocId implements Function<HDocument, String>
+   private static enum HDocumentToId implements Function<HDocument, Long>
    {
       FUNCTION;
 
       @Override
-      public String apply(HDocument input)
+      public Long apply(HDocument input)
       {
-         return input.getDocId();
+         return input.getId();
       }
    }
 }
