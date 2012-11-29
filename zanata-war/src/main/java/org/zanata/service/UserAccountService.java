@@ -45,5 +45,11 @@ public interface UserAccountService
     */
    HAccount runRoleAssignmentRules(HAccount account, HCredentials credentials, String policyName);
 
+   /**
+    * Edits an account's user name.
+    *
+    * @param currentUsername The account's current user name.
+    * @param newUsername The new user name for the account.
+    */
    public void editUsername( String currentUsername, String newUsername );
 }

@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -30,13 +31,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
-import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.model.HAccount;
 import org.zanata.service.UserAccountService;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
@@ -117,12 +115,38 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
    @Override
    public String save()
    {
-      // Allow user name changes
-      if( !newUserFlag )
+      // Allow user name changes when editing
+      if( !newUserFlag && !originalUsername.equals(getUsername()) )
       {
-         userAccountServiceImpl.editUsername(originalUsername, getUsername());
+         if( isNewUsernameValid(getUsername()) )
+         {
+            userAccountServiceImpl.editUsername(originalUsername, getUsername());
+         }
+         else
+         {
+            FacesMessages.instance().addToControl("username", "Username '" + getUsername() + "' is not available");
+            setUsername(originalUsername); // reset the username field
+            return "failure";
+         }
       }
 
       return super.save();
+   }
+
+   /**
+    * Validate that a user name is not already in the system, by another account
+    */
+   private boolean isNewUsernameValid(String username)
+   {
+      try
+      {
+         entityManager.createQuery("from HAccount a where a.username = :username").setParameter("username", username).getSingleResult();
+         return false;
+      }
+      catch (NoResultException e)
+      {
+         // pass
+         return true;
+      }
    }
 }

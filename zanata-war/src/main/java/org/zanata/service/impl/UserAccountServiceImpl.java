@@ -58,9 +58,6 @@ public class UserAccountServiceImpl implements UserAccountService
    private Session session;
 
    @In
-   private SessionFactory sessionFactory;
-
-   @In
    private AccountDAO accountDAO;
 
    @In
@@ -144,6 +141,6 @@ public class UserAccountServiceImpl implements UserAccountService
             .setParameter("newUsername", newUsername)
             .setParameter("currentUsername", currentUsername);
       updateQuery.executeUpdate();
-      sessionFactory.evictQueries(); // Because a Natural Id was modified
+      session.getSessionFactory().evictQueries(); // Because a Natural Id was modified
    }
 }
