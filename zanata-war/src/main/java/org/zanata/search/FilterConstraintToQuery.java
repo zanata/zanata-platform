@@ -25,7 +25,7 @@ public class FilterConstraintToQuery
    protected static final String STATE_LIST_NAMED_PARAM = "contentStateList";
    protected static final String LOCALE_NAMED_PARAM = "locale";
    protected static final String DOC_ID_NAMED_PARAM = "docId";
-   protected static final String DOC_IDS_LIST_NAMED_PARAM = "docIdList";
+   protected static final String DOC_IDS_LIST_NAMED_PARAM = "documentIds";
    private static final String SEARCH_PLACEHOLDER = ":" + SEARCH_NAMED_PARAM;
    private static final String STATE_LIST_PLACEHOLDER = ":" + STATE_LIST_NAMED_PARAM;
    private static final String LOCALE_PLACEHOLDER = ":" + LOCALE_NAMED_PARAM;
@@ -36,7 +36,7 @@ public class FilterConstraintToQuery
    private final boolean hasSearch;
    private String searchString;
    private DocumentId documentId;
-   private Collection<String> docIdList;
+   private Collection<Long> documentIds;
 
    private FilterConstraintToQuery(FilterConstraints constraints, DocumentId documentId)
    {
@@ -44,10 +44,10 @@ public class FilterConstraintToQuery
       this.documentId = documentId;
    }
 
-   public FilterConstraintToQuery(FilterConstraints constraints, Collection<String> docIdList)
+   public FilterConstraintToQuery(FilterConstraints constraints, Collection<Long> documentIds)
    {
       this(constraints);
-      this.docIdList = docIdList;
+      this.documentIds = documentIds;
    }
 
    private FilterConstraintToQuery(FilterConstraints constraints)
@@ -67,11 +67,11 @@ public class FilterConstraintToQuery
       return new FilterConstraintToQuery(constraints, documentId);
    }
 
-   public static FilterConstraintToQuery filterInMultipleDocuments(FilterConstraints constraints, Collection<String> docIdList)
+   public static FilterConstraintToQuery filterInMultipleDocuments(FilterConstraints constraints, Collection<Long> documentIds)
    {
-      Preconditions.checkNotNull(docIdList);
-      Preconditions.checkState(!docIdList.isEmpty());
-      return new FilterConstraintToQuery(constraints, docIdList);
+      Preconditions.checkNotNull(documentIds);
+      Preconditions.checkState(!documentIds.isEmpty());
+      return new FilterConstraintToQuery(constraints, documentIds);
    }
 
    public String toHQL()
@@ -83,7 +83,7 @@ public class FilterConstraintToQuery
       }
       else
       {
-         docIdCondition = "tf.document.docId in (" + DOC_IDS_LIST_PLACEHOLDER + ")";
+         docIdCondition = "tf.document.id in (" + DOC_IDS_LIST_PLACEHOLDER + ")";
       }
       String obsoleteCondition = eq("tf.obsolete", "0").toString();
       String searchCondition = buildSearchCondition();
@@ -167,7 +167,7 @@ public class FilterConstraintToQuery
       }
       else
       {
-         textFlowQuery.setParameterList(DOC_IDS_LIST_NAMED_PARAM, docIdList);
+         textFlowQuery.setParameterList(DOC_IDS_LIST_NAMED_PARAM, documentIds);
       }
       textFlowQuery.setParameter(LOCALE_NAMED_PARAM, hLocale.getId());
       if (hasSearch)
