@@ -95,7 +95,7 @@ public class HLocale extends ModelEntityBase implements Serializable
 
    @OneToMany(cascade=CascadeType.ALL)
    @JoinColumn(name = "supportedLanguageId")
-   //   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE) // caching affects permission checks in security.drl
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    public Set<HLocaleMember> getMembers()
    {
       if( this.members == null )
