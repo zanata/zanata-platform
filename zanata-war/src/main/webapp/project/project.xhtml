@@ -22,66 +22,69 @@
     </s:div>
 
    	<div class="iterations">
-        <rich:dataGrid id="activeIterations" columns="5"
-                       value="#{projectHome.activeIterations}"
-                       var="_iteration"
-                       columnClasses="iteration_grid_col">
-            <s:link view="/iteration/view.xhtml" styleClass="version_link">
-                <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-                <f:param name="iterationSlug" value="#{_iteration.slug}"/>
-                <div class="version_link_div">
-                    <div class="version_title">
-                        <h:outputText value="#{_iteration.slug}"/>
-                    </div>
-                    <div class="version_info">
-                        Documents: #{_iteration.documents.size()}
-                    </div>
-                </div>
-            </s:link>
-        </rich:dataGrid>
+   		<a4j:form>
+   		
+   		<rich:dataTable id="iterations" value="#{projectHome.iterations}" var="_iteration">
+            <rich:column sortBy="#{_iteration.slug}">
+            	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
+                 <s:link view="/iteration/view.xhtml" styleClass="version_link">
+                 	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+                	<f:param name="iterationSlug" value="#{_iteration.slug}"/>
+                	<h:outputText styleClass="icon-lock-4 readOnlyIcon" title="#{messages['jsf.ReadOnlyVersions']}" rendered="#{projectHome.getEffectiveIterationStatus(_iteration) == 'READONLY'}"/>
+            		<h:outputText styleClass="icon-block obsoleteIcon" title="#{messages['jsf.ObsoleteVersions']}" rendered="#{projectHome.getEffectiveIterationStatus(_iteration) == 'OBSOLETE'}"/>
+                	<span class="version_title">#{_iteration.slug}</span> 
+                </s:link>
+                
+                
+                <a4j:outputPanel id="expendPanel" style="float:right">
+                
+               		<span class="version_info">Documents: #{_iteration.documents.size}</span>
+               	
+	               	<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="panel,expendPanel"  styleClass="buttonLink" rendered="#{!projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
+						<span class="icon-down-circle expendIcon"/>
+			 		</a4j:commandLink>
+			 		
+			 		<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="panel,expendPanel"  styleClass="buttonLink" rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
+						<span class="icon-up-circle expendIcon"/>
+			 		</a4j:commandLink>
+			 		
+		 		</a4j:outputPanel>
+               	
+               	<s:div id="panel">
+	               	<a4j:outputPanel rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
+	               		<rich:dataTable value="#{projectHome.iterationLocaleList.toArray()}" var="language">
+		                    <rich:column sortBy="#{language.localeId.id}">
+			                    <s:link view="/iteration/files.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="version_language_list table_link">
+									<f:param name="project" value="#{projectHome.instance.slug}" />
+									<f:param name="iteration" value="#{_iteration.slug}" />
+									<f:param name="localeId" value="#{language.localeId}" />
+								</s:link>
+							</rich:column>
+							
+		                </rich:dataTable>
+	               	</a4j:outputPanel>
+               	</s:div>
+            </rich:column>
+            
+            <rich:column styleClass="centered topAlignment" width="200px">
+            	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+            	<s:link styleClass="version_action_link action_link"
+					rendered="#{s:hasPermission(_iteration, 'update')}"
+					value="#{messages['jsf.EditVersion']}" view="/iteration/edit.xhtml"
+					propagation="none">
+					<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+					<f:param name="slug" value="#{_iteration.slug}" />
+				</s:link>
+	            <s:link styleClass="version_action_link action_link"
+	                value="#{messages['jsf.SourceDocuments']}" view="/iteration/source_files.xhtml"
+	                propagation="none">
+	                <f:param name="project" value="#{projectHome.instance.slug}"/>
+	                <f:param name="iteration" value="#{_iteration.slug}" />
+	            </s:link>
+            </rich:column>
+        </rich:dataTable>
         
-        <rich:spacer height="10px" />
-        
-        <rich:dataGrid id="readOnlyIterations" columns="5"
-                value="#{projectHome.readOnlyIterations}"
-                var="_iteration"
-                columnClasses="iteration_grid_col">
-           <s:link view="/iteration/view.xhtml" styleClass="version_link">
-               <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-               <f:param name="iterationSlug" value="#{_iteration.slug}"/>
-               <div class="version_link_div">
-                   <div class="version_title">
-                       <h:outputText value="#{_iteration.slug}"/>
-                   </div>
-                   <span class="icon-lock-4" title="#{messages['jsf.ReadOnlyVersions']}"/>
-                   <div class="version_info">
-                       Documents: #{_iteration.documents.size()}
-                   </div>
-               </div>
-           </s:link>
-       </rich:dataGrid>
-       
-       <rich:spacer height="10px" />
-       
-       <rich:dataGrid id="obsoleteIterations" columns="5"
-                value="#{projectHome.obsoleteIterations}"
-                var="_iteration"
-                columnClasses="iteration_grid_col">
-           <s:link view="/iteration/view.xhtml" styleClass="version_link">
-               <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-               <f:param name="iterationSlug" value="#{_iteration.slug}"/>
-               <div class="version_link_div">
-                   <div class="version_title">
-                       <h:outputText value="#{_iteration.slug}"/>
-                   </div>
-                   
-                   <span class="icon-block" title="#{messages['jsf.ObsoleteVersions']}"/>
-                   <div class="version_info">
-                       Documents: #{_iteration.documents.size()}
-                   </div>
-               </div>
-           </s:link>
-       </rich:dataGrid>
+        </a4j:form>
    	</div>
     </s:decorate>
 </ui:define>

@@ -21,6 +21,9 @@
 package org.zanata.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,26 +35,34 @@ import javax.persistence.EntityNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
+import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 
 @Name("projectHome")
+@CachedMethods
+@Scope(ScopeType.PAGE)
 public class ProjectHome extends SlugHome<HIterationProject>
 {
    private static final long serialVersionUID = 1L;
@@ -65,6 +76,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    @Logger
    Log log;
+
+   @In
+   PersonDAO personDAO;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -157,45 +171,85 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return retValue;
    }
 
-   public List<HProjectIteration> getActiveIterations()
-   {
-      if (getInstance().getStatus() == EntityStatus.ACTIVE)
-      {
-         return projectDAO.getActiveIterations(slug);
-      }
-      return null;
-   }
-
-   public List<HProjectIteration> getReadOnlyIterations()
+   @CachedMethodResult
+   public List<HProjectIteration> getIterations()
    {
       List<HProjectIteration> results = new ArrayList<HProjectIteration>();
-      if (getInstance().getStatus() == EntityStatus.ACTIVE)
+
+      for (HProjectIteration iteration : getInstance().getProjectIterations())
       {
-         results = projectDAO.getReadOnlyIterations(slug);
+         if (iteration.getStatus() == EntityStatus.OBSOLETE && checkViewObsolete())
+         {
+            results.add(iteration);
+         }
+         else if (iteration.getStatus() != EntityStatus.OBSOLETE)
+         {
+            results.add(iteration);
+         }
       }
-      else if (getInstance().getStatus() == EntityStatus.READONLY)
+      Collections.sort(results, new Comparator<HProjectIteration>()
       {
-         results.addAll(projectDAO.getActiveIterations(slug));
-         results.addAll(projectDAO.getReadOnlyIterations(slug));
-      }
+         @Override
+         public int compare(HProjectIteration o1, HProjectIteration o2)
+         {
+            EntityStatus fromStatus = o1.getStatus();
+            EntityStatus toStatus = o2.getStatus();
+            
+            if (fromStatus.equals(toStatus))
+            {
+               return 0;
+            }
+
+            if (fromStatus.equals(EntityStatus.ACTIVE))
+            {
+               return -1;
+            }
+
+            if (fromStatus.equals(EntityStatus.READONLY))
+            {
+               if (toStatus.equals(EntityStatus.ACTIVE))
+               {
+                  return 1;
+               }
+               return -1;
+            }
+
+            if (fromStatus.equals(EntityStatus.OBSOLETE))
+            {
+               return 1;
+            }
+
+            return 0;
+         }
+      });
       return results;
    }
 
-   public List<HProjectIteration> getObsoleteIterations()
+   public EntityStatus getEffectiveIterationStatus(HProjectIteration iteration)
    {
-      List<HProjectIteration> results = new ArrayList<HProjectIteration>();
-      if (getInstance().getStatus() == EntityStatus.ACTIVE || getInstance().getStatus() == EntityStatus.READONLY)
+      /**
+       * Null pointer exception checking caused by unknown issues where
+       * getEffectiveIterationStatus gets invoke before getIterations
+       */
+      if (iteration == null)
       {
-         results = projectDAO.getObsoleteIterations(slug);
+         return null;
       }
-      else
+      if (getInstance().getStatus() == EntityStatus.READONLY)
       {
-         results.addAll(projectDAO.getActiveIterations(slug));
-         results.addAll(projectDAO.getReadOnlyIterations(slug));
-         results.addAll(projectDAO.getObsoleteIterations(slug));
+         if (iteration.getStatus() == EntityStatus.ACTIVE)
+         {
+            return EntityStatus.READONLY;
+         }
       }
-      return results;
-
+      else if (getInstance().getStatus() == EntityStatus.OBSOLETE)
+      {
+         if (iteration.getStatus() == EntityStatus.ACTIVE || iteration.getStatus() == EntityStatus.READONLY)
+         {
+            return EntityStatus.OBSOLETE;
+         }
+      }
+      return iteration.getStatus();
    }
 
    public String cancel()
@@ -325,5 +379,34 @@ public class ProjectHome extends SlugHome<HIterationProject>
    public boolean checkViewObsolete()
    {
       return identity != null && identity.hasPermission("HProject", "view-obsolete");
+   }
+
+   private Set<String> renderedPanel = new HashSet<String>();
+
+   public void togglePanel(String slug)
+   {
+      if (renderedPanel.contains(slug))
+      {
+         renderedPanel.remove(slug);
+      }
+      else
+      {
+         renderedPanel.add(slug);
+      }
+   }
+
+   public boolean checkIfRendered(String slug)
+   {
+      return renderedPanel.contains(slug);
+   }
+   
+   public Set<HLocale> getIterationLocaleList()
+   {
+      HPerson person = personDAO.findByUsername(identity.getCredentials().getUsername());
+      if (person != null)
+      {
+         return person.getLanguageMemberships();
+      }
+      return new HashSet<HLocale>();
    }
 }

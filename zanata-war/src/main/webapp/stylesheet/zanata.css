@@ -165,6 +165,10 @@ td.centered {
 	text-align: center;
 }
 
+td.topAlignment {
+	vertical-align: top;
+}
+
 .leftalign {
 	text-align: left;
 }
@@ -992,91 +996,63 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 /* -----------------------  Project iteration CSS  -------------------------*/
 
 .iterations table {
-	border: none;
-	background:#FFFFFF;
+	background:#FFFFFF;	
 }
 
 .iterations table.rich-table tbody tr:hover {
-	background:none;
+	background:#EEE;
 }
 
-.iteration_grid_col {
-	border: none;
-	min-width: 100px;
-}
 
-.version_link_div {
-	border:1px solid #7092C3;
-	border-radius: 5px;
-	padding:5px;
-	margin-bottom:3px;
-	min-width: 100px; 
-	min-height: 100px;
-}
-
-.version_link_div:hover {
-    background-color: #FFFFFF;
-    box-shadow: 0 0 3px #5274A5 inset;
-}
-
-.version_link_div .version_title {
-	word-break: break-word; 
-	word-wrap: break-word; 
-	width: 84px;
-	float:left;
-}
-
-.version_link_div span
+a.version_action_link
 {
-	float:right;
+	display:inline-block;
+	font-size:12px;
+	padding:3px;
+	margin:1px;
+}
+
+a.version_language_list
+{
+	padding-right:5px;
+}
+
+ span.readOnlyIcon {
 	font-size:16px;
 	color:#B62918;
 }
 
-.version_link_div .version_info {
-	margin-top:30px; 
+span.obsoleteIcon {
+	font-size:16px;
+	color:#B62918;
+}
+
+span.expendIcon {
+	font-size:16px;
+	color:#B62918;
+}
+
+.version_title {
+	word-break: break-word; 
+	word-wrap: break-word; 
+}
+
+
+.version_info {
 	font-size: 11px; 
+	padding-left:5px;
 }
 
 a.version_link {
 	font-size: 14px;
 	font-weight: bold;
 	color: #7092C3;
-	text-decoration: none;
+	text-decoration: underline;
 	outline:none;
 }
 
 a.version_link:hover {
 	/*color: #990000;*/
-}
-
-.list_view_header {
-	width: 100%;
-	padding-bottom: 3px;
-}
-
-.list_view_header h2 {
-	display: inline;
-	margin-top: 0px;
-	margin-bottom: 3px;
-}
-
-.list_view_header h2>a {
-	text-decoration: none;
-	float: left;
-}
-
-.list_view_header .series_name {
-	font-style: italic;
-	font-size: 80%;
-	color: gray;
-}
-
-.menu_items {
-	float: right;
-	display: inline;
-	text-align: right;
-	margin-bottom: 6px;
 }
 
 .highlighted_datatable_row {
