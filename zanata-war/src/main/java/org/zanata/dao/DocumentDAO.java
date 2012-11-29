@@ -64,6 +64,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             "select tft.locale from HTextFlowTarget tft " +
             "where tft.textFlow.document = :document");
       q.setParameter("document", hDoc);
+      // TODO q.setCacheable(true); ??
       @SuppressWarnings("unchecked")
       List<LocaleId> locales = q.list();
       // @formatter:on
@@ -305,6 +306,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public HDocument getByProjectIterationAndDocId(final String projectSlug, final String iterationSlug, final String docId)
    {
+      // TODO caching might be better with getByDocIdAndIteration(ProjectIterationDAO.getBySlug(), docId)
       Session session = getSession();
       Query q = session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
             "and d.projectIteration.project.slug = :projectSlug " +
@@ -343,6 +345,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             "order by d.name");
       q.setParameter("iterationSlug", iterationSlug)
             .setParameter("projectSlug", projectSlug);
+      // TODO q.setCacheable(true); ??
       @SuppressWarnings("unchecked")
       final List<HDocument> documents = q.list();
       return documents;

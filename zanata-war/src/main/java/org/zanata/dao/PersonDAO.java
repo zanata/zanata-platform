@@ -66,7 +66,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("select m.id.supportedLanguage from HLocaleMember as m where m.id.person.account.username = :username");
       query.setParameter("username", userName);
-      query.setCacheable(true);
+      query.setCacheable(false);
       query.setComment("PersonDAO.getLanguageMembershipByUsername");
       List<HLocale> re = new ArrayList<HLocale>();
       List<HLocale> su = query.list();
@@ -85,7 +85,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("select p.maintainerProjects from HPerson as p where p.account.username = :username");
       query.setParameter("username", userName);
-      query.setCacheable(true);
+      query.setCacheable(false);
       query.setComment("PersonDAO.getMaintainerProjectByUsername");
       return query.list();
    }
@@ -94,7 +94,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("from HPerson as p where p.account.username = :username");
       query.setParameter("username", username);
-      query.setCacheable(true);
+      query.setCacheable(false);
       query.setComment("PersonDAO.findByUsername");
       return (HPerson) query.uniqueResult();
    }
@@ -103,7 +103,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("select p.email from HPerson as p where p.account.username = :username");
       query.setParameter("username", username);
-      query.setCacheable(true);
+      query.setCacheable(false);
       query.setComment("PersonDAO.findEmail");
       return (String) query.uniqueResult();
 
@@ -114,7 +114,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("from HPerson as p where p.account.username like :name or p.name like :name");
       query.setParameter("name", "%" + name + "%");
-      query.setCacheable(true);
+      query.setCacheable(false);
       query.setComment("PersonDAO.findAllContainingName");
       return query.list();
    }
@@ -141,7 +141,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
             "where id.person = :person and id.supportedLanguage = :language")
             .setParameter("person", person)
             .setParameter("language", language);
-      q.setCacheable(true).setComment("PersonDAO.isMemberOfLanguageTeam");
+      q.setCacheable(false).setComment("PersonDAO.isMemberOfLanguageTeam");
       Long totalCount = (Long) q.uniqueResult();
       return totalCount > 0L;
    }
@@ -159,7 +159,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
             "and coordinator = true")
             .setParameter("person", person)
             .setParameter("language", language);
-      q.setCacheable(true).setComment("PersonDAO.isCoordinatorOfLanguageTeam");
+      q.setCacheable(false).setComment("PersonDAO.isCoordinatorOfLanguageTeam");
       Long totalCount = (Long) q.uniqueResult();
       return totalCount > 0L;
    }

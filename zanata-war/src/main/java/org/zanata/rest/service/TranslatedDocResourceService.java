@@ -218,6 +218,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       TranslationsResource translationResource = new TranslationsResource();
+      // TODO avoid queries for better cacheability
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
       boolean foundData = resourceUtils.transferToTranslationsResource(
             translationResource, document, hLocale, extensions, hTargets);
