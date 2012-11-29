@@ -97,7 +97,7 @@
       
       <property name="hibernate.cache.use_second_level_cache" value="true"/>
 	  <!--       http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue -->
-      <property name="hibernate.cache.use_query_cache" value="false"/>
+      <property name="hibernate.cache.use_query_cache" value="true"/>
       <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
       
       <!-- https://docs.jboss.org/author/display/AS71/JPA+Reference+Guide#JPAReferenceGuide-Persistenceunitproperties -->
