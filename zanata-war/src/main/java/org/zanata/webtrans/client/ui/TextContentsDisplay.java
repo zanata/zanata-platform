@@ -19,9 +19,16 @@ public class TextContentsDisplay
       safeHtml = convertToSafeHtml(contents, highlightString);
    }
 
-   private TextContentsDisplay(List<String> originalContents, List<String> diffContent)
+   private TextContentsDisplay(List<String> originalContents, List<String> diffContent, DiffMode diffMode)
    {
-      safeHtml = convertToSafeHtmlAsDiff(originalContents, diffContent);
+      if (diffMode == DiffMode.HIGHLIGHT)
+      {
+         safeHtml = convertToSafeHtmlAsDiffHighlight(originalContents, diffContent);
+      }
+      else
+      {
+         safeHtml = convertToSafeHtmlAsDiff(originalContents, diffContent);
+      }
    }
 
    public static TextContentsDisplay asSyntaxHighlightAndSearch(Iterable<String> contents, String highlightString)
@@ -36,7 +43,12 @@ public class TextContentsDisplay
 
    public static TextContentsDisplay asDiff(List<String> originalContents, List<String> diffContents)
    {
-      return new TextContentsDisplay(originalContents, diffContents);
+      return new TextContentsDisplay(originalContents, diffContents, DiffMode.NORMAL);
+   }
+
+   public static TextContentsDisplay asDiffHighlight(List<String> originalContents, List<String> diffContents)
+   {
+      return new TextContentsDisplay(originalContents, diffContents, DiffMode.HIGHLIGHT);
    }
 
    private static SafeHtml convertToSafeHtmlAsDiff(List<String> originalContents, List<String> diffContents)
@@ -44,7 +56,20 @@ public class TextContentsDisplay
       SafeHtmlBuilder builder = new SafeHtmlBuilder();
       for (int i = 0; i < originalContents.size(); i++)
       {
-         DiffMatchPatchLabel label = new DiffMatchPatchLabel();
+         DiffMatchPatchLabel label = DiffMatchPatchLabel.normalDiff();
+         label.setOriginal(originalContents.get(i));
+         label.setText(diffContents.get(i));
+         appendContent(builder, label.getElement().getString());
+      }
+      return builder.toSafeHtml();
+   }
+
+   private static SafeHtml convertToSafeHtmlAsDiffHighlight(List<String> originalContents, List<String> diffContents)
+   {
+      SafeHtmlBuilder builder = new SafeHtmlBuilder();
+      for (int i = 0; i < originalContents.size(); i++)
+      {
+         DiffMatchPatchLabel label = DiffMatchPatchLabel.highlightDiff();
          label.setOriginal(originalContents.get(i));
          label.setText(diffContents.get(i));
          appendContent(builder, label.getElement().getString());

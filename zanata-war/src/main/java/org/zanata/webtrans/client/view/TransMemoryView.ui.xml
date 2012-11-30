@@ -27,7 +27,7 @@
         }
 
     </ui:style>
-        
+
 	<g:ScrollPanel>
 		<g:VerticalPanel styleName="{style.rootContainer}">
 			<g:cell height="30px" verticalAlignment="ALIGN_MIDDLE">
@@ -39,6 +39,8 @@
 						<g:Button ui:field="searchButton"/>
 						<g:Button ui:field="clearButton"/>
 		                <g:Button ui:field="mergeTMButton"/>
+                        <g:RadioButton name="diffMode" ui:field="diffModeDiff" />
+                        <g:RadioButton name="diffMode" ui:field="diffModeHighlight" />
 					</g:HorizontalPanel>
 				</g:HTMLPanel>
 			</g:cell>

@@ -174,4 +174,10 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Search Source or Target content")
    String findSourceOrTargetString();
+
+   @DefaultMessage("Show as Diff")
+   String diffModeAsDiff();
+
+   @DefaultMessage("Highlight matched term")
+   String diffModeAsHighlight();
 }

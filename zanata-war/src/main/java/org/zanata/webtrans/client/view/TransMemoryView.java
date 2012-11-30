@@ -6,6 +6,7 @@ import java.util.List;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
+import org.zanata.webtrans.client.ui.DiffMode;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
@@ -20,12 +21,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
@@ -35,6 +38,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
@@ -45,6 +49,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
 {
 
    private static TransMemoryViewUiBinder uiBinder = GWT.create(TransMemoryViewUiBinder.class);
+   private List<String> currentQueries;
 
    interface TransMemoryViewUiBinder extends UiBinder<Widget, TransMemoryView>
    {
@@ -78,6 +83,10 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
 
    @UiField
    HTMLPanel container;
+   @UiField
+   RadioButton diffModeDiff;
+   @UiField
+   RadioButton diffModeHighlight;
 
    private final FlexTable resultTable;
    private final Label loadingLabel, noResultFoundLabel;
@@ -156,6 +165,10 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       searchButton.setText(messages.searchButtonLabel());
       mergeTMButton.setText(messages.mergeTMButtonLabel());
       mergeTMButton.setTitle(messages.mergeTMTooltip());
+
+      diffModeDiff.setText(messages.diffModeAsDiff());
+      diffModeHighlight.setText(messages.diffModeAsHighlight());
+      diffModeDiff.setValue(true);
    }
 
    @UiHandler("tmTextBox")
@@ -229,7 +242,18 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       }
    }
 
-   private SimplePanel getSourcePanel(TransMemoryResultItem object, List<String> queries)
+   @UiHandler({"diffModeDiff", "diffModeHighlight"})
+   public void onDiffModeOptionChange(ValueChangeEvent<Boolean> event)
+   {
+      listener.onDiffModeChanged();
+   }
+
+   private DiffMode determineDiffMode()
+   {
+      return diffModeDiff.getValue() ? DiffMode.NORMAL : DiffMode.HIGHLIGHT;
+   }
+
+   private SimplePanel createSourcePanel(TransMemoryResultItem object, List<String> queries)
    {
       SimplePanel panel = new SimplePanel();
       panel.setSize("100%", "100%");
@@ -248,12 +272,20 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
             queriesPadded.add(queries.get(0));
          }
       }
-      SafeHtml safeHtml = TextContentsDisplay.asDiff(queriesPadded, sourceContents).toSafeHtml();
-      panel.setWidget(new InlineHTML(safeHtml));
+      if (determineDiffMode() == DiffMode.NORMAL)
+      {
+         SafeHtml safeHtml = TextContentsDisplay.asDiff(queriesPadded, sourceContents).toSafeHtml();
+         panel.setWidget(new InlineHTML(safeHtml));
+      }
+      else
+      {
+         SafeHtml safeHtmlHighlight = TextContentsDisplay.asDiffHighlight(queriesPadded, sourceContents).toSafeHtml();
+         panel.setWidget(new InlineHTML(safeHtmlHighlight));
+      }
       return panel;
    }
 
-   private SimplePanel getTargetPanel(TransMemoryResultItem object)
+   private SimplePanel createTargetPanel(TransMemoryResultItem object)
    {
       SimplePanel panel = new SimplePanel();
       panel.setSize("100%", "100%");
@@ -264,14 +296,15 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    }
 
    @Override
-   public void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries)
+   public void renderTable(List<TransMemoryResultItem> memories, List<String> queries)
    {
+      currentQueries = queries;
       for (int i = 0; i < memories.size(); i++)
       {
          final TransMemoryResultItem item = memories.get(i);
 
-         resultTable.setWidget(i + 1, SOURCE_COL, getSourcePanel(item, queries));
-         resultTable.setWidget(i + 1, TARGET_COL, getTargetPanel(item));
+         resultTable.setWidget(i + 1, SOURCE_COL, createSourcePanel(item, queries));
+         resultTable.setWidget(i + 1, TARGET_COL, createTargetPanel(item));
 
          Label countLabel = new Label(String.valueOf(item.getMatchCount()));
          countLabel.setTitle(messages.matchCountTooltip(item.getMatchCount()));
@@ -319,6 +352,16 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       }
       container.clear();
       container.add(resultTable);
+   }
+
+   @Override
+   public void redrawTable(List<TransMemoryResultItem> memories)
+   {
+      for (int i = 0; i < memories.size(); i++)
+      {
+         TransMemoryResultItem item = memories.get(i);
+         resultTable.setWidget(i + 1, SOURCE_COL, createSourcePanel(item, currentQueries));
+      }
    }
 
    @UiHandler("tmTextBox")

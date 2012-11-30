@@ -25,6 +25,7 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.zanata.webtrans.client.ui.DiffMode;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -44,7 +45,7 @@ public interface TranslationMemoryDisplay extends WidgetDisplay
 
    void startProcessing();
 
-   void renderTable(ArrayList<TransMemoryResultItem> memories, List<String> queries);
+   void renderTable(List<TransMemoryResultItem> memories, List<String> queries);
 
    void setListener(Listener listener);
 
@@ -53,6 +54,8 @@ public interface TranslationMemoryDisplay extends WidgetDisplay
    void clearTableContent();
 
    void showDiffLegend(boolean show);
+
+   void redrawTable(List<TransMemoryResultItem> currentResult);
 
    interface Listener
    {
@@ -69,5 +72,7 @@ public interface TranslationMemoryDisplay extends WidgetDisplay
       void showDiffLegend(boolean show);
 
       void onTMMergeClick();
+
+      void onDiffModeChanged();
    }
 }

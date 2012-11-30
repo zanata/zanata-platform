@@ -88,6 +88,15 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    }
 
    @Override
+   public void onDiffModeChanged()
+   {
+      if (currentResult != null)
+      {
+         display.redrawTable(currentResult);
+      }
+   }
+
+   @Override
    public void showDiffLegend(boolean show)
    {
       display.showDiffLegend(show);

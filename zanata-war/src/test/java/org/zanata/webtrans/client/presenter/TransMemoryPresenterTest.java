@@ -383,4 +383,25 @@ public class TransMemoryPresenterTest
       verify(display).clearTableContent();
       assertThat(currentResult, Matchers.<TransMemoryResultItem>empty());
    }
+
+   @Test
+   public void onDiffModeChanged()
+   {
+      List<TransMemoryResultItem> currentResult = Lists.newArrayList(transMemoryResultItem);
+      presenter.setStatesForTesting(currentResult, null);
+
+      presenter.onDiffModeChanged();
+
+      verify(display).redrawTable(currentResult);
+   }
+
+   @Test
+   public void willIgnoreDiffModeChangeIfNoCurrentResult()
+   {
+      presenter.setStatesForTesting(null, null);
+
+      presenter.onDiffModeChanged();
+
+      verifyZeroInteractions(display);
+   }
 }

@@ -28,17 +28,22 @@ public class DiffMatchPatchLabel extends HTML
 {
    private String original;
    private String plainText;
+   private final DiffMode diffMode;
 
-   public DiffMatchPatchLabel()
+   private DiffMatchPatchLabel(DiffMode diffMode)
    {
       super("<pre></pre>");
+      this.diffMode = diffMode;
    }
 
-   public DiffMatchPatchLabel(String orig, String text)
+   public static DiffMatchPatchLabel normalDiff()
    {
-      this();
-      this.original = Strings.nullToEmpty(orig);
-      setText(text);
+      return new DiffMatchPatchLabel(DiffMode.NORMAL);
+   }
+
+   public static DiffMatchPatchLabel highlightDiff()
+   {
+      return new DiffMatchPatchLabel(DiffMode.HIGHLIGHT);
    }
 
    @Override
@@ -52,7 +57,15 @@ public class DiffMatchPatchLabel extends HTML
    {
       this.plainText = text;
       Element preElement = getElement().getFirstChildElement();
-      String diffHtml = Highlighting.diffAsHtml(original, plainText);
+      String diffHtml;
+      if (diffMode == DiffMode.NORMAL)
+      {
+         diffHtml = Highlighting.diffAsHtml(original, plainText);
+      }
+      else
+      {
+         diffHtml = Highlighting.diffAsHighlight(original, plainText);
+      }
       preElement.setInnerHTML(diffHtml);
    }
 

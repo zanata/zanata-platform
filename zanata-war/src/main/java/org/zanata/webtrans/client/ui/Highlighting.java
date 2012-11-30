@@ -76,11 +76,11 @@ public class Highlighting
 
    public static String diffAsHtml(String text1, String text2)
    {
-      JavaScriptObject diffs = diff(text1, text2);
+      JavaScriptObject diffs = diff(text1, text2, true);
       return diffsToHtml(diffs);
    }
 
-   private static native JavaScriptObject diff(String text1, String text2)/*-{
+   private static native JavaScriptObject diff(String text1, String text2, boolean cleanupSemantic)/*-{
 		if (!$wnd.diffMatchPatch) {
 			$wnd.diffMatchPatch = new $wnd.diff_match_patch();
 			$wnd.diffMatchPatch.Diff_Timeout = 0.2;
@@ -88,7 +88,10 @@ public class Highlighting
 
 		var dmp = $wnd.diffMatchPatch;
 		var diffs = dmp.diff_main(text1, text2);
-		dmp.diff_cleanupSemantic(diffs);
+      if (cleanupSemantic)
+      {
+         dmp.diff_cleanupSemantic(diffs);
+      }
 		return diffs;
    }-*/;
 
@@ -118,6 +121,39 @@ public class Highlighting
 			}
 		}
 		return html.join('');
+   }-*/;
+
+   public static String diffAsHighlight(String text1, String text2)
+   {
+      JavaScriptObject diffs = diff(text1, text2, false);
+      return diffsHighlight(diffs);
+   }
+
+   // DIFF_DELETE text is hidden, DIFF_EQUAL text is highlighted, and DIFF_INSERT text is shown plain
+   private static native String diffsHighlight(JavaScriptObject diffs)/*-{
+      var html = [];
+      var pattern_amp = /&/g;
+      var pattern_lt = /</g;
+      var pattern_gt = />/g;
+      var pattern_para = /\n/g;
+      for ( var x = 0; x < diffs.length; x++) {
+         var op = diffs[x][0]; // Operation (insert, delete, equal)
+         var data = diffs[x][1]; // Text of change.
+         var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt,
+               '&lt;').replace(pattern_gt, '&gt;').replace(pattern_para,
+               '&para;<br>');
+         switch (op) {
+            case $wnd['DIFF_INSERT']:
+               html[x] = text;
+               break;
+            case $wnd['DIFF_DELETE']:
+               break;
+            case $wnd['DIFF_EQUAL']:
+               html[x] = '<span class="CodeMirror-searching">' + text + '</span>';
+               break;
+         }
+      }
+      return html.join('');
    }-*/;
 
 }
