@@ -91,6 +91,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
       useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
       showSaveApprovedWarningChk.setTitle(messages.showSaveApprovedWarningTooltip());
+      // TODO at the moment browser spell check only works in Firefox. If later Chrome supports it then change the tooltip.
+      spellCheckChk.setTitle(messages.spellCheckTooltip());
    }
 
    @Override
