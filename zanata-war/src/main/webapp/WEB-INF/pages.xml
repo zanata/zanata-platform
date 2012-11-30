@@ -771,6 +771,7 @@
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/language/list', messages['jsf.Languages'])}"/>
     <action execute="#{breadcrumbs.addLocation('', languageTeamAction.language)}"/>
+      
   </page>
   
   <page view-id="/language/contact_coordinator.xhtml">
@@ -904,7 +905,9 @@
 
   <exception>
     <redirect view-id="/error.xhtml">
-      <message severity="error">#{messages['jsf.UnexpectedErrorPleaseTryAgain']}</message>
+      <message severity="error">#{messages['jsf.UnexpectedErrorPleaseTryAgain']}
+      [ Request: #{servletContexts.request.requestURI}?#{servletContexts.request.queryString} ]
+      </message>
     </redirect>
   </exception>
 
