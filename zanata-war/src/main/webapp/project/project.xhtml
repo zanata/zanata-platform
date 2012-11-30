@@ -11,6 +11,21 @@
 
 <ui:define name="page_title">#{projectHome.instance.name}</ui:define>
 <ui:define name="head">
+	<script type="text/javascript">
+		function showLoading(show, id)
+            {
+            	var loadingId = id.substring(0,id.lastIndexOf(":") + 1) + "loading";
+            	if(show == true)
+            	{
+            		document.getElementById(loadingId).style.display='inline';
+            	}
+            	else
+            	{
+            		document.getElementById(loadingId).style.display='none';
+            	}
+            }
+	
+	</script>
 </ui:define>
 
 <ui:define name="center_content">
@@ -28,52 +43,102 @@
             <rich:column sortBy="#{_iteration.slug}">
             	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
                  <s:link view="/iteration/view.xhtml" styleClass="version_link">
-                 	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+                 	<f:param name="projectSlug" value="#{projectHome.slug}"/>
                 	<f:param name="iterationSlug" value="#{_iteration.slug}"/>
                 	<h:outputText styleClass="icon-lock-4 readOnlyIcon" title="#{messages['jsf.ReadOnlyVersions']}" rendered="#{projectHome.getEffectiveIterationStatus(_iteration) == 'READONLY'}"/>
             		<h:outputText styleClass="icon-block obsoleteIcon" title="#{messages['jsf.ObsoleteVersions']}" rendered="#{projectHome.getEffectiveIterationStatus(_iteration) == 'OBSOLETE'}"/>
-                	<span class="version_title">#{_iteration.slug}</span> 
+                	<span class="version_title">#{_iteration.slug}</span>
                 </s:link>
+               	<span class="version_info">Documents: #{_iteration.documents.size}</span>
                 
                 <span style="float:right">
-	                <s:link styleClass="version_action_link action_link"
+	                <s:link styleClass="version_action_link table_link"
 						rendered="#{s:hasPermission(_iteration, 'update')}"
-						value="#{messages['jsf.EditVersion']}" view="/iteration/edit.xhtml"
+						value="#{messages['jsf.Edit']}" view="/iteration/edit.xhtml"
 						propagation="none">
-						<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+						<f:param name="projectSlug" value="#{projectHome.slug}"/>
 						<f:param name="slug" value="#{_iteration.slug}" />
 					</s:link>
-		            <s:link styleClass="version_action_link action_link"
-		                value="#{messages['jsf.SourceDocuments']}" view="/iteration/source_files.xhtml"
+		            <s:link styleClass="version_action_link table_link"
+		                value="#{messages['jsf.SourceDocs']}" view="/iteration/source_files.xhtml"
 		                propagation="none">
-		                <f:param name="project" value="#{projectHome.instance.slug}"/>
+		                <f:param name="project" value="#{projectHome.slug}"/>
 		                <f:param name="iteration" value="#{_iteration.slug}" />
 		            </s:link>
 		            
 	                <a4j:outputPanel id="expendPanel">
-	               	
-		               	<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="panel,expendPanel"  styleClass="buttonLink" rendered="#{!projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
+		               	<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="details_panel,expendPanel"  styleClass="buttonLink" rendered="#{!projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}" onclick="showLoading(true,this.id)">
 							<span class="icon-down-circle expendIcon"/>
 				 		</a4j:commandLink>
 				 		
-				 		<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="panel,expendPanel"  styleClass="buttonLink" rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
+				 		<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="details_panel,expendPanel"  styleClass="buttonLink" rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
 							<span class="icon-up-circle expendIcon"/>
 				 		</a4j:commandLink>
 				 		
 			 		</a4j:outputPanel>
 			 	</span>
                	
-               	<s:div id="panel">
+               	<s:div id="details_panel">
+               		<h:graphicImage value="/images/loading.gif" id="loading" style="display:none" />
 	               	<a4j:outputPanel rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
-	               		<span class="version_info">Documents: #{_iteration.documents.size}</span>
-	               		
-	               		<rich:dataTable value="#{projectHome.iterationLocaleList.toArray()}" var="language">
+	               		<rich:dataTable value="#{projectHome.iterationLocaleList.toArray()}" var="language" styleClass="details_table">
 		                    <rich:column sortBy="#{language.localeId.id}">
-			                    <s:link view="/iteration/files.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="version_language_list table_link">
-									<f:param name="project" value="#{projectHome.instance.slug}" />
+			                    <s:link view="/iteration/files.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
+									<f:param name="project" value="#{projectHome.slug}" />
 									<f:param name="iteration" value="#{_iteration.slug}" />
 									<f:param name="localeId" value="#{language.localeId}" />
 								</s:link>
+							</rich:column>
+							
+							<rich:column styleClass="centered">
+								<h:outputLink
+									rendered="#{not applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_iteration.slug, language) }"
+									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Open']}">
+									<f:param name="project" value="#{projectHome.slug}" />
+									<f:param name="iteration" value="#{_iteration.slug}" />
+									<f:param name="localeId" value="#{language.localeId}" />
+									<f:param name="locale" value="#{locale.language}" />
+									<span class="icon-eye"/>
+								</h:outputLink>
+				
+								<h:outputLink
+									rendered="#{applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_iteration.slug, language)}"
+									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.OpenGWTDevMode']}">
+									<f:param name="project" value="#{projectHome.slug}" />
+									<f:param name="iteration" value="#{_iteration.slug}" />
+									<f:param name="localeId" value="#{language.localeId}" />
+									<f:param name="locale" value="#{locale.language}" />
+									<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
+									<span class="icon-eye"/>
+				    			</h:outputLink>
+				
+								<h:outputLink
+									rendered="#{not applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_iteration.slug, language)}"
+									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Translate']}">
+									<f:param name="project" value="#{projectHome.slug}" />
+									<f:param name="iteration" value="#{_iteration.slug}" />
+									<f:param name="localeId" value="#{language.localeId}" />
+									<f:param name="locale" value="#{locale.language}" />
+									<span class="icon-edit"/>
+				    			</h:outputLink>
+				    					
+								<h:outputLink
+									rendered="#{applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_iteration.slug, language)}"
+									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.TranslateGWTDevMode']}">
+									<f:param name="project" value="#{projectHome.slug}" />
+									<f:param name="iteration" value="#{_iteration.slug}" />
+									<f:param name="localeId" value="#{language.localeId}" />
+									<f:param name="locale" value="#{locale.language}" />
+									<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
+									<span class="icon-edit"/>
+				    			</h:outputLink>
+							</rich:column>
+							
+							<rich:column width="210px">
+								<ui:param name="tstatus" value="#{projectHome.getStats(_iteration.slug, language)}" />
+								<ui:include src="../WEB-INF/layout/statsbar.xhtml">
+									<ui:param name="status" value="#{tstatus}" />
+								</ui:include>
 							</rich:column>
 							
 		                </rich:dataTable>
@@ -92,19 +157,19 @@
   <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" value="#{messages['jsf.EditProject']}" view="/project/edit.xhtml" propagation="none">
-      <f:param name="slug" value="#{projectHome.instance.slug}"/>
+      <f:param name="slug" value="#{projectHome.slug}"/>
     </s:link>
     <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="#{messages['jsf.project.EditHomePage.label']}" view="/project/homepage_edit.xhtml" title="#{messages['jsf.project.EditHomePage.tooltip']}" propagation="none">
-      <f:param name="slug" value="#{projectHome.instance.slug}"/>
+      <f:param name="slug" value="#{projectHome.slug}"/>
     </s:link>
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration') and projectHome.isProjectActive()}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
-    	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+    	<f:param name="projectSlug" value="#{projectHome.slug}"/>
     </s:link>
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
-    	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+    	<f:param name="projectSlug" value="#{projectHome.slug}"/>
     </s:link>
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/copy_trans_options.xhtml" value="#{messages['jsf.project.CopyTransOpts.linkTitle']}" title="#{messages['jsf.project.CopyTransOpts.tooltip']}" propagation="none">
-        <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+        <f:param name="projectSlug" value="#{projectHome.slug}"/>
     </s:link>
 
   </rich:panel>

@@ -995,21 +995,23 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 
 /* -----------------------  Project iteration CSS  -------------------------*/
 
-.iterations table {
-	background:#FFFFFF;	
-}
-
-.iterations table.rich-table tbody tr:hover {
+.iterations table.rich-table tr:hover {
 	background:#EEE;
 }
 
+.iterations table.details_table td.rich-table-cell
+{
+	padding:5px;
+}
+
+.iterations table.details_table tr:hover {
+	background:#FFFFFF;
+}
 
 a.version_action_link
 {
-	display:inline-block;
 	font-size:12px;
 	padding:3px;
-	margin:1px;
 }
 
 a.version_language_list
@@ -1028,7 +1030,7 @@ span.obsoleteIcon {
 }
 
 span.expendIcon {
-	font-size:16px;
+	font-size:18px;
 	color:#461446;
 }
 
@@ -1046,13 +1048,13 @@ span.expendIcon {
 a.version_link {
 	font-size: 14px;
 	font-weight: bold;
-	color: #7092C3;
+	color: #454545;
 	text-decoration: underline;
 	outline:none;
 }
 
 a.version_link:hover {
-	/*color: #990000;*/
+	color: #0085CC;
 }
 
 .highlighted_datatable_row {

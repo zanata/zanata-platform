@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,14 +51,22 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.rest.service.StatisticsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 
@@ -72,13 +82,19 @@ public class ProjectHome extends SlugHome<HIterationProject>
    private String slug;
 
    @In
-   Identity identity;
+   StatisticsResource statisticsServiceImpl;
+   
+   @In
+   ZanataIdentity identity;
 
    @Logger
    Log log;
 
    @In
    PersonDAO personDAO;
+   
+   @In
+   LocaleDAO localeDAO;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -107,6 +123,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    @In(create = true)
    ProjectDAO projectDAO;
+   
+   @In
+   ProjectIterationDAO projectIterationDAO;
 
    @In
    private EntityManager entityManager;
@@ -383,21 +402,21 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    private Set<String> renderedPanel = new HashSet<String>();
 
-   public void togglePanel(String slug)
+   public void togglePanel(String versionSlug)
    {
-      if (renderedPanel.contains(slug))
+      if (renderedPanel.contains(versionSlug))
       {
-         renderedPanel.remove(slug);
+         renderedPanel.remove(versionSlug);
       }
       else
       {
-         renderedPanel.add(slug);
+         renderedPanel.add(versionSlug);
       }
    }
 
-   public boolean checkIfRendered(String slug)
+   public boolean checkIfRendered(String versionSlug)
    {
-      return renderedPanel.contains(slug);
+      return renderedPanel.contains(versionSlug);
    }
    
    public Set<HLocale> getIterationLocaleList()
@@ -408,5 +427,47 @@ public class ProjectHome extends SlugHome<HIterationProject>
          return person.getLanguageMemberships();
       }
       return new HashSet<HLocale>();
+   }
+   
+   public boolean isUserAllowedToTranslate(String versionSlug, HLocale localeId)
+   {
+      return isIterationActive(versionSlug) && identity != null && identity.hasPermission("add-translation", getInstance(), localeId);
+   }
+   
+   private StatUnit statsOption = WORD;
+   
+   @CachedMethodResult
+   public TranslationStatistics getStats(String versionSlug, HLocale locale)
+   {
+      String[] localeIds = new String[1];
+      localeIds[0] = locale.getLocaleId().getId();
+      HProjectIteration iteration = projectIterationDAO.getBySlug(getSlug(), versionSlug);
+      
+      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(getSlug(), versionSlug, false, true, localeIds);
+      
+      Long total;
+      if (statsOption == WORD)
+      {
+         total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
+      }
+      else
+      {
+         total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
+      }
+      
+      TranslationStatistics stats = iterationStats.getStats(localeIds[0], statsOption);
+      if (stats == null)
+      {
+         stats = new TranslationStatistics();
+         stats.setUntranslated(total);
+         stats.setTotal(total);
+      }
+      return stats;
+   }
+
+   private boolean isIterationActive(String versionSlug)
+   {
+      HProjectIteration version = projectIterationDAO.getBySlug(getSlug(), versionSlug);
+      return getInstance().getStatus() == EntityStatus.ACTIVE || version.getStatus() == EntityStatus.ACTIVE;
    }
 }
