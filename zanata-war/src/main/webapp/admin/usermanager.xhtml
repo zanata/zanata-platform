@@ -33,10 +33,22 @@
 	            cellspacing="0"
 	            columnClasses="centered,centered,centered,centered"
 	            styleClass="fullwidth">
-	          <h:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+	          <rich:column width="auto" filterExpression="#{userAction.filter(user)}">
+	            <f:facet name="header">
+                  <h:panelGroup>
+                    <h:outputText value="#{messages['jsf.Username']}"/>
+                    <br/>
+                    <h:inputText id="username_filter_input"
+                                 value="#{userAction.usernameFilter}"
+                                 styleClass="filter_input">
+                        <a4j:support event="onkeyup" reRender="threads"
+                                     ignoreDupResponses="true" requestDelay="700"
+                                     focus="username_filter_input"/>
+                    </h:inputText>
+                  </h:panelGroup>
+                </f:facet>
 	            #{user}
-	          </h:column>
+	          </rich:column>
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
 	            #{userAction.getEmail(userSearch.selectedUser)}

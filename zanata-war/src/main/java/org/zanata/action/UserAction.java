@@ -72,6 +72,8 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
 
    private String originalUsername;
 
+   private String usernameFilter;
+
 
    public void deleteUser( String userName )
    {
@@ -93,6 +95,16 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
    public String getEmail(String username)
    {
       return personDAO.findEmail(username);
+   }
+
+   public String getUsernameFilter()
+   {
+      return usernameFilter;
+   }
+
+   public void setUsernameFilter(String usernameFilter)
+   {
+      this.usernameFilter = usernameFilter;
    }
 
    @Override
@@ -131,6 +143,11 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
       }
 
       return super.save();
+   }
+
+   public boolean filter(String user)
+   {
+      return user.toLowerCase().contains( this.usernameFilter == null ? "" : this.usernameFilter.toLowerCase() );
    }
 
    /**
