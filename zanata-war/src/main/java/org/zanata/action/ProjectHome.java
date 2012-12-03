@@ -46,12 +46,10 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -82,7 +80,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
    private String slug;
 
    @In
-   StatisticsResource statisticsServiceImpl;
+   private StatisticsResource statisticsServiceImpl;
    
    @In
    ZanataIdentity identity;
@@ -91,10 +89,10 @@ public class ProjectHome extends SlugHome<HIterationProject>
    Log log;
 
    @In
-   PersonDAO personDAO;
+   private PersonDAO personDAO;
    
    @In
-   LocaleDAO localeDAO;
+   private LocaleDAO localeDAO;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -116,19 +114,24 @@ public class ProjectHome extends SlugHome<HIterationProject>
    private Boolean restrictByRoles;
 
    @In
-   LocaleService localeServiceImpl;
+   private LocaleService localeServiceImpl;
 
    @In
-   SlugEntityService slugEntityServiceImpl;
+   private SlugEntityService slugEntityServiceImpl;
 
    @In(create = true)
-   ProjectDAO projectDAO;
+   private ProjectDAO projectDAO;
    
    @In
-   ProjectIterationDAO projectIterationDAO;
+   private ProjectIterationDAO projectIterationDAO;
 
    @In
    private EntityManager entityManager;
+
+   private Set<String> renderedPanel = new HashSet<String>();
+   private Set<Integer> rowsToUpdate = new HashSet<Integer>();
+
+   private StatUnit statsOption = WORD;
 
    @Override
    protected HIterationProject loadInstance()
@@ -400,10 +403,13 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return identity != null && identity.hasPermission("HProject", "view-obsolete");
    }
 
-   private Set<String> renderedPanel = new HashSet<String>();
 
-   public void togglePanel(String versionSlug)
+
+   public void togglePanel(String versionSlug, Integer selectedRow)
    {
+      rowsToUpdate.clear();
+      rowsToUpdate.add(selectedRow);
+
       if (renderedPanel.contains(versionSlug))
       {
          renderedPanel.remove(versionSlug);
@@ -434,7 +440,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return isIterationActive(versionSlug) && identity != null && identity.hasPermission("add-translation", getInstance(), localeId);
    }
    
-   private StatUnit statsOption = WORD;
+
    
    @CachedMethodResult
    public TranslationStatistics getStats(String versionSlug, HLocale locale)
@@ -469,5 +475,15 @@ public class ProjectHome extends SlugHome<HIterationProject>
    {
       HProjectIteration version = projectIterationDAO.getBySlug(getSlug(), versionSlug);
       return getInstance().getStatus() == EntityStatus.ACTIVE || version.getStatus() == EntityStatus.ACTIVE;
+   }
+
+   public Set<Integer> getRowsToUpdate()
+   {
+      return rowsToUpdate;
+   }
+
+   public void setRowsToUpdate(Set<Integer> rowsToUpdate)
+   {
+      this.rowsToUpdate = rowsToUpdate;
    }
 }

@@ -39,8 +39,8 @@
    	<div class="iterations">
    		<a4j:form>
    		
-   		<rich:dataTable id="iterations" value="#{projectHome.iterations}" var="_iteration">
-            <rich:column sortBy="#{_iteration.slug}">
+   		<rich:dataTable id="iterations" value="#{projectHome.iterations}" var="_iteration" ajaxKeys="#{projectHome.rowsToUpdate}" rowKeyVar="idx">
+            <rich:column sortBy="#{_iteration.slug}" id="column">
             	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
                  <s:link view="/iteration/view.xhtml" styleClass="version_link">
                  	<f:param name="projectSlug" value="#{projectHome.slug}"/>
@@ -66,19 +66,18 @@
 		                <f:param name="iteration" value="#{_iteration.slug}" />
 		            </s:link>
 		            
-	                <a4j:outputPanel id="expendPanel">
-		               	<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="details_panel,expendPanel"  styleClass="buttonLink" rendered="#{!projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}" onclick="showLoading(true,this.id)">
+		            <a4j:outputPanel id="togglePanel">
+		               	<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug, idx)}" type="submit" reRender="details_panel,togglePanel"  styleClass="buttonLink" rendered="#{!projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}" onclick="showLoading(true,this.id)" ajaxSingle="true">
 							<span class="icon-down-circle expendIcon"/>
 				 		</a4j:commandLink>
 				 		
-				 		<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug)}" type="submit" reRender="details_panel,expendPanel"  styleClass="buttonLink" rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
+				 		<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug, idx)}" type="submit" reRender="details_panel,togglePanel"  styleClass="buttonLink" rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}" ajaxSingle="true">
 							<span class="icon-up-circle expendIcon"/>
 				 		</a4j:commandLink>
-				 		
 			 		</a4j:outputPanel>
 			 	</span>
                	
-               	<s:div id="details_panel">
+               	<s:div id="details_panel" styleClass="version_details_panel">
                		<h:graphicImage value="/images/loading.gif" id="loading" style="display:none" />
 	               	<a4j:outputPanel rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
 	               		<rich:dataTable value="#{projectHome.iterationLocaleList.toArray()}" var="language" styleClass="details_table">

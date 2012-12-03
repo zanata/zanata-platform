@@ -995,6 +995,11 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 
 /* -----------------------  Project iteration CSS  -------------------------*/
 
+.iterations table.details_table
+{
+	background:#FFFFFF;
+}
+
 .iterations table.rich-table tr:hover {
 	background:#EEE;
 }
@@ -1006,6 +1011,11 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 
 .iterations table.details_table tr:hover {
 	background:#FFFFFF;
+}
+
+.version_details_panel
+{
+	margin-top:10px;
 }
 
 a.version_action_link
