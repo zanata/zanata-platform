@@ -108,7 +108,7 @@
 
   <page view-id="/account/email_validation.xhtml" login-required="true">
     <param name="key" value="#{validateEmail.activationKey}" />
-    <action execute="#{validateEmail.validate}" />
+   	<action execute="#{validateEmail.validate}" />
   </page>
 
   <page view-id="/account/password_reset.xhtml">

@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Date;
 import java.util.Random;
 
 import org.zanata.util.Base64UrlSafe;
@@ -31,11 +32,13 @@ public class EmailChangeActivationService
    {
       private String id;
       private String email;
+      private String creationDate;
 
-      public KeyParameter(String id, String email)
+      public KeyParameter(String id, String email, String creationDate)
       {
          this.id = id;
          this.email = email;
+         this.creationDate = creationDate;
       }
 
       public String getId()
@@ -47,12 +50,18 @@ public class EmailChangeActivationService
       {
          return email;
       }
+
+      public String getCreationDate()
+      {
+         return creationDate;
+      }
    }
 
-   public static String generateActivationKey(String id, String email)
+   public static String generateActivationKey(String id, String email, Date creationDate)
    {
       Random ran = new Random();
-      String var = id + ";" + ran.nextInt() + ";" + email;
+
+      String var = id + ";" + ran.nextInt() + ";" + email + ";" + ran.nextInt() + ";" + TimestampValidationService.formatDate(creationDate);
       return Base64UrlSafe.encode(var);
    }
 
@@ -62,7 +71,8 @@ public class EmailChangeActivationService
       String[] array = var.split(";");
       String id = array[0];
       String email = array[2];
-      return new KeyParameter(id, email);
+      String creationDate = array[4];
+      return new KeyParameter(id, email, creationDate);
    }
 
 }
