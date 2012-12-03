@@ -57,10 +57,10 @@ public class Pager extends Composite implements HasPager
       initWidget(uiBinder.createAndBindUi(this));
 
       // set tooltips of page nav icons, i18n-ized w/ WebTransMessages.java
-      firstPage.setTitle(messages.tooltipsWithShortcut(messages.firstPage(), messages.firstPageShortcut()));
-      prevPage.setTitle(messages.tooltipsWithShortcut(messages.prevPage(), messages.prevPageShortcut()));
-      nextPage.setTitle(messages.tooltipsWithShortcut(messages.nextPage(), messages.nextPageShortcut()));
-      lastPage.setTitle(messages.tooltipsWithShortcut(messages.lastPage(), messages.lastPageShortcut()));
+      firstPage.setTitle(messages.firstPage());
+      prevPage.setTitle(messages.prevPage());
+      nextPage.setTitle(messages.nextPage());
+      lastPage.setTitle(messages.lastPage());
    }
 
    @UiHandler("gotoPage")

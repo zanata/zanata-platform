@@ -35,26 +35,14 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("First Page")
    String firstPage();
 
-   @DefaultMessage("Home")
-   String firstPageShortcut();
-
    @DefaultMessage("Previous Page")
    String prevPage();
-
-   @DefaultMessage("PageUp")
-   String prevPageShortcut();
 
    @DefaultMessage("Next Page")
    String nextPage();
 
-   @DefaultMessage("PageDown")
-   String nextPageShortcut();
-
    @DefaultMessage("Last Page")
    String lastPage();
-
-   @DefaultMessage("End")
-   String lastPageShortcut();
 
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
@@ -67,9 +55,6 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Restore Translation Memory and Glossary")
    String restoreSouthPanel();
-
-   @DefaultMessage("{0} (Shortcut: {1})")
-   String tooltipsWithShortcut(String text, String shortcut);
 
    @DefaultMessage("Load")
    String load();
