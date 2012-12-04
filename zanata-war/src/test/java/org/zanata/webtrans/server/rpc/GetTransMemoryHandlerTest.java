@@ -41,6 +41,9 @@ import com.google.common.collect.Lists;
 @Test(groups = "jpa-tests")
 public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
 {
+
+   private static final int EXPECTED_MAX_RESULTS = 25;
+
    private GetTransMemoryHandler handler;
    @Mock
    private ZanataIdentity identity;
@@ -84,8 +87,14 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
       HTextFlowTarget tmMatch1 = getEm().find(HTextFlowTarget.class, 60L);
       HTextFlowTarget tmMatch2 = getEm().find(HTextFlowTarget.class, 62L);
-      List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, tmMatch2});
-      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(25));
+
+      // Note: Different method calls and return types are used depending whether source or target
+      // index implementation is used
+      List<Object[]> targetMatches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, tmMatch2});
+      doReturn(targetMatches).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
+      List<Object[]> textFlowMatches = Lists.newArrayList(new Object[] {1.0F, tmMatch1.getTextFlow()}, new Object[] {1.1F, tmMatch2.getTextFlow()});
+      doReturn(textFlowMatches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
+
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
@@ -98,25 +107,25 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       assertThat(result.getMemories().get(1).getTargetContents(), Matchers.contains("%d files removed"));
    }
 
-   // This does not apply to the current implementation, but is left in
+   // This does not apply to the source index based implementation, but is left in
    // case a return to the other implementation is required.
-   @Test
-   public void searchReturnNotApprovedResult() throws Exception
-   {
-      // Given: hibernate search finds 2 matches for query and they are not approved translation
-      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-      HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 61L).getTextFlow();
-      List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
-      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(targetLocaleId), eq(10));
-      GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
-
-      // When:
-      GetTranslationMemoryResult result = handler.execute(action, null);
-
-      // Then:
-      verify(identity).checkLoggedIn();
-      assertThat(result.getMemories(), Matchers.hasSize(0));
-   }
+//   @Test
+//   public void searchReturnNotApprovedResult() throws Exception
+//   {
+//      // Given: hibernate search finds 2 matches for query and they are not approved translation
+//      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
+//      HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 61L).getTextFlow();
+//      List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
+//      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
+//      GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
+//
+//      // When:
+//      GetTranslationMemoryResult result = handler.execute(action, null);
+//
+//      // Then:
+//      verify(identity).checkLoggedIn();
+//      assertThat(result.getMemories(), Matchers.hasSize(0));
+//   }
 
    @SuppressWarnings("unchecked")
    @Test
@@ -124,7 +133,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: hibernate search can not parse query
       TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-      doThrow(new ParseException("bad token")).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(25));
+      doThrow(new ParseException("bad token")).when(textFlowDAOSpy).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
