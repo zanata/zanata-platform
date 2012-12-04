@@ -1,4 +1,4 @@
-package org.zanata.webtrans.client.ui;
+package org.zanata.webtrans.shared.model;
 
 public enum DiffMode
 {

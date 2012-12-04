@@ -20,12 +20,11 @@
  */
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.webtrans.client.ui.DiffMode;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -56,6 +55,8 @@ public interface TranslationMemoryDisplay extends WidgetDisplay
    void showDiffLegend(boolean show);
 
    void redrawTable(List<TransMemoryResultItem> currentResult);
+
+   void setDisplayMode(DiffMode displayMode);
 
    interface Listener
    {

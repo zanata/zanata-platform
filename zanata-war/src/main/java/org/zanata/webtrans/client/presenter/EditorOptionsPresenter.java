@@ -39,6 +39,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
@@ -186,6 +187,16 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       if (userOptionsService.getConfigHolder().isSpellCheckEnabled() != spellCheckChkValue)
       {
          userOptionsService.getConfigHolder().setSpellCheckEnabled(spellCheckChkValue);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
+
+   @Override
+   public void onTransMemoryDisplayModeChanged(DiffMode displayMode)
+   {
+      if (userOptionsService.getConfigHolder().getTMDisplayMode() != displayMode)
+      {
+         userOptionsService.getConfigHolder().setTMDisplayMode(displayMode);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       }
    }

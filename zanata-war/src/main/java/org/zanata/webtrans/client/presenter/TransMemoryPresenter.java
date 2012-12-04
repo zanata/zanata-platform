@@ -13,6 +13,8 @@ import org.zanata.webtrans.client.events.TransMemoryShorcutCopyHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
@@ -33,7 +35,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDisplay> implements TranslationMemoryDisplay.Listener, TransUnitSelectionHandler, TransMemoryShorcutCopyHandler
+public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDisplay> implements TranslationMemoryDisplay.Listener, TransUnitSelectionHandler, TransMemoryShorcutCopyHandler, UserConfigChangeHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
@@ -41,6 +43,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    private final TransMemoryMergePresenter transMemoryMergePresenter;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final WebTransMessages messages;
+   private final UserConfigHolder configHolder;
 
    // states
    private boolean isFocused;
@@ -49,7 +52,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    private List<TransMemoryResultItem> currentResult;
 
    @Inject
-   public TransMemoryPresenter(TranslationMemoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter)
+   public TransMemoryPresenter(TranslationMemoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, final WebTransMessages messages, TransMemoryDetailsPresenter tmInfoPresenter, UserWorkspaceContext userWorkspaceContext, TransMemoryMergePresenter transMemoryMergePresenter, KeyShortcutPresenter keyShortcutPresenter, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -58,7 +61,10 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
       this.transMemoryMergePresenter = transMemoryMergePresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.messages = messages;
+      this.configHolder = configHolder;
       currentResult = new ArrayList<TransMemoryResultItem>();
+
+      display.setDisplayMode(configHolder.getTMDisplayMode());
    }
 
    @Override
@@ -77,6 +83,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
 
       registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransMemoryShortcutCopyEvent.getType(), this));
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
       display.setListener(this);
    }
@@ -90,9 +97,19 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    @Override
    public void onDiffModeChanged()
    {
-      if (currentResult != null)
+      if (currentResult != null && !currentResult.isEmpty())
       {
          display.redrawTable(currentResult);
+      }
+   }
+
+   @Override
+   public void onUserConfigChanged(UserConfigChangeEvent event)
+   {
+      if (event == UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT)
+      {
+         display.setDisplayMode(configHolder.getTMDisplayMode());
+         onDiffModeChanged();
       }
    }
 

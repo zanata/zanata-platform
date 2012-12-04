@@ -39,6 +39,7 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
@@ -129,7 +130,7 @@ public class UserOptionsServiceTest
    {
       Map<UserOptions, String> map = service.getEditorOptions();
 
-      assertThat(map.size(), Matchers.equalTo(11));
+      assertThat(map.size(), Matchers.equalTo(12));
       
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.DisplayButtons), Matchers.equalTo(true));
@@ -137,6 +138,7 @@ public class UserOptionsServiceTest
       assertThat(map.containsKey(UserOptions.EditorPageSize), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.TranslatedMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.UseCodeMirrorEditor), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.TransMemoryDisplayMode), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.EnableSpellCheck), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.NeedReviewMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.UntranslatedMessageFilter), Matchers.equalTo(true));
@@ -183,6 +185,8 @@ public class UserOptionsServiceTest
       assertThat(configHolder.getState().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
       assertThat(configHolder.getState().getEditorPageSize(), Matchers.equalTo(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE));
       assertThat(configHolder.getState().isShowSaveApprovedWarning(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING));
+      assertThat(configHolder.getState().isUseCodeMirrorEditor(), Matchers.equalTo(UserConfigHolder.DEFAULT_USE_CODE_MIRROR));
+      assertThat(configHolder.getState().getTransMemoryDisplayMode(), Matchers.equalTo(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE));
    }
 
    @Test

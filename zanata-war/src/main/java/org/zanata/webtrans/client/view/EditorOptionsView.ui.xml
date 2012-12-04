@@ -81,6 +81,16 @@
                 <g:VerticalPanel ui:field="optionsContainer" />
             </g:VerticalPanel>
         </g:cell>
+
+        <g:cell>
+            <g:VerticalPanel width="100%">
+                <g:Label ui:field="transMemoryHeader" styleName="sideMenuHeader"/>
+                <g:RadioButton name="transMemoryDisplayMode" ui:field="diffModeDiff" />
+                <g:RadioButton name="transMemoryDisplayMode" ui:field="diffModeHighlight" />
+            </g:VerticalPanel>
+        </g:cell>
+
+
         
         <g:cell>
         	<g:VerticalPanel width="100%">

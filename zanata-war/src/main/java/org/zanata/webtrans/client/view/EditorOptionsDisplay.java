@@ -4,6 +4,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.user.client.ui.HasValue;
@@ -36,5 +37,7 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning);
 
       void onSpellCheckOptionChanged(Boolean spellCheckChkValue);
+
+      void onTransMemoryDisplayModeChanged(DiffMode displayMode);
    }
 }

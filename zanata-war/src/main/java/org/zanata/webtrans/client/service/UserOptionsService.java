@@ -105,6 +105,7 @@ public class UserOptionsService
       configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
       configMap.put(UserOptions.UseCodeMirrorEditor, Boolean.toString(configHolder.getState().isUseCodeMirrorEditor()));
       configMap.put(UserOptions.EnableSpellCheck, Boolean.toString(configHolder.getState().isSpellCheckEnabled()));
+      configMap.put(UserOptions.TransMemoryDisplayMode, configHolder.getTMDisplayMode().name());
 
       configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
       configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));
@@ -144,6 +145,7 @@ public class UserOptionsService
       configHolder.setEditorPageSize(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE);
       configHolder.setShowSaveApprovedWarning(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING);
       configHolder.setUseCodeMirrorEditor(UserConfigHolder.DEFAULT_USE_CODE_MIRROR);
+      configHolder.setTMDisplayMode(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE);
    }
 
    public UserConfigHolder getConfigHolder()

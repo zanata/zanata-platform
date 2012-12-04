@@ -6,7 +6,7 @@ import java.util.List;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
-import org.zanata.webtrans.client.ui.DiffMode;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
@@ -28,7 +28,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
@@ -168,7 +167,6 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
 
       diffModeDiff.setText(messages.diffModeAsDiff());
       diffModeHighlight.setText(messages.diffModeAsHighlight());
-      diffModeDiff.setValue(true);
    }
 
    @UiHandler("tmTextBox")
@@ -361,6 +359,19 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       {
          TransMemoryResultItem item = memories.get(i);
          resultTable.setWidget(i + 1, SOURCE_COL, createSourcePanel(item, currentQueries));
+      }
+   }
+
+   @Override
+   public void setDisplayMode(DiffMode displayMode)
+   {
+      if (displayMode == DiffMode.NORMAL)
+      {
+         diffModeDiff.setValue(true);
+      }
+      else
+      {
+         diffModeHighlight.setValue(true);
       }
    }
 

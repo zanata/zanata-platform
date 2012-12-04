@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import com.google.common.base.Strings;
+import org.zanata.webtrans.shared.model.DiffMode;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 

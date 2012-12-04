@@ -18,11 +18,13 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
@@ -137,11 +139,7 @@ public class EditorOptionsPresenterTest
       verify(userWorkspaceContext).setProjectActive(false);
       assertThat(configHolder.isDisplayButtons(), Matchers.is(false));
       verify(display).setOptionsState(configHolder.getState());
-      verify(eventBus).fireEvent(eventCaptor.capture());
-
-      UserConfigChangeEvent event = eventCaptor.getValue();
-      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
-
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
    private static HasWorkspaceContextUpdateData workplaceContextData(final boolean projectActive)
@@ -197,9 +195,7 @@ public class EditorOptionsPresenterTest
       presenter.onEnterSaveOptionChanged(true);
 
       assertThat(configHolder.isEnterSavesApproved(), Matchers.is(true));
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      UserConfigChangeEvent event = eventCaptor.getValue();
-      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
    @Test
@@ -210,10 +206,7 @@ public class EditorOptionsPresenterTest
       presenter.onEditorButtonsOptionChanged(true);
 
       assertThat(configHolder.isDisplayButtons(), Matchers.is(true));
-
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      UserConfigChangeEvent event = eventCaptor.getValue();
-      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
    @Test
@@ -224,9 +217,51 @@ public class EditorOptionsPresenterTest
       presenter.onSelectionChange("", NavOption.FUZZY);
 
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      UserConfigChangeEvent event = eventCaptor.getValue();
-      assertThat(event.getView(), Matchers.equalTo(MainView.Editor));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
+
+   @Test
+   public void onShowSaveApprovedWarningChanged()
+   {
+      configHolder.setShowSaveApprovedWarning(true);
+
+      presenter.onShowSaveApprovedWarningChanged(false);
+
+      assertThat(configHolder.isShowSaveApprovedWarning(), Matchers.equalTo(false));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
+
+   @Test
+   public void onSpellCheckOptionChanged()
+   {
+      configHolder.setSpellCheckEnabled(false);
+
+      presenter.onSpellCheckOptionChanged(true);
+
+      assertThat(configHolder.isSpellCheckEnabled(), Matchers.equalTo(true));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
+
+   @Test
+   public void onTMDisplayModeChanged()
+   {
+      configHolder.setTMDisplayMode(DiffMode.HIGHLIGHT);
+
+      presenter.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
+
+      assertThat(configHolder.getTMDisplayMode(), Matchers.equalTo(DiffMode.NORMAL));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
+
+   @Test
+   public void onCodeMirrorOptionChanged()
+   {
+      configHolder.setUseCodeMirrorEditor(false);
+
+      presenter.onUseCodeMirrorOptionChanged(true);
+
+      assertThat(configHolder.isUseCodeMirrorEditor(), Matchers.equalTo(true));
+      verify(eventBus).fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);
    }
 
    @Test
@@ -241,7 +276,7 @@ public class EditorOptionsPresenterTest
       verify(userOptionsService).loadEditorDefaultOptions();
 
       verify(display).setOptionsState(isA(UserConfigHolder.ConfigurationState.class));
-      verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
    }
 
@@ -283,7 +318,7 @@ public class EditorOptionsPresenterTest
       assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(10));
       assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
 
-      verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
       callback.onFailure(null);
       verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
