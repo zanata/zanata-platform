@@ -64,7 +64,7 @@ import com.google.common.collect.Lists;
 public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult>
 {
 
-   private static final boolean useTargetIndex = true;
+   private static final boolean useTargetIndex = false;
 
    private static final int MAX_RESULTS = 25;
 
