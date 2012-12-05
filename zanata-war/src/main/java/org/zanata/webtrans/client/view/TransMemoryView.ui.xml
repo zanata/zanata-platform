@@ -24,28 +24,31 @@
 
         .topBar {
             padding-left: 10px;
-            vertical-align: middle;
+            min-height: 30px;
         }
 
     </ui:style>
 
-    <g:LayoutPanel styleName="{style.rootContainer}">
-        <g:layer top="0" height="30px">
-            <g:HTMLPanel styleName="{style.topBar}">
-                <g:HorizontalPanel>
-                    <g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
-                    <g:TextBox ui:field="tmTextBox" styleName="{style.searchBox}"/>
-                    <g:ValueListBox ui:field="searchType"/>
-                    <g:Button ui:field="searchButton"/>
-                    <g:Button ui:field="clearButton"/>
-                    <g:Button ui:field="mergeTMButton"/>
-                    <g:RadioButton name="diffMode" ui:field="diffModeDiff"/>
-                    <g:RadioButton name="diffMode" ui:field="diffModeHighlight"/>
-                </g:HorizontalPanel>
-            </g:HTMLPanel>
-        </g:layer>
-        <g:layer top="30px" bottom="0">
-            <g:ScrollPanel ui:field="container" />
-        </g:layer>
-    </g:LayoutPanel>
+    <g:ScrollPanel>
+        <g:VerticalPanel styleName="{style.rootContainer}">
+            <g:cell verticalAlignment="ALIGN_MIDDLE">
+                <g:HTMLPanel styleName="{style.topBar}">
+                    <g:HorizontalPanel>
+                        <g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
+                        <g:TextBox ui:field="tmTextBox" styleName="{style.searchBox}"/>
+                        <g:ValueListBox ui:field="searchType"/>
+                        <g:Button ui:field="searchButton"/>
+                        <g:Button ui:field="clearButton"/>
+                        <g:Button ui:field="mergeTMButton"/>
+                        <g:RadioButton name="diffMode" ui:field="diffModeDiff" />
+                        <g:RadioButton name="diffMode" ui:field="diffModeHighlight" />
+                    </g:HorizontalPanel>
+                </g:HTMLPanel>
+            </g:cell>
+
+            <g:cell>
+                <g:ScrollPanel ui:field="container"/>
+            </g:cell>
+        </g:VerticalPanel>
+    </g:ScrollPanel>
 </ui:UiBinder>
