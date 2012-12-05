@@ -69,8 +69,8 @@ public class FileRestTest extends ZanataRawRestTest
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document.txt.po\"");
-            assertThat(response.getContentType(), is(MediaType.APPLICATION_OCTET_STREAM));
-            assertPoFileCorrect( response.getContentAsString() );    
+            assertThat(response.getContentType(), is(MediaType.TEXT_PLAIN));
+            assertPoFileCorrect( response.getContentAsString() );
             assertPoFileContainsTranslations( response.getContentAsString(), 
                   "hello world", "" );
          }
@@ -94,8 +94,8 @@ public class FileRestTest extends ZanataRawRestTest
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document-2.txt.po\"");
-            assertThat(response.getContentType(), is(MediaType.APPLICATION_OCTET_STREAM));
-            assertPoFileCorrect( response.getContentAsString() );    
+            assertThat(response.getContentType(), is(MediaType.TEXT_PLAIN));
+            assertPoFileCorrect( response.getContentAsString() );
             assertPoFileContainsTranslations( response.getContentAsString(), 
                   "mssgId1", "mssgTrans1",
                   "mssgId2", "mssgTrans2",
