@@ -42,7 +42,7 @@ import com.google.common.collect.Lists;
 public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
 {
 
-   private static final int EXPECTED_MAX_RESULTS = 25;
+   private static final int EXPECTED_MAX_RESULTS = GetTransMemoryHandler.MAX_RESULTS;
 
    private GetTransMemoryHandler handler;
    @Mock

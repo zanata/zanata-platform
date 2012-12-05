@@ -66,7 +66,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
    private static final boolean useTargetIndex = false;
 
-   private static final int MAX_RESULTS = 25;
+   static final int MAX_RESULTS = 10;
 
    @In
    private LocaleService localeServiceImpl;
