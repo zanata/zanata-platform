@@ -36,7 +36,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -151,9 +151,9 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @UiHandler("filterTextBox")
-   void onFilterTextBoxKeyUp(KeyUpEvent event)
+   void onFilterTextBoxKeyPress(KeyPressEvent event)
    {
-      if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+      if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER)
       {
          searchButton.click();
       }
