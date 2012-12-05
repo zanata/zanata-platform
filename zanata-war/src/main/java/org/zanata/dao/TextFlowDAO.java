@@ -34,6 +34,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -224,7 +225,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    /**
     * Using id list and source index
     */
-   public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, OpenBitSet translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult) throws ParseException
    {
       return getSearchResult(query, translatedIds, sourceLocale, targetLocale, maxResult, false);
    }
@@ -247,7 +248,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * @return
     * @throws ParseException
     */
-   private List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult, boolean useTargetIndex) throws ParseException
+   private List<Object[]> getSearchResult(TransMemoryQuery query, OpenBitSet translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult, boolean useTargetIndex) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -307,7 +308,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       {
          org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.CONTENT_FIELDS, useTargetIndex);
          ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-         ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
+         ftQuery.enableFullTextFilter("textFlowFilter").setParameter("translatedTextFlowBitSet", translatedIds);
       }
 
 

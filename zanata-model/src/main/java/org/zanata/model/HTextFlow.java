@@ -62,7 +62,7 @@ import org.hibernate.validator.NotNull;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
-import org.zanata.hibernate.search.IdFilterFactory;
+import org.zanata.hibernate.search.TranslatedTextFlowFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
@@ -88,15 +88,16 @@ import lombok.extern.slf4j.Slf4j;
 @Indexed
 @FullTextFilterDef(
       name = "textFlowFilter",
-      impl = IdFilterFactory.class,
-      cache = FilterCacheModeType.INSTANCE_AND_DOCIDSETRESULTS)
+      impl = TranslatedTextFlowFilterFactory.class,
+      cache = FilterCacheModeType.INSTANCE_ONLY)
 @NamedQueries(@NamedQuery(
       name = "HTextFlow.findIdsWithTranslations",
       query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +
             "WHERE tft.locale.localeId=:locale " +
             "AND tft.state=org.zanata.common.ContentState.Approved " +
             "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
-            "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
+            "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE " +
+            "ORDER BY tft.textFlow.id DESC"
 ))
 @Setter
 @NoArgsConstructor

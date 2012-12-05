@@ -32,6 +32,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -47,6 +48,7 @@ import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -70,6 +72,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
    @In
    private LocaleService localeServiceImpl;
+
+   @In
+   private TranslationMemoryService translationMemoryServiceImpl;
 
    @In
    private TextFlowDAO textFlowDAO;
@@ -106,7 +111,8 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          else
          {
             // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
-            List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(targetLocale.getLocaleId());
+            OpenBitSet idsWithTranslations = translationMemoryServiceImpl.getTranslatedTextFlowIds(targetLocale.getLocaleId());
+            //List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(targetLocale.getLocaleId());
             matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
          }
 
@@ -158,7 +164,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    {
       HTextFlow textFlow = (HTextFlow) match[1];
       HTextFlowTarget textFlowTarget = textFlow.getTargets().get(targetLocale.getId());
-      if (textFlowTarget == null)
+      if (!isValidResult(textFlowTarget))
       {
          return;
       }
