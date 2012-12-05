@@ -25,7 +25,6 @@ import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
-import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
@@ -107,7 +106,7 @@ public class Application implements EntryPoint
 
    public static void exitWorkspace()
    {
-      injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson()), new NoOpAsyncCallback<ExitWorkspaceResult>());
+      injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson()), new NoOpAsyncCallback<NoOpResult>());
    }
 
    private void startApp()

@@ -15,6 +15,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
+import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -75,7 +76,10 @@ public class SeamDispatchAsync implements CachingDispatchAsync
          {
             if (caught instanceof com.google.gwt.user.client.rpc.StatusCodeException && ((StatusCodeException) caught).getStatusCode() == 0)
             {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.noResponseFromServer()));
+               if (!(action instanceof ExitWorkspaceAction))
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.noResponseFromServer()));
+               }
             }
             if (caught instanceof AuthenticationError || caught instanceof InvalidTokenError)
             {
