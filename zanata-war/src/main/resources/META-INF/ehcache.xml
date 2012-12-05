@@ -11,7 +11,20 @@
 		maxElementsOnDisk="10000000" 
 		diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="120" 
-		memoryStoreEvictionPolicy="LRU" />
+		memoryStoreEvictionPolicy="LRU"
+        statistics="true"
+    />
+
+    <cache
+        name="org.zanata.service.impl.TranslatedTextFlowCache"
+        maxElementsInMemory="200"
+        eternal="false"
+        timeToIdleSeconds="0"
+        timeToLiveSeconds="1200"
+        overflowToDisk="false"
+        memoryStoreEvictionPolicy="LRU"
+        statistics="true"
+    />
 
 	<!-- <cache -->
 	<!-- name="net.sf.hibernate.cache.StandardQueryCache" -->

@@ -50,6 +50,8 @@ import net.sf.ehcache.Element;
 public class TranslationStateCacheImpl implements TranslationStateCache
 {
 
+   private final String TRANSLATED_TEXT_FLOW_CACHE_NAME = "org.zanata.service.impl.TranslatedTextFlowCache";
+
    @In
    private TextFlowDAO textFlowDAO;
 
@@ -61,8 +63,8 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    public void initialize()
    {
       cacheManager = CacheManager.create();
-      cacheManager.addCacheIfAbsent("org.zanata.service.impl.TranslatedTextFlowCache"); // TODO Configure cache (programmatically or in ehcahce.xml)
-      translatedTextFlowCache = cacheManager.getCache("org.zanata.service.impl.TranslatedTextFlowCache");
+      cacheManager.addCacheIfAbsent(TRANSLATED_TEXT_FLOW_CACHE_NAME);
+      translatedTextFlowCache = cacheManager.getCache(TRANSLATED_TEXT_FLOW_CACHE_NAME);
    }
 
    @Destroy

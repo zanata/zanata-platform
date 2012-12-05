@@ -31,13 +31,16 @@ import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 
 import org.hibernate.HibernateException;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.Work;
 import org.zanata.common.ContentState;
@@ -85,6 +88,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TranslationServiceImpl implements TranslationService
 {
 
+   public final String TEXT_FLOW_TRANSLATED_EVENT = "org.zanata.event.HTextFlowTranslated";
+
    @In
    private EntityManager entityManager;
 
@@ -113,14 +118,10 @@ public class TranslationServiceImpl implements TranslationService
    private LocaleService localeServiceImpl;
 
    @In
-   private TranslationStateCache translationStateCacheImpl;
-
-   @In
    private LockManagerService lockManagerServiceImpl;
 
    @In(required = false, scope = ScopeType.EVENT)
    MessagesProcessHandle asynchronousProcessHandle;
-
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION, required = false)
    private HAccount authenticatedAccount;
 
@@ -222,6 +223,36 @@ public class TranslationServiceImpl implements TranslationService
       return localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, projectIteration.getSlug());
    }
 
+   /**
+    * Sends out an event to signal that a Text Flow target has been translated
+    */
+   private void signalPostTranslateEvent( HTextFlowTarget hTextFlowTarget )
+   {
+      if( Events.exists() )
+      {
+         Events.instance().raiseTransactionSuccessEvent(TEXT_FLOW_TRANSLATED_EVENT, hTextFlowTarget);
+      }
+   }
+
+   /**
+    * This method contains all logic to be run immediately after a Text Flow Target has
+    * been successfully translated.
+    *
+    * @param hTextFlowTarget The text flow target that has just been modified (translated).
+    */
+   @Observer(TEXT_FLOW_TRANSLATED_EVENT)
+   public void postTranslate( HTextFlowTarget hTextFlowTarget )
+   {
+      HTextFlow textFlow = hTextFlowTarget.getTextFlow();
+
+      // Update the Translation state cache
+      TranslationStateCache translationStateCacheImpl =
+            (TranslationStateCache) Component.getInstance("translationStateCacheImpl");
+      translationStateCacheImpl.textFlowStateUpdated(textFlow.getId(),
+            hTextFlowTarget.getLocale().getLocaleId(),
+            hTextFlowTarget.getState());
+   }
+
    private boolean translate(@Nonnull
    HTextFlowTarget hTextFlowTarget, @Nonnull
    List<String> contentsToSave, ContentState requestedState, int nPlurals)
@@ -238,9 +269,7 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
          log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
 
-         translationStateCacheImpl.textFlowStateUpdated(textFlow.getId(),
-               hTextFlowTarget.getLocale().getLocaleId(),
-               hTextFlowTarget.getState());
+         this.signalPostTranslateEvent(hTextFlowTarget);
       }
 
       // save the target histories
@@ -571,6 +600,8 @@ public class TranslationServiceImpl implements TranslationService
                            }
                            textFlowTargetDAO.makePersistent(hTarget);
                         }
+
+                        signalPostTranslateEvent(hTarget);
                      }
 
                      personDAO.flush();
