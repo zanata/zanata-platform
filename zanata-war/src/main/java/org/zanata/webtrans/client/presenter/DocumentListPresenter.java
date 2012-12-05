@@ -137,6 +137,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
       display.setListener(this);
+
+      display.updatePageSize(configHolder.getDocumentListPageSize());
    }
 
    @Override

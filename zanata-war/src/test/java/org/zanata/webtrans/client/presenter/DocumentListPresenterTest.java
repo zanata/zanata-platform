@@ -101,16 +101,17 @@ public class DocumentListPresenterTest
       when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
       when(mockMessages.byWords()).thenReturn(TEST_BY_WORDS_MESSAGE);
       when(mockMessages.byMessage()).thenReturn(TEST_BY_MESSAGE_MESSAGE);
+      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
 
       documentListPresenter.onBind();
 
       verify(mockDisplay).renderTable(isA(SingleSelectionModel.class));
       verify(mockDisplay).setStatsFilter("Words");
+      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(TransUnitUpdatedEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(UserConfigChangeEvent.TYPE, documentListPresenter);
-
    }
 
    @Test
@@ -449,16 +450,13 @@ public class DocumentListPresenterTest
    @Test
    public void onUserConfigChangedDocument()
    {
-      int pageSize = 25;
       UserConfigChangeEvent mockEvent = mock(UserConfigChangeEvent.class);
       when(mockEvent.getView()).thenReturn(MainView.Documents);
-      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(pageSize);
-
-      documentListPresenter.bind();
+      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
-      verify(mockDisplay).updatePageSize(pageSize);
+      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
    }
 
    @Test
@@ -466,8 +464,6 @@ public class DocumentListPresenterTest
    {
       UserConfigChangeEvent mockEvent = mock(UserConfigChangeEvent.class);
       when(mockEvent.getView()).thenReturn(MainView.Editor);
-
-      documentListPresenter.bind();
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
