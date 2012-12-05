@@ -472,4 +472,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Enable spell check in editor (Firefox only)")
    String spellCheckTooltip();
+
+   @DefaultMessage("Translation Memory (TM) options")
+   String transMemoryOption();
 }

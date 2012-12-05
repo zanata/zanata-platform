@@ -22,6 +22,7 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -49,9 +50,13 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
 
    public HLocale findByLocaleId(LocaleId locale)
    {
-      return (HLocale) getSession().createCriteria(HLocale.class).add(Restrictions.naturalId().set("localeId", locale)).setCacheable(true).uniqueResult();
+      Criteria cr = getSession().createCriteria(HLocale.class);
+      cr.add(Restrictions.naturalId().set("localeId", locale));
+      cr.setCacheable(true);
+      return (HLocale) cr.uniqueResult();
    }
 
+   @SuppressWarnings("unchecked")
    public List<HLocale> findBySimilarLocaleId(LocaleId localeId)
    {
       return (List<HLocale>) getSession().createQuery("from HLocale l where lower(l.localeId) = :id ")

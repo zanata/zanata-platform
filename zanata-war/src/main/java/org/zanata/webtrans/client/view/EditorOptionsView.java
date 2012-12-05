@@ -22,9 +22,11 @@ package org.zanata.webtrans.client.view;
 
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;
 import org.zanata.webtrans.client.ui.NavOptionRenderer;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.core.client.GWT;
@@ -39,6 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -74,11 +77,17 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    CheckBox showSaveApprovedWarningChk;
    @UiField
    CheckBox spellCheckChk;
+   @UiField
+   Label transMemoryHeader;
+   @UiField
+   RadioButton diffModeDiff;
+   @UiField
+   RadioButton diffModeHighlight;
 
    private Listener listener;
 
    @Inject
-   public EditorOptionsView(WebTransMessages messages, NavOptionRenderer navOptionRenderer)
+   public EditorOptionsView(WebTransMessages messages, NavOptionRenderer navOptionRenderer, UiMessages uiMessages)
    {
       initWidget(uiBinder.createAndBindUi(this));
       navOptionGroup = new EnumRadioButtonGroup<NavOption>("navOption", NavOption.class, navOptionRenderer);
@@ -88,11 +97,16 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
       pageSizeHeader.setText(messages.pageSize());
+      transMemoryHeader.setText(messages.transMemoryOption());
 
       useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
       showSaveApprovedWarningChk.setTitle(messages.showSaveApprovedWarningTooltip());
       // TODO at the moment browser spell check only works in Firefox. If later Chrome supports it then change the tooltip.
       spellCheckChk.setTitle(messages.spellCheckTooltip());
+
+      diffModeDiff.setText(uiMessages.diffModeAsDiff());
+      diffModeHighlight.setText(uiMessages.diffModeAsHighlight());
+      diffModeDiff.setValue(true);
    }
 
    @Override
@@ -209,6 +223,19 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onSpellCheckOptionChanged(spellCheckChk.getValue());
    }
 
+   @UiHandler({"diffModeDiff", "diffModeHighlight"})
+   public void onDiffModeOptionChange(ValueChangeEvent<Boolean> event)
+   {
+      if (diffModeDiff.getValue())
+      {
+         listener.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
+      }
+      else
+      {
+         listener.onTransMemoryDisplayModeChanged(DiffMode.HIGHLIGHT);
+      }
+   }
+
    @Override
    public void setListener(Listener listener)
    {
@@ -230,6 +257,15 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
       showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
       spellCheckChk.setValue(state.isSpellCheckEnabled());
+
+      if (state.getTransMemoryDisplayMode() == DiffMode.NORMAL)
+      {
+         diffModeDiff.setValue(true);
+      }
+      else
+      {
+         diffModeHighlight.setValue(true);
+      }
    }
 
    private void selectPageSize(int pageSize)

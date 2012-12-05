@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -38,7 +39,10 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer>
 
    public HAccountRole findByName(String roleName)
    {
-      return (HAccountRole) getSession().createCriteria(HAccountRole.class).add(Restrictions.naturalId().set("name", roleName)).uniqueResult();
+      Criteria cr = getSession().createCriteria(HAccountRole.class);
+      cr.add(Restrictions.naturalId().set("name", roleName));
+      cr.setCacheable(true).setComment("AccountRoleDAO.findByName");
+      return (HAccountRole) cr.uniqueResult();
    }
 
    public HAccountRole create(String roleName, HAccountRole.RoleType type, String... includesRoles)

@@ -75,7 +75,8 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    protected HProjectIteration createInstance()
    {
       HProjectIteration iteration = new HProjectIteration();
-      iteration.setProject((HIterationProject) projectDAO.getBySlug(projectSlug));
+      HIterationProject project = (HIterationProject) projectDAO.getBySlug(projectSlug);
+      project.addIteration(iteration);
       return iteration;
    }
 

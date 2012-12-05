@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -45,7 +46,10 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
 
    public HAccount getByUsername(String username)
    {
-      return (HAccount) getSession().createCriteria(HAccount.class).add(Restrictions.naturalId().set("username", username)).uniqueResult();
+      Criteria cr = getSession().createCriteria(HAccount.class);
+      cr.add(Restrictions.naturalId().set("username", username));
+      cr.setCacheable(true).setComment("AccountDAO.getByUsername");
+      return (HAccount) cr.uniqueResult();
    }
 
    public HAccount getByUsernameAndEmail(String username, String email)

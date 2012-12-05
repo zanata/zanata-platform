@@ -1,12 +1,15 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.*;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +23,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -29,12 +33,14 @@ import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.TranslationMemoryDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -91,12 +97,16 @@ public class TransMemoryPresenterTest
    private TransMemoryResultItem transMemoryResultItem;
    @Captor
    private ArgumentCaptor<CopyDataToEditorEvent> copyTMEventCaptor;
+   private UserConfigHolder configHolder;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransMemoryPresenter(display, eventBus, dispatcher, messages, transMemoryDetailsPresenter, userWorkspaceContext, transMemoryMergePresenter, keyShortcutPresenter);
+      configHolder = new UserConfigHolder();
+      presenter = new TransMemoryPresenter(display, eventBus, dispatcher, messages, transMemoryDetailsPresenter, userWorkspaceContext, transMemoryMergePresenter, keyShortcutPresenter, configHolder);
+
+      verify(display).setDisplayMode(configHolder.getTMDisplayMode());
    }
 
    @Test
@@ -402,6 +412,27 @@ public class TransMemoryPresenterTest
 
       presenter.onDiffModeChanged();
 
-      verifyZeroInteractions(display);
+      verify(display, never()).redrawTable(Mockito.anyList());
+   }
+
+   @Test
+   public void onEditorConfigOptionChange()
+   {
+      List<TransMemoryResultItem> currentResult = Lists.newArrayList(transMemoryResultItem);
+      presenter.setStatesForTesting(currentResult, null);
+      configHolder.setTMDisplayMode(DiffMode.HIGHLIGHT);
+
+      presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+
+      verify(display).setDisplayMode(configHolder.getTMDisplayMode());
+      verify(display).redrawTable(currentResult);
+   }
+
+   @Test
+   public void ignoreIfNotEditorConfigOptionChange()
+   {
+      presenter.onUserConfigChanged(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
+
+      verifyNoMoreInteractions(display);
    }
 }

@@ -813,6 +813,7 @@ public class FileService implements FileResource
          StreamingOutput output = new POTStreamingOutput(res);
          return Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".pot\"")
+               .type(MediaType.TEXT_PLAIN)
                .entity(output).build();
       }
       else
@@ -875,6 +876,7 @@ public class FileService implements FileResource
          StreamingOutput output = new POStreamingOutput(res, transRes);
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
+               .type(MediaType.TEXT_PLAIN)
                .entity(output).build();
       }
       else if (FILETYPE_TRANSLATED_APPROVED.equals(fileType) || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType) )

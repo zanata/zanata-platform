@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.common.base.Predicate;
@@ -55,7 +56,6 @@ public class UserConfigHolder
          return contentState == ContentState.New;
       }
    };
-   
    private ConfigurationState state;
 
    public static final int DEFAULT_DOC_LIST_PAGE_SIZE = 25;
@@ -67,6 +67,7 @@ public class UserConfigHolder
    public static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
    public static final boolean DEFAULT_USE_CODE_MIRROR = false;
    public static final boolean DEFAULT_SPELL_CHECK = true;
+   public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
 
    public UserConfigHolder()
    {
@@ -80,6 +81,7 @@ public class UserConfigHolder
       state.showError = DEFAULT_SHOW_ERROR;
       state.useCodeMirrorEditor = DEFAULT_USE_CODE_MIRROR;
       state.showSaveApprovedWarning = DEFAULT_SHOW_SAVE_APPROVED_WARNING;
+      state.transMemoryDisplayMode = DEFAULT_TM_DISPLAY_MODE;
 
       state.filterByNeedReview = DEFAULT_FILTER;
       state.filterByTranslated = DEFAULT_FILTER;
@@ -236,6 +238,17 @@ public class UserConfigHolder
       return state.isSpellCheckEnabled();
    }
 
+   public void setTMDisplayMode(DiffMode diffMode)
+   {
+      state = new ConfigurationState(state);
+      state.transMemoryDisplayMode = diffMode;
+   }
+
+   public DiffMode getTMDisplayMode()
+   {
+      return state.getTransMemoryDisplayMode();
+   }
+
    /**
     * Immutable object represents configuration state
     */
@@ -255,6 +268,7 @@ public class UserConfigHolder
 
       private boolean showSaveApprovedWarning;
       private boolean spellCheckEnabled;
+      private DiffMode transMemoryDisplayMode;
 
       // Needed for GWT serialization
       private ConfigurationState()
@@ -275,6 +289,7 @@ public class UserConfigHolder
          this.filterByTranslated = old.isFilterByTranslated();
          this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
          this.spellCheckEnabled = old.isSpellCheckEnabled();
+         this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
       }
 
       public boolean isEnterSavesApproved()
@@ -335,6 +350,11 @@ public class UserConfigHolder
       public boolean isSpellCheckEnabled()
       {
          return spellCheckEnabled;
+      }
+
+      public DiffMode getTransMemoryDisplayMode()
+      {
+         return transMemoryDisplayMode;
       }
    }
 }

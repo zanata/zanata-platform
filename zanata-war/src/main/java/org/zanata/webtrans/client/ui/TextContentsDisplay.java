@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
+import org.zanata.webtrans.shared.model.DiffMode;
 import com.google.common.base.Strings;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;

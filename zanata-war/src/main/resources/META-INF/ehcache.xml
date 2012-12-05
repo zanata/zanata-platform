@@ -1,4 +1,7 @@
-<ehcache>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd"
+	updateCheck="false">
+
 	<defaultCache 
 		maxElementsInMemory="10000" 
 		eternal="false"
@@ -19,13 +22,13 @@
 	<!-- overflowToDisk="false" -->
 	<!-- /> -->
 
-	<!-- <cache -->
-	<!-- name="net.sf.hibernate.cache.UpdateTimestampsCache" -->
-	<!-- maxElementsInMemory="50" -->
-	<!-- eternal="false" -->
-	<!-- timeToIdleSeconds="500" -->
-	<!-- timeToLiveSeconds="0" -->
-	<!-- overflowToDisk="false" -->
-	<!-- /> -->
+	<!-- Don't allow timestamps to be evicted too early (or at all).
+	     See http://tech.puredanger.com/2009/07/10/hibernate-query-cache/ -->
+	<cache
+		name="net.sf.hibernate.cache.UpdateTimestampsCache"
+		maxElementsInMemory="50"
+		eternal="true"
+		overflowToDisk="false"
+	/>
 
 </ehcache>

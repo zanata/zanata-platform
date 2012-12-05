@@ -6,7 +6,7 @@ import java.util.List;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
-import org.zanata.webtrans.client.ui.DiffMode;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
@@ -28,7 +28,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
@@ -39,6 +38,7 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
@@ -82,7 +82,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    Button clearButton, mergeTMButton, searchButton;
 
    @UiField
-   HTMLPanel container;
+   ScrollPanel container;
    @UiField
    RadioButton diffModeDiff;
    @UiField
@@ -158,7 +158,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       initWidget(uiBinder.createAndBindUi(this));
 
-      container.add(loadingLabel);
+      container.setWidget(loadingLabel);
 
       headerLabel.setText(messages.translationMemoryHeading());
       clearButton.setText(messages.clearButtonLabel());
@@ -168,7 +168,6 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
 
       diffModeDiff.setText(messages.diffModeAsDiff());
       diffModeHighlight.setText(messages.diffModeAsHighlight());
-      diffModeDiff.setValue(true);
    }
 
    @UiHandler("tmTextBox")
@@ -213,8 +212,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    @Override
    public void startProcessing()
    {
-      container.clear();
-      container.add(loadingLabel);
+      container.setWidget(loadingLabel);
 
       clearTableContent();
    }
@@ -222,14 +220,13 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    @Override
    public void stopProcessing(boolean showResult)
    {
-      container.clear();
       if (!showResult)
       {
-         container.add(noResultFoundLabel);
+         container.setWidget(noResultFoundLabel);
       }
       else
       {
-         container.add(resultTable);
+         container.setWidget(resultTable);
       }
    }
 
@@ -350,8 +347,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
          resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
          resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
       }
-      container.clear();
-      container.add(resultTable);
+      container.setWidget(resultTable);
    }
 
    @Override
@@ -361,6 +357,19 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       {
          TransMemoryResultItem item = memories.get(i);
          resultTable.setWidget(i + 1, SOURCE_COL, createSourcePanel(item, currentQueries));
+      }
+   }
+
+   @Override
+   public void setDisplayMode(DiffMode displayMode)
+   {
+      if (displayMode == DiffMode.NORMAL)
+      {
+         diffModeDiff.setValue(true);
+      }
+      else
+      {
+         diffModeHighlight.setValue(true);
       }
    }
 

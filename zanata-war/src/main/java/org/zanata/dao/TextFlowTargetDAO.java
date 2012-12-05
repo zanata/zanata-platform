@@ -150,7 +150,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             "order by t.textFlow.pos");
       q.setParameter("document", document);
       q.setParameter("localeId", localeId);
-      q.setCacheable(true);
+      q.setCacheable(false);
       return q.list();
       // @formatter:on
    }
@@ -227,7 +227,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       q.setParameter("document", document)
        .setParameter("locale", locale)
        .setParameter("approvedState", ContentState.Approved);
-      q.setCacheable(false); // TODO does it make sense to cache scrollable results?
+      q.setCacheable(false); // don't try to cache scrollable results
       return q.scroll();
    }
 

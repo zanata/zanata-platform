@@ -96,8 +96,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    {
       Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
       q.setParameter("locale", locale);
-      // TextFlowFilter does its own caching, no need for double caching
-      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
+      // may be lots of cache misses because HTextFlowTarget table is always changing
+      // TODO maintain a map (locale -> translatedIDs) in memory?
+      q.setCacheable(true).setComment("TextFlowDAO.findIdsWithTranslations");
       return q.list();
    }
 
@@ -121,14 +122,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       // caching could be expensive for long idLists
       query.setCacheable(false).setComment("TextFlowDAO.getByIdList");
       return query.list();
-   }
-
-   public HTextFlow getObsoleteById(HDocument document, String id)
-   {
-      Criteria cr = getSession().createCriteria(HTextFlow.class);
-      cr.add(Restrictions.naturalId().set("resId", id).set("document", document)).add(Restrictions.eq("obsolete", true));
-      cr.setCacheable(true).setComment("TextFlowDAO.getObsoleteById");
-      return (HTextFlow) cr.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")

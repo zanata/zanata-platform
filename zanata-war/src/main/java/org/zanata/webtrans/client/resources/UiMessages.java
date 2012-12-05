@@ -178,6 +178,6 @@ public interface UiMessages extends Messages
    @DefaultMessage("Show as Diff")
    String diffModeAsDiff();
 
-   @DefaultMessage("Highlight matched term")
+   @DefaultMessage("Highlight matches")
    String diffModeAsHighlight();
 }

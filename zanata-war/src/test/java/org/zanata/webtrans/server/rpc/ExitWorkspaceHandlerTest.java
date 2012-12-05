@@ -1,11 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
-import org.hamcrest.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.LocaleId;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
@@ -13,12 +11,9 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
-import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 
-import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,11 +55,10 @@ public class ExitWorkspaceHandlerTest
       action.setEditorClientId(editorClientId);
       action.setWorkspaceId(workspaceId);
 
-      ExitWorkspaceResult result = handler.execute(action, null);
+      handler.execute(action, null);
 
       verify(identity).checkLoggedIn();
       verify(translationWorkspace).removeEditorClient(action.getEditorClientId());
-      assertThat(result.getuserName(), Matchers.equalTo(person.getId().toString()));
    }
 
    @Test

@@ -67,7 +67,9 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
          }
          else
          {
-            localeMemberDAO.makePersistent(new HLocaleMember(currentPerson, lang, false));
+            HLocaleMember localeMember = new HLocaleMember(currentPerson, lang, false);
+            lang.getMembers().add(localeMember);
+            localeMemberDAO.makePersistent(localeMember);
             localeMemberDAO.flush();
             return true;
          }

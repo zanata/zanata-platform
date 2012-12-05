@@ -30,6 +30,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
 import org.drools.util.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -72,7 +73,10 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    public HGlossaryEntry getEntryById(Long id)
    {
       // TODO can't we just use Session.load() ?
-      return (HGlossaryEntry) getSession().createCriteria(HGlossaryEntry.class).add(Restrictions.naturalId().set("id", id)).setCacheable(true).setComment("GlossaryDAO.getEntryById").uniqueResult();
+      Criteria cr = getSession().createCriteria(HGlossaryEntry.class);
+      cr.add(Restrictions.naturalId().set("id", id));
+      cr.setCacheable(true).setComment("GlossaryDAO.getEntryById");
+      return (HGlossaryEntry) cr.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")

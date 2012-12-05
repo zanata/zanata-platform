@@ -363,7 +363,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    {
       Query q = getSession().createQuery("from HProjectIteration t where lower(t.slug) LIKE :searchTerm OR lower(t.project.slug) LIKE :searchTerm OR lower(t.project.name) LIKE :searchTerm");
       q.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
-      q.setCacheable(true).setComment("ProjectIterationDAO.searchLikeSlugOrProjectSlug");
+      q.setCacheable(false).setComment("ProjectIterationDAO.searchLikeSlugOrProjectSlug");
 
       return q.list();
 

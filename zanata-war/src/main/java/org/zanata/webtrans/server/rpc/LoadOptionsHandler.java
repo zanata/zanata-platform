@@ -37,6 +37,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
@@ -117,6 +118,11 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
       if (filteredOptions.containsKey(UserOptions.EnableSpellCheck.getPersistentName()))
       {
          configHolder.setSpellCheckEnabled(filteredOptions.get(UserOptions.EnableSpellCheck.getPersistentName()).getValueAsBoolean());
+      }
+
+      if (filteredOptions.containsKey(UserOptions.TransMemoryDisplayMode.getPersistentName()))
+      {
+         configHolder.setTMDisplayMode(DiffMode.valueOf(filteredOptions.get(UserOptions.TransMemoryDisplayMode.getPersistentName()).getValue()));
       }
 
       if (filteredOptions.containsKey(UserOptions.TranslatedMessageFilter.getPersistentName()))

@@ -126,7 +126,7 @@ public abstract class HProject extends SlugEntityBase implements Serializable
     */
    @ManyToMany
    @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-   //   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE) // caching affects permission checks in security.drl
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    public Set<HPerson> getMaintainers()
    {
       if (maintainers == null)

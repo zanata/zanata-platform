@@ -91,8 +91,7 @@ public class ProjectMaintainerManageAction implements Serializable
       if (a != null && a.isEnabled())
       {
          HProject project = projectDAO.getBySlug(this.slug);
-         Set<HPerson> personList = project.getMaintainers();
-         personList.add(a.getPerson());
+         project.addMaintainer(a.getPerson());
          projectDAO.makePersistent(project);
          projectDAO.flush();
          log.debug("add {0} into maintainers", account);
