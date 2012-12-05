@@ -21,14 +21,33 @@
 package org.zanata.service;
 
 import org.apache.lucene.util.OpenBitSet;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
 /**
+ * Defines a Cache Service for translation states.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface TranslationMemoryService
+public interface TranslationStateCache
 {
+   /**
+    * Returns a {@link OpenBitSet} of translated text flows, where the bits represent
+    * the Ids of {@link org.zanata.model.HTextFlow} entries that have been translated
+    * for the given Locale Id
+    *
+    * @param localeId
+    * @return An OpenBitSet
+    */
    OpenBitSet getTranslatedTextFlowIds(LocaleId localeId);
 
-   void textFlowUpdated(Long textFlowId, LocaleId localeId);
+   /**
+    * Informs the cache that a text flow has changed its state in a given locale.
+    * (It's really a Text Flow Target state)
+    *
+    * @param textFlowId The id of the text flow that has changed state.
+    * @param localeId The locale for which state has changed.
+    * @param newState The new state after the change.
+    */
+   void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState);
 }

@@ -53,16 +53,14 @@ public class TranslatedTextFlowFilter extends Filter
    {
       OpenBitSet docIdSet = new OpenBitSet(reader.maxDoc());
 
-      long nextBit = 0;
-      while( (nextBit = translatedTextFlowBitSet.nextSetBit(nextBit)) >= 0 )
+      for( long i=0; (i = translatedTextFlowBitSet.nextSetBit(i)) >= 0; i++ )
       {
-         Term term = new Term("id", Long.toString(nextBit)); // bit is the same as the text flow id
+         Term term = new Term("id", Long.toString(i)); // bit is the same as the text flow id
          TermDocs termDocs = reader.termDocs(term);
          while( termDocs.next() ) // Should only be one
          {
             docIdSet.set(termDocs.doc());
          }
-         nextBit++;
       }
       return docIdSet;
    }

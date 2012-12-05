@@ -44,7 +44,6 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.util.ContentStateUtil;
-import org.zanata.dao.AccountDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -64,12 +63,12 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.process.MessagesProcessHandle;
-import org.zanata.process.ProcessHandle;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -96,9 +95,6 @@ public class TranslationServiceImpl implements TranslationService
    private DocumentDAO documentDAO;
 
    @In
-   private AccountDAO accountDAO;
-
-   @In
    private PersonDAO personDAO;
 
    @In
@@ -115,6 +111,9 @@ public class TranslationServiceImpl implements TranslationService
 
    @In
    private LocaleService localeServiceImpl;
+
+   @In
+   private TranslationStateCache translationStateCacheImpl;
 
    @In
    private LockManagerService lockManagerServiceImpl;
@@ -233,10 +232,15 @@ public class TranslationServiceImpl implements TranslationService
 
       if (targetChanged || hTextFlowTarget.getVersionNum() == 0)
       {
+         HTextFlow textFlow = hTextFlowTarget.getTextFlow();
          hTextFlowTarget.setVersionNum(hTextFlowTarget.getVersionNum() + 1);
-         hTextFlowTarget.setTextFlowRevision(hTextFlowTarget.getTextFlow().getRevision());
+         hTextFlowTarget.setTextFlowRevision(textFlow.getRevision());
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
          log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
+
+         translationStateCacheImpl.textFlowStateUpdated(textFlow.getId(),
+               hTextFlowTarget.getLocale().getLocaleId(),
+               hTextFlowTarget.getState());
       }
 
       // save the target histories

@@ -48,7 +48,7 @@ import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
-import org.zanata.service.TranslationMemoryService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -74,7 +74,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    private LocaleService localeServiceImpl;
 
    @In
-   private TranslationMemoryService translationMemoryServiceImpl;
+   private TranslationStateCache translationStateCacheImpl;
 
    @In
    private TextFlowDAO textFlowDAO;
@@ -111,7 +111,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          else
          {
             // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
-            OpenBitSet idsWithTranslations = translationMemoryServiceImpl.getTranslatedTextFlowIds(targetLocale.getLocaleId());
+            OpenBitSet idsWithTranslations = translationStateCacheImpl.getTranslatedTextFlowIds(targetLocale.getLocaleId());
             //List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(targetLocale.getLocaleId());
             matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
          }

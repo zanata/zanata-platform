@@ -30,21 +30,24 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
-import org.zanata.service.TranslationMemoryService;
+import org.zanata.service.TranslationStateCache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 /**
+ * Default Implementation of the Translation State Cache.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationMemoryServiceImpl")
+@Name("translationStateCacheImpl")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
-public class TranslationMemoryServiceImpl implements TranslationMemoryService
+public class TranslationStateCacheImpl implements TranslationStateCache
 {
 
    @In
@@ -58,8 +61,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService
    public void initialize()
    {
       cacheManager = CacheManager.create();
-      cacheManager.addCacheIfAbsent("TranslatedTextFlowCache"); // TODO Create a cache and configure it
-      translatedTextFlowCache = cacheManager.getCache("TranslatedTextFlowCache");
+      cacheManager.addCacheIfAbsent("org.zanata.service.impl.TranslatedTextFlowCache"); // TODO Configure cache (programmatically or in ehcahce.xml)
+      translatedTextFlowCache = cacheManager.getCache("org.zanata.service.impl.TranslatedTextFlowCache");
    }
 
    @Destroy
@@ -73,14 +76,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService
    {
       if( translatedTextFlowCache.get(localeId) == null )
       {
-         List<Long> textFlowIds = textFlowDAO.findIdsWithTranslations(localeId);
-         int bitSetSize = 1000 + textFlowIds.size(); // A bit of extra room
-
-         OpenBitSet bitSet = new OpenBitSet( bitSetSize );
-         for( Long id : textFlowIds )
-         {
-            bitSet.set(id);
-         }
+         OpenBitSet bitSet = textFlowDAO.findIdsWithTranslations(localeId);
          translatedTextFlowCache.put( new Element(localeId, bitSet) );
       }
 
@@ -88,13 +84,22 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService
    }
 
    @Override
-   public void textFlowUpdated(Long textFlowId, LocaleId localeId)
+   public void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState)
    {
       final Element element = translatedTextFlowCache.get(localeId);
       if( element != null )
       {
          OpenBitSet bitSet = (OpenBitSet)element.getValue();
-         bitSet.set( textFlowId );
+
+         boolean translated = newState == ContentState.Approved;
+         if( translated )
+         {
+            bitSet.set( textFlowId );
+         }
+         else
+         {
+            bitSet.clear( textFlowId );
+         }
       }
    }
 

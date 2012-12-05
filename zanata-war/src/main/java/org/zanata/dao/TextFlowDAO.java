@@ -39,6 +39,8 @@ import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -93,14 +95,22 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<Long> findIdsWithTranslations(LocaleId locale)
+   public OpenBitSet findIdsWithTranslations(LocaleId locale)
    {
       Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
       q.setParameter("locale", locale);
-      // may be lots of cache misses because HTextFlowTarget table is always changing
-      // TODO maintain a map (locale -> translatedIDs) in memory?
-      q.setCacheable(true).setComment("TextFlowDAO.findIdsWithTranslations");
-      return q.list();
+      // TextFlowFilter does its own caching, no need for double caching
+      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
+
+      ScrollableResults results = q.scroll();
+      OpenBitSet resultBitSet = new OpenBitSet();
+      while( results.next() )
+      {
+         resultBitSet.set( results.getLong(0) ); // results[0] => TextFlow id
+      }
+      results.close();
+
+      return resultBitSet;
    }
 
    public HTextFlow getById(HDocument document, String id)
