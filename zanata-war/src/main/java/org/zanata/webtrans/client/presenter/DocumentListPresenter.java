@@ -316,10 +316,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       {
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
          DocumentNode node = new DocumentNode(messages, doc, eventBus);
-         if (filter != null)
-         {
-            node.setVisible(filter.accept(doc));
-         }
+         node.setVisible(filter.accept(doc));
          if (node.isVisible())
          {
             dataProvider.getList().add(node);
