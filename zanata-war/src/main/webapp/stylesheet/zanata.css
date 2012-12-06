@@ -1004,6 +1004,7 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 .iterations table.details_table
 {
 	background:#FFFFFF;
+	margin-top:10px;
 }
 
 .iterations table.rich-table tr:hover {
@@ -1019,10 +1020,28 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 	background:#FFFFFF;
 }
 
+.version_details_cell
+{
+	text-align:right;
+}
+
+
 .version_details_panel
 {
-	margin-top:10px;
 }
+
+.version_details_panel td.rich-table-cell
+{
+	border-bottom:none;
+	padding:0;
+}
+
+.version_details_panel .table_link
+{
+	margin-left:3px;
+	text-decoration:none;
+}
+
 
 a.version_action_link
 {

@@ -10,23 +10,6 @@
     template="../WEB-INF/layout/template.xhtml">
 
 <ui:define name="page_title">#{projectHome.instance.name}</ui:define>
-<ui:define name="head">
-	<script type="text/javascript">
-		function showLoading(show, id)
-            {
-            	var loadingId = id.substring(0,id.lastIndexOf(":") + 1) + "loading";
-            	if(show == true)
-            	{
-            		document.getElementById(loadingId).style.display='inline';
-            	}
-            	else
-            	{
-            		document.getElementById(loadingId).style.display='none';
-            	}
-            }
-	
-	</script>
-</ui:define>
 
 <ui:define name="center_content">
     <s:decorate id="main_content">
@@ -39,110 +22,92 @@
    	<div class="iterations">
    		<a4j:form>
    		
-   		<rich:dataTable id="iterations" value="#{projectHome.iterations}" var="_iteration" ajaxKeys="#{projectHome.rowsToUpdate}" rowKeyVar="idx">
-            <rich:column sortBy="#{_iteration.slug}" id="column">
+   		<rich:dataTable id="iterations" value="#{projectHome.versions}" var="_version">
+            <rich:column sortBy="#{_version.slug}" id="column">
             	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
                  <s:link view="/iteration/view.xhtml" styleClass="version_link">
                  	<f:param name="projectSlug" value="#{projectHome.slug}"/>
-                	<f:param name="iterationSlug" value="#{_iteration.slug}"/>
-                	<h:outputText styleClass="icon-lock-4 readOnlyIcon" title="#{messages['jsf.ReadOnlyVersions']}" rendered="#{projectHome.getEffectiveIterationStatus(_iteration) == 'READONLY'}"/>
-            		<h:outputText styleClass="icon-block obsoleteIcon" title="#{messages['jsf.ObsoleteVersions']}" rendered="#{projectHome.getEffectiveIterationStatus(_iteration) == 'OBSOLETE'}"/>
-                	<span class="version_title">#{_iteration.slug}</span>
+                	<f:param name="iterationSlug" value="#{_version.slug}"/>
+                	<s:fragment rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'ACTIVE'}">
+                		<rich:spacer width="20px"/>
+                	</s:fragment>
+                	<h:outputText styleClass="icon-lock-4 readOnlyIcon" title="#{messages['jsf.ReadOnlyVersions']}" rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'READONLY'}"/>
+            		<h:outputText styleClass="icon-block obsoleteIcon" title="#{messages['jsf.ObsoleteVersions']}" rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'OBSOLETE'}"/>
+                	<span class="version_title">#{_version.slug}</span>
                 </s:link>
-               	<span class="version_info">Documents: #{_iteration.documents.size}</span>
-                
-                <span style="float:right">
-	                <s:link styleClass="version_action_link table_link"
-						rendered="#{s:hasPermission(_iteration, 'update')}"
-						value="#{messages['jsf.Edit']}" view="/iteration/edit.xhtml"
-						propagation="none">
-						<f:param name="projectSlug" value="#{projectHome.slug}"/>
-						<f:param name="slug" value="#{_iteration.slug}" />
-					</s:link>
-		            <s:link styleClass="version_action_link table_link"
-		                value="#{messages['jsf.SourceDocs']}" view="/iteration/source_files.xhtml"
-		                propagation="none">
-		                <f:param name="project" value="#{projectHome.slug}"/>
-		                <f:param name="iteration" value="#{_iteration.slug}" />
-		            </s:link>
-		            
-		            <a4j:outputPanel id="togglePanel">
-		               	<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug, idx)}" type="submit" reRender="details_panel,togglePanel"  styleClass="buttonLink" rendered="#{!projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}" onclick="showLoading(true,this.id)" ajaxSingle="true">
-							<span class="icon-down-circle expendIcon"/>
-				 		</a4j:commandLink>
-				 		
-				 		<a4j:commandLink action="#{projectHome.togglePanel(_iteration.slug, idx)}" type="submit" reRender="details_panel,togglePanel"  styleClass="buttonLink" rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}" ajaxSingle="true">
-							<span class="icon-up-circle expendIcon"/>
-				 		</a4j:commandLink>
-			 		</a4j:outputPanel>
-			 	</span>
-               	
-               	<s:div id="details_panel" styleClass="version_details_panel">
-               		<h:graphicImage value="/images/loading.gif" id="loading" style="display:none" />
-	               	<a4j:outputPanel rendered="#{projectHome.checkIfRendered(_iteration.slug) and identity.loggedIn}">
-	               		<rich:dataTable value="#{projectHome.iterationLocaleList.toArray()}" var="language" styleClass="details_table">
-		                    <rich:column sortBy="#{language.localeId.id}">
-			                    <s:link view="/iteration/files.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
-									<f:param name="project" value="#{projectHome.slug}" />
-									<f:param name="iteration" value="#{_iteration.slug}" />
-									<f:param name="localeId" value="#{language.localeId}" />
-								</s:link>
-							</rich:column>
-							
-							<rich:column styleClass="centered">
-								<h:outputLink
-									rendered="#{not applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_iteration.slug, language) }"
-									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Open']}">
-									<f:param name="project" value="#{projectHome.slug}" />
-									<f:param name="iteration" value="#{_iteration.slug}" />
-									<f:param name="localeId" value="#{language.localeId}" />
-									<f:param name="locale" value="#{locale.language}" />
-									<span class="icon-eye"/>
-								</h:outputLink>
-				
-								<h:outputLink
-									rendered="#{applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_iteration.slug, language)}"
-									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.OpenGWTDevMode']}">
-									<f:param name="project" value="#{projectHome.slug}" />
-									<f:param name="iteration" value="#{_iteration.slug}" />
-									<f:param name="localeId" value="#{language.localeId}" />
-									<f:param name="locale" value="#{locale.language}" />
-									<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-									<span class="icon-eye"/>
-				    			</h:outputLink>
-				
-								<h:outputLink
-									rendered="#{not applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_iteration.slug, language)}"
-									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Translate']}">
-									<f:param name="project" value="#{projectHome.slug}" />
-									<f:param name="iteration" value="#{_iteration.slug}" />
-									<f:param name="localeId" value="#{language.localeId}" />
-									<f:param name="locale" value="#{locale.language}" />
-									<span class="icon-edit"/>
-				    			</h:outputLink>
-				    					
-								<h:outputLink
-									rendered="#{applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_iteration.slug, language)}"
-									value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.TranslateGWTDevMode']}">
-									<f:param name="project" value="#{projectHome.slug}" />
-									<f:param name="iteration" value="#{_iteration.slug}" />
-									<f:param name="localeId" value="#{language.localeId}" />
-									<f:param name="locale" value="#{locale.language}" />
-									<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-									<span class="icon-edit"/>
-				    			</h:outputLink>
-							</rich:column>
-							
-							<rich:column width="210px">
-								<ui:param name="tstatus" value="#{projectHome.getStats(_iteration.slug, language)}" />
-								<ui:include src="../WEB-INF/layout/statsbar.xhtml">
-									<ui:param name="status" value="#{tstatus}" />
-								</ui:include>
-							</rich:column>
-							
-		                </rich:dataTable>
-	               	</a4j:outputPanel>
-               	</s:div>
+               	<span class="version_info">Documents: #{_version.documents.size}</span>
+            </rich:column>
+            
+            <rich:column styleClass="centered">
+            	<f:facet name="header">#{messages['jsf.TranslateLinks']}</f:facet>
+            	<rich:dataGrid value="#{versionDetailsAction.getSupportedLocaleList(_version.slug)}" var="language"  columns="3" styleClass="version_details_panel" >
+		 			<s:div styleClass="version_details_cell">
+			 			<s:link view="/iteration/files.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
+							<f:param name="project" value="#{projectHome.slug}" />
+							<f:param name="iteration" value="#{_version.slug}" />
+							<f:param name="localeId" value="#{language.localeId}" />
+						</s:link>
+						
+						<h:outputLink
+							rendered="#{not applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language) }"
+							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Open']}">
+							<f:param name="project" value="#{projectHome.slug}" />
+							<f:param name="iteration" value="#{_version.slug}" />
+							<f:param name="localeId" value="#{language.localeId}" />
+							<f:param name="locale" value="#{locale.language}" />
+							<span class="icon-eye"/>
+						</h:outputLink>
+		
+						<h:outputLink
+							rendered="#{applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language)}"
+							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.OpenGWTDevMode']}">
+							<f:param name="project" value="#{projectHome.slug}" />
+							<f:param name="iteration" value="#{_version.slug}" />
+							<f:param name="localeId" value="#{language.localeId}" />
+							<f:param name="locale" value="#{locale.language}" />
+							<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
+							<span class="icon-eye"/>
+		    			</h:outputLink>
+		
+						<h:outputLink
+							rendered="#{not applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
+							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Translate']}">
+							<f:param name="project" value="#{projectHome.slug}" />
+							<f:param name="iteration" value="#{_version.slug}" />
+							<f:param name="localeId" value="#{language.localeId}" />
+							<f:param name="locale" value="#{locale.language}" />
+							<span class="icon-edit"/>
+		    			</h:outputLink>
+		    					
+						<h:outputLink
+							rendered="#{applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
+							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.TranslateGWTDevMode']}">
+							<f:param name="project" value="#{projectHome.slug}" />
+							<f:param name="iteration" value="#{_version.slug}" />
+							<f:param name="localeId" value="#{language.localeId}" />
+							<f:param name="locale" value="#{locale.language}" />
+							<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
+							<span class="icon-edit"/>
+		    			</h:outputLink>
+	    			</s:div>
+		 		</rich:dataGrid>
+            </rich:column>
+            
+            <rich:column styleClass="centered"> 
+            	<f:facet name="header">#{messages['jsf.ManageVersion']}</f:facet>
+                <s:link styleClass="version_action_link table_link"
+					rendered="#{s:hasPermission(_version, 'update')}"
+					value="#{messages['jsf.Edit']}" view="/iteration/edit.xhtml"
+					propagation="none">
+					<f:param name="projectSlug" value="#{projectHome.slug}"/>
+					<f:param name="slug" value="#{_version.slug}" />
+				</s:link>
+	            <s:link styleClass="version_action_link table_link"
+	                value="#{messages['jsf.SourceDocs']}" view="/iteration/source_files.xhtml"
+	                propagation="none">
+	                <f:param name="project" value="#{projectHome.slug}"/>
+	                <f:param name="iteration" value="#{_version.slug}" />
+	            </s:link>
             </rich:column>
         </rich:dataTable>
         
