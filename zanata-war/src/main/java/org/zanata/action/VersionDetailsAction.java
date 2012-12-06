@@ -99,4 +99,14 @@ public class VersionDetailsAction implements Serializable
    {
       this.projectSlug = projectSlug;
    }
+
+   public String editVersion()
+   {
+      return "/iteration/edit.xhtml";
+   }
+
+   public String sourceDocs()
+   {
+      return "/iteration/source_files.xhtml";
+   }
 }

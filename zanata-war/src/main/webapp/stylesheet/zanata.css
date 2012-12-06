@@ -1007,7 +1007,7 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 	margin-top:10px;
 }
 
-.iterations table.rich-table tr:hover {
+.iterations table.version_details_panel tr:hover {
 	background:#EEE;
 }
 
