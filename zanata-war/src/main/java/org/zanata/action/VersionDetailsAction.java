@@ -100,13 +100,13 @@ public class VersionDetailsAction implements Serializable
       this.projectSlug = projectSlug;
    }
 
-   public String editVersion()
+   public String editVersion(String versionSlug)
    {
-      return "/iteration/edit.xhtml";
+      return "/iteration/edit/" + projectSlug + "/" + versionSlug;
    }
 
-   public String sourceDocs()
+   public String sourceDocs(String versionSlug)
    {
-      return "/iteration/source_files.xhtml";
+      return "/iteration/source_files/" + projectSlug + "/" + versionSlug;
    }
 }

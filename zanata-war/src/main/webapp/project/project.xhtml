@@ -21,7 +21,6 @@
 
    	<div class="iterations">
    		<a4j:form>
-   		
    		<rich:dataTable id="iterations" value="#{projectHome.versions}" var="_version">
             <rich:column sortBy="#{_version.slug}" id="column">
             	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
@@ -38,11 +37,11 @@
                	<span class="version_info">Documents: #{_version.documents.size}</span>
             </rich:column>
             
-            <rich:column styleClass="centered" rendered="#{identity.loggedin}">
+            <rich:column styleClass="centered" rendered="#{identity.loggedIn}">
             	<f:facet name="header">#{messages['jsf.TranslateLinks']}</f:facet>
             	<rich:dataGrid value="#{versionDetailsAction.getSupportedLocaleList(_version.slug)}" var="language"  columns="3" styleClass="version_details_panel" >
 		 			<s:div styleClass="version_details_cell">
-			 			<s:link view="/iteration/files.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
+			 			<s:link view="/iteration/files.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link" title="#{messages['jsf.Documents']}">
 							<f:param name="project" value="#{projectHome.slug}" />
 							<f:param name="iteration" value="#{_version.slug}" />
 							<f:param name="localeId" value="#{language.localeId}" />
@@ -97,15 +96,11 @@
             	<f:facet name="header">#{messages['jsf.ManageVersion']}</f:facet>
             	
             	<h:commandButton value="#{messages['jsf.Edit']}"
-							action="#{versionDetailsAction.editVersion()}" rendered="#{s:hasPermission(_version, 'update')}">
-							<f:param name="projectSlug" value="#{projectHome.slug}"/>
-							<f:param name="slug" value="#{_version.slug}" />
+							action="#{versionDetailsAction.editVersion(_version.slug)}" rendered="#{s:hasPermission(_version, 'update')}" title="#{messages['jsf.EditVersion']}">
 				</h:commandButton>
 				
 				<h:commandButton value="#{messages['jsf.SourceDocs']}"
-							action="#{versionDetailsAction.sourceDocs()}">
-							<f:param name="project" value="#{projectHome.slug}"/>
-	                		<f:param name="iteration" value="#{_version.slug}" />
+							action="#{versionDetailsAction.sourceDocs(_version.slug)}" title="#{messages['jsf.SourceDocuments']}">
 				</h:commandButton>
 						
             </rich:column>

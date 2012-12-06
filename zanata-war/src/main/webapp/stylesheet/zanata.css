@@ -1001,24 +1001,18 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 
 /* -----------------------  Project iteration CSS  -------------------------*/
 
-.iterations table.details_table
-{
-	background:#FFFFFF;
-	margin-top:10px;
+.iterations table.version_details_panel tr:hover {
+	background:#FFFFF;
 }
 
 .iterations table.version_details_panel tr:hover {
-	background:#EEE;
+	background:#FFFFF;
 }
 
-.iterations table.details_table td.rich-table-cell
+.iterations .rich-table tbody tr:hover .version_details_panel
 {
-	padding:5px;
-}
-
-.iterations table.details_table tr:hover {
 	background:#FFFFFF;
-}
+}  
 
 .version_details_cell
 {
