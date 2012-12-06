@@ -47,8 +47,7 @@ public class PropertiesPullStrategyTest
    @Test
    public void utf8() throws Exception
    {
-      PullStrategy strat = new UTF8PropertiesStrategy();
-      strat.setPullOptions(opts);
+      PullStrategy strat = new UTF8PropertiesStrategy(opts);
 
       doc.setName("utf8");
       strat.writeSrcFile(doc);
@@ -63,8 +62,7 @@ public class PropertiesPullStrategyTest
    @Test
    public void latin1() throws Exception
    {
-      PullStrategy strat = new PropertiesStrategy();
-      strat.setPullOptions(opts);
+      PullStrategy strat = new PropertiesStrategy(opts);
 
       doc.setName("latin1");
       strat.writeSrcFile(doc);

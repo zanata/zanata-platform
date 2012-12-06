@@ -33,26 +33,20 @@ import org.zanata.rest.dto.resource.Resource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public abstract class AbstractGettextPullStrategy implements PullStrategy
+public abstract class AbstractGettextPullStrategy extends AbstractPullStrategy
 {
-   private PoWriter2 poWriter = new PoWriter2();
+   private final PoWriter2 poWriter;
    private StringSet extensions = new StringSet("gettext;comment");
-   private PullOptions opts;
 
-   public PullOptions getOpts()
+   protected AbstractGettextPullStrategy(PullOptions opts)
    {
-      return opts;
+      super(opts);
+      poWriter = new PoWriter2(opts.getEncodeTabs());
    }
 
    protected PoWriter2 getPoWriter()
    {
       return poWriter;
-   }
-
-   @Override
-   public void setPullOptions(PullOptions opts)
-   {
-      this.opts = opts;
    }
 
    @Override

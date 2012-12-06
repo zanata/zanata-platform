@@ -37,7 +37,7 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    @Override
    public String getCommandDescription()
    {
-      return "Publishes publican source text to Zanata so that it can be translated.";
+      return "Publishes publican source text to Zanata so that it can be translated. DEPRECATED: use 'push' with projectType 'podir'";
    }
 
    @Override

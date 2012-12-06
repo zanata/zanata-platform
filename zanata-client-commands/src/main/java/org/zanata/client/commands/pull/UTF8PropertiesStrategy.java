@@ -35,24 +35,25 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public class UTF8PropertiesStrategy extends PropertiesStrategy
 {
 
-   public UTF8PropertiesStrategy()
+   protected UTF8PropertiesStrategy(PullOptions opts)
    {
+      super(opts);
    }
 
    @Override
    public void writeSrcFile(Resource doc) throws IOException
    {
-      PropWriter.writeUTF8(doc, getPullOptions().getSrcDir());
+      PropWriter.writeUTF8(doc, getOpts().getSrcDir());
    }
 
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      boolean createSkeletons = getPullOptions().getCreateSkeletons();
+      boolean createSkeletons = getOpts().getCreateSkeletons();
       if (createSkeletons)
-         PropWriter.writeUTF8(doc, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+         PropWriter.writeUTF8(doc, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
-         PropWriter.writeUTF8(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+         PropWriter.writeUTF8(null, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
    }
 
 }

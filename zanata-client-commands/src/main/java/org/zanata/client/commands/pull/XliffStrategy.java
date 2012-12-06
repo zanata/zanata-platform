@@ -33,15 +33,13 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class XliffStrategy implements PullStrategy
+public class XliffStrategy extends AbstractPullStrategy
 {
    StringSet extensions = new StringSet("comment");
-   private PullOptions opts;
 
-   @Override
-   public void setPullOptions(PullOptions opts)
+   protected XliffStrategy(PullOptions opts)
    {
-      this.opts = opts;
+      super(opts);
    }
 
    @Override
@@ -59,13 +57,13 @@ public class XliffStrategy implements PullStrategy
    @Override
    public void writeSrcFile(Resource doc) throws IOException
    {
-      XliffWriter.write(opts.getSrcDir(), doc, "en-US");
+      XliffWriter.write(getOpts().getSrcDir(), doc, "en-US");
    }
 
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      XliffWriter.write(opts.getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, opts.getCreateSkeletons());
+      XliffWriter.write(getOpts().getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, getOpts().getCreateSkeletons());
    }
 
 }

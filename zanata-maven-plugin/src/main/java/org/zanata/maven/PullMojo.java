@@ -75,6 +75,12 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    // Cached copy of the effective locales to avoid calculating it more than once
    private LocaleList effectiveLocales;
 
+   /**
+    * Whether tabs should be encoded as \t (true) or left as tabs (false).
+    * @parameter expression="${zanata.encodeTabs}" default-value="true"
+    */
+   private boolean encodeTabs = true;
+
 
    public PullMojo() throws Exception
    {
@@ -97,6 +103,12 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    public boolean getCreateSkeletons()
    {
       return createSkeletons;
+   }
+
+   @Override
+   public boolean getEncodeTabs()
+   {
+      return encodeTabs;
    }
 
    @Override

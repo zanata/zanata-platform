@@ -34,6 +34,10 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public class GettextDirStrategy extends AbstractGettextPullStrategy
 {
+   public GettextDirStrategy(PullOptions opts)
+   {
+      super(opts);
+   }
 
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException

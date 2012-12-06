@@ -1,6 +1,8 @@
 package org.zanata.client.commands.pull;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -35,15 +37,15 @@ public class PullCommand extends PushPullCommand<PullOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PullCommand.class);
 
-   private static final Map<String, PullStrategy> strategies = new HashMap<String, PullStrategy>();
+   private static final Map<String, Class<? extends PullStrategy>> strategies = new HashMap<String, Class<? extends PullStrategy>>();
 
    {
-      strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, new UTF8PropertiesStrategy());
-      strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
-      strategies.put(PROJECT_TYPE_GETTEXT, new GettextPullStrategy());
-      strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
-      strategies.put(PROJECT_TYPE_XLIFF, new XliffStrategy());
-      strategies.put(PROJECT_TYPE_XML, new XmlStrategy());
+      strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, UTF8PropertiesStrategy.class);
+      strategies.put(PROJECT_TYPE_PROPERTIES, PropertiesStrategy.class);
+      strategies.put(PROJECT_TYPE_GETTEXT, GettextPullStrategy.class);
+      strategies.put(PROJECT_TYPE_PUBLICAN, GettextDirStrategy.class);
+      strategies.put(PROJECT_TYPE_XLIFF, XliffStrategy.class);
+      strategies.put(PROJECT_TYPE_XML, XmlStrategy.class);
    }
 
    public PullCommand(PullOptions opts)
@@ -56,15 +58,17 @@ public class PullCommand extends PushPullCommand<PullOptions>
       super(opts, factory, sourceDocResource, translationResources, uri);
    }
 
-   private PullStrategy getStrategy(String strategyType)
+   private PullStrategy createStrategy(String strategyType)
+           throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException
    {
-      PullStrategy strat = strategies.get(strategyType);
-      if (strat == null)
+      Class<? extends PullStrategy> clazz = strategies.get(strategyType);
+      if (clazz == null)
       {
          throw new RuntimeException("unknown project type: " + getOpts().getProjectType());
       }
-      strat.setPullOptions(getOpts());
-      return strat;
+      Constructor<? extends PullStrategy> ctor = clazz.getConstructor(PullOptions.class);
+      assert ctor != null: "strategy must have constructor which accepts PullOptions";
+      return ctor.newInstance(getOpts());
    }
 
    private void logOptions()
@@ -103,6 +107,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
          }
       }
       logger.info("Locales to pull: {}", opts.getLocaleMapList());
+      logger.info("Encode tab as \\t: {}", opts.getEncodeTabs());
       if (opts.getPullType() == PushPullType.Source)
       {
          logger.info("Pulling source documents only");
@@ -129,7 +134,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
       LocaleList locales = getOpts().getLocaleMapList();
       if (locales == null)
          throw new ConfigException("no locales specified");
-      PullStrategy strat = getStrategy(getOpts().getProjectType());
+      PullStrategy strat = createStrategy(getOpts().getProjectType());
       List<String> docNamesForModule = getQualifiedDocNamesForCurrentModuleFromServer();
 
       // TODO compare docNamesForModule with localDocNames, offer to delete obsolete translations from filesystem

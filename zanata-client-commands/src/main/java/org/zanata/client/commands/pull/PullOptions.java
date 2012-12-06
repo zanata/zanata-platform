@@ -32,4 +32,5 @@ public interface PullOptions extends PushPullOptions
 {
    PushPullType getPullType();
    boolean getCreateSkeletons();
+   boolean getEncodeTabs();
 }

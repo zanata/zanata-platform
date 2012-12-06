@@ -33,27 +33,13 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PropertiesStrategy implements PullStrategy
+public class PropertiesStrategy extends AbstractPullStrategy
 {
    StringSet extensions = new StringSet("comment");
-   private PullOptions pullOptions;
 
-   public PropertiesStrategy()
+   protected PropertiesStrategy(PullOptions opts)
    {
-   }
-
-   /**
-    * @return the opts
-    */
-   protected PullOptions getPullOptions()
-   {
-      return pullOptions;
-   }
-
-   @Override
-   public void setPullOptions(PullOptions opts)
-   {
-      this.pullOptions = opts;
+      super(opts);
    }
 
    @Override
@@ -71,17 +57,17 @@ public class PropertiesStrategy implements PullStrategy
    @Override
    public void writeSrcFile(Resource doc) throws IOException
    {
-      PropWriter.write(doc, getPullOptions().getSrcDir());
+      PropWriter.write(doc, getOpts().getSrcDir());
    }
 
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      boolean createSkeletons = getPullOptions().getCreateSkeletons();
+      boolean createSkeletons = getOpts().getCreateSkeletons();
       if (createSkeletons)
-         PropWriter.write(doc, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+         PropWriter.write(doc, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
-         PropWriter.write(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+         PropWriter.write(null, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
    }
 
 }
