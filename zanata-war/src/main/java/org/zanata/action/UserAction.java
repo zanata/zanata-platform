@@ -32,6 +32,7 @@ import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.PersonDAO;
@@ -68,6 +69,9 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
    @In
    private UserAccountService userAccountServiceImpl;
 
+   @In(create = true)
+   private Renderer renderer;
+
    private boolean newUserFlag;
 
    private String originalUsername;
@@ -95,6 +99,11 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
    public String getEmail(String username)
    {
       return personDAO.findEmail(username);
+   }
+
+   public String getName(String username)
+   {
+      return personDAO.findByUsername(username).getName();
    }
 
    public String getUsernameFilter()
@@ -127,12 +136,15 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
    @Override
    public String save()
    {
+      boolean usernameChanged = false;
+
       // Allow user name changes when editing
       if( !newUserFlag && !originalUsername.equals(getUsername()) )
       {
          if( isNewUsernameValid(getUsername()) )
          {
             userAccountServiceImpl.editUsername(originalUsername, getUsername());
+            usernameChanged = true;
          }
          else
          {
@@ -142,7 +154,13 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
          }
       }
 
-      return super.save();
+      String saveResult = super.save();
+
+      if( usernameChanged )
+      {
+         renderer.render("/WEB-INF/facelets/email/username_changed.xhtml");
+      }
+      return saveResult;
    }
 
    public boolean filter(String user)
