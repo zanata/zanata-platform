@@ -20,8 +20,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -171,9 +171,9 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    }
 
    @UiHandler("tmTextBox")
-   public void onTmTextBoxKeyUp(KeyUpEvent event)
+   public void onTmTextBoxKeyPress(KeyPressEvent event)
    {
-      if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+      if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER)
       {
          searchButton.click();
       }
