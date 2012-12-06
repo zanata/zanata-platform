@@ -303,6 +303,7 @@ public class SeamAutowire
          replaceGetInstance(pool, componentCls, stringCls, booleanCls, booleanCls);
          replaceGetInstance(pool, componentCls, stringCls, scopeTypeCls, booleanCls, booleanCls);
          replaceGetInstance(pool, componentCls, classCls);
+         replaceGetInstance(pool, componentCls, classCls, scopeTypeCls);
          try
          {
             // Seam 2.2.2
@@ -442,6 +443,10 @@ public class SeamAutowire
       return interfaces;
    }
 
+   /**
+    * Invokes a single method (the first found) annotated with {@link javax.annotation.PostConstruct},
+    * {@link org.jboss.seam.annotations.intercept.PostConstruct}, or {@link org.jboss.seam.annotations.Create} annotations.
+    */
    private static void invokePostConstructMethod(Object component)
    {
       Class<?> compClass = component.getClass();
@@ -451,7 +456,8 @@ public class SeamAutowire
       {
          // Call the first Post Constructor found. Per the spec, there should be only one
          if( m.getAnnotation(javax.annotation.PostConstruct.class) != null
-             || m.getAnnotation(org.jboss.seam.annotations.intercept.PostConstruct.class) != null )
+             || m.getAnnotation(org.jboss.seam.annotations.intercept.PostConstruct.class) != null
+             || m.getAnnotation(org.jboss.seam.annotations.Create.class) != null)
          {
             if(postConstructAlreadyFound)
             {

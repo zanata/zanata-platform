@@ -48,6 +48,11 @@ public class AutowireComponent
       return SeamAutowire.instance().getComponent(name);
    }
 
+   public static Object getInstance(Class<?> clazz, ScopeType scopeType)
+   {
+      return SeamAutowire.instance().autowire(clazz);
+   }
+
    private static Object getInstance(Class<?> clazz)
    {
       return SeamAutowire.instance().autowire(clazz);
