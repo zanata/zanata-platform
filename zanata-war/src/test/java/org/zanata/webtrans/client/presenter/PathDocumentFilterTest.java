@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.*;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Test(groups = "unit-tests")
 public class PathDocumentFilterTest
 {
    private PathDocumentFilter filter;
