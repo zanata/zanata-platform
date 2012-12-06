@@ -1001,28 +1001,41 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 
 /* -----------------------  Project iteration CSS  -------------------------*/
 
-.iterations table.details_table
+.iterations table.version_details_panel tr:hover {
+	background:#FFFFF;
+}
+
+.iterations table.version_details_panel tr:hover {
+	background:#FFFFF;
+}
+
+.iterations .rich-table tbody tr:hover .version_details_panel
 {
 	background:#FFFFFF;
-}
+}  
 
-.iterations table.rich-table tr:hover {
-	background:#EEE;
-}
-
-.iterations table.details_table td.rich-table-cell
+.version_details_cell
 {
-	padding:5px;
+	text-align:right;
 }
 
-.iterations table.details_table tr:hover {
-	background:#FFFFFF;
-}
 
 .version_details_panel
 {
-	margin-top:10px;
 }
+
+.version_details_panel td.rich-table-cell
+{
+	border-bottom:none;
+	padding:0;
+}
+
+.version_details_panel .table_link
+{
+	margin-left:3px;
+	text-decoration:none;
+}
+
 
 a.version_action_link
 {

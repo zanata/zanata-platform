@@ -20,12 +20,9 @@
  */
 package org.zanata.action;
 
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,22 +31,19 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
-import org.zanata.annotation.CachedMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -59,19 +53,12 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
-import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
-import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 
 @Name("projectHome")
-@CachedMethods
-@Scope(ScopeType.PAGE)
 public class ProjectHome extends SlugHome<HIterationProject>
 {
    private static final long serialVersionUID = 1L;
@@ -80,9 +67,6 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    private String slug;
 
-   @In
-   private StatisticsResource statisticsServiceImpl;
-   
    @In
    ZanataIdentity identity;
 
@@ -128,11 +112,6 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    @In
    private EntityManager entityManager;
-
-   private Set<String> renderedPanel = new HashSet<String>();
-   private Set<Integer> rowsToUpdate = new HashSet<Integer>();
-
-   private StatUnit statsOption = WORD;
 
    @Override
    protected HIterationProject loadInstance()
@@ -197,8 +176,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return retValue;
    }
 
-   @CachedMethodResult
-   public List<HProjectIteration> getIterations()
+   public List<HProjectIteration> getVersions()
    {
       List<HProjectIteration> results = new ArrayList<HProjectIteration>();
 
@@ -251,31 +229,31 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return results;
    }
 
-   public EntityStatus getEffectiveIterationStatus(HProjectIteration iteration)
+   public EntityStatus getEffectiveVersionStatus(HProjectIteration version)
    {
       /**
        * Null pointer exception checking caused by unknown issues where
        * getEffectiveIterationStatus gets invoke before getIterations
        */
-      if (iteration == null)
+      if (version == null)
       {
          return null;
       }
       if (getInstance().getStatus() == EntityStatus.READONLY)
       {
-         if (iteration.getStatus() == EntityStatus.ACTIVE)
+         if (version.getStatus() == EntityStatus.ACTIVE)
          {
             return EntityStatus.READONLY;
          }
       }
       else if (getInstance().getStatus() == EntityStatus.OBSOLETE)
       {
-         if (iteration.getStatus() == EntityStatus.ACTIVE || iteration.getStatus() == EntityStatus.READONLY)
+         if (version.getStatus() == EntityStatus.ACTIVE || version.getStatus() == EntityStatus.READONLY)
          {
             return EntityStatus.OBSOLETE;
          }
       }
-      return iteration.getStatus();
+      return version.getStatus();
    }
 
    public String cancel()
@@ -384,110 +362,19 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return getInstance().getStatus() == EntityStatus.ACTIVE;
    }
 
-   public boolean isReadOnly(HProjectIteration iteration)
-   {
-      if (getInstance().getStatus() == EntityStatus.READONLY || (iteration != null && iteration.getStatus() == EntityStatus.READONLY))
-      {
-         return true;
-      }
-      return false;
-   }
-
-   public boolean isObsolete(HProjectIteration iteration)
-   {
-      if (getInstance().getStatus() == EntityStatus.OBSOLETE || (iteration != null && iteration.getStatus() == EntityStatus.OBSOLETE))
-      {
-         return true;
-      }
-      return false;
-   }
-
    public boolean checkViewObsolete()
    {
       return identity != null && identity.hasPermission("HProject", "view-obsolete");
    }
 
-
-
-   public void togglePanel(String versionSlug, Integer selectedRow)
-   {
-      rowsToUpdate.clear();
-      rowsToUpdate.add(selectedRow);
-
-      if (renderedPanel.contains(versionSlug))
-      {
-         renderedPanel.remove(versionSlug);
-      }
-      else
-      {
-         renderedPanel.add(versionSlug);
-      }
-   }
-
-   public boolean checkIfRendered(String versionSlug)
-   {
-      return renderedPanel.contains(versionSlug);
-   }
-   
-   public Set<HLocale> getIterationLocaleList()
-   {
-      HPerson person = personDAO.findByUsername(identity.getCredentials().getUsername());
-      if (person != null)
-      {
-         return person.getLanguageMemberships();
-      }
-      return new HashSet<HLocale>();
-   }
-   
    public boolean isUserAllowedToTranslate(String versionSlug, HLocale localeId)
    {
-      return isIterationActive(versionSlug) && identity != null && identity.hasPermission("add-translation", getInstance(), localeId);
+      return !StringUtils.isEmpty(versionSlug) && localeId != null && isIterationActive(versionSlug) && identity != null && identity.hasPermission("add-translation", getInstance(), localeId);
    }
    
-
-   
-   @CachedMethodResult
-   public TranslationStatistics getStats(String versionSlug, HLocale locale)
-   {
-      String[] localeIds = new String[1];
-      localeIds[0] = locale.getLocaleId().getId();
-      HProjectIteration iteration = projectIterationDAO.getBySlug(getSlug(), versionSlug);
-      
-      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(getSlug(), versionSlug, false, true, localeIds);
-      
-      Long total;
-      if (statsOption == WORD)
-      {
-         total = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
-      }
-      else
-      {
-         total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
-      }
-      
-      TranslationStatistics stats = iterationStats.getStats(localeIds[0], statsOption);
-      if (stats == null)
-      {
-         stats = new TranslationStatistics();
-         stats.setUntranslated(total);
-         stats.setTotal(total);
-      }
-      return stats;
-   }
-
    private boolean isIterationActive(String versionSlug)
    {
       HProjectIteration version = projectIterationDAO.getBySlug(getSlug(), versionSlug);
       return getInstance().getStatus() == EntityStatus.ACTIVE || version.getStatus() == EntityStatus.ACTIVE;
-   }
-
-   public Set<Integer> getRowsToUpdate()
-   {
-      return rowsToUpdate;
-   }
-
-   public void setRowsToUpdate(Set<Integer> rowsToUpdate)
-   {
-      this.rowsToUpdate = rowsToUpdate;
    }
 }
