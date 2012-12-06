@@ -1,11 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import com.beust.jcommander.internal.Sets;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 /**
  * Filters documents by their full path + name, with substring and exact
@@ -20,7 +22,8 @@ public final class PathDocumentFilter
 {
    private static final String DOCUMENT_FILTER_LIST_DELIMITER = ",";
 
-   private HashSet<String> patterns = new HashSet<String>();
+   private Set<String> patterns = Sets.newHashSet();
+   private Set<String> patternsInLowerCase = Sets.newHashSet();
    private boolean isFullText = false;
    private boolean caseSensitive = false;
 
@@ -31,53 +34,50 @@ public final class PathDocumentFilter
          return true;
       }
       String fullPath = value.getPath() + value.getName();
-      if (!caseSensitive)
-      {
-         fullPath = fullPath.toLowerCase();
-      }
-      for (String pattern : patterns)
-      {
-         if (!caseSensitive)
-         {
-            pattern = pattern.toLowerCase();
-         }
-         if (isFullText)
-         {
-            if (fullPath.equals(pattern))
-            {
-               return true;
-            }
-         }
-         else if (fullPath.contains(pattern))
-         {
-            return true;
-         }
-      }
-      return false; // didn't match any patterns
+
+      Iterable<String> patternsToUse = caseSensitive ? patterns : patternsInLowerCase;
+      fullPath = caseSensitive ? fullPath : fullPath.toLowerCase();
+
+      Optional<String> matchedPattern = Iterables.tryFind(patternsToUse, new MatchPredicate(isFullText, fullPath));
+      return matchedPattern.isPresent();
    }
 
-   public void setPattern(String pattern)
+   public PathDocumentFilter setPattern(String pattern)
    {
       patterns.clear();
-      String[] patternCandidates = pattern.split(DOCUMENT_FILTER_LIST_DELIMITER);
-
-      for (String candidate : patternCandidates)
-      {
-         candidate = candidate.trim();
-         if (candidate.length() != 0)
-         {
-            patterns.add(candidate);
-         }
-      }
+      Splitter splitter = Splitter.on(DOCUMENT_FILTER_LIST_DELIMITER).trimResults().omitEmptyStrings();
+      Iterables.addAll(patterns, splitter.split(pattern));
+      Iterables.addAll(patternsInLowerCase, splitter.split(pattern.toLowerCase()));
+      return this;
    }
 
-   public void setFullText(boolean fullText)
+   public PathDocumentFilter setFullText(boolean fullText)
    {
       isFullText = fullText;
+      return this;
    }
 
-   public void setCaseSensitive(boolean caseSensitive)
+   public PathDocumentFilter setCaseSensitive(boolean caseSensitive)
    {
       this.caseSensitive = caseSensitive;
+      return this;
+   }
+
+   private static class MatchPredicate implements Predicate<String>
+   {
+      private final boolean isFullText;
+      private final String fullPath;
+
+      private MatchPredicate(boolean isFullText, String fullPath)
+      {
+         this.isFullText = isFullText;
+         this.fullPath = fullPath;
+      }
+
+      @Override
+      public boolean apply(String input)
+      {
+         return isFullText ? fullPath.equals(input) : fullPath.contains(input);
+      }
    }
 }
