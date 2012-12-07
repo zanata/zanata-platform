@@ -62,6 +62,9 @@ public class RegisterAction implements Serializable
    
    @In
    PersonDAO personDAO;
+   
+   @In(create = true)
+   InactivateAccountAction inactivateAccountAction;
 
    @In(create = true)
    private Renderer renderer;
@@ -199,19 +202,11 @@ public class RegisterAction implements Serializable
       final String pass = getPassword();
       final String email = getEmail();
       String key = registerServiceImpl.register(user, pass, getPerson().getName(), email);
-      setActivationKey(key);
       log.info("get register key:" + key);
 
-      renderer.render("/WEB-INF/facelets/email/activation.xhtml");
-
-      FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
+      inactivateAccountAction.sendActivationEmail(user, email, key);
 
       return "/home.xhtml";
-   }
-
-   public String getActivationKey()
-   {
-      return activationKey;
    }
 
    @Begin(join = true)

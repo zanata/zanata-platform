@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="page_title">Inactive account</ui:define>
+
+    <ui:define name="head">
+                               
+    </ui:define>
+
+    <ui:define name="center_content">
+    	<h:form>
+ 			<h:outputText value="Your account is not activated. Please select the following:" styleClass="input_help"/>
+        	
+        	<s:div>
+        		<h:commandButton id="resendEmail" value="Resend activation email" 
+        							 action="#{inactivateAccountAction.sendActivationEmail}"/>
+                                     
+        		<h:commandButton id="changeOfEmail" value="Change email address" 
+        							 action="#{inactivateAccountAction.changeEmail}"/>     
+			</s:div>        							 
+    	</h:form>
+
+    </ui:define>
+
+</ui:composition>

@@ -27,6 +27,9 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.dao.AccountActivationKeyDAO;
+import org.zanata.dao.AccountDAO;
+import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -48,6 +51,15 @@ public class LoginAction implements Serializable
 
    @In
    private AuthenticationManager authenticationManager;
+   
+   @In
+   private AccountActivationKeyDAO accountActivationKeyDAO;
+   
+   @In
+   private AccountDAO accountDAO;
+   
+   @In(create = true)
+   private InactivateAccountAction inactivateAccountAction;
 
    private String username;
 
@@ -58,8 +70,7 @@ public class LoginAction implements Serializable
    private OpenIdProviderType openIdProviderType;
 
    private AuthenticationType authType;
-
-
+   
 
    public String getUsername()
    {
@@ -146,6 +157,29 @@ public class LoginAction implements Serializable
       }
 
       return loginResult;
+   }
+
+   public boolean isAccountExistAndNotActivated()
+   { 
+      HAccount account = accountDAO.getByUsername(username);
+      if(account != null)
+      {
+         if(account.getAccountActivationKey() == null)
+         {
+            //account activated
+            return false;
+         }
+         else
+         {
+            //account not activated
+            inactivateAccountAction.setActivationKey(account.getAccountActivationKey().getKeyHash());
+            inactivateAccountAction.setPersonName(account.getPerson().getName());
+            inactivateAccountAction.setToEmail(account.getPerson().getEmail());
+            return true;
+         }
+      }
+      //account not exist
+      return false;
    }
 
    private String loginWithOpenId()
