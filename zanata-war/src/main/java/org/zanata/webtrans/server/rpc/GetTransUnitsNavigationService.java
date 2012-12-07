@@ -23,6 +23,7 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -43,6 +44,7 @@ import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
@@ -58,8 +60,8 @@ public class GetTransUnitsNavigationService
    protected GetTransUnitsNavigationResult getNavigationIndexes(GetTransUnitsNavigation action, HLocale hLocale)
    {
       FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getPhrase()).filterSource().filterTarget().filterByStatus(action.isNewState(), action.isFuzzyState(), action.isApprovedState());
-      ArrayList<Long> idIndexList = new ArrayList<Long>();
-      HashMap<Long, ContentState> transIdStateMap = new HashMap<Long, ContentState>();
+      List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
+      Map<TransUnitId, ContentState> transIdStateMap = new HashMap<TransUnitId, ContentState>();
 
       List<HTextFlow> textFlows;
       TextFlowResultTransformer resultTransformer = new TextFlowResultTransformer(hLocale);
@@ -67,8 +69,9 @@ public class GetTransUnitsNavigationService
       textFlows = textFlowDAO.getNavigationByDocumentId(action.getId(), hLocale, resultTransformer, filterConstraints);
       for (HTextFlow textFlow : textFlows)
       {
-         idIndexList.add(textFlow.getId());
-         transIdStateMap.put(textFlow.getId(), textFlow.getTargets().get(hLocale.getId()).getState());
+         TransUnitId transUnitId = new TransUnitId(textFlow.getId());
+         idIndexList.add(transUnitId);
+         transIdStateMap.put(transUnitId, textFlow.getTargets().get(hLocale.getId()).getState());
       }
 
       log.info("for action {} returned size: {}", action, idIndexList.size());

@@ -149,13 +149,13 @@ public class NavigationServiceIntegrationTest
       assertThat(TestFixture.asIds(getTransUnitListResult.getUnits()), contains(0, 1, 2, 3, 4, 5));
 
       GetTransUnitsNavigationResult navigationResult = getTransUnitListResult.getNavigationIndex();
-      assertThat(navigationResult.getIdIndexList(), contains(0L, 1L, 2L, 3L, 4L, 5L));
-      assertThat(navigationResult.getTransIdStateList(), hasEntry(0L, ContentState.New));
-      assertThat(navigationResult.getTransIdStateList(), hasEntry(1L, ContentState.New));
-      assertThat(navigationResult.getTransIdStateList(), hasEntry(2L, ContentState.NeedReview));
-      assertThat(navigationResult.getTransIdStateList(), hasEntry(3L, ContentState.Approved));
-      assertThat(navigationResult.getTransIdStateList(), hasEntry(4L, ContentState.NeedReview));
-      assertThat(navigationResult.getTransIdStateList(), hasEntry(5L, ContentState.New));
+      assertThat(TestFixture.asLongs(navigationResult.getIdIndexList()), contains(0L, 1L, 2L, 3L, 4L, 5L));
+      assertThat(navigationResult.getTransIdStateList(), hasEntry(new TransUnitId(0L), ContentState.New));
+      assertThat(navigationResult.getTransIdStateList(), hasEntry(new TransUnitId(1L), ContentState.New));
+      assertThat(navigationResult.getTransIdStateList(), hasEntry(new TransUnitId(2L), ContentState.NeedReview));
+      assertThat(navigationResult.getTransIdStateList(), hasEntry(new TransUnitId(3L), ContentState.Approved));
+      assertThat(navigationResult.getTransIdStateList(), hasEntry(new TransUnitId(4L), ContentState.NeedReview));
+      assertThat(navigationResult.getTransIdStateList(), hasEntry(new TransUnitId(5L), ContentState.New));
    }
 
    @Test

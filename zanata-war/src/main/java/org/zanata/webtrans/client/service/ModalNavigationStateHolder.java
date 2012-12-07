@@ -22,6 +22,7 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
@@ -39,8 +40,8 @@ import com.google.inject.Singleton;
 
 class ModalNavigationStateHolder
 {
-   private Map<Long, ContentState> idAndStateMap;
-   private ArrayList<Long> idIndexList;
+   private Map<TransUnitId, ContentState> idAndStateMap;
+   private List<TransUnitId> idIndexList;
 
    private int pageSize;
    private int rowIndexInDocument = -1;
@@ -48,7 +49,7 @@ class ModalNavigationStateHolder
    private int totalCount;
    private int pageCount;
 
-   protected void init(Map<Long, ContentState> transIdStateMap, ArrayList<Long> idIndexList, int pageSize)
+   protected void init(Map<TransUnitId, ContentState> transIdStateMap, List<TransUnitId> idIndexList, int pageSize)
    {
       this.idAndStateMap = transIdStateMap;
       this.idIndexList = idIndexList;
@@ -56,7 +57,7 @@ class ModalNavigationStateHolder
       updatePageSize(pageSize);
    }
 
-   protected void updateState(Long id, ContentState newState)
+   protected void updateState(TransUnitId id, ContentState newState)
    {
       idAndStateMap.put(id, newState);
    }
@@ -114,7 +115,7 @@ class ModalNavigationStateHolder
 
    protected TransUnitId getTargetTransUnitId(int rowIndex)
    {
-      return new TransUnitId(idIndexList.get(rowIndex));
+      return idIndexList.get(rowIndex);
    }
 
    protected int lastPage()

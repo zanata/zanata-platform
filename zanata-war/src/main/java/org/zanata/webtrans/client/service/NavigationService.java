@@ -247,7 +247,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
    public boolean updateDataModel(TransUnit updatedTU)
    {
-      navigationStateHolder.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
+      navigationStateHolder.updateState(updatedTU.getId(), updatedTU.getStatus());
       return pageModel.updateIfInCurrentPage(updatedTU);
    }
 

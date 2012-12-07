@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
@@ -16,6 +17,7 @@ import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.collect.Lists;
 
@@ -41,8 +43,8 @@ public class ModalNavigationStateHolderTest
        TestFixture.makeTransUnit(9, ContentState.New),
        TestFixture.makeTransUnit(10, ContentState.NeedReview)
    );
-   private HashMap<Long,ContentState> transIdStateMap;
-   private ArrayList<Long> idIndexList;
+   private Map<TransUnitId,ContentState> transIdStateMap;
+   private List<TransUnitId> idIndexList;
    // @formatter:on
 
    @BeforeClass
@@ -56,13 +58,13 @@ public class ModalNavigationStateHolderTest
    @BeforeMethod
    protected void setUp() throws Exception
    {
-      transIdStateMap = new HashMap<Long, ContentState>();
-      idIndexList = new ArrayList<Long>();
+      transIdStateMap = new HashMap<TransUnitId, ContentState>();
+      idIndexList = new ArrayList<TransUnitId>();
 
       for (TransUnit tu : tuList)
       {
-         transIdStateMap.put(tu.getId().getId(), tu.getStatus());
-         idIndexList.add(tu.getId().getId());
+         transIdStateMap.put(tu.getId(), tu.getStatus());
+         idIndexList.add(tu.getId());
       }
       navigationStateHolder = new ModalNavigationStateHolder();
       navigationStateHolder.init(transIdStateMap, idIndexList, 50);
@@ -185,12 +187,12 @@ public class ModalNavigationStateHolderTest
    @Test
    public void testUpdateMapAndNavigate()
    {
-      navigationStateHolder.updateState(9L, ContentState.Approved);
+      navigationStateHolder.updateState(new TransUnitId(9L), ContentState.Approved);
 
       navigationStateHolder.updateRowIndexInDocument(10);
       assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 8);
 
-      navigationStateHolder.updateState(3L, ContentState.NeedReview);
+      navigationStateHolder.updateState(new TransUnitId(3L), ContentState.NeedReview);
 
       navigationStateHolder.updateRowIndexInDocument(2);
       assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 3);

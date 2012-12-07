@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -63,8 +64,8 @@ public class NavigationServiceUnitTest
    private CachingDispatchAsync dispatcher;
    private GetTransUnitActionContext initContext;
    private List<TransUnit> data;
-   private HashMap<Long,ContentState> idStateMap;
-   private ArrayList<Long> idIndexList;
+   private Map<TransUnitId,ContentState> idStateMap;
+   private List<TransUnitId> idIndexList;
    @Captor
    private ArgumentCaptor<GwtEvent> eventCaptor;
    @Captor
@@ -111,8 +112,8 @@ public class NavigationServiceUnitTest
       idIndexList = Lists.newArrayList();
       for (TransUnit transUnit : data)
       {
-         idStateMap.put(transUnit.getId().getId(), transUnit.getStatus());
-         idIndexList.add(transUnit.getId().getId());
+         idStateMap.put(transUnit.getId(), transUnit.getStatus());
+         idIndexList.add(transUnit.getId());
       }
    }
 
