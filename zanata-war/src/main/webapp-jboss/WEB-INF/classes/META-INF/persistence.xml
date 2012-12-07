@@ -93,6 +93,7 @@
            See http://stackoverflow.com/a/8701914
       -->
       <property name="hibernate.cache.region.factory_class" value="net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory"/>
+      <property name="hibernate.cache.region_prefix" value="" />
       
       <property name="net.sf.ehcache.configurationResourceName" value="/META-INF/ehcache.xml"/>
       
