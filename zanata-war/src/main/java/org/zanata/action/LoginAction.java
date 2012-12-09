@@ -20,21 +20,22 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.security.management.IdentityStore;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
-import org.zanata.security.ZanataIdentity;
+import org.zanata.security.ZanataJpaIdentityStore;
 import org.zanata.security.openid.OpenIdProviderType;
-import org.zanata.util.HashUtil;
-
-import java.io.Serializable;
 
 /**
  * This action takes care of logging a user into the system. It contains logic
@@ -62,8 +63,8 @@ public class LoginAction implements Serializable
    private AccountDAO accountDAO;
 
    @In
-   private ZanataIdentity identity;
-
+   private ZanataJpaIdentityStore identityStore;
+   
    private String username;
 
    private String password;
@@ -163,17 +164,12 @@ public class LoginAction implements Serializable
 
    public boolean isAccountActivated()
    {
-      HAccount account = accountDAO.getByUsername(identity.getCredentials().getUsername());
-      if (account != null && account.getAccountActivationKey() == null)
-      {
-         // account activated
-         return true;
-      }
-      else
-      {
-         // account not activated
-         return false;
-      }
+      return identityStore.isUserEnabled(username);
+   }
+   
+   public boolean isAuthenticated()
+   {
+      return identityStore.authenticateIgnoreEnabled(username, password);
    }
   
    private String loginWithOpenId()

@@ -10,6 +10,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;

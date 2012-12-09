@@ -95,6 +95,11 @@
             <param name="username" value="#{loginAction.username}"/>
         </redirect>
       </rule>
+      <rule if="#{!identity.loggedIn and loginAction.isAuthenticated() and !loginAction.isAccountActivated()}">
+        <redirect view-id="/account/inactive_account.xhtml">
+            <param name="username" value="#{loginAction.username}"/>
+        </redirect>
+      </rule>
       
     </navigation>
   </page>
