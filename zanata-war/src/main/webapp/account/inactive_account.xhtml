@@ -21,23 +21,31 @@
         		<h:commandButton id="resendEmail" value="#{messages['jsf.ResendActivationEmail']}" 
         							 action="#{inactiveAccountAction.sendActivationEmail}"/>
 
-                OR
-                Update email and resend activation email:
-                <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
-                    <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-                    <h:inputText id="email" required="true"
-                                 value="#{inactiveAccountAction.email}">
-                        <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
-                    </h:inputText>
-                    <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-                        <rich:toolTip>
-                            #{messages['jsf.EmailToolTip']}
-                        </rich:toolTip>
-                    </s:span>
-                </s:decorate>
-
-        		<h:commandButton id="changeOfEmail" value="#{messages['jsf.ChangeEmail']}" 
-        							 action="#{inactiveAccountAction.changeEmail}"/>
+				<s:div>
+	                <h:outputText value="OR" styleClass="input_help"/>
+	                
+	                <s:div>
+	                	<h:outputText value="Update email and resend activation email:" styleClass="input_help"/>
+		                
+		                
+		                <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
+		                    <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+		                    <h:inputText id="email" required="true"
+		                                 value="#{inactiveAccountAction.email}">
+		                        <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
+		                    </h:inputText>
+		                    <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
+		                        <rich:toolTip>
+		                            #{messages['jsf.EmailToolTip']}
+		                        </rich:toolTip>
+		                    </s:span>
+		                </s:decorate>
+	                </s:div>
+					<s:div>
+	        			<h:commandButton id="changeOfEmail" value="#{messages['jsf.ChangeEmail']}" 
+	        							 action="#{inactiveAccountAction.changeEmail}"/>
+	      			</s:div>
+        		</s:div>
 			</s:div>        							 
     	</h:form>
 

@@ -40,6 +40,7 @@ public class InactiveAccountAction implements Serializable
    {
        account = accountDAO.getByUsername(username);
    }
+   
 
    public void sendActivationEmail()
    {

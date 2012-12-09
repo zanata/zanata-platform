@@ -30,15 +30,18 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.openid.OpenIdProviderType;
+import org.zanata.util.HashUtil;
 
 import java.io.Serializable;
 
 /**
- * This action takes care of logging a user into the system. It contains logic to
- * handle the different authentication mechanisms offered by the system.
- *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * This action takes care of logging a user into the system. It contains logic
+ * to handle the different authentication mechanisms offered by the system.
+ * 
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("loginAction")
 @Scope(ScopeType.PAGE)
@@ -51,13 +54,16 @@ public class LoginAction implements Serializable
 
    @In
    private AuthenticationManager authenticationManager;
-   
+
    @In
    private AccountActivationKeyDAO accountActivationKeyDAO;
-   
+
    @In
    private AccountDAO accountDAO;
-   
+
+   @In
+   private ZanataIdentity identity;
+
    private String username;
 
    private String password;
@@ -67,7 +73,6 @@ public class LoginAction implements Serializable
    private OpenIdProviderType openIdProviderType;
 
    private AuthenticationType authType;
-   
 
    public String getUsername()
    {
@@ -105,13 +110,13 @@ public class LoginAction implements Serializable
    private void configureAuthentication()
    {
       // All others
-      if( authProvider == null )
+      if (authProvider == null)
       {
-         if( applicationConfiguration.isInternalAuth() )
+         if (applicationConfiguration.isInternalAuth())
          {
             this.authType = AuthenticationType.INTERNAL;
          }
-         else if( applicationConfiguration.isJaasAuth() )
+         else if (applicationConfiguration.isJaasAuth())
          {
             this.authType = AuthenticationType.JAAS;
          }
@@ -141,41 +146,36 @@ public class LoginAction implements Serializable
 
       switch (authType)
       {
-         case OPENID:
-            loginResult = this.loginWithOpenId();
-            break;
-         case INTERNAL:
-            loginResult = this.loginWithInternal();
-            break;
-         case JAAS:
-            loginResult = this.loginWithJaas();
-            break;
-         // Kerberos auth happens on its own
+      case OPENID:
+         loginResult = this.loginWithOpenId();
+         break;
+      case INTERNAL:
+         loginResult = this.loginWithInternal();
+         break;
+      case JAAS:
+         loginResult = this.loginWithJaas();
+         break;
+      // Kerberos auth happens on its own
       }
 
       return loginResult;
    }
 
-   public boolean isAccountExistAndNotActivated()
-   { 
-      HAccount account = accountDAO.getByUsername(username);
-      if(account != null)
+   public boolean isAccountActivated()
+   {
+      HAccount account = accountDAO.getByUsername(identity.getCredentials().getUsername());
+      if (account != null && account.getAccountActivationKey() == null)
       {
-         if(account.getAccountActivationKey() == null)
-         {
-            //account activated
-            return false;
-         }
-         else
-         {
-            //account not activated
-            return true;
-         }
+         // account activated
+         return true;
       }
-      //account not exist
-      return false;
+      else
+      {
+         // account not activated
+         return false;
+      }
    }
-
+  
    private String loginWithOpenId()
    {
       return authenticationManager.openIdLogin(openIdProviderType, username);

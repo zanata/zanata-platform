@@ -81,20 +81,21 @@
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SignIn'])}"/>
     <navigation from-action="#{loginAction.login}">
-      <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
+      <rule if="#{identity.loggedIn and loginAction.isAccountActivated() and zanataExternalLoginBean.newUser}">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and !zanataExternalLoginBean.newUser and !userRedirect.redirect}">
+      <rule if="#{identity.loggedIn and loginAction.isAccountActivated() and !zanataExternalLoginBean.newUser and !userRedirect.redirect}">
         <redirect view-id="/home.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and !zanataExternalLoginBean.newUser and userRedirect.redirect}">
+      <rule if="#{identity.loggedIn and loginAction.isAccountActivated() and !zanataExternalLoginBean.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
       </rule>
-      <rule if="#{!identity.loggedIn and loginAction.isAccountExistAndNotActivated()}">
+      <rule if="#{identity.loggedIn and !loginAction.isAccountActivated()}">
         <redirect view-id="/account/inactive_account.xhtml">
             <param name="username" value="#{loginAction.username}"/>
         </redirect>
       </rule>
+      
     </navigation>
   </page>
 
@@ -145,9 +146,6 @@
   		<redirect view-id="/home.xhtml" />
   	</navigation>
   	
-  	<navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
-  		<redirect view-id="/home.xhtml" />
-  	</navigation>
   </page>
   
   

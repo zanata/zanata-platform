@@ -129,7 +129,7 @@ public class HAccount extends ModelEntityBase implements Serializable
       return passwordHash;
    }
 
-   @UserEnabled
+//   @UserEnabled
    public boolean isEnabled()
    {
       return enabled;
