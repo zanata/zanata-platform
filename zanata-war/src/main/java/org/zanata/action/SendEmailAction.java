@@ -64,11 +64,6 @@ public class SendEmailAction implements Serializable
    private static final String EMAIL_TYPE_REQUEST_TO_JOIN = "request_to_join_language_team";
    private static final String EMAIL_TYPE_REQUEST_TO_JOIN_GROUP = "request_to_join_group";
 
-   private static final String ADMIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_admin.xhtml";
-   private static final String COORDINATOR_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_coordinator.xhtml";
-   private static final String REQUEST_TO_JOIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join.xhtml";
-   private static final String REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join_group.xhtml";
-
    @In
    private EmailService emailServiceImpl;
 
@@ -220,25 +215,25 @@ public class SendEmailAction implements Serializable
       {
          if (emailType.equals(EMAIL_TYPE_CONTACT_ADMIN))
          {
-            String msg = emailServiceImpl.sendToAdminEmails(ADMIN_EMAIL_TEMPLATE, fromName, fromLoginName, replyEmail, subject, message);
+            String msg = emailServiceImpl.sendToAdminEmails(EmailService.ADMIN_EMAIL_TEMPLATE, fromName, fromLoginName, replyEmail, subject, message);
             FacesMessages.instance().add(msg);
             return "success";
          }
          else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR))
          {
-            String msg = emailServiceImpl.sendToLanguageCoordinators(COORDINATOR_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
+            String msg = emailServiceImpl.sendToLanguageCoordinators(EmailService.COORDINATOR_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
             FacesMessages.instance().add(msg);
             return "success";
          }
          else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN))
          {
-            String msg = emailServiceImpl.sendToLanguageCoordinators(REQUEST_TO_JOIN_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
+            String msg = emailServiceImpl.sendToLanguageCoordinators(EmailService.REQUEST_TO_JOIN_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
             FacesMessages.instance().add(msg);
             return "success";
          }
          else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP))
          {
-            String msg = emailServiceImpl.sendToVersionGroupMaintainer(REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE, groupMaintainers, fromName, fromLoginName, replyEmail, subject, message);
+            String msg = emailServiceImpl.sendToVersionGroupMaintainer(EmailService.REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE, groupMaintainers, fromName, fromLoginName, replyEmail, subject, message);
             FacesMessages.instance().add(msg);
             return "success";
          }

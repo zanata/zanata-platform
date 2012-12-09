@@ -8,15 +8,15 @@
    template="/WEB-INF/facelets/email/template_email.xhtml">
    
   <ui:param name="toName" value="#{messages['jsf.email.activation.register.Name']}" />
-  <ui:param name="toEmailAddr" value="#{inactivateAccountAction.toEmail}" />
+  <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
   <ui:param name="subject" value="#{messages['jsf.email.activation.Subject']}" />
   
   <ui:define name="body">
     <p>#{messages['jsf.email.activation.register.DearName']}</p>
     <p>#{messages['jsf.email.activation.ClickLinkToActivateAccount']}</p>
     <p>
-      <a href="#{applicationConfiguration.serverPath}/account/activate/#{inactivateAccountAction.activationKey}">
-      #{applicationConfiguration.serverPath}/account/activate/#{inactivateAccountAction.activationKey}
+      <a href="#{applicationConfiguration.serverPath}/account/activate/#{emailServiceImpl.activationKey}">
+      #{applicationConfiguration.serverPath}/account/activate/#{emailServiceImpl.activationKey}
       </a>
     </p>
   </ui:define>
