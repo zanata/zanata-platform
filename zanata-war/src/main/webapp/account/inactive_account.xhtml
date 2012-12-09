@@ -19,10 +19,25 @@
         	
         	<s:div>
         		<h:commandButton id="resendEmail" value="#{messages['jsf.ResendActivationEmail']}" 
-        							 action="#{inactivateAccountAction.sendActivationEmail}"/>
-                                     
+        							 action="#{inactiveAccountAction.sendActivationEmail}"/>
+
+                OR
+                Update email and resend activation email:
+                <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
+                    <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+                    <h:inputText id="email" required="true"
+                                 value="#{inactiveAccountAction.email}">
+                        <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
+                    </h:inputText>
+                    <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
+                        <rich:toolTip>
+                            #{messages['jsf.EmailToolTip']}
+                        </rich:toolTip>
+                    </s:span>
+                </s:decorate>
+
         		<h:commandButton id="changeOfEmail" value="#{messages['jsf.ChangeEmail']}" 
-        							 action="#{inactivateAccountAction.changeEmail}"/>     
+        							 action="#{inactiveAccountAction.changeEmail}"/>
 			</s:div>        							 
     	</h:form>
 

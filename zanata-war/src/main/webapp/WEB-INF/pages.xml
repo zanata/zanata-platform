@@ -91,7 +91,8 @@
         <redirect url="#{userRedirect.url}" />
       </rule>
       <rule if="#{!identity.loggedIn and loginAction.isAccountExistAndNotActivated()}">
-        <redirect view-id="/account/inactivate_account.xhtml">
+        <redirect view-id="/account/inactive_account.xhtml">
+            <param name="username" value="#{loginAction.username}"/>
         </redirect>
       </rule>
     </navigation>
@@ -135,14 +136,16 @@
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Register'])}"/>
   </page>
   
-  <page view-id="/account/inactivate_account.xhtml">
+  <page view-id="/account/inactive_account.xhtml">
   	<restrict>#{!identity.loggedIn}</restrict>
-  	
-  	<navigation from-action="#{inactivateAccountAction.sendActivationEmail}">
+    <param name="username" value="#{inactiveAccountAction.username}" />
+    <action execute="#{inactiveAccountAction.init()}"/>
+
+  	<navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
   		<redirect view-id="/home.xhtml" />
   	</navigation>
   	
-  	<navigation from-action="#{inactivateAccountAction.sendActivationEmail}">
+  	<navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
   		<redirect view-id="/home.xhtml" />
   	</navigation>
   </page>

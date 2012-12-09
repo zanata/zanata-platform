@@ -20,8 +20,6 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -33,6 +31,8 @@ import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.openid.OpenIdProviderType;
+
+import java.io.Serializable;
 
 /**
  * This action takes care of logging a user into the system. It contains logic to
@@ -58,9 +58,6 @@ public class LoginAction implements Serializable
    @In
    private AccountDAO accountDAO;
    
-   @In(create = true)
-   private InactivateAccountAction inactivateAccountAction;
-
    private String username;
 
    private String password;
@@ -172,9 +169,6 @@ public class LoginAction implements Serializable
          else
          {
             //account not activated
-            inactivateAccountAction.setActivationKey(account.getAccountActivationKey().getKeyHash());
-            inactivateAccountAction.setPersonName(account.getPerson().getName());
-            inactivateAccountAction.setToEmail(account.getPerson().getEmail());
             return true;
          }
       }
