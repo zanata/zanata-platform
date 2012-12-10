@@ -83,7 +83,9 @@ public class NavigationServiceUnitTest
       initData();
       UserConfigHolder  configHolder = new UserConfigHolder();
       configHolder.setEditorPageSize(EDITOR_PAGE_SIZE);
-      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class));
+      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl();
+      ModalNavigationStateHolder navigationStateHolder = new ModalNavigationStateHolder(configHolder);
+      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder);
       service.addPageDataChangeListener(pageDataChangeListener);
 
       verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
@@ -92,8 +94,8 @@ public class NavigationServiceUnitTest
       verify(eventBus).addHandler(NavTransUnitEvent.getType(), service);
       verify(eventBus).addHandler(EditorPageSizeChangeEvent.TYPE, service);
 
-      service.getPageModel().setData(data.subList(0, configHolder.getEditorPageSize()));
-      service.getNavigationStateHolder().init(idStateMap, idIndexList, configHolder.getEditorPageSize());
+      pageModel.setData(data.subList(0, configHolder.getEditorPageSize()));
+      navigationStateHolder.init(idStateMap, idIndexList);
       initContext = new GetTransUnitActionContext(new DocumentId(1)).changeCount(configHolder.getEditorPageSize());
    }
 

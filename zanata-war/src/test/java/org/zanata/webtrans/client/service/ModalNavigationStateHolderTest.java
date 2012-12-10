@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.service;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -18,6 +19,7 @@ import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.common.collect.Lists;
 
@@ -45,6 +47,7 @@ public class ModalNavigationStateHolderTest
    );
    private Map<TransUnitId,ContentState> transIdStateMap;
    private List<TransUnitId> idIndexList;
+   private UserConfigHolder configHolder;
    // @formatter:on
 
    @BeforeClass
@@ -66,8 +69,9 @@ public class ModalNavigationStateHolderTest
          transIdStateMap.put(tu.getId(), tu.getStatus());
          idIndexList.add(tu.getId());
       }
-      navigationStateHolder = new ModalNavigationStateHolder();
-      navigationStateHolder.init(transIdStateMap, idIndexList, 50);
+      configHolder = new UserConfigHolder();
+      navigationStateHolder = new ModalNavigationStateHolder(configHolder);
+      navigationStateHolder.init(transIdStateMap, idIndexList);
    }
 
    @Test
@@ -77,111 +81,98 @@ public class ModalNavigationStateHolderTest
    }
 
    @Test
-   public void testGetNextRowIndex()
+   public void testGetNextRow()
    {
-      navigationStateHolder.updateRowIndexInDocument(0);
+      navigationStateHolder.updateSelected(new TransUnitId(0));
 
-      assertThat(navigationStateHolder.getNextRowIndex(), is(1));
+      assertThat(navigationStateHolder.getNextId().getId(), is(1L));
 
-      navigationStateHolder.updateRowIndexInDocument(3);
-      assertThat(navigationStateHolder.getNextRowIndex(), is(4));
+      navigationStateHolder.updateSelected(new TransUnitId(3));
+      assertThat(navigationStateHolder.getNextId().getId(), is(4L));
 
-      navigationStateHolder.updateRowIndexInDocument(5);
-      assertThat(navigationStateHolder.getNextRowIndex(), is(6));
+      navigationStateHolder.updateSelected(new TransUnitId(5));
+      assertThat(navigationStateHolder.getNextId().getId(), is(6L));
 
    }
 
    @Test
-   public void testGetPrevRowIndex()
+   public void testGetNextRowWithContentStateFilterOn()
    {
-      navigationStateHolder.updateRowIndexInDocument(1);
-      assertEquals(navigationStateHolder.getPrevRowIndex(), 0);
+      configHolder.setFilterByNeedReview(true);
+      configHolder.setFilterByUntranslated(true);
 
-      navigationStateHolder.updateRowIndexInDocument(4);
-      assertEquals(navigationStateHolder.getPrevRowIndex(), 3);
+      navigationStateHolder.updateSelected(new TransUnitId(2));
+      assertThat(navigationStateHolder.getNextId().getId(), is(4L));
+
+      navigationStateHolder.updateSelected(new TransUnitId(4));
+      assertThat(navigationStateHolder.getNextId().getId(), is(5L));
    }
 
    @Test
-   public void testGetPreviousStateRowIndexNewAndFuzzy()
+   public void testGetPrevRow()
    {
-      navigationStateHolder.updateRowIndexInDocument(9);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 8);
+      navigationStateHolder.updateSelected(new TransUnitId(1));
+      assertThat(navigationStateHolder.getPrevId().getId(), is(0L));
 
-      navigationStateHolder.updateRowIndexInDocument(8);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 6);
-
-      navigationStateHolder.updateRowIndexInDocument(4);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 2);
-
-      navigationStateHolder.updateRowIndexInDocument(0);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 0);
+      navigationStateHolder.updateSelected(new TransUnitId(4));
+      assertThat(navigationStateHolder.getPrevId().getId(), is(3L));
    }
 
    @Test
-   public void testGetPreviousStateRowIndexNew()
+   public void testGetPrevRowWithContentStateFilterOn()
    {
-      navigationStateHolder.updateRowIndexInDocument(9);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.NEW_PREDICATE), 8);
+      configHolder.setFilterByTranslated(true);
+      configHolder.setFilterByUntranslated(true);
 
-      navigationStateHolder.updateRowIndexInDocument(8);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.NEW_PREDICATE), 5);
+      navigationStateHolder.updateSelected(new TransUnitId(4));
+      assertThat(navigationStateHolder.getPrevId().getId(), is(3L));
 
-      navigationStateHolder.updateRowIndexInDocument(0);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.NEW_PREDICATE), 0);
-
+      navigationStateHolder.updateSelected(new TransUnitId(3));
+      assertThat(navigationStateHolder.getPrevId().getId(), is(1L));
    }
 
    @Test
-   public void testGetPreviousStateRowIndexFuzzy()
+   public void testGetPreviousStateRow()
    {
-      navigationStateHolder.updateRowIndexInDocument(9);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 6);
+      navigationStateHolder.updateSelected(new TransUnitId(9));
+      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+      assertThat(navigationStateHolder.getPreviousStateId().getId(), is(8L));
 
-      navigationStateHolder.updateRowIndexInDocument(6);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
+      navigationStateHolder.updateSelected(new TransUnitId(8));
+      configHolder.setNavOption(NavOption.FUZZY);
+      assertEquals(navigationStateHolder.getPreviousStateId().getId(), 6);
 
-      navigationStateHolder.updateRowIndexInDocument(3);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 2);
+      navigationStateHolder.updateSelected(new TransUnitId(4));
+      configHolder.setNavOption(NavOption.UNTRANSLATED);
+      assertEquals(navigationStateHolder.getPreviousStateId().getId(), 1);
+
+      navigationStateHolder.updateSelected(new TransUnitId(0));
+      configHolder.setNavOption(NavOption.FUZZY);
+      assertEquals(navigationStateHolder.getPreviousStateId().getId(), 0);
    }
 
    @Test
-   public void testGetNextStateRowIndexNewAndFuzzy()
+   public void testGetNextStateRow()
    {
-      navigationStateHolder.updateRowIndexInDocument(2);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 4);
+      navigationStateHolder.updateSelected(new TransUnitId(2));
+      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+      assertEquals(navigationStateHolder.getNextStateId().getId(), 4);
 
-      navigationStateHolder.updateRowIndexInDocument(4);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 5);
+      navigationStateHolder.updateSelected(new TransUnitId(3));
+      configHolder.setNavOption(NavOption.FUZZY);
+      assertEquals(navigationStateHolder.getNextStateId().getId(), 4);
 
-      navigationStateHolder.updateRowIndexInDocument(7);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 8);
-   }
+      navigationStateHolder.updateSelected(new TransUnitId(7));
+      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+      assertEquals(navigationStateHolder.getNextStateId().getId(), 8);
 
-   @Test
-   public void testGetNextStateRowIndexNew()
-   {
-      navigationStateHolder.updateRowIndexInDocument(0);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.NEW_PREDICATE), 1);
+      navigationStateHolder.updateSelected(new TransUnitId(5));
+      configHolder.setNavOption(NavOption.UNTRANSLATED);
+      assertEquals(navigationStateHolder.getNextStateId().getId(), 8);
 
-      navigationStateHolder.updateRowIndexInDocument(5);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.NEW_PREDICATE), 8);
-
-      navigationStateHolder.updateRowIndexInDocument(9);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.NEW_PREDICATE), 9);
-
-   }
-
-   @Test
-   public void testGetNextStateRowIndexFuzzy()
-   {
-      navigationStateHolder.updateRowIndexInDocument(0);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 2);
-
-      navigationStateHolder.updateRowIndexInDocument(3);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
-
-      navigationStateHolder.updateRowIndexInDocument(10);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 10);
+      navigationStateHolder.updateSelected(new TransUnitId(9));
+      configHolder.setNavOption(NavOption.UNTRANSLATED);
+      assertEquals(navigationStateHolder.getNextStateId().getId(), 9);
    }
 
    @Test
@@ -189,39 +180,42 @@ public class ModalNavigationStateHolderTest
    {
       navigationStateHolder.updateState(new TransUnitId(9L), ContentState.Approved);
 
-      navigationStateHolder.updateRowIndexInDocument(10);
-      assertEquals(navigationStateHolder.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 8);
+      navigationStateHolder.updateSelected(new TransUnitId(10));
+      assertEquals(navigationStateHolder.getPreviousStateId().getId(), 8);
 
       navigationStateHolder.updateState(new TransUnitId(3L), ContentState.NeedReview);
 
-      navigationStateHolder.updateRowIndexInDocument(2);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 3);
+      navigationStateHolder.updateSelected(new TransUnitId(2));
+      assertEquals(navigationStateHolder.getNextStateId().getId(), 3);
    }
 
    @Test
    public void canGetTargetPage() {
       // given page size is 3 and we have 11 trans unit
       // 0 1 2 | 3 4 5 | 6 7 8 | 9 10
-      navigationStateHolder.init(transIdStateMap, idIndexList, 3);
+      configHolder.setEditorPageSize(3);
+      navigationStateHolder.init(transIdStateMap, idIndexList);
 
-      assertThat(navigationStateHolder.getTargetPage(0), Matchers.equalTo(0));
-      assertThat(navigationStateHolder.getTargetPage(2), Matchers.equalTo(0));
-      assertThat(navigationStateHolder.getTargetPage(3), Matchers.equalTo(1));
-      assertThat(navigationStateHolder.getTargetPage(7), Matchers.equalTo(2));
-      assertThat(navigationStateHolder.getTargetPage(9), Matchers.equalTo(3));
-      assertThat(navigationStateHolder.getTargetPage(10), Matchers.equalTo(3));
+      assertThat(navigationStateHolder.getTargetPage(new TransUnitId(0)), Matchers.equalTo(0));
+      assertThat(navigationStateHolder.getTargetPage(new TransUnitId(2)), Matchers.equalTo(0));
+      assertThat(navigationStateHolder.getTargetPage(new TransUnitId(3)), Matchers.equalTo(1));
+      assertThat(navigationStateHolder.getTargetPage(new TransUnitId(7)), Matchers.equalTo(2));
+      assertThat(navigationStateHolder.getTargetPage(new TransUnitId(9)), Matchers.equalTo(3));
+      assertThat(navigationStateHolder.getTargetPage(new TransUnitId(10)), Matchers.equalTo(3));
    }
 
    @Test
    public void canUpdatePageSize()
    {
-      navigationStateHolder.init(transIdStateMap, idIndexList, 3);
+      configHolder.setEditorPageSize(3);
+      navigationStateHolder.init(transIdStateMap, idIndexList);
       assertThat(navigationStateHolder.getPageCount(), Matchers.equalTo(4));
-      navigationStateHolder.updateRowIndexInDocument(3);
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
+      navigationStateHolder.updateSelected(new TransUnitId(3));
+      assertThat(navigationStateHolder.getNextStateId(), equalTo(new TransUnitId(4)));
 
-      navigationStateHolder.updatePageSize(4);
+      configHolder.setEditorPageSize(4);
+      navigationStateHolder.updatePageSize();
       assertThat(navigationStateHolder.getPageCount(), Matchers.equalTo(3));
-      assertEquals(navigationStateHolder.getNextStateRowIndex(UserConfigHolder.FUZZY_PREDICATE), 4);
+      assertThat(navigationStateHolder.getNextStateId(), equalTo(new TransUnitId(4)));
    }
 }

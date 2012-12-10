@@ -226,7 +226,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onTransUnitEdit(TransUnitEditEvent event)
    {
-      if (event.getSelectedTransUnitId() != null)
+      if (event.getSelectedTransUnitId() != null && display != null)
       {
          ArrayList<ToggleEditor> editors = display.getEditors();
          editorTranslators.clearTranslatorList(editors);

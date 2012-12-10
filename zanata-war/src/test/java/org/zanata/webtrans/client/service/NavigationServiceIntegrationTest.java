@@ -107,15 +107,19 @@ public class NavigationServiceIntegrationTest
    @Captor
    private ArgumentCaptor<GwtEvent> eventCaptor;
    private GetTransUnitListResult getTransUnitListResult;
+   private SinglePageDataModelImpl pageModel;
+   private UserConfigHolder configHolder;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
 
-      service = new NavigationService(eventBus, dispatcher, new UserConfigHolder(), messages);
+      pageModel = new SinglePageDataModelImpl();
+      configHolder = new UserConfigHolder();
+      navigationStateHolder = new ModalNavigationStateHolder(configHolder);
+      service = new NavigationService(eventBus, dispatcher, configHolder, messages, pageModel, navigationStateHolder);
       service.addPageDataChangeListener(transUnitsTablePresenter);
-      navigationStateHolder = service.getNavigationStateHolder();
 
       context = new GetTransUnitActionContext(DOCUMENT_ID);
 
@@ -178,7 +182,7 @@ public class NavigationServiceIntegrationTest
 
    private List<Integer> getPageDataModelAsIds()
    {
-      return TestFixture.asIds(service.getCurrentPageValues());
+      return TestFixture.asIds(pageModel.getData());
    }
 
    @Test

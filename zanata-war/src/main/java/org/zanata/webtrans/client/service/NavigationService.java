@@ -43,7 +43,6 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -51,8 +50,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
-import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
-import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -82,18 +79,16 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
    //tracking variables
    private GetTransUnitActionContext context;
-   private boolean isLoadingTU = false;
-   private boolean isLoadingIndex =false;
 
    @Inject
-   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages)
+   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.configHolder = configHolder;
       this.messages = messages;
-      this.pageModel = new SinglePageDataModelImpl();
-      this.navigationStateHolder = new ModalNavigationStateHolder();
+      this.pageModel = pageModel;
+      this.navigationStateHolder = navigationStateHolder;
       bindHandlers();
    }
 
@@ -133,15 +128,17 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
             if (result.getNavigationIndex() != null)
             {
-               navigationStateHolder.init(result.getNavigationIndex().getTransIdStateList(), result.getNavigationIndex().getIdIndexList(), context.getCount());
+               navigationStateHolder.init(result.getNavigationIndex().getTransIdStateList(), result.getNavigationIndex().getIdIndexList());
                eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
             }
             navigationStateHolder.updateCurrentPage(result.getTargetPage());
 
             if (!units.isEmpty())
             {
+               TransUnitId selectedId = units.get(result.getGotoRow()).getId();
+               navigationStateHolder.updateSelected(selectedId);
                // in case there is pending save (as fuzzy) happening, we do not want to trigger another pending save
-               eventBus.fireEvent(new TableRowSelectedEvent(units.get(result.getGotoRow()).getId()).setSuppressSavePending(true));
+               eventBus.fireEvent(new TableRowSelectedEvent(selectedId).setSuppressSavePending(true));
             }
             eventBus.fireEvent(new PageChangeEvent(result.getTargetPage()));
             highlightSearch();
@@ -184,42 +181,42 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
-      int rowIndex;
+      Log.info(navigationStateHolder.toString());
+      TransUnitId targetId;
       switch (event.getRowType())
       {
          case PrevEntry:
-            rowIndex = navigationStateHolder.getPrevRowIndex();
+            targetId = navigationStateHolder.getPrevId();
             break;
          case NextEntry:
-            rowIndex = navigationStateHolder.getNextRowIndex();
+            targetId = navigationStateHolder.getNextId();
             break;
          case PrevState:
-            rowIndex = navigationStateHolder.getPreviousStateRowIndex(configHolder.getContentStatePredicate());
+            targetId = navigationStateHolder.getPreviousStateId();
             break;
          case NextState:
-            rowIndex = navigationStateHolder.getNextStateRowIndex(configHolder.getContentStatePredicate());
+            targetId = navigationStateHolder.getNextStateId();
             break;
          case FirstEntry:
-            rowIndex = 0;
+            targetId = navigationStateHolder.getFirstId();
             break;
          case LastEntry:
-            rowIndex = navigationStateHolder.maxRowIndex();
+            targetId = navigationStateHolder.getLastId();
             break;
          default:
             Log.warn("ignore unknown navigation type:" + event.getRowType());
             return;
       }
-      int targetPage = navigationStateHolder.getTargetPage(rowIndex);
-      TransUnitId targetTransUnitId = navigationStateHolder.getTargetTransUnitId(rowIndex);
-      Log.info("target page : [" + targetPage + "] target TU id: " + targetTransUnitId + " rowIndex: " + rowIndex);
+      int targetPage = navigationStateHolder.getTargetPage(targetId);
+      Log.info("target page : [" + targetPage + "] target TU id: " + targetId);
 
       if (navigationStateHolder.getCurrentPage() == targetPage)
       {
-         eventBus.fireEvent(new TableRowSelectedEvent(targetTransUnitId));
+         eventBus.fireEvent(new TableRowSelectedEvent(targetId));
       }
       else
       {
-         loadPageAndGoToRow(targetPage, targetTransUnitId);
+         loadPageAndGoToRow(targetPage, targetId);
       }
    }
 
@@ -228,7 +225,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       int page = normalizePageIndex(pageIndex);
       GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(transUnitId);
       Log.debug("page index: " + page + " page context: " + newContext);
-      requestTransUnitsAndUpdatePageIndex(newContext, false);
+      requestTransUnitsAndUpdatePageIndex(newContext, true);
    }
 
    @Override
@@ -267,7 +264,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    public void onPageSizeChange(EditorPageSizeChangeEvent pageSizeChangeEvent)
    {
       execute(pageSizeChangeEvent);
-      navigationStateHolder.updatePageSize(pageSizeChangeEvent.getPageSize());
+      navigationStateHolder.updatePageSize();
       eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
    }
 
@@ -307,7 +304,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          pageModel.setSelected(rowIndexOnPage);
          context = context.changeTargetTransUnitId(pageModel.getSelectedOrNull().getId());
          eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
-         navigationStateHolder.updateRowIndexInDocument(rowIndexOnPage);
+         navigationStateHolder.updateSelected(getSelectedOrNull().getId());
       }
    }
 
@@ -342,31 +339,14 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    }
 
    /**
-    * for testing only.
-    * @return navigation state holder
-    */
-   protected ModalNavigationStateHolder getNavigationStateHolder()
-   {
-      return navigationStateHolder;
-   }
-
-   /**
     * for testing only
     * @param context GetTransUnitActionContext
     */
    protected void init(GetTransUnitActionContext context)
    {
       this.context = context;
+      configHolder.setEditorPageSize(context.getCount());
       requestTransUnitsAndUpdatePageIndex(context, true);
-   }
-
-   /**
-    * for testing only.
-    * @return page model
-    */
-   protected SinglePageDataModelImpl getPageModel()
-   {
-      return pageModel;
    }
 
    public static interface UpdateContextCommand
