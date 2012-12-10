@@ -141,12 +141,14 @@
   <page view-id="/account/inactive_account.xhtml">
   	<restrict>#{!identity.loggedIn}</restrict>
   	<action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}"/>
-    <action execute="#{inactiveAccountAction.init()}"/>
+  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.InactiveAccount'])}"/>
+    <action execute="#{inactiveAccountAction.init}"/>
   	<navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
   		<redirect view-id="/home.xhtml" />
   	</navigation>
-  	
+  	<navigation from-action="#{inactiveAccountAction.changeEmail}">
+  		<redirect view-id="/home.xhtml" />
+  	</navigation>
   </page>
   
   

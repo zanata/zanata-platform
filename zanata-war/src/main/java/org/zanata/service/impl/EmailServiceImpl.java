@@ -82,7 +82,8 @@ public class EmailServiceImpl implements EmailService
       renderer.render(emailTemplate);
 
       log.info("Sent activation account email: toName '{0}', toEmailAddress '{1}'", toName, toEmailAddr);
-      return "You will soon receive an email with a link to activate your account.";
+      return "#{messages['jsf.Account.ActivationMessage']}";
+      		
    }
    
    @Override

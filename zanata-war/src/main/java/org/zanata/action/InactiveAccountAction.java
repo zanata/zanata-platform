@@ -2,6 +2,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.ScopeType;
@@ -10,14 +11,15 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
-import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HPerson;
 import org.zanata.service.EmailService;
 
 @Name("inactiveAccountAction")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.SESSION)
 public class InactiveAccountAction implements Serializable
 {
    @In(create = true)
@@ -25,6 +27,9 @@ public class InactiveAccountAction implements Serializable
 
    @In
    private AccountDAO accountDAO;
+   
+   @In
+   private PersonDAO personDAO;
 
    @In
    private EmailService emailServiceImpl;
@@ -39,6 +44,8 @@ public class InactiveAccountAction implements Serializable
 
    public void init()
    {
+       email = "";
+       FacesMessages.instance().clear();
        account = accountDAO.getByUsername(username);
    }
 
@@ -48,10 +55,40 @@ public class InactiveAccountAction implements Serializable
       FacesMessages.instance().add(message);
    }
    
-   public String changeEmail()
+   public void changeEmail()
    {
-      return "";
+      if(validateEmail(email))
+      {
+         HPerson person = personDAO.findById(account.getPerson().getId(), true);
+         person.setEmail(email);
+         personDAO.makePersistent(person);
+         personDAO.flush();
+         
+         account.getPerson().setEmail(email);
+         FacesMessages.instance().add("Email updated.");
+         
+         sendActivationEmail();
+      }
    }
+   
+   private boolean validateEmail(String email)
+   {
+      if(StringUtils.isEmpty(email))
+      {
+         FacesMessages.instance().addToControl("email", "#{messages['javax.faces.component.UIInput.REQUIRED']}");
+         return false;
+      }
+      
+      HPerson person = personDAO.findByEmail(email);
+      
+      if( person != null && !person.getAccount().equals( account ) )
+      {
+         FacesMessages.instance().addToControl("email", "This email address is already taken");
+         return false;
+      }
+      return true;
+   }
+
 
     @NotEmpty
     @Email
