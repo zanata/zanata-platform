@@ -162,7 +162,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       {
          GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
          Log.info("page index: " + page + " page context: " + newContext);
-         requestTransUnitsAndUpdatePageIndex(newContext, false);
+         requestTransUnitsAndUpdatePageIndex(newContext, !configHolder.isAcceptAllStatus());
       }
    }
 
@@ -225,7 +225,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       int page = normalizePageIndex(pageIndex);
       GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(transUnitId);
       Log.debug("page index: " + page + " page context: " + newContext);
-      requestTransUnitsAndUpdatePageIndex(newContext, true);
+      requestTransUnitsAndUpdatePageIndex(newContext, !configHolder.isAcceptAllStatus());
    }
 
    @Override
