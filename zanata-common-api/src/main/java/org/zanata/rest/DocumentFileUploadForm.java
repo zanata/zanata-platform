@@ -22,11 +22,7 @@ package org.zanata.rest;
 
 import java.io.InputStream;
 import java.io.Serializable;
-
 import javax.ws.rs.FormParam;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
@@ -53,37 +49,85 @@ public class DocumentFileUploadForm implements Serializable
 
    @FormParam("file")
    @PartType("application/octet-stream")
-   @Getter
-   @Setter
    private InputStream fileStream;
 
    @FormParam("type")
    @PartType("text/plain")
-   @Getter
-   @Setter
    private String fileType;
 
    @FormParam("uploadId")
    @PartType("text/plain")
-   @Getter
-   @Setter
    private Long uploadId;
 
    @FormParam("first")
    @PartType("text/plain")
-   @Getter
-   @Setter
    private Boolean first;
 
    @FormParam("last")
    @PartType("text/plain")
-   @Getter
-   @Setter
    private Boolean last;
 
    @FormParam("hash")
    @PartType("text/plain")
-   @Getter
-   @Setter
    private String hash;
+
+   public InputStream getFileStream()
+   {
+      return fileStream;
+   }
+
+   public void setFileStream(InputStream fileStream)
+   {
+      this.fileStream = fileStream;
+   }
+
+   public String getFileType()
+   {
+      return fileType;
+   }
+
+   public void setFileType(String fileType)
+   {
+      this.fileType = fileType;
+   }
+
+   public Long getUploadId()
+   {
+      return uploadId;
+   }
+
+   public void setUploadId(Long uploadId)
+   {
+      this.uploadId = uploadId;
+   }
+
+   public Boolean getFirst()
+   {
+      return first;
+   }
+
+   public void setFirst(Boolean first)
+   {
+      this.first = first;
+   }
+
+   public Boolean getLast()
+   {
+      return last;
+   }
+
+   public void setLast(Boolean last)
+   {
+      this.last = last;
+   }
+
+   public String getHash()
+   {
+      return hash;
+   }
+
+   public void setHash(String hash)
+   {
+      this.hash = hash;
+   }
 }
