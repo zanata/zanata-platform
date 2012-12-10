@@ -91,14 +91,10 @@
         <redirect url="#{userRedirect.url}" />
       </rule>
       <rule if="#{identity.loggedIn and !loginAction.isAccountActivated()}">
-        <redirect view-id="/account/inactive_account.xhtml">
-            <param name="username" value="#{loginAction.username}"/>
-        </redirect>
+        <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
       <rule if="#{!identity.loggedIn and loginAction.isAuthenticated() and !loginAction.isAccountActivated()}">
-        <redirect view-id="/account/inactive_account.xhtml">
-            <param name="username" value="#{loginAction.username}"/>
-        </redirect>
+        <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
       
     </navigation>
@@ -144,9 +140,9 @@
   
   <page view-id="/account/inactive_account.xhtml">
   	<restrict>#{!identity.loggedIn}</restrict>
-    <param name="username" value="#{inactiveAccountAction.username}" />
+  	<action execute="#{breadcrumbs.clear}"/>
+  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}"/>
     <action execute="#{inactiveAccountAction.init()}"/>
-
   	<navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
   		<redirect view-id="/home.xhtml" />
   	</navigation>

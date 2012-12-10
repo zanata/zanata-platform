@@ -142,19 +142,7 @@ public class ZanataJpaIdentityStore extends JpaIdentityStore
       }
       
        
-      boolean success = passwordHash.equals(userPasswordProperty.getValue(user));
-            
-      if (success && Events.exists())
-      {
-         if (Contexts.isEventContextActive())
-         {
-            Contexts.getEventContext().set(AUTHENTICATED_USER, user);
-         }
-         
-         Events.instance().raiseEvent(EVENT_USER_AUTHENTICATED, user);
-      }
-      
-      return success;
+      return passwordHash.equals(userPasswordProperty.getValue(user));
    }
    
 

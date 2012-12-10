@@ -25,13 +25,12 @@
 	                <h:outputText value="OR" styleClass="input_help"/>
 	                
 	                <s:div>
-	                	<h:outputText value="Update email and resend activation email:" styleClass="input_help"/>
+	                	<h:outputText value="Update email address and resend activation email:" styleClass="input_help"/>
 		                
 		                
 		                <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
 		                    <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-		                    <h:inputText id="email" required="true"
-		                                 value="#{inactiveAccountAction.email}">
+		                    <h:inputText id="email"  value="#{inactiveAccountAction.email}">
 		                        <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
 		                    </h:inputText>
 		                    <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">

@@ -26,12 +26,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.management.IdentityStore;
-import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
-import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataJpaIdentityStore;
@@ -61,6 +58,9 @@ public class LoginAction implements Serializable
 
    @In
    private AccountDAO accountDAO;
+   
+   @In(create = true)
+   private InactiveAccountAction inactiveAccountAction;
 
    @In
    private ZanataJpaIdentityStore identityStore;
@@ -82,6 +82,7 @@ public class LoginAction implements Serializable
 
    public void setUsername(String username)
    {
+      inactiveAccountAction.setUsername(username);
       this.username = username;
    }
 

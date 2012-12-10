@@ -17,7 +17,7 @@ import org.zanata.model.HAccount;
 import org.zanata.service.EmailService;
 
 @Name("inactiveAccountAction")
-@Scope(ScopeType.PAGE)
+@Scope(ScopeType.CONVERSATION)
 public class InactiveAccountAction implements Serializable
 {
    @In(create = true)
@@ -41,7 +41,6 @@ public class InactiveAccountAction implements Serializable
    {
        account = accountDAO.getByUsername(username);
    }
-   
 
    public void sendActivationEmail()
    {
