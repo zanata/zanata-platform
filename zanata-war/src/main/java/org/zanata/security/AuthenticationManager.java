@@ -20,7 +20,8 @@
  */
 package org.zanata.security;
 
-import org.jboss.seam.Component;
+import java.util.List;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -28,7 +29,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.model.HAccount;
@@ -58,6 +58,9 @@ public class AuthenticationManager
    private ZanataIdentity identity;
 
    @In
+   private ZanataJpaIdentityStore identityStore;
+
+   @In
    private Credentials credentials;
 
    @In
@@ -73,17 +76,7 @@ public class AuthenticationManager
    private AccountDAO accountDAO;
 
 
-   /**
-    * Logs in a user using internal authentication.
-    *
-    * @param username User's name
-    * @param password User's password
-    * @return A String with the result of the operation.
-    */
-   public String login(String username, String password)
-   {
-      return this.login(AuthenticationType.INTERNAL, username, password);
-   }
+
 
    /**
     * Logs in a user using a specified authentication type.
@@ -93,7 +86,7 @@ public class AuthenticationManager
     * @param password User's password. May be null for some authentication types.
     * @return A String with the result of the operation.
     */
-   public String login( AuthenticationType authenticationType, String username, String password )
+   private String login(AuthenticationType authenticationType, String username, String password)
    {
       credentials.setUsername(username);
       credentials.setPassword(password);
@@ -105,6 +98,30 @@ public class AuthenticationManager
       }
 
       return result;
+   }
+
+   /**
+    * Logs in user with internal authentication type
+    * 
+    * @param username
+    * @param password
+    * @return
+    */
+   public String internalLogin(String username, String password)
+   {
+      return login(AuthenticationType.INTERNAL, username, password);
+   }
+
+   /**
+    * Logs in user with jaas authentication type
+    * 
+    * @param username
+    * @param password
+    * @return
+    */
+   public String jaasLogin(String username, String password)
+   {
+      return login(AuthenticationType.JAAS, username, password);
    }
 
    /**
@@ -187,6 +204,49 @@ public class AuthenticationManager
       {
          userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount, authenticatedCredentials, authType.name());
       }
+   }
+
+   public boolean isAccountActivated(String username)
+   {
+      HAccount account = accountDAO.getByUsername(username);
+      if (account != null && account.getAccountActivationKey() == null)
+      {
+         return true;
+      }
+      return false;
+   }
+
+   public boolean isAccountEnabled(String username)
+   {
+      return identityStore.isUserEnabled(username);
+   }
+
+   public boolean authenticate(String username, String password, boolean ignoreAccountEnabled)
+   {
+      if (ignoreAccountEnabled)
+      {
+         return identityStore.authenticateIgnoreEnabled(username, password);
+      }
+      else
+      {
+         return identityStore.authenticate(username, password);
+      }
+   }
+
+   public boolean isNewUser(String username)
+   {
+      return identityStore.isNewUser(username);
+   }
+
+   public void setAuthenticateUser(String username)
+   {
+      Object user = identityStore.lookupUser(username);
+      identityStore.setAuthenticateUser(user);
+   }
+
+   public List<String> getImpliedRoles(String username)
+   {
+      return identityStore.getImpliedRoles(username);
    }
 
 }

@@ -23,6 +23,10 @@
 	      <rule if="#{identity.loggedIn and !zanataExternalLoginBean.newUser and userRedirect.redirect}">
 	        <redirect url="#{userRedirect.url}" />
 	      </rule>
+	      <rule if="#{!identity.loggedIn and zanataExternalLoginBean.isRedirectToInactiveAccPage()}">
+	      	<begin-conversation/>
+	        <redirect view-id="/account/inactive_account.xhtml"/>
+	      </rule>
 	      <rule if="#{!identity.loggedIn}">
 	        <redirect view-id="/account/login_input.xhtml" />
 	      </rule>
@@ -55,6 +59,7 @@
   </page>
   
   <!-- Account -->
+    <!-- Kerberos authentication -->
    <page view-id="/account/login.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
@@ -70,31 +75,32 @@
         <!-- TODO add login success message -->
         <redirect url="#{userRedirect.url}" />
       </rule>
+      <rule if-outcome="inactiveAccount">
+      	<begin-conversation/>
+        <redirect view-id="/account/inactive_account.xhtml"/>
+      </rule>
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
       </rule>
 	</navigation>
   </page>
 
+   <!-- Internal authentication -->
    <page view-id="/account/login_input.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SignIn'])}"/>
     <navigation from-action="#{loginAction.login}">
-      <rule if="#{identity.loggedIn and loginAction.isAccountActivated() and zanataExternalLoginBean.newUser}">
+      <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and loginAction.isAccountActivated() and !zanataExternalLoginBean.newUser and !userRedirect.redirect}">
+      <rule if="#{identity.loggedIn and !zanataExternalLoginBean.newUser and !userRedirect.redirect}">
         <redirect view-id="/home.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and loginAction.isAccountActivated() and !zanataExternalLoginBean.newUser and userRedirect.redirect}">
+      <rule if="#{identity.loggedIn and !zanataExternalLoginBean.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
       </rule>
-      <rule if="#{identity.loggedIn and !loginAction.isAccountActivated()}">
-      	<begin-conversation/>
-        <redirect view-id="/account/inactive_account.xhtml"/>
-      </rule>
-      <rule if="#{!identity.loggedIn and loginAction.isAuthenticated() and !loginAction.isAccountActivated()}">
+      <rule if="#{!identity.loggedIn and loginAction.isAuthenticatedNotActivate()}">
       	<begin-conversation/>
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
@@ -141,7 +147,6 @@
   </page>
   
   <page view-id="/account/inactive_account.xhtml">
-  	<restrict>#{!identity.loggedIn}</restrict>
   	<action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.InactiveAccount'])}"/>
     <action execute="#{inactiveAccountAction.init}"/>

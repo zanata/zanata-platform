@@ -27,11 +27,9 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
-import org.zanata.security.ZanataJpaIdentityStore;
 import org.zanata.security.openid.OpenIdProviderType;
 
 /**
@@ -48,13 +46,10 @@ public class LoginAction implements Serializable
    private static final long serialVersionUID = 1L;
 
    @In
-   private ApplicationConfiguration applicationConfiguration;
-
-   @In
    private AuthenticationManager authenticationManager;
 
    @In
-   private AccountActivationKeyDAO accountActivationKeyDAO;
+   private ApplicationConfiguration applicationConfiguration;
 
    @In
    private AccountDAO accountDAO;
@@ -62,9 +57,6 @@ public class LoginAction implements Serializable
    @In(create = true)
    private InactiveAccountAction inactiveAccountAction;
 
-   @In
-   private ZanataJpaIdentityStore identityStore;
-   
    private String username;
 
    private String password;
@@ -161,16 +153,21 @@ public class LoginAction implements Serializable
 
       return loginResult;
    }
-
-   public boolean isAccountActivated()
-   {
-      return identityStore.isUserEnabled(username);
-   }
    
-   public boolean isAuthenticated()
+   /**
+    * For INTERNAL authentication - check if user account is authenticated but
+    * not activate
+    * 
+    * @return
+    */
+   public boolean isAuthenticatedNotActivate()
    {
-      inactiveAccountAction.setUsername(username);
-      return identityStore.authenticateIgnoreEnabled(username, password);
+      if (authenticationManager.authenticate(username, password, true) && !authenticationManager.isAccountActivated(username))
+      {
+         inactiveAccountAction.setUsername(username);
+         return true;
+      }
+      return false;
    }
   
    private String loginWithOpenId()
@@ -180,12 +177,12 @@ public class LoginAction implements Serializable
 
    private String loginWithInternal()
    {
-      return authenticationManager.login(username, password);
+      return authenticationManager.internalLogin(username, password);
    }
 
    private String loginWithJaas()
    {
-      return authenticationManager.login(AuthenticationType.JAAS, username, password);
+      return authenticationManager.jaasLogin(username, password);
    }
 
 }

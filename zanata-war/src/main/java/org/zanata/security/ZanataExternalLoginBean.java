@@ -21,10 +21,14 @@
 package org.zanata.security;
 
 
+import static org.jboss.seam.annotations.Install.APPLICATION;
+
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -35,8 +39,7 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
-
-import static org.jboss.seam.annotations.Install.APPLICATION;
+import org.zanata.action.InactiveAccountAction;
 
 @Name("zanataExternalLoginBean")
 @Scope(ScopeType.SESSION)
@@ -45,33 +48,83 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @Startup
 public class ZanataExternalLoginBean implements Serializable
 {
-
-   /**
-    * 
-    */
    private static final long serialVersionUID = 1L;
 
    private ZanataIdentity identity;
 
-   private ZanataJpaIdentityStore identityStore;
-   
    private ApplicationConfiguration applicationConfiguration;
 
    private UserRedirectBean userRedirectBean;
+
+   private AuthenticationManager authenticationManager;
+
+   private String redirectUsername = "";
+
+   private InactiveAccountAction inactiveAccountAction;
 
    @Create
    public void init()
    {
       identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-      identityStore = (ZanataJpaIdentityStore) Component.getInstance(ZanataJpaIdentityStore.class, ScopeType.APPLICATION);
       applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
       userRedirectBean = (UserRedirectBean) Component.getInstance(UserRedirectBean.class, ScopeType.SESSION);
+      authenticationManager = (AuthenticationManager) Component.getInstance(AuthenticationManager.class, ScopeType.SESSION);
    }
 
 
+   public boolean isAccountActivate()
+   {
+      String username = identity.getCredentials().getUsername();
+      if (!authenticationManager.isAccountActivated(username))
+      {
+         FacesMessages.instance().clear();
+         FacesMessages.instance().add("#{messages['org.jboss.seam.loginFailed']}");
+         identity.setPreAuthenticated(false);
+         identity.unAuthenticate();
+
+         redirectUsername = username;
+
+         return false;
+      }
+      redirectUsername = "";
+      return true;
+   }
+
+   public boolean isAccountEnabled()
+   {
+      String username = identity.getCredentials().getUsername();
+      if (!authenticationManager.isAccountEnabled(username))
+      {
+         FacesMessages.instance().clear();
+         FacesMessages.instance().add("User {0} has been disabled. Please contact server admin.", username);
+         identity.setPreAuthenticated(false);
+         identity.unAuthenticate();
+
+         return false;
+      }
+      return true;
+   }
+
+   public boolean isRedirectToInactiveAccPage()
+   {
+      if (!StringUtils.isEmpty(redirectUsername))
+      {
+         initInactionAccountAction();
+         return true;
+      }
+      return false;
+   }
+
+   @Begin
+   private void initInactionAccountAction()
+   {
+      inactiveAccountAction = (InactiveAccountAction) Component.getInstance(InactiveAccountAction.class, ScopeType.CONVERSATION);
+      inactiveAccountAction.setUsername(redirectUsername);
+   }
+
    public boolean isNewUser()
    {
-      return identityStore.isNewUser(identity.getCredentials().getUsername());
+      return authenticationManager.isNewUser(identity.getCredentials().getUsername());
    }
 
    public boolean externalLogin()
@@ -81,26 +134,13 @@ public class ZanataExternalLoginBean implements Serializable
 
    public void applyAuthentication()
    {
-      Object user = identityStore.lookupUser(identity.getCredentials().getUsername());
-      for (String role : identityStore.getImpliedRoles(identity.getCredentials().getUsername()))
+      String username = identity.getCredentials().getUsername();
+
+      for (String role : authenticationManager.getImpliedRoles(username))
       {
          identity.addRole(role);
       }
-      identityStore.setAuthenticateUser(user);
-   }
-
-   public boolean checkDisabledUser()
-   {
-      String username = identity.getCredentials().getUsername();
-      if (!identityStore.isUserEnabled(username))
-      {
-         FacesMessages.instance().clear();
-         FacesMessages.instance().add("User {0} has been disabled. Please check your email for a validation code, or contact server admin.", username);
-         identity.setPreAuthenticated(false);
-         identity.unAuthenticate();
-         return true;
-      }
-      return false;
+      authenticationManager.setAuthenticateUser(username);
    }
 
 
@@ -108,9 +148,16 @@ public class ZanataExternalLoginBean implements Serializable
    public void loginInSuccessful()
    {
       identity.setPreAuthenticated(true);
-      if (externalLogin() && !isNewUser() && !checkDisabledUser())
+      if (externalLogin() && !isNewUser())
       {
-         applyAuthentication();
+         if (isAccountActivate())
+         {
+            applyAuthentication();
+         }
+         else if (isAccountEnabled())
+         {
+            applyAuthentication();
+         }
       }
    }
 
@@ -144,6 +191,10 @@ public class ZanataExternalLoginBean implements Serializable
 
       if (identity.getAuthenticationType() == AuthenticationType.KERBEROS && !identity.isLoggedIn())
       {
+         if (isRedirectToInactiveAccPage())
+         {
+            return "inactiveAccount";
+         }
          return "home";
       }
 
