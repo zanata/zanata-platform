@@ -32,8 +32,6 @@
                 </executions>
                 <configuration>
                     <mainClass>org.zanata.client.ZanataClient</mainClass>
-                    <!-- mainly to get logging working: -->
-                    <classpathScope>test</classpathScope>
                 </configuration>
             </plugin>
         </plugins>
