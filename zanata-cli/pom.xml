@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.zanata</groupId>
-		<artifactId>client</artifactId>
-		<version>2.0.2-SNAPSHOT</version>
-	</parent>
-	<artifactId>zanata-cli</artifactId>
-	<name>Zanata command-line client</name>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.zanata</groupId>
+        <artifactId>client</artifactId>
+        <version>2.0.2-SNAPSHOT</version>
+    </parent>
+    <artifactId>zanata-cli</artifactId>
+    <name>Zanata command-line client</name>
 
     <!-- Should be the same as zanata-client/pom.xml -->
     <scm>
@@ -40,24 +40,31 @@
     </build>
 
 
-	<dependencies>
-		<dependency>
-			<groupId>args4j</groupId>
-			<artifactId>args4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-client-commands</artifactId>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-client-commands</artifactId>
+        </dependency>
+    </dependencies>
 </project>
