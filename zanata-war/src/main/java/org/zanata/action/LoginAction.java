@@ -82,7 +82,6 @@ public class LoginAction implements Serializable
 
    public void setUsername(String username)
    {
-      inactiveAccountAction.setUsername(username);
       this.username = username;
    }
 
@@ -170,6 +169,7 @@ public class LoginAction implements Serializable
    
    public boolean isAuthenticated()
    {
+      inactiveAccountAction.setUsername(username);
       return identityStore.authenticateIgnoreEnabled(username, password);
    }
   
