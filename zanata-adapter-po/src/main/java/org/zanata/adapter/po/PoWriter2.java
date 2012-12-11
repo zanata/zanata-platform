@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
+import org.fedorahosted.tennera.jgettext.PoWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
@@ -33,7 +34,7 @@ import org.zanata.util.PathUtil;
 public class PoWriter2
 {
    private static final Logger log = LoggerFactory.getLogger(PoWriter2.class);
-   private final org.fedorahosted.tennera.jgettext.PoWriter poWriter = new org.fedorahosted.tennera.jgettext.PoWriter();
+   private final PoWriter poWriter;
    private static final int DEFAULT_NPLURALS = 1;
 
    // TODO Expose and use the one in org.fedorahosted.tennera.jgettext.HeaderFields
@@ -43,11 +44,22 @@ public class PoWriter2
          Pattern.CASE_INSENSITIVE);
 
 
-   public PoWriter2()
+   public PoWriter2(boolean encodeTabs)
    {
+      this.poWriter = new PoWriter(encodeTabs);
    }
 
-   private void mkdirs(File dir) throws IOException
+   public PoWriter2()
+   {
+      this(false);
+   }
+
+   /**
+    * Creates dir and its parents
+    * @param dir
+    * @throws IOException
+    */
+   private void makeDirs(File dir) throws IOException
    {
       if (!dir.exists())
       {
@@ -139,7 +151,7 @@ public class PoWriter2
     */
    public void writePoToFile(File poFile, Resource doc, TranslationsResource targetDoc) throws IOException
    {
-      mkdirs(poFile.getParentFile());
+      makeDirs(poFile.getParentFile());
       FileWriter fWriter = new FileWriter(poFile);
       write(fWriter, "UTF-8", doc, targetDoc);
    }
