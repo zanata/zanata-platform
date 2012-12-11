@@ -135,7 +135,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private LocaleList effectiveLocales;
 
    /**
-    * Maximum size, in bytes, of document chunks to transmit. Documents smaller
+    * Maximum size, in bytes, of document chunks to transmit when using project type 'raw'. Documents smaller
     * than this size will be transmitted in a single request, larger documents
     * will be sent over multiple requests.
     * 
@@ -146,7 +146,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private int maxChunkSize = 1024 * 1024;
 
    /**
-    * File types to locate and transmit to the server.
+    * File types to locate and transmit to the server when using project type "raw".
     * 
     * @parameter expression="${zanata.fileTypes}" default-value="txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb"
     */
