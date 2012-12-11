@@ -9,12 +9,12 @@
 	<artifactId>zanata-client-commands</artifactId>
 	<name>Zanata client commands</name>
 
-   <!-- Should be the same as zanata-client/pom.xml -->
-   <scm>
-      <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
-      <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
-      <url>https://github.com/zanata/zanata-client</url>
-   </scm>
+    <!-- Should be the same as zanata-client/pom.xml -->
+    <scm>
+        <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
+        <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
+        <url>https://github.com/zanata/zanata-client</url>
+    </scm>
 
 	<dependencies>
 		<dependency>

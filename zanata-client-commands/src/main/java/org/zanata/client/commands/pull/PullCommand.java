@@ -108,6 +108,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
       }
       logger.info("Locales to pull: {}", opts.getLocaleMapList());
       logger.info("Encode tab as \\t: {}", opts.getEncodeTabs());
+      logger.info("Current directory: {}", System.getProperty("user.dir"));
       if (opts.getPullType() == PushPullType.Source)
       {
          logger.info("Pulling source documents only");

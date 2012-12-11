@@ -139,14 +139,22 @@ public class PushCommandTest
       String versionSlug = "1.0";
       opts.setProjectVersion(versionSlug);
       opts.setSrcDir(new File("src/test/resources/test1/pot"));
-      opts.setPushTrans(pushTrans);
-      opts.transDir = new File("src/test/resources/test1");
+      if (pushTrans)
+      {
+         opts.setPushType("both");
+      }
+      else
+      {
+         opts.setPushType("source");
+      }
+      opts.setTransDir(new File("src/test/resources/test1"));
       opts.setProjectType("podir");
-      opts.copyTrans = true;
-      opts.includes = new ArrayList<String>();
-      opts.excludes = new ArrayList<String>();
-      opts.sourceLang = "en-US";
-      opts.mergeType = "auto";
+//      opts.setNoCopyTrans(false);
+      opts.setCopyTrans(true);
+      opts.setIncludes("**/*.pot");
+      opts.setExcludes("");
+      opts.setSourceLang("en-US");
+      opts.setMergeType("auto");
       LocaleList locales = new LocaleList();
       if (mapLocale)
       {

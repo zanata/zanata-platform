@@ -27,6 +27,11 @@
       <dependencies>
         <dependency>
             <groupId>org.zanata</groupId>
+            <artifactId>zanata-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
             <artifactId>zanata-client-commands</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -64,6 +69,7 @@
    </dependencyManagement>
 
   <modules>
+    <module>zanata-cli</module>
     <module>zanata-client-commands</module>
     <module>zanata-maven-plugin</module>
     <module>zanata-rest-client</module>

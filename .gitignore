@@ -1,8 +1,9 @@
 /target/
 /*/target/
 *~
-/.settings
-/.project
+.classpath
+.project
+.settings
 *.iml
 */bin/
 test-output/

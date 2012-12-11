@@ -31,7 +31,7 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions
 
    public String getProjectType();
 
-   @Option(name = "--project-type", metaVar = "PROJTYPE", usage = "Project type  This value is required unless specified in zanata.xml.")
+   @Option(aliases = { "-T" }, name = "--project-type", metaVar = "PROJTYPE", usage = "Project type  This value is required unless specified in zanata.xml.")
    public void setProjectType(String projectType);
 
    public File getProjectConfig();
