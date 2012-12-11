@@ -46,45 +46,91 @@ public class JavaVariablesValidation extends AbstractValidation
    @Override
    public void doValidate(String source, String target)
    {
-      ArrayList<String> sourceVars = findJavaVars(source);
-      ArrayList<String> targetVars = findJavaVars(target);
+      StringInfo sourceInfo = analyseString(source);
+      StringInfo targetInfo = analyseString(target);
 
       //check if any indices are added/missing
-      HashMap<String, Integer> sourceCounts = countIndices(sourceVars);
-      HashMap<String, Integer> targetCounts = countIndices(targetVars);
       ArrayList<String> missing = new ArrayList<String>();
+      ArrayList<String> missingQuoted = new ArrayList<String>();
       ArrayList<String> added = new ArrayList<String>();
+      ArrayList<String> addedQuoted = new ArrayList<String>();
       ArrayList<String> different = new ArrayList<String>();
 
-      for (Entry<String, Integer> sourceVar : sourceCounts.entrySet())
+      for (Entry<String, Integer> sourceVar : sourceInfo.varCounts.entrySet())
       {
-         Integer targetCount = targetCounts.remove(sourceVar.getKey());
+         Integer targetCount = targetInfo.varCounts.remove(sourceVar.getKey());
          if (targetCount == null)
          {
-            missing.add("{" + sourceVar.getKey() + "}");
+            Integer quotedCount = targetInfo.quotedVarCounts.get(sourceVar.getKey());
+            if (quotedCount != null && quotedCount > 0)
+            {
+               missingQuoted.add("{" + sourceVar.getKey() + "}");
+            }
+            else
+            {
+               missing.add("{" + sourceVar.getKey() + "}");
+            }
          }
          else if (!sourceVar.getValue().equals(targetCount))
          {
-            different.add("{" + sourceVar.getKey() + "}");
+            if (targetInfo.quotedVars.contains(sourceVar.getKey()))
+            {
+               missingQuoted.add("{" + sourceVar.getKey() + "}");
+            }
+            else
+            {
+               different.add("{" + sourceVar.getKey() + "}");
+            }
          }
       }
-      for (String targetVar : targetCounts.keySet())
+
+      // TODO could warn if they were quoted in original
+      for (String targetVar : targetInfo.varCounts.keySet())
       {
-         added.add("{" + targetVar + "}");
+         if (sourceInfo.quotedVarCounts.containsKey(targetVar))
+         {
+            addedQuoted.add("{" + targetVar + "}");
+         }
+         else
+         {
+            added.add("{" + targetVar + "}");
+         }
       }
+
+      boolean looksLikeMessageFormatString = !sourceInfo.varCounts.isEmpty();
 
       if (!missing.isEmpty())
       {
          addError(getMessages().varsMissing(missing));
       }
+
+      if (looksLikeMessageFormatString && sourceInfo.singleApostrophes != targetInfo.singleApostrophes)
+      {
+         // different number of apos.
+         addError(getMessages().differentApostropheCount());
+      }
+      if (looksLikeMessageFormatString && sourceInfo.quotedChars == 0 && targetInfo.quotedChars > 0)
+      {
+         // quoted chars in target but not source
+         addError(getMessages().quotedCharsAdded());
+      }
+      if (!missingQuoted.isEmpty())
+      {
+         addError(getMessages().varsMissingQuoted(missingQuoted));
+      }
       if (!added.isEmpty())
       {
          addError(getMessages().varsAdded(added));
+      }
+      if (!addedQuoted.isEmpty())
+      {
+         addError(getMessages().varsAddedQuoted(addedQuoted));
       }
       if (!different.isEmpty())
       {
          addError(getMessages().differentVarCount(different));
       }
+
 
       //TODO check if indices are used with the same format types
       //e.g. "You owe me {0, currency}" --> "Du schuldest mir {0, percent}" is not correct
@@ -107,18 +153,25 @@ public class JavaVariablesValidation extends AbstractValidation
       return argumentIndexCounts;
    }
 
-   private ArrayList<String> findJavaVars(String inString)
+   private StringInfo analyseString(String inString)
    {
-      ArrayList<String> vars = new ArrayList<String>();
+      StringInfo descriptor = new StringInfo();
+
       //stack of opening brace positions, replace if better gwt LIFO collection found
       ArrayList<Integer> openings = new ArrayList<Integer>();
+      ArrayList<Integer> quotedOpenings = new ArrayList<Integer>();
+
       ArrayList<Character> escapeChars = new ArrayList<Character>();
       escapeChars.add('\\');
+
       boolean isEscaped = false;
       boolean isQuoted = false;
+      int quotedLength = 0;
+
       //scan for opening brace
       for (int i = 0; i<inString.length(); i++)
       {
+         // escaping skips a single character
          if (isEscaped)
          {
             isEscaped = false;
@@ -129,20 +182,55 @@ public class JavaVariablesValidation extends AbstractValidation
 
          char c = inString.charAt(i);
 
+         // begin or end quoted sections
          if (c == '\'')
          {
-            isQuoted = !isQuoted;
+            if (isQuoted)
+            {
+               if (quotedLength == 0)
+               {
+                  // don't count doubled quotes
+                  descriptor.singleApostrophes--;
+               }
+               isQuoted = false;
+            }
+            else
+            {
+               isQuoted = true;
+               quotedLength = 0;
+               quotedOpenings.clear();
+               descriptor.singleApostrophes++;
+            }
             continue;
          }
+
          if (isQuoted)
          {
+            quotedLength++;
+            descriptor.quotedChars++;
+
+            // identify quoted variables (not valid variables, identified to warn user)
+            if (c == '{')
+            {
+               quotedOpenings.add(i);
+            }
+            else if (c == '}' && quotedOpenings.size() > 0)
+            {
+               String variable = inString.substring(quotedOpenings.remove(quotedOpenings.size() -1), i + 1);
+               descriptor.quotedVars.add(variable);
+            }
+
             continue;
          }
+
+         // identify escape character (intentionally after quoted section handling)
          if (escapeChars.contains(c))
          {
             isEscaped = true;
             continue;
          }
+
+         // identify non-quoted variables
          if (c == '{')
          {
             openings.add(i);
@@ -150,9 +238,28 @@ public class JavaVariablesValidation extends AbstractValidation
          else if (c == '}' && openings.size() > 0)
          {
             String variable = inString.substring(openings.remove(openings.size() -1), i + 1);
-            vars.add(variable);
+            descriptor.vars.add(variable);
          }
       }
-      return vars;
+
+      descriptor.varCounts = countIndices(descriptor.vars);
+      descriptor.quotedVarCounts = countIndices(descriptor.quotedVars);
+
+      return descriptor;
+   }
+
+   /**
+    * Holds information about java variables, quoting etc. for a string.
+    */
+   private class StringInfo
+   {
+      private int quotedChars = 0;
+      private int singleApostrophes = 0;
+
+      private ArrayList<String> vars = new ArrayList<String>();
+      private ArrayList<String> quotedVars = new ArrayList<String>();
+
+      HashMap<String, Integer> varCounts;
+      HashMap<String, Integer> quotedVarCounts;
    }
 }
