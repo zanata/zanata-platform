@@ -1,5 +1,6 @@
 import ch.qos.logback.classic.boolex.GEventEvaluator
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.classic.filter.ThresholdFilter
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.filter.EvaluatorFilter
 
@@ -10,29 +11,25 @@ def patternExpression = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%
 
 
 appender("STDERR", ConsoleAppender) {
-    filter(EvaluatorFilter) {
-      evaluator(GEventEvaluator) {
-        expression = 'e.level.toInt() >= WARN.toInt()'
-      }
-      onMatch = NEUTRAL
-      onMismatch = DENY
+    filter(ThresholdFilter) {
+        level = WARN
     }
     encoder(PatternLayoutEncoder) {
-      pattern = patternExpression
+        pattern = patternExpression
     }
     target = "System.err"
-  }
+}
 
 appender("STDOUT", ConsoleAppender) {
     filter(EvaluatorFilter) {
-      evaluator(GEventEvaluator) {
-        expression = 'e.level.toInt() < WARN.toInt()'
-      }
-      onMismatch = DENY
-      onMatch = NEUTRAL
+        evaluator(GEventEvaluator) {
+            expression = 'e.level.toInt() < WARN.toInt()'
+        }
+        onMatch = NEUTRAL
+        onMismatch = DENY
     }
     encoder(PatternLayoutEncoder) {
-      pattern = patternExpression
+        pattern = patternExpression
     }
     target = "System.out"
 }
