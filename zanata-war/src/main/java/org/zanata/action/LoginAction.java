@@ -162,12 +162,23 @@ public class LoginAction implements Serializable
     */
    public boolean isAuthenticatedNotActivate()
    {
-      if (authenticationManager.authenticate(username, password, true) && !authenticationManager.isAccountActivated(username))
+      boolean ignoreAccountEnabledCheck = true;
+      if (authType == AuthenticationType.INTERNAL)
+      {
+         ignoreAccountEnabledCheck = true;
+      }
+      else if (authType == AuthenticationType.JAAS)
+      {
+         ignoreAccountEnabledCheck = false;
+      }
+
+      if (authenticationManager.authenticate(username, password, ignoreAccountEnabledCheck) && !authenticationManager.isAccountActivated(username))
       {
          inactiveAccountAction.setUsername(username);
          return true;
       }
       return false;
+
    }
   
    private String loginWithOpenId()
