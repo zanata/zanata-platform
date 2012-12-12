@@ -55,7 +55,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
    public void setupClass() throws Exception
    {
       super.setupClass();
-      this.clearHibernateCache(); // Clear the Hibernate cache after initial setup
+      this.clearHibernateSecondLevelCache(); // Clear the Hibernate cache after initial setup
    }
 
    @BeforeMethod(groups = { "seam-tests" })
@@ -63,7 +63,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
    public void prepareDataBeforeTest()
    {
       super.prepareDataBeforeTest();
-      this.clearHibernateCache(); // Clear the hibernate cache after data is modified before the test
+      this.clearHibernateSecondLevelCache(); // Clear the hibernate cache after data is modified before the test
    }
 
    @AfterMethod(groups = { "seam-tests" })
@@ -114,12 +114,13 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
    // end of setup methods from SeamTest
    
    /**
-    * Clears the Hibernate Cache.
+    * Clears the Hibernate Second Level Cache.
     * This method starts a Test lifecycle just for the purpose of clearing the Hibernate session factory's
-    * second level cache.
+    * second level cache. The hibernate session being used is a Seam component and as such can only be
+    * retrieved when a test is "active".
     * TODO Maybe there is a way of doing this without intruding into TestNGs internals.
     */
-   protected void clearHibernateCache()
+   protected void clearHibernateSecondLevelCache()
    {
       TestLifecycle.beginTest(servletContext, new ServletSessionMap(new MockHttpSession(servletContext)));
       try
