@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.projects.ProjectPage;
@@ -66,7 +64,7 @@ public class CreateSampleProjectTest
 
       // can go to project version page
       projectPage = projectWorkFlow.goToProjectByName(projectName);
-      projectVersionPage = projectPage.goToActiveVersion(projectVersion);
+      projectVersionPage = projectPage.goToVersion(projectVersion);
 
    }
 
@@ -119,14 +117,14 @@ public class CreateSampleProjectTest
 
       assertThat(exitCode, Matchers.equalTo(0));
 
-      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToActiveVersion("master");
+      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToVersion("master");
       assertThat(projectVersionPage.getTranslatableLocales(), Matchers.hasItems("en-US", "pl", "zh"));
    }
 
-   @Test(enabled = false)
+   @Test(dependsOnMethods = "canPush")
    public void canSeeDocumentList() {
       new LoginWorkFlow().signIn("admin", "admin");
-      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToActiveVersion("master");
+      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToVersion("master");
       WebTranPage webTranPage = projectVersionPage.translate("pl");
 
       log.info("document list table: {}", webTranPage.getDocumentListTableContent());

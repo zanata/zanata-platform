@@ -32,9 +32,11 @@ import org.zanata.page.AbstractPage;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
@@ -72,49 +74,44 @@ public class ProjectPage extends AbstractPage
       return new CreateVersionPage(getDriver());
    }
 
-   public ProjectVersionPage goToActiveVersion(final String versionId)
+   public ProjectVersionPage goToVersion(final String versionId)
    {
-      WebElement activeVersions = getDriver().findElement(By.id(ACTIVE_VERSIONS_TABLE_ID));
-      List<WebElement> versionLinks = activeVersions.findElements(By.tagName("a"));
+      List<WebElement> versionLinks = getDriver().findElements(By.className("version_link"));
       log.info("found {} active versions", versionLinks.size());
 
       Preconditions.checkState(!versionLinks.isEmpty(), "no version links available");
-      Collection<WebElement> found = Collections2.filter(versionLinks, new Predicate<WebElement>()
+      Optional<WebElement> found = Iterables.tryFind(versionLinks, new Predicate<WebElement>()
       {
          @Override
          public boolean apply(WebElement input)
          {
-            // the link text has line break in it
-            String linkText = input.getText().replaceAll("\\n", " ");
-            return linkText.matches(versionId + "\\s+Documents:.+");
+            return input.getText().contains(versionId);
          }
       });
-      Preconditions.checkState(found.size() == 1, versionId + " not found");
-      found.iterator().next().click();
+      Preconditions.checkState(found.isPresent(), versionId + " not found");
+      found.get().click();
       return new ProjectVersionPage(getDriver());
    }
 
    public List<String> getVersions()
    {
-      List<WebElement> tables = getDriver().findElements(By.id(ACTIVE_VERSIONS_TABLE_ID));
-      if (tables.isEmpty())
+      List<WebElement> versionLinks = getDriver().findElements(By.className("version_link"));
+      if (versionLinks.isEmpty())
       {
          log.debug("no version exists for this project");
          return Collections.emptyList();
       }
 
-      List<WebElement> versionLinks = tables.get(0).findElements(By.tagName("a"));
-
-      List<String> versions = WebElementUtil.elementsToText(versionLinks);
-      return Lists.transform(versions, new Function<String, String>()
-      {
-         @Override
-         public String apply(String from)
-         {
-            String replaceLineBreak = from.replaceAll("\\n", " ");
-            log.debug("version text: {}", replaceLineBreak);
-            return replaceLineBreak.split("\\s")[0];
-         }
-      });
+      return WebElementUtil.elementsToText(versionLinks);
+//      return Lists.transform(versions, new Function<String, String>()
+//      {
+//         @Override
+//         public String apply(String from)
+//         {
+//            String replaceLineBreak = from.replaceAll("\\n", " ");
+//            log.debug("version text: {}", replaceLineBreak);
+//            return replaceLineBreak.split("\\s")[0];
+//         }
+//      });
    }
 }

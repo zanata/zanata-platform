@@ -29,6 +29,7 @@ import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.page.AbstractPage;
+import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -36,8 +37,7 @@ import com.google.common.collect.ImmutableList;
 
 public class WebTranPage extends AbstractPage
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(WebTranPage.class);
-   @FindBy(xpath = "//table[@class = 'DocumentListTable']")
+   @FindBy(className = "DocumentListTable")
    private WebElement documentListTable;
 
 //   @FindBy(id = "gwt-debug-loadingIndicator")
@@ -51,33 +51,8 @@ public class WebTranPage extends AbstractPage
 
    public List<List<String>> getDocumentListTableContent()
    {
+      List<TableRow> tableRows = WebElementUtil.getTableRows(documentListTable);
 
-      List<WebElement> trs = null;
-      trs = waitForSeconds(getDriver(), 20).until(new Function<WebDriver, List<WebElement>>()
-      {
-         @Override
-         public List<WebElement> apply(WebDriver from)
-         {
-//            if (loadingIndicator.isDisplayed())
-//            {
-//               return null;
-//            }
-            List<WebElement> trs = getDriver().findElements(By.xpath("//table[@class = 'DocumentListTable']/.//tr"));
-            LOGGER.info("trs: {}", WebElementUtil.elementsToText(trs));
-            //we assume there is at least one document
-            return trs.size() < 3 || Strings.isNullOrEmpty(trs.get(0).getText()) ? null : trs;
-         }
-      });
-
-      ImmutableList.Builder<List<String>> rowsBuilder = ImmutableList.builder();
-      for (int i = 1, trsSize = trs.size(); i < trsSize; i++)
-      {
-         WebElement tr = trs.get(i);
-         LOGGER.info("document list table row: {}", tr.getText());
-         List<WebElement> tds = tr.findElements(By.xpath(".//td"));
-         LOGGER.info("tds: {} for row:{}", tds, i);
-         rowsBuilder.add(WebElementUtil.elementsToText(tds));
-      }
-      return rowsBuilder.build();
+      return WebElementUtil.transformToTwoDimensionList(tableRows);
    }
 }

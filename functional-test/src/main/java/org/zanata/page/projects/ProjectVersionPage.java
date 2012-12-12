@@ -20,26 +20,24 @@
  */
 package org.zanata.page.projects;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.webtrans.WebTranPage;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ProjectVersionPage extends AbstractPage
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectVersionPage.class);
-
    @FindBy(className = "rich-table-row")
    private List<WebElement> localeTableRows;
 
@@ -50,13 +48,12 @@ public class ProjectVersionPage extends AbstractPage
 
    public List<String> getTranslatableLocales()
    {
-//      List<WebElement> tableRows = localeTable.findElements(By.className("rich-table-row"));
-      Collection<String> rows = Collections2.transform(localeTableRows, new Function<WebElement, String>()
+      List<String> rows = Lists.transform(localeTableRows, new Function<WebElement, String>()
       {
          @Override
          public String apply(WebElement tr)
          {
-            LOGGER.debug("table row: {}", tr.getText());
+            log.debug("table row: {}", tr.getText());
             List<WebElement> links = tr.findElements(By.tagName("a"));
             return getLocaleLinkText(links);
          }
@@ -65,26 +62,25 @@ public class ProjectVersionPage extends AbstractPage
       return ImmutableList.copyOf(rows);
    }
 
-   private static String getLocaleLinkText(List<WebElement> links)
-   {
-      return links.get(0).getText();
-   }
-
    public WebTranPage translate(String locale)
    {
 
       for (WebElement tableRow : localeTableRows)
       {
          List<WebElement> links = tableRow.findElements(By.tagName("a"));
-         Preconditions.checkState(links.size() == 4, "each translatable locale row should have 4 links");
-
-         if (getLocaleLinkText(links).equals(locale))
+         Preconditions.checkState(links.size() == 3, "each translatable locale row should have 4 links");
+         WebElement localeCell = links.get(0);
+         if (localeCell.getText().equals(locale))
          {
-            WebElement translateLink = links.get(2);
-            translateLink.click();
+            localeCell.click();
             return new WebTranPage(getDriver());
          }
       }
       throw new IllegalArgumentException("can not translate locale: " + locale);
+   }
+
+   private static String getLocaleLinkText(List<WebElement> links)
+   {
+      return links.get(0).getText();
    }
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.page;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.zanata.util.Constants.chrome;
 import static org.zanata.util.Constants.firefox;
 import static org.zanata.util.Constants.loadProperties;
@@ -29,6 +28,7 @@ import static org.zanata.util.Constants.zanataInstance;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -36,16 +36,16 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.google.common.base.Strings;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public enum WebDriverFactory
 {
    INSTANCE;
-
-   private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverFactory.class);
 
    private WebDriver driver;
    private Properties properties;
@@ -60,6 +60,8 @@ public enum WebDriverFactory
             {
                properties = loadProperties();
                driver = createDriver();
+               driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+               Runtime.getRuntime().addShutdownHook(new ShutdownHook());
             }
          }
       }
@@ -99,8 +101,9 @@ public enum WebDriverFactory
 
    private WebDriver configureChromeDriver()
    {
-      System.getProperties().put("webdriver.chrome.bin", "/opt/google/chrome/google-chrome");
-      return new ChromeDriver();
+      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+      capabilities.setCapability("chrome.binary", "/opt/google/chrome/google-chrome");
+      return new ChromeDriver(capabilities);
    }
 
    private WebDriver configureFirefoxDriver()
@@ -135,7 +138,29 @@ public enum WebDriverFactory
       // false); // disables connection to sb-ssl.google.com
       firefoxProfile.setAlwaysLoadNoFocusLib(true);
       firefoxProfile.setEnableNativeEvents(true);
-      firefoxProfile.setPort(8000);
+      firefoxProfile.setAcceptUntrustedCertificates(true);
+//      firefoxProfile.setPort(8000);
       return firefoxProfile;
+   }
+
+   private class ShutdownHook extends Thread
+   {
+      public void run()
+      {
+         // If webdriver is running quit.
+         WebDriver driver = getDriver();
+         if (driver != null)
+         {
+            try
+            {
+               log.info("Quitting webdriver.");
+               driver.quit();
+            }
+            catch (Throwable e)
+            {
+               // Ignoring driver tear down errors.
+            }
+         }
+      }
    }
 }

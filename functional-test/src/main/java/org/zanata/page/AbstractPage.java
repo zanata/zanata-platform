@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -39,24 +38,16 @@ import org.slf4j.LoggerFactory;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class AbstractPage
 {
-   protected List<String> getErrors()
-   {
-      List<WebElement> errorSpans = getDriver().findElements(By.xpath("//span[@class='errors']"));
-      return WebElementUtil.elementsToText(errorSpans);
-   }
-
-   public enum PageContext
-   {
-      jsf, webTran
-   }
-   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPage.class);
-
    private final WebDriver driver;
    private final FluentWait<WebDriver> ajaxWaitForTenSec;
    private List<WebElement> navMenuItems = Collections.emptyList();
@@ -114,7 +105,7 @@ public class AbstractPage
 
    public <P> P goToPage(String navLinkText, Class<P> pageClass)
    {
-      LOGGER.info("click {} and go to page {}", navLinkText, pageClass.getName());
+      log.info("click {} and go to page {}", navLinkText, pageClass.getName());
       List<String> navigationMenuItems = getNavigationMenuItems();
       int menuItemIndex = navigationMenuItems.indexOf(navLinkText);
 
@@ -127,7 +118,7 @@ public class AbstractPage
    // TODO this doesn't seem useful
    public <P> P goToUrl(String url, P page)
    {
-      LOGGER.info("go to url: {}", url);
+      log.info("go to url: {}", url);
       driver.get(url);
       PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), page);
       return page;
@@ -144,7 +135,18 @@ public class AbstractPage
       List<String> errors = getErrors();
       if (!errors.isEmpty())
       {
-         throw new RuntimeException(StringUtils.join(errors, ";"));
+         throw new RuntimeException(Joiner.on(";").join(errors));
       }
+   }
+
+   protected List<String> getErrors()
+   {
+      List<WebElement> errorSpans = getDriver().findElements(By.xpath("//span[@class='errors']"));
+      return WebElementUtil.elementsToText(errorSpans);
+   }
+
+   public enum PageContext
+   {
+      jsf, webTran
    }
 }

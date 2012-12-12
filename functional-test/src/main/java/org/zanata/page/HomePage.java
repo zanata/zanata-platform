@@ -85,6 +85,7 @@ public class HomePage extends AbstractPage
 
    public AdministrationPage goToAdministration()
    {
+      getDriver().findElement(By.linkText("More")).click();
       WebElement adminLink = getDriver().findElement(By.id("Administration"));
       adminLink.click();
       return new AdministrationPage(getDriver());

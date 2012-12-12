@@ -37,8 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SignInPage extends AbstractPage
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(SignInPage.class);
-
    @FindBy(id = "login:usernameField:username")
    private WebElement usernameField;
 
@@ -55,7 +53,7 @@ public class SignInPage extends AbstractPage
 
    public <P extends AbstractPage> P signInAndGoToPage(String username, String password, Class<P> pageClass)
    {
-      LOGGER.info("log in as username: {}", username);
+      log.info("log in as username: {}", username);
       usernameField.sendKeys(username);
       passwordField.sendKeys(password);
       signInButton.click();

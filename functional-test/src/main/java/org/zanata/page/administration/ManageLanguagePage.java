@@ -20,7 +20,6 @@
  */
 package org.zanata.page.administration;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -30,10 +29,10 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,13 +72,13 @@ public class ManageLanguagePage extends AbstractPage
 
    private TableRow findRowByLocale(final String localeId)
    {
-      TableRow matchedRow = waitForSeconds(getDriver(), 20).until(new Function<WebDriver, TableRow>()
+      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
       {
          @Override
          public TableRow apply(WebDriver driver)
          {
             List<TableRow> tableRows = WebElementUtil.getTableRows(languageTable);
-            Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
+            Optional<TableRow> matchedRow = Iterables.tryFind(tableRows, new Predicate<TableRow>()
             {
                @Override
                public boolean apply(TableRow input)
@@ -90,9 +89,8 @@ public class ManageLanguagePage extends AbstractPage
                }
             });
 
-            log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
             //we keep looking for the locale until timeout
-            return (matchedRow.size() == 1) ? matchedRow.iterator().next() : null;
+            return matchedRow.isPresent() ? matchedRow.get() : null;
          }
       });
       return matchedRow;
@@ -122,6 +120,7 @@ public class ManageLanguagePage extends AbstractPage
       if(!enabledCheckbox.isSelected())
       {
          enabledCheckbox.click();
+         getDriver().switchTo().alert().accept();
       }
 
       return this;
