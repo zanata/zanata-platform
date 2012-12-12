@@ -97,14 +97,14 @@
 			    <configuration>
 			      <!-- Remove extra directories created by GWT DevMode -->
 			      <filesets>
-			        <fileset>
+                    <fileset>
 			          <directory>src/main/webapp/WEB-INF/deploy</directory>
 			        </fileset>
-			      </filesets>
-			      <fileset>
-			          <directory>src/main/webapp/webtrans</directory>
-			        </fileset>
-		          <followSymlinks>false</followSymlinks>
+                    <fileset>
+                      <directory>src/main/webapp/webtrans</directory>
+                    </fileset>
+                  </filesets>
+		          <followSymLinks>false</followSymLinks>
 			    </configuration>
 			</plugin>
 			<plugin>
