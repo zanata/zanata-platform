@@ -31,6 +31,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -166,5 +167,17 @@ public class TestFixture
    {
       object.setId(id);
       return object;
+   }
+
+   public static List<Long> asLongs(List<TransUnitId> transUnitIds)
+   {
+      return Lists.transform(transUnitIds, new Function<TransUnitId, Long>()
+      {
+         @Override
+         public Long apply(TransUnitId input)
+         {
+            return input.getId();
+         }
+      });
    }
 }

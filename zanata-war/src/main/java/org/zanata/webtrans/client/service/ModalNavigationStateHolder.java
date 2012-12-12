@@ -21,14 +21,16 @@
 
 package org.zanata.webtrans.client.service;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnitId;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Predicate;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -37,41 +39,38 @@ import com.google.inject.Singleton;
  * 
  **/
 
-class ModalNavigationStateHolder
+@Singleton
+public class ModalNavigationStateHolder
 {
-   private Map<Long, ContentState> idAndStateMap;
-   private ArrayList<Long> idIndexList;
+   private final UserConfigHolder configHolder;
+   private Map<TransUnitId, ContentState> idAndStateMap;
+   private LinkedList<TransUnitId> idIndexList;
 
-   private int pageSize;
-   private int rowIndexInDocument = -1;
    private int curPage = 0;
-   private int totalCount;
-   private int pageCount;
+   private TransUnitId selected = new TransUnitId(-1);
 
-   protected void init(Map<Long, ContentState> transIdStateMap, ArrayList<Long> idIndexList, int pageSize)
+   // variables to save computation
+   private transient int totalCount;
+   private transient int pageCount;
+   private transient int currentIndex;
+
+   @Inject
+   public ModalNavigationStateHolder(UserConfigHolder configHolder)
+   {
+      this.configHolder = configHolder;
+   }
+
+   protected void init(Map<TransUnitId, ContentState> transIdStateMap, List<TransUnitId> idIndexList)
    {
       this.idAndStateMap = transIdStateMap;
-      this.idIndexList = idIndexList;
+      this.idIndexList = Lists.newLinkedList(idIndexList);
       totalCount = idIndexList.size();
-      updatePageSize(pageSize);
+      updatePageSize();
    }
 
-   protected void updateState(Long id, ContentState newState)
+   protected void updateState(TransUnitId id, ContentState newState)
    {
       idAndStateMap.put(id, newState);
-   }
-
-   protected int getNextStateRowIndex(Predicate<ContentState> condition)
-   {
-      for (int i = rowIndexInDocument + 1; i <= maxRowIndex(); i++)
-      {
-         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
-         if (condition.apply(contentState))
-         {
-            return i;
-         }
-      }
-      return rowIndexInDocument;
    }
 
    protected int maxRowIndex()
@@ -79,42 +78,15 @@ class ModalNavigationStateHolder
       return totalCount - 1;
    }
 
-   protected int getPreviousStateRowIndex(Predicate<ContentState> condition)
-   {
-      for (int i = rowIndexInDocument - 1; i >= 0; i--)
-      {
-         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
-         if (condition.apply(contentState))
-         {
-            return i;
-         }
-      }
-      return rowIndexInDocument;
-   }
-
    protected int getCurrentPage()
    {
       return curPage;
    }
 
-   protected int getNextRowIndex()
+   protected int getTargetPage(TransUnitId targetId)
    {
-      return Math.min(rowIndexInDocument + 1, maxRowIndex());
-   }
-
-   protected int getPrevRowIndex()
-   {
-      return Math.max(rowIndexInDocument - 1, 0);
-   }
-
-   protected int getTargetPage(int targetIndex)
-   {
-      return targetIndex / pageSize;
-   }
-
-   protected TransUnitId getTargetTransUnitId(int rowIndex)
-   {
-      return new TransUnitId(idIndexList.get(rowIndex));
+      int targetIndex = idIndexList.indexOf(targetId);
+      return targetIndex / configHolder.getEditorPageSize();
    }
 
    protected int lastPage()
@@ -132,16 +104,112 @@ class ModalNavigationStateHolder
       curPage = currentPageIndex;
    }
 
-   protected void updateRowIndexInDocument(int rowIndexOnPage)
+   protected void updateSelected(TransUnitId id)
    {
-      rowIndexInDocument = this.curPage * pageSize + rowIndexOnPage;
-      Log.info("update current page:" + curPage + ", current row index in document:" + rowIndexInDocument);
+      selected = id;
+      currentIndex = idIndexList.indexOf(selected);
    }
 
-   protected void updatePageSize(int pageSize)
+   protected void updatePageSize()
    {
-      this.pageSize = pageSize;
-      pageCount = (int) Math.ceil(totalCount * 1.0 / pageSize);
+      pageCount = (int) Math.ceil(totalCount * 1.0 / configHolder.getEditorPageSize());
    }
 
+   protected TransUnitId getNextId()
+   {
+      if (configHolder.isAcceptAllStatus())
+      {
+      return idIndexList.get(Math.min(currentIndex + 1, maxRowIndex()));
+   }
+
+      // we are in filter mode
+      for (int i = currentIndex + 1; i <= maxRowIndex(); i++)
+      {
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
+         if (matchFilterCondition(contentState))
+         {
+            return idIndexList.get(i);
+         }
+      }
+      // nothing matches filter condition and has reached the end
+      return selected;
+   }
+
+   private boolean matchFilterCondition(ContentState contentState)
+   {
+     // @formatter:off
+      return configHolder.getState().isFilterByNeedReview() && contentState == ContentState.NeedReview
+            || configHolder.getState().isFilterByUntranslated() && contentState == ContentState.New
+            || configHolder.getState().isFilterByTranslated() && contentState == ContentState.Approved;
+     // @formatter:on
+   }
+
+   public TransUnitId getPrevId()
+   {
+      if (configHolder.isAcceptAllStatus())
+      {
+      return idIndexList.get(Math.max(currentIndex - 1, 0));
+   }
+
+      // we are in filter mode
+      for (int i = currentIndex - 1; i >= 0; i--)
+      {
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
+         if (matchFilterCondition(contentState))
+         {
+            return idIndexList.get(i);
+         }
+      }
+      // nothing matches filter condition and has reached the end
+      return selected;
+   }
+
+   public TransUnitId getPreviousStateId()
+   {
+      for (int i = currentIndex - 1; i >= 0; i--)
+      {
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
+         if (configHolder.getContentStatePredicate().apply(contentState))
+         {
+            return idIndexList.get(i);
+         }
+      }
+      return selected;
+   }
+
+   public TransUnitId getNextStateId()
+   {
+      for (int i = currentIndex + 1; i <= maxRowIndex(); i++)
+      {
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
+         if (configHolder.getContentStatePredicate().apply(contentState))
+         {
+            return idIndexList.get(i);
+         }
+      }
+      return selected;
+   }
+
+   public TransUnitId getFirstId()
+   {
+      return idIndexList.get(0);
+   }
+
+   public TransUnitId getLastId()
+   {
+      return idIndexList.get(maxRowIndex());
+   }
+
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("idAndStateMap", idAndStateMap).
+            add("idIndexList", idIndexList).
+            add("selected", selected).
+            add("curPage", curPage).
+            add("totalCount", totalCount).
+            add("pageCount", pageCount).
+            toString();
+   }
 }

@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -63,8 +64,8 @@ public class NavigationServiceUnitTest
    private CachingDispatchAsync dispatcher;
    private GetTransUnitActionContext initContext;
    private List<TransUnit> data;
-   private HashMap<Long,ContentState> idStateMap;
-   private ArrayList<Long> idIndexList;
+   private Map<TransUnitId,ContentState> idStateMap;
+   private List<TransUnitId> idIndexList;
    @Captor
    private ArgumentCaptor<GwtEvent> eventCaptor;
    @Captor
@@ -82,7 +83,9 @@ public class NavigationServiceUnitTest
       initData();
       UserConfigHolder  configHolder = new UserConfigHolder();
       configHolder.setEditorPageSize(EDITOR_PAGE_SIZE);
-      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class));
+      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl();
+      ModalNavigationStateHolder navigationStateHolder = new ModalNavigationStateHolder(configHolder);
+      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder);
       service.addPageDataChangeListener(pageDataChangeListener);
 
       verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
@@ -91,8 +94,8 @@ public class NavigationServiceUnitTest
       verify(eventBus).addHandler(NavTransUnitEvent.getType(), service);
       verify(eventBus).addHandler(EditorPageSizeChangeEvent.TYPE, service);
 
-      service.getPageModel().setData(data.subList(0, configHolder.getEditorPageSize()));
-      service.getNavigationStateHolder().init(idStateMap, idIndexList, configHolder.getEditorPageSize());
+      pageModel.setData(data.subList(0, configHolder.getEditorPageSize()));
+      navigationStateHolder.init(idStateMap, idIndexList);
       initContext = new GetTransUnitActionContext(new DocumentId(1)).changeCount(configHolder.getEditorPageSize());
    }
 
@@ -111,8 +114,8 @@ public class NavigationServiceUnitTest
       idIndexList = Lists.newArrayList();
       for (TransUnit transUnit : data)
       {
-         idStateMap.put(transUnit.getId().getId(), transUnit.getStatus());
-         idIndexList.add(transUnit.getId().getId());
+         idStateMap.put(transUnit.getId(), transUnit.getStatus());
+         idIndexList.add(transUnit.getId());
       }
    }
 

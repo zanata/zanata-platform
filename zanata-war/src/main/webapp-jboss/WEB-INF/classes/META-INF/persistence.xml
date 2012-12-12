@@ -89,17 +89,18 @@
       <property name="hibernate.session_factory_name" value="SessionFactories/zanataSF"/>
       -->
       
-      <!-- These are the default for JBoss EJB3, but not for HEM: -->
-      <property name="hibernate.cache.provider_class" value="org.jboss.seam.cache.EhCacheProvider"/>
+      <!-- NB: for Hibernate 4 / AS 7, we may need to use org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory.
+           See http://stackoverflow.com/a/8701914
+      -->
       <property name="hibernate.cache.region.factory_class" value="net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory"/>
+      <property name="hibernate.cache.region_prefix" value="" />
       
       <property name="net.sf.ehcache.configurationResourceName" value="/META-INF/ehcache.xml"/>
       
       <property name="hibernate.cache.use_second_level_cache" value="true"/>
 	  <!--       http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue -->
       <property name="hibernate.cache.use_query_cache" value="true"/>
-      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
-      
+
       <!-- https://docs.jboss.org/author/display/AS71/JPA+Reference+Guide#JPAReferenceGuide-Persistenceunitproperties -->
       <property name="jboss.as.jpa.providerModule" value="hibernate3-bundled" />
       <property name="jboss.as.jpa.managed" value="false"/>

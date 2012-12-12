@@ -179,7 +179,7 @@ public class GetTransUnitActionContext
     */
    public boolean needReloadList(GetTransUnitActionContext newContext)
    {
-      return needReloadNavigationIndex(newContext) || count != newContext.count || offset != newContext.offset;
+      return needReloadNavigationIndex(newContext) || count != newContext.count;
    }
 
    /**
@@ -198,6 +198,7 @@ public class GetTransUnitActionContext
       return filterNeedReview != newContext.filterNeedReview
             || filterTranslated != newContext.filterTranslated
             || filterUntranslated != newContext.filterUntranslated
+            || offset != newContext.offset
             || !documentId.equals(newContext.documentId)
             || !Objects.equal(findMessage, newContext.findMessage);
       // @formatter:on

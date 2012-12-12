@@ -21,11 +21,8 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -37,18 +34,11 @@ import org.zanata.webtrans.client.events.RunValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.shared.validation.ValidationObject;
-import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
-import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
-import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
-import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
-import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
-import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
-
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * 

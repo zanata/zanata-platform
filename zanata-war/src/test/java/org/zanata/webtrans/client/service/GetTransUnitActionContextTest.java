@@ -100,7 +100,7 @@ public class GetTransUnitActionContextTest
       verifyNeedReloadNavigationIndex(context, context.changeFindMessage("find message"), NEEDED);
 
       verifyNeedReloadNavigationIndex(context, context.changeCount(2), NO_NEED);
-      verifyNeedReloadNavigationIndex(context, context.changeOffset(2), NO_NEED);
+      verifyNeedReloadNavigationIndex(context, context.changeOffset(2), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeTargetTransUnitId(new TransUnitId(2)), NO_NEED);
    }
 

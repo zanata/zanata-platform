@@ -7,6 +7,7 @@ import java.util.List;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -236,13 +237,14 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void updateValidationWarning(List<String> errors)
    {
-      if (!errors.isEmpty())
+      if (errors.isEmpty())
       {
-         targetWrapper.addStyleName(style.hasValidationError());
+         targetWrapper.removeStyleName(style.hasValidationError());
       }
       else
       {
-         targetWrapper.removeStyleName(style.hasValidationError());
+         Log.info(id + " id has error: " + errors);
+         targetWrapper.addStyleName(style.hasValidationError());
       }
    }
 
