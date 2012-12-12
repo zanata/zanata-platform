@@ -249,6 +249,11 @@ public class UserConfigHolder
       return state.getTransMemoryDisplayMode();
    }
 
+   public boolean isAcceptAllStatus()
+   {
+      return state.isFilterByNeedReview() == state.isFilterByTranslated() && state.isFilterByNeedReview() == state.isFilterByUntranslated();
+   }
+
    /**
     * Immutable object represents configuration state
     */

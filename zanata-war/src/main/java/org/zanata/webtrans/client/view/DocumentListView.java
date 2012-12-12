@@ -62,9 +62,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @UiField
    FlowPanel documentListContainer;
 
-   // @UiField
-   // TextBox filterTextBox;
-   
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
    
@@ -78,7 +75,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
 
    private final Resources resources;
    private final WebTransMessages messages;
-   
+
    private ListDataProvider<DocumentNode> dataProvider;
 
    @Inject
@@ -238,26 +235,23 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    }
 
    @Override
+   public void onSearchFieldCancel()
+   {
+      searchField.setValue("");
+   }
+
+   @Override
    public void onSearchFieldBlur()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override
    public void onSearchFieldFocus()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override
    public void onSearchFieldClick()
    {
-      // TODO Auto-generated method stub
-   }
-
-   @Override
-   public void onSearchFieldCancel()
-   {
-      searchField.setValue("");
    }
 }

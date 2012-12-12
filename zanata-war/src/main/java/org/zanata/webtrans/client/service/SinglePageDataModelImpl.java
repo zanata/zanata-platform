@@ -6,11 +6,13 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Lists;
+import com.google.inject.Singleton;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-class SinglePageDataModelImpl
+@Singleton
+public class SinglePageDataModelImpl
 {
    private List<TransUnit> data = Lists.newArrayList();
    private int currentRow = NavigationService.UNSELECTED;

@@ -73,6 +73,14 @@ public interface ValidationMessages extends Messages
    @AlternateMessage({ "one", "Inconsistent count for variable: {0,list,string}" })
    String differentVarCount(@PluralCount List<String> vars);
 
+   @DefaultMessage("Number of apostrophes ('') in source does not match number in translation. This may lead to other warnings.")
+   String differentApostropheCount();
+
+   @DefaultMessage("Quoted characters found in translation but not in source text. " +
+   "Apostrophe character ('') must be doubled ('''') to prevent quoting " +
+   "when it is used in Java MessageFormat strings.")
+   String quotedCharsAdded();
+
 
    // Shared variables validator messages
 
@@ -81,10 +89,20 @@ public interface ValidationMessages extends Messages
    @AlternateMessage({ "one", "Missing variable: {0,list,string}" })
    String varsMissing(@PluralCount List<String> vars);
 
+   @Description("Lists the variables that are in the original string and are present but quoted in the target")
+   @DefaultMessage("Unexpected quoting of variables: {0,list,string}")
+   @AlternateMessage({ "one", "Unexpected quoting of variable: {0,list,string}" })
+   String varsMissingQuoted(@PluralCount List<String> vars);
+
    @Description("Lists the variables that are in the target but are not in the original string")
    @DefaultMessage("Unexpected variables: {0,list,string}")
    @AlternateMessage({ "one", "Unexpected variable: {0,list,string}" })
    String varsAdded(@PluralCount List<String> vars);
+
+   @Description("Lists the variables that are in the target and are present but quoted in the original string")
+   @DefaultMessage("Variables not quoted: {0,list,string}")
+   @AlternateMessage({ "one", "Variable not quoted: {0,list,string}" })
+   String varsAddedQuoted(@PluralCount List<String> vars);
 
 
 
@@ -128,4 +146,6 @@ public interface ValidationMessages extends Messages
 
    @DefaultMessage("Possible XML entity [ {0} ] does not match with pre-defined [ {1} ]")
    String invalidPredefinedEnity(String word, String preDefinedEntity);
+
+
 }
