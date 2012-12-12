@@ -911,7 +911,8 @@ public class FileService implements FileResource
                   .entity(e)
                   .build();
          }
-         StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, translationFileServiceImpl.getAdapterFor(docId));
+         FileFormatAdapter adapter = translationFileServiceImpl.getAdapterFor(hDocument.getRawDocument().getType());
+         StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, adapter);
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();

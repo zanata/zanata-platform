@@ -32,6 +32,7 @@ import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.exception.FileFormatAdapterException;
@@ -227,6 +228,8 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @Override
    public FileFormatAdapter getAdapterFor(String fileNameOrExtension)
    {
+      // FIXME throw exception when not found
+
       String extension = extractExtension(fileNameOrExtension);
       if (extension == null)
       {
@@ -250,6 +253,39 @@ public class TranslationFileServiceImpl implements TranslationFileService
          {
             return null;
          }
+      }
+   }
+
+   @Override
+   public FileFormatAdapter getAdapterFor(DocumentType type)
+   {
+      switch (type)
+      {
+      case PLAIN_TEXT:
+      {
+         return new PlainTextAdapter();
+      }
+      case XML_DOCUMENT_TYPE_DEFINITION:
+      {
+         return new DTDAdapter();
+      }
+      case OPEN_DOCUMENT_DATABASE:
+      case OPEN_DOCUMENT_FORMULA:
+      case OPEN_DOCUMENT_GRAPHICS:
+      case OPEN_DOCUMENT_GRAPHICS_FLAT:
+      case OPEN_DOCUMENT_PRESENTATION:
+      case OPEN_DOCUMENT_PRESENTATION_FLAT:
+      case OPEN_DOCUMENT_SPREADSHEET:
+      case OPEN_DOCUMENT_SPREADSHEET_FLAT:
+      case OPEN_DOCUMENT_TEXT:
+      case OPEN_DOCUMENT_TEXT_FLAT:
+      {
+         return new OpenOfficeAdapter();
+      }
+      default:
+      {
+         throw new RuntimeException("no adapter for document type " + type);
+      }
       }
    }
 
