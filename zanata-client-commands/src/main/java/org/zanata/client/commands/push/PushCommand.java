@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;

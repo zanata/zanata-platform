@@ -3,7 +3,7 @@ package org.zanata.maven;
 import java.util.Arrays;
 
 import org.zanata.client.commands.push.PushCommand;
-import org.zanata.client.commands.push.PushPullType;
+import org.zanata.client.commands.PushPullType;
 
 public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
 {

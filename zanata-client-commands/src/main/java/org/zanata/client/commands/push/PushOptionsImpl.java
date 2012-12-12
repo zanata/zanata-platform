@@ -29,6 +29,7 @@ import java.util.Set;
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.BooleanValueHandler;
 import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.util.StringUtil;
 
@@ -90,8 +91,8 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
       this.sourceLang = sourceLang;
    }
 
-   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALES", usage = "Locales to push to the server.\n" + 
-   		"By default all locales in zanata.xml will be pushed.")
+//   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALES", usage = "Locales to push to the server.\n" +
+//   		"By default all locales in zanata.xml will be pushed.")
    public void setLocales(String locales)
    {
       // FIXME implement -l for target locales

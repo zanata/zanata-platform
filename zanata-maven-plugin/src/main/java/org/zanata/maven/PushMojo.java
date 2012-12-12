@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
-import org.zanata.client.commands.push.PushPullType;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;

@@ -22,7 +22,7 @@
 package org.zanata.client.commands.pull;
 
 import org.zanata.client.commands.PushPullOptions;
-import org.zanata.client.commands.push.PushPullType;
+import org.zanata.client.commands.PushPullType;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>

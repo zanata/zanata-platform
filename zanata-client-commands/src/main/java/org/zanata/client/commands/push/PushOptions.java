@@ -23,6 +23,7 @@ package org.zanata.client.commands.push;
 import java.util.List;
 
 import org.zanata.client.commands.PushPullOptions;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 

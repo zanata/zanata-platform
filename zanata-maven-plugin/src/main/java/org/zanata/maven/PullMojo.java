@@ -24,7 +24,7 @@ import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.RawPullCommand;
-import org.zanata.client.commands.push.PushPullType;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;

@@ -21,6 +21,7 @@ import org.zanata.client.commands.PutUserOptionsImpl;
 import org.zanata.client.commands.PutVersionOptionsImpl;
 import org.zanata.client.commands.SystemExitStrategy;
 import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.commands.pull.PullOptionsImpl;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
 import org.zanata.util.VersionUtility;
@@ -68,7 +69,7 @@ public class ZanataClient extends BasicOptionsImpl
       getOptionsMap().put("listremote", new ListRemoteOptionsImpl());
 //      getOptionsMap().put("publican-push", new PublicanPushOptionsImpl());
 //      getOptionsMap().put("publican-pull", new PublicanPullOptionsImpl());
-//      getOptionsMap().put("pull", new PullOptionsImpl());
+      getOptionsMap().put("pull", new PullOptionsImpl());
       getOptionsMap().put("push", new PushOptionsImpl());
       getOptionsMap().put("putproject", new PutProjectOptionsImpl());
       getOptionsMap().put("putuser", new PutUserOptionsImpl());
