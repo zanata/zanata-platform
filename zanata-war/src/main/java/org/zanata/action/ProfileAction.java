@@ -233,9 +233,9 @@ public class ProfileAction implements Serializable
       {
 
          String key;
-         if (identity.getAuthenticationType() == AuthenticationType.KERBEROS)
+         if (identity.getAuthenticationType() == AuthenticationType.KERBEROS || identity.getAuthenticationType() == AuthenticationType.JAAS)
          {
-            key = registerServiceImpl.register(this.username, "", this.username, this.email);
+            key = registerServiceImpl.register(this.username, this.username, this.email);
          }
          else
          {
