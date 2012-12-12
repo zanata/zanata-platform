@@ -71,38 +71,34 @@ public class ZanataExternalLoginBean implements Serializable
       authenticationManager = (AuthenticationManager) Component.getInstance(AuthenticationManager.class, ScopeType.SESSION);
    }
 
-
-   public boolean isAccountActivate()
+   private boolean isAccountEnabledAndActivated()
    {
       String username = identity.getCredentials().getUsername();
-      if (!authenticationManager.isAccountActivated(username))
+      if (authenticationManager.isAccountEnabled(username))
       {
-         FacesMessages.instance().clear();
-         FacesMessages.instance().add("#{messages['org.jboss.seam.loginFailed']}");
-         identity.setPreAuthenticated(false);
-         identity.unAuthenticate();
-
-         redirectUsername = username;
-
-         return false;
+         return true;
       }
-      redirectUsername = "";
-      return true;
-   }
-
-   public boolean isAccountEnabled()
-   {
-      String username = identity.getCredentials().getUsername();
-      if (!authenticationManager.isAccountEnabled(username))
+      else
       {
+         String message = "";
+         if (!authenticationManager.isAccountActivated(username))
+         {
+            message = "#{messages['org.jboss.seam.loginFailed']}";
+            redirectUsername = username;
+         }
+         else
+         {
+            message = "User " + username + " has been disabled. Please contact server admin.";
+         }
+
          FacesMessages.instance().clear();
-         FacesMessages.instance().add("User {0} has been disabled. Please contact server admin.", username);
+         FacesMessages.instance().add(message);
+
          identity.setPreAuthenticated(false);
          identity.unAuthenticate();
 
          return false;
       }
-      return true;
    }
 
    public boolean isRedirectToInactiveAccPage()
@@ -148,16 +144,9 @@ public class ZanataExternalLoginBean implements Serializable
    public void loginInSuccessful()
    {
       identity.setPreAuthenticated(true);
-      if (externalLogin() && !isNewUser())
+      if (externalLogin() && !isNewUser() && isAccountEnabledAndActivated())
       {
-         if (isAccountActivate())
-         {
-            applyAuthentication();
-         }
-         else if (isAccountEnabled())
-         {
-            applyAuthentication();
-         }
+         applyAuthentication();
       }
    }
 
