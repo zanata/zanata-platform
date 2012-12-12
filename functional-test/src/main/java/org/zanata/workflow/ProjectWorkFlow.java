@@ -22,6 +22,7 @@ package org.zanata.workflow;
 
 import java.util.List;
 
+import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.projects.ProjectsPage;
@@ -55,7 +56,9 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow
          log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectVersion);
          return projectPage.goToVersion(projectVersion);
       }
-      return projectPage.clickCreateVersionLink().inputVersionId(projectVersion).saveVersion();
+      CreateVersionPage createVersionPage = projectPage.clickCreateVersionLink().inputVersionId(projectVersion);
+
+      return createVersionPage.saveVersion();
    }
 
    public ProjectPage goToProjectByName(String projectName)

@@ -119,7 +119,7 @@ public class ManualRunHelper
 
    private void insertAdminUser() throws Exception
    {
-      List<String> scripts = readLines("init.sql");
+      List<String> scripts = readLines("create_admin_user.sql");
 
       for (String script : scripts)
       {
