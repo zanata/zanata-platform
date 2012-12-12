@@ -99,6 +99,7 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
       }
       headerLabel.setText(messages.validationWarningsHeading(errors.size()));
       headerLabel.addStyleName(style.hasError());
+      setVisible(true);
    }
 
    private void clear()
@@ -106,6 +107,7 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
       contents.clear();
       headerLabel.setText(messages.validationWarningsHeading(0));
       headerLabel.removeStyleName(style.hasError());
+      setVisible(false);
    }
 
 }

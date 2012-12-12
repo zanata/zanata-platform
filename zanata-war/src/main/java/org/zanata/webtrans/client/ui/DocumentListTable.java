@@ -35,6 +35,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -244,45 +245,21 @@ public class DocumentListTable extends CellTable<DocumentNode>
             // StatsByWords is always true for TransUnitCountGraph used in this
             // table
             boolean statsByWords = true;
-            if (o1.getDocInfo().getStats().getApprovedPercent(statsByWords) == o2.getDocInfo().getStats().getApprovedPercent(statsByWords))
-            {
-               return 0;
-            }
-            if (o1 != null && o2 != null)
-            {
-               return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) > o2.getDocInfo().getStats().getApprovedPercent(statsByWords) ? 1 : -1;
-            }
-            return -1;
+            return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) - o2.getDocInfo().getStats().getApprovedPercent(statsByWords);
          }
       });
       columnSortHandler.setComparator(translatedColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getDocInfo().getStats().getWordCount().getApproved() == o2.getDocInfo().getStats().getWordCount().getApproved())
-            {
-               return 0;
-            }
-            if (o1 != null && o2 != null)
-            {
-               return o1.getDocInfo().getStats().getWordCount().getApproved() > o2.getDocInfo().getStats().getWordCount().getApproved() ? 1 : -1;
-            }
-            return -1;
+            return o1.getDocInfo().getStats().getWordCount().getApproved() - o2.getDocInfo().getStats().getWordCount().getApproved();
          }
       });
       columnSortHandler.setComparator(untranslatedColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getDocInfo().getStats().getWordCount().getUntranslated() == o2.getDocInfo().getStats().getWordCount().getUntranslated())
-            {
-               return 0;
-            }
-            if (o1 != null && o2 != null)
-            {
-               return o1.getDocInfo().getStats().getWordCount().getUntranslated() > o2.getDocInfo().getStats().getWordCount().getUntranslated() ? 1 : -1;
-            }
-            return -1;
+            return o1.getDocInfo().getStats().getWordCount().getUntranslated() - o2.getDocInfo().getStats().getWordCount().getUntranslated();
          }
       });
       columnSortHandler.setComparator(remainingColumn, new Comparator<DocumentNode>()
@@ -293,11 +270,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
             {
                return 0;
             }
-            if (o1 != null && o2 != null)
-            {
-               return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
-            }
-            return -1;
+            return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
          }
       });
       addColumnSortHandler(columnSortHandler);

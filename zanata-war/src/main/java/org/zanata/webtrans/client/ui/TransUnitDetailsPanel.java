@@ -73,7 +73,7 @@ public class TransUnitDetailsPanel extends Composite
       {
          headerSummary.append(" Comment: ").append(comment);
       }
-      headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), headerSummary.toString()));
+      headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getId().toString(), transUnit.getRowIndex(), headerSummary.toString()));
    }
 
    interface TransUnitDetailsPanelUiBinder extends UiBinder<DisclosurePanel, TransUnitDetailsPanel>

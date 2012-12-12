@@ -88,7 +88,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
          if (action.getTargetTransUnitId() != null)
          {
-            int targetIndexInDoc = navigationResult.getIdIndexList().indexOf(action.getTargetTransUnitId().getId());
+            int targetIndexInDoc = navigationResult.getIdIndexList().indexOf(action.getTargetTransUnitId());
             targetPage = targetIndexInDoc / action.getCount();
             targetOffset = action.getCount() * targetPage;
          }
