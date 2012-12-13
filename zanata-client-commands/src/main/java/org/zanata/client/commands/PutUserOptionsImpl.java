@@ -20,7 +20,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements PutUs
    @Override
    public String getCommandName()
    {
-      return "putuser";
+      return "put-user";
    }
 
    @Override

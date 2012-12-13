@@ -14,7 +14,7 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
    @Override
    public String getCommandName()
    {
-      return "putversion";
+      return "put-version";
    }
 
    @Override
