@@ -21,6 +21,7 @@
 package org.zanata.service;
 
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.common.DocumentType;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -102,7 +103,10 @@ public interface TranslationFileService
 
    Set<String> getSupportedExtensions();
 
+   @Deprecated
    FileFormatAdapter getAdapterFor(String fileNameOrExtension);
+
+   FileFormatAdapter getAdapterFor(DocumentType type);
 
    /**
     * Persist an input stream to a temporary file.
