@@ -65,16 +65,14 @@ public class ZanataClient extends BasicOptionsImpl
       this.abortStrategy = strategy;
       this.out = out;
       this.err = err;
-      // getOptionsMap().put("listlocal", new ListLocalOptionsImpl());
-      getOptionsMap().put("listremote", new ListRemoteOptionsImpl());
-//      getOptionsMap().put("publican-push", new PublicanPushOptionsImpl());
-//      getOptionsMap().put("publican-pull", new PublicanPullOptionsImpl());
+      // getOptionsMap().put("list-local", new ListLocalOptionsImpl());
+      getOptionsMap().put("list-remote", new ListRemoteOptionsImpl());
       getOptionsMap().put("pull", new PullOptionsImpl());
       getOptionsMap().put("push", new PushOptionsImpl());
-      getOptionsMap().put("putproject", new PutProjectOptionsImpl());
-      getOptionsMap().put("putuser", new PutUserOptionsImpl());
-      getOptionsMap().put("putversion", new PutVersionOptionsImpl());
-      getOptionsMap().put("getstatistics", new GetStatisticsOptionsImpl());
+      getOptionsMap().put("put-project", new PutProjectOptionsImpl());
+      getOptionsMap().put("put-user", new PutUserOptionsImpl());
+      getOptionsMap().put("put-version", new PutVersionOptionsImpl());
+      getOptionsMap().put("statistics", new GetStatisticsOptionsImpl());
    }
 
    public String getCommandName()
