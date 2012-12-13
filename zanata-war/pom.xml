@@ -953,13 +953,6 @@
 
 	<dependencies>
 
-        <!-- This needs to appear before log4j and before jboss-embedded-all -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Zanata-specific dependencies -->
 
 		<dependency>
@@ -1215,12 +1208,6 @@
          <scope>provided</scope>
 		</dependency>
 
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-         <scope>test</scope>
-      </dependency>
-
         <dependency>
             <groupId>net.sourceforge.openutils</groupId>
             <artifactId>openutils-log4j</artifactId>
@@ -1351,6 +1338,12 @@
 		</dependency>
 
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <scope>provided</scope>
@@ -1465,7 +1458,7 @@
 
 		<!-- Testing dependencies -->
 
-        <dependency>
+		<dependency>
 			<groupId>org.jboss.embedded</groupId>
 			<artifactId>jboss-embedded-all</artifactId>
 			<version>${jboss.embedded.version}</version>
