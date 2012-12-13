@@ -6,7 +6,7 @@ import org.zanata.client.commands.ListRemoteCommand;
 /**
  * Lists all remote documents in the configured Zanata project version.
  * 
- * @goal listremote
+ * @goal list-remote
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
@@ -34,7 +34,7 @@ public class ListRemoteMojo extends ConfigurableProjectMojo<ConfigurableProjectO
    @Override
    public String getCommandName()
    {
-      return "listremote";
+      return "list-remote";
    }
 
 }

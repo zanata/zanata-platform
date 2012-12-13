@@ -6,7 +6,7 @@ import org.zanata.client.commands.PutVersionOptions;
 /**
  * Creates or updates a Zanata project version.
  * 
- * @goal putversion
+ * @goal put-version
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
@@ -63,6 +63,6 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions> implemen
    @Override
    public String getCommandName()
    {
-      return "putversion";
+      return "put-version";
    }
 }
