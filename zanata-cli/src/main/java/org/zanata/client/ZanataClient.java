@@ -147,7 +147,7 @@ public class ZanataClient extends BasicOptionsImpl
          }
          else
          {
-            new ArgsUtil(abortStrategy, out, err).process(otherArgs, options);
+            new ArgsUtil(abortStrategy, out, err, getCommandName()).process(otherArgs, options);
          }
       }
       catch (Exception e)

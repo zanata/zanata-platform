@@ -20,17 +20,14 @@ public class ArgsUtil
    private final AppAbortStrategy abortStrategy;
    private final PrintStream out;
    private final PrintStream err;
+   private final String clientName;
 
-   public ArgsUtil(AppAbortStrategy strategy, PrintStream out, PrintStream err)
+   public ArgsUtil(AppAbortStrategy strategy, PrintStream out, PrintStream err, String clientName)
    {
       this.abortStrategy = strategy;
       this.out = out;
       this.err = err;
-   }
-
-   public static void processArgs(String[] args, BasicOptions opts)
-   {
-      new ArgsUtil(new SystemExitStrategy(), System.out, System.err).process(args, opts);
+      this.clientName = clientName;
    }
 
    public void process(String[] args, BasicOptions opts)
@@ -123,9 +120,9 @@ public class ArgsUtil
       root.setLevel(org.apache.log4j.Level.ERROR);
    }
 
-   private static void printHelp(BasicOptions cmd, PrintStream output)
+   private void printHelp(BasicOptions cmd, PrintStream output)
    {
-      output.println("Usage: " + cmd.getCommandName() + " [options]");
+      output.println("Usage: " + clientName + " " + cmd.getCommandName() + " [options]");
       output.println(cmd.getCommandDescription());
       output.println();
    }
