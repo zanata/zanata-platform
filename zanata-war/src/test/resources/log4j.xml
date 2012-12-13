@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
 <log4j:configuration>
+    <throwableRenderer class="org.apache.log4j.EnhancedThrowableRenderer"/>
     <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
         <param name="threshold" value="info"/>
         <layout class="org.apache.log4j.PatternLayout">
