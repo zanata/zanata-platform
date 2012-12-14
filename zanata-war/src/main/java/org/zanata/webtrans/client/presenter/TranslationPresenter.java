@@ -49,6 +49,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    public interface Display extends WidgetDisplay
    {
       void setSouthPanelExpanded(boolean expanded);
+
+      void togglePanelDisplay(boolean showTMPanel, boolean showGlossaryPanel);
    }
 
    private final TranslationEditorPresenter translationEditorPresenter;
@@ -59,13 +61,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    private final UserWorkspaceContext userWorkspaceContext;
    private final NavigationService navigationService;
+   private final UserConfigHolder configHolder;
 
    private final WebTransMessages messages;
 
-   private boolean southPanelExpanded = true;
-
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, TargetContentsPresenter targetContentsPresenter, TranslationEditorPresenter translationEditorPresenter, TransMemoryPresenter transMemoryPresenter, GlossaryPresenter glossaryPresenter, WebTransMessages messages, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter, NavigationService navigationService)
+   public TranslationPresenter(Display display, EventBus eventBus, TargetContentsPresenter targetContentsPresenter, TranslationEditorPresenter translationEditorPresenter, TransMemoryPresenter transMemoryPresenter, GlossaryPresenter glossaryPresenter, WebTransMessages messages, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter, NavigationService navigationService, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -76,6 +77,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.userWorkspaceContext = userWorkspaceContext;
       this.navigationService = navigationService;
+      this.configHolder = configHolder;
    }
 
    @Override
@@ -209,12 +211,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
     */
    public void setSouthPanelExpanded(boolean expanded)
    {
-      if (expanded == southPanelExpanded)
-      {
-         return; // nothing to do
-      }
+      checkPanelDisplayOption();
       display.setSouthPanelExpanded(expanded);
-      southPanelExpanded = expanded;
       if (expanded && !userWorkspaceContext.hasReadOnlyAccess())
       {
          bindSouthPanelPresenters();
@@ -222,8 +220,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          TransUnit tu = navigationService.getSelectedOrNull();
          if (tu != null)
          {
-            transMemoryPresenter.createTMRequestForTransUnit(tu);
-            glossaryPresenter.createGlossaryRequestForTransUnit(tu);
+            if (configHolder.getState().isShowTMPanel())
+            {
+               transMemoryPresenter.createTMRequestForTransUnit(tu);
+            }
+            if (configHolder.getState().isShowGlossaryPanel())
+            {
+               glossaryPresenter.createGlossaryRequestForTransUnit(tu);
+            }
          }
       }
       else
@@ -232,16 +236,69 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       }
    }
 
+   private void checkPanelDisplayOption()
+   {
+      if (configHolder.getState().isShowTMPanel())
+      {
+         bindTransMemoryPresenter();
+      }
+      else
+      {
+         unbindTransMemoryPresenter();
+      }
+      if (configHolder.getState().isShowGlossaryPanel())
+      {
+         bindGlossaryPresenter();
+      }
+      else
+      {
+         unbindGlossaryPresenter();
+      }
+      display.togglePanelDisplay(configHolder.getState().isShowTMPanel(), configHolder.getState().isShowGlossaryPanel());
+   }
+
    private void bindSouthPanelPresenters()
    {
-      transMemoryPresenter.bind();
-      glossaryPresenter.bind();
+      bindTransMemoryPresenter();
+      bindGlossaryPresenter();
+   }
+
+   private void bindGlossaryPresenter()
+   {
+      if (configHolder.getState().isShowGlossaryPanel() && !glossaryPresenter.isBound())
+      {
+         glossaryPresenter.bind();
+      }
+   }
+
+   private void bindTransMemoryPresenter()
+   {
+      if (configHolder.getState().isShowTMPanel() && !transMemoryPresenter.isBound())
+      {
+         transMemoryPresenter.bind();
+      }
    }
 
    private void unbindSouthPanelPresenters()
    {
-      transMemoryPresenter.unbind();
-      glossaryPresenter.unbind();
+      unbindTransMemoryPresenter();
+      unbindGlossaryPresenter();
+   }
+
+   private void unbindGlossaryPresenter()
+   {
+      if (!configHolder.getState().isShowGlossaryPanel() && glossaryPresenter.isBound())
+      {
+         glossaryPresenter.unbind();
+      }
+   }
+
+   private void unbindTransMemoryPresenter()
+   {
+      if (!configHolder.getState().isShowTMPanel() && transMemoryPresenter.isBound())
+      {
+         transMemoryPresenter.unbind();
+      }
    }
 
    public void concealDisplay()

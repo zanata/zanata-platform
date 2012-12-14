@@ -82,6 +82,14 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    RadioButton diffModeDiff;
    @UiField
    RadioButton diffModeHighlight;
+   @UiField
+   Label displayHeader;
+   @UiField
+   CheckBox showTMChk;
+   @UiField
+   CheckBox showGlossaryChk;
+   @UiField
+   CheckBox showOptionalTransUnitDetailsChk;
 
    private Listener listener;
 
@@ -105,6 +113,13 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       diffModeDiff.setText(uiMessages.diffModeAsDiff());
       diffModeHighlight.setText(uiMessages.diffModeAsHighlight());
       diffModeDiff.setValue(true);
+
+      displayHeader.setText(messages.displayConfiguration());
+      displayHeader.setTitle(messages.displayConfigurationTooltip());
+      showTMChk.setText(messages.showTranslationMemoryPanel());
+      showGlossaryChk.setText(messages.showGlossaryPanel());
+      showOptionalTransUnitDetailsChk.setText(messages.showTransUnitDetails());
+      showOptionalTransUnitDetailsChk.setTitle(messages.showTransUnitDetailsTooltip());
    }
 
    @Override
@@ -216,6 +231,18 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       }
    }
 
+   @UiHandler({"showTMChk", "showGlossaryChk"})
+   public void onTMOrGlossaryDisplayOptionsChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onTMOrGlossaryDisplayOptionsChanged(showTMChk.getValue(), showGlossaryChk.getValue());
+   }
+
+   @UiHandler("showOptionalTransUnitDetailsChk")
+   public void onDisplayTransUnitDetailsOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onDisplayTransUnitDetailsOptionChanged(showOptionalTransUnitDetailsChk.getValue());
+   }
+
    @Override
    public void setListener(Listener listener)
    {
@@ -243,6 +270,10 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       {
          diffModeHighlight.setValue(true);
       }
+
+      showTMChk.setValue(state.isShowTMPanel());
+      showGlossaryChk.setValue(state.isShowGlossaryPanel());
+      showOptionalTransUnitDetailsChk.setValue(state.isShowOptionalTransUnitDetails());
    }
 
    private void selectPageSize(int pageSize)

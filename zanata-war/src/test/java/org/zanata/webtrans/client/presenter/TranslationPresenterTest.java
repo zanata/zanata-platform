@@ -73,7 +73,7 @@ public class TranslationPresenterTest
    {
       MockitoAnnotations.initMocks(this);
       userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new TranslationPresenter(display, eventBus, targetContentsPresenter, translationEditorPresenter, transMemoryPresenter, glossaryPresenter, messages, userWorkspaceContext, keyShortcutPresenter, navigationService);
+      presenter = new TranslationPresenter(display, eventBus, targetContentsPresenter, translationEditorPresenter, transMemoryPresenter, glossaryPresenter, messages, userWorkspaceContext, keyShortcutPresenter, navigationService, new UserConfigHolder());
    }
 
    @Test

@@ -68,6 +68,7 @@ public class UserConfigHolder
    public static final boolean DEFAULT_USE_CODE_MIRROR = false;
    public static final boolean DEFAULT_SPELL_CHECK = true;
    public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
+   public static final boolean DEFAULT_SHOW_PANEL = true;
 
    public static final String DEFAULT_DISPLAY_THEME = "themeDefault";
    public static final String COMPACT_DISPLAY_THEME = "themeCompact";
@@ -92,6 +93,10 @@ public class UserConfigHolder
       state.filterByUntranslated = DEFAULT_FILTER;
 
       state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
+
+      state.showTMPanel = DEFAULT_SHOW_PANEL;
+      state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
+      state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
       state.displayTheme = DEFAULT_DISPLAY_THEME;
    }
 
@@ -210,6 +215,24 @@ public class UserConfigHolder
       state.displayTheme = theme;
    }
 
+   public void setShowTMPanel(boolean show)
+   {
+      state = new ConfigurationState(state);
+      state.showTMPanel = show;
+   }
+
+   public void setShowGlossaryPanel(boolean show)
+   {
+      state = new ConfigurationState(state);
+      state.showGlossaryPanel = show;
+   }
+
+   public void setShowOptionalTransUnitDetails(boolean show)
+   {
+      state = new ConfigurationState(state);
+      state.showOptionalTransUnitDetails = show;
+   }
+
    public boolean isAcceptAllStatus()
    {
       return state.isFilterByNeedReview() == state.isFilterByTranslated() && state.isFilterByNeedReview() == state.isFilterByUntranslated();
@@ -237,6 +260,10 @@ public class UserConfigHolder
       private DiffMode transMemoryDisplayMode;
       private String displayTheme;
 
+      private boolean showTMPanel;
+      private boolean showGlossaryPanel;
+      private boolean showOptionalTransUnitDetails;
+
       // Needed for GWT serialization
       private ConfigurationState()
       {
@@ -258,6 +285,9 @@ public class UserConfigHolder
          this.spellCheckEnabled = old.isSpellCheckEnabled();
          this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
          this.displayTheme = old.getDisplayTheme();
+         this.showTMPanel = old.isShowTMPanel();
+         this.showGlossaryPanel = old.isShowGlossaryPanel();
+         this.showOptionalTransUnitDetails = old.isShowOptionalTransUnitDetails();
       }
 
       public boolean isEnterSavesApproved()
@@ -328,6 +358,21 @@ public class UserConfigHolder
       public String getDisplayTheme()
       {
          return displayTheme;
+      }
+
+      public boolean isShowTMPanel()
+      {
+         return showTMPanel;
+      }
+
+      public boolean isShowGlossaryPanel()
+      {
+         return showGlossaryPanel;
+      }
+
+      public boolean isShowOptionalTransUnitDetails()
+      {
+         return showOptionalTransUnitDetails;
       }
    }
 }

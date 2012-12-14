@@ -79,6 +79,15 @@
                 </g:HTMLPanel>
             </g:VerticalPanel>
         </g:cell>
+
+        <g:cell>
+            <g:VerticalPanel width="100%">
+                <g:Label ui:field="displayHeader" styleName="sideMenuHeader"/>
+                <g:CheckBox ui:field="showTMChk" />
+                <g:CheckBox ui:field="showGlossaryChk" />
+                <g:CheckBox ui:field="showOptionalTransUnitDetailsChk" />
+            </g:VerticalPanel>
+        </g:cell>
 	                
 	</g:VerticalPanel>
    

@@ -24,4 +24,6 @@ public interface SourceContentsDisplay extends IsWidget, HasTransUnitId
 
 
    void refresh();
+
+   void toggleTransUnitDetails(boolean showTransUnitDetails);
 }

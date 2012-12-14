@@ -103,6 +103,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
          sourcePanelList.add(sourcePanel);
          rowIndex++;
       }
+      toggleTransUnitDetails(configHolder.getState().isShowOptionalTransUnitDetails());
    }
 
    @Override
@@ -130,6 +131,19 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       for (HasSelectableSource hasSelectableSource : sourcePanelList)
       {
          hasSelectableSource.refresh();
+      }
+   }
+
+   @Override
+   public void toggleTransUnitDetails(boolean showTransUnitDetails)
+   {
+      if (transUnitDetailsPanel.hasNoMetaInfo() && !showTransUnitDetails)
+      {
+         transUnitDetailsPanel.setVisible(false);
+      }
+      else
+      {
+         transUnitDetailsPanel.setVisible(true);
       }
    }
 

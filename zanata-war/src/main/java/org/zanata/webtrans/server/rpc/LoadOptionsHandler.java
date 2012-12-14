@@ -130,6 +130,21 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setTMDisplayMode(DiffMode.valueOf(filteredOptions.get(UserOptions.TransMemoryDisplayMode.getPersistentName()).getValue()));
       }
 
+      if (filteredOptions.containsKey(UserOptions.DisplayTransMemory.getPersistentName()))
+      {
+         configHolder.setShowTMPanel(filteredOptions.get(UserOptions.DisplayTransMemory.getPersistentName()).getValueAsBoolean());
+      }
+
+      if (filteredOptions.containsKey(UserOptions.DisplayGlossary.getPersistentName()))
+      {
+         configHolder.setShowGlossaryPanel(filteredOptions.get(UserOptions.DisplayGlossary.getPersistentName()).getValueAsBoolean());
+      }
+
+      if (filteredOptions.containsKey(UserOptions.ShowOptionalTransUnitDetails.getPersistentName()))
+      {
+         configHolder.setShowOptionalTransUnitDetails(filteredOptions.get(UserOptions.ShowOptionalTransUnitDetails.getPersistentName()).getValueAsBoolean());
+      }
+
       if (filteredOptions.containsKey(UserOptions.TranslatedMessageFilter.getPersistentName()))
       {
          configHolder.setFilterByTranslated(filteredOptions.get(UserOptions.TranslatedMessageFilter.getPersistentName()).getValueAsBoolean());

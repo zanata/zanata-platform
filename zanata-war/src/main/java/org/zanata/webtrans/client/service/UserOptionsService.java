@@ -107,6 +107,8 @@ public class UserOptionsService
       configMap.put(UserOptions.UseCodeMirrorEditor, Boolean.toString(configHolder.getState().isUseCodeMirrorEditor()));
       configMap.put(UserOptions.EnableSpellCheck, Boolean.toString(configHolder.getState().isSpellCheckEnabled()));
       configMap.put(UserOptions.TransMemoryDisplayMode, configHolder.getState().getTransMemoryDisplayMode().name());
+      configMap.put(UserOptions.DisplayTransMemory, Boolean.toString(configHolder.getState().isShowTMPanel()));
+      configMap.put(UserOptions.DisplayGlossary, Boolean.toString(configHolder.getState().isShowGlossaryPanel()));
 
       configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
       configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));
@@ -148,6 +150,8 @@ public class UserOptionsService
       configHolder.setShowSaveApprovedWarning(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING);
       configHolder.setUseCodeMirrorEditor(UserConfigHolder.DEFAULT_USE_CODE_MIRROR);
       configHolder.setTMDisplayMode(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE);
+      configHolder.setShowTMPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
+      configHolder.setShowGlossaryPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
    }
 
    public UserConfigHolder getConfigHolder()
