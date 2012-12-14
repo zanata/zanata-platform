@@ -109,13 +109,14 @@ public class ZanataJpaIdentityStore extends JpaIdentityStore
    }
    
    /**
-    * Custom authentication that ignores if the account is enabled flag
+    * Custom authentication that ignores the account's enabled state.
     * 
     * @param username
     * @param password
     * @return
+    * @see {@link JpaIdentityStore#authenticate(String, String)}
     */
-   public boolean authenticateIgnoreEnabled(String username, String password)
+   public boolean authenticateEvenIfDisabled(String username, String password)
    {
       Object user = lookupUser(username);          
       if (user == null)

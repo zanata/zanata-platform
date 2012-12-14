@@ -11,21 +11,21 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
+import org.zanata.security.AuthenticationType;
+import org.zanata.security.ZanataCredentials;
+import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
 
 @Name("inactiveAccountAction")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.PAGE)
 public class InactiveAccountAction implements Serializable
 {
-   @In(create = true)
-   private Renderer renderer;
-
    @In
    private AccountDAO accountDAO;
    
@@ -35,9 +35,16 @@ public class InactiveAccountAction implements Serializable
    @In
    private EmailService emailServiceImpl;
 
-   private String email;
+   @In
+   private ZanataCredentials credentials;
 
-   private String username;
+   @In
+   private ZanataOpenId zanataOpenId;
+
+   @In
+   private CredentialsDAO credentialsDAO;
+
+   private String email;
 
    private HAccount account;
 
@@ -45,7 +52,15 @@ public class InactiveAccountAction implements Serializable
 
    public void init()
    {
-      account = accountDAO.getByUsername(username);
+      if( credentials.getAuthType() == AuthenticationType.OPENID )
+      {
+         // NB: Maybe we can get the authenticated openid from somewhere else
+         account = credentialsDAO.findByUser( zanataOpenId.getId() ).getAccount();
+      }
+      else
+      {
+         account = accountDAO.getByUsername(credentials.getUsername());
+      }
    }
 
    public void sendActivationEmail()
@@ -101,13 +116,5 @@ public class InactiveAccountAction implements Serializable
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 }

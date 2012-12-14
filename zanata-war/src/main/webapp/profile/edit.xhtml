@@ -10,7 +10,7 @@
     <ui:define name="page_title">Edit Profile</ui:define>
     <ui:define name="center_content">
             <div>
-	    	<h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}" rendered="#{zanataExternalLoginBean.newUser}"/>
+	    	<h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}" rendered="#{authenticationManager.newUser}"/>
 		<br/>
             </div>
 	
