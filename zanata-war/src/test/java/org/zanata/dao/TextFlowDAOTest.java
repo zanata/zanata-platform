@@ -142,8 +142,9 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       assertThat(TextFlowDAO.buildSearchCondition("", "tft"), Matchers.equalTo("1"));
 
       // with search term
-      assertThat(TextFlowDAO.buildSearchCondition("a", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE '%a%' or lower(tft.content1) LIKE '%a%' or lower(tft.content2) LIKE '%a%' or lower(tft.content3) LIKE '%a%' or lower(tft.content4) LIKE '%a%' or lower(tft.content5) LIKE '%a%')"));
-      assertThat(TextFlowDAO.buildSearchCondition("A", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE '%a%' or lower(tft.content1) LIKE '%a%' or lower(tft.content2) LIKE '%a%' or lower(tft.content3) LIKE '%a%' or lower(tft.content4) LIKE '%a%' or lower(tft.content5) LIKE '%a%')"));
+      assertThat(TextFlowDAO.buildSearchCondition("a", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE :searchstringlowercase or lower(tft.content1) LIKE :searchstringlowercase or lower(tft.content2) LIKE :searchstringlowercase or lower(tft.content3) LIKE :searchstringlowercase or lower(tft.content4) LIKE :searchstringlowercase or lower(tft.content5) LIKE :searchstringlowercase)"));
+      assertThat(TextFlowDAO.buildSearchCondition("A", "tft"), Matchers.equalTo("(lower(tft.content0) LIKE :searchstringlowercase or lower(tft.content1) LIKE :searchstringlowercase or lower(tft.content2) LIKE :searchstringlowercase or lower(tft.content3) LIKE :searchstringlowercase or lower(tft.content4) LIKE :searchstringlowercase or lower(tft.content5) LIKE :searchstringlowercase)"));
+
    }
 
    @Test
