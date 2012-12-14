@@ -143,21 +143,32 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
             .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
       queryBuilder
             .append(" AND ")
-            .append(buildContentStateCondition(filterConstraints.isIncludeApproved(), filterConstraints.isIncludeFuzzy(), filterConstraints.isIncludeNew(), "tft"))
+            .append(buildContentStateCondition(filterConstraints.isIncludeApproved(), filterConstraints.isIncludeFuzzy(), filterConstraints.isIncludeNew(), "tft"));
+      boolean hasSearchString = !Strings.isNullOrEmpty(filterConstraints.getSearchString());
+      if (hasSearchString)
+      {
+         queryBuilder
             .append(" AND (")
             .append(buildSearchCondition(filterConstraints.getSearchString(), "tf")) // search in source
             .append(" OR ")
             .append(buildSearchCondition(filterConstraints.getSearchString(), "tft")) // search in target
-            .append(")")
+            .append(")");
+      }
+      queryBuilder
             .append(" ORDER BY tf.pos");
+
       // @formatter:on
       log.debug("get navigation SQL query: {}", queryBuilder);
       Query query = getSession().createSQLQuery(queryBuilder.toString())
             .addScalar("id", Hibernate.LONG)
             .addScalar("state")
             .setParameter("docId", documentId)
-            .setParameter("locale", hLocale.getId())
-            .setResultTransformer(resultTransformer);
+            .setParameter("locale", hLocale.getId());
+      if (hasSearchString)
+      {
+         query.setParameter("searchstringlowercase", "%" + filterConstraints.getSearchString().toLowerCase() + "%");
+      }
+      query.setResultTransformer(resultTransformer);
 
       return query.list();
    }
@@ -220,7 +231,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       List<String> conditions = Lists.newArrayList();
       for (int i = 0; i < 6; i++)
       {
-         conditions.add("lower(" + alias + ".content" + i + ") LIKE '%" + searchString.toLowerCase() + "%'");
+         conditions.add("lower(" + alias + ".content" + i + ") LIKE :searchstringlowercase");
       }
       Joiner joiner = Joiner.on(" or ");
       joiner.appendTo(builder, conditions);
