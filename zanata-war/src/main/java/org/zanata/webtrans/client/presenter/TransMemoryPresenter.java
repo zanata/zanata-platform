@@ -64,7 +64,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
       this.configHolder = configHolder;
       currentResult = new ArrayList<TransMemoryResultItem>();
 
-      display.setDisplayMode(configHolder.getTMDisplayMode());
+      display.setDisplayMode(configHolder.getState().getTransMemoryDisplayMode());
    }
 
    @Override
@@ -108,7 +108,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    {
       if (event == UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT)
       {
-         display.setDisplayMode(configHolder.getTMDisplayMode());
+         display.setDisplayMode(configHolder.getState().getTransMemoryDisplayMode());
          onDiffModeChanged();
       }
    }

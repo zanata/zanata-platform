@@ -86,7 +86,7 @@ public class ModalNavigationStateHolder
    protected int getTargetPage(TransUnitId targetId)
    {
       int targetIndex = idIndexList.indexOf(targetId);
-      return targetIndex / configHolder.getEditorPageSize();
+      return targetIndex / configHolder.getState().getEditorPageSize();
    }
 
    protected int lastPage()
@@ -112,7 +112,7 @@ public class ModalNavigationStateHolder
 
    protected void updatePageSize()
    {
-      pageCount = (int) Math.ceil(totalCount * 1.0 / configHolder.getEditorPageSize());
+      pageCount = (int) Math.ceil(totalCount * 1.0 / configHolder.getState().getEditorPageSize());
    }
 
    protected TransUnitId getNextId()

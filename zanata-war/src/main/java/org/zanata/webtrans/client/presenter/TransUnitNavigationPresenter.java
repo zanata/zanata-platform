@@ -109,7 +109,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    {
       if (event.getView() == MainView.Editor)
       {
-         display.setNavModeTooltip(configHolder.getNavOption());
+         display.setNavModeTooltip(configHolder.getState().getNavOption());
       }
    }
 }

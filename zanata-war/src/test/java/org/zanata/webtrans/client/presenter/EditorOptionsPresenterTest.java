@@ -137,7 +137,7 @@ public class EditorOptionsPresenterTest
 
       // Then:
       verify(userWorkspaceContext).setProjectActive(false);
-      assertThat(configHolder.isDisplayButtons(), Matchers.is(false));
+      assertThat(configHolder.getState().isDisplayButtons(), Matchers.is(false));
       verify(display).setOptionsState(configHolder.getState());
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
@@ -181,7 +181,7 @@ public class EditorOptionsPresenterTest
    {
       presenter.onPageSizeClick(99);
 
-      assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(99));
+      assertThat(configHolder.getState().getEditorPageSize(), Matchers.equalTo(99));
       ArgumentCaptor<EditorPageSizeChangeEvent> eventCaptor = ArgumentCaptor.forClass(EditorPageSizeChangeEvent.class);
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().getPageSize(), Matchers.equalTo(99));
@@ -194,7 +194,7 @@ public class EditorOptionsPresenterTest
 
       presenter.onEnterSaveOptionChanged(true);
 
-      assertThat(configHolder.isEnterSavesApproved(), Matchers.is(true));
+      assertThat(configHolder.getState().isEnterSavesApproved(), Matchers.is(true));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
@@ -205,7 +205,7 @@ public class EditorOptionsPresenterTest
 
       presenter.onEditorButtonsOptionChanged(true);
 
-      assertThat(configHolder.isDisplayButtons(), Matchers.is(true));
+      assertThat(configHolder.getState().isDisplayButtons(), Matchers.is(true));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
@@ -216,7 +216,7 @@ public class EditorOptionsPresenterTest
 
       presenter.onSelectionChange("", NavOption.FUZZY);
 
-      assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
+      assertThat(configHolder.getState().getNavOption(), Matchers.equalTo(NavOption.FUZZY));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
@@ -227,7 +227,7 @@ public class EditorOptionsPresenterTest
 
       presenter.onShowSaveApprovedWarningChanged(false);
 
-      assertThat(configHolder.isShowSaveApprovedWarning(), Matchers.equalTo(false));
+      assertThat(configHolder.getState().isShowSaveApprovedWarning(), Matchers.equalTo(false));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
@@ -238,7 +238,7 @@ public class EditorOptionsPresenterTest
 
       presenter.onSpellCheckOptionChanged(true);
 
-      assertThat(configHolder.isSpellCheckEnabled(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().isSpellCheckEnabled(), Matchers.equalTo(true));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
@@ -249,7 +249,7 @@ public class EditorOptionsPresenterTest
 
       presenter.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
 
-      assertThat(configHolder.getTMDisplayMode(), Matchers.equalTo(DiffMode.NORMAL));
+      assertThat(configHolder.getState().getTransMemoryDisplayMode(), Matchers.equalTo(DiffMode.NORMAL));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
@@ -260,7 +260,7 @@ public class EditorOptionsPresenterTest
 
       presenter.onUseCodeMirrorOptionChanged(true);
 
-      assertThat(configHolder.isUseCodeMirrorEditor(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().isUseCodeMirrorEditor(), Matchers.equalTo(true));
       verify(eventBus).fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);
    }
 
@@ -315,8 +315,8 @@ public class EditorOptionsPresenterTest
       when(translatedChk.getValue()).thenReturn(true);
       when(untranslatedChk.getValue()).thenReturn(false);
       callback.onSuccess(result);
-      assertThat(configHolder.getEditorPageSize(), Matchers.equalTo(10));
-      assertThat(configHolder.getNavOption(), Matchers.equalTo(NavOption.FUZZY));
+      assertThat(configHolder.getState().getEditorPageSize(), Matchers.equalTo(10));
+      assertThat(configHolder.getState().getNavOption(), Matchers.equalTo(NavOption.FUZZY));
 
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 

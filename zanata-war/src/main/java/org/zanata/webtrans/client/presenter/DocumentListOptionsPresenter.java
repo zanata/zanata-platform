@@ -92,7 +92,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    @Override
    public void onPageSizeClick(int pageSize)
    {
-      if (userOptionsService.getConfigHolder().getDocumentListPageSize() != pageSize)
+      if (userOptionsService.getConfigHolder().getState().getDocumentListPageSize() != pageSize)
       {
          userOptionsService.getConfigHolder().setDocumentListPageSize(pageSize);
          eventBus.fireEvent(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);

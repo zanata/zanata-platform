@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +26,8 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
-import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import com.google.common.collect.Lists;
@@ -42,7 +38,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -94,9 +89,9 @@ public class NavigationServiceUnitTest
       verify(eventBus).addHandler(NavTransUnitEvent.getType(), service);
       verify(eventBus).addHandler(EditorPageSizeChangeEvent.TYPE, service);
 
-      pageModel.setData(data.subList(0, configHolder.getEditorPageSize()));
+      pageModel.setData(data.subList(0, configHolder.getState().getEditorPageSize()));
       navigationStateHolder.init(idStateMap, idIndexList);
-      initContext = new GetTransUnitActionContext(new DocumentId(1)).changeCount(configHolder.getEditorPageSize());
+      initContext = new GetTransUnitActionContext(new DocumentId(1)).changeCount(configHolder.getState().getEditorPageSize());
    }
 
    private void initData()

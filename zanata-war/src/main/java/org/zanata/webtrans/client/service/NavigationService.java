@@ -277,7 +277,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          DocumentId documentId = documentSelectionEvent.getDocumentId();
          // @formatter:off
          context = new GetTransUnitActionContext(documentId)
-               .changeCount(configHolder.getEditorPageSize())
+               .changeCount(configHolder.getState().getEditorPageSize())
                .changeFindMessage(documentSelectionEvent.getFindMessage())
                .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
                .changeFilterTranslated(configHolder.getState().isFilterByTranslated())

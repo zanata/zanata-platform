@@ -101,7 +101,7 @@ public class DocumentListPresenterTest
       when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
       when(mockMessages.byWords()).thenReturn(TEST_BY_WORDS_MESSAGE);
       when(mockMessages.byMessage()).thenReturn(TEST_BY_MESSAGE_MESSAGE);
-      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
+      when(mockConfigHolder.getState().getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
 
       documentListPresenter.onBind();
 
@@ -452,7 +452,7 @@ public class DocumentListPresenterTest
    {
       UserConfigChangeEvent mockEvent = mock(UserConfigChangeEvent.class);
       when(mockEvent.getView()).thenReturn(MainView.Documents);
-      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
+      when(mockConfigHolder.getState().getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 

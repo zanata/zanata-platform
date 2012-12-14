@@ -94,7 +94,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       sourcePanelList.clear();
 
       int rowIndex = 0;
-      boolean useCodeMirrorEditor = configHolder.isUseCodeMirrorEditor();
+      boolean useCodeMirrorEditor = configHolder.getState().isUseCodeMirrorEditor();
       for (String source : value.getSources())
       {
          SourcePanel sourcePanel = new SourcePanel(transUnitId, useCodeMirrorEditor);
