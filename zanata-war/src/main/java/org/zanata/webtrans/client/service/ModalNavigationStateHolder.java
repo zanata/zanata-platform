@@ -73,7 +73,7 @@ public class ModalNavigationStateHolder
       idAndStateMap.put(id, newState);
    }
 
-   protected int maxRowIndex()
+   private int maxRowIndex()
    {
       return totalCount - 1;
    }
@@ -119,8 +119,8 @@ public class ModalNavigationStateHolder
    {
       if (configHolder.isAcceptAllStatus())
       {
-      return idIndexList.get(Math.min(currentIndex + 1, maxRowIndex()));
-   }
+         return idIndexList.get(Math.min(currentIndex + 1, maxRowIndex()));
+      }
 
       // we are in filter mode
       for (int i = currentIndex + 1; i <= maxRowIndex(); i++)
@@ -148,8 +148,8 @@ public class ModalNavigationStateHolder
    {
       if (configHolder.isAcceptAllStatus())
       {
-      return idIndexList.get(Math.max(currentIndex - 1, 0));
-   }
+         return idIndexList.get(Math.max(currentIndex - 1, 0));
+      }
 
       // we are in filter mode
       for (int i = currentIndex - 1; i >= 0; i--)
