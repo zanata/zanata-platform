@@ -163,32 +163,4 @@ public class LoginAction implements Serializable
 
       return loginResult;
    }
-   
-   /**
-    * For INTERNAL authentication - check if user account is authenticated but
-    * not activate
-    * 
-    * @return
-    */
-   public boolean isAuthenticatedNotActivate()
-   {
-      /*boolean ignoreAccountEnabledCheck = true;
-      if (authType == AuthenticationType.INTERNAL)
-      {
-         ignoreAccountEnabledCheck = true;
-      }
-      else if (authType == AuthenticationType.JAAS)
-      {
-         ignoreAccountEnabledCheck = false;
-      }
-
-      if (authenticationManager.authenticate(username, password, ignoreAccountEnabledCheck) && !authenticationManager.isAccountActivated(username))
-      {
-         inactiveAccountAction.setUsername(username);
-         return true;
-      }*/
-      return false;
-
-   }
-
 }

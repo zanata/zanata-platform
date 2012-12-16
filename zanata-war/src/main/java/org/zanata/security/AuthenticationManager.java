@@ -30,7 +30,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
@@ -131,6 +130,10 @@ public class AuthenticationManager
     */
    public String jaasLogin()
    {
+      if (isLoggedInAccountWaitingForActivation())
+      {
+         return "inactive";
+      }
       return login(AuthenticationType.JAAS, credentials.getUsername(), credentials.getPassword());
    }
 
@@ -206,37 +209,30 @@ public class AuthenticationManager
     */
    public String getAuthenticationRedirect()
    {
-      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS && identity.isLoggedIn() && isNewUser())
+      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS)
       {
-         return "edit";
-      }
-
-      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS && identity.isLoggedIn() && !isNewUser())
-      {
-         if (userRedirect != null && userRedirect.isRedirect())
+         if (identity.isLoggedIn())
          {
-            return "redirect";
-         }
-         else
-         {
+            if (isNewUser())
+            {
+               return "edit";
+            }
+            else if (userRedirect != null && userRedirect.isRedirect())
+            {
+               return "redirect";
+            }
             return "home";
          }
-      }
-
-      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS && !identity.isLoggedIn())
-      {
-         if (isLoggedInAccountWaitingForActivation())
+         else if (isLoggedInAccountWaitingForActivation())
          {
             return "inactive";
          }
          return "home";
       }
-
-      if (identity.getAuthenticationType() != AuthenticationType.KERBEROS)
+      else
       {
          return "login";
       }
-      return null;
    }
 
 
