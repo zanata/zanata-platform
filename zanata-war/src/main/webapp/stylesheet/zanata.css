@@ -276,6 +276,30 @@ a.breadcrumbs_link:hover
 	font-size:12px;
 }
 
+.inactiveAccountForm div.contentDiv
+{
+	padding:5px;
+	margin:5px;
+	border:1px dotted lightGrey;
+	border-radius:5px;
+	
+}
+
+.inactive_message {
+	font-size:14px;
+	padding:5px;
+	color:#004BA9;
+}
+
+.inactive_message_bold
+{
+	font-weight:bold;
+	font-size:14px;
+	padding:5px;
+	color:#004BA9;
+	display:block;
+}
+
 .input_help {
 	padding-left: 2px;
 	padding-right: 2px;

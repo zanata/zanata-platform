@@ -176,7 +176,12 @@
     <from casesensitive="true">^/account/password_reset/(.+)$</from>
     <to last="true">/account/password_reset.seam\?key=$1</to>
   </rule>
-
+  
+  <rule>
+    <from casesensitive="true">^/account/inactive(.+)?$</from>
+    <to last="true">/account/inactive_account.seam$1</to>
+  </rule>
+  
   <!-- Profile -->
   <rule>
     <from casesensitive="true">^/profile/edit(.+)?$</from>
@@ -409,6 +414,10 @@
   <outbound-rule>
     <from>^(/.+)?/account/changepassword.seam(.+)?$</from>
     <to>$1/account/changepassword$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/inactive_account.seam(.+)?$</from>
+    <to>$1/account/inactive$2</to>
   </outbound-rule>
   
   <outbound-rule>

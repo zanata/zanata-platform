@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="page_title">Inactive account</ui:define>
+
+    <ui:define name="head">
+    	<script type="text/javascript">
+    		function showUpdateEmailLoading(show)
+            {
+            	if(show == true)
+            	{
+            		document.getElementById("#{rich:clientId('updateEmailLoading')}").style.display='inline';
+            	}
+            	else
+            	{
+            		document.getElementById("#{rich:clientId('updateEmailLoading')}").style.display='none';
+            	}
+            }
+            
+            function showSendEmailLoading(show)
+            {
+            	if(show == true)
+            	{
+            		document.getElementById("#{rich:clientId('sendActivationEmail')}").style.display='inline';
+            	}
+            	else
+            	{
+            		document.getElementById("#{rich:clientId('sendActivationEmail')}").style.display='none';
+            	}
+            }
+    	</script>                           
+    </ui:define>
+
+    <ui:define name="center_content">
+    	<h:form styleClass="inactiveAccountForm">
+			<h:outputText value="Your account is not activated. Please select the following:" styleClass="inactive_message"/>
+	    	
+			<s:div styleClass="contentDiv">
+				<h:commandButton id="resendEmail" value="#{messages['jsf.ResendActivationEmail']}" 
+						 			action="#{inactiveAccountAction.sendActivationEmail}" onclick="showSendEmailLoading(true)"/>
+				<h:graphicImage value="/images/loading.gif" id="sendActivationEmail" style="display:none" />
+			</s:div>
+			
+            <h:outputText value="OR" styleClass="inactive_message_bold"/>
+            
+            <s:div styleClass="contentDiv">
+            	<h:outputText value="Update email address and resend activation email:" styleClass="inactive_message"/>
+             
+             
+	             <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
+	                 <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+	                 <h:inputText id="email"  value="#{inactiveAccountAction.email}">
+	                     <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
+	                 </h:inputText>
+	                 <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
+	                     <rich:toolTip>
+	                         #{messages['jsf.EmailToolTip']}
+	                     </rich:toolTip>
+	                 </s:span>
+	             </s:decorate>
+	             <div style="clear:both;"/>
+    		
+    			<h:commandButton id="updateEmail" value="#{messages['jsf.UpdateEmail']}" 
+    							 action="#{inactiveAccountAction.changeEmail}" onclick="showUpdateEmailLoading(true)"/>
+    			<h:graphicImage value="/images/loading.gif" id="updateEmailLoading" style="display:none" />
+            </s:div>
+    	</h:form>
+
+    </ui:define>
+
+</ui:composition>

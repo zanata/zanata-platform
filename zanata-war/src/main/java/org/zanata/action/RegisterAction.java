@@ -42,6 +42,7 @@ import org.jboss.seam.log.Log;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
+import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 
 @Name("register")
@@ -62,6 +63,9 @@ public class RegisterAction implements Serializable
    
    @In
    PersonDAO personDAO;
+   
+   @In
+   EmailService emailServiceImpl;
 
    @In(create = true)
    private Renderer renderer;
@@ -199,19 +203,12 @@ public class RegisterAction implements Serializable
       final String pass = getPassword();
       final String email = getEmail();
       String key = registerServiceImpl.register(user, pass, getPerson().getName(), email);
-      setActivationKey(key);
       log.info("get register key:" + key);
 
-      renderer.render("/WEB-INF/facelets/email/activation.xhtml");
-
-      FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
-
+      String message = emailServiceImpl.sendActivationEmail(EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, user, email, key);
+      FacesMessages.instance().add(message);
+      
       return "/home.xhtml";
-   }
-
-   public String getActivationKey()
-   {
-      return activationKey;
    }
 
    @Begin(join = true)

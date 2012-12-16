@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
@@ -39,7 +40,7 @@ public class RemoteLoggingHandlerTest
             .autowire(RemoteLoggingHandler.class);
       // @formatter:on
 
-      when(identity.getCredentials()).thenReturn(new Credentials());
+      when(identity.getCredentials()).thenReturn(new ZanataCredentials());
    }
 
    @Test

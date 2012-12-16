@@ -27,15 +27,18 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.dao.AccountDAO;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.ZanataCredentials;
 import org.zanata.security.openid.OpenIdProviderType;
 
 /**
- * This action takes care of logging a user into the system. It contains logic to
- * handle the different authentication mechanisms offered by the system.
- *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * This action takes care of logging a user into the system. It contains logic
+ * to handle the different authentication mechanisms offered by the system.
+ * 
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("loginAction")
 @Scope(ScopeType.PAGE)
@@ -44,21 +47,25 @@ public class LoginAction implements Serializable
    private static final long serialVersionUID = 1L;
 
    @In
-   private ApplicationConfiguration applicationConfiguration;
+   private ZanataCredentials credentials;
 
    @In
    private AuthenticationManager authenticationManager;
+
+   @In
+   private ApplicationConfiguration applicationConfiguration;
+
+   @In
+   private AccountDAO accountDAO;
+   
+   @In(create = true)
+   private InactiveAccountAction inactiveAccountAction;
 
    private String username;
 
    private String password;
 
    private String authProvider;
-
-   private OpenIdProviderType openIdProviderType;
-
-   private AuthenticationType authType;
-
 
 
    public String getUsername()
@@ -92,20 +99,26 @@ public class LoginAction implements Serializable
    }
 
    /**
-    * Prepares authentication based on the passed parameters.
+    * Prepares authentication credentials based on the passed parameters.
     */
-   private void configureAuthentication()
+   private void prepareCredentials()
    {
+      AuthenticationType authType = null;
+      OpenIdProviderType openIdProviderType = null;
+
+      credentials.setUsername( username );
+      credentials.setPassword( password );
+
       // All others
-      if( authProvider == null )
+      if (authProvider == null)
       {
-         if( applicationConfiguration.isInternalAuth() )
+         if (applicationConfiguration.isInternalAuth())
          {
-            this.authType = AuthenticationType.INTERNAL;
+            authType = AuthenticationType.INTERNAL;
          }
-         else if( applicationConfiguration.isJaasAuth() )
+         else if (applicationConfiguration.isJaasAuth())
          {
-            this.authType = AuthenticationType.JAAS;
+            authType = AuthenticationType.JAAS;
          }
       }
       // Open Id / internal auth
@@ -114,53 +127,40 @@ public class LoginAction implements Serializable
          try
          {
             // If it is open Id
-            this.openIdProviderType = OpenIdProviderType.valueOf(authProvider);
-            this.authType = AuthenticationType.OPENID;
+            openIdProviderType = OpenIdProviderType.valueOf(authProvider);
+            authType = AuthenticationType.OPENID;
          }
          catch (Exception e)
          {
             // If it's not open id, it might be another authentication type
-            this.openIdProviderType = null;
-            this.authType = AuthenticationType.valueOf(authProvider);
+            openIdProviderType = null;
+            authType = AuthenticationType.valueOf(authProvider);
          }
       }
+
+      credentials.setAuthType( authType );
+      credentials.setOpenIdProviderType( openIdProviderType );
    }
 
    public String login()
    {
-      this.configureAuthentication();
+      this.prepareCredentials();
       String loginResult = null;
 
-      switch (authType)
+      switch (credentials.getAuthType())
       {
-         case OPENID:
-            loginResult = this.loginWithOpenId();
-            break;
-         case INTERNAL:
-            loginResult = this.loginWithInternal();
-            break;
-         case JAAS:
-            loginResult = this.loginWithJaas();
-            break;
-         // Kerberos auth happens on its own
+      case OPENID:
+         loginResult = authenticationManager.openIdLogin();
+         break;
+      case INTERNAL:
+         loginResult = authenticationManager.internalLogin();
+         break;
+      case JAAS:
+         loginResult = authenticationManager.jaasLogin();
+         break;
+      // Kerberos auth happens on its own
       }
 
       return loginResult;
    }
-
-   private String loginWithOpenId()
-   {
-      return authenticationManager.openIdLogin(openIdProviderType, username);
-   }
-
-   private String loginWithInternal()
-   {
-      return authenticationManager.login(username, password);
-   }
-
-   private String loginWithJaas()
-   {
-      return authenticationManager.login(AuthenticationType.JAAS, username, password);
-   }
-
 }

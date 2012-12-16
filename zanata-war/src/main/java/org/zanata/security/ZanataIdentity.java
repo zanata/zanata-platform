@@ -42,6 +42,7 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Configuration;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
@@ -121,6 +122,12 @@ public class ZanataIdentity extends Identity
       {
          throw new NotLoggedInException();
       }
+   }
+
+   @Override
+   public ZanataCredentials getCredentials()
+   {
+      return (ZanataCredentials)super.getCredentials();
    }
 
    @Observer("org.jboss.seam.preDestroyContext.SESSION")
@@ -261,10 +268,10 @@ public class ZanataIdentity extends Identity
       {
          this.preAuthenticated = true;
       }
-      else
+      /*else
       {
          this.getCredentials().clear();
-      }
+      }*/
       return result;
    }
 }

@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.ScopeType;
@@ -49,7 +50,6 @@ import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.security.AuthenticationType;
 import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
-import org.zanata.util.PasswordGenerator;
 
 @Name("registerServiceImpl")
 @AutoCreate
@@ -93,6 +93,35 @@ public class RegisterServiceImpl implements RegisterService
             account.getRoles().add( adminRole );
          }
       }
+   }
+
+   @Override
+   public String register(final String username, final String name, String email)
+   {
+      new RunAsOperation()
+      {
+         public void execute()
+         {
+            identityStore.createUser(username, null);
+            identityStore.disableUser(username);
+         }
+      }.addRole("admin").run();
+
+      HAccount account = accountDAO.getByUsername(username);
+      HPerson person = new HPerson();
+      person.setAccount(account);
+      person.setEmail(email);
+      person.setName(name);
+
+      this.postProcessRegisteredAccount(account);
+      personDAO.makePersistent(person);
+
+      HAccountActivationKey key = new HAccountActivationKey();
+      key.setAccount(account);
+      key.setKeyHash(HashUtil.generateHash(username + email + name + System.currentTimeMillis()));
+      accountActivationKeyDAO.makePersistent(key);
+      accountActivationKeyDAO.flush();
+      return key.getKeyHash();
    }
 
    public String register(final String username, final String password, String name, String email)

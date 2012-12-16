@@ -44,7 +44,6 @@ public class OpenIdLoginModule implements LoginModule
    protected CallbackHandler callbackHandler;
 
    protected String username;
-   protected OpenIdProviderType openIdProviderType;
 
    public boolean abort() throws LoginException
    {
@@ -74,7 +73,7 @@ public class OpenIdLoginModule implements LoginModule
          callbackHandler.handle(new Callback[] { cbName, cbPassword });
          username = cbName.getName();
          ZanataOpenId openid = (ZanataOpenId) Component.getInstance(ZanataOpenId.class, ScopeType.SESSION);
-         openid.login(username);
+         openid.login(ZanataIdentity.instance().getCredentials());
       }
       catch (Exception ex)
       {

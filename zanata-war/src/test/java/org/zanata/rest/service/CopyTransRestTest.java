@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
@@ -62,7 +63,7 @@ public class CopyTransRestTest extends ZanataRestTest
       MockitoAnnotations.initMocks(this);
       when(mockIdentity.hasPermission(anyString(), anyString(), anyVararg())).thenReturn(true);
       when(mockIdentity.hasPermission(anyString(), anyString())).thenReturn(true);
-      Credentials credentials = new Credentials();
+      ZanataCredentials credentials = new ZanataCredentials();
       credentials.setUsername("testuser");
       when(mockIdentity.getCredentials()).thenReturn(credentials);
 

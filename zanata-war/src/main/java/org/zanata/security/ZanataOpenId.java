@@ -252,21 +252,7 @@ public class ZanataOpenId implements OpenIdAuthCallback
       }
    }
 
-   public void login( String username )
-   {
-      if( this.openIdProvider == null )
-      {
-         throw new RuntimeException("Attempting to log in with Open Id without specifying the provider type.");
-      }
-      this.login(username, null);
-   }
-
-   public void login(String username, OpenIdProviderType openIdProviderType)
-   {
-      this.login(username, openIdProviderType, this);
-   }
-
-   public void login(String username, OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback)
+   private void login(String username, OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback)
    {
       try
       {
@@ -281,6 +267,16 @@ public class ZanataOpenId implements OpenIdAuthCallback
       {
          throw new RuntimeException(e);
       }
+   }
+
+   public void login(ZanataCredentials credentials)
+   {
+      this.login(credentials, this);
+   }
+
+   public void login(ZanataCredentials credentials, OpenIdAuthCallback callback)
+   {
+      this.login(credentials.getUsername(), credentials.getOpenIdProviderType(), callback);
    }
 
    private void login()
@@ -316,13 +312,13 @@ public class ZanataOpenId implements OpenIdAuthCallback
          HAccount authenticatedAccount = accountDAO.getByCredentialsId( result.getAuthenticatedId() );
 
          // If the user hasn't been registered, there is no authenticated account
-         if( authenticatedAccount != null )
+         if( authenticatedAccount != null && authenticatedAccount.isEnabled() )
          {
             credentials.setUsername( authenticatedAccount.getUsername() );
             Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(result.getAuthenticatedId())));
+            this.loginImmediate();
          }
 
-         this.loginImmediate();
       }
    }
 

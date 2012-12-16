@@ -26,8 +26,11 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import org.jboss.seam.annotations.security.management.PasswordSalt;
+import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.security.crypto.BinTools;
 import org.jboss.seam.security.management.IdentityManagementException;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.AnnotatedBeanProperty;
@@ -52,6 +55,9 @@ public class ZanataJpaIdentityStore extends JpaIdentityStore
    // Logging.getLog(ZanataJpaIdentityStore.class);
 
    private AnnotatedBeanProperty<UserApiKey> userApiKeyProperty;
+   
+   private AnnotatedBeanProperty<PasswordSalt> passwordSaltProperty;
+   private AnnotatedBeanProperty<UserPassword> userPasswordProperty;
 
 
 
@@ -64,11 +70,16 @@ public class ZanataJpaIdentityStore extends JpaIdentityStore
 
    private void initProperties()
    {
+      userPasswordProperty = new AnnotatedBeanProperty<UserPassword>(getUserClass(), UserPassword.class);
+      passwordSaltProperty = new AnnotatedBeanProperty<PasswordSalt>(getUserClass(), PasswordSalt.class);
+      
       userApiKeyProperty = new AnnotatedBeanProperty<UserApiKey>(getUserClass(), UserApiKey.class);
       if (!userApiKeyProperty.isSet())
       {
          throw new IdentityManagementException("Invalid userClass " + getUserClass().getName() + " - required annotation @UserApiKey not found on any Field or Method.");
       }
+      
+      
    }
 
    public boolean apiKeyAuthenticate(String username, String apiKey)
@@ -96,6 +107,45 @@ public class ZanataJpaIdentityStore extends JpaIdentityStore
       return success;
 
    }
+   
+   /**
+    * Custom authentication that ignores the account's enabled state.
+    * 
+    * @param username
+    * @param password
+    * @return
+    * @see {@link JpaIdentityStore#authenticate(String, String)}
+    */
+   public boolean authenticateEvenIfDisabled(String username, String password)
+   {
+      Object user = lookupUser(username);          
+      if (user == null)
+      {
+         return false;
+      }
+      
+      String passwordHash = null;
+      
+      if (passwordSaltProperty.isSet())
+      {
+         String encodedSalt = (String) passwordSaltProperty.getValue(user);
+         if (encodedSalt == null)
+         {
+            throw new IdentityManagementException("A @PasswordSalt property was found on entity " + user + 
+                  ", but it contains no value");
+         }
+         
+         passwordHash = generatePasswordHash(password, BinTools.hex2bin(encodedSalt));
+      }
+      else
+      {
+         passwordHash = generatePasswordHash(password, getUserAccountSalt(user));   
+      }
+      
+       
+      return passwordHash.equals(userPasswordProperty.getValue(user));
+   }
+   
 
    @Override
    public boolean authenticate(String username, String password)

@@ -51,7 +51,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
       cr.setCacheable(true).setComment("AccountDAO.getByUsername");
       return (HAccount) cr.uniqueResult();
    }
-
+   
    public HAccount getByUsernameAndEmail(String username, String email)
    {
       return (HAccount) getSession().createQuery("from HAccount acc where acc.username = :username and acc.person.email = :email")
@@ -159,5 +159,4 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
       query.setParameter("mergedInto", mergedInto);
       return query.list();
    }
-
 }

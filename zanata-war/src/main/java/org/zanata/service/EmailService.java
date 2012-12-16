@@ -30,7 +30,11 @@ import org.zanata.model.HPerson;
  */
 public interface EmailService
 {
-
+   public static final String ADMIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_admin.xhtml";
+   public static final String COORDINATOR_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_coordinator.xhtml";
+   public static final String REQUEST_TO_JOIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join.xhtml";
+   public static final String REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join_group.xhtml";
+   public static final String ACTIVATION_ACCOUNT_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/activation.xhtml";
    /**
     * sends emails to configured admin emails for server, or admin users if no
     * server emails are configured.
@@ -74,4 +78,15 @@ public interface EmailService
     * @return
     */
    String sendToLanguageCoordinators(String emailTemplate, List<HPerson> coordinators, String fromName, String fromLoginName, String replyEmail, String subject, String message, String language);
+
+   /**
+    * send account activation email to register user
+    * 
+    * @param emailTemplate
+    * @param toName
+    * @param toEmailAddr
+    * @param activationKey
+    * @return
+    */
+   String sendActivationEmail(String emailTemplate, String toName, String toEmailAddr, String activationKey);
 }
