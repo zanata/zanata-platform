@@ -120,6 +120,10 @@ public class LoginAction implements Serializable
          {
             authType = AuthenticationType.JAAS;
          }
+         else if (applicationConfiguration.isKerberosAuth())
+         {
+            authType = AuthenticationType.KERBEROS;
+         }
       }
       // Open Id / internal auth
       else

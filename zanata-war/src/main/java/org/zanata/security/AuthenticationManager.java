@@ -22,6 +22,7 @@ package org.zanata.security;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -30,7 +31,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
@@ -42,19 +42,23 @@ import org.zanata.service.UserAccountService;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
- *
- * The authenticate methods will perform the authentication but will not login the authenticated
- * user against the session. The login methods will perform these two steps.
- *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * 
+ * The authenticate methods will perform the authentication but will not login
+ * the authenticated user against the session. The login methods will perform
+ * these two steps.
+ * 
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("authenticationManager")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
 public class AuthenticationManager
 {
-   /* Event used to signal a successful login using the authentication manager.
-    * It is a complement to the events in the Identity class.*/
+   /*
+    * Event used to signal a successful login using the authentication manager.
+    * It is a complement to the events in the Identity class.
+    */
    public static final String EVENT_LOGIN_COMPLETED = "org.zanata.security.event.loginCompleted";
 
    @In
@@ -84,14 +88,13 @@ public class AuthenticationManager
    @In
    private ApplicationConfiguration applicationConfiguration;
 
-
-
    /**
     * Logs in a user using a specified authentication type.
-    *
+    * 
     * @param authenticationType Authentication type to use.
     * @param username User's name.
-    * @param password User's password. May be null for some authentication types.
+    * @param password User's password. May be null for some authentication
+    *           types.
     * @return A String with the result of the operation.
     */
    private String login(AuthenticationType authenticationType, String username, String password)
@@ -100,12 +103,17 @@ public class AuthenticationManager
       credentials.setPassword(password);
 
       String result = identity.login(authenticationType);
-      if( result != null && result.equals("loggedIn") )
+      if (isLoggedIn(result))
       {
          this.onLoginCompleted(authenticationType);
       }
 
       return result;
+   }
+
+   private boolean isLoggedIn(String result)
+   {
+      return result != null && result.equals("loggedIn");
    }
 
    /**
@@ -115,7 +123,7 @@ public class AuthenticationManager
     */
    public String internalLogin()
    {
-      if( isLoggedInAccountWaitingForActivation() )
+      if (isAuthenticatedAccountWaitingForActivation())
       {
          return "inactive";
       }
@@ -130,11 +138,16 @@ public class AuthenticationManager
     */
    public String jaasLogin()
    {
-      if (isLoggedInAccountWaitingForActivation())
+      String result = login(AuthenticationType.JAAS, credentials.getUsername(), credentials.getPassword());
+
+      if (isLoggedIn(result))
       {
-         return "inactive";
+         if (isAuthenticatedAccountWaitingForActivation())
+         {
+            return "inactive";
+         }
       }
-      return login(AuthenticationType.JAAS, credentials.getUsername(), credentials.getPassword());
+      return result;
    }
 
    /**
@@ -142,10 +155,15 @@ public class AuthenticationManager
     */
    public void kerberosLogin()
    {
-      if( credentials.getAuthType() == AuthenticationType.KERBEROS && applicationConfiguration.isKerberosAuth() )
+      // credentials.getAuthType() == AuthenticationType.KERBEROS &&
+      if (applicationConfiguration.isKerberosAuth())
       {
          SpNegoIdentity spNegoIdentity = (SpNegoIdentity) Component.getInstance(SpNegoIdentity.class, ScopeType.SESSION);
-         spNegoIdentity.setCredential();
+         spNegoIdentity.authenticate();
+         if (!isAuthenticatedAccountWaitingForActivation())
+         {
+            spNegoIdentity.login();
+         }
       }
    }
 
@@ -153,22 +171,23 @@ public class AuthenticationManager
     * Logs in an Open Id user. Uses the values set in {@link ZanataCredentials}
     * for authentication. This method should be invoked to authenticate AND log
     * a user into Zanata.
-    *
+    * 
     * @return A String with the result of the operation.
     */
    public String openIdLogin()
    {
       // Federated OpenId providers
-      if( zanataOpenId.isFederatedProvider() )
+      if (zanataOpenId.isFederatedProvider())
       {
-         // NB: Credentials' user name must be set to something or else login will fail. The real user name will be asked
+         // NB: Credentials' user name must be set to something or else login
+         // will fail. The real user name will be asked
          // by the provider
          credentials.setUsername("zanata");
       }
 
-      String loginResult = identity.login( AuthenticationType.OPENID );
+      String loginResult = identity.login(AuthenticationType.OPENID);
 
-      if( zanataOpenId.isFederatedProvider() )
+      if (zanataOpenId.isFederatedProvider())
       {
          // Clear out the credentials again
          credentials.setUsername("");
@@ -178,13 +197,16 @@ public class AuthenticationManager
    }
 
    /**
-    * Authenticates an Open Id user. This method <b>will not</b> log in the authenticated user.
-    * Because control needs to be handled over to the Open Id provider, a callback may be
-    * provided to perform actions after the authentication attempt is finished.
-    *
+    * Authenticates an Open Id user. This method <b>will not</b> log in the
+    * authenticated user. Because control needs to be handled over to the Open
+    * Id provider, a callback may be provided to perform actions after the
+    * authentication attempt is finished.
+    * 
     * @param openIdProviderType Open Id provider to use for authentication
-    * @param username User name. The provider will use this username to construct an Open Id.
-    * @param callback Contains the logic to execute after the authentication attempt.
+    * @param username User name. The provider will use this username to
+    *           construct an Open Id.
+    * @param callback Contains the logic to execute after the authentication
+    *           attempt.
     */
    public void openIdAuthenticate(OpenIdProviderType openIdProviderType, String username, OpenIdAuthCallback callback)
    {
@@ -196,22 +218,28 @@ public class AuthenticationManager
    }
 
    /**
-    * This method indicates where a user needs to be redirected for security purposes. It should be
-    * used to determine where to direct a user when they try to access secured content.
-    *
+    * This method indicates where a user needs to be redirected for security
+    * purposes. It should be used to determine where to direct a user when they
+    * try to access secured content.
+    * 
     * @return A string containing a hint of where to redirect the user. <br/>
     *         Valid values are: <br/>
     *         edit - Redirect the user to the edit profile page.<br/>
-    *         redirect - Allow the user to continue to the page they originally aimed for.<br/>
+    *         redirect - Allow the user to continue to the page they originally
+    *         aimed for.<br/>
     *         home - Redirect the user to the home page.<br/>
     *         inactive - The user's account is inactive.<br/>
     *         login - Redirect the user to the login page.
     */
    public String getAuthenticationRedirect()
    {
-      if (identity.getAuthenticationType() == AuthenticationType.KERBEROS)
+      if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS)
       {
-         if (identity.isLoggedIn())
+         if (isAuthenticatedAccountWaitingForActivation())
+         {
+            return "inactive";
+         }
+         else if (identity.isLoggedIn())
          {
             if (isNewUser())
             {
@@ -223,10 +251,6 @@ public class AuthenticationManager
             }
             return "home";
          }
-         else if (isLoggedInAccountWaitingForActivation())
-         {
-            return "inactive";
-         }
          return "home";
       }
       else
@@ -235,38 +259,42 @@ public class AuthenticationManager
       }
    }
 
-
    /**
-    * Performs operations after a successful login is completed.
-    * Currently runs the role assignment rules on the logged in account.
-    *
+    * Performs operations after a successful login is completed. Currently runs
+    * the role assignment rules on the logged in account.
+    * 
     * @param authType Authentication type that was used to login.
     */
    @Observer(EVENT_LOGIN_COMPLETED)
    public void onLoginCompleted(AuthenticationType authType)
    {
+      identity.setPreAuthenticated(true);
+      if (isExternalLogin() && !isNewUser() && isAccountEnabledAndActivated())
+      {
+         applyAuthentication();
+      }
       // Get the authenticated account and credentials
       HAccount authenticatedAccount = null;
       HCredentials authenticatedCredentials = null;
 
       String username = credentials.getUsername();
 
-      if( authType == AuthenticationType.OPENID )
+      if (authType == AuthenticationType.OPENID)
       {
-         authenticatedCredentials = credentialsDAO.findByUser( zanataOpenId.getAuthResult().getAuthenticatedId() );
+         authenticatedCredentials = credentialsDAO.findByUser(zanataOpenId.getAuthResult().getAuthenticatedId());
          // on first Open Id login, there might not be any stored credentials
-         if( authenticatedCredentials != null )
+         if (authenticatedCredentials != null)
          {
             authenticatedAccount = authenticatedCredentials.getAccount();
          }
       }
       else
       {
-         authenticatedCredentials = credentialsDAO.findByUser( username );
-         authenticatedAccount = accountDAO.getByUsername( username );
+         authenticatedCredentials = credentialsDAO.findByUser(username);
+         authenticatedAccount = accountDAO.getByUsername(username);
       }
 
-      if( authenticatedAccount != null )
+      if (authenticatedAccount != null)
       {
          userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount, authenticatedCredentials, authType.name());
       }
@@ -284,16 +312,21 @@ public class AuthenticationManager
 
    public boolean isAccountEnabled(String username)
    {
+      if (StringUtils.isEmpty(username))
+      {
+         return false;
+      }
       return identityStore.isUserEnabled(username);
    }
 
-   public boolean isLoggedInAccountWaitingForActivation()
+   public boolean isAuthenticatedAccountWaitingForActivation()
    {
       boolean userIsAuthenticated = true;
 
-      // For internal Authentication, the user must be re-authenticated without taking into account
+      // For internal Authentication, the user must be re-authenticated without
+      // taking into account
       // the account's enabled flag
-      if( credentials.getAuthType() == AuthenticationType.INTERNAL && applicationConfiguration.isInternalAuth() )
+      if (credentials.getAuthType() == AuthenticationType.INTERNAL && applicationConfiguration.isInternalAuth())
       {
          userIsAuthenticated = identityStore.authenticateEvenIfDisabled(credentials.getUsername(), credentials.getPassword());
       }
@@ -308,7 +341,11 @@ public class AuthenticationManager
 
    public boolean isNewUser()
    {
-      return isNewUser( credentials.getUsername() );
+      if (credentials.getAuthType() == AuthenticationType.OPENID && applicationConfiguration.isOpenIdAuth())
+      {
+         return credentialsDAO.findByUser(zanataOpenId.getAuthResult().getAuthenticatedId()) == null;
+      }
+      return isNewUser(credentials.getUsername());
    }
 
    public void setAuthenticateUser(String username)
@@ -320,6 +357,15 @@ public class AuthenticationManager
    public List<String> getImpliedRoles(String username)
    {
       return identityStore.getImpliedRoles(username);
+   }
+
+   public boolean isAuthenticated()
+   {
+      if (credentials.getAuthType() == AuthenticationType.OPENID && applicationConfiguration.isOpenIdAuth())
+      {
+         return zanataOpenId.getAuthResult().isAuthenticated();
+      }
+      return identity.isLoggedIn();
    }
 
    private boolean isAccountEnabledAndActivated()
@@ -344,8 +390,8 @@ public class AuthenticationManager
          FacesMessages.instance().clear();
          FacesMessages.instance().add(message);
 
-         //identity.setPreAuthenticated(false);
-         //identity.unAuthenticate();
+         // identity.setPreAuthenticated(false);
+         // identity.unAuthenticate();
 
          return false;
       }
@@ -353,7 +399,7 @@ public class AuthenticationManager
 
    private boolean isExternalLogin()
    {
-      return identity.getAuthenticationType() != AuthenticationType.INTERNAL && !identity.isApiRequest();
+      return identity.getCredentials().getAuthType() != AuthenticationType.INTERNAL && !identity.isApiRequest();
    }
 
    private void applyAuthentication()
@@ -365,17 +411,6 @@ public class AuthenticationManager
          identity.addRole(role);
       }
       setAuthenticateUser(username);
-   }
-
-
-   @Observer(Identity.EVENT_LOGIN_SUCCESSFUL)
-   public void loginInSuccessful()
-   {
-      identity.setPreAuthenticated(true);
-      if (isExternalLogin() && !isNewUser() && isAccountEnabledAndActivated())
-      {
-         applyAuthentication();
-      }
    }
 
 }

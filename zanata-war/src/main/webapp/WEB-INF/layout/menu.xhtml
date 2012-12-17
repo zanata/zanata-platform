@@ -53,7 +53,7 @@
 					<s:fragment rendered="#{not identity.loggedIn}">
 						<li>
 							<s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none"
-								rendered="#{applicationConfiguration.internalAuth}" /> 
+								rendered="#{applicationConfiguration.internalAuth}"/> 
 								
 							<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
 								<a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>

@@ -55,7 +55,7 @@ public class InactiveAccountAction implements Serializable
       if( credentials.getAuthType() == AuthenticationType.OPENID )
       {
          // NB: Maybe we can get the authenticated openid from somewhere else
-         account = credentialsDAO.findByUser( zanataOpenId.getId() ).getAccount();
+         account = credentialsDAO.findByUser(zanataOpenId.getAuthResult().getAuthenticatedId()).getAccount();
       }
       else
       {

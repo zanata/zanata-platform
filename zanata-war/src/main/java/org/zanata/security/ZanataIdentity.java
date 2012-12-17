@@ -42,7 +42,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Configuration;
-import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
@@ -71,8 +70,6 @@ public class ZanataIdentity extends Identity
 
    private boolean preAuthenticated;
 
-   private AuthenticationType authenticationType;
-
    public String getApiKey()
    {
       return apiKey;
@@ -87,16 +84,6 @@ public class ZanataIdentity extends Identity
    public boolean isApiRequest()
    {
       return apiKey != null;
-   }
-
-   public AuthenticationType getAuthenticationType()
-   {
-      return authenticationType;
-   }
-
-   protected void setAuthenticationType(AuthenticationType authenticationType)
-   {
-      this.authenticationType = authenticationType;
    }
 
    public static ZanataIdentity instance()
@@ -238,7 +225,7 @@ public class ZanataIdentity extends Identity
       if (getJaasConfigName() != null && !getJaasConfigName().equals(JAAS_DEFAULT))
       {
          ApplicationConfiguration appConfig = (ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class);
-         return new LoginContext(appConfig.getLoginModuleName(this.authenticationType), getSubject(), getCredentials().createCallbackHandler());
+         return new LoginContext(appConfig.getLoginModuleName(getCredentials().getAuthType()), getSubject(), getCredentials().createCallbackHandler());
       }
 
       return new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance());
@@ -262,16 +249,12 @@ public class ZanataIdentity extends Identity
 
    public String login( AuthenticationType authType )
    {
-      this.authenticationType = authType;
+      getCredentials().setAuthType(authType);
       String result = super.login();
       if (result != null && result.equals("loggedIn"))
       {
          this.preAuthenticated = true;
       }
-      /*else
-      {
-         this.getCredentials().clear();
-      }*/
       return result;
    }
 }

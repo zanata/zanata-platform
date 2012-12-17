@@ -20,7 +20,10 @@
  */
 package org.zanata.security;
 
+import static org.jboss.seam.ScopeType.SESSION;
+
 import java.util.List;
+
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,8 +63,6 @@ import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
-
-import static org.jboss.seam.ScopeType.SESSION;
 
 
 @Name("org.jboss.seam.security.zanataOpenId")
@@ -247,7 +248,8 @@ public class ZanataOpenId implements OpenIdAuthCallback
       if (loginImmediately() && Events.exists())
       {
          Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
-         Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL, AuthenticationType.OPENID);
+         // Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL,
+         // AuthenticationType.OPENID);
          Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
       }
    }
@@ -311,10 +313,12 @@ public class ZanataOpenId implements OpenIdAuthCallback
       {
          HAccount authenticatedAccount = accountDAO.getByCredentialsId( result.getAuthenticatedId() );
 
+         identity.setPreAuthenticated(true);
+
          // If the user hasn't been registered, there is no authenticated account
          if( authenticatedAccount != null && authenticatedAccount.isEnabled() )
          {
-            credentials.setUsername( authenticatedAccount.getUsername() );
+            credentials.setUsername(authenticatedAccount.getUsername());
             Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(result.getAuthenticatedId())));
             this.loginImmediate();
          }
