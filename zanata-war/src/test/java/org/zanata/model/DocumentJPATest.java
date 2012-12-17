@@ -35,7 +35,7 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   public void syncRevisions(HDocument doc, HTextFlow... textFlows)
+   private void syncRevisions(HDocument doc, HTextFlow... textFlows)
    {
       int rev = doc.getRevision();
       syncRevisions(doc, rev, textFlows);

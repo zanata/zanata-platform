@@ -401,6 +401,7 @@
             <persistenceunit>zanataTestDatasourcePU</persistenceunit>
           </componentProperties>
         </configuration>
+<!--
         <executions>
           <execution>
             <phase>process-test-classes</phase>
@@ -409,6 +410,7 @@
             </goals>
           </execution>
         </executions>
+-->
         <dependencies>
 <!--
           <dependency>

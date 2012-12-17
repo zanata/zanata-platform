@@ -277,6 +277,20 @@
       </dependencies>
    </dependencyManagement>    
 
+   <dependencies>
+      <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>0.11.0</version>
+            <scope>provided</scope>
+      </dependency>
+      <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+      </dependency>
+   </dependencies>
+
    <!--
    https://community.jboss.org/wiki/MavenRepository
    https://community.jboss.org/wiki/MavenSettings
