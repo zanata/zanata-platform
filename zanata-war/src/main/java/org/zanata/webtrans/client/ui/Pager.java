@@ -5,9 +5,11 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -186,6 +188,18 @@ public class Pager extends Composite implements HasPager
          }
       }
    };
+
+   @Override
+   public HandlerRegistration addFocusHandler(FocusHandler handler)
+   {
+      return gotoPage.addFocusHandler(handler);
+   }
+
+   @Override
+   public HandlerRegistration addBlurHandler(BlurHandler handler)
+   {
+      return gotoPage.addBlurHandler(handler);
+   }
 
    private void setEnabled(Button button, boolean enabled)
    {
