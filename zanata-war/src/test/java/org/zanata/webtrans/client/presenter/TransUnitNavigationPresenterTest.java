@@ -36,7 +36,6 @@ public class TransUnitNavigationPresenterTest
    private EventBus eventBus;
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
-   @Mock
    private UserConfigHolder userConfigHolder;
    @Captor
    private ArgumentCaptor<NavTransUnitEvent> eventCaptor;
@@ -45,6 +44,7 @@ public class TransUnitNavigationPresenterTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
+      userConfigHolder = new UserConfigHolder();
       presenter = new TransUnitNavigationPresenter(display, eventBus, userConfigHolder, targetContentsPresenter);
 
       verify(display).setListener(presenter);
@@ -61,7 +61,7 @@ public class TransUnitNavigationPresenterTest
    @Test
    public void onUserConfigChange()
    {
-      when(userConfigHolder.getState().getNavOption()).thenReturn(NavOption.UNTRANSLATED);
+      userConfigHolder.setNavOption(NavOption.UNTRANSLATED);
 
       presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 

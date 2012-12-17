@@ -59,7 +59,7 @@ public class UserConfigHolderTest
    @SuppressWarnings("unchecked")
    private Map<String, String> getPropertiesMap() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
-      return BeanUtils.describe(configHolder);
+      return BeanUtils.describe(configHolder.getState());
    }
 
    @Test
