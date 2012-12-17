@@ -21,7 +21,6 @@
 
 package org.zanata.webtrans.client.service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -44,7 +42,7 @@ public class ModalNavigationStateHolder
 {
    private final UserConfigHolder configHolder;
    private Map<TransUnitId, ContentState> idAndStateMap;
-   private LinkedList<TransUnitId> idIndexList;
+   private List<TransUnitId> idIndexList;
 
    private int curPage = 0;
    private TransUnitId selected = new TransUnitId(-1);
@@ -63,7 +61,7 @@ public class ModalNavigationStateHolder
    protected void init(Map<TransUnitId, ContentState> transIdStateMap, List<TransUnitId> idIndexList)
    {
       this.idAndStateMap = transIdStateMap;
-      this.idIndexList = Lists.newLinkedList(idIndexList);
+      this.idIndexList = idIndexList;
       totalCount = idIndexList.size();
       updatePageSize();
    }
