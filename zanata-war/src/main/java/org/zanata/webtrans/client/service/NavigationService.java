@@ -181,7 +181,6 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
-      Log.info(navigationStateHolder.toString());
       TransUnitId targetId;
       switch (event.getRowType())
       {
