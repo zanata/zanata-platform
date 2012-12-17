@@ -61,7 +61,7 @@ public class TransUnitNavigationPresenterTest
    @Test
    public void onUserConfigChange()
    {
-      when(userConfigHolder.getNavOption()).thenReturn(NavOption.UNTRANSLATED);
+      when(userConfigHolder.getState().getNavOption()).thenReturn(NavOption.UNTRANSLATED);
 
       presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 

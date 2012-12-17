@@ -52,7 +52,7 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
       action.addContextInfo("editor contents", targetContentsPresenter.getNewTargets());
       dispatcher.execute(action, new NoOpAsyncCallback<NoOpResult>());
 
-      if (!configHolder.isShowError())
+      if (!configHolder.getState().isShowError())
       {
          return;
       }

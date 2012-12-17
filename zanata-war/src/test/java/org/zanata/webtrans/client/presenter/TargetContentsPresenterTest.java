@@ -475,7 +475,7 @@ public class TargetContentsPresenterTest
 
       // Then:
       verify(display, times(3)).showButtons(false);
-      verify(saveAsApprovedConfirmation).setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
+      verify(saveAsApprovedConfirmation).setShowSaveApprovedWarning(userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning());
       verify(display, times(3)).setEnableSpellCheck(false);
    }
 

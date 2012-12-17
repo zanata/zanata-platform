@@ -196,7 +196,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
             .setHandler(saveAsApprovedKeyShortcutHandler)
             .build();
       // @formatter:on
-      if (configHolder.isEnterSavesApproved())
+      if (configHolder.getState().isEnterSavesApproved())
       {
          enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
       }

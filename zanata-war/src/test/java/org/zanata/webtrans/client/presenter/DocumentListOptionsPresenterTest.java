@@ -83,8 +83,8 @@ public class DocumentListOptionsPresenterTest
       presenter.onWorkspaceContextUpdated(workspaceContextUpdateEvent);
 
       // Then:
-      assertThat(configHolder.getDocumentListPageSize(), Matchers.equalTo(25));
-      assertThat(configHolder.isShowError(), Matchers.equalTo(false));
+      assertThat(configHolder.getState().getDocumentListPageSize(), Matchers.equalTo(25));
+      assertThat(configHolder.getState().isShowError(), Matchers.equalTo(false));
       
       verify(userWorkspaceContext).setProjectActive(false);
       verify(display, times(3)).setOptionsState(isA(UserConfigHolder.ConfigurationState.class));
@@ -111,7 +111,7 @@ public class DocumentListOptionsPresenterTest
       presenter.onBind();
       presenter.onPageSizeClick(99);
 
-      assertThat(configHolder.getDocumentListPageSize(), Matchers.equalTo(99));
+      assertThat(configHolder.getState().getDocumentListPageSize(), Matchers.equalTo(99));
       ArgumentCaptor<UserConfigChangeEvent> eventCaptor = ArgumentCaptor.forClass(UserConfigChangeEvent.class);
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().getView(), Matchers.equalTo(MainView.Documents));
@@ -153,8 +153,8 @@ public class DocumentListOptionsPresenterTest
       AsyncCallback callback = callbackCaptor.getValue();
 
       callback.onSuccess(result);
-      assertThat(configHolder.getDocumentListPageSize(), Matchers.equalTo(100));
-      assertThat(configHolder.isShowError(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().getDocumentListPageSize(), Matchers.equalTo(100));
+      assertThat(configHolder.getState().isShowError(), Matchers.equalTo(true));
 
       verify(eventBus).fireEvent(isA(UserConfigChangeEvent.class));
 

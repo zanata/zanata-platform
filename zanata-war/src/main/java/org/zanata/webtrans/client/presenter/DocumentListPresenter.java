@@ -137,7 +137,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       display.setListener(this);
 
-      display.updatePageSize(configHolder.getDocumentListPageSize());
+      display.updatePageSize(configHolder.getState().getDocumentListPageSize());
    }
 
    @Override
@@ -369,7 +369,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       if (event.getView() == MainView.Documents)
       {
-         display.updatePageSize(configHolder.getDocumentListPageSize());
+         display.updatePageSize(configHolder.getState().getDocumentListPageSize());
       }
    }
 }

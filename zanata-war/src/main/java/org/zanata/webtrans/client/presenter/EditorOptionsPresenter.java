@@ -112,7 +112,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
 
    private void setReadOnly(boolean readOnly)
    {
-      boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().isDisplayButtons();
+      boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().getState().isDisplayButtons();
       userOptionsService.getConfigHolder().setDisplayButtons(displayButtons);
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
       eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -134,7 +134,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onSelectionChange(String groupName, NavOption navOption)
    {
-      if (userOptionsService.getConfigHolder().getNavOption() != navOption)
+      if (userOptionsService.getConfigHolder().getState().getNavOption() != navOption)
       {
          userOptionsService.getConfigHolder().setNavOption(navOption);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -144,7 +144,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onPageSizeClick(int pageSize)
    {
-      if (userOptionsService.getConfigHolder().getEditorPageSize() != pageSize)
+      if (userOptionsService.getConfigHolder().getState().getEditorPageSize() != pageSize)
       {
          userOptionsService.getConfigHolder().setEditorPageSize(pageSize);
          eventBus.fireEvent(new EditorPageSizeChangeEvent(pageSize));
@@ -154,7 +154,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onEnterSaveOptionChanged(Boolean enterSaveApproved)
    {
-      if (userOptionsService.getConfigHolder().isEnterSavesApproved() != enterSaveApproved)
+      if (userOptionsService.getConfigHolder().getState().isEnterSavesApproved() != enterSaveApproved)
       {
          userOptionsService.getConfigHolder().setEnterSavesApproved(enterSaveApproved);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -164,7 +164,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onEditorButtonsOptionChanged(Boolean editorButtons)
    {
-      if (userOptionsService.getConfigHolder().isDisplayButtons() != editorButtons)
+      if (userOptionsService.getConfigHolder().getState().isDisplayButtons() != editorButtons)
       {
          userOptionsService.getConfigHolder().setDisplayButtons(editorButtons);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -174,7 +174,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning)
    {
-      if (userOptionsService.getConfigHolder().isShowSaveApprovedWarning() != showSaveApprovedWarning)
+      if (userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning() != showSaveApprovedWarning)
       {
          userOptionsService.getConfigHolder().setShowSaveApprovedWarning(showSaveApprovedWarning);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -184,7 +184,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onSpellCheckOptionChanged(Boolean spellCheckChkValue)
    {
-      if (userOptionsService.getConfigHolder().isSpellCheckEnabled() != spellCheckChkValue)
+      if (userOptionsService.getConfigHolder().getState().isSpellCheckEnabled() != spellCheckChkValue)
       {
          userOptionsService.getConfigHolder().setSpellCheckEnabled(spellCheckChkValue);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -194,7 +194,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onTransMemoryDisplayModeChanged(DiffMode displayMode)
    {
-      if (userOptionsService.getConfigHolder().getTMDisplayMode() != displayMode)
+      if (userOptionsService.getConfigHolder().getState().getTransMemoryDisplayMode() != displayMode)
       {
          userOptionsService.getConfigHolder().setTMDisplayMode(displayMode);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -204,7 +204,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue)
    {
-      if (userOptionsService.getConfigHolder().isUseCodeMirrorEditor() != useCodeMirrorChkValue)
+      if (userOptionsService.getConfigHolder().getState().isUseCodeMirrorEditor() != useCodeMirrorChkValue)
       {
          userOptionsService.getConfigHolder().setUseCodeMirrorEditor(useCodeMirrorChkValue);
          eventBus.fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);

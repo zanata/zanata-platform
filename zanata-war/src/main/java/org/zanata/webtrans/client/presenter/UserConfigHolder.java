@@ -90,20 +90,10 @@ public class UserConfigHolder
       state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
    }
 
-   public boolean isEnterSavesApproved()
-   {
-      return state.isEnterSavesApproved();
-   }
-
    public void setEnterSavesApproved(boolean enterSavesApproved)
    {
       state = new ConfigurationState(state);
       state.enterSavesApproved = enterSavesApproved;
-   }
-
-   public boolean isDisplayButtons()
-   {
-      return state.isDisplayButtons();
    }
 
    public void setDisplayButtons(boolean displayButtons)
@@ -116,11 +106,6 @@ public class UserConfigHolder
    {
       state = new ConfigurationState(state);
       state.navOption = navOption;
-   }
-
-   public NavOption getNavOption()
-   {
-      return state.getNavOption();
    }
 
    public Predicate<ContentState> getContentStatePredicate()
@@ -139,20 +124,10 @@ public class UserConfigHolder
       }
    }
 
-   public int getEditorPageSize()
-   {
-      return state.getEditorPageSize();
-   }
-
    public void setEditorPageSize(int editorPageSize)
    {
       state = new ConfigurationState(state);
       state.editorPageSize = editorPageSize;
-   }
-
-   public int getDocumentListPageSize()
-   {
-      return state.getDocumentListPageSize();
    }
 
    public void setDocumentListPageSize(int documentListPageSize)
@@ -176,20 +151,10 @@ public class UserConfigHolder
       this.state = new ConfigurationState(state);
    }
 
-   public boolean isShowError()
-   {
-      return state.isShowError();
-   }
-
    public void setShowError(boolean showError)
    {
       state = new ConfigurationState(state);
       state.showError = showError;
-   }
-
-   public boolean isUseCodeMirrorEditor()
-   {
-      return state.isUseCodeMirrorEditor();
    }
 
    public void setUseCodeMirrorEditor(boolean useCodeMirrorEditor)
@@ -222,31 +187,16 @@ public class UserConfigHolder
       state.showSaveApprovedWarning = showSaveApprovedWarning;
    }
 
-   public boolean isShowSaveApprovedWarning()
-   {
-      return state.isShowSaveApprovedWarning();
-   }
-
    public void setSpellCheckEnabled(boolean spellCheckEnabled)
    {
       state = new ConfigurationState(state);
       state.spellCheckEnabled = spellCheckEnabled;
    }
 
-   public boolean isSpellCheckEnabled()
-   {
-      return state.isSpellCheckEnabled();
-   }
-
    public void setTMDisplayMode(DiffMode diffMode)
    {
       state = new ConfigurationState(state);
       state.transMemoryDisplayMode = diffMode;
-   }
-
-   public DiffMode getTMDisplayMode()
-   {
-      return state.getTransMemoryDisplayMode();
    }
 
    public boolean isAcceptAllStatus()

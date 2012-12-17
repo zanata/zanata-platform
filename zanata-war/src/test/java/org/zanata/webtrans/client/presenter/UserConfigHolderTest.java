@@ -72,9 +72,9 @@ public class UserConfigHolderTest
       configHolder.setDisplayButtons(value);
       configHolder.setShowError(value);
 
-      assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(value));
-      assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(value));
-      assertThat(configHolder.isShowError(), Matchers.equalTo(value));
+      assertThat(configHolder.getState().isEnterSavesApproved(), Matchers.equalTo(value));
+      assertThat(configHolder.getState().isDisplayButtons(), Matchers.equalTo(value));
+      assertThat(configHolder.getState().isShowError(), Matchers.equalTo(value));
    }
 
    @Test

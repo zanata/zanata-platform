@@ -21,7 +21,6 @@
 
 package org.zanata.webtrans.client.service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -44,7 +42,7 @@ public class ModalNavigationStateHolder
 {
    private final UserConfigHolder configHolder;
    private Map<TransUnitId, ContentState> idAndStateMap;
-   private LinkedList<TransUnitId> idIndexList;
+   private List<TransUnitId> idIndexList;
 
    private int curPage = 0;
    private TransUnitId selected = new TransUnitId(-1);
@@ -63,7 +61,7 @@ public class ModalNavigationStateHolder
    protected void init(Map<TransUnitId, ContentState> transIdStateMap, List<TransUnitId> idIndexList)
    {
       this.idAndStateMap = transIdStateMap;
-      this.idIndexList = Lists.newLinkedList(idIndexList);
+      this.idIndexList = idIndexList;
       totalCount = idIndexList.size();
       updatePageSize();
    }
@@ -73,7 +71,7 @@ public class ModalNavigationStateHolder
       idAndStateMap.put(id, newState);
    }
 
-   protected int maxRowIndex()
+   private int maxRowIndex()
    {
       return totalCount - 1;
    }
@@ -86,7 +84,7 @@ public class ModalNavigationStateHolder
    protected int getTargetPage(TransUnitId targetId)
    {
       int targetIndex = idIndexList.indexOf(targetId);
-      return targetIndex / configHolder.getEditorPageSize();
+      return targetIndex / configHolder.getState().getEditorPageSize();
    }
 
    protected int lastPage()
@@ -112,15 +110,15 @@ public class ModalNavigationStateHolder
 
    protected void updatePageSize()
    {
-      pageCount = (int) Math.ceil(totalCount * 1.0 / configHolder.getEditorPageSize());
+      pageCount = (int) Math.ceil(totalCount * 1.0 / configHolder.getState().getEditorPageSize());
    }
 
    protected TransUnitId getNextId()
    {
       if (configHolder.isAcceptAllStatus())
       {
-      return idIndexList.get(Math.min(currentIndex + 1, maxRowIndex()));
-   }
+         return idIndexList.get(Math.min(currentIndex + 1, maxRowIndex()));
+      }
 
       // we are in filter mode
       for (int i = currentIndex + 1; i <= maxRowIndex(); i++)
@@ -148,8 +146,8 @@ public class ModalNavigationStateHolder
    {
       if (configHolder.isAcceptAllStatus())
       {
-      return idIndexList.get(Math.max(currentIndex - 1, 0));
-   }
+         return idIndexList.get(Math.max(currentIndex - 1, 0));
+      }
 
       // we are in filter mode
       for (int i = currentIndex - 1; i >= 0; i--)

@@ -152,6 +152,6 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      display.setShowErrorChk(userOptionsService.getConfigHolder().isShowError());
+      display.setShowErrorChk(userOptionsService.getConfigHolder().getState().isShowError());
    }
 }
