@@ -57,6 +57,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
       return (HAccount) getSession().createQuery("from HAccount acc where acc.username = :username and acc.person.email = :email")
             .setString("username", username)
             .setString("email", email)
+            .setComment("AccountDAO.getByUsernameAndEmail")
             .uniqueResult();
    }
 
@@ -135,6 +136,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
       String userName = searchQuery + "%";
       Query query = getSession().createQuery("from HAccount as a where a.username like :username");
       query.setParameter("username", userName);
+      query.setComment("AccountDAO.searchQuery/username");
       return query.list();
    }
 
@@ -143,6 +145,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
       Query query = getSession()
             .createQuery("select c.account from HCredentials c where c.user = :id");
       query.setParameter("id", credentialsId);
+      query.setComment("AccountDAO.getByCredentialsId");
       return (HAccount)query.uniqueResult();
    }
 
@@ -157,6 +160,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
       Query query = getSession()
             .createQuery("from HAccount as a where a.mergedInto = :mergedInto");
       query.setParameter("mergedInto", mergedInto);
+      query.setComment("AccountDAO.getAllMergedAccounts");
       return query.list();
    }
 }

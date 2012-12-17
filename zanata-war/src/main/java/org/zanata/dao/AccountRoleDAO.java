@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -73,7 +74,10 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer>
    @SuppressWarnings("unchecked")
    public List<HAccount> listMembers(HAccountRole role)
    {
-      return getSession().createQuery("from HAccount account where :role member of account.roles").setParameter("role", role).list();
+      Query query = getSession().createQuery("from HAccount account where :role member of account.roles");
+      query.setParameter("role", role);
+      query.setComment("AccountRoleDAO.listMembers");
+      return query.list();
    }
 
    public Collection<HAccountRole> getByProject( HProject project )
@@ -81,6 +85,7 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer>
       return getSession()
             .createQuery("select p.allowedRoles from HProject p where p = :project")
             .setParameter("project", project)
+            .setComment("AccountRoleDAO.getByProject")
             .list();
    }
 

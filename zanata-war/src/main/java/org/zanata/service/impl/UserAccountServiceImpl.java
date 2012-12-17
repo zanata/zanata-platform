@@ -140,6 +140,7 @@ public class UserAccountServiceImpl implements UserAccountService
             .createQuery("update HAccount set username = :newUsername where username = :currentUsername")
             .setParameter("newUsername", newUsername)
             .setParameter("currentUsername", currentUsername);
+      updateQuery.setComment("UserAccountServiceImpl.editUsername");
       updateQuery.executeUpdate();
       session.getSessionFactory().evictQueries(); // Because a Natural Id was modified
    }

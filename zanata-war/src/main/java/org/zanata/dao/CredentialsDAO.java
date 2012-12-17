@@ -52,6 +52,7 @@ public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long>
    {
       return (HCredentials)getSession().createQuery("from HCredentials c where c.user = :user")
             .setParameter("user", user)
+            .setComment("CredentialsDAO.findByUser")
             .uniqueResult();
    }
 }

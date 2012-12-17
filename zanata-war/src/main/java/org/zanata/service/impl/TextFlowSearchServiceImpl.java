@@ -184,6 +184,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       log.debug("hql for searching: {}", hql);
       org.hibernate.Query query = session.createQuery(hql);
       toQuery.setQueryParameters(query, hLocale);
+      query.setComment("TextFlowSearchServiceImpl.findTextFlowsWithDatabaseSearch");
       @SuppressWarnings("unchecked")
       List<HTextFlow> result = query.list();
       return result;

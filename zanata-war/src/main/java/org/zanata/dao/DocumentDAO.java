@@ -64,6 +64,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             "select tft.locale from HTextFlowTarget tft " +
             "where tft.textFlow.document = :document");
       q.setParameter("document", hDoc);
+      q.setComment("DocumentDAO.getTargetLocales");
       // TODO q.setCacheable(true); ??
       @SuppressWarnings("unchecked")
       List<LocaleId> locales = q.list();
@@ -75,6 +76,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    {
       Query q = getSession().createQuery("select count(*) from HDocument");
       q.setCacheable(true);
+      q.setComment("DocumentDAO.getTotalDocument");
       Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
@@ -85,6 +87,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    {
       Query q = getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = false");
       q.setCacheable(true);
+      q.setComment("DocumentDAO.getTotalActiveDocument");
       Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
@@ -95,6 +98,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    {
       Query q = getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = true");
       q.setCacheable(true);
+      q.setComment("DocumentDAO.getTotalObsoleteDocument");
       Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
@@ -111,6 +115,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             "select count(tf) from HTextFlow tf " +
             "where tf.document = :doc and tf.obsolete = false")
       .setParameter("doc", document)
+      .setComment("DocumentDAO.getTotalCountForDocument")
       .setCacheable(true).uniqueResult();
       
       if (totalCount == null)
@@ -131,6 +136,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             "where tf.document = :doc and tf.obsolete = false")
       .setParameter("doc", document)
       .setCacheable(true)
+      .setComment("DocumentDAO.getTotalWordCountForDocument")
       .uniqueResult();
       
       if (totalWordCount == null)
@@ -164,6 +170,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
          "group by tft.state")
             .setParameter("id", docId)
             .setParameter("locale", localeId)
+            .setComment("DocumentDAO.getStatistics-units")
             .setCacheable(true).list();
       Long totalCount = getTotalCountForDocument( getById(docId) );
 
@@ -186,6 +193,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             .setParameter("id", docId)
             .setParameter("locale", localeId)
             .setCacheable(true)
+            .setComment("DocumentDAO.getStatistics-words")
             .list();
       Long totalWordCount = getTotalWordCountForDocument( getById(docId) );
       TransUnitWords wordCount = new TransUnitWords();
@@ -234,6 +242,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       @SuppressWarnings("unchecked")
       Query hQuery = session.createQuery( query.toString() )
             .setParameter("id", docId)
+            .setComment("DocumentDAO.getStatisticsMultipleLocales-units")
             .setCacheable(true);
 
       if(localeIds != null && localeIds.length > 0)
@@ -247,6 +256,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
                   "from HTextFlow tf " +
                   "where tf.document.id = :id and tf.obsolete = false")
             .setParameter("id", docId)
+            .setComment("DocumentDAO.getStatisticsMultipleLocales-words")
             .setCacheable(true).uniqueResult();
 
       // Collect the results for all states
@@ -315,6 +325,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       q.setParameter("iterationSlug", iterationSlug)
             .setParameter("projectSlug", projectSlug)
             .setParameter("docId", docId);
+      q.setComment("DocumentDAO.getByProjectIterationAndDocId");
       q.setCacheable(true);
       final HDocument doc = (HDocument) q.uniqueResult();
       return doc;
@@ -330,6 +341,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       q.setParameter("iterationSlug", iterationSlug)
             .setParameter("projectSlug", projectSlug)
             .setParameterList("docIdList", docIdList);
+      q.setComment("DocumentDAO.getByProjectIterationAndDocIdList");
       q.setCacheable(true);
       List<HDocument> docs = q.list();
       return docs;
@@ -345,6 +357,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             "order by d.name");
       q.setParameter("iterationSlug", iterationSlug)
             .setParameter("projectSlug", projectSlug);
+      q.setComment("DocumentDAO.getAllByProjectIteration");
       // TODO q.setCacheable(true); ??
       @SuppressWarnings("unchecked")
       final List<HDocument> documents = q.list();

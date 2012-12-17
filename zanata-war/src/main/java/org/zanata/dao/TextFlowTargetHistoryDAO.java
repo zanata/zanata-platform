@@ -73,6 +73,7 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       {
          query.setParameter(paramPos++, c);
       }
+      query.setComment("TextFlowTargetHistoryDAO.findContentInHistory-"+contents.size());
       return (Long)query.uniqueResult() != 0;
    }
 
@@ -82,6 +83,7 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       query.setParameter("id", target.getId());
       query.setParameter("ver", verNum);
       query.setParameter("username", username);
+      query.setComment("TextFlowTargetHistoryDAO.findConflictInHistory");
       Long count = (Long) query.uniqueResult();
       return count != 0;
    }

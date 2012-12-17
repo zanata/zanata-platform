@@ -601,6 +601,28 @@
 								        <ignore />
 								    </action>
 								</pluginExecution>
+								<pluginExecution>
+								    <pluginExecutionFilter>
+								        <groupId>
+								            org.codehaus.gmaven
+								        </groupId>
+								        <artifactId>
+								            gmaven-plugin
+								        </artifactId>
+								        <versionRange>
+								            [1.4,)
+								        </versionRange>
+								        <goals>
+								            <goal>testCompile</goal>
+								            <goal>
+								                generateTestStubs
+								            </goal>
+								        </goals>
+								    </pluginExecutionFilter>
+								    <action>
+								        <execute/>
+								    </action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>

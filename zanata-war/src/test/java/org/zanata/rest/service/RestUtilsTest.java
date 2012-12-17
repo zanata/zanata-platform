@@ -52,7 +52,7 @@ public class RestUtilsTest
    }
 
    @Test(dataProvider = "ResourceTestData")
-   public void testUnmarshallResource(Resource res)
+   public void testUnmarshallResource(Resource res) throws UnsupportedEncodingException
    {
       // SeamMockClientExecutor test = new SeamMockClientExecutor();
       // ClientRequest client = test.createRequest("http://example.com/");
@@ -60,7 +60,7 @@ public class RestUtilsTest
       testRestUtilUnmarshall(res, Resource.class);
    }
 
-   private <T extends Serializable> void testRestUtilUnmarshall(T entity, Class<T> type)
+   private <T extends Serializable> void testRestUtilUnmarshall(T entity, Class<T> type) throws UnsupportedEncodingException
    {
       InputStream messageBody = null;
       try
@@ -72,10 +72,6 @@ public class RestUtilsTest
          T unmarshall = (T) RestUtils.unmarshall(type, messageBody, MediaType.APPLICATION_XML_TYPE, null);
          Log.info("got:" + unmarshall.toString());
          assertThat(entity.toString(), is(testStr));
-      }
-      catch (UnsupportedEncodingException e)
-      {
-         e.printStackTrace();
       }
       finally
       {
@@ -128,19 +124,19 @@ public class RestUtilsTest
 
 
    @Test(dataProvider = "TranslationTestData")
-   public void testUnmarshallTranslation(TranslationsResource res)
+   public void testUnmarshallTranslation(TranslationsResource res) throws UnsupportedEncodingException
    {
       testRestUtilUnmarshall(res, TranslationsResource.class);
    }
 
    @Test(dataProvider = "ResourceMetaTestData")
-   public void testUnmarshallResourceMeta(ResourceMeta res)
+   public void testUnmarshallResourceMeta(ResourceMeta res) throws UnsupportedEncodingException
    {
       testRestUtilUnmarshall(res, ResourceMeta.class);
    }
 
    @Test
-   public void testVersion()
+   public void testVersion() throws UnsupportedEncodingException
    {
       VersionInfo ver = new VersionInfo(null, null);
       testRestUtilUnmarshall(ver, VersionInfo.class);

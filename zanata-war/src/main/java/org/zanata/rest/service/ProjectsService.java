@@ -38,6 +38,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
@@ -87,8 +88,10 @@ public class ProjectsService implements ProjectsResource
    @TypeHint(Project.class)
    public Response get()
    {
+      Query query = session.createQuery("from HProject p");
+      query.setComment("ProjectsService.get");
       @SuppressWarnings("unchecked")
-      List<HProject> projects = session.createQuery("from HProject p").list();
+      List<HProject> projects = query.list();
 
       List<Project> projectRefs = new ArrayList<Project>(projects.size());
 

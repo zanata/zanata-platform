@@ -246,6 +246,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
             " group by tft.state, tft.locale");
       // @formatter:on
       q.setParameter("id", iterationId);
+      q.setComment("ProjectIterationDAO.getAllStatisticsForContainer");
 
       @SuppressWarnings("unchecked")
       List<Map> stats = q.list();

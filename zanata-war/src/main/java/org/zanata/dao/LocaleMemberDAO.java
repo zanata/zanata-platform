@@ -53,6 +53,7 @@ public class LocaleMemberDAO extends AbstractDAOImpl<HLocaleMember, HLocaleMembe
    {
       Query query = getSession().createQuery("from HLocaleMember as m where m.id.supportedLanguage.localeId = :localeId");
       query.setParameter("localeId", localeId);
+      query.setComment("LocaleMemberDAO.findAllByLocale");
       return query.list();
    }
    
@@ -62,6 +63,7 @@ public class LocaleMemberDAO extends AbstractDAOImpl<HLocaleMember, HLocaleMembe
       		"and m.id.person.id = :personId and m.coordinator = true");
       query.setParameter("localeId", localeId)
            .setParameter("personId", personId);
+      query.setComment("LocaleMemberDAO.isLocaleCoordinator");
       return query.list().size() > 0;
    }
    
@@ -71,6 +73,7 @@ public class LocaleMemberDAO extends AbstractDAOImpl<HLocaleMember, HLocaleMembe
             "and m.id.person.id = :personId");
       query.setParameter("localeId", localeId)
            .setParameter("personId", personId);
+      query.setComment("LocaleMemberDAO.isLocaleMember");
       return query.list().size() > 0;
    }
 }

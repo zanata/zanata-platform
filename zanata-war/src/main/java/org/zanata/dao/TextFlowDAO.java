@@ -173,6 +173,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          query.setParameter("searchstringlowercase", "%" + filterConstraints.getSearchString().toLowerCase() + "%");
       }
       query.setResultTransformer(resultTransformer);
+      query.setComment("TextFlowDAO.getNavigationByDocumentId");
 
       return query.list();
    }
@@ -443,7 +444,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       q.setParameter("id", documentId.getId());
       q.setFirstResult(startIndex);
       q.setMaxResults(maxSize);
-      q.setCacheable(true).setComment("TextFlowDAO.getTransUnitList");
+      q.setCacheable(true).setComment("TextFlowDAO.getTextFlows");
       return q.list();
    }
 

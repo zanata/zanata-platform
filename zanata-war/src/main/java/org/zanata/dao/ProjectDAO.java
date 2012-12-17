@@ -55,7 +55,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       Query q = getSession().createQuery("select p.maintainers from HProject as p where p.slug = :slug");
       q.setParameter("slug", slug);
       // http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue
-      // q.setCacheable(true).setComment("ProjectDAO.getProjectMaintainerBySlug");
+      // q.setCacheable(true)
+      q.setComment("ProjectDAO.getProjectMaintainerBySlug");
       return q.list();
    }
 

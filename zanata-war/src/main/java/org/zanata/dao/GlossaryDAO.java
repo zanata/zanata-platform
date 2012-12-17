@@ -84,6 +84,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    {
       Query query = getSession().createQuery("from HGlossaryEntry as e WHERE e.id IN (SELECT t.glossaryEntry.id FROM HGlossaryTerm as t WHERE t.locale.localeId= :localeId)");
       query.setParameter("localeId", locale);
+      query.setComment("GlossaryDAO.getEntriesByLocaleId");
       return query.list();
    }
 
@@ -91,6 +92,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    public List<HGlossaryEntry> getEntries()
    {
       Query query = getSession().createQuery("from HGlossaryEntry");
+      query.setComment("GlossaryDAO.getEntries");
       return query.list();
    }
 
@@ -99,6 +101,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.locale.localeId= :locale AND glossaryEntry.id= :glossaryEntryId");
       query.setParameter("locale", locale);
       query.setParameter("glossaryEntryId", glossaryEntryId);
+      query.setComment("GlossaryDAO.getTermByEntryAndLocale");
       return (HGlossaryTerm) query.uniqueResult();
    }
 
@@ -107,6 +110,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    {
       Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.glossaryEntry.id= :glossaryEntryId");
       query.setParameter("glossaryEntryId", glossaryEntryId);
+      query.setComment("GlossaryDAO.getTermByGlossaryEntryId");
       return query.list();
    }
 
@@ -120,6 +124,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
             "AND t.content= :content)");
       query.setParameter("localeid", localeid);
       query.setParameter("content", content);
+      query.setComment("GlossaryDAO.getEntryBySrcLocaleAndContent");
       return (HGlossaryEntry) query.uniqueResult();
    }
    /* @formatter:on */
@@ -179,6 +184,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       Map<HLocale, Integer> result = new HashMap<HLocale, Integer>();
       
       Query query = getSession().createQuery("select term.locale, count(*) from HGlossaryTerm term GROUP BY term.locale.localeId");
+      query.setComment("GlossaryDAO.getGlossaryTermCountByLocale");
 
       @SuppressWarnings("unchecked")
       List<Object[]> list = query.list();
@@ -197,12 +203,15 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    public int deleteAllEntries()
    {
       Query query = getSession().createQuery("Delete HTermComment");
+      query.setComment("GlossaryDAO.deleteAllEntries-comments");
       query.executeUpdate();
 
       Query query2 = getSession().createQuery("Delete HGlossaryTerm");
+      query2.setComment("GlossaryDAO.deleteAllEntries-terms");
       int rowCount = query2.executeUpdate();
 
       Query query3 = getSession().createQuery("Delete HGlossaryEntry");
+      query3.setComment("GlossaryDAO.deleteAllEntries-entries");
       query3.executeUpdate();
 
       return rowCount;
@@ -212,13 +221,16 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    {
       Query query = getSession().createQuery("Delete HTermComment c WHERE c.glossaryTerm.id IN (SELECT t.id FROM HGlossaryTerm t WHERE t.locale.localeId= :locale)");
       query.setParameter("locale", targetLocale);
+      query.setComment("GlossaryDAO.deleteLocaleEntries-comments");
       query.executeUpdate();
 
       Query query2 = getSession().createQuery("Delete HGlossaryTerm t WHERE t.locale IN (SELECT l FROM HLocale l WHERE localeId= :locale)");
       query2.setParameter("locale", targetLocale);
+      query2.setComment("GlossaryDAO.deleteLocaleEntries-terms");
       int rowCount = query2.executeUpdate();
 
       Query query3 = getSession().createQuery("Delete HGlossaryEntry e WHERE size(e.glossaryTerms) = 0");
+      query3.setComment("GlossaryDAO.deleteLocaleEntries-entries");
       query3.executeUpdate();
 
       return rowCount;

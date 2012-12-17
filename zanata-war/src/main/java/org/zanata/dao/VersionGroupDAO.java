@@ -57,6 +57,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
    {
       Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
       query.setParameter("status", EntityStatus.ACTIVE);
+      query.setComment("VersionGroupDAO.getAllActiveVersionGroups");
       return query.list();
    }
 
@@ -65,6 +66,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
    {
       Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
       query.setParameter("status", EntityStatus.OBSOLETE);
+      query.setComment("VersionGroupDAO.getAllObsoleteVersionGroups");
       return query.list();
    }
 
@@ -80,6 +82,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
    {
       Query q = getSession().createQuery("select g.maintainers from HIterationGroup as g where g.slug = :slug");
       q.setParameter("slug", slug);
+      q.setComment("VersionGroupDAO.getMaintainerBySlug");
       @SuppressWarnings("unchecked")
       List<HPerson> results = q.list();
       return results;
@@ -90,6 +93,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       Query query = getSession().createQuery("from HIterationGroup g where lower(g.slug) LIKE :searchTerm OR lower(g.name) LIKE :searchTerm AND g.status = :status");
       query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
       query.setParameter("status", EntityStatus.ACTIVE);
+      query.setComment("VersionGroupDAO.searchLikeSlugAndName");
       return query.list();
    }
 }

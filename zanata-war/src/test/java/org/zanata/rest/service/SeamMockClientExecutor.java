@@ -58,6 +58,7 @@ public class SeamMockClientExecutor implements ClientExecutor
       RestEasyResourceRequest resourceRequest = new RestEasyResourceRequest(seamTest, clientRequest);
       return resourceRequest.execute();
    }
+   
 
    private class RestEasyResourceRequest extends ResourceRequest
    {
@@ -213,4 +214,5 @@ public class SeamMockClientExecutor implements ClientExecutor
       {
       }
    }
+
 }

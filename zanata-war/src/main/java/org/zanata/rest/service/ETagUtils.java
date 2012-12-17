@@ -54,6 +54,7 @@ public class ETagUtils
       		"and status not in (:statusList)")
       		.setParameter("slug", slug)
       		.setParameterList("statusList", new Object[]{OBSOLETE})
+            .setComment("ETagUtils.generateTagForProject-project")
       		.uniqueResult();
 
       if (projectVersion == null)
@@ -64,6 +65,7 @@ public class ETagUtils
       		"where i.project.slug =:slug and status not in (:statusList)")
       		.setParameter("slug", slug)
       		.setParameterList("statusList", new Object[]{OBSOLETE})
+            .setComment("ETagUtils.generateTagForProject-iteration")
       		.list();
 
       String hash = HashUtil.generateHash(projectVersion + ':' + StringUtils.join(iterationVersions, ':'));
@@ -86,6 +88,7 @@ public class ETagUtils
             .setParameter("islug", iterationSlug)
             .setParameter("pslug", projectSlug)
             .setParameterList("statusList", new Object[]{OBSOLETE})
+            .setComment("ETagUtils.generateETagForIteration")
             .uniqueResult();
 
       if (iterationVersion == null)
