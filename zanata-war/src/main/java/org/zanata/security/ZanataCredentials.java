@@ -20,15 +20,15 @@
  */
 package org.zanata.security;
 
+import static org.jboss.seam.ScopeType.SESSION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
+
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.security.Credentials;
 import org.zanata.security.openid.OpenIdProviderType;
-
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * Overrides the default Seam credentials.
@@ -66,6 +66,12 @@ public class ZanataCredentials extends Credentials
    public void setOpenIdProviderType(OpenIdProviderType openIdProviderType)
    {
       this.openIdProviderType = openIdProviderType;
+   }
+
+   @Override
+   public boolean isInvalid()
+   {
+      return false;
    }
 
    @Override

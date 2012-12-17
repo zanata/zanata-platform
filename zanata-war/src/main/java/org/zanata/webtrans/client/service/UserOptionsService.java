@@ -105,7 +105,7 @@ public class UserOptionsService
       configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
       configMap.put(UserOptions.UseCodeMirrorEditor, Boolean.toString(configHolder.getState().isUseCodeMirrorEditor()));
       configMap.put(UserOptions.EnableSpellCheck, Boolean.toString(configHolder.getState().isSpellCheckEnabled()));
-      configMap.put(UserOptions.TransMemoryDisplayMode, configHolder.getTMDisplayMode().name());
+      configMap.put(UserOptions.TransMemoryDisplayMode, configHolder.getState().getTransMemoryDisplayMode().name());
 
       configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
       configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));

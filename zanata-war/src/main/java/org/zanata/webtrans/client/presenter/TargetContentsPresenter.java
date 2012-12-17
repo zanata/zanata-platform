@@ -129,8 +129,8 @@ public class TargetContentsPresenter implements
       this.historyPresenter.setCurrentValueHolder(this);
       this.userOptionsService = userOptionsService;
       this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
-      isDisplayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
-      spellCheckEnabled = userOptionsService.getConfigHolder().isSpellCheckEnabled();
+      isDisplayButtons = userOptionsService.getConfigHolder().getState().isDisplayButtons();
+      spellCheckEnabled = userOptionsService.getConfigHolder().getState().isSpellCheckEnabled();
       editorKeyShortcuts.registerKeys(this);
       saveAsApprovedConfirmation.setListener(this);
 
@@ -286,7 +286,7 @@ public class TargetContentsPresenter implements
    {
       ensureRowSelection(transUnitId);
 
-      if (checkForConfirmation && userOptionsService.getConfigHolder().isShowSaveApprovedWarning())
+      if (checkForConfirmation && userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning())
       {
          eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId, getNewTargets(), ContentState.Approved));
       }
@@ -347,7 +347,7 @@ public class TargetContentsPresenter implements
    @Override
    public boolean isDisplayButtons()
    {
-      return userOptionsService.getConfigHolder().isDisplayButtons() && !userWorkspaceContext.hasReadOnlyAccess();
+      return userOptionsService.getConfigHolder().getState().isDisplayButtons() && !userWorkspaceContext.hasReadOnlyAccess();
    }
 
    @Override
@@ -419,8 +419,8 @@ public class TargetContentsPresenter implements
       {
          return;
       }
-      boolean displayButtons = userOptionsService.getConfigHolder().isDisplayButtons();
-      boolean isSpellCheckEnabled = userOptionsService.getConfigHolder().isSpellCheckEnabled();
+      boolean displayButtons = userOptionsService.getConfigHolder().getState().isDisplayButtons();
+      boolean isSpellCheckEnabled = userOptionsService.getConfigHolder().getState().isSpellCheckEnabled();
 
       if (isDisplayButtons != displayButtons || spellCheckEnabled != isSpellCheckEnabled)
       {
@@ -431,7 +431,7 @@ public class TargetContentsPresenter implements
          }
       }
 
-      saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().isShowSaveApprovedWarning());
+      saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning());
       isDisplayButtons = displayButtons;
       spellCheckEnabled = isSpellCheckEnabled;
    }

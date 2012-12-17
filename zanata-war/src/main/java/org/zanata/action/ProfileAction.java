@@ -233,7 +233,7 @@ public class ProfileAction implements Serializable
       {
 
          String key;
-         if (identity.getAuthenticationType() == AuthenticationType.KERBEROS || identity.getAuthenticationType() == AuthenticationType.JAAS)
+         if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS || identity.getCredentials().getAuthType() == AuthenticationType.JAAS)
          {
             key = registerServiceImpl.register(this.username, this.username, this.email);
          }

@@ -26,7 +26,9 @@ import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.Pager;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -164,6 +166,18 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public void setListener(Listener listener)
    {
       this.listener = listener;
+   }
+
+   @UiHandler("pager")
+   public void onPagerFocused(FocusEvent event)
+   {
+      listener.onPagerFocused();
+   }
+
+   @UiHandler("pager")
+   public void onPagerBlurred(BlurEvent event)
+   {
+      listener.onPagerBlurred();
    }
 
    @UiHandler("resize")

@@ -49,12 +49,14 @@ public class TranslationEditorPresenterTest
    private TransUnitsTableDisplay transUnitsTableDisplay;
    @Mock
    private HasPager pageNavigation;
+   @Mock
+   private EditorKeyShortcuts editorKeyShortcuts;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter);
+      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter, editorKeyShortcuts);
 
       when(display.getPageNavigation()).thenReturn(pageNavigation);
    }
@@ -151,5 +153,21 @@ public class TranslationEditorPresenterTest
       presenter.onResizeClicked();
 
       verify(eventBus).fireEvent(isA(DisplaySouthPanelEvent.class));
+   }
+
+   @Test
+   public void onPagerFocused()
+   {
+      presenter.onPagerFocused();
+
+      verify(editorKeyShortcuts).enableNavigationContext();
+   }
+
+   @Test
+   public void onPagerBlurred()
+   {
+      presenter.onPagerBlurred();
+
+      verify(editorKeyShortcuts).enableEditContext();
    }
 }

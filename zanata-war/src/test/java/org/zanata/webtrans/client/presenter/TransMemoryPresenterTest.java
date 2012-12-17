@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
@@ -106,7 +105,7 @@ public class TransMemoryPresenterTest
       configHolder = new UserConfigHolder();
       presenter = new TransMemoryPresenter(display, eventBus, dispatcher, messages, transMemoryDetailsPresenter, userWorkspaceContext, transMemoryMergePresenter, keyShortcutPresenter, configHolder);
 
-      verify(display).setDisplayMode(configHolder.getTMDisplayMode());
+      verify(display).setDisplayMode(configHolder.getState().getTransMemoryDisplayMode());
    }
 
    @Test
@@ -424,7 +423,7 @@ public class TransMemoryPresenterTest
 
       presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
-      verify(display).setDisplayMode(configHolder.getTMDisplayMode());
+      verify(display).setDisplayMode(configHolder.getState().getTransMemoryDisplayMode());
       verify(display).redrawTable(currentResult);
    }
 

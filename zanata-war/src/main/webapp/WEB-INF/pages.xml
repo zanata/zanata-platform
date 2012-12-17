@@ -14,20 +14,20 @@
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
 	 <navigation>
-	      <rule if="#{identity.loggedIn and authenticationManager.newUser}">
+	      <rule if="#{authenticationManager.authenticated and authenticationManager.newUser}">
 	        <redirect view-id="/profile/edit.xhtml" />
 	      </rule>
-	      <rule if="#{identity.loggedIn and !authenticationManager.newUser and !userRedirect.redirect}">
-	        <redirect view-id="/home.xhtml" />
-	      </rule>
-	      <rule if="#{identity.loggedIn and !authenticationManager.newUser and userRedirect.redirect}">
-	        <redirect url="#{userRedirect.url}" />
-	      </rule>
-	      <rule if="#{!identity.loggedIn and authenticationManager.loggedInAccountWaitingForActivation}">
+	      <rule if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
 	        <redirect view-id="/account/inactive_account.xhtml"/>
 	      </rule>
 	      <rule if="#{!identity.loggedIn}">
 	        <redirect view-id="/account/login_input.xhtml" />
+	      </rule>
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and !userRedirect.redirect}">
+	        <redirect view-id="/home.xhtml" />
+	      </rule>
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
+	        <redirect url="#{userRedirect.url}" />
 	      </rule>
      </navigation>
   </page>
@@ -70,15 +70,15 @@
       <rule if-outcome="edit">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
-      <rule if-outcome="redirect">
-        <!-- TODO add login success message -->
-        <redirect url="#{userRedirect.url}" />
-      </rule>
       <rule if-outcome="inactive">
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if-outcome="redirect">
+        <!-- TODO add login success message -->
+        <redirect url="#{userRedirect.url}" />
       </rule>
 	</navigation>
   </page>
@@ -89,17 +89,17 @@
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SignIn'])}"/>
     <navigation from-action="#{loginAction.login}">
+      <rule if="#{authenticationManager.authenticated and authenticationManager.newUser}">
+        <redirect view-id="/profile/edit.xhtml" />
+      </rule>
       <rule if-outcome="inactive">
         <begin-conversation/>
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
-      <rule if="#{identity.loggedIn and authenticationManager.newUser}">
-        <redirect view-id="/profile/edit.xhtml" />
-      </rule>
-      <rule if="#{identity.loggedIn and !authenticationManager.newUser and !userRedirect.redirect}">
+      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and !userRedirect.redirect}">
         <redirect view-id="/home.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and !authenticationManager.newUser and userRedirect.redirect}">
+      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
       </rule>
     </navigation>
@@ -144,6 +144,7 @@
   </page>
   
   <page view-id="/account/inactive_account.xhtml">
+  	<restrict>#{authenticationManager.isAuthenticatedAccountWaitingForActivation()}</restrict>
   	<action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.InactiveAccount'])}"/>
     <action execute="#{inactiveAccountAction.init}"/>

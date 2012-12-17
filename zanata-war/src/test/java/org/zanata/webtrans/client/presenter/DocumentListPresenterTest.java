@@ -68,8 +68,7 @@ public class DocumentListPresenterTest
    private WebTransMessages mockMessages;
    @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
-   @Mock
-   private UserConfigHolder mockConfigHolder;
+   private UserConfigHolder configHolder;
 
    // this list is updated to update display table
    private List<DocumentNode> dataProviderList;
@@ -91,8 +90,9 @@ public class DocumentListPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
+      configHolder = new UserConfigHolder();
       dataProviderList = new ArrayList<DocumentNode>();
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory, mockConfigHolder);
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory, configHolder);
    }
 
    @Test
@@ -101,7 +101,6 @@ public class DocumentListPresenterTest
       when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
       when(mockMessages.byWords()).thenReturn(TEST_BY_WORDS_MESSAGE);
       when(mockMessages.byMessage()).thenReturn(TEST_BY_MESSAGE_MESSAGE);
-      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
 
       documentListPresenter.onBind();
 
@@ -452,7 +451,6 @@ public class DocumentListPresenterTest
    {
       UserConfigChangeEvent mockEvent = mock(UserConfigChangeEvent.class);
       when(mockEvent.getView()).thenReturn(MainView.Documents);
-      when(mockConfigHolder.getDocumentListPageSize()).thenReturn(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
@@ -467,7 +465,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
-      verifyZeroInteractions(mockConfigHolder);
+      verifyZeroInteractions(mockDisplay);
    }
 
    private ArrayList<DocumentInfo> buildSampleDocumentArray()

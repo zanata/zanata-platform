@@ -33,6 +33,10 @@ public interface TranslationEditorDisplay extends WidgetDisplay
       void refreshCurrentPage();
 
       void onResizeClicked();
+
+      void onPagerFocused();
+
+      void onPagerBlurred();
    }
 
    HasVisibility getResizeButton();

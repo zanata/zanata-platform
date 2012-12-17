@@ -20,8 +20,12 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
  */
 package org.zanata.security;
 
+import static org.jboss.seam.ScopeType.SESSION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import javax.faces.context.FacesContext;
 
 import org.jboss.seam.Component;
@@ -31,15 +35,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.jboss.security.SecurityAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 @Name("org.jboss.seam.security.spNegoIdentity")
 @Scope(SESSION)
@@ -52,7 +51,28 @@ public class SpNegoIdentity implements Serializable
    private static final String SUBJECT = "subject";
    private static final String PRINCIPAL = "principal";
 
-   public void setCredential()
+   public void authenticate()
+   {
+      ZanataIdentity identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
+      if (identity.isLoggedIn())
+      {
+         if (Events.exists())
+         {
+            Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
+         }
+         return;
+      }
+
+      String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+      LOGGER.debug("remote username: {}", username);
+
+      identity.getCredentials().setUsername(username);
+      identity.getCredentials().setPassword("");
+      identity.getCredentials().setAuthType(AuthenticationType.KERBEROS);
+      identity.getCredentials().setInitialized(true);
+   }
+
+   public void login()
    {
       try
       {
@@ -66,13 +86,6 @@ public class SpNegoIdentity implements Serializable
             return;
          }
 
-         String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-         LOGGER.debug("remote username: {}", username);
-
-         identity.getCredentials().setUsername(username);
-         identity.getCredentials().setPassword("");
-         identity.getCredentials().setInitialized(true);
-         
          Field field = Identity.class.getDeclaredField(PRINCIPAL);
          field.setAccessible(true);
          field.set(identity, SecurityAssociation.getCallerPrincipal());
@@ -80,14 +93,6 @@ public class SpNegoIdentity implements Serializable
          field = Identity.class.getDeclaredField(SUBJECT);
          field.setAccessible(true);
          field.set(identity, SecurityAssociation.getSubject());
-
-         identity.setAuthenticationType(AuthenticationType.KERBEROS);
-
-         if (Events.exists())
-         {
-            Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
-         }
-
       }
       catch (Exception e)
       {

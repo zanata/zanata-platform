@@ -47,6 +47,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
 
+   @DefaultMessage("Show Glossary Suggestion")
+   String showGlossaryPanel();
+
    @DefaultMessage("Chat room")
    String chatRoom();
 
@@ -475,4 +478,12 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Translation Memory (TM) options")
    String transMemoryOption();
+
+   @DefaultMessage("Display configuration")
+   String displayConfiguration();
+
+   @DefaultMessage("Configure how you want your editor to look like")
+   String displayConfigurationTooltip();
+
+
 }

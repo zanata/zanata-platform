@@ -151,7 +151,7 @@ public class UserOptionsServiceTest
    {
       service.loadCommonOptions();
 
-      assertThat(configHolder.isShowError(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
+      assertThat(configHolder.getState().isShowError(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
    }
 
    @Test
@@ -162,7 +162,7 @@ public class UserOptionsServiceTest
 
       service.loadDocumentListDefaultOptions();
 
-      assertThat(configHolder.isShowError(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
+      assertThat(configHolder.getState().isShowError(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
       assertThat(configHolder.getState().getDocumentListPageSize(), Matchers.equalTo(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE));
 
    }
@@ -176,9 +176,9 @@ public class UserOptionsServiceTest
 
       service.loadEditorDefaultOptions();
 
-      assertThat(configHolder.isShowError(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
-      assertThat(configHolder.isDisplayButtons(), Matchers.equalTo(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS));
-      assertThat(configHolder.isEnterSavesApproved(), Matchers.equalTo(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED));
+      assertThat(configHolder.getState().isShowError(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
+      assertThat(configHolder.getState().isDisplayButtons(), Matchers.equalTo(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS));
+      assertThat(configHolder.getState().isEnterSavesApproved(), Matchers.equalTo(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED));
       assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().isFilterByTranslated(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));

@@ -61,7 +61,7 @@ public class OptionsPresenterTest
       verify(documentListOptionsPresenter).onBind();
       
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
-      verify(display).setShowErrorChk(configHolder.isShowError());
+      verify(display).setShowErrorChk(configHolder.getState().isShowError());
    }
    
    @Test
@@ -110,7 +110,7 @@ public class OptionsPresenterTest
       presenter.onBind();
       presenter.onShowErrorsOptionChanged(true);
       
-      assertThat(configHolder.isShowError(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().isShowError(), Matchers.equalTo(true));
    }
 
    @Test

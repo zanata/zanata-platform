@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -42,15 +43,17 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransFilterPresenter transFilterPresenter;
    private final TransUnitsTablePresenter transUnitsTablePresenter;
+   private final EditorKeyShortcuts editorKeyShortcuts;
 
    @Inject
-   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter)
+   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter, EditorKeyShortcuts editorKeyShortcuts)
    {
       super(display, eventBus);
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.transFilterPresenter = transFilterPresenter;
       this.transUnitsTablePresenter = transUnitsTablePresenter;
-      
+      this.editorKeyShortcuts = editorKeyShortcuts;
+
       display.setListener(this);
    }
 
@@ -119,6 +122,18 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public void onResizeClicked()
    {
       eventBus.fireEvent(new DisplaySouthPanelEvent(display.getAndToggleResizeButton()));
+   }
+
+   @Override
+   public void onPagerFocused()
+   {
+      editorKeyShortcuts.enableNavigationContext();
+   }
+
+   @Override
+   public void onPagerBlurred()
+   {
+      editorKeyShortcuts.enableEditContext();
    }
 
    public void setReadOnly(boolean isReadOnly)

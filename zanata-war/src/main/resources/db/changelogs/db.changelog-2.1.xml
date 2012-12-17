@@ -42,4 +42,10 @@
                                  referencedTableName="HAccount"
                                  referencedColumnNames="id"/>
     </changeSet>
+    <changeSet id="3" author="aeng@redhat.com">
+        <comment>Cleanup HAccountActivationKey which account already activated</comment>
+        <sql>
+            DELETE FROM HAccountActivationKey where accountId in(select acc.id from HAccount acc where acc.enabled = 1)
+        </sql>
+    </changeSet>
 </databaseChangeLog>
