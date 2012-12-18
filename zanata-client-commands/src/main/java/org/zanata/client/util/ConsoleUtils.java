@@ -20,6 +20,7 @@
  */
 package org.zanata.client.util;
 
+import java.io.Console;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class ConsoleUtils
             currentState = 0;
          }
          String output = SEQUENCE[currentState++] + this.suffix;
-         System.out.print("\r" + output);
+         printf("\r" + output);
          lastOutput = output.trim();
       }
 
@@ -92,8 +93,7 @@ public class ConsoleUtils
             {
                endMssg.append(" ");
             }
-            System.out.print("\r" + endMssg);
-            System.out.println();
+            printf("\r" + endMssg + "\n");
          }
          return super.cancel();
       }
@@ -131,6 +131,20 @@ public class ConsoleUtils
       if( task != null )
       {
          task.cancel();
+      }
+   }
+
+   /**
+    * Print to the System Console if available, otherwise print nothing.
+    * @param format
+    * @param args
+    */
+   private static void printf(String format, Object ... args)
+   {
+      Console console = System.console();
+      if (console != null)
+      {
+         console.printf(format, args);
       }
    }
 
