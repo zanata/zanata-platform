@@ -2,29 +2,6 @@
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
 
-   <!-- A time/date based rolling appender -->
-   <appender name="FILE" class="org.jboss.logging.appender.DailyRollingFileAppender">
-      <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
-      <param name="File" value="target/jboss_embedded_server.log"/>
-      <param name="Append" value="false"/>
-      <param name="Threshold" value="DEBUG"/>
-      <!-- Rollover at midnight each day -->
-      <param name="DatePattern" value="'.'yyyy-MM-dd"/>
-
-      <!-- Rollover at the top of each hour
-      <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
-      -->
-
-      <layout class="org.apache.log4j.PatternLayout">
-         <!-- The default pattern: Date Priority [Category] Message\n -->
-         <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>
-
-         <!-- The full pattern: Date MS Priority [Category] (Thread:NDC) Message\n
-         <param name="ConversionPattern" value="%d %-5r %-5p [%c] (%t:%x) %m%n"/>
-          -->
-      </layout>
-   </appender>
-
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
         <param name="Target" value="System.out"/>
@@ -35,110 +12,9 @@
         </layout>
     </appender>
 
-    <!-- ############### Embedded JBoss AS #################  -->
-    <category name="org.jboss">
-        <priority value="INFO"/>
-    </category>
-    <category name="com.arjuna">
-        <priority value="ERROR"/>
-    </category>
-    
-    <!-- EMB-6, JMS activation throws an error due to deployment ordering, but as there is a timeout
-    and retry the tests pass. Hide the error message -->
-    <category name="jboss.resource.adapter.jms.inflow.JmsActivation">
-        <priority value="ERROR"/>
-    </category>
-
-    <!-- ############### Hibernate logging ################# -->
-
-    <category name="org.hibernate">
-        <priority value="ERROR"/>
-    </category>
-
-    <!--
-    <category name="org.hibernate.SQL">
-        <priority value="TRACE"/>
-    </category>
-    <category name="org.hibernate.type">
-        <priority value="TRACE"/>
-    </category>
-    <category name="org.hibernate.loader">
-        <priority value="TRACE"/>
-    </category>
-    <category name="org.hibernate.cache">
-        <priority value="TRACE"/>
-    </category>
-    -->
-
-    <!-- Ajax4jsf is too noisy -->
-    <category name="org.ajax4jsf.cache">
-        <priority value="WARN"/>
-    </category>
-
-
-    <!-- ############### Seam logging ################### -->
-    <category name="org.jboss.seam">
-        <priority value="WARN"/>
-    </category>
-
-
-
-    <!-- These things are too noisy
-    <category name="org.jboss.seam.jsf.SeamVariableResolver">
-        <priority value="INFO"/>
-    </category>
-    <category name="org.jboss.seam.contexts.Contexts">
-        <priority value="INFO"/>
-    </category>
-    <category name="org.jboss.seam.Component">
-        <priority value="INFO"/>
-    </category>
-    <category name="org.jboss.seam.deployment.Scanner">
-        <priority value="INFO"/>
-    </category>
-    <category name="org.jboss.seam.util.Naming">
-        <priority value="INFO"/>
-    </category>
-    <category name="org.jboss.seam.debug.hot">
-        <priority value="INFO"/>
-    </category>
-    <category name="org.jboss.seam.core.Events">
-        <priority value="INFO"/>
-    </category>
-    -->
-
-    <!-- Debugging conversations and persistence contexts
-    <category name="org.jboss.seam.core.Manager">
-        <priority value="DEBUG"/>
-    </category>
-    <category name="org.jboss.seam.core.ManagedPersistenceContext">
-        <priority value="DEBUG"/>
-    </category>
-    <category name="org.jboss.seam.jsf.AbstractSeamPhaseListener">
-        <priority value="DEBUG"/>
-    </category>
-    <category name="org.jboss.seam.interceptors.ConversationInterceptor">
-        <priority value="DEBUG"/>
-    </category>
-    <category name="org.jboss.seam.contexts.Lifecycle">
-        <priority value="DEBUG"/>
-    </category>
-    <category name="org.hibernate.impl.SessionImpl">
-        <priority value="DEBUG"/>
-    </category>
-    <category name="org.hibernate.event.def.AbstractFlushingEventListener">
-        <priority value="DEBUG"/>
-    </category>
-    -->
-
-   <category name="org.jboss.seam.web.ExceptionFilter">
-     <priority value="DEBUG"/>
-   </category>
-
     <root>
         <priority value="ERROR"/>
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
     </root>
 
 </log4j:configuration>

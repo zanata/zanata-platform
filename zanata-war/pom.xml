@@ -243,11 +243,14 @@
 
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7.2</version>
 				<configuration>
 					<suiteXmlFiles>
 						<suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
 					</suiteXmlFiles>
+<!-- TODO try parallel execution
+               <parallel>methods</parallel>
+               <threadCount>4</threadCount>
+ -->
 				</configuration>
 			</plugin>
             <plugin>
