@@ -21,10 +21,6 @@
 		.rightText{
 			text-align: right;
 		}
-
-		.centerText{
-			margin-left:120px;
-		}
 		
 		.topBar
 		{
@@ -47,17 +43,16 @@
 		{
 			color:#0085CC;
 		}
-		
 	</ui:style>
 	
 			<g:LayoutPanel>
 				<g:layer top="0" height="32px">
 					<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
-						<g:cell width="420px">
+						<g:cell>
 							<g:HTMLPanel ui:field="filterPanelContainer"/>		
 						</g:cell>
-						<g:cell horizontalAlignment="ALIGN_CENTER">
-							<g:HTMLPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
+						<g:cell horizontalAlignment="ALIGN_RIGHT">
+							<g:HTMLPanel ui:field="transUnitNavigationContainer"/>
 						</g:cell>
 						<g:cell horizontalAlignment="ALIGN_RIGHT">
 							<g:InlineLabel ui:field="refreshCurrentPage" styleName="icon-arrows-cw {style.iconButton}"/>

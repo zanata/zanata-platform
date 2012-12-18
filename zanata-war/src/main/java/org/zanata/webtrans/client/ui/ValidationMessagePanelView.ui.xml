@@ -8,7 +8,6 @@
 		type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
         .container {
             width: 96%;
-            margin-top: 5px;
             margin-left: 3%;
             table-layout: fixed;
         }
@@ -17,10 +16,6 @@
         {
 			font-size: 11px;
 			font-weight: bold;
-		}
-
-		.headerLabel:hover
-        {
 			text-decoration: underline;
 		}
 
@@ -32,14 +27,10 @@
             width: 100%;
             text-indent: 5px;
             cursor: pointer;
-            background: #FFFFFF;
-            border: 1px solid #E0E8EE;
             color: #686868;
-            text-decoration: none;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
-            padding: 2px 5px 2px 5px;
         }
 
         .content {

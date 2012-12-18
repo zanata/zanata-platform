@@ -22,7 +22,7 @@
         .button {
             cursor: pointer;
             font-size: 20px;
-            padding-left: 3px;
+            padding-left: 1px;
         }
 
         .button:hover {
@@ -54,7 +54,7 @@
             </g:FlowPanel>
         </g:cell>
         <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="30px">
-            <g:HTMLPanel ui:field="buttons" height="120px" styleName="fadeElement">
+            <g:HTMLPanel ui:field="buttons" height="100px" styleName="fadeElement">
                 <g:InlineLabel ui:field="saveIcon" title="{messages.editSaveShortcut}" styleName="icon-install {style.button}"/>
                 <g:InlineLabel ui:field="fuzzyIcon" title="{messages.editSaveAsFuzzyShortcut}" styleName="icon-flag-1 {style.button}" />
                 <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}" styleName="icon-cancel-circle {style.button}" />
