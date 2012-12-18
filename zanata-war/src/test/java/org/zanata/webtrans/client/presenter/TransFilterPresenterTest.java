@@ -47,15 +47,19 @@ public class TransFilterPresenterTest
    @Captor
    private ArgumentCaptor<ValueChangeHandler<Boolean>> filterChangeHandlerCaptor;
 
+   private UserConfigHolder configHolder = new UserConfigHolder();
+
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransFilterPresenter(display, eventBus, history, userOptionsService);
 
+      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
       when(display.getNeedReviewChk()).thenReturn(needReviewChk);
       when(display.getTranslatedChk()).thenReturn(translatedChk);
       when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
+
+      presenter = new TransFilterPresenter(display, eventBus, history, userOptionsService);
 
       verify(display).setListener(presenter);
    }
