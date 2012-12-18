@@ -56,7 +56,7 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest
       ProjectDAO dao = SeamAutowire.instance().ignoreNonResolvable().use("session", getSession()).autowire(ProjectDAO.class);
 
       int t = dao.getTotalProjectCount();
-      System.out.println("Total Projects: " + t);
+//      System.out.println("Total Projects: " + t);
    }
 
    @Test
@@ -66,7 +66,7 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest
       dao = SeamAutowire.instance().ignoreNonResolvable().use("session", getSession()).autowire(dao);
 
       int t = dao.getTotalProjectCount();
-      System.out.println("Total Projects: " + t);
+//      System.out.println("Total Projects: " + t);
    }
 
    @Test

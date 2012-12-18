@@ -73,7 +73,6 @@ public class LevenshteinUtilTest
       List<String> strings1 = Arrays.asList("1234567890", "abcdefghij");
       List<String> strings2 = Arrays.asList("1234567890abcdefghij");
       double similarity = LevenshteinUtil.getSimilarity(strings1, strings2);
-      System.out.println(similarity);
       Assert.assertTrue(similarity > 0.3);
       Assert.assertTrue(similarity < 0.4);
    }
@@ -83,7 +82,6 @@ public class LevenshteinUtilTest
       List<String> strings1 = Arrays.asList("1234567890", "abcdefghij");
       List<String> strings2 = Arrays.asList("123456789", "bcdefghij");
       double similarity = LevenshteinUtil.getSimilarity(strings1, strings2);
-      System.out.println(similarity);
       Assert.assertEquals(similarity, 0.9, DELTA);
    }
 

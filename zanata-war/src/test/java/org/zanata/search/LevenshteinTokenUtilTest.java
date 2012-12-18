@@ -72,7 +72,6 @@ public class LevenshteinTokenUtilTest
       List<String> strings1 = Arrays.asList("1234567890", "abcdefghij");
       List<String> strings2 = Arrays.asList("1234567890abcdefghij");
       double similarity = LevenshteinTokenUtil.getSimilarity(strings1, strings2);
-      System.out.println(similarity);
       Assert.assertEquals(similarity, 0.0, DELTA);
    }
 
@@ -81,10 +80,8 @@ public class LevenshteinTokenUtilTest
       List<String> strings1 = Arrays.asList("123 456 78 90", "a_ bc_ def ghi j");
       List<String> strings2 = Arrays.asList("123 456 78 9", "bc_ def ghi j");
       double similarity = LevenshteinTokenUtil.getSimilarity(strings1, strings2);
-      System.out.println(similarity);
       Assert.assertTrue(similarity > 0.7);
       Assert.assertTrue(similarity < 0.8);
-
    }
 
    public void testMisorderedLists()

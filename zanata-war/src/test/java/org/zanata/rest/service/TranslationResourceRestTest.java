@@ -91,6 +91,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.collect.Lists;
 
+@Test(singleThreaded = true)
 public class TranslationResourceRestTest extends ZanataRestTest
 {
    private static final Logger log = LoggerFactory.getLogger(TranslationResourceRestTest.class);
@@ -445,11 +446,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       tf3.setContents("more text");
       textFlows.add(tf3);
 
-      Marshaller m = null;
-      JAXBContext jc = JAXBContext.newInstance(Resource.class);
-      m = jc.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      m.marshal(doc, System.out);
+//      Marshaller m = null;
+//      JAXBContext jc = JAXBContext.newInstance(Resource.class);
+//      m = jc.createMarshaller();
+//      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//      m.marshal(doc, System.out);
 
       Response response = sourceDocResource.putResource(docUrl, doc, null);
 

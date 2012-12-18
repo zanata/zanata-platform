@@ -57,7 +57,6 @@ public class LocaleServiceImplTest
       {
          st.append(localeId.getId() + ",");
       }
-      System.out.println(st);
 
       Assert.assertTrue(loc.contains(LocaleId.DE));
       Assert.assertTrue(loc.contains(LocaleId.EN));
