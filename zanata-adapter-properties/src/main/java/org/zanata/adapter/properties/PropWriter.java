@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fedorahosted.openprops.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
@@ -22,11 +24,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 public class PropWriter
 {
-
-   private static void logVerbose(String msg)
-   {
-      System.out.println(msg);
-   }
+   private static final Logger log = LoggerFactory.getLogger(PropWriter.class);
 
    private static void makeParentDirs(File f)
    {
@@ -58,7 +56,7 @@ public class PropWriter
       File baseFile = new File(baseDir, doc.getName() + ".properties");
       makeParentDirs(baseFile);
 
-      logVerbose("Creating base file " + baseFile);
+      log.debug("Creating base file " + baseFile);
       Properties props = new Properties();
       for (TextFlow textFlow : doc.getTextFlows())
       {
@@ -119,7 +117,7 @@ public class PropWriter
 
       File langFile = new File(baseDir, bundleName + "_" + locale + ".properties");
       makeParentDirs(langFile);
-      logVerbose("Creating target file " + langFile);
+      log.debug("Creating target file " + langFile);
       storeProps(targetProp, langFile, utf8);
    }
 

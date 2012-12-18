@@ -41,7 +41,7 @@ public class PoReader2Test
       InputSource inputSource = new InputSource(new File(testDir, "pot/RPM.pot").toURI().toString());
       inputSource.setEncoding("utf8");
 
-      System.out.println("parsing template");
+      log.debug("parsing template");
       Resource doc = poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
       assertThat(doc.getTextFlows().size(), is(137));
       return doc;
@@ -55,7 +55,7 @@ public class PoReader2Test
       String locale = "ja-JP";
       inputSource = new InputSource(new File(testDir, locale + "/RPM.po").toURI().toString());
       inputSource.setEncoding("utf8");
-      System.out.println("extracting target: " + locale);
+      log.debug("extracting target: " + locale);
       TranslationsResource targetDoc = poReader.extractTarget(inputSource);
       List<TextFlowTarget> textFlowTargets = targetDoc.getTextFlowTargets();
       assertThat(textFlowTargets.size(), is(137));
@@ -66,14 +66,14 @@ public class PoReader2Test
       Marshaller m = jaxbContext.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-      System.out.println("marshalling source doc");
+      log.debug("marshalling source doc");
       {
          StringWriter writer = new StringWriter();
          m.marshal(doc, writer);
          log.debug("{}", writer);
       }
 
-      System.out.println("marshalling target doc");
+      log.debug("marshalling target doc");
       {
          StringWriter writer = new StringWriter();
          m.marshal(targetDoc, writer);
@@ -113,7 +113,7 @@ public class PoReader2Test
       String locale = "ja-JP";
       InputSource inputSource = new InputSource(new File(testDir, locale + "/invalid.po").toURI().toString());
       inputSource.setEncoding("utf8");
-      System.out.println("extracting target: " + locale);
+      log.debug("extracting target: " + locale);
 
       poReader.extractTarget(inputSource);
    }
