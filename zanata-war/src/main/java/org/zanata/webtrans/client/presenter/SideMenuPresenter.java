@@ -149,6 +149,10 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
       display.setChatTabVisible(!isReadOnly);
       display.setOptionsTabVisible(!isReadOnly);
       display.setValidationOptionsTabVisible(!isReadOnly);
+      if (isReadOnly)
+      {
+         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+      }
    }
 
    @Override

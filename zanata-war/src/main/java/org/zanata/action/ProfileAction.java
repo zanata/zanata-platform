@@ -139,8 +139,6 @@ public class ProfileAction implements Serializable
                email = identity.getCredentials().getUsername() + "@" + domain;
             }
          }
-         
-         identity.unAuthenticate();
       }
       else
       {

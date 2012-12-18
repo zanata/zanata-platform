@@ -70,6 +70,7 @@ public class SpNegoIdentity implements Serializable
       identity.getCredentials().setPassword("");
       identity.getCredentials().setAuthType(AuthenticationType.KERBEROS);
       identity.getCredentials().setInitialized(true);
+      identity.setPreAuthenticated(true);
    }
 
    public void login()

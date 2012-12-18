@@ -160,7 +160,7 @@ public class AuthenticationManager
       {
          SpNegoIdentity spNegoIdentity = (SpNegoIdentity) Component.getInstance(SpNegoIdentity.class, ScopeType.SESSION);
          spNegoIdentity.authenticate();
-         if (!isAuthenticatedAccountWaitingForActivation())
+         if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation())
          {
             spNegoIdentity.login();
          }
@@ -239,13 +239,13 @@ public class AuthenticationManager
          {
             return "inactive";
          }
+         else if(identity.isPreAuthenticated() && isNewUser())
+         {
+            return "edit";
+         }
          else if (identity.isLoggedIn())
          {
-            if (isNewUser())
-            {
-               return "edit";
-            }
-            else if (userRedirect != null && userRedirect.isRedirect())
+            if (userRedirect != null && userRedirect.isRedirect())
             {
                return "redirect";
             }
@@ -300,10 +300,10 @@ public class AuthenticationManager
       }
    }
 
-   public boolean isAccountActivated(String username)
+   public boolean isAccountWaitingForActivation(String username)
    {
       HAccount account = accountDAO.getByUsername(username);
-      if (account != null && account.getAccountActivationKey() == null)
+      if (account != null && account.getAccountActivationKey() != null)
       {
          return true;
       }
@@ -331,7 +331,7 @@ public class AuthenticationManager
          userIsAuthenticated = identityStore.authenticateEvenIfDisabled(credentials.getUsername(), credentials.getPassword());
       }
 
-      return userIsAuthenticated && !isAccountEnabled(credentials.getUsername()) && !isAccountActivated(credentials.getUsername());
+      return userIsAuthenticated && !isAccountEnabled(credentials.getUsername()) && isAccountWaitingForActivation(credentials.getUsername());
    }
 
    public boolean isNewUser(String username)
@@ -378,7 +378,7 @@ public class AuthenticationManager
       else
       {
          String message = "";
-         if (!isAccountActivated(username))
+         if (isAccountWaitingForActivation(username))
          {
             message = "#{messages['org.jboss.seam.loginFailed']}";
          }

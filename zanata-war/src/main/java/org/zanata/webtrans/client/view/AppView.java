@@ -101,7 +101,7 @@ public class AppView extends Composite implements AppDisplay
    private Listener listener;
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final Identity identity, final UserWorkspaceContext userWorkspaceContext)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
    {
       this.resources = resources;
 
