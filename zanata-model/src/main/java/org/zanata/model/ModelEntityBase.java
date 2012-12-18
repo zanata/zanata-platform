@@ -20,9 +20,10 @@
  */
 package org.zanata.model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -39,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @MappedSuperclass
-public class ModelEntityBase implements Serializable
+public class ModelEntityBase implements Serializable, HashableState
 {
 
    private static final long serialVersionUID = -6139220551322868743L;
@@ -190,4 +191,9 @@ public class ModelEntityBase implements Serializable
       return true;
    }
 
+   @Override
+   public void writeHashState(ByteArrayOutputStream buff) throws IOException
+   {
+      buff.write(versionNum.byteValue());
+   }
 }
