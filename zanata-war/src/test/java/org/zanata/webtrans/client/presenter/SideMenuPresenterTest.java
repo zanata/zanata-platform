@@ -98,7 +98,7 @@ public class SideMenuPresenterTest
       // Then:
       verify(userWorkspaceContext).setProjectActive(workspaceContextEvent.isProjectActive());
       verify(display).setChatTabVisible(false);
-      verify(display).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+      verify(display, times(2)).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
       verify(display).setValidationOptionsTabVisible(false);
    }
 
