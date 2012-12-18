@@ -34,6 +34,12 @@
           <artifactId>zanata-common-util</artifactId>
           <version>${project.version}</version>
         </dependency>
+        <dependency>
+          <groupId>org.zanata</groupId>
+          <artifactId>zanata-common-util</artifactId>
+          <version>${project.version}</version>
+          <type>test-jar</type>
+        </dependency>
       </dependencies>
    </dependencyManagement>
 
