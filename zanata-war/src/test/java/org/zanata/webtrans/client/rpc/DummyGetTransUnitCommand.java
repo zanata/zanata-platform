@@ -4,6 +4,7 @@
 package org.zanata.webtrans.client.rpc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -12,6 +13,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
+import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
@@ -37,7 +39,21 @@ final class DummyGetTransUnitCommand implements Command
       int count = action.getCount();
       int offset = action.getOffset();
       int totalCount = count * 5;
-      GetTransUnitListResult result = new GetTransUnitListResult(documentId, generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset), 1, offset, offset / count);
+
+      ArrayList<TransUnit> data = generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset);
+      GetTransUnitListResult result = new GetTransUnitListResult(documentId, data, 1, offset, offset / count);
+
+      ArrayList<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
+      HashMap<TransUnitId, ContentState> transIdStateMap = new HashMap<TransUnitId, ContentState>();
+
+      for (TransUnit tu : data)
+      {
+         idIndexList.add(tu.getId());
+         transIdStateMap.put(tu.getId(), tu.getStatus());
+      }
+
+      result.setNavigationIndex(new GetTransUnitsNavigationResult(idIndexList, transIdStateMap));
+
       callback.onSuccess(result);
       Log.info("EXIT DummyGetTransUnitCommand.execute()");
    }

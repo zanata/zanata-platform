@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.presenter.UserConfigHolder.ConfigurationState;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.SearchField;
 
@@ -29,7 +30,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -44,6 +47,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
 
    @UiField
    Styles style;
+
+   @UiField
+   CheckBox translatedChk, needReviewChk, untranslatedChk;
 
    private String hintMessage;
 
@@ -145,5 +151,32 @@ public class TransFilterView extends Composite implements TransFilterDisplay
          searchField.setValue("");
          searchField.addStyleName(style.transFilterTextBoxEmpty());
       }
+   }
+
+   @Override
+   public HasValue<Boolean> getTranslatedChk()
+   {
+      return translatedChk;
+   }
+
+   @Override
+   public HasValue<Boolean> getNeedReviewChk()
+   {
+      return needReviewChk;
+   }
+
+   @Override
+   public HasValue<Boolean> getUntranslatedChk()
+   {
+      return untranslatedChk;
+   }
+
+   @Override
+   public void setOptionsState(ConfigurationState state)
+   {
+      translatedChk.setValue(state.isFilterByTranslated());
+      needReviewChk.setValue(state.isFilterByNeedReview());
+      untranslatedChk.setValue(state.isFilterByUntranslated());
+
    }
 }

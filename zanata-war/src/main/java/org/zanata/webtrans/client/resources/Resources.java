@@ -35,24 +35,6 @@ public interface Resources extends ClientBundle
    @Source("images/crystal_project/_16x16/filesystems/file_doc.png")
    ImageResource documentImage();
 
-   @Source("images/next_entry.png")
-   ImageResource nextEntry();
-
-   @Source("images/prev_entry.png")
-   ImageResource prevEntry();
-
-   @Source("images/next_mode.png")
-   ImageResource nextState();
-
-   @Source("images/prev_mode.png")
-   ImageResource prevState();
-
-   @Source("images/first_entry.png")
-   ImageResource firstEntry();
-
-   @Source("images/last_entry.png")
-   ImageResource lastEntry();
-
    @Source("images/loading.gif")
    ImageResource spinner();
 

@@ -5,27 +5,21 @@
 	<ui:style>
             
         .nav-button {
-	       width:36px;
-	       height:12px;
-	       border-radius:2px; 
-	       margin-right:3px;
-	       border-style:solid;
-	       outline:none;
+	       padding:0 3px;
+	       cursor:pointer;
+	       font-size:18px;
+	       color:#4E4E4E;
         }
         
-        .nav-button img {
-	       margin-top:1px;
-	       margin-left:3px;
+        .nav-button:hover {
+	       color:#0085CC;
         }
-        
        
 	</ui:style>
-	<g:HorizontalPanel>
-	   <g:PushButton ui:field="firstEntry" addStyleNames="{style.nav-button}"/>
-	   <g:PushButton ui:field="prevState" addStyleNames="{style.nav-button}"/>
-	   <g:PushButton ui:field="prevEntry" addStyleNames="{style.nav-button}"/>
-	   <g:PushButton ui:field="nextEntry" addStyleNames="{style.nav-button}"/>
-	   <g:PushButton ui:field="nextState" addStyleNames="{style.nav-button}"/>
-	   <g:PushButton ui:field="lastEntry" addStyleNames="{style.nav-button}"/>
-	</g:HorizontalPanel>
+	<g:FlowPanel>
+	   <g:InlineLabel ui:field="firstEntry" addStyleNames="{style.nav-button} icon-to-start"/>
+	   <g:InlineLabel ui:field="prevState" addStyleNames="{style.nav-button} icon-left-open"/>
+	   <g:InlineLabel ui:field="nextState" addStyleNames="{style.nav-button} icon-right-open-1"/>
+	   <g:InlineLabel ui:field="lastEntry" addStyleNames="{style.nav-button} icon-to-end"/>
+	</g:FlowPanel>
 </ui:UiBinder> 

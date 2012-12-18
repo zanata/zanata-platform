@@ -389,9 +389,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Editor options")
    String editorOptions();
 
-   @DefaultMessage("Message filters")
-   String messageFilters();
-
    @DefaultMessage("Validation options")
    String validationOptions();
 

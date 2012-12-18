@@ -203,7 +203,7 @@ Removes some of the styling on the page-level splitters
 
 .transUnitTable tr .fadeElement
 {
-	opacity:0.2;
+	opacity:0;
 }
 
 

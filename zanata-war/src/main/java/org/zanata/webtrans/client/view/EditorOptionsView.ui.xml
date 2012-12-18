@@ -16,21 +16,6 @@
             color: #FFFFFF;
         }
 
-        .translated {
-            border-left: 3px solid #099B09;
-            margin-left: 5px;
-        }
-
-        .needReview {
-            border-left: 3px solid #ffc000;
-            margin-left: 5px;
-        }
-
-        .untranslated {
-            border-left: 3px solid #e5e5e5;
-            margin-left: 5px;
-        }
-
         .selectedPageSize {
             background-color: #B62918;
         }
@@ -64,15 +49,6 @@
 	            <g:CheckBox ui:field="showSaveApprovedWarningChk" ><ui:msg>Show 'Save as Approved' warning</ui:msg></g:CheckBox>
 	            <g:CheckBox ui:field="spellCheckChk" ><ui:msg>Enable Spell Check</ui:msg></g:CheckBox>
 	        </g:VerticalPanel>
-        </g:cell>
-        
-        <g:cell>
-        	<g:VerticalPanel width="100%">
-        		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
-                 <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
-                 <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
-                 <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
-        	</g:VerticalPanel>
         </g:cell>
         
         <g:cell>

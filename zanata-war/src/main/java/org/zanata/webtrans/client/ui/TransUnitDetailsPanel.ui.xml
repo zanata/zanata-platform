@@ -6,10 +6,10 @@
 	<ui:style field="style" type="org.zanata.webtrans.client.ui.TransUnitDetailsPanel.Styles">
         .container {
             width: 100%;
-            margin-top: 5px;
             table-layout: fixed;
             margin-left: 6px;
             padding-right: 32px;
+            margin-bottom: 3px;
         }
 
         .header {
@@ -18,11 +18,10 @@
             text-align: left;
             text-indent: 5px;
             cursor: pointer;
-            background: #FFFFFF;
-            border: 1px solid #E0E8EE;
             color: #686868;
-            text-decoration: none;
-            padding: 2px 5px 2px 5px;
+        }
+        .header:hover {
+            color: #686868;
         }
 
         .headerLabel {
@@ -34,13 +33,11 @@
         .tuDetailsLabel {
             font-weight: bold;
             font-size: 11px;
-            padding: 5px 5px 0 5px;
             color: #686868;
             text-align: right;
         }
 
         .tuDetails {
-            padding-top: 5px;
             font-size: 11px;
             color: #686868;
         }
