@@ -29,8 +29,6 @@ public class TextFlowTest {
                   "    \"contents\" : [\"plural1\", \"plural2\"]\n" +
                   "}";
       TextFlow tf = om.readValue(json, TextFlow.class);
-      System.out.println(tf);
-      System.out.println(tf.getContents());
 
       TextFlow expected = new TextFlow("_id", esES, "plural1", "plural2");
       expected.setRevision(17);

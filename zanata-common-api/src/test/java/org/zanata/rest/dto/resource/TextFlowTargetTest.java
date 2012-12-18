@@ -30,8 +30,6 @@ public class TextFlowTargetTest {
                   "    \"contents\" : [\"plural1\", \"plural2\"]\n" +
                   "}";
       TextFlowTarget tft = om.readValue(json, TextFlowTarget.class);
-      System.out.println(tft);
-      System.out.println(tft.getContents());
 
       TextFlowTarget expected = new TextFlowTarget("_id");
       expected.setResId("_resid");
