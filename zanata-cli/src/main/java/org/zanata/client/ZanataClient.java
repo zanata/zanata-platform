@@ -147,6 +147,7 @@ public class ZanataClient extends BasicOptionsImpl
          }
          else
          {
+            copyGlobalOptionsTo(options);
             new ArgsUtil(abortStrategy, out, err, getCommandName()).process(otherArgs, options);
          }
       }
@@ -154,6 +155,18 @@ public class ZanataClient extends BasicOptionsImpl
       {
          ArgsUtil.handleException(e, getErrors(), abortStrategy);
       }
+   }
+
+   /**
+    * @param options
+    */
+   private void copyGlobalOptionsTo(BasicOptions options)
+   {
+      options.setDebug(getDebug());
+      options.setErrors(getErrors());
+      options.setHelp(getHelp());
+      options.setInteractiveMode(isInteractiveMode());
+      options.setQuiet(getQuiet());
    }
 
    private void printHelp(PrintStream out)
