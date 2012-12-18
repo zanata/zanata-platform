@@ -27,6 +27,12 @@
 		<groupId>org.zanata</groupId>
 		<artifactId>zanata-common-util</artifactId>
 	</dependency>
+    <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-util</artifactId>
+        <type>test-jar</type>
+        <scope>test</scope>
+    </dependency>
  	<dependency>
 		<groupId>net.sf.opencsv</groupId>
 		<artifactId>opencsv</artifactId>
@@ -36,11 +42,6 @@
       		<groupId>org.fedorahosted.tennera</groupId>
 	      	<artifactId>jgettext</artifactId>
 	</dependency>
-	<dependency>
-		  <groupId>ch.qos.logback</groupId>
-		  <artifactId>logback-classic</artifactId>
-		  <scope>test</scope>
-        </dependency>
 	<dependency>
 		<groupId>org.easymock</groupId>
 		<artifactId>easymock</artifactId>

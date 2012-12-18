@@ -28,6 +28,12 @@
 		<artifactId>zanata-common-util</artifactId>
 	</dependency>
     <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-util</artifactId>
+        <type>test-jar</type>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.fedorahosted.tennera</groupId>
       <artifactId>jgettext</artifactId>
     </dependency>
@@ -39,11 +45,6 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-         <scope>test</scope>
-      </dependency>
 	<dependency>
 		<groupId>org.hamcrest</groupId>
 		<artifactId>hamcrest-library</artifactId>
