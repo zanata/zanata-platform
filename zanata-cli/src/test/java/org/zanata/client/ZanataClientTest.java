@@ -1,9 +1,9 @@
 package org.zanata.client;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
 
-import org.codehaus.plexus.util.StringOutputStream;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,13 @@ import org.zanata.client.commands.RuntimeExceptionStrategy;
 public class ZanataClientTest
 {
    private static final Logger log = LoggerFactory.getLogger(ZanataClientTest.class);
-   StringOutputStream out;
-   StringOutputStream err;
+   ByteArrayOutputStream out = new ByteArrayOutputStream();
+   ByteArrayOutputStream err = new ByteArrayOutputStream();
    ZanataClient client;
 
    @BeforeMethod
    void before()
    {
-      out = new StringOutputStream();
-      err = new StringOutputStream();
       client = new ZanataClient(new RuntimeExceptionStrategy(), new PrintStream(out), new PrintStream(err));
    }
 
