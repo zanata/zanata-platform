@@ -114,8 +114,9 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    {
       if (event.getView() == MainView.Editor)
       {
-         filterChangeHandler.onValueChange(null); // NB: Null event is valid
-         // because it's not being used
+         display.getTranslatedChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByTranslated(), true);
+         display.getNeedReviewChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByNeedReview(), true);
+         display.getUntranslatedChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByUntranslated(), true);
       }
 
    }

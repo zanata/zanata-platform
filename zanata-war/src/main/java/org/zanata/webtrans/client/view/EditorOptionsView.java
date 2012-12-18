@@ -54,7 +54,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    CheckBox enterChk, editorButtonsChk;
 
    @UiField
-   Label navOptionHeader, editorOptionHeader, filterHeader;
+   Label navOptionHeader, editorOptionHeader;
 
    @UiField
    VerticalPanel optionsContainer;
@@ -93,7 +93,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       navOptionGroup.addToContainer(optionsContainer);
 
       editorOptionHeader.setText(messages.editorOptions());
-      filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
       pageSizeHeader.setText(messages.pageSize());
       transMemoryHeader.setText(messages.transMemoryOption());
@@ -272,16 +271,9 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
    interface Styles extends CssResource
    {
-
-      String translated();
-
-      String needReview();
-
       String selectedPageSize();
 
       String mainPanel();
-
-      String untranslated();
 
       String pageSizeContainer();
    }
