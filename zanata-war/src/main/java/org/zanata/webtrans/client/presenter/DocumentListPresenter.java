@@ -139,7 +139,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       display.setListener(this);
 
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
-      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
+      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
 
    @Override
@@ -369,7 +369,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
+      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
       if (event.getView() == MainView.Documents)
       {
          display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());

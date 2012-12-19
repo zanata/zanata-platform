@@ -87,7 +87,7 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    }
 
    @Override
-   public void setDisplayTheme(String theme)
+   public void setThemes(String theme)
    {
       transUnitTable.setStyleName(style.table());
       transUnitTable.addStyleName("transUnitTable");

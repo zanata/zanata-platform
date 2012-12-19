@@ -143,7 +143,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
-      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
+      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
 
    @Override
@@ -381,6 +381,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
+      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
 }

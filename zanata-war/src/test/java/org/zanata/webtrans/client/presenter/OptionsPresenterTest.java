@@ -18,6 +18,7 @@ import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.DocumentListOptionsDisplay;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 @Test(groups = { "unit-tests" })
 public class OptionsPresenterTest
@@ -118,9 +119,9 @@ public class OptionsPresenterTest
    public void onDisplayThemeChanged()
    {
       presenter.onBind();
-      presenter.onDisplayThemeChanged(UserConfigHolder.COMPACT_DISPLAY_THEME);
+      presenter.onThemesChanged(ThemesOption.THEMES_COMPACT.name());
 
-      assertThat(configHolder.getState().getDisplayTheme(), Matchers.equalTo(UserConfigHolder.COMPACT_DISPLAY_THEME));
+      assertThat(configHolder.getState().getDisplayTheme(), Matchers.equalTo(ThemesOption.THEMES_COMPACT));
    }
 
    @Test

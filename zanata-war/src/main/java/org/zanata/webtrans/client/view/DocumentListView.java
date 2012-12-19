@@ -192,9 +192,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    }
 
    @Override
-   public void setDisplayTheme(String style)
+   public void setThemes(String theme)
    {
-      documentListContainer.setStyleName(style);
+      documentListContainer.setStyleName(theme);
    }
 
    @Override

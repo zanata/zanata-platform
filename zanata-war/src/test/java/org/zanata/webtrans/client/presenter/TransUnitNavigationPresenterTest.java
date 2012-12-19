@@ -2,12 +2,9 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.FirstEntry;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.LastEntry;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextEntry;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.NextState;
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevEntry;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.PrevState;
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -106,25 +103,5 @@ public class TransUnitNavigationPresenterTest
       verify(targetContentsPresenter).savePendingChangesIfApplicable();
       verify(eventBus).fireEvent(eventCaptor.capture());
       assertThat(eventCaptor.getValue().getRowType(), Matchers.equalTo(NextState));
-   }
-
-   @Test
-   public void onGoToPreviousEntry()
-   {
-      presenter.goToPreviousEntry();
-
-      verify(targetContentsPresenter).savePendingChangesIfApplicable();
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      assertThat(eventCaptor.getValue().getRowType(), Matchers.equalTo(PrevEntry));
-   }
-
-   @Test
-   public void onGoToNextEntry()
-   {
-      presenter.goToNextEntry();
-
-      verify(targetContentsPresenter).savePendingChangesIfApplicable();
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      assertThat(eventCaptor.getValue().getRowType(), Matchers.equalTo(NextEntry));
    }
 }

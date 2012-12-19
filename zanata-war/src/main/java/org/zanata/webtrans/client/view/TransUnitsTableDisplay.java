@@ -50,7 +50,7 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
 
    void ensureVisible(TargetContentsDisplay currentDisplay);
 
-   void setDisplayTheme(String style);
+   void setThemes(String theme);
 
    interface Listener
    {

@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.presenter;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.rpc.NavOption;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -70,10 +71,6 @@ public class UserConfigHolder
    public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
    public static final boolean DEFAULT_SHOW_PANEL = true;
 
-   public static final String DEFAULT_DISPLAY_THEME = "themeDefault";
-   public static final String COMPACT_DISPLAY_THEME = "themeCompact";
-   public static final String LOOSE_DISPLAY_THEME = "themeloose";
-
    public UserConfigHolder()
    {
       // default state
@@ -97,7 +94,7 @@ public class UserConfigHolder
       state.showTMPanel = DEFAULT_SHOW_PANEL;
       state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
       state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
-      state.displayTheme = DEFAULT_DISPLAY_THEME;
+      state.displayTheme = ThemesOption.THEMES_DEFAULT;
    }
 
    public void setEnterSavesApproved(boolean enterSavesApproved)
@@ -209,7 +206,7 @@ public class UserConfigHolder
       state.transMemoryDisplayMode = diffMode;
    }
 
-   public void setDisplayTheme(String theme)
+   public void setDisplayTheme(ThemesOption theme)
    {
       state = new ConfigurationState(state);
       state.displayTheme = theme;
@@ -258,7 +255,7 @@ public class UserConfigHolder
       private boolean showSaveApprovedWarning;
       private boolean spellCheckEnabled;
       private DiffMode transMemoryDisplayMode;
-      private String displayTheme;
+      private ThemesOption displayTheme;
 
       private boolean showTMPanel;
       private boolean showGlossaryPanel;
@@ -355,7 +352,7 @@ public class UserConfigHolder
          return transMemoryDisplayMode;
       }
 
-      public String getDisplayTheme()
+      public ThemesOption getDisplayTheme()
       {
          return displayTheme;
       }

@@ -20,7 +20,7 @@ public enum UserOptions implements IsSerializable
    DisplayGlossary(editor()+ ".displayGlossary"),
    ShowOptionalTransUnitDetails(editor()+ ".showOptionalTransUnitDetails"),
    ShowErrors(common()+ ".ShowErrors"),
-   DisplayTheme(common()+ ".DisplayTheme"),
+   Themes(common()+ ".Themes"),
    TranslatedMessageFilter(editor()+ ".TranslatedMessageFilter"), 
    NeedReviewMessageFilter(editor()+ ".NeedReviewMessageFilter"), 
    UntranslatedMessageFilter(editor()+ ".UntranslatedMessageFilter"), 

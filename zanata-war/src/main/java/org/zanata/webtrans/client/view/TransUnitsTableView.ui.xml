@@ -8,7 +8,7 @@
         }
 
         .evenRow {
-             background-color: #F3F7FB;
+            /* background-color: #F3F7FB; */
         }
 
         .cellFormat {

@@ -42,6 +42,7 @@ import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 /**
  * @author Carlos Munoz <a
@@ -110,9 +111,9 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setShowError(filteredOptions.get(UserOptions.ShowErrors.getPersistentName()).getValueAsBoolean());
       }
 
-      if (filteredOptions.containsKey(UserOptions.DisplayTheme.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.Themes.getPersistentName()))
       {
-         configHolder.setDisplayTheme(filteredOptions.get(UserOptions.DisplayTheme.getPersistentName()).getValue());
+         configHolder.setDisplayTheme(ThemesOption.valueOf(filteredOptions.get(UserOptions.Themes.getPersistentName()).getValue()));
       }
 
       if (filteredOptions.containsKey(UserOptions.UseCodeMirrorEditor.getPersistentName()))

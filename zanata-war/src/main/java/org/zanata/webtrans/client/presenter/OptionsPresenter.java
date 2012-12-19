@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.OptionsDisplay;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.inject.Inject;
 
@@ -88,9 +89,9 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    }
 
    @Override
-   public void onDisplayThemeChanged(String value)
+   public void onThemesChanged(String themes)
    {
-      userOptionsService.getConfigHolder().setDisplayTheme(value);
+      userOptionsService.getConfigHolder().setDisplayTheme(ThemesOption.valueOf(themes));
       eventBus.fireEvent(UserConfigChangeEvent.COMMON_CONFIG_CHANGE_EVENT);
    }
 

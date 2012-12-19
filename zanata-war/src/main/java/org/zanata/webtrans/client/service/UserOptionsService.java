@@ -33,6 +33,7 @@ import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -83,7 +84,7 @@ public class UserOptionsService
    {
       HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
       configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
-      configMap.put(UserOptions.DisplayTheme, configHolder.getState().getDisplayTheme());
+      configMap.put(UserOptions.Themes, configHolder.getState().getDisplayTheme().name());
 
       return configMap;
    }
@@ -123,7 +124,7 @@ public class UserOptionsService
    public void loadCommonOptions()
    {
       configHolder.setShowError(UserConfigHolder.DEFAULT_SHOW_ERROR);
-      configHolder.setDisplayTheme(UserConfigHolder.DEFAULT_DISPLAY_THEME);
+      configHolder.setDisplayTheme(ThemesOption.THEMES_DEFAULT);
    }
 
    public void loadDocumentListDefaultOptions()

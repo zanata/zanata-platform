@@ -45,6 +45,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -470,7 +471,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
-      verify(mockDisplay).setDisplayTheme(UserConfigHolder.DEFAULT_DISPLAY_THEME);
+      verify(mockDisplay).setThemes(ThemesOption.THEMES_DEFAULT.name());
 
       verifyZeroInteractions(mockDisplay);
    }

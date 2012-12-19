@@ -537,6 +537,6 @@ public class TransUnitsTablePresenterTest
       
       presenter.onUserConfigChanged(mockEvent);
 
-      verify(display).setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
+      verify(display).setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
 }

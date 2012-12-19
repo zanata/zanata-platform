@@ -113,7 +113,7 @@ public class UserOptionsServiceTest
       Map<UserOptions, String> map = service.getCommonOptions();
       assertThat(map.size(), Matchers.equalTo(2));
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
-      assertThat(map.containsKey(UserOptions.DisplayTheme), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.Themes), Matchers.equalTo(true));
    }
 
    @Test
@@ -122,7 +122,7 @@ public class UserOptionsServiceTest
       Map<UserOptions, String> map = service.getDocumentListOptions();
       assertThat(map.size(), Matchers.equalTo(3));
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
-      assertThat(map.containsKey(UserOptions.DisplayTheme), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.Themes), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.DocumentListPageSize), Matchers.equalTo(true));
    }
 
@@ -134,7 +134,7 @@ public class UserOptionsServiceTest
       assertThat(map.size(), Matchers.equalTo(15));
       
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
-      assertThat(map.containsKey(UserOptions.DisplayTheme), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.Themes), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.DisplayButtons), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.EnterSavesApproved), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.EditorPageSize), Matchers.equalTo(true));

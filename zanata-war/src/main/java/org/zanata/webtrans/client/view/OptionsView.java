@@ -21,8 +21,8 @@
 package org.zanata.webtrans.client.view;
 
 
-import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -59,7 +59,7 @@ public class OptionsView extends Composite implements OptionsDisplay
    CheckBox showErrorChk;
 
    @UiField
-   ListBox displayThemeList;
+   ListBox themesList;
 
    @UiField
    PushButton saveButton;
@@ -77,9 +77,9 @@ public class OptionsView extends Composite implements OptionsDisplay
    {
       initWidget(uiBinder.createAndBindUi(this));
       
-      displayThemeList.addItem("Compact", UserConfigHolder.COMPACT_DISPLAY_THEME);
-      displayThemeList.addItem("Default", UserConfigHolder.DEFAULT_DISPLAY_THEME);
-      displayThemeList.addItem("Loose", UserConfigHolder.LOOSE_DISPLAY_THEME);
+      themesList.addItem("Compact", ThemesOption.THEMES_COMPACT.name());
+      themesList.addItem("Default", ThemesOption.THEMES_DEFAULT.name());
+      themesList.addItem("Loose", ThemesOption.THEMES_LOOSE.name());
 
       advancedUserConfig.setText(messages.otherConfiguration());
 
@@ -118,10 +118,10 @@ public class OptionsView extends Composite implements OptionsDisplay
       listener.onShowErrorsOptionChanged(showErrorChk.getValue());
    }
 
-   @UiHandler("displayThemeList")
-   public void onDisplayThemeListChanged(ChangeEvent event)
+   @UiHandler("themesList")
+   public void onThemesChanged(ChangeEvent event)
    {
-      listener.onDisplayThemeChanged(displayThemeList.getValue(displayThemeList.getSelectedIndex()));
+      listener.onThemesChanged(themesList.getValue(themesList.getSelectedIndex()));
    }
 
    @UiHandler("saveButton")
@@ -149,19 +149,19 @@ public class OptionsView extends Composite implements OptionsDisplay
    }
 
    @Override
-   public void setDisplayTheme(String displayTheme)
+   public void setDisplayTheme(ThemesOption displayTheme)
    {
-      if (displayTheme.equals(UserConfigHolder.COMPACT_DISPLAY_THEME))
+      if (displayTheme.equals(ThemesOption.THEMES_COMPACT))
       {
-         displayThemeList.setSelectedIndex(0);
+         themesList.setSelectedIndex(0);
       }
-      else if (displayTheme.equals(UserConfigHolder.LOOSE_DISPLAY_THEME))
+      else if (displayTheme.equals(ThemesOption.THEMES_LOOSE))
       {
-         displayThemeList.setSelectedIndex(2);
+         themesList.setSelectedIndex(2);
       }
       else
       {
-         displayThemeList.setSelectedIndex(1);
+         themesList.setSelectedIndex(1);
       }
 
    }

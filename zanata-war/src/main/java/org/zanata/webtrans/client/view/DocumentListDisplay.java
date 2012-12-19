@@ -69,5 +69,5 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void fireDocumentSelection(DocumentInfo doc);
    }
 
-   void setDisplayTheme(String style);
+   void setThemes(String style);
 }

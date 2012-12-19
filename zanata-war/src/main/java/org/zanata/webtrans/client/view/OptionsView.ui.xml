@@ -41,7 +41,7 @@
 	    		<g:cell>
 	    			<g:HTMLPanel>
 	    				<g:InlineLabel><ui:msg>Theme</ui:msg></g:InlineLabel>
-	    				<g:ListBox ui:field="displayThemeList" styleName="{style.listBox}"/>
+	    				<g:ListBox ui:field="themesList" styleName="{style.listBox}"/>
 	    			</g:HTMLPanel>
     			</g:cell>
     			<g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
