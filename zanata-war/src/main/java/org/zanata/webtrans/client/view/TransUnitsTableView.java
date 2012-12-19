@@ -90,6 +90,7 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    public void setDisplayTheme(String theme)
    {
       transUnitTable.setStyleName(style.table());
+      transUnitTable.addStyleName("transUnitTable");
       transUnitTable.addStyleName(theme);
    }
 

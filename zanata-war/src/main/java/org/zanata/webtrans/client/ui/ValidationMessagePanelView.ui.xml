@@ -10,6 +10,7 @@
             width: 96%;
             margin-left: 3%;
             table-layout: fixed;
+            margin-bottom: 3px;
         }
 
         .headerLabel
@@ -34,7 +35,6 @@
         }
 
         .content {
-            height: 100%;
             color: #D14836;
         }
 

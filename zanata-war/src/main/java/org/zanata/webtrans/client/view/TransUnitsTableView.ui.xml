@@ -33,6 +33,6 @@
     </ui:style>
 
         <g:ScrollPanel ui:field="root">
-            <g:Grid ui:field="transUnitTable" styleName="{style.table}"/>
+            <g:Grid ui:field="transUnitTable" styleName="{style.table} transUnitTable"/>
         </g:ScrollPanel>
 </ui:UiBinder>
