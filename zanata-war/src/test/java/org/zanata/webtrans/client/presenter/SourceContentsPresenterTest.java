@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -48,13 +49,16 @@ public class SourceContentsPresenterTest
    private HasSelectableSource hasSelectableSource2;
    @Mock
    private ClickEvent clickEvent;
+   private UserConfigHolder configHolder;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new SourceContentsPresenter(eventBus, displayProvider);
+      configHolder = new UserConfigHolder();
+      presenter = new SourceContentsPresenter(eventBus, displayProvider, configHolder);
 
+      verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
    }
 
    @Test

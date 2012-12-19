@@ -31,5 +31,9 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onSpellCheckOptionChanged(Boolean spellCheckChkValue);
 
       void onTransMemoryDisplayModeChanged(DiffMode displayMode);
+
+      void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue);
+
+      void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue);
    }
 }

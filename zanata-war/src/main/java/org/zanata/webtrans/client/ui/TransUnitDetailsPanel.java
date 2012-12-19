@@ -26,6 +26,7 @@ public class TransUnitDetailsPanel extends Composite
    DisclosurePanel disclosurePanel;
    @UiField
    Styles style;
+   private String metaInfo;
 
    public TransUnitDetailsPanel()
    {
@@ -55,7 +56,29 @@ public class TransUnitDetailsPanel extends Composite
          lastModifiedBy.setText(person);
          lastModifiedTime.setText(transUnit.getLastModifiedTime());
       }
-      headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex()));
+
+      StringBuilder headerSummary = new StringBuilder();
+      if (!context.isEmpty())
+      {
+         headerSummary.append(" MsgCtx: ").append(context);
+      }
+      if (!comment.isEmpty())
+      {
+         headerSummary.append(" Comment: ").append(comment);
+      }
+      metaInfo = headerSummary.toString();
+
+      String transUnitId = "";
+      if (!GWT.isProdMode())
+      {
+         transUnitId = "Id: " + transUnit.getId().toString();
+      }
+      headerLabel.setText(transUnitId + messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), metaInfo));
+   }
+
+   public boolean hasNoMetaInfo()
+   {
+      return Strings.isNullOrEmpty(metaInfo);
    }
 
    interface TransUnitDetailsPanelUiBinder extends UiBinder<DisclosurePanel, TransUnitDetailsPanel>

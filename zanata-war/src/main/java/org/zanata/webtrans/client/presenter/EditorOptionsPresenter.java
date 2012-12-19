@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
@@ -94,6 +95,8 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    {
       boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().getState().isDisplayButtons();
       userOptionsService.getConfigHolder().setDisplayButtons(displayButtons);
+      userOptionsService.getConfigHolder().setShowTMPanel(false);
+      userOptionsService.getConfigHolder().setShowGlossaryPanel(false);
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
       eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
@@ -166,6 +169,32 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
          userOptionsService.getConfigHolder().setTMDisplayMode(displayMode);
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       }
+   }
+
+   @Override
+   public void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue)
+   {
+      UserConfigHolder.ConfigurationState state = userOptionsService.getConfigHolder().getState();
+      if (state.isShowTMPanel() != showTMChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowTMPanel(showTMChkValue);
+      }
+      if (state.isShowGlossaryPanel() != showGlossaryChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowGlossaryPanel(showGlossaryChkValue);
+      }
+      boolean displaySouthPanel = showTMChkValue || showGlossaryChkValue;
+      eventBus.fireEvent(new DisplaySouthPanelEvent(displaySouthPanel));
+   }
+
+   @Override
+   public void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue)
+   {
+      if (userOptionsService.getConfigHolder().getState().isShowOptionalTransUnitDetails() != showTransUnitDetailsChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowOptionalTransUnitDetails(showTransUnitDetailsChkValue);
+      }
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 
    @Override
