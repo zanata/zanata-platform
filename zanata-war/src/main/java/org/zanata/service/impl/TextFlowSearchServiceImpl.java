@@ -186,6 +186,14 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       toQuery.setQueryParameters(query, hLocale);
       @SuppressWarnings("unchecked")
       List<HTextFlow> result = query.list();
+      if (constraints.isCaseSensitive())
+      {
+         // Query results are post-filtered because the content table uses case-insensitive collation
+         // so results will always be case-insensitive at this point.
+         // This can be removed if the table or query can be updated to specify a case-sensitive
+         // collation.
+         result = filterCaseSensitive(result, constraints, hLocale.getId());
+      }
       return result;
    }
 
