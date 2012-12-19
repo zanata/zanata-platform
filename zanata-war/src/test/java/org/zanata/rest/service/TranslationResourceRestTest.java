@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
-import org.fest.assertions.Assertions;
+import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -84,6 +84,7 @@ import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -994,7 +995,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       
       assertThat(result.isSingleSuccess(), is(true));
       verify(mockIdentity).checkLoggedIn();
-      verify(mockIdentity, times(6)).checkPermission(anyString(), any(HLocale.class), any(HProject.class));
+      verify(mockIdentity, atLeastOnce()).checkPermission(anyString(), any(HLocale.class), any(HProject.class));
       verify(transWorkspace).publish(any(SessionEventData.class));
    }
    
@@ -1042,7 +1043,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
             ResourceTestUtil.clearRevs(actualDoc);
          createExtensionSets(expectedDoc);
          createExtensionSets(actualDoc);
-         Assertions.assertThat(actualDoc).isEqualTo(expectedDoc);
+         assertThat(actualDoc, Matchers.equalTo(expectedDoc));
       }
    }
 
@@ -1090,7 +1091,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // Clear Po Headers since Zanata will generate custom ones
       ResourceTestUtil.clearPoTargetHeaders(actualDoc, expectedDoc);
 
-      Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
+      assertThat(actualDoc.toString(), Matchers.equalTo(expectedDoc.toString()));
    }
 
    private Resource createSourceDoc(String name, boolean withTextFlow)
