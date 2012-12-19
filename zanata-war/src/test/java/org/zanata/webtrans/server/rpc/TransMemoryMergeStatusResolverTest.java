@@ -48,7 +48,7 @@ import static org.hamcrest.Matchers.nullValue;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-test")
+@Test(groups = "unit-tests")
 public class TransMemoryMergeStatusResolverTest
 {
    TransMemoryMergeStatusResolver resolver;

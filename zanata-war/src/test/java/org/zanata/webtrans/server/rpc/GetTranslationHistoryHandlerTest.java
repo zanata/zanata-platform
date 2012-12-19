@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-test")
+@Test(groups = "unit-tests")
 public class GetTranslationHistoryHandlerTest
 {
    private GetTranslationHistoryHandler handler;

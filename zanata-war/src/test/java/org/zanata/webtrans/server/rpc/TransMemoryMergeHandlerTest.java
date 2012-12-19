@@ -68,7 +68,7 @@ import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLUR
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-test")
+@Test(groups = "unit-tests")
 public class TransMemoryMergeHandlerTest
 {
    TransMemoryMergeHandler handler;

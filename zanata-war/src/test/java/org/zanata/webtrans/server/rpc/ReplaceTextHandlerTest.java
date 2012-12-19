@@ -41,7 +41,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-@Test(groups = "unit-test")
+@Test(groups = "unit-tests")
 public class ReplaceTextHandlerTest
 {
    public static final boolean CASE_INSENSITIVE = false;
