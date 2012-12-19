@@ -185,9 +185,16 @@ Removes some of the styling on the page-level splitters
 	display: inline;
 }
 
-.transUnitTable
-{
-	
+.themeCompact .transUnitCol {
+	padding:0px 0px;
+}
+
+.themeDefault .transUnitCol {
+	padding:10px 0px;
+}
+
+.themeLoose .transUnitCol {
+	padding:20px 0px;
 }
 
 .transUnitTable tr.selected
@@ -491,15 +498,15 @@ td.ApprovedStateDecoration div div div
 }
 
 .themeCompact .DocumentListTable td {
-	padding:0px;
+	padding:0px 5px;
 }
 
 .themeDefault .DocumentListTable td {
-	padding:5px;
+	padding:10px 5px;
 }
 
 .themeLoose .DocumentListTable td {
-	padding:10px;
+	padding:20px 5px;
 }
 
 .DocumentListTable td.directoryCol {

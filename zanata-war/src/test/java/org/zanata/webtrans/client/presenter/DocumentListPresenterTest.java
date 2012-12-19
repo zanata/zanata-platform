@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -68,6 +69,9 @@ public class DocumentListPresenterTest
    private WebTransMessages mockMessages;
    @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
+   @Mock
+   private UserOptionsService mockUserOptionsService;
+
    private UserConfigHolder configHolder;
 
    // this list is updated to update display table
@@ -91,8 +95,9 @@ public class DocumentListPresenterTest
    {
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
+      when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
       dataProviderList = new ArrayList<DocumentNode>();
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory, configHolder);
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
    }
 
    @Test

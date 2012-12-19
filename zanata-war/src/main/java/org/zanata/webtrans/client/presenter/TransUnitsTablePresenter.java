@@ -43,10 +43,13 @@ import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
@@ -76,7 +79,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       TransUnitsTableDisplay.Listener,
       TableRowSelectedEventHandler,
       LoadingEventHandler,
-      RefreshPageEventHandler
+      RefreshPageEventHandler, UserConfigChangeHandler
 // @formatter:on
 {
 
@@ -88,6 +91,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
    private final TranslatorInteractionService translatorService;
+
+   private final UserOptionsService userOptionsService;
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
@@ -103,7 +108,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    TranslatorInteractionService translatorService,
                                    TransUnitSaveService transUnitSaveService,
                                    TranslationHistoryPresenter translationHistoryPresenter,
-                                   WebTransMessages messages)
+                                   WebTransMessages messages,UserOptionsService userOptionsService)
    // @formatter:on
    {
       super(display, eventBus);
@@ -119,6 +124,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
+      this.userOptionsService = userOptionsService;
 
       // we register it here because we can't use eager singleton on it (it
       // references TargetContentsPresenter). And if it's not eagerly created,
@@ -135,6 +141,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(TableRowSelectedEvent.TYPE, this));
       registerHandler(eventBus.addHandler(LoadingEvent.TYPE, this));
       registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
+
+      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
    }
 
    @Override
@@ -367,5 +376,11 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       {
          this.selectedId = selectedId;
       }
+   }
+
+   @Override
+   public void onUserConfigChanged(UserConfigChangeEvent event)
+   {
+      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
    }
 }

@@ -35,10 +35,12 @@ import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
@@ -75,12 +77,14 @@ public class TransUnitsTablePresenterTest
    private WebTransMessages messages;
    @Mock
    private TranslationHistoryPresenter translationHistoryPresenter;
+   @Mock
+   private UserOptionsService userOptionsService;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages);
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages, userOptionsService);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);
@@ -92,6 +96,7 @@ public class TransUnitsTablePresenterTest
    @Test
    public void onBind()
    {
+      when(userOptionsService.getConfigHolder()).thenReturn(new UserConfigHolder());
       presenter.onBind();
 
       verify(eventBus).addHandler(FilterViewEvent.getType(), presenter);
@@ -521,5 +526,17 @@ public class TransUnitsTablePresenterTest
       verify(targetContentsPresenter).getCurrentTransUnitIdOrNull();
       verify(display).buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
       verify(targetContentsPresenter, never()).setSelected(any(TransUnitId.class));
+   }
+   
+   @Test
+   public void onUserConfigChanged()
+   {
+      when(userOptionsService.getConfigHolder()).thenReturn(new UserConfigHolder());
+
+      UserConfigChangeEvent mockEvent = mock(UserConfigChangeEvent.class);
+      
+      presenter.onUserConfigChanged(mockEvent);
+
+      verify(display).setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
    }
 }

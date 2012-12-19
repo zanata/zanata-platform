@@ -40,6 +40,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
@@ -62,7 +63,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
    private final History history;
-   private final UserConfigHolder configHolder;
+   private final UserOptionsService userOptionsService;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
@@ -99,13 +100,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    };
 
    @Inject
-   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserConfigHolder configHolder)
+   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
       this.userworkspaceContext = userworkspaceContext;
       this.messages = messages;
       this.history = history;
-      this.configHolder = configHolder;
+      this.userOptionsService = userOptionsService;
 
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
@@ -137,8 +138,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       display.setListener(this);
 
-      display.updatePageSize(configHolder.getState().getDocumentListPageSize());
-      display.setDisplayTheme(configHolder.getState().getDisplayTheme());
+      display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
+      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
    }
 
    @Override
@@ -368,10 +369,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      display.setDisplayTheme(configHolder.getState().getDisplayTheme());
+      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
       if (event.getView() == MainView.Documents)
       {
-         display.updatePageSize(configHolder.getState().getDocumentListPageSize());
+         display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       }
    }
 }

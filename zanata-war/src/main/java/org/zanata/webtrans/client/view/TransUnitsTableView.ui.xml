@@ -14,7 +14,7 @@
         .cellFormat {
             border-bottom: 1px solid silver;
         }
-
+        
         .table {
             border-collapse: collapse;
             /* setting width to 99% to leave some space from the scroll bar */
@@ -33,6 +33,6 @@
     </ui:style>
 
         <g:ScrollPanel ui:field="root">
-            <g:Grid ui:field="transUnitTable" styleName="{style.table} transUnitTable"/>
+            <g:Grid ui:field="transUnitTable" styleName="{style.table}"/>
         </g:ScrollPanel>
 </ui:UiBinder>
