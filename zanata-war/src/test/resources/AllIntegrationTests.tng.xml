@@ -2,18 +2,12 @@
 <suite name="Integration Tests" verbose="1">
 
 	<listeners>
-		<!-- 
-			   This ensures that all SeamTest classes 
-			   are treated as seam-tests: 
-		-->
-		<listener class-name="org.zanata.testing.SeamTestTransformer"/>
+		<!--
+			   This ensures that all SeamTest classes
+			   are treated as seam-tests:
+      -->
+      <listener class-name="org.zanata.testing.TestTransformer"/>
 	</listeners>
-
-<!-- these default values are hard-coded into ZanataDBUnitSeamTest:
-	<parameter name="database" value="hsql" />
-	<parameter name="datasourceJndiName" value="java:/zanataDatasource" />
-	<parameter name="binaryDir" value="" />
- -->
 
 		<!-- 
 	<test name="Seam Tests">

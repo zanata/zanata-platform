@@ -2,10 +2,10 @@
 <suite name="JPA and REST Tests" verbose="1">
 
 	<listeners>
-		<!-- 
-			   This ensures that ungrouped tests are treated as unit-tests: 
-		-->
-		<listener class-name="org.zanata.testing.UnitTestTransformer"/>
+      <!--
+            This ensures that ungrouped tests are treated as unit-tests (unless they extend AbstractSeamTest) :
+      -->
+      <listener class-name="org.zanata.testing.TestTransformer"/>
 	</listeners>
 
 	<test name="Non-Seam Tests">
