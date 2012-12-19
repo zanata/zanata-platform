@@ -234,6 +234,8 @@ public class SearchResultsPresenterTest
    @Test
    public void testExpectedActionsOnBind()
    {
+      dataProviderDoc1List = new ArrayList<TransUnitReplaceInfo>();
+
       when(mockKeyShortcutPresenter.register(capturedKeyShortcuts.capture())).thenReturn(handlerRegistration);
       when(mockDataProviderDoc1.getList()).thenReturn(dataProviderDoc1List);
 
@@ -252,13 +254,12 @@ public class SearchResultsPresenterTest
       verify(mockEventBus).addHandler(eq(WorkspaceContextUpdateEvent.getType()), capturedWorkspaceContextUpdatedEventHandler.capture());
 
 
-      dataProviderDoc1List = new ArrayList<TransUnitReplaceInfo>();
-      mockDisplay.setReplaceAllButtonVisible(!workspaceIsReadOnly);
-      mockDisplay.setReplaceAllButtonEnabled(false);
+      verify(mockDisplay).setReplaceAllButtonVisible(!workspaceIsReadOnly);
+      verify(mockDisplay).setReplaceAllButtonEnabled(false);
 
-      mockDisplay.addSearchFieldsSelect("search target", "target");
-      mockDisplay.addSearchFieldsSelect("search source", "source");
-      mockDisplay.addSearchFieldsSelect("search both", "both");
+      verify(mockDisplay).addSearchFieldsSelect("search target", "target");
+      verify(mockDisplay).addSearchFieldsSelect("search source", "source");
+      verify(mockDisplay).addSearchFieldsSelect("search both", "both");
 
    }
 
