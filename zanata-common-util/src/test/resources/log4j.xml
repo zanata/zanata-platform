@@ -21,6 +21,9 @@
         <level value="info" />
     </logger>
 -->
+    <logger name="gwt-log">
+        <level value="OFF" />
+    </logger>
     <root>
         <level value="ERROR" />
         <appender-ref ref="STDOUT" />
