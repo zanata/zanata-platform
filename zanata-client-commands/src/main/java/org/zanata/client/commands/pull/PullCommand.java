@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,8 +17,10 @@ import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.push.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.etag.ETagCacheEntry;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.ISourceDocResource;
@@ -180,8 +183,11 @@ public class PullCommand extends PushPullCommand<PullOptions>
             {
                LocaleId locale = new LocaleId(locMapping.getLocale());
 
+               ETagCacheEntry eTagCacheEntry = eTagCache.findEntry(localDocName, locale.getId());
+               String eTag = eTagCacheEntry != null ? eTagCacheEntry.getServerETag() : null;
+
                ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(
-                     docUri, locale, strat.getExtensions(), createSkeletons);
+                     docUri, locale, strat.getExtensions(), createSkeletons, eTag);
                TranslationsResource targetDoc;
                // ignore 404 (no translation yet for specified document)
                if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
@@ -193,6 +199,12 @@ public class PullCommand extends PushPullCommand<PullOptions>
                      continue;
                   }
                }
+               // 304 NOT MODIFIED (the document can stay the same)
+               else if(transResponse.getResponseStatus() == Response.Status.NOT_MODIFIED)
+               {
+                  targetDoc = null;
+                  log.info("No changes in translations for locale {} and document {}", locale, localDocName);
+               }
                else
                {
                   ClientUtility.checkResult(transResponse, uri);
@@ -200,9 +212,12 @@ public class PullCommand extends PushPullCommand<PullOptions>
                }
                if (targetDoc != null || createSkeletons)
                {
-                  writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc);
+                  writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc, transResponse.getHeaders().getFirst(HttpHeaders.ETAG));
                }
             }
+
+            // write the cache
+            super.storeETagCache();
          }
       }
 
@@ -235,17 +250,48 @@ public class PullCommand extends PushPullCommand<PullOptions>
          String localDocName,
          LocaleMapping locMapping,
          Resource docWithLocalName,
-         TranslationsResource targetDoc) throws IOException
+         TranslationsResource targetDoc,
+         String serverETag) throws IOException
    {
       if (!getOpts().isDryRun())
       {
          log.info("Writing translation file in locale {} for document {}", locMapping.getLocalLocale(), localDocName);
-         strat.writeTransFile(docWithLocalName, localDocName, locMapping, targetDoc);
+         FileDetails fileDetails = strat.writeTransFile(docWithLocalName, localDocName, locMapping, targetDoc);
+
+         // Insert to cache if the strategy returned file details
+         if( fileDetails != null )
+         {
+            eTagCache.addEntry( new ETagCacheEntry(
+                  "",
+                  localDocName,
+                  locMapping.getLocale(),
+                  Long.toHexString(fileDetails.getFile().lastModified()),
+                  fileDetails.getMd5(),
+                  serverETag) );
+         }
       }
       else
       {
          log.info("Writing translation file in locale {} for document {} (skipped due to dry run)", locMapping.getLocalLocale(), localDocName);
       }
+   }
+
+   /**
+    * Creates a new ETag cache entry for a document.
+    *
+    * @param docName Qualified document name to create the ETag cache entry.
+    */
+   private ETagCacheEntry createETagCacheEntry( String docName, String lang, String eTag )
+   {
+      ETagCacheEntry entry = new ETagCacheEntry();
+      entry.setLocalFileName(docName);
+      entry.setLanguage(lang);
+      entry.setLocalFileMD5("");
+      entry.setLocalFileTime("");
+      entry.setServerETag(eTag);
+      entry.setUrl("does it really matter?");
+
+      return entry;
    }
 
 }

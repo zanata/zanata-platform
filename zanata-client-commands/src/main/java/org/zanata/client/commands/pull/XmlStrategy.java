@@ -29,6 +29,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -98,7 +99,7 @@ public class XmlStrategy implements PullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping locale, TranslationsResource targetDoc) throws IOException
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locale, TranslationsResource targetDoc) throws IOException
    {
       try
       {
@@ -106,6 +107,7 @@ public class XmlStrategy implements PullStrategy
          File transFile = new File(pullOptions.getTransDir(), filename);
          PathUtil.makeParents(transFile);
          marshaller.marshal(targetDoc, transFile);
+         return null;
       }
       catch (JAXBException e)
       {

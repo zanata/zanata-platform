@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -75,13 +76,15 @@ public class PropertiesStrategy implements PullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
       boolean createSkeletons = getPullOptions().getCreateSkeletons();
       if (createSkeletons)
          PropWriter.write(doc, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
          PropWriter.write(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+
+      return null;
    }
 
 }

@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.zanata.adapter.xliff.XliffWriter;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -63,9 +64,10 @@ public class XliffStrategy implements PullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
       XliffWriter.write(opts.getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, opts.getCreateSkeletons());
+      return null;
    }
 
 }
