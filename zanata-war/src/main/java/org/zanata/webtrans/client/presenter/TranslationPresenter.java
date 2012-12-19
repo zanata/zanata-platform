@@ -281,8 +281,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    private void unbindSouthPanelPresenters()
    {
-      unbindTransMemoryPresenter();
-      unbindGlossaryPresenter();
+      transMemoryPresenter.unbind();
+      glossaryPresenter.unbind();
    }
 
    private void unbindGlossaryPresenter()
