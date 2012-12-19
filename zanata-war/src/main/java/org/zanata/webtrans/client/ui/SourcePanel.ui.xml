@@ -9,7 +9,7 @@
         .selectedRow {
             padding: 3px;
             table-layout: fixed;
-            border:3px solid  #add8e6;
+            background-color:#add8e6;
         }
 
         .nonSelectedRow {
