@@ -39,7 +39,6 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
@@ -112,16 +111,18 @@ public class UserOptionsServiceTest
    public void getCommonOptions()
    {
       Map<UserOptions, String> map = service.getCommonOptions();
-      assertThat(map.size(), Matchers.equalTo(1));
+      assertThat(map.size(), Matchers.equalTo(2));
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.DisplayTheme), Matchers.equalTo(true));
    }
 
    @Test
    public void getDocumentListOptions()
    {
       Map<UserOptions, String> map = service.getDocumentListOptions();
-      assertThat(map.size(), Matchers.equalTo(2));
+      assertThat(map.size(), Matchers.equalTo(3));
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.DisplayTheme), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.DocumentListPageSize), Matchers.equalTo(true));
    }
 
@@ -130,9 +131,10 @@ public class UserOptionsServiceTest
    {
       Map<UserOptions, String> map = service.getEditorOptions();
 
-      assertThat(map.size(), Matchers.equalTo(12));
+      assertThat(map.size(), Matchers.equalTo(13));
       
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.DisplayTheme), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.DisplayButtons), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.EnterSavesApproved), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.EditorPageSize), Matchers.equalTo(true));

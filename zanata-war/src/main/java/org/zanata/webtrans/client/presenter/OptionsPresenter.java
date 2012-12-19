@@ -88,6 +88,13 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    }
 
    @Override
+   public void onDisplayThemeChanged(String value)
+   {
+      userOptionsService.getConfigHolder().setDisplayTheme(value);
+      eventBus.fireEvent(UserConfigChangeEvent.COMMON_CONFIG_CHANGE_EVENT);
+   }
+
+   @Override
    protected void onUnbind()
    {
       editorOptionsPresenter.unbind();
@@ -153,5 +160,8 @@ public class OptionsPresenter extends WidgetPresenter<OptionsDisplay> implements
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
       display.setShowErrorChk(userOptionsService.getConfigHolder().getState().isShowError());
+      display.setDisplayTheme(userOptionsService.getConfigHolder().getState().getDisplayTheme());
    }
+
+
 }

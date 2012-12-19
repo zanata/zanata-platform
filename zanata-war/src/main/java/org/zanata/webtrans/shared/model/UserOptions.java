@@ -17,6 +17,7 @@ public enum UserOptions implements IsSerializable
    EnableSpellCheck(editor()+ ".enableSpellCheck"),
    TransMemoryDisplayMode(editor()+ ".transMemoryDisplayMode"),
    ShowErrors(common()+ ".ShowErrors"),
+   DisplayTheme(common()+ ".DisplayTheme"),
    TranslatedMessageFilter(editor()+ ".TranslatedMessageFilter"), 
    NeedReviewMessageFilter(editor()+ ".NeedReviewMessageFilter"), 
    UntranslatedMessageFilter(editor()+ ".UntranslatedMessageFilter"), 

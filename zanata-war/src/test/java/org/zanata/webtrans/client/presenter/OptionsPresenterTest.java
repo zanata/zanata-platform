@@ -62,6 +62,7 @@ public class OptionsPresenterTest
       
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
       verify(display).setShowErrorChk(configHolder.getState().isShowError());
+      verify(display).setDisplayTheme(configHolder.getState().getDisplayTheme());
    }
    
    @Test
@@ -111,6 +112,15 @@ public class OptionsPresenterTest
       presenter.onShowErrorsOptionChanged(true);
       
       assertThat(configHolder.getState().isShowError(), Matchers.equalTo(true));
+   }
+
+   @Test
+   public void onDisplayThemeChanged()
+   {
+      presenter.onBind();
+      presenter.onDisplayThemeChanged(UserConfigHolder.COMPACT_DISPLAY_THEME);
+
+      assertThat(configHolder.getState().getDisplayTheme(), Matchers.equalTo(UserConfigHolder.COMPACT_DISPLAY_THEME));
    }
 
    @Test

@@ -14,6 +14,7 @@ public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
    public static Type<UserConfigChangeHandler> TYPE = new Type<UserConfigChangeHandler>();
    public static final UserConfigChangeEvent EDITOR_CONFIG_CHANGE_EVENT = new UserConfigChangeEvent(MainView.Editor);
    public static final UserConfigChangeEvent DOCUMENT_CONFIG_CHANGE_EVENT = new UserConfigChangeEvent(MainView.Documents);
+   public static final UserConfigChangeEvent COMMON_CONFIG_CHANGE_EVENT = new UserConfigChangeEvent(null);
 
    private final MainView view;
 

@@ -110,6 +110,11 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setShowError(filteredOptions.get(UserOptions.ShowErrors.getPersistentName()).getValueAsBoolean());
       }
 
+      if (filteredOptions.containsKey(UserOptions.DisplayTheme.getPersistentName()))
+      {
+         configHolder.setDisplayTheme(filteredOptions.get(UserOptions.DisplayTheme.getPersistentName()).getValue());
+      }
+
       if (filteredOptions.containsKey(UserOptions.UseCodeMirrorEditor.getPersistentName()))
       {
          configHolder.setUseCodeMirrorEditor(filteredOptions.get(UserOptions.UseCodeMirrorEditor.getPersistentName()).getValueAsBoolean());

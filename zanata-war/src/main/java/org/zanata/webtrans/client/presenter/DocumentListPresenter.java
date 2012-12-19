@@ -138,6 +138,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       display.setListener(this);
 
       display.updatePageSize(configHolder.getState().getDocumentListPageSize());
+      display.setDisplayTheme(configHolder.getState().getDisplayTheme());
    }
 
    @Override
@@ -367,6 +368,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
+      display.setDisplayTheme(configHolder.getState().getDisplayTheme());
       if (event.getView() == MainView.Documents)
       {
          display.updatePageSize(configHolder.getState().getDocumentListPageSize());

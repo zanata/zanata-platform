@@ -83,6 +83,7 @@ public class UserOptionsService
    {
       HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
       configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
+      configMap.put(UserOptions.DisplayTheme, configHolder.getState().getDisplayTheme());
 
       return configMap;
    }
@@ -120,6 +121,7 @@ public class UserOptionsService
    public void loadCommonOptions()
    {
       configHolder.setShowError(UserConfigHolder.DEFAULT_SHOW_ERROR);
+      configHolder.setDisplayTheme(UserConfigHolder.DEFAULT_DISPLAY_THEME);
    }
 
    public void loadDocumentListDefaultOptions()

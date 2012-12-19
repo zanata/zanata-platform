@@ -18,9 +18,13 @@ public interface OptionsDisplay extends WidgetDisplay
 
    void setShowErrorChk(boolean showError);
 
+   void setDisplayTheme(String displayTheme);
+
    interface Listener extends CommonOptionsListener
    {
       void onShowErrorsOptionChanged(Boolean showErrorChkValue);
+
+      void onDisplayThemeChanged(String value);
    }
 
    interface CommonOptionsListener
@@ -32,5 +36,6 @@ public interface OptionsDisplay extends WidgetDisplay
       void loadDefaultOptions();
 
    }
+
 
 }

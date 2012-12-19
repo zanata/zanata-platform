@@ -69,6 +69,10 @@ public class UserConfigHolder
    public static final boolean DEFAULT_SPELL_CHECK = true;
    public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
 
+   public static final String DEFAULT_DISPLAY_THEME = "themeDefault";
+   public static final String COMPACT_DISPLAY_THEME = "themeCompact";
+   public static final String LOOSE_DISPLAY_THEME = "themeloose";
+
    public UserConfigHolder()
    {
       // default state
@@ -88,6 +92,7 @@ public class UserConfigHolder
       state.filterByUntranslated = DEFAULT_FILTER;
 
       state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
+      state.displayTheme = DEFAULT_DISPLAY_THEME;
    }
 
    public void setEnterSavesApproved(boolean enterSavesApproved)
@@ -199,6 +204,12 @@ public class UserConfigHolder
       state.transMemoryDisplayMode = diffMode;
    }
 
+   public void setDisplayTheme(String theme)
+   {
+      state = new ConfigurationState(state);
+      state.displayTheme = theme;
+   }
+
    public boolean isAcceptAllStatus()
    {
       return state.isFilterByNeedReview() == state.isFilterByTranslated() && state.isFilterByNeedReview() == state.isFilterByUntranslated();
@@ -224,6 +235,7 @@ public class UserConfigHolder
       private boolean showSaveApprovedWarning;
       private boolean spellCheckEnabled;
       private DiffMode transMemoryDisplayMode;
+      private String displayTheme;
 
       // Needed for GWT serialization
       private ConfigurationState()
@@ -245,6 +257,7 @@ public class UserConfigHolder
          this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
          this.spellCheckEnabled = old.isSpellCheckEnabled();
          this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
+         this.displayTheme = old.getDisplayTheme();
       }
 
       public boolean isEnterSavesApproved()
@@ -310,6 +323,11 @@ public class UserConfigHolder
       public DiffMode getTransMemoryDisplayMode()
       {
          return transMemoryDisplayMode;
+      }
+
+      public String getDisplayTheme()
+      {
+         return displayTheme;
       }
    }
 }

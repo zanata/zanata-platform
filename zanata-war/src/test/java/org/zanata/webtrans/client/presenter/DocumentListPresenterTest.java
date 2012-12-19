@@ -465,6 +465,8 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
+      verify(mockDisplay).setDisplayTheme(UserConfigHolder.DEFAULT_DISPLAY_THEME);
+
       verifyZeroInteractions(mockDisplay);
    }
 
