@@ -27,6 +27,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -35,6 +36,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
+import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.resource.Resource;
@@ -56,7 +58,8 @@ public interface TranslatedDocResource
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
          @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skel") boolean createSkeletons
+         @QueryParam("skel") boolean createSkeletons,
+         @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag
          );
 
    @DELETE

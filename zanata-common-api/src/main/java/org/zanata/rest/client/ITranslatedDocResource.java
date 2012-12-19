@@ -25,11 +25,13 @@ import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.client.ClientResponse;
@@ -55,7 +57,8 @@ public interface ITranslatedDocResource extends TranslatedDocResource
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
          @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") boolean skeletons);
+         @QueryParam("skeletons") boolean skeletons,
+         @HeaderParam(HttpHeaders.IF_NONE_MATCH) String eTag);
 
    @Override
    @DELETE
