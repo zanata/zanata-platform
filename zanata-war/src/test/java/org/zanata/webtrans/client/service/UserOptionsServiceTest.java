@@ -131,7 +131,7 @@ public class UserOptionsServiceTest
    {
       Map<UserOptions, String> map = service.getEditorOptions();
 
-      assertThat(map.size(), Matchers.equalTo(13));
+      assertThat(map.size(), Matchers.equalTo(15));
       
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.DisplayTheme), Matchers.equalTo(true));
