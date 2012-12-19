@@ -46,6 +46,7 @@ import org.zanata.v1_3.rest.dto.resource.TextFlow;
 import org.zanata.v1_3.rest.dto.resource.TextFlowTarget;
 import org.zanata.v1_3.rest.dto.resource.TranslationsResource;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
 {
 

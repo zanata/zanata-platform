@@ -32,6 +32,7 @@ import org.zanata.ZanataCompatibilityTest;
 import org.zanata.v1_4_4.rest.client.IProjectIterationResource;
 import org.zanata.v1_4_4.rest.dto.ProjectIteration;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class ProjectIterationCompatibilityTest extends ZanataCompatibilityTest
 {
 

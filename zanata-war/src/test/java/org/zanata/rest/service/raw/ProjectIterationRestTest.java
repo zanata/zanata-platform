@@ -37,6 +37,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
 
+@Test(groups = {"seam-tests"})
 public class ProjectIterationRestTest extends ZanataRawRestTest
 {
 

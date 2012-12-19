@@ -28,6 +28,7 @@ import org.zanata.v1_5_0.rest.dto.VersionInfo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class VersionCompatibilityTest extends ZanataCompatibilityTest
 {
 

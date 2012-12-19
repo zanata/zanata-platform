@@ -34,6 +34,7 @@ import org.zanata.ZanataRawRestTest;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
 
+@Test(groups = {"seam-tests"})
 public class VersionRestTest extends ZanataRawRestTest
 {
 

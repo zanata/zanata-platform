@@ -38,6 +38,7 @@ import org.zanata.v1_4_4.rest.MediaTypes;
 import org.zanata.v1_4_4.rest.client.IProjectIterationResource;
 import org.zanata.v1_4_4.rest.dto.ProjectIteration;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class ProjectIterationRawCompatibilityTest extends ZanataCompatibilityTest
 {
 

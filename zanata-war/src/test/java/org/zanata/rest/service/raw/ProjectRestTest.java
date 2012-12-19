@@ -40,6 +40,7 @@ import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.ProjectType;
 
+@Test(groups = {"seam-tests"})
 public class ProjectRestTest extends ZanataRawRestTest
 {
 

@@ -36,6 +36,7 @@ import org.zanata.ZanataRawRestTest;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
 
+@Test(groups = {"seam-tests"})
 public class AccountRestTest extends ZanataRawRestTest
 {
 

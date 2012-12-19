@@ -44,6 +44,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Test(groups = {"seam-tests"})
 public class StatisticsRestTest extends ZanataRawRestTest
 {
    @Override

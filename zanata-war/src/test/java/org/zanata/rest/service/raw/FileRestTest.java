@@ -40,6 +40,7 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRawRestTest;
 
+@Test(groups = {"seam-tests"})
 public class FileRestTest extends ZanataRawRestTest
 {
 

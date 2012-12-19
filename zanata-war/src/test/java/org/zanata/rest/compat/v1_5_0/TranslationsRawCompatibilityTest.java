@@ -51,6 +51,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
 {
 

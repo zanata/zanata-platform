@@ -53,6 +53,7 @@ import static org.hamcrest.Matchers.notNullValue;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  *
  */
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class ProjectRawCompatibilityTest extends ZanataCompatibilityTest
 {
    
