@@ -7,14 +7,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
+import org.junit.Test;
 
-public class ZanataConfigTest extends TestCase
+import static org.junit.Assert.*;
+
+@org.testng.annotations.Test(groups = "unit-tests")
+public class ZanataConfigTest
 {
    JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
    Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -32,6 +34,7 @@ public class ZanataConfigTest extends TestCase
    // GenerateSchema.generateSchemaToStdout(jc);
    // }
 
+   @Test
    public void testWriteReadProject() throws Exception
    {
       writeProject();
@@ -63,6 +66,7 @@ public class ZanataConfigTest extends TestCase
       assertNull(locales.get(1).getMapFrom());
    }
 
+   @Test
    public void testWriteReadUser() throws Exception
    {
       writeUser();

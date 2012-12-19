@@ -6,7 +6,9 @@ import junit.framework.TestCase;
 
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.testng.annotations.Test;
 
+@Test(groups = "unit-tests") // since TestNG Eclipse doesn't always find JUnit tests
 public class ConfigUtilTest extends TestCase
 {
    public void testReadUser() throws Exception
