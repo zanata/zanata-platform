@@ -1,9 +1,10 @@
 package org.zanata.rest.service;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
+import javax.ws.rs.core.Response.Status;
+
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.security.Identity;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
@@ -19,8 +20,6 @@ import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
 
-import javax.ws.rs.core.Response.Status;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -31,28 +30,31 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    private final Logger log = LoggerFactory.getLogger(TranslationServiceRestTest.class);
    private TranslationsResourceTestObjectFactory transTestFactory = new TranslationsResourceTestObjectFactory();
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
-   private IMocksControl mockControl = EasyMock.createControl();
-   private Identity mockIdentity = mockControl.createMock(ZanataIdentity.class);
    private SeamAutowire seam = SeamAutowire.instance();
 
    @DataProvider(name = "TranslationTestData")
    public Object[][] getTestData()
    {
-      return new Object[][] {
- new Object[] { transTestFactory.getTestObject() }, new Object[] { transTestFactory.getPoTargetHeaderTextFlowTargetTest() }, new Object[] { transTestFactory.getTextFlowTargetCommentTest() },
-      new Object[] { transTestFactory.getAllExtension() }
-
-      };
+      // @formatter:off
+      return new Object[][]
+            {
+               new Object[] { transTestFactory.getTestObject() },
+               new Object[] { transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
+               new Object[] { transTestFactory.getTextFlowTargetCommentTest() },
+               new Object[] { transTestFactory.getAllExtension() }
+            };
+      // @formatter:on
    }
 
    @Override
    protected void prepareResources()
    {
+      MockitoAnnotations.initMocks(this);
       seam.reset();
       seam.ignoreNonResolvable()
             .use("entityManager", getEm())
             .use("session", getSession())
-            .use("identity", mockIdentity)
+            .use("identity", Mockito.mock(ZanataIdentity.class))
             .useImpl(LocaleServiceImpl.class)
             .useImpl(CopyTransServiceImpl.class)
             .useImpl(DocumentServiceImpl.class)
