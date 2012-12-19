@@ -24,18 +24,12 @@
             margin-left: 5px;
         }
         
-        .searchField
-        {
-			width:420px;
-			display:inline-block;
-		}
-		
 		
 	</ui:style>
 	
 	<g:HorizontalPanel>
 		<g:cell verticalAlignment="ALIGN_MIDDLE">
-			<fui:SearchField ui:field="searchField" addStyleNames="{style.searchField}"/>
+			<fui:SearchField ui:field="searchField"/>
 		</g:cell>
 		
 		<g:cell verticalAlignment="ALIGN_MIDDLE">

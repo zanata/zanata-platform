@@ -9,7 +9,7 @@
 			font-size: 16px;
 			border: 2px solid #C5C5C5;
 			border-radius: 3px;
-			width:100%;
+			width:350px;
 			line-height:18px;
 			padding-left:22px;
 			padding-right:20px;
@@ -28,7 +28,7 @@
 		{
 			position:absolute;
 			top:7px;
-			left:410px;
+			left:340px;
 			font-size:16px;
 			cursor:pointer;
 		}

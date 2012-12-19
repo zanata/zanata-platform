@@ -51,10 +51,10 @@
 						<g:cell>
 							<g:HTMLPanel ui:field="filterPanelContainer"/>		
 						</g:cell>
-						<g:cell horizontalAlignment="ALIGN_RIGHT">
+						<g:cell horizontalAlignment="ALIGN_RIGHT" width="115px">
 							<g:HTMLPanel ui:field="transUnitNavigationContainer"/>
 						</g:cell>
-						<g:cell horizontalAlignment="ALIGN_RIGHT">
+						<g:cell horizontalAlignment="ALIGN_RIGHT" width="35px">
 							<g:InlineLabel ui:field="refreshCurrentPage" styleName="icon-arrows-cw {style.iconButton}"/>
 						</g:cell>
 					</g:HorizontalPanel>
