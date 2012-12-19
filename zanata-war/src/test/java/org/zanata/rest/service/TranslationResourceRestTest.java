@@ -301,7 +301,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       response = transResource.putTranslations("my.txt", de_DE, entity, null, MergeType.IMPORT.toString());
       assertThat(response.getResponseStatus(), is(Status.OK));
 
-      getResponse = transResource.getTranslations("my.txt", de_DE, null, false);
+      getResponse = transResource.getTranslations("my.txt", de_DE, null, false, null);
       assertThat(getResponse.getResponseStatus(), is(Status.OK));
    }
 
@@ -702,7 +702,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       publishTranslations(); // push some translations (with no headers)
       // Get the translations with PO headers
       ClientResponse<TranslationsResource> response = transResource.getTranslations(
-            "my.txt", de_DE, new StringSet("gettext"), true);
+            "my.txt", de_DE, new StringSet("gettext"), true, null);
       
       TranslationsResource translations = response.getEntity();
       assertThat(translations.getExtensions().size(), greaterThan(0));
@@ -746,7 +746,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       
       // Get the translations with PO headers
       ClientResponse<TranslationsResource> response = transResource.getTranslations(
-            "my.txt", de_DE, new StringSet("gettext"), true);
+            "my.txt", de_DE, new StringSet("gettext"), true, null);
       
       TranslationsResource translations = response.getEntity();
       assertThat( translations.getTextFlowTargets().size(), is(0) ); // Expecting no translations
@@ -1058,7 +1058,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void dontExpectTarget(String id, LocaleId locale)
    {
-      ClientResponse<TranslationsResource> response = transResource.getTranslations(id, locale, null, false);
+      ClientResponse<TranslationsResource> response = transResource.getTranslations(id, locale, null, false, null);
       assertThat(response.getStatus(), is(404));
    }
 

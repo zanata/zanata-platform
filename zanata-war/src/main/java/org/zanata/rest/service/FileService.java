@@ -870,7 +870,7 @@ public class FileService implements FileResource
 
          // Perform translation of Hibernate DTOs to JAXB DTOs
          TranslationsResource transRes = 
-               (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
+               (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true, null).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
 
          StreamingOutput output = new POStreamingOutput(res, transRes);
@@ -887,7 +887,7 @@ public class FileService implements FileResource
          }
          final Set<String> extensions = Collections.<String>emptySet();
          TranslationsResource transRes = 
-               (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
+               (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true, null).getEntity();
          // Filter to only provide translated targets. "Preview" downloads include fuzzy.
          // New list is used as transRes list appears not to be a modifiable implementation.
          Map<String, TextFlowTarget> translations = new HashMap<String, TextFlowTarget>();
