@@ -23,14 +23,14 @@
 		TODO: use group seam-tests instead, but make sure TestNG 
 		executes the @BeforeSuite method SeamTest.startSeam()
 		 -->
+<!-- FIXME get these tests working again
      	<test name="Seam Tests">
      		<classes>
-<!-- FIXME get these tests working again
             <class name="org.zanata.server.rpc.ActivateWorkspaceActionSeamTest"/>
             <class name="org.zanata.dao.LocaleMemberDAOTest"/>
- -->
      		</classes>
      	</test>
+ -->
      	<test name="Raw Rest Tests">
      		<classes>
      			<class name="org.zanata.rest.service.raw.AccountRestTest"/>
