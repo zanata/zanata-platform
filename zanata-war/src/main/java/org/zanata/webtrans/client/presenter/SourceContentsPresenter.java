@@ -26,6 +26,8 @@ import javax.inject.Provider;
 
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -47,10 +49,11 @@ import net.customware.gwt.presenter.client.EventBus;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class SourceContentsPresenter implements ClickHandler
+public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler
 {
    private final EventBus eventBus;
    private final Provider<SourceContentsDisplay> displayProvider;
+   private final UserConfigHolder configHolder;
 
    // states
    private List<SourceContentsDisplay> displayList = Collections.emptyList();
@@ -58,10 +61,12 @@ public class SourceContentsPresenter implements ClickHandler
    private HasSelectableSource selectedSource;
 
    @Inject
-   public SourceContentsPresenter(EventBus eventBus, Provider<SourceContentsDisplay> displayProvider)
+   public SourceContentsPresenter(EventBus eventBus, Provider<SourceContentsDisplay> displayProvider, UserConfigHolder configHolder)
    {
       this.eventBus = eventBus;
       this.displayProvider = displayProvider;
+      this.configHolder = configHolder;
+      eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
    }
 
    /**
@@ -165,5 +170,14 @@ public class SourceContentsPresenter implements ClickHandler
    public TransUnitId getCurrentTransUnitIdOrNull()
    {
       return currentTransUnitId;
+   }
+
+   @Override
+   public void onUserConfigChanged(UserConfigChangeEvent event)
+   {
+      for (SourceContentsDisplay sourceContentsDisplay : displayList)
+      {
+          sourceContentsDisplay.toggleTransUnitDetails(configHolder.getState().isShowOptionalTransUnitDetails());
+      }
    }
 }

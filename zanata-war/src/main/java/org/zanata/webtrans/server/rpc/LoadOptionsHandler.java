@@ -42,6 +42,7 @@ import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 /**
  * @author Carlos Munoz <a
@@ -110,6 +111,11 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setShowError(filteredOptions.get(UserOptions.ShowErrors.getPersistentName()).getValueAsBoolean());
       }
 
+      if (filteredOptions.containsKey(UserOptions.Themes.getPersistentName()))
+      {
+         configHolder.setDisplayTheme(ThemesOption.valueOf(filteredOptions.get(UserOptions.Themes.getPersistentName()).getValue()));
+      }
+
       if (filteredOptions.containsKey(UserOptions.UseCodeMirrorEditor.getPersistentName()))
       {
          configHolder.setUseCodeMirrorEditor(filteredOptions.get(UserOptions.UseCodeMirrorEditor.getPersistentName()).getValueAsBoolean());
@@ -123,6 +129,21 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
       if (filteredOptions.containsKey(UserOptions.TransMemoryDisplayMode.getPersistentName()))
       {
          configHolder.setTMDisplayMode(DiffMode.valueOf(filteredOptions.get(UserOptions.TransMemoryDisplayMode.getPersistentName()).getValue()));
+      }
+
+      if (filteredOptions.containsKey(UserOptions.DisplayTransMemory.getPersistentName()))
+      {
+         configHolder.setShowTMPanel(filteredOptions.get(UserOptions.DisplayTransMemory.getPersistentName()).getValueAsBoolean());
+      }
+
+      if (filteredOptions.containsKey(UserOptions.DisplayGlossary.getPersistentName()))
+      {
+         configHolder.setShowGlossaryPanel(filteredOptions.get(UserOptions.DisplayGlossary.getPersistentName()).getValueAsBoolean());
+      }
+
+      if (filteredOptions.containsKey(UserOptions.ShowOptionalTransUnitDetails.getPersistentName()))
+      {
+         configHolder.setShowOptionalTransUnitDetails(filteredOptions.get(UserOptions.ShowOptionalTransUnitDetails.getPersistentName()).getValueAsBoolean());
       }
 
       if (filteredOptions.containsKey(UserOptions.TranslatedMessageFilter.getPersistentName()))

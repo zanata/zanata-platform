@@ -16,11 +16,12 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,9 +35,16 @@ public class Pager extends Composite implements HasPager
    {
    }
 
+   interface Styles extends CssResource
+   {
+      String enabled();
+
+      String disabled();
+   }
+
 
    @UiField
-   Button firstPage, lastPage, nextPage, prevPage;
+   InlineLabel firstPage, lastPage, nextPage, prevPage;
 
    @UiField
    TextBox gotoPage;
@@ -46,6 +54,9 @@ public class Pager extends Composite implements HasPager
 
    @UiField(provided = true)
    Resources resources;
+
+   @UiField
+   Styles style;
 
    private int pageCount = PAGECOUNT_UNKNOWN;
    private int currentPage;
@@ -201,9 +212,18 @@ public class Pager extends Composite implements HasPager
       return gotoPage.addBlurHandler(handler);
    }
 
-   private void setEnabled(Button button, boolean enabled)
+   private void setEnabled(InlineLabel button, boolean enabled)
    {
-      button.setEnabled(enabled);
+      if(enabled)
+      {
+         button.removeStyleName(style.disabled());
+         button.addStyleName(style.enabled());
+      }
+      else
+      {
+         button.removeStyleName(style.enabled());
+         button.addStyleName(style.disabled());
+      }
    }
 
    public boolean isFocused()

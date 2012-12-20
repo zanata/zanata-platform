@@ -16,21 +16,6 @@
             color: #FFFFFF;
         }
 
-        .translated {
-            border-left: 3px solid #099B09;
-            margin-left: 5px;
-        }
-
-        .needReview {
-            border-left: 3px solid #ffc000;
-            margin-left: 5px;
-        }
-
-        .untranslated {
-            border-left: 3px solid #e5e5e5;
-            margin-left: 5px;
-        }
-
         .selectedPageSize {
             background-color: #B62918;
         }
@@ -68,15 +53,6 @@
         
         <g:cell>
         	<g:VerticalPanel width="100%">
-        		 <g:Label ui:field="filterHeader" styleName="sideMenuHeader"/>
-                 <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>			                
-                 <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"><ui:msg>Need Review</ui:msg></g:CheckBox>
-                 <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
-        	</g:VerticalPanel>
-        </g:cell>
-        
-        <g:cell>
-        	<g:VerticalPanel width="100%">
         	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
                 <g:VerticalPanel ui:field="optionsContainer" />
             </g:VerticalPanel>
@@ -101,6 +77,15 @@
                     <g:InlineLabel ui:field="twentyFive" >25</g:InlineLabel>
                     <g:InlineLabel ui:field="fifty" >50</g:InlineLabel>
                 </g:HTMLPanel>
+            </g:VerticalPanel>
+        </g:cell>
+
+        <g:cell>
+            <g:VerticalPanel width="100%">
+                <g:Label ui:field="displayHeader" styleName="sideMenuHeader"/>
+                <g:CheckBox ui:field="showTMChk" />
+                <g:CheckBox ui:field="showGlossaryChk" />
+                <g:CheckBox ui:field="showOptionalTransUnitDetailsChk" />
             </g:VerticalPanel>
         </g:cell>
 	                

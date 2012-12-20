@@ -7,9 +7,9 @@
 
 	<ui:style type="org.zanata.webtrans.client.ui.SourcePanel.Styles">
         .selectedRow {
-            background-color: #add8e6;
             padding: 3px;
             table-layout: fixed;
+            background-color:#add8e6;
         }
 
         .nonSelectedRow {

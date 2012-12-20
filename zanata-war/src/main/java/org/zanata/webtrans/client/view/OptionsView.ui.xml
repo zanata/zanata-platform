@@ -22,6 +22,11 @@
             margin-right: 3px;
             border-radius: 3px;
         }
+        
+        .listBox
+        {
+			color:#000000;
+		}
 
     </ui:style>
 	
@@ -30,11 +35,17 @@
     		<g:HTMLPanel ui:field="optionsContainer"/>
     	</g:cell>
     	
-    	<g:cell verticalAlignment="ALIGN_TOP" height="50px">
-    		<g:HTMLPanel>
+    	<g:cell verticalAlignment="ALIGN_TOP" height="80px">
+    		<g:VerticalPanel width="100%">
 	    		<g:Label ui:field="advancedUserConfig" styleName="sideMenuHeader"/>
-	    		<g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
-    		</g:HTMLPanel>
+	    		<g:cell>
+	    			<g:HTMLPanel>
+	    				<g:InlineLabel><ui:msg>Theme</ui:msg></g:InlineLabel>
+	    				<g:ListBox ui:field="themesList" styleName="{style.listBox}"/>
+	    			</g:HTMLPanel>
+    			</g:cell>
+    			<g:CheckBox ui:field="showErrorChk"><ui:msg>Show System Errors</ui:msg></g:CheckBox>
+    		</g:VerticalPanel>
     	</g:cell>
     	<g:cell verticalAlignment="ALIGN_BOTTOM" height="30px">
    		 <g:HTMLPanel>

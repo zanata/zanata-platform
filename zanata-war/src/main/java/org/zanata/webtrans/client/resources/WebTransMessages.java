@@ -47,7 +47,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
 
-   @DefaultMessage("Show Glossary Suggestion")
+   @DefaultMessage("Show Glossary Suggestions")
    String showGlossaryPanel();
 
    @DefaultMessage("Chat room")
@@ -389,9 +389,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Editor options")
    String editorOptions();
 
-   @DefaultMessage("Message filters")
-   String messageFilters();
-
    @DefaultMessage("Validation options")
    String validationOptions();
 
@@ -410,7 +407,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("When unexpected error happens, a popup window will display and show it")
    String showErrorsTooltip();
 
-   @DefaultMessage("Switch between CodeMirror Editor (supports syntax highlight but no spell check) and plain textarea (no syntax highlight but with spell check)")
+   @DefaultMessage("Switch between CodeMirror Editor (supports syntax highlight) and plain textarea (no syntax highlight but support spell check)")
    String useCodeMirrorEditorTooltip();
 
    @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
@@ -485,5 +482,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Configure how you want your editor to look like")
    String displayConfigurationTooltip();
 
+   @DefaultMessage("Display optional Trans Unit Details")
+   String showTransUnitDetails();
 
+   @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
+   String showTransUnitDetailsTooltip();
 }

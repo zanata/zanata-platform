@@ -1,43 +1,27 @@
 package org.zanata.rest.service;
 
-import static java.util.Arrays.asList;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isOneOf;
-import static org.hamcrest.Matchers.notNullValue;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
-import org.fest.assertions.Assertions;
+import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -88,8 +72,23 @@ import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-
 import com.google.common.collect.Lists;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isOneOf;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @Test(singleThreaded = true)
 public class TranslationResourceRestTest extends ZanataRestTest
@@ -111,28 +110,22 @@ public class TranslationResourceRestTest extends ZanataRestTest
    StringSet extGettextComment = new StringSet("gettext;comment");
    StringSet extComment = new StringSet("comment");
 
-   IMocksControl mockControl = EasyMock.createControl();
-   ZanataIdentity mockIdentity = mockControl.createMock(ZanataIdentity.class);
-   TranslationWorkspaceManager transWorspaceManager = mockControl.createMock(TranslationWorkspaceManager.class);
+   @Mock
+   private ZanataIdentity mockIdentity;
+   @Mock
+   private TranslationWorkspaceManager transWorspaceManager;
 
    TranslationService translationService;
 
    ISourceDocResource sourceDocResource;
    ITranslatedDocResource transResource;
-   
-   private LocaleId de_de;
 
 
    @BeforeClass
    void beforeClass()
    {
+      MockitoAnnotations.initMocks(this);
       Identity.setSecurityEnabled(false);
-   }
-
-   @BeforeMethod
-   void reset()
-   {
-      mockControl.reset();
    }
 
    @Override
@@ -896,7 +889,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Test
    public void headersAfterWebtransEdit() throws Exception
    {
-      de_de = new LocaleId("de");
+      LocaleId de_de = new LocaleId("de");
       getZero();
       
       // Push a document with no translations
@@ -968,19 +961,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
    throws Exception
    {
       // Mock certain objects
-      TranslationWorkspace transWorkspace = mockControl.createMock(TranslationWorkspace.class);
+      TranslationWorkspace transWorkspace = mock(TranslationWorkspace.class);
 
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
       
       // Set mock expectations
-      expect(this.transWorspaceManager.getOrRegisterWorkspace(anyObject(WorkspaceId.class))).andReturn(transWorkspace).anyTimes();
-      mockIdentity.checkLoggedIn();
-      expectLastCall();
-      mockIdentity.checkPermission(anyObject(String.class), anyObject(HLocale.class), anyObject(HProject.class));
-      expectLastCall();
-      transWorkspace.publish(anyObject(SessionEventData.class));
-      expectLastCall();
-      mockControl.replay();
+      when(transWorspaceManager.getOrRegisterWorkspace(any(WorkspaceId.class))).thenReturn(transWorkspace);
 
       seam.use(JpaIdentityStore.AUTHENTICATED_USER, translator); // use a given authenticated account
       seam.use("translationServiceImpl", seam.autowire(TranslationServiceImpl.class));// TODO because translationService component has already been created in prepareResource and have a wrong HAccount injected
@@ -1007,8 +993,10 @@ public class TranslationResourceRestTest extends ZanataRestTest
       
       UpdateTransUnitResult result = transUnitHandler.execute(action, null);
       
-      assertThat( result.isSingleSuccess(), is(true) );
-      mockControl.verify();
+      assertThat(result.isSingleSuccess(), is(true));
+      verify(mockIdentity).checkLoggedIn();
+      verify(mockIdentity, atLeastOnce()).checkPermission(anyString(), any(HLocale.class), any(HProject.class));
+      verify(transWorkspace).publish(any(SessionEventData.class));
    }
    
    private void expectDocs(boolean checkRevs, boolean checkLinksIgnored, Resource... docs)
@@ -1055,7 +1043,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
             ResourceTestUtil.clearRevs(actualDoc);
          createExtensionSets(expectedDoc);
          createExtensionSets(actualDoc);
-         Assertions.assertThat(actualDoc).isEqualTo(expectedDoc);
+         assertThat(actualDoc, Matchers.equalTo(expectedDoc));
       }
    }
 
@@ -1103,7 +1091,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // Clear Po Headers since Zanata will generate custom ones
       ResourceTestUtil.clearPoTargetHeaders(actualDoc, expectedDoc);
 
-      Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
+      assertThat(actualDoc.toString(), Matchers.equalTo(expectedDoc.toString()));
    }
 
    private Resource createSourceDoc(String name, boolean withTextFlow)

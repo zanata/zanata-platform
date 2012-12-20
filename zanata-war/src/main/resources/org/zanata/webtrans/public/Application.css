@@ -185,25 +185,57 @@ Removes some of the styling on the page-level splitters
 	display: inline;
 }
 
-.transUnitTable
-{
-	
+.THEMES_COMPACT .transUnitCol {
+	padding:0px 0px;
+}
+
+.THEMES_COMPACT .transUnitCol .buttons {
+	font-size:16px;
+}
+
+.THEMES_DEFAULT .transUnitCol {
+	padding:10px 0px;
+}
+
+.THEMES_DEFAULT .transUnitCol .buttons {
+	font-size:18px;
+}
+
+.THEMES_LOOSE .transUnitCol {
+	padding:20px 0px;
+}
+
+.THEMES_LOOSE .transUnitCol .buttons {
+	font-size:20px;
 }
 
 .transUnitTable tr.selected
 {
+	border-left: 2px dotted #0085CC;
 	border-right: 2px dotted #0085CC;
-    border-left: 2px dotted #0085CC;
+    background-color:#F3F7FB;
+}
+
+
+.transUnitTable tr.selected .transUnitCol
+{
+	border-top: 2px solid #0085CC;
+	border-bottom: 2px solid #0085CC;
+}
+
+.transUnitTable tr:hover
+{
+	background-color:#F3F7FB;
 }
 
 .transUnitTable tr:hover .fadeElement, .transUnitTable tr.selected .fadeElement
 {
 	opacity:1;
+	
 }
-
 .transUnitTable tr .fadeElement
 {
-	opacity:0.2;
+	opacity:0;
 }
 
 
@@ -488,7 +520,18 @@ td.ApprovedStateDecoration div div div
 .DocumentListTable td {
 	font-size: 16px;
 	cursor: pointer;
-	padding:6px;
+}
+
+.THEMES_COMPACT .DocumentListTable td {
+	padding:0px 5px;
+}
+
+.THEMES_DEFAULT .DocumentListTable td {
+	padding:10px 5px;
+}
+
+.THEMES_LOOSE .DocumentListTable td {
+	padding:20px 5px;
 }
 
 .DocumentListTable td.directoryCol {

@@ -1,21 +1,15 @@
 package org.zanata.rest.service;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import java.util.List;
-
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.hamcrest.CoreMatchers;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Identity;
 import org.junit.Assert;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -26,17 +20,20 @@ import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class GlossaryRestTest extends ZanataRestTest
 {
 
-   private final String RESOURCE_PATH = "/glossary";
-   IMocksControl mockControl = EasyMock.createControl();
-   Identity mockIdentity = mockControl.createMock(Identity.class);
-   IGlossaryResource glossaryService;
-   SeamAutowire seam = SeamAutowire.instance();
+   @Mock
+   private ZanataIdentity mockIdentity;
+   private IGlossaryResource glossaryService;
+   private SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
@@ -44,16 +41,11 @@ public class GlossaryRestTest extends ZanataRestTest
       Identity.setSecurityEnabled(false);
    }
 
-   @BeforeMethod
-   void reset()
-   {
-      mockControl.reset();
-   }
-
    @BeforeMethod(dependsOnMethods = "prepareRestEasyFramework")
    public void createClient()
    {
-      this.glossaryService = getClientRequestFactory().createProxy(IGlossaryResource.class, createBaseURI(RESOURCE_PATH));
+      MockitoAnnotations.initMocks(this);
+      this.glossaryService = getClientRequestFactory().createProxy(IGlossaryResource.class, createBaseURI("/glossary"));
    }
 
    @Override
@@ -68,11 +60,13 @@ public class GlossaryRestTest extends ZanataRestTest
    protected void prepareResources()
    {
       seam.reset();
+      // @formatter:off
       seam.ignoreNonResolvable()
             .use("session", getSession())
             .use("identity", mockIdentity)
-.useImpl(LocaleServiceImpl.class)
+            .useImpl(LocaleServiceImpl.class)
             .useImpl(GlossaryFileServiceImpl.class);
+      // @formatter:on
 
       GlossaryService glossaryService = seam.autowire(GlossaryService.class);
 
@@ -120,9 +114,6 @@ public class GlossaryRestTest extends ZanataRestTest
    @Test
    public void putGlossary()
    {
-      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-insert"));
-      mockControl.replay();
-
       Glossary glossary = new Glossary();
       GlossaryEntry glossaryEntry1 = new GlossaryEntry();
       glossaryEntry1.setSrcLang(LocaleId.EN_US);
@@ -169,9 +160,6 @@ public class GlossaryRestTest extends ZanataRestTest
    @Test
    public void deleteAllGlossaries()
    {
-      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-delete"));
-      mockControl.replay();
-
       ClientResponse<String> response = glossaryService.deleteGlossaries();
       assertThat(response.getStatus(), is(200));
 
@@ -184,9 +172,6 @@ public class GlossaryRestTest extends ZanataRestTest
    @Test
    public void deleteGlossaryTermWithLocale()
    {
-      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-delete"));
-      mockControl.replay();
-
       ClientResponse<String> response = glossaryService.deleteGlossary(LocaleId.ES);
       assertThat(response.getStatus(), is(200));
 

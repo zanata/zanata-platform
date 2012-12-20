@@ -6,7 +6,6 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -87,6 +86,14 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
       transUnitTable.getColumnFormatter().setWidth(1, "50%");
    }
 
+   @Override
+   public void setThemes(String theme)
+   {
+      transUnitTable.setStyleName(style.table());
+      transUnitTable.addStyleName("transUnitTable");
+      transUnitTable.addStyleName(theme);
+   }
+
    private void selectRow(int rowIndex)
    {
       listener.onRowSelected(rowIndex);
@@ -130,7 +137,9 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
          cellFormatter.setVerticalAlignment(i, 0, HasVerticalAlignment.ALIGN_TOP);
          cellFormatter.setVerticalAlignment(i, 1, HasVerticalAlignment.ALIGN_TOP);
          cellFormatter.setStyleName(i, 0, style.cellFormat());
+         cellFormatter.addStyleName(i, 0, "transUnitCol");
          cellFormatter.setStyleName(i, 1, style.cellFormat());
+         cellFormatter.addStyleName(i, 1, "transUnitCol");
 
          sourceDisplay.refresh();
          targetDisplay.refresh();

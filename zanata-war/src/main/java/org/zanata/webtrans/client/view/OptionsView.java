@@ -22,8 +22,10 @@ package org.zanata.webtrans.client.view;
 
 
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -33,6 +35,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -56,6 +59,9 @@ public class OptionsView extends Composite implements OptionsDisplay
    CheckBox showErrorChk;
 
    @UiField
+   ListBox themesList;
+
+   @UiField
    PushButton saveButton;
 
    @UiField
@@ -70,6 +76,10 @@ public class OptionsView extends Composite implements OptionsDisplay
    public OptionsView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
+      
+      themesList.addItem("Compact", ThemesOption.THEMES_COMPACT.name());
+      themesList.addItem("Default", ThemesOption.THEMES_DEFAULT.name());
+      themesList.addItem("Loose", ThemesOption.THEMES_LOOSE.name());
 
       advancedUserConfig.setText(messages.otherConfiguration());
 
@@ -96,16 +106,22 @@ public class OptionsView extends Composite implements OptionsDisplay
       return this;
    }
 
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
+
    @UiHandler("showErrorChk")
    public void onShowErrorOptionChanged(ValueChangeEvent<Boolean> event)
    {
       listener.onShowErrorsOptionChanged(showErrorChk.getValue());
    }
 
-   @Override
-   public void setListener(Listener listener)
+   @UiHandler("themesList")
+   public void onThemesChanged(ChangeEvent event)
    {
-      this.listener = listener;
+      listener.onThemesChanged(themesList.getValue(themesList.getSelectedIndex()));
    }
 
    @UiHandler("saveButton")
@@ -130,5 +146,23 @@ public class OptionsView extends Composite implements OptionsDisplay
    public void setShowErrorChk(boolean showError)
    {
       showErrorChk.setValue(showError, true);
+   }
+
+   @Override
+   public void setDisplayTheme(ThemesOption displayTheme)
+   {
+      if (displayTheme.equals(ThemesOption.THEMES_COMPACT))
+      {
+         themesList.setSelectedIndex(0);
+      }
+      else if (displayTheme.equals(ThemesOption.THEMES_LOOSE))
+      {
+         themesList.setSelectedIndex(2);
+      }
+      else
+      {
+         themesList.setSelectedIndex(1);
+      }
+
    }
 }

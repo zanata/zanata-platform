@@ -1,48 +1,34 @@
 package org.zanata.rest.service;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.dbunit.operation.DatabaseOperation;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.seam.security.Identity;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import org.zanata.ZanataRestTest;
+import org.zanata.rest.client.IProjectIterationResource;
+import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.seam.SeamAutowire;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.dbunit.operation.DatabaseOperation;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
-import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.security.Identity;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRestTest;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.rest.client.IProjectIterationResource;
-import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.seam.SeamAutowire;
-
 public class ProjectIterationRestTest extends ZanataRestTest
 {
 
-   private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
-   IMocksControl mockControl = EasyMock.createControl();
-   Identity mockIdentity = mockControl.createMock(Identity.class);
-   SeamAutowire seam = SeamAutowire.instance();
+   private static final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
+   private SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
    {
       Identity.setSecurityEnabled(false);
-   }
-
-   @BeforeMethod
-   void reset()
-   {
-      mockControl.reset();
    }
 
    @Override
@@ -56,8 +42,7 @@ public class ProjectIterationRestTest extends ZanataRestTest
    {
       seam.reset();
       seam.ignoreNonResolvable()
-            .use("session", getSession())
-            .use("identity", mockIdentity);
+            .use("session", getSession());
 
       ProjectIterationService projectIterationService = seam.autowire(ProjectIterationService.class);
 

@@ -21,18 +21,16 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -42,31 +40,32 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    private static TransUnitNavigationViewUiBinder uiBinder = GWT.create(TransUnitNavigationViewUiBinder.class);
    private Listener listener;
 
-   @UiField(provided = true)
-   PushButton nextEntry, prevEntry, prevState, nextState, firstEntry, lastEntry;
+   interface Styles extends CssResource
+   {
+      String fuzzyUntranslated();
+
+      String fuzzy();
+
+      String untranslated();
+      
+      String navButton();
+   }
+
+   @UiField
+   InlineLabel prevState, nextState, firstEntry, lastEntry;
+
+   @UiField
+   Styles style;
 
    private final NavigationMessages messages;
 
-   @UiField(provided = true)
-   Resources resources;
-
    @Inject
-   public TransUnitNavigationView(final NavigationMessages messages, final Resources resources)
+   public TransUnitNavigationView(final NavigationMessages messages)
    {
-      this.resources = resources;
       this.messages = messages;
-
-      nextEntry = new PushButton(new Image(resources.nextEntry()));
-      prevEntry = new PushButton(new Image(resources.prevEntry()));
-      prevState = new PushButton(new Image(resources.prevState()));
-      nextState = new PushButton(new Image(resources.nextState()));
-      firstEntry = new PushButton(new Image(resources.firstEntry()));
-      lastEntry = new PushButton(new Image(resources.lastEntry()));
 
       initWidget(uiBinder.createAndBindUi(this));
 
-      prevEntry.setTitle(messages.actionToolTip(messages.prevEntry(), messages.prevEntryShortcut()));
-      nextEntry.setTitle(messages.actionToolTip(messages.nextEntry(), messages.nextEntryShortcut()));
       firstEntry.setTitle(messages.firstEntry());
       lastEntry.setTitle(messages.lastEntry());
       setFuzzyUntranslatedModeTooltip();
@@ -74,19 +73,28 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
 
    private void setFuzzyModeTooltip()
    {
+      prevState.setStylePrimaryName(style.fuzzy());
       prevState.setTitle(messages.actionToolTip(messages.prevFuzzy(), messages.prevFuzzyOrUntranslatedShortcut()));
+
+      nextState.setStylePrimaryName(style.fuzzy());
       nextState.setTitle(messages.actionToolTip(messages.nextFuzzy(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
    private void setUntranslatedModeTooltip()
    {
+      prevState.setStylePrimaryName(style.untranslated());
       prevState.setTitle(messages.actionToolTip(messages.prevUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
+
+      nextState.setStylePrimaryName(style.untranslated());
       nextState.setTitle(messages.actionToolTip(messages.nextUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
    private void setFuzzyUntranslatedModeTooltip()
    {
+      prevState.setStylePrimaryName(style.fuzzyUntranslated());
       prevState.setTitle(messages.actionToolTip(messages.prevFuzzyOrUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
+
+      nextState.setStylePrimaryName(style.fuzzyUntranslated());
       nextState.setTitle(messages.actionToolTip(messages.nextFuzzyOrUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
@@ -112,18 +120,6 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    public void onNextStateClicked(ClickEvent event)
    {
       listener.goToNextState();
-   }
-
-   @UiHandler("prevEntry")
-   public void onPreviousEntryClicked(ClickEvent event)
-   {
-      listener.goToPreviousEntry();
-   }
-
-   @UiHandler("nextEntry")
-   public void onNextEntryClicked(ClickEvent event)
-   {
-      listener.goToNextEntry();
    }
 
    @Override

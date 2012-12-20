@@ -20,25 +20,24 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import java.util.List;
+
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-
-import java.util.List;
-
-import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -57,39 +56,27 @@ public class HtmlXmlTagValidationTests
 
    private HtmlXmlTagValidation htmlXmlTagValidation;
 
+   @Mock
    private ValidationMessages mockMessages;
 
    // captured tag lists sent to messages
-   private Capture<List<String>> capturedTagsAdded;
-   private Capture<List<String>> capturedTagsMissing;
-   private Capture<List<String>> capturedTagsOutOfOrder;
-
-
-   @BeforeClass
-   public void mockMessages()
-   {
-      mockMessages = createMock(ValidationMessages.class);
-
-      capturedTagsAdded = new Capture<List<String>>();
-      capturedTagsMissing = new Capture<List<String>>();
-      capturedTagsOutOfOrder = new Capture<List<String>>();
-
-      expect(mockMessages.tagsAdded(capture(capturedTagsAdded))).andReturn(MOCK_TAGS_ADDED_MESSAGE).anyTimes();
-      expect(mockMessages.tagsMissing(capture(capturedTagsMissing))).andReturn(MOCK_TAGS_MISSING_MESSAGE).anyTimes();
-      expect(mockMessages.tagsWrongOrder(capture(capturedTagsOutOfOrder))).andReturn(MOCK_TAGS_OUT_OF_ORDER_MESSAGE).anyTimes();
-      expect(mockMessages.xmlHtmlValidatorName()).andReturn(MOCK_XML_HTML_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.xmlHtmlValidatorDescription()).andReturn(MOCK_XML_HTML_VALIDATOR_DESCRIPTION).anyTimes();
-      replay(mockMessages);
-   }
+   @Captor
+   private ArgumentCaptor<List<String>> capturedTagsAdded;
+   @Captor
+   private ArgumentCaptor<List<String>> capturedTagsMissing;
+   @Captor
+   private ArgumentCaptor<List<String>> capturedTagsOutOfOrder;
 
    @BeforeMethod
    public void init()
    {
+      MockitoAnnotations.initMocks(this);
       htmlXmlTagValidation = null;
-
-      capturedTagsAdded.reset();
-      capturedTagsMissing.reset();
-      capturedTagsOutOfOrder.reset();
+      when(mockMessages.tagsAdded(capturedTagsAdded.capture())).thenReturn(MOCK_TAGS_ADDED_MESSAGE);
+      when(mockMessages.tagsMissing(capturedTagsMissing.capture())).thenReturn(MOCK_TAGS_MISSING_MESSAGE);
+      when(mockMessages.tagsWrongOrder(capturedTagsOutOfOrder.capture())).thenReturn(MOCK_TAGS_OUT_OF_ORDER_MESSAGE);
+      when(mockMessages.xmlHtmlValidatorName()).thenReturn(MOCK_XML_HTML_VALIDATOR_NAME);
+      when(mockMessages.xmlHtmlValidatorDescription()).thenReturn(MOCK_XML_HTML_VALIDATOR_DESCRIPTION);
    }
 
    @Test
@@ -211,7 +198,6 @@ public class HtmlXmlTagValidationTests
       assertThat(capturedTagsMissing.getValue().size(), is(1));
       assertThat(capturedTagsAdded.getValue(), hasItem("<six>"));
       assertThat(capturedTagsAdded.getValue().size(), is(1));
-      assertThat(capturedTagsOutOfOrder.hasCaptured(), is(false));
    }
 
    @Test

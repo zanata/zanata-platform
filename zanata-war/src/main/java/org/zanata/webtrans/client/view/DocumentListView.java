@@ -192,6 +192,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    }
 
    @Override
+   public void setThemes(String theme)
+   {
+      documentListContainer.setStyleName(theme);
+   }
+
+   @Override
    public void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText)
    {
       caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);

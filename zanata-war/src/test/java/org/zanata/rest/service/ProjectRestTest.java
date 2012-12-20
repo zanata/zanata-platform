@@ -1,53 +1,47 @@
 package org.zanata.rest.service;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.notNullValue;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
-import org.zanata.dao.AccountDAO;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HIterationProject;
 import org.zanata.rest.client.IProjectResource;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectType;
 import org.zanata.seam.SeamAutowire;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class ProjectRestTest extends ZanataRestTest
 {
 
-   private final String RESOURCE_PATH = "/projects/p/";
-   IMocksControl mockControl = EasyMock.createControl();
-   Identity mockIdentity = mockControl.createMock(Identity.class);
+   private static final String RESOURCE_PATH = "/projects/p/";
+   @Mock
+   private Identity mockIdentity;
    SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
    {
+      MockitoAnnotations.initMocks(this);
       Identity.setSecurityEnabled(false);
-   }
-
-   @BeforeMethod
-   void reset()
-   {
-      mockControl.reset();
    }
 
    @Override
@@ -134,14 +128,9 @@ public class ProjectRestTest extends ZanataRestTest
       final String PROJECT_NAME = "My New Project";
       final String PROJECT_DESC = "Another test project";
 
-      mockIdentity.checkPermission(anyObject(HIterationProject.class), eq("insert"));
-
-      Credentials mockCredentials = mockControl.createMock(Credentials.class);
-      EasyMock.expect(mockIdentity.getCredentials()).andReturn(mockCredentials);
-
-      EasyMock.expect(mockCredentials.getUsername()).andReturn("admin");
-
-      mockControl.replay();
+      Credentials mockCredentials = mock(Credentials.class);
+      when(mockIdentity.getCredentials()).thenReturn(mockCredentials);
+      when(mockCredentials.getUsername()).thenReturn("admin");
 
       Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC);
 
@@ -166,7 +155,7 @@ public class ProjectRestTest extends ZanataRestTest
       assertThat(projectRes.getName(), is(PROJECT_NAME));
       assertThat(projectRes.getId(), is(PROJECT_SLUG));
       assertThat(projectRes.getDescription(), is(PROJECT_DESC));
-      mockControl.verify();
+      verify(mockIdentity).checkPermission(any(HIterationProject.class), eq("insert"));
    }
 
    final String PROJECT_SLUG = "my-new-project";
@@ -211,9 +200,6 @@ public class ProjectRestTest extends ZanataRestTest
    @Test
    public void updateProject()
    {
-      mockIdentity.checkPermission(anyObject(HIterationProject.class), eq("update"));
-      mockControl.replay();
-
       Project project = new Project("sample-project", "My Project Update", ProjectType.IterationProject, "Update project");
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
@@ -230,7 +216,7 @@ public class ProjectRestTest extends ZanataRestTest
 
       assertThat(projectRes.getName(), is("My Project Update"));
       assertThat(projectRes.getDescription(), is("Update project"));
-      mockControl.verify();
+      verify(mockIdentity).checkPermission(any(HIterationProject.class), eq("update"));
    }
 
 }

@@ -91,20 +91,6 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    }
 
    @Override
-   public void goToPreviousEntry()
-   {
-      targetContentsPresenter.savePendingChangesIfApplicable();
-      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.PrevEntry));
-   }
-
-   @Override
-   public void goToNextEntry()
-   {
-      targetContentsPresenter.savePendingChangesIfApplicable();
-      eventBus.fireEvent(new NavTransUnitEvent(NavigationType.NextEntry));
-   }
-
-   @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
       if (event.getView() == MainView.Editor)

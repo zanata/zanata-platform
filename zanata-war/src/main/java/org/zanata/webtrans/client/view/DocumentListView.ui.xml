@@ -48,7 +48,7 @@
             <g:LayoutPanel styleName="{style.mainPanel}">
                 <g:layer top='0' height='32px' left="0px" right="0px">
                 	<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
-                		<g:cell width="420px">
+                		<g:cell width="350px">
                 			<fui:SearchField ui:field="searchField"/>
                 		</g:cell>
                 		<g:cell width="210px">

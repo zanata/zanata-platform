@@ -38,7 +38,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -52,10 +51,10 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    private final EnumRadioButtonGroup<NavOption> navOptionGroup;
 
    @UiField
-   CheckBox translatedChk, needReviewChk, untranslatedChk, enterChk, editorButtonsChk;
+   CheckBox enterChk, editorButtonsChk;
 
    @UiField
-   Label navOptionHeader, editorOptionHeader, filterHeader;
+   Label navOptionHeader, editorOptionHeader;
 
    @UiField
    VerticalPanel optionsContainer;
@@ -83,6 +82,14 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    RadioButton diffModeDiff;
    @UiField
    RadioButton diffModeHighlight;
+   @UiField
+   Label displayHeader;
+   @UiField
+   CheckBox showTMChk;
+   @UiField
+   CheckBox showGlossaryChk;
+   @UiField
+   CheckBox showOptionalTransUnitDetailsChk;
 
    private Listener listener;
 
@@ -94,7 +101,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       navOptionGroup.addToContainer(optionsContainer);
 
       editorOptionHeader.setText(messages.editorOptions());
-      filterHeader.setText(messages.messageFilters());
       navOptionHeader.setText(messages.navOption());
       pageSizeHeader.setText(messages.pageSize());
       transMemoryHeader.setText(messages.transMemoryOption());
@@ -107,30 +113,19 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       diffModeDiff.setText(uiMessages.diffModeAsDiff());
       diffModeHighlight.setText(uiMessages.diffModeAsHighlight());
       diffModeDiff.setValue(true);
+
+      displayHeader.setText(messages.displayConfiguration());
+      displayHeader.setTitle(messages.displayConfigurationTooltip());
+      showTMChk.setText(messages.showTranslationMemoryPanel());
+      showGlossaryChk.setText(messages.showGlossaryPanel());
+      showOptionalTransUnitDetailsChk.setText(messages.showTransUnitDetails());
+      showOptionalTransUnitDetailsChk.setTitle(messages.showTransUnitDetailsTooltip());
    }
 
    @Override
    public Widget asWidget()
    {
       return this;
-   }
-
-   @Override
-   public HasValue<Boolean> getTranslatedChk()
-   {
-      return translatedChk;
-   }
-
-   @Override
-   public HasValue<Boolean> getNeedReviewChk()
-   {
-      return needReviewChk;
-   }
-
-   @Override
-   public HasValue<Boolean> getUntranslatedChk()
-   {
-      return untranslatedChk;
    }
 
    @UiHandler("five")
@@ -236,6 +231,18 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       }
    }
 
+   @UiHandler({"showTMChk", "showGlossaryChk"})
+   public void onTMOrGlossaryDisplayOptionsChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onTMOrGlossaryDisplayOptionsChanged(showTMChk.getValue(), showGlossaryChk.getValue());
+   }
+
+   @UiHandler("showOptionalTransUnitDetailsChk")
+   public void onDisplayTransUnitDetailsOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onDisplayTransUnitDetailsOptionChanged(showOptionalTransUnitDetailsChk.getValue());
+   }
+
    @Override
    public void setListener(Listener listener)
    {
@@ -248,9 +255,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    {
       enterChk.setValue(state.isEnterSavesApproved());
       editorButtonsChk.setValue(state.isDisplayButtons());
-      translatedChk.setValue(state.isFilterByTranslated());
-      needReviewChk.setValue(state.isFilterByNeedReview());
-      untranslatedChk.setValue(state.isFilterByUntranslated());
 
       navOptionGroup.setDefaultSelected(state.getNavOption());
       selectPageSize(state.getEditorPageSize());
@@ -266,6 +270,10 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       {
          diffModeHighlight.setValue(true);
       }
+
+      showTMChk.setValue(state.isShowTMPanel());
+      showGlossaryChk.setValue(state.isShowGlossaryPanel());
+      showOptionalTransUnitDetailsChk.setValue(state.isShowOptionalTransUnitDetails());
    }
 
    private void selectPageSize(int pageSize)
@@ -294,16 +302,9 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
    interface Styles extends CssResource
    {
-
-      String translated();
-
-      String needReview();
-
       String selectedPageSize();
 
       String mainPanel();
-
-      String untranslated();
 
       String pageSizeContainer();
    }

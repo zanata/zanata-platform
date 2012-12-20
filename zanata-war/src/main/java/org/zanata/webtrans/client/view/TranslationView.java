@@ -22,14 +22,15 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,11 +38,15 @@ import com.google.inject.Inject;
 
 public class TranslationView extends Composite implements TranslationPresenter.Display
 {
-   interface TranslationViewUiBinder extends UiBinder<LayoutPanel, TranslationView>
-   {
-   }
-
    private static TranslationViewUiBinder uiBinder = GWT.create(TranslationViewUiBinder.class);
+   private static final double MIN_SOUTH_PANEL_HEIGHT = 0;
+   private static final double GLOSSARY_PANEL_WIDTH = 500;
+   private static final int ANIMATE_DURATION = 200;
+   private static double SOUTH_PANEL_HEIGHT = 150;
+
+   private final TranslationMemoryDisplay transMemoryView;
+   private final GlossaryDisplay glossaryView;
+   private final HasVisibility resizeButton;
 
    @UiField(provided = true)
    LayoutPanel southPanelContainer;
@@ -57,15 +62,12 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
    SplitLayoutPanel tmGlossaryPanel;
 
-   private static double SOUTH_PANEL_HEIGHT = 150;
-   private static double MIN_SOUTH_PANEL_HEIGHT = 0;
-   private final static double GLOSSARY_PANEL_WIDTH = 500;
-
-   private final static int ANIMATE_DURATION = 200;
-
    @Inject
-   public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorDisplay translationEditorView, TranslationMemoryDisplay transMemoryView, GlossaryDisplay glossaryView)
+   public TranslationView(Resources resources, TranslationEditorDisplay translationEditorView, TranslationMemoryDisplay transMemoryView, GlossaryDisplay glossaryView)
    {
+      this.transMemoryView = transMemoryView;
+      this.glossaryView = glossaryView;
+      resizeButton = translationEditorView.getResizeButton();
 
       StyleInjector.inject(resources.style().getText(), true);
       southPanelContainer = new LayoutPanel();
@@ -81,20 +83,20 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
       setEditorView(translationEditorView.asWidget());
 
-      setGlossaryView(glossaryView.asWidget());
-      setTranslationMemoryView(transMemoryView.asWidget());
+      setGlossaryView();
+      setTranslationMemoryView();
    }
 
-   private void setTranslationMemoryView(Widget translationMemoryView)
+   private void setTranslationMemoryView()
    {
-      tmGlossaryPanel.remove(translationMemoryView);
-      tmGlossaryPanel.add(translationMemoryView);
+      tmGlossaryPanel.remove(transMemoryView.asWidget());
+      tmGlossaryPanel.add(transMemoryView.asWidget());
    }
 
-   private void setGlossaryView(Widget glossaryView)
+   private void setGlossaryView()
    {
-      tmGlossaryPanel.remove(glossaryView);
-      tmGlossaryPanel.addEast(glossaryView, GLOSSARY_PANEL_WIDTH);
+      tmGlossaryPanel.remove(glossaryView.asWidget());
+      tmGlossaryPanel.addEast(glossaryView.asWidget(), GLOSSARY_PANEL_WIDTH);
    }
 
    private void setEditorView(Widget editorView)
@@ -115,15 +117,47 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
       if (expanded)
       {
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, SOUTH_PANEL_HEIGHT);
+         mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(), SOUTH_PANEL_HEIGHT);
       }
       else
       {
+         mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(), MIN_SOUTH_PANEL_HEIGHT);
          SOUTH_PANEL_HEIGHT = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, MIN_SOUTH_PANEL_HEIGHT);
       }
       splitter.setVisible(expanded);
       mainSplitPanel.animate(ANIMATE_DURATION);
 
+   }
+
+   @Override
+   public void togglePanelDisplay(boolean showTMPanel, boolean showGlossaryPanel)
+   {
+      tmGlossaryPanel.forceLayout();
+      resizeButton.setVisible(true);
+      if (showTMPanel && showGlossaryPanel)
+      {
+         // show both
+         tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), GLOSSARY_PANEL_WIDTH);
+      }
+      else if (showGlossaryPanel)
+      {
+         // only show glossary
+         tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), glossaryView.asWidget().getOffsetWidth() + transMemoryView.asWidget().getOffsetWidth());
+      }
+      else if (showTMPanel)
+      {
+         // only show TM
+         tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), 0);
+      }
+      else
+      {
+         // hide both
+         resizeButton.setVisible(false);
+      }
+      tmGlossaryPanel.animate(ANIMATE_DURATION);
+   }
+
+   interface TranslationViewUiBinder extends UiBinder<LayoutPanel, TranslationView>
+   {
    }
 }

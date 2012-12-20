@@ -25,9 +25,8 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.ReloadUserConfigUIEvent;
@@ -46,29 +45,15 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler, FilterViewEventHandler, ReloadUserConfigUIHandler
+public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler, ReloadUserConfigUIHandler
 {
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
    private final UserOptionsService userOptionsService;
-   
-   private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
-   {
-      @Override
-      public void onValueChange(ValueChangeEvent<Boolean> event)
-      {
-         eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), false));
-         userOptionsService.getConfigHolder().setFilterByUntranslated(display.getUntranslatedChk().getValue());
-         userOptionsService.getConfigHolder().setFilterByNeedReview(display.getNeedReviewChk().getValue());
-         userOptionsService.getConfigHolder().setFilterByTranslated(display.getTranslatedChk().getValue());
-      }
-   };
 
    @Inject
    public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
@@ -92,10 +77,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
          setReadOnly(true);
       }
 
-      registerHandler(display.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(display.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(display.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       registerHandler(eventBus.addHandler(ReloadUserConfigUIEvent.TYPE, this));
 
@@ -114,21 +95,10 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    {
       boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().getState().isDisplayButtons();
       userOptionsService.getConfigHolder().setDisplayButtons(displayButtons);
+      userOptionsService.getConfigHolder().setShowTMPanel(false);
+      userOptionsService.getConfigHolder().setShowGlossaryPanel(false);
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
       eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
-
-   @Override
-   public void onFilterView(FilterViewEvent event)
-   {
-      // filter cancel will revert a checkbox value, so the checkboxes are
-      // updated to reflect this reversion
-      if (event.isCancelFilter())
-      {
-         display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
-         display.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
-         display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
-      }
    }
 
    @Override
@@ -202,6 +172,32 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    }
 
    @Override
+   public void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue)
+   {
+      UserConfigHolder.ConfigurationState state = userOptionsService.getConfigHolder().getState();
+      if (state.isShowTMPanel() != showTMChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowTMPanel(showTMChkValue);
+      }
+      if (state.isShowGlossaryPanel() != showGlossaryChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowGlossaryPanel(showGlossaryChkValue);
+      }
+      boolean displaySouthPanel = showTMChkValue || showGlossaryChkValue;
+      eventBus.fireEvent(new DisplaySouthPanelEvent(displaySouthPanel));
+   }
+
+   @Override
+   public void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue)
+   {
+      if (userOptionsService.getConfigHolder().getState().isShowOptionalTransUnitDetails() != showTransUnitDetailsChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowOptionalTransUnitDetails(showTransUnitDetailsChkValue);
+      }
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
+
+   @Override
    public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue)
    {
       if (userOptionsService.getConfigHolder().getState().isUseCodeMirrorEditor() != useCodeMirrorChkValue)
@@ -270,8 +266,6 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    private void refreshOptions()
    {
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
-      filterChangeHandler.onValueChange(null); // NB: Null event is valid
-                                               // because it's not being used
       eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
    }

@@ -20,13 +20,7 @@
  */
 package org.zanata.dao;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-
 import org.dbunit.operation.DatabaseOperation;
-import org.easymock.EasyMock;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.testng.annotations.BeforeMethod;
@@ -37,6 +31,11 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 @Test(groups = { "jpa-tests" })
 public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest

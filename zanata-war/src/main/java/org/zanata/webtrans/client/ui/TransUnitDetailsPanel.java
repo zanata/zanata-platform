@@ -5,20 +5,12 @@ import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 
 public class TransUnitDetailsPanel extends Composite
 {
@@ -34,6 +26,7 @@ public class TransUnitDetailsPanel extends Composite
    DisclosurePanel disclosurePanel;
    @UiField
    Styles style;
+   private String metaInfo;
 
    public TransUnitDetailsPanel()
    {
@@ -73,7 +66,19 @@ public class TransUnitDetailsPanel extends Composite
       {
          headerSummary.append(" Comment: ").append(comment);
       }
-      headerLabel.setText(messages.transUnitDetailsHeadingWithInfo(transUnit.getId().toString(), transUnit.getRowIndex(), headerSummary.toString()));
+      metaInfo = headerSummary.toString();
+
+      String transUnitId = "";
+      if (!GWT.isProdMode())
+      {
+         transUnitId = "Id: " + transUnit.getId().toString();
+      }
+      headerLabel.setText(transUnitId + messages.transUnitDetailsHeadingWithInfo(transUnit.getRowIndex(), metaInfo));
+   }
+
+   public boolean hasNoMetaInfo()
+   {
+      return Strings.isNullOrEmpty(metaInfo);
    }
 
    interface TransUnitDetailsPanelUiBinder extends UiBinder<DisclosurePanel, TransUnitDetailsPanel>

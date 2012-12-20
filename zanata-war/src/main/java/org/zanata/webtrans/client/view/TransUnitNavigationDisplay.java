@@ -1,9 +1,8 @@
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.shared.rpc.NavOption;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+
+import org.zanata.webtrans.shared.rpc.NavOption;
 
 /**
 * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -23,9 +22,5 @@ public interface TransUnitNavigationDisplay extends WidgetDisplay
       void goToPreviousState();
 
       void goToNextState();
-
-      void goToPreviousEntry();
-
-      void goToNextEntry();
    }
 }

@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -44,6 +45,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -68,6 +70,9 @@ public class DocumentListPresenterTest
    private WebTransMessages mockMessages;
    @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
+   @Mock
+   private UserOptionsService mockUserOptionsService;
+
    private UserConfigHolder configHolder;
 
    // this list is updated to update display table
@@ -91,8 +96,9 @@ public class DocumentListPresenterTest
    {
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
+      when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
       dataProviderList = new ArrayList<DocumentNode>();
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory, configHolder);
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
    }
 
    @Test
@@ -464,6 +470,8 @@ public class DocumentListPresenterTest
       when(mockEvent.getView()).thenReturn(MainView.Editor);
 
       documentListPresenter.onUserConfigChanged(mockEvent);
+
+      verify(mockDisplay).setThemes(ThemesOption.THEMES_DEFAULT.name());
 
       verifyZeroInteractions(mockDisplay);
    }

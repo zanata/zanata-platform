@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -16,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
-import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -31,9 +29,7 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
 
 @Test(groups = { "unit-tests" })
 public class EditorOptionsPresenterTest
@@ -48,14 +44,6 @@ public class EditorOptionsPresenterTest
    @Mock
    private ValidationOptionsPresenter validationDetailsPresenter;
    @Mock
-   private HasValue<Boolean> needReviewChk;
-   @Mock
-   private HasValue<Boolean> translatedChk;
-   @Mock
-   private HasValue<Boolean> untranslatedChk;
-   @Captor
-   private ArgumentCaptor<ValueChangeHandler<Boolean>> filterChangeHandlerCaptor;
-   @Mock
    private CachingDispatchAsync dispatcher;
    @Captor
    private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
@@ -68,9 +56,6 @@ public class EditorOptionsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      when(display.getNeedReviewChk()).thenReturn(needReviewChk);
-      when(display.getTranslatedChk()).thenReturn(translatedChk);
-      when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
       when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
       presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, dispatcher, userOptionsService);
@@ -88,40 +73,9 @@ public class EditorOptionsPresenterTest
 
       // Then:
       verify(validationDetailsPresenter).bind();
-      verify(display).getNeedReviewChk();
-      verify(display).getTranslatedChk();
-      verify(display).getUntranslatedChk();
-      verify(needReviewChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
-      verify(translatedChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
-      verify(untranslatedChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
 
-      verify(eventBus).addHandler(FilterViewEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
       verify(display).setOptionsState(userOptionsService.getConfigHolder().getState());
-   }
-
-   @Test
-   public void filterChangeHandlerWillFireEvent()
-   {
-      // Given: checkbox value as following
-      when(needReviewChk.getValue()).thenReturn(true);
-      when(translatedChk.getValue()).thenReturn(false);
-      when(untranslatedChk.getValue()).thenReturn(true);
-      presenter.onBind();
-      verify(needReviewChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
-      ValueChangeHandler<Boolean> handler = filterChangeHandlerCaptor.getValue();
-      ArgumentCaptor<FilterViewEvent> eventCaptor = ArgumentCaptor.forClass(FilterViewEvent.class);
-
-      // When: value change event happens
-      handler.onValueChange(null);
-
-      // Then:
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      FilterViewEvent event = eventCaptor.getValue();
-      assertThat(event.isCancelFilter(), Matchers.equalTo(false));
-      assertThat(event.isFilterNeedReview(), Matchers.equalTo(true));
-      assertThat(event.isFilterTranslated(), Matchers.equalTo(false));
-      assertThat(event.isFilterUntranslated(), Matchers.equalTo(true));
    }
 
    @Test
@@ -152,28 +106,6 @@ public class EditorOptionsPresenterTest
             return projectActive;
          }
       };
-   }
-
-   @Test
-   public void willSetOptionsBackOnFilterViewCancelEvent()
-   {
-      FilterViewEvent event = new FilterViewEvent(true, true, true, true);
-
-      presenter.onFilterView(event);
-
-      verify(untranslatedChk).setValue(event.isFilterUntranslated(), false);
-      verify(translatedChk).setValue(event.isFilterTranslated(), false);
-      verify(needReviewChk).setValue(event.isFilterNeedReview(), false);
-   }
-
-   @Test
-   public void willDoNothingIfItsNotCancelEvent()
-   {
-      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, false);
-
-      presenter.onFilterView(cancelEvent);
-
-      verifyZeroInteractions(untranslatedChk, translatedChk, needReviewChk);
    }
 
    @Test
@@ -267,10 +199,6 @@ public class EditorOptionsPresenterTest
    @Test
    public void onLoadDefaultOptions()
    {
-      when(needReviewChk.getValue()).thenReturn(false);
-      when(translatedChk.getValue()).thenReturn(false);
-      when(untranslatedChk.getValue()).thenReturn(false);
-
       presenter.loadDefaultOptions();
 
       verify(userOptionsService).loadEditorDefaultOptions();
@@ -311,9 +239,9 @@ public class EditorOptionsPresenterTest
 
       AsyncCallback callback = callbackCaptor.getValue();
 
-      when(needReviewChk.getValue()).thenReturn(false);
-      when(translatedChk.getValue()).thenReturn(true);
-      when(untranslatedChk.getValue()).thenReturn(false);
+      // when(needReviewChk.getValue()).thenReturn(false);
+      // when(translatedChk.getValue()).thenReturn(true);
+      // when(untranslatedChk.getValue()).thenReturn(false);
       callback.onSuccess(result);
       assertThat(configHolder.getState().getEditorPageSize(), Matchers.equalTo(10));
       assertThat(configHolder.getState().getNavOption(), Matchers.equalTo(NavOption.FUZZY));

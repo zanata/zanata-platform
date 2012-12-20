@@ -20,23 +20,22 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-
 import java.util.List;
 
-import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -53,31 +52,22 @@ public class JavaVariablesValidationTest
 
    private JavaVariablesValidation javaVariablesValidation;
 
+   @Mock 
    private ValidationMessages mockMessages;
-   private Capture<List<String>> capturedVarsAdded;
-   private Capture<List<String>> capturedVarsMissing;
-
-   @BeforeClass
-   public void mockMessages()
-   {
-      mockMessages = createMock(ValidationMessages.class);
-
-      capturedVarsAdded = new Capture<List<String>>();
-      capturedVarsMissing = new Capture<List<String>>();
-
-      expect(mockMessages.varsAdded(capture(capturedVarsAdded))).andReturn(MOCK_VARIABLES_ADDED_MESSAGE).anyTimes();
-      expect(mockMessages.varsMissing(capture(capturedVarsMissing))).andReturn(MOCK_VARIABLES_MISSING_MESSAGE).anyTimes();
-      expect(mockMessages.javaVariablesValidatorName()).andReturn(MOCK_VARIABLES_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.javaVariablesValidatorDescription()).andReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION).anyTimes();
-      replay(mockMessages);
-   }
+   @Captor
+   private ArgumentCaptor<List<String>> capturedVarsAdded;
+   @Captor
+   private ArgumentCaptor<List<String>> capturedVarsMissing;
 
    @BeforeMethod
    public void init()
    {
+      MockitoAnnotations.initMocks(this);
       javaVariablesValidation = null;
-      capturedVarsAdded.reset();
-      capturedVarsMissing.reset();
+      when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
+      when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
+      when(mockMessages.javaVariablesValidatorName()).thenReturn(MOCK_VARIABLES_VALIDATOR_NAME);
+      when(mockMessages.javaVariablesValidatorDescription()).thenReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION);
    }
 
    @Test
@@ -104,9 +94,6 @@ public class JavaVariablesValidationTest
 
       assertThat(javaVariablesValidation.hasError(), is(false));
       assertThat(javaVariablesValidation.getError().size(), is(0));
-
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    @Test
@@ -123,7 +110,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
       assertThat(capturedVarsMissing.getValue().size(), is(1));
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
    }
 
    @Test
@@ -140,7 +126,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsMissing.getValue(), hasItems("{0}", "{1}", "{2}"));
       assertThat(capturedVarsMissing.getValue().size(), is(3));
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
    }
 
    @Test
@@ -157,7 +142,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsAdded.getValue(), hasItem("{0}"));
       assertThat(capturedVarsAdded.getValue().size(), is(1));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    @Test
@@ -174,7 +158,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsAdded.getValue(), hasItems("{0}", "{1}", "{2}"));
       assertThat(capturedVarsAdded.getValue().size(), is(3));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    @Test
@@ -208,7 +191,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsMissing.getValue(), hasItems("{1}", "{2}", "{0}"));
       assertThat(capturedVarsMissing.getValue().size(), is(3));
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
    }
 
    public void diskContainsFiles()
@@ -224,7 +206,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsMissing.getValue(), hasItems("{1}", "{0}"));
       assertThat(capturedVarsMissing.getValue().size(), is(2));
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
    }
 
    public void doesNotDetectEscapedVariables()
@@ -236,9 +217,6 @@ public class JavaVariablesValidationTest
 
       assertThat(javaVariablesValidation.hasError(), is(false));
       assertThat(javaVariablesValidation.getError().size(), is(0));
-
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    public void doesNotDetectQuotedVariables()
@@ -250,9 +228,6 @@ public class JavaVariablesValidationTest
 
       assertThat(javaVariablesValidation.hasError(), is(false));
       assertThat(javaVariablesValidation.getError().size(), is(0));
-
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    public void doesNotDetectVariablesInQuotedText()
@@ -264,9 +239,6 @@ public class JavaVariablesValidationTest
 
       assertThat(javaVariablesValidation.hasError(), is(false));
       assertThat(javaVariablesValidation.getError().size(), is(0));
-
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    public void ignoresEscapedQuotes()
@@ -282,7 +254,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
       assertThat(capturedVarsMissing.getValue().size(), is(1));
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
    }
 
    public void advancedQuoting()
@@ -294,9 +265,6 @@ public class JavaVariablesValidationTest
 
       assertThat(javaVariablesValidation.hasError(), is(false));
       assertThat(javaVariablesValidation.getError().size(), is(0));
-
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    public void translatedChoicesStillMatch()
@@ -308,9 +276,6 @@ public class JavaVariablesValidationTest
 
       assertThat(javaVariablesValidation.hasError(), is(false));
       assertThat(javaVariablesValidation.getError().size(), is(0));
-
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    public void choiceFormatAndRecursion()
@@ -326,7 +291,6 @@ public class JavaVariablesValidationTest
 
       assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
       assertThat(capturedVarsMissing.getValue().size(), is(1));
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
    }
 
    //TODO tests for format type

@@ -3,21 +3,20 @@ package org.zanata.webtrans.shared.validation.action;
 import java.util.Collection;
 import java.util.List;
 
-import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -35,41 +34,31 @@ public class PrintfXSIExtensionValidationTest
 
    private PrintfXSIExtensionValidation printfVariablesValidation;
 
+   @Mock
    private ValidationMessages mockMessages;
-   private Capture<List<String>> capturedVarsAdded;
-   private Capture<List<String>> capturedVarsMissing;
-   private Capture<String> captureOutOfRangeVar;
-   private Capture<Collection<String>> captureVars;
-
-   @BeforeClass
-   public void mockMessages()
-   {
-      mockMessages = createMock(ValidationMessages.class);
-
-      capturedVarsAdded = new Capture<List<String>>();
-      capturedVarsMissing = new Capture<List<String>>();
-      captureOutOfRangeVar = new Capture<String>();
-      captureVars = new Capture<Collection<String>>();
-
-      expect(mockMessages.varsAdded(capture(capturedVarsAdded))).andReturn(MOCK_VARIABLES_ADDED_MESSAGE).anyTimes();
-      expect(mockMessages.varsMissing(capture(capturedVarsMissing))).andReturn(MOCK_VARIABLES_MISSING_MESSAGE).anyTimes();
-      expect(mockMessages.mixVarFormats()).andReturn(MIX_VAR_FORMAT_MESSAGE).anyTimes();
-      expect(mockMessages.varPositionOutOfRange(capture(captureOutOfRangeVar))).andReturn(VAR_IS_OUT_OF_RANGE).anyTimes();
-      expect(mockMessages.varPositionDuplicated(capture(captureVars))).andReturn(VARIABLES_HAS_SAME_POSITION).anyTimes();
-      expect(mockMessages.positionalPrintfVariablesValidatorName()).andReturn(MOCK_VARIABLES_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.positionalPrintfVariablesValidatorDescription()).andReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION).anyTimes();
-      replay(mockMessages);
-   }
+   @Captor
+   private ArgumentCaptor<List<String>> capturedVarsAdded;
+   @Captor
+   private ArgumentCaptor<List<String>> capturedVarsMissing;
+   @Captor
+   private ArgumentCaptor<String> captureOutOfRangeVar;
+   @Captor
+   private ArgumentCaptor<Collection<String>> captureVars;
 
    @BeforeMethod
    public void init()
    {
-      printfVariablesValidation = new PrintfXSIExtensionValidation(mockMessages);
+      MockitoAnnotations.initMocks(this);
 
-      capturedVarsAdded.reset();
-      capturedVarsMissing.reset();
-      captureOutOfRangeVar.reset();
-      captureVars.reset();
+      when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
+      when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
+      when(mockMessages.mixVarFormats()).thenReturn(MIX_VAR_FORMAT_MESSAGE);
+      when(mockMessages.varPositionOutOfRange(captureOutOfRangeVar.capture())).thenReturn(VAR_IS_OUT_OF_RANGE);
+      when(mockMessages.varPositionDuplicated(captureVars.capture())).thenReturn(VARIABLES_HAS_SAME_POSITION);
+      when(mockMessages.positionalPrintfVariablesValidatorName()).thenReturn(MOCK_VARIABLES_VALIDATOR_NAME);
+      when(mockMessages.positionalPrintfVariablesValidatorDescription()).thenReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION);
+
+      printfVariablesValidation = new PrintfXSIExtensionValidation(mockMessages);
    }
 
    @Test
@@ -87,9 +76,6 @@ public class PrintfXSIExtensionValidationTest
 
       assertThat(printfVariablesValidation.hasError(), is(false));
       assertThat(printfVariablesValidation.getError().size(), is(0));
-
-      assertThat(capturedVarsAdded.hasCaptured(), is(false));
-      assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
 
    @Test
@@ -101,9 +87,7 @@ public class PrintfXSIExtensionValidationTest
       assertThat(printfVariablesValidation.hasError(), is(true));
       assertThat(printfVariablesValidation.getError().size(), is(3));
 
-      assertThat(capturedVarsAdded.hasCaptured(), is(true));
       assertThat(capturedVarsAdded.getValue(), contains("%lu"));
-      assertThat(capturedVarsMissing.hasCaptured(), is(true));
       assertThat(capturedVarsMissing.getValue(), contains("%3$lu"));
    }
 
@@ -116,9 +100,7 @@ public class PrintfXSIExtensionValidationTest
       assertThat(printfVariablesValidation.hasError(), is(true));
       assertThat(printfVariablesValidation.getError().size(), is(3));
 
-      assertThat(capturedVarsAdded.hasCaptured(), is(true));
       assertThat(capturedVarsAdded.getValue(), contains("%3$s", "%99$lu"));
-      assertThat(capturedVarsMissing.hasCaptured(), is(true));
       assertThat(capturedVarsMissing.getValue(), contains("%1$s", "%3$lu"));
       assertThat(captureOutOfRangeVar.getValue(), equalTo("%99$lu"));
    }
@@ -132,9 +114,7 @@ public class PrintfXSIExtensionValidationTest
       assertThat(printfVariablesValidation.hasError(), is(true));
       assertThat(printfVariablesValidation.getError().size(), is(3));
 
-      assertThat(capturedVarsAdded.hasCaptured(), is(true));
       assertThat(capturedVarsAdded.getValue(), contains("%3$s"));
-      assertThat(capturedVarsMissing.hasCaptured(), is(true));
       assertThat(capturedVarsMissing.getValue(), contains("%1$s"));
       assertThat(captureVars.getValue(), contains("%3$s", "%3$lu"));
    }

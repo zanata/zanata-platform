@@ -23,7 +23,8 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -31,19 +32,22 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
 
+import static org.mockito.Mockito.when;
+
 
 @Test(groups = { "business-tests" })
 public class LocaleServiceImplTest
 {
    private LocaleServiceImpl testLocaleServiceImpl;
+   @Mock
    private LocaleDAO mockDAO;
 
 
    @BeforeMethod(firstTimeOnly = true)
    public void setup()
    {
+      MockitoAnnotations.initMocks(this);
       this.testLocaleServiceImpl = new LocaleServiceImpl();
-      this.mockDAO = EasyMock.createMock(LocaleDAO.class);
       this.testLocaleServiceImpl.setLocaleDAO(mockDAO);
    }
 
@@ -71,14 +75,12 @@ public class LocaleServiceImplTest
       List<HLocale> lan = new ArrayList<HLocale>();
       lan.add(new HLocale(new LocaleId("as-IN")));
       lan.add(new HLocale(new LocaleId("pt-BR")));
-      EasyMock.expect(mockDAO.findAll()).andReturn(lan);
-      EasyMock.replay(mockDAO);
+      when(mockDAO.findAll()).thenReturn(lan);
       List<HLocale> sup = this.testLocaleServiceImpl.getAllLocales();
       Assert.assertEquals(sup.size(), 2);
       String loc1 = sup.get(0).getLocaleId().getId();
       Assert.assertEquals(loc1, "as-IN");
       String loc2 = sup.get(1).getLocaleId().getId();
       Assert.assertEquals(loc2, "pt-BR");
-      EasyMock.verify(mockDAO);
    }
 }

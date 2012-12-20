@@ -28,18 +28,11 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface NavigationMessages extends Messages
 {
-
-   @DefaultMessage("Next Entry")
-   String nextEntry();
-
    @DefaultMessage("Alt+Down")
    String nextEntryShortcut();
 
    @DefaultMessage("Prev Entry")
    String prevEntry();
-
-   @DefaultMessage("Alt+Up")
-   String prevEntryShortcut();
 
    @DefaultMessage("First Entry")
    String firstEntry();

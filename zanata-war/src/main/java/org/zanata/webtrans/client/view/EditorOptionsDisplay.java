@@ -7,19 +7,11 @@ import org.zanata.webtrans.client.ui.EnumRadioButtonGroup;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-import com.google.gwt.user.client.ui.HasValue;
-
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public interface EditorOptionsDisplay extends WidgetDisplay
 {
-   HasValue<Boolean> getTranslatedChk();
-
-   HasValue<Boolean> getNeedReviewChk();
-
-   HasValue<Boolean> getUntranslatedChk();
-
    void setListener(Listener listener);
 
    void setOptionsState(UserConfigHolder.ConfigurationState state);
@@ -39,5 +31,9 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onSpellCheckOptionChanged(Boolean spellCheckChkValue);
 
       void onTransMemoryDisplayModeChanged(DiffMode displayMode);
+
+      void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue);
+
+      void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue);
    }
 }

@@ -4,36 +4,44 @@
 	
 	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources"/>
 	
-	<ui:style>
+	<ui:style type="org.zanata.webtrans.client.ui.Pager.Styles">
 		 .nav-button {
-           padding-left:8px;
-           padding-right:8px;
            font-size:16px;
         }
         
         .rootContainer {
 	       text-align:center;
-	       margin-top:1px;
         }
         
         .textBox {
 	       border:1px solid #CCC;
 	       border-radius:2px;
 	       width:40px;
-	       height:18px;
         }
+        
+        .enabled
+        {
+			opacity:1;
+			cursor:pointer;
+		}
+		
+		.disabled
+		{
+			opacity:0.3;
+			cursor:default;
+		}
         
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.rootContainer}">
-		<g:Button ui:field="firstPage" addStyleNames="{style.nav-button} icon-to-start"/>
-		<g:Button ui:field="prevPage" addStyleNames="{style.nav-button} icon-left-open"/>
+		<g:InlineLabel ui:field="firstPage" addStyleNames="{style.nav-button} icon-to-start"/>
+		<g:InlineLabel ui:field="prevPage" addStyleNames="{style.nav-button} icon-left-open"/>
 		  
 		<g:TextBox ui:field="gotoPage" maxLength="8" styleName="{style.textBox}" />
 		<g:InlineLabel ui:field="pageCountLabel"/>
 		
-		<g:Button ui:field="nextPage" addStyleNames="{style.nav-button} icon-right-open-1"/>
-        <g:Button ui:field="lastPage" addStyleNames="{style.nav-button} icon-to-end"/>
+		<g:InlineLabel ui:field="nextPage" addStyleNames="{style.nav-button} icon-right-open-1"/>
+        <g:InlineLabel ui:field="lastPage" addStyleNames="{style.nav-button} icon-to-end"/>
 		
 	</g:HTMLPanel>
 </ui:UiBinder>

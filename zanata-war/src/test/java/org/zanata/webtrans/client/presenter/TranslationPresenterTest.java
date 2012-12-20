@@ -5,6 +5,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -73,7 +74,7 @@ public class TranslationPresenterTest
    {
       MockitoAnnotations.initMocks(this);
       userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new TranslationPresenter(display, eventBus, targetContentsPresenter, translationEditorPresenter, transMemoryPresenter, glossaryPresenter, messages, userWorkspaceContext, keyShortcutPresenter, navigationService);
+      presenter = new TranslationPresenter(display, eventBus, targetContentsPresenter, translationEditorPresenter, transMemoryPresenter, glossaryPresenter, messages, userWorkspaceContext, keyShortcutPresenter, navigationService, new UserConfigHolder());
    }
 
    @Test
@@ -179,14 +180,6 @@ public class TranslationPresenterTest
    }
 
    @Test
-   public void onSouthPanelExpandedIfAlreadyExpanded()
-   {
-      presenter.setSouthPanelExpanded(true);
-
-      verifyZeroInteractions(display, transMemoryPresenter, glossaryPresenter);
-   }
-
-   @Test
    public void onSouthPanelCollapse()
    {
       presenter.setSouthPanelExpanded(false);
@@ -208,8 +201,8 @@ public class TranslationPresenterTest
       presenter.setSouthPanelExpanded(true);
 
       // Then:
-      verify(transMemoryPresenter).bind();
-      verify(glossaryPresenter).bind();
+      verify(transMemoryPresenter, atLeastOnce()).bind();
+      verify(glossaryPresenter, atLeastOnce()).bind();
       verify(transMemoryPresenter).createTMRequestForTransUnit(selection);
       verify(glossaryPresenter).createGlossaryRequestForTransUnit(selection);
    }
@@ -240,8 +233,11 @@ public class TranslationPresenterTest
    {
       DisplaySouthPanelEvent event = mock(DisplaySouthPanelEvent.class);
       when(event.isDisplay()).thenReturn(false);
+      when(transMemoryPresenter.isBound()).thenReturn(true);
+      when(glossaryPresenter.isBound()).thenReturn(true);
 
       presenter.onDisplaySouthPanel(event);
+
       verify(transMemoryPresenter).unbind();
       verify(glossaryPresenter).unbind();
    }
@@ -253,11 +249,13 @@ public class TranslationPresenterTest
       when(event.isDisplay()).thenReturn(true);
 
       // hide south panel first
-      presenter.setSouthPanelExpanded(false);
+      presenter.setSouthPanelExpanded(true);
 
       presenter.onDisplaySouthPanel(event);
-      verify(transMemoryPresenter).bind();
-      verify(glossaryPresenter).bind();
+      verify(transMemoryPresenter, atLeastOnce()).bind();
+      verify(glossaryPresenter, atLeastOnce()).bind();
+      verify(transMemoryPresenter, never()).unbind();
+      verify(glossaryPresenter, never()).unbind();
    }
 
 }

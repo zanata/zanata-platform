@@ -20,25 +20,20 @@
  */
 package org.zanata.model;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.dao.LocaleDAO;
 import org.zanata.service.impl.LocaleServiceImpl;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *
@@ -48,17 +43,7 @@ import org.zanata.service.impl.LocaleServiceImpl;
 @Test(groups = { "jpa-tests" })
 public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
 {
-   IMocksControl control = EasyMock.createControl();
-
-   <T> T createMock(String name, Class<T> toMock)
-   {
-      T mock = control.createMock(name, toMock);
-      return mock;
-   }
-
    private GlossaryDAO glossaryDAO;
-   HGlossaryEntry entry;
-   LocaleServiceImpl localeService;
 
    @BeforeMethod(firstTimeOnly = true)
    public void beforeMethod()
