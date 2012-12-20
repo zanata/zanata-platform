@@ -21,7 +21,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
@@ -48,7 +47,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataOpenId;
 import org.zanata.service.RegisterService;
-import org.zanata.service.impl.EmailChangeActivationService;
+import org.zanata.service.impl.EmailChangeService;
 
 @Name("profileAction")
 @Scope(ScopeType.PAGE)
@@ -94,6 +93,9 @@ public class ProfileAction implements Serializable
    @In
    RegisterService registerServiceImpl;
    
+   @In
+   EmailChangeService emailChangeService;
+
    private void validateEmail(String email)
    {
       HPerson person = personDAO.findByEmail(email);
@@ -220,7 +222,7 @@ public class ProfileAction implements Serializable
          log.debug("updated successfully");
          if (!authenticatedAccount.getPerson().getEmail().equals(this.email))
          {
-            activationKey = EmailChangeActivationService.generateActivationKey(authenticatedAccount.getPerson().getId().toString(), this.email, new Date());
+            activationKey = emailChangeService.generateActivationKey(person, this.email);
             renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
             FacesMessages.instance().add("You will soon receive an email with a link to activate your email account change.");
          }

@@ -48,4 +48,25 @@
             DELETE FROM HAccountActivationKey where accountId in(select acc.id from HAccount acc where acc.enabled = 1)
         </sql>
     </changeSet>
+    
+    <changeSet id="4" author="aeng@redhat.com">
+		<comment>Add HPersonEmailValidationKey table</comment>
+		<createTable tableName="HPersonEmailValidationKey">
+			<column name="keyHash" type="varchar(32)"> 
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="personId" type="bigint">
+				<constraints primaryKey="true" nullable="false"  />
+			</column>
+			<column name="email" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="creationDate" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FK_HPersonEmailValidationKey_HPerson" 
+			referencedTableName="HPerson" referencedColumnNames="id"
+			baseTableName="HPersonEmailValidationKey" baseColumnNames="personId"/>
+	</changeSet>
 </databaseChangeLog>

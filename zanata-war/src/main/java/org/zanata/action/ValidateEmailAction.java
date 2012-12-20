@@ -24,6 +24,7 @@ import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Date;
 
 import javax.security.auth.login.LoginException;
 
@@ -36,11 +37,11 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.PersonDAO;
+import org.zanata.exception.KeyNotFoundException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
-import org.zanata.service.impl.EmailChangeActivationService;
-import org.zanata.service.impl.EmailChangeActivationService.KeyParameter;
-import org.zanata.service.impl.TimestampValidationService;
+import org.zanata.model.HPersonEmailValidationKey;
+import org.zanata.service.impl.EmailChangeService;
 
 @Name("validateEmail")
 public class ValidateEmailAction implements Serializable
@@ -54,6 +55,9 @@ public class ValidateEmailAction implements Serializable
    @In
    Identity identity;
 
+   @In
+   EmailChangeService emailChangeService;
+
    @Logger
    Log log;
 
@@ -64,24 +68,30 @@ public class ValidateEmailAction implements Serializable
 
       if (activationKey != null && !activationKey.isEmpty())
       {
-         KeyParameter keyPair = EmailChangeActivationService.parseKey(activationKey);
+         HPersonEmailValidationKey entry = emailChangeService.getActivationKey(activationKey);
+         if (entry == null)
+         {
+            throw new KeyNotFoundException("activation key: " + activationKey);
+         }
 
-         String checkResult = checkExpiryDate(keyPair.getCreationDate());
+         String checkResult = checkExpiryDate(entry.getCreationDate());
 
          if (StringUtils.isEmpty(checkResult))
          {
-            HPerson person = personDAO.findById(new Long(keyPair.getId()), true);
+            HPerson person = entry.getPerson();
             HAccount account = person.getAccount();
             if (!account.getUsername().equals(identity.getCredentials().getUsername()))
             {
                throw new LoginException();
             }
-            person.setEmail(keyPair.getEmail());
+
+            person.setEmail(entry.getEmail());
             account.setEnabled(true);
             personDAO.makePersistent(person);
             personDAO.flush();
+            emailChangeService.removeEntry(entry);
             FacesMessages.instance().add("You have successfully changed your email account.");
-            log.info("update email address to {0}  successfully", keyPair.getEmail());
+            log.info("update email address to {0}  successfully", entry.getEmail());
          }
          else
          {
@@ -93,11 +103,11 @@ public class ValidateEmailAction implements Serializable
 
    private static int LINK_ACTIVE_DAYS = 1;
 
-   private String checkExpiryDate(String createdDate)
+   private String checkExpiryDate(Date createdDate)
    {
       try
       {
-         if (TimestampValidationService.isExpired(createdDate, LINK_ACTIVE_DAYS))
+         if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS))
          {
             log.info("Creation date expired:" + createdDate);
             FacesMessages.instance().add(ERROR, "Link expired. Please update your email again.");
