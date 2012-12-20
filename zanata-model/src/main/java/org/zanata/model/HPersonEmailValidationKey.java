@@ -21,23 +21,73 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.Email;
+import org.hibernate.validator.NotEmpty;
 
 @Entity
 @Setter
 @ToString
 @NoArgsConstructor
-public class HAccountActivationKey extends AccountKeyBase implements Serializable
+public class HPersonEmailValidationKey implements Serializable
 {
-
    private static final long serialVersionUID = 1L;
+
+   private String keyHash;
+
+   private HPerson person;
+
+   private Date creationDate;
+
+   private String email;
+
+   public HPersonEmailValidationKey(HPerson person, String email, String keyHash, Date creationDate)
+   {
+      this.person = person;
+      this.keyHash = keyHash;
+      this.creationDate = creationDate;
+      this.email = email;
+   }
+
+   @Column(unique = true, nullable = false)
+   public String getKeyHash()
+   {
+      return keyHash;
+   }
+
+   @Temporal(TemporalType.TIMESTAMP)
+   @Column(nullable = false)
+   public Date getCreationDate()
+   {
+      return creationDate;
+   }
+
+   @Id
+   @ManyToOne(optional = false)
+   @JoinColumn(name = "personId", nullable = false)
+   public HPerson getPerson()
+   {
+      return person;
+   }
+
+   @Email
+   @NotEmpty
+   public String getEmail()
+   {
+      return email;
+   }
 
 }
