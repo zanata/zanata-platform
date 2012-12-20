@@ -117,13 +117,6 @@ public class GlossaryRestTest extends ZanataRestTest
    @Test
    public void putGlossary()
    {
-      // TODO removed easymock check (there is NO verification afterwards).
-      // Down below there is a mockito verify which failed the test.
-      // This test may not have the full seam environment to run permission check.
-      // But do we forget to test the permission check?
-//      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-insert"));
-//      mockControl.replay();
-
       Glossary glossary = new Glossary();
       GlossaryEntry glossaryEntry1 = new GlossaryEntry();
       glossaryEntry1.setSrcLang(LocaleId.EN_US);
@@ -165,15 +158,14 @@ public class GlossaryRestTest extends ZanataRestTest
       ClientResponse<String> response = glossaryService.put(glossary);
 
       assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
+
+      // TODO SeamAutowire needs to handle @Restrict. See org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
 //      verify(mockIdentity).checkPermission(anyString(), eq("glossary-insert"));
    }
 
    @Test
    public void deleteAllGlossaries()
    {
-//      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-delete"));
-//      mockControl.replay();
-
       ClientResponse<String> response = glossaryService.deleteGlossaries();
       assertThat(response.getStatus(), is(200));
 
@@ -181,6 +173,9 @@ public class GlossaryRestTest extends ZanataRestTest
 
       List<GlossaryEntry> glossaryEntries = response1.getEntity().getGlossaryEntries();
       assertThat(glossaryEntries.size(), is(0));
+
+      // TODO SeamAutowire needs to handle @Restrict. See org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
+//    verify(mockIdentity).checkPermission(anyString(), eq("glossary-delete"));
    }
 
    @Test
@@ -193,13 +188,14 @@ public class GlossaryRestTest extends ZanataRestTest
       List<GlossaryEntry> glossaryEntries = response1.getEntity().getGlossaryEntries();
 
       assertThat(glossaryEntries.get(0).getGlossaryTerms().size(), is(2));
+
+      // TODO SeamAutowire needs to handle @Restrict. See org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
+//    verify(mockIdentity).checkPermission(anyString(), eq("glossary-delete"));
    }
 
    @Test
    public void testPutGlossaries()
    {
-//      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-delete"));
-//      mockControl.replay();
       Glossary glossary = new Glossary();
       GlossaryEntry glossaryEntry1 = new GlossaryEntry();
       glossaryEntry1.setSrcLang(LocaleId.EN_US);
@@ -219,5 +215,7 @@ public class GlossaryRestTest extends ZanataRestTest
       ClientResponse<Glossary> response1 = glossaryService.getEntries();
       assertThat(response1.getEntity().getGlossaryEntries().size(), CoreMatchers.is(1));
 
+      // TODO SeamAutowire needs to handle @Restrict. See org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
+//    verify(mockIdentity).checkPermission(anyString(), eq("glossary-insert"));
    }
 }
