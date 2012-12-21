@@ -35,6 +35,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.UnmarshalException;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
@@ -204,9 +205,9 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
          }
          eTagCache = ETagCacheReaderWriter.readCache( new FileInputStream(location));
       }
-      catch (FileNotFoundException e)
+      catch (Exception e)
       {
-         // not found, use a new one
+         // could not read for some reason, use a new one
          eTagCache = new ETagCache();
       }
    }

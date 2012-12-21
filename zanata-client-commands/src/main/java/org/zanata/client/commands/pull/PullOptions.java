@@ -33,4 +33,6 @@ public interface PullOptions extends PushPullOptions
    PushPullType getPullType();
    boolean getCreateSkeletons();
    boolean getIncludeFuzzy();
+   boolean getPurgeCache();
+   boolean getUseCache();
 }

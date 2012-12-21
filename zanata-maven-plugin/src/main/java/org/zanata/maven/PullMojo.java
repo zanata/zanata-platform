@@ -64,6 +64,23 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    private boolean includeFuzzy = false;
 
    /**
+    * Whether to purge the cache before performing the pull operation. This means that all
+    * documents will be fetched from the server anew.
+    *
+    * @parameter expression="${zanata.purgeCache}" default-value="false"
+    */
+   private boolean purgeCache;
+
+   /**
+    * Whether to use an Entity cache when fetching documents. When using the cache, documents
+    * that have been retrieved previously and have not changed since then will not be retrieved
+    * again.
+    *
+    * @parameter expression="${zanata.useCache}" default-value="true"
+    */
+   private boolean useCache;
+
+   /**
     * Type of pull to perform from the server: "source" pulls source documents only.
     * "trans" pulls translation documents only.
     * "both" pulls both source and translation documents.
@@ -112,6 +129,18 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    public boolean getIncludeFuzzy()
    {
       return includeFuzzy;
+   }
+
+   @Override
+   public boolean getPurgeCache()
+   {
+      return purgeCache;
+   }
+
+   @Override
+   public boolean getUseCache()
+   {
+      return useCache;
    }
 
    @Override

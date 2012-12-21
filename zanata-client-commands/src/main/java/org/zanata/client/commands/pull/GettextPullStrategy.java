@@ -37,13 +37,20 @@ public class GettextPullStrategy extends AbstractGettextPullStrategy
 {
 
    @Override
-   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
    {
-      String localLocale = locMapping.getLocalLocale();
+      String localLocale = localeMapping.getLocalLocale();
       // write the PO file to $docdirname/$locale.po
       File transDir = getOpts().getTransDir();
       File docDir = new File(transDir, docName).getParentFile();
       File transFile = new File(docDir, localLocale + ".po");
+      return transFile;
+   }
+
+   @Override
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   {
+      File transFile = getTransFileToWrite(docName, locMapping);
       return getPoWriter().writePoToFile(transFile, doc, targetDoc);
    }
 

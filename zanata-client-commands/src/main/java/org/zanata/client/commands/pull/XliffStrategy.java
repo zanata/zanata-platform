@@ -21,6 +21,7 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.xliff.XliffWriter;
@@ -61,6 +62,13 @@ public class XliffStrategy implements PullStrategy
    public void writeSrcFile(Resource doc) throws IOException
    {
       XliffWriter.write(opts.getSrcDir(), doc, "en-US");
+   }
+
+   @Override
+   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
+   {
+      // TODO This is the same as XliffWriter's used file, but code is duplicated
+      return new File(opts.getTransDir(), docName + "_" + localeMapping.getLocalLocale().replace('-', '_') + ".xml");
    }
 
    @Override

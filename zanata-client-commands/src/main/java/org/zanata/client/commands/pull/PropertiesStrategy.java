@@ -21,6 +21,7 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
@@ -73,6 +74,13 @@ public class PropertiesStrategy implements PullStrategy
    public void writeSrcFile(Resource doc) throws IOException
    {
       PropWriter.write(doc, getPullOptions().getSrcDir());
+   }
+
+   @Override
+   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
+   {
+      // TODO This is the same as PropWriter's file, but code is duplicated
+      return new File(getPullOptions().getTransDir(), docName + "_" + localeMapping.getJavaLocale() + ".properties");
    }
 
    @Override

@@ -70,6 +70,11 @@ public class ETagCache
       return fileNameIndex.get( new MultiKey(localFileName, language) );
    }
 
+   public void clear()
+   {
+      fileNameIndex.clear();
+   }
+
    ETagCacheCollection asETagCacheCollection()
    {
       ETagCacheCollection col = new ETagCacheCollection();

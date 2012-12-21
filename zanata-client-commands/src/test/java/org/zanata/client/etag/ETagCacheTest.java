@@ -55,7 +55,6 @@ public class ETagCacheTest
          assertThat(cacheEntry.getLocalFileName(), is("xyz_abc_" + (i+1) + ".properties"));
          assertThat(cacheEntry.getLocalFileTime(), is("1234"));
          assertThat(cacheEntry.getServerETag(), is("ABCDE"));
-         assertThat(cacheEntry.getUrl(), is("translate.example.com/project/document/doc" + (i+1)));
       }
    }
 
@@ -63,10 +62,11 @@ public class ETagCacheTest
    public void writeCache() throws Exception
    {
       File cacheFile = File.createTempFile("etag-cache", "xml");
+      cacheFile.deleteOnExit();
       FileOutputStream os = new FileOutputStream(cacheFile);
 
       ETagCache cache = new ETagCache();
-      cache.addEntry( new ETagCacheEntry("http://url.com", "myfile.txt", "en-US", "1234.5678", "ABCDEFG", "ABCD1234") );
+      cache.addEntry( new ETagCacheEntry("myfile.txt", "en-US", "1234.5678", "ABCDEFG", "ABCD1234") );
 
       ETagCacheReaderWriter.writeCache(cache, os);
 
@@ -83,7 +83,6 @@ public class ETagCacheTest
          assertThat(cacheEntry.getLocalFileName(), is(readEntry.getLocalFileName()));
          assertThat(cacheEntry.getLocalFileTime(), is(readEntry.getLocalFileTime()));
          assertThat(cacheEntry.getServerETag(), is(readEntry.getServerETag()));
-         assertThat(cacheEntry.getUrl(), is(readEntry.getUrl()));
       }
    }
 

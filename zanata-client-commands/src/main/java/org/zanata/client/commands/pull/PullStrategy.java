@@ -1,5 +1,6 @@
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.zanata.client.config.LocaleMapping;
@@ -14,6 +15,18 @@ public interface PullStrategy
    StringSet getExtensions();
 
    boolean needsDocToWriteTrans();
+
+   /**
+    * Provides the file reference that will be used to write a Translation file
+    * for a given Resource. Ideally, this method should be used by concrete
+    * implementations of the strategy to write the file.
+    *
+    * @param docName  may be null if needsDocToWriteTrans() returns false
+    * @param localeMapping Locale mapping to use.
+    * @return A File reference (might not exist physically) to which a Translation
+    * Resource will be written.
+    */
+   File getTransFileToWrite(String docName, LocaleMapping localeMapping);
 
    /**
     * @param docWithLocalName

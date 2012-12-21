@@ -1,5 +1,6 @@
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.HashUtil;
 
 /**
  * @author Sean Flanigan <a
@@ -93,6 +95,8 @@ public class PullCommand extends PushPullCommand<PullOptions>
       logger.info("Username: {}", opts.getUsername());
       logger.info("Project type: {}", opts.getProjectType());
       logger.info("Enable modules: {}", opts.getEnableModules());
+      logger.info("Using ETag cache: {}", opts.getUseCache());
+      logger.info("Purging ETag cache beforehand: {}", opts.getPurgeCache());
       if (opts.getEnableModules())
       {
          logger.info("Current Module: {}", opts.getCurrentModule());
@@ -158,6 +162,11 @@ public class PullCommand extends PushPullCommand<PullOptions>
          confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
       }
 
+      if( getOpts().getPurgeCache() )
+      {
+         eTagCache.clear();
+      }
+
       for (String qualifiedDocName : docNamesForModule)
       {
          Resource doc = null;
@@ -182,13 +191,24 @@ public class PullCommand extends PushPullCommand<PullOptions>
             for (LocaleMapping locMapping : locales)
             {
                LocaleId locale = new LocaleId(locMapping.getLocale());
-
+               String eTag = null;
+               File transFile = strat.getTransFileToWrite(localDocName, locMapping);
                ETagCacheEntry eTagCacheEntry = eTagCache.findEntry(localDocName, locale.getId());
-               String eTag = eTagCacheEntry != null ? eTagCacheEntry.getServerETag() : null;
+
+               if( getOpts().getUseCache() && eTagCacheEntry != null )
+               {
+                  // Check the last updated date on the file matches what's in the cache
+                  // only then use the cached ETag
+                  if( transFile.exists() && Long.toString(transFile.lastModified()).equals( eTagCacheEntry.getLocalFileTime() ) )
+                  {
+                     eTag = eTagCacheEntry.getServerETag();
+                  }
+               }
 
                ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(
                      docUri, locale, strat.getExtensions(), createSkeletons, eTag);
                TranslationsResource targetDoc;
+
                // ignore 404 (no translation yet for specified document)
                if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
                {
@@ -204,6 +224,16 @@ public class PullCommand extends PushPullCommand<PullOptions>
                {
                   targetDoc = null;
                   log.info("No changes in translations for locale {} and document {}", locale, localDocName);
+
+                  // Check the file's MD5 matches what's stored in the cache. If not, it needs to be fetched again (with no etag)
+                  String fileChecksum = HashUtil.getMD5Checksum( transFile );
+                  if( !fileChecksum.equals( eTagCacheEntry.getLocalFileMD5() ) )
+                  {
+                     transResponse = translationResources.getTranslations(
+                           docUri, locale, strat.getExtensions(), createSkeletons, null);
+                     ClientUtility.checkResult(transResponse, uri);
+                     targetDoc = transResponse.getEntity();
+                  }
                }
                else
                {
@@ -258,14 +288,13 @@ public class PullCommand extends PushPullCommand<PullOptions>
          log.info("Writing translation file in locale {} for document {}", locMapping.getLocalLocale(), localDocName);
          FileDetails fileDetails = strat.writeTransFile(docWithLocalName, localDocName, locMapping, targetDoc);
 
-         // Insert to cache if the strategy returned file details
-         if( fileDetails != null )
+         // Insert to cache if the strategy returned file details and we are using the cache
+         if( getOpts().getUseCache() && fileDetails != null )
          {
             eTagCache.addEntry( new ETagCacheEntry(
-                  "",
                   localDocName,
                   locMapping.getLocale(),
-                  Long.toHexString(fileDetails.getFile().lastModified()),
+                  Long.toString(fileDetails.getFile().lastModified()),
                   fileDetails.getMd5(),
                   serverETag) );
          }
@@ -274,24 +303,6 @@ public class PullCommand extends PushPullCommand<PullOptions>
       {
          log.info("Writing translation file in locale {} for document {} (skipped due to dry run)", locMapping.getLocalLocale(), localDocName);
       }
-   }
-
-   /**
-    * Creates a new ETag cache entry for a document.
-    *
-    * @param docName Qualified document name to create the ETag cache entry.
-    */
-   private ETagCacheEntry createETagCacheEntry( String docName, String lang, String eTag )
-   {
-      ETagCacheEntry entry = new ETagCacheEntry();
-      entry.setLocalFileName(docName);
-      entry.setLanguage(lang);
-      entry.setLocalFileMD5("");
-      entry.setLocalFileTime("");
-      entry.setServerETag(eTag);
-      entry.setUrl("does it really matter?");
-
-      return entry;
    }
 
 }

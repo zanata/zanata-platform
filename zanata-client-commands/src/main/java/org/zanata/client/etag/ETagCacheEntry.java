@@ -29,8 +29,6 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class ETagCacheEntry
 {
-   private String url;
-
    private String localFileName;
 
    private String language;
@@ -46,25 +44,13 @@ public class ETagCacheEntry
    {
    }
 
-   public ETagCacheEntry(String url, String localFileName, String language, String localFileTime, String localFileMD5, String serverETag)
+   public ETagCacheEntry(String localFileName, String language, String localFileTime, String localFileMD5, String serverETag)
    {
-      this.url = url;
       this.localFileName = localFileName;
       this.language = language;
       this.localFileTime = localFileTime;
       this.localFileMD5 = localFileMD5;
       this.serverETag = serverETag;
-   }
-
-   @XmlAttribute
-   public String getUrl()
-   {
-      return url;
-   }
-
-   public void setUrl(String url)
-   {
-      this.url = url;
    }
 
    @XmlAttribute
