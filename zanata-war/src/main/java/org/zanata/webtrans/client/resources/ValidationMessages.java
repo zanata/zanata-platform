@@ -36,15 +36,15 @@ public interface ValidationMessages extends Messages
    String trailingNewlineAdded();
 
    // Tab validator
-   @DefaultMessage("Tab characters (\t)")
+   @DefaultMessage("Tab characters (\\t)")
    String tabValidatorName();
-   @DefaultMessage("Check whether only source or only target have tabs")
+   @DefaultMessage("Check whether source and target have the same number of tabs")
    String tabValidatorDescription();
 
-   @DefaultMessage("Source has one or more tabs but target has no tabs (t)")
-   String targetHasNoTabs();
-   @DefaultMessage("Target has one or more tabs but source has no tabs (t)")
-   String targetHasExtraTabs();
+   @DefaultMessage("Target has fewer tabs (\\t) than source (source: {0}, target: {1})")
+   String targetHasFewerTabs(int sourceTabs, int targetTabs);
+   @DefaultMessage("Target has more tabs (\\t) than source (source: {0}, target: {1})")
+   String targetHasMoreTabs(int sourceTabs, int targetTabs);
 
    // Printf variables validator
 

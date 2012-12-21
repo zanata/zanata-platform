@@ -22,10 +22,10 @@ package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
+import com.google.common.base.CharMatcher;
+
 public class TabValidation extends AbstractValidation
 {
-   private static final CharSequence TAB = "\t";
-
    public TabValidation(final ValidationMessages messages)
    {
       super(messages.tabValidatorName(), messages.tabValidatorDescription(), true, messages);
@@ -34,19 +34,16 @@ public class TabValidation extends AbstractValidation
    @Override
    public void doValidate(String source, String target)
    {
-      boolean sourceTab = source.contains(TAB);
-      boolean targetTab = target.contains(TAB);
-
-      if (sourceTab != targetTab)
+      CharMatcher tabs = CharMatcher.is('\t');
+      int sourceTabs = tabs.countIn(source);
+      int targetTabs = tabs.countIn(target);
+      if (sourceTabs > targetTabs)
       {
-         if (sourceTab)
-         {
-            addError(getMessages().targetHasNoTabs());
-         }
-         else
-         {
-            addError(getMessages().targetHasExtraTabs());
-         }
+         addError(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
+      }
+      else if (targetTabs > sourceTabs)
+      {
+         addError(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
       }
    }
 

@@ -88,21 +88,45 @@ public class TabValidationTest
       String target = "Target without tab";
       validation.validate(source, target);
 
-      assertThat(validation.hasError(), is(true));
+      assertThat(validation.getError(), hasItem(messages.targetHasFewerTabs(1, 0)));
       assertThat(validation.getError().size(), is(1));
-      assertThat(validation.getError(), hasItem(messages.targetHasNoTabs()));
+      assertThat(validation.hasError(), is(true));
    }
 
    @Test
-   public void extraTabsInTarget()
+   public void noTabsInSource()
    {
       String source = "Source without tab";
       String target = "Target with\textra tab";
       validation.validate(source, target);
 
-      assertThat(validation.hasError(), is(true));
+      assertThat(validation.getError(), hasItem(messages.targetHasMoreTabs(0, 1)));
       assertThat(validation.getError().size(), is(1));
-      assertThat(validation.getError(), hasItem(messages.targetHasExtraTabs()));
+      assertThat(validation.hasError(), is(true));
+   }
+
+   @Test
+   public void fewerTabsInTarget()
+   {
+      String source = "Source with two\t\t tabs";
+      String target = "Target with one\ttab";
+      validation.validate(source, target);
+
+      assertThat(validation.getError(), hasItem(messages.targetHasFewerTabs(2, 1)));
+      assertThat(validation.getError().size(), is(1));
+      assertThat(validation.hasError(), is(true));
+   }
+
+   @Test
+   public void moreTabsInTarget()
+   {
+      String source = "Source with one\ttab";
+      String target = "Target with two\t\t tabs";
+      validation.validate(source, target);
+
+      assertThat(validation.getError(), hasItem(messages.targetHasMoreTabs(1, 2)));
+      assertThat(validation.getError().size(), is(1));
+      assertThat(validation.hasError(), is(true));
    }
 
 }
