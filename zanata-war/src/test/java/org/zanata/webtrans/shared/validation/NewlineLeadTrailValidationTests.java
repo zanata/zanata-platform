@@ -41,6 +41,8 @@ import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 @Test(groups = { "unit-tests" })
 public class NewlineLeadTrailValidationTests
 {
+   // TODO use TestMessages
+
    // mock message strings
    private static final String MOCK_NEWLINE_VALIDATOR_NAME = "test newline validator name";
    private static final String MOCK_NEWLINE_VALIDATOR_DESCRIPTION = "test xml html validator description";

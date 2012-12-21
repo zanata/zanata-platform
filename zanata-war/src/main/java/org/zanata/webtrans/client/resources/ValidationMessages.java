@@ -17,24 +17,34 @@ public interface ValidationMessages extends Messages
 {
    // Newline validator
 
-   @DefaultMessage("Leading/trailing newline (¶)")
+   @DefaultMessage("Leading/trailing newline (\\n)")
    String newlineValidatorName();
 
-   @DefaultMessage("Check for consistent leading and trailing newline (¶)")
+   @DefaultMessage("Check for consistent leading and trailing newline (\\n)")
    String newlineValidatorDescription();
 
-   @DefaultMessage("Leading newline (¶) is missing")
+   @DefaultMessage("Leading newline (\\n) is missing")
    String leadingNewlineMissing();
 
-   @DefaultMessage("Unexpected leading newline (¶)")
+   @DefaultMessage("Unexpected leading newline (\\n)")
    String leadingNewlineAdded();
 
-   @DefaultMessage("Trailing newline (¶) is missing")
+   @DefaultMessage("Trailing newline (\\n) is missing")
    String trailingNewlineMissing();
 
-   @DefaultMessage("Unexpected trailing newline (¶)")
+   @DefaultMessage("Unexpected trailing newline (\\n)")
    String trailingNewlineAdded();
 
+   // Tab validator
+   @DefaultMessage("Tab characters (\t)")
+   String tabValidatorName();
+   @DefaultMessage("Check whether only source or only target have tabs")
+   String tabValidatorDescription();
+
+   @DefaultMessage("Source has one or more tabs but target has no tabs (t)")
+   String targetHasNoTabs();
+   @DefaultMessage("Target has one or more tabs but source has no tabs (t)")
+   String targetHasExtraTabs();
 
    // Printf variables validator
 
