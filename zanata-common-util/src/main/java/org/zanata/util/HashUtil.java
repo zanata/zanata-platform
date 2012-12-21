@@ -8,6 +8,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 public class HashUtil
 {
 
+   // This class is used in import.sql to provide the MD5 function in H2 tests
    public static String generateHash(String key)
    {
       try
