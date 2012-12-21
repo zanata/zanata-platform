@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -310,7 +311,7 @@ public class AppPresenterTest
       DocumentId docId = new DocumentId(1L);
       // newly selected document has new stats
       TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3), new TransUnitWords(4, 5, 6));
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats);
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, "Translator", new Date());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       // current view is editor
       presenter.showView(MainView.Editor);
@@ -334,7 +335,7 @@ public class AppPresenterTest
       DocumentId docId = new DocumentId(1L);
       // newly selected document has new stats
       TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3), new TransUnitWords(4, 5, 6));
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats);
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, "Translator", new Date());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
 
       // When:
@@ -380,7 +381,7 @@ public class AppPresenterTest
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
       presenter.showView(MainView.Editor);
       DocumentId docId = new DocumentId(1L);
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats);
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats, "Translator", new Date());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       presenter.selectDocument(docId);
       verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
@@ -434,7 +435,7 @@ public class AppPresenterTest
    {
       // Given: current token is search view and has selected doc
       DocumentId docId = new DocumentId(1L);
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats);
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats, "Translator", new Date());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       when(history.getToken()).thenReturn("view:search;doc:pot/a.po");
       presenter.selectDocument(docId);

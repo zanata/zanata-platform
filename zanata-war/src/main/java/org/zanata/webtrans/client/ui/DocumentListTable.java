@@ -31,6 +31,8 @@ import org.zanata.webtrans.client.ui.table.column.UntranslatedColumn;
 import com.google.gwt.cell.client.IconCellDecorator;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.Header;
@@ -79,63 +81,14 @@ public class DocumentListTable extends CellTable<DocumentNode>
       }
    }
 
-   private final class TranslatedHeader extends Header<String> implements HasStatsFilter
-   {
-      private final WebTransMessages messages;
-      private String statsOption = STATS_OPTION_WORDS;
-
-      public TranslatedHeader(WebTransMessages messages)
-      {
-         super(new TextCell());
-         this.messages = messages;
-      }
-
-      @Override
-      public String getValue()
-      {
-         return messages.columnHeaderTranslated(statsOption);
-      }
-
-      @Override
-      public void setStatsFilter(String option)
-      {
-         statsOption = option;
-      }
-   }
-
-   private final class UntranslatedHeader extends Header<String> implements HasStatsFilter
-   {
-      private final WebTransMessages messages;
-      private String statsOption = STATS_OPTION_WORDS;
-
-      public UntranslatedHeader(WebTransMessages messages)
-      {
-         super(new TextCell());
-         this.messages = messages;
-      }
-
-      @Override
-      public String getValue()
-      {
-         return messages.columnHeaderUntranslated(statsOption);
-      }
-
-      @Override
-      public void setStatsFilter(String option)
-      {
-         statsOption = option;
-      }
-   }
-
    private final TextColumn<DocumentNode> directoryColumn;
    private final TextColumn<DocumentNode> documentColumn;
    private final StatisticColumn statisticColumn;
-   private final TranslatedColumn translatedColumn;
-   private final UntranslatedColumn untranslatedColumn;
    private final RemainingHoursColumn remainingColumn;
+   
+   private final TextColumn<DocumentNode> lastModifiedDateColumn;
+   private final TextColumn<DocumentNode> lastModifiedByColumn;
 
-   private final TranslatedHeader translatedColumnHeader;
-   private final UntranslatedHeader untranslatedColumnHeader;
    private final StatisticHeader statisticColumnHeader;
 
    public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final SingleSelectionModel<DocumentNode> selectionModel)
@@ -164,16 +117,36 @@ public class DocumentListTable extends CellTable<DocumentNode>
       };
 
       statisticColumn = new StatisticColumn(messages);
-      translatedColumn = new TranslatedColumn();
-      untranslatedColumn = new UntranslatedColumn();
       remainingColumn = new RemainingHoursColumn(messages);
+      
+      lastModifiedDateColumn = new TextColumn<DocumentNode>()
+      {
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            if(object.getDocInfo().getLastChanged() != null)
+            {
+               String date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
+               return date;
+            }
+            return "";
+         }
+      };
+      
+      lastModifiedByColumn = new TextColumn<DocumentNode>()
+      {
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            return object.getDocInfo().getLastModifiedBy();
+         }
+      };
 
       directoryColumn.setSortable(true);
       documentColumn.setSortable(true);
       statisticColumn.setSortable(true);
-      translatedColumn.setSortable(true);
-      untranslatedColumn.setSortable(true);
       remainingColumn.setSortable(true);
+      lastModifiedDateColumn.setSortable(true);
       
       
       addColumn(directoryColumn, messages.columnHeaderDirectory());
@@ -187,29 +160,22 @@ public class DocumentListTable extends CellTable<DocumentNode>
       statisticColumn.setCellStyleNames("statisticCol");
       addColumn(statisticColumn, statisticColumnHeader);
 
-      translatedColumnHeader = new TranslatedHeader(messages);
-      translatedColumn.setCellStyleNames("translatedCol");
-      addColumn(translatedColumn, translatedColumnHeader);
-
-      untranslatedColumnHeader = new UntranslatedHeader(messages);
-      untranslatedColumn.setCellStyleNames("untranslatedCol");
-      addColumn(untranslatedColumn, untranslatedColumnHeader);
-
       remainingColumn.setCellStyleNames("remainingCol");
       addColumn(remainingColumn, messages.columnHeaderRemaining());
+      
+      lastModifiedDateColumn.setCellStyleNames("lastModifiedDateCol");
+      addColumn(lastModifiedDateColumn, "Last Modified Date");
+      
+      lastModifiedByColumn.setCellStyleNames("lastModifiedByCol");
+      addColumn(lastModifiedByColumn, "Last Modified By");
 
       addSorting(dataProvider);
    }
 
    public void setStatsFilter(String option)
    {
-      translatedColumnHeader.setStatsFilter(option);
-      untranslatedColumnHeader.setStatsFilter(option);
       statisticColumnHeader.setStatsFilter(option);
-
       statisticColumn.setStatsFilter(option);
-      translatedColumn.setStatsFilter(option);
-      untranslatedColumn.setStatsFilter(option);
       remainingColumn.setStatsFilter(option);
    }
 
@@ -245,20 +211,6 @@ public class DocumentListTable extends CellTable<DocumentNode>
             // table
             boolean statsByWords = true;
             return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) - o2.getDocInfo().getStats().getApprovedPercent(statsByWords);
-         }
-      });
-      columnSortHandler.setComparator(translatedColumn, new Comparator<DocumentNode>()
-      {
-         public int compare(DocumentNode o1, DocumentNode o2)
-         {
-            return o1.getDocInfo().getStats().getWordCount().getApproved() - o2.getDocInfo().getStats().getWordCount().getApproved();
-         }
-      });
-      columnSortHandler.setComparator(untranslatedColumn, new Comparator<DocumentNode>()
-      {
-         public int compare(DocumentNode o1, DocumentNode o2)
-         {
-            return o1.getDocInfo().getStats().getWordCount().getUntranslated() - o2.getDocInfo().getStats().getWordCount().getUntranslated();
          }
       });
       columnSortHandler.setComparator(remainingColumn, new Comparator<DocumentNode>()

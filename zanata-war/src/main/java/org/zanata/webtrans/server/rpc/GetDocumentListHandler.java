@@ -17,6 +17,7 @@ import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -56,7 +57,13 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          {
             DocumentId docId = new DocumentId(hDoc.getId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
-            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats);
+            String lastModifiedBy = "";
+            HPerson person = hDoc.getLastModifiedBy();
+            if(person != null)
+            {
+               lastModifiedBy = person.getAccount().getUsername();
+            }
+            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged());
             docs.add(doc);
          }
       }

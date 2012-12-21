@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.lang.model.util.Types;
 
@@ -191,7 +192,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEvent()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -214,7 +215,7 @@ public class GlossaryPresenterTest
    public void fireSearchEventInSequentialWillBlockSecondRequestUntilFirstReturn()
    {
       // Given:
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
       when(messages.searchGlossary()).thenReturn("Search glossary");
       when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
@@ -238,7 +239,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEventOnSuccessCallbackWithGlossaryResults()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -266,7 +267,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEventOnSuccessCallbackButNoGlossaryFound()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -292,7 +293,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEventOnFailureCallback()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -316,7 +317,7 @@ public class GlossaryPresenterTest
    @Test
    public void createGlossaryRequestForTransUnit()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
       when(messages.searchGlossary()).thenReturn("Search glossary");
       when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);

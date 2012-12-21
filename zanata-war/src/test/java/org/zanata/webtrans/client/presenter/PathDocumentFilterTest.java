@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.Date;
+
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -26,7 +28,7 @@ public class PathDocumentFilterTest
 
    private static DocumentInfo docInfo(String name, String path)
    {
-      return new DocumentInfo(new DocumentId(1L), name, path, LocaleId.EN_US, new TranslationStats());
+      return new DocumentInfo(new DocumentId(1L), name, path, LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
    }
 
    @Test
