@@ -52,11 +52,14 @@
     <changeSet id="4" author="aeng@redhat.com">
 		<comment>Add HPersonEmailValidationKey table</comment>
 		<createTable tableName="HPersonEmailValidationKey">
+			 <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
 			<column name="keyHash" type="varchar(32)"> 
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" unique="true"/>
 			</column>
 			<column name="personId" type="bigint">
-				<constraints primaryKey="true" nullable="false"  />
+				<constraints nullable="false" unique="true"  />
 			</column>
 			<column name="email" type="varchar(255)">
 				<constraints nullable="false" />

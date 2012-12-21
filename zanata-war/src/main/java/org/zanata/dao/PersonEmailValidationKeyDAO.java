@@ -26,6 +26,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 
 
@@ -45,12 +46,22 @@ public class PersonEmailValidationKeyDAO extends AbstractDAOImpl<HPersonEmailVal
       super(HPersonEmailValidationKey.class, session);
    }
 
+   
    public HPersonEmailValidationKey findByKeyHash(String keyHash)
    {
-      Query query = getSession().createQuery("from HPersonEmailValidationKey as key where key.keyHash= :keyHash");
-      query.setParameter("keyHash", keyHash);
-      query.setCacheable(false);
-      query.setComment("PersonEmailValidationKeyDAO.findByKeyHashId");
-      return (HPersonEmailValidationKey) query.uniqueResult();
+    Query query = getSession().createQuery("from HPersonEmailValidationKey as key where key.keyHash= :keyHash");
+    query.setParameter("keyHash", keyHash);
+    query.setCacheable(false);
+    query.setComment("PersonEmailValidationKeyDAO.findByKeyHash");
+    return (HPersonEmailValidationKey) query.uniqueResult();
+   }
+   
+   public HPersonEmailValidationKey findByPersonId(Long personId)
+   {
+    Query query = getSession().createQuery("from HPersonEmailValidationKey as key where key.person.id= :personId");
+    query.setLong("personId", personId);
+    query.setCacheable(false);
+    query.setComment("PersonEmailValidationKeyDAO.findByPersonId");
+    return (HPersonEmailValidationKey) query.uniqueResult();
    }
 }

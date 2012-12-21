@@ -76,7 +76,7 @@ public class EmailChangeService
       String var = person.getId() + email + System.currentTimeMillis();
       String hash = HashUtil.generateHash(var);
 
-      HPersonEmailValidationKey entry = personEmailValidationKeyDAO.findById(person.getId(), false);
+      HPersonEmailValidationKey entry = personEmailValidationKeyDAO.findByPersonId(person.getId());
       if (entry == null)
       {
          entry = new HPersonEmailValidationKey(person, email, hash, new Date());

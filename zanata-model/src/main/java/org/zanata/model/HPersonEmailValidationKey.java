@@ -25,6 +25,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -46,6 +47,8 @@ public class HPersonEmailValidationKey implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
+   private Long id;
+   
    private String keyHash;
 
    private HPerson person;
@@ -62,7 +65,14 @@ public class HPersonEmailValidationKey implements Serializable
       this.email = email;
    }
 
-   @Column(unique = true, nullable = false)
+   @Id
+   @GeneratedValue
+   public Long getId()
+   {
+      return id;
+   }
+
+   @Column(nullable = false, unique = true)
    public String getKeyHash()
    {
       return keyHash;
@@ -75,9 +85,9 @@ public class HPersonEmailValidationKey implements Serializable
       return creationDate;
    }
 
-   @Id
+   
    @ManyToOne(optional = false)
-   @JoinColumn(name = "personId", nullable = false)
+   @JoinColumn(name = "personId", nullable = false, unique = true)
    public HPerson getPerson()
    {
       return person;
