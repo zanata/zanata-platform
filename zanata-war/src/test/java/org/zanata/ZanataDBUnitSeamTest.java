@@ -1,7 +1,9 @@
 package org.zanata;
 
+import java.io.InputStream;
 import java.util.Map;
 
+import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.persister.collection.AbstractCollectionPersister;
@@ -20,7 +22,6 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-@Test(groups = { "seam-tests" })
 public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
 {
 
@@ -50,7 +51,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
 
    // begin setup methods from DBUnitSeamTest
 
-   @BeforeClass(groups = { "seam-tests" })
+   @BeforeClass
    @Override
    public void setupClass() throws Exception
    {
@@ -58,7 +59,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
       this.clearHibernateSecondLevelCache(); // Clear the Hibernate cache after initial setup
    }
 
-   @BeforeMethod(groups = { "seam-tests" })
+   @BeforeMethod
    @Override
    public void prepareDataBeforeTest()
    {
@@ -66,7 +67,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
       this.clearHibernateSecondLevelCache(); // Clear the hibernate cache after data is modified before the test
    }
 
-   @AfterMethod(groups = { "seam-tests" })
+   @AfterMethod
    @Override
    public void cleanDataAfterTest()
    {
@@ -77,14 +78,14 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
 
    // begin setup methods from SeamTest
 
-   @BeforeMethod(groups = { "seam-tests" })
+   @BeforeMethod
    @Override
    public void begin()
    {
       super.begin();
    }
 
-   @AfterMethod(groups = { "seam-tests" })
+   @AfterMethod
    @Override
    public void end()
    {
@@ -92,21 +93,21 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
    }
 
    @Override
-   @AfterClass(groups = { "seam-tests" })
+   @AfterClass
    public void cleanupClass() throws Exception
    {
       super.cleanupClass();
    }
 
    @Override
-   @BeforeSuite(groups = { "seam-tests" })
+   @BeforeSuite
    public void startSeam() throws Exception
    {
       super.startSeam();
    }
 
    @Override
-   @AfterSuite(groups = { "seam-tests" })
+   @AfterSuite
    protected void stopSeam() throws Exception
    {
       super.stopSeam();
@@ -156,4 +157,46 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
       }
    }   
 
+   protected static class DataSetOperation extends DBUnitSeamTest.DataSetOperation
+   {
+      public DataSetOperation()
+      {
+         super();
+      }
+
+      public DataSetOperation(String dataSetLocation, DatabaseOperation operation)
+      {
+         super(checkedLocation(dataSetLocation), operation);
+      }
+
+      public DataSetOperation(String dataSetLocation, String dtdLocation, DatabaseOperation operation)
+      {
+         super(checkedLocation(dataSetLocation), dtdLocation, operation);
+      }
+
+      public DataSetOperation(String dataSetLocation, String dtdLocation)
+      {
+         super(checkedLocation(dataSetLocation), dtdLocation);
+      }
+
+      public DataSetOperation(String dataSetLocation)
+      {
+         super(checkedLocation(dataSetLocation));
+      }
+
+      private static String checkedLocation(String dataSetLocation)
+      {
+         if (dataSetLocation == null)
+         {
+            return null;
+         }
+
+         // Check the base dataset file
+         if (Thread.currentThread().getContextClassLoader().getResourceAsStream(dataSetLocation) == null)
+         {
+            throw new RuntimeException("Classpath resource not found: "+dataSetLocation);
+         }
+         return dataSetLocation;
+      }
+   }
 }

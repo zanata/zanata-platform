@@ -2,18 +2,12 @@
 <suite name="Integration Tests" verbose="1">
 
 	<listeners>
-		<!-- 
-			   This ensures that all SeamTest classes 
-			   are treated as seam-tests: 
-		-->
-		<listener class-name="org.zanata.testing.SeamTestTransformer"/>
+		<!--
+			   This ensures that all SeamTest classes
+			   are treated as seam-tests:
+      -->
+      <listener class-name="org.zanata.testing.TestTransformer"/>
 	</listeners>
-
-<!-- these default values are hard-coded into ZanataDBUnitSeamTest:
-	<parameter name="database" value="hsql" />
-	<parameter name="datasourceJndiName" value="java:/zanataDatasource" />
-	<parameter name="binaryDir" value="" />
- -->
 
 		<!-- 
 	<test name="Seam Tests">
@@ -29,14 +23,14 @@
 		TODO: use group seam-tests instead, but make sure TestNG 
 		executes the @BeforeSuite method SeamTest.startSeam()
 		 -->
+<!-- FIXME get these tests working again
      	<test name="Seam Tests">
      		<classes>
-<!-- FIXME get these tests working again
             <class name="org.zanata.server.rpc.ActivateWorkspaceActionSeamTest"/>
             <class name="org.zanata.dao.LocaleMemberDAOTest"/>
- -->
      		</classes>
      	</test>
+ -->
      	<test name="Raw Rest Tests">
      		<classes>
      			<class name="org.zanata.rest.service.raw.AccountRestTest"/>

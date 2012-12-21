@@ -40,6 +40,7 @@ import org.zanata.v1_3.rest.MediaTypes;
 import org.zanata.v1_3.rest.client.IAccountResource;
 import org.zanata.v1_3.rest.dto.Account;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class AccountRawCompatibilityTest extends ZanataCompatibilityTest
 {
 

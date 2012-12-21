@@ -2,10 +2,10 @@
 <suite name="Unit Tests" verbose="1">
 
 	<listeners>
-		<!-- 
-			   This ensures that ungrouped tests are treated as unit-tests: 
+		<!--
+			   This ensures that ungrouped tests are treated as unit-tests (unless they extend AbstractSeamTest) :
 		-->
-		<listener class-name="org.zanata.testing.UnitTestTransformer"/>
+		<listener class-name="org.zanata.testing.TestTransformer"/>
 	</listeners>
 
 	<test name="Unit Tests">

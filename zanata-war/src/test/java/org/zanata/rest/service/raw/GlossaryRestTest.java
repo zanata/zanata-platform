@@ -41,6 +41,7 @@ import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 
+@Test(groups = {"seam-tests"})
 public class GlossaryRestTest extends ZanataRawRestTest
 {
 

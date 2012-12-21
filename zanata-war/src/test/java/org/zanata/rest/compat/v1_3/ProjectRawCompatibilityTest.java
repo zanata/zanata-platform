@@ -54,6 +54,7 @@ import org.zanata.v1_3.rest.dto.ProjectType;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  *
  */
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class ProjectRawCompatibilityTest extends ZanataCompatibilityTest
 {
    

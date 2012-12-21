@@ -20,15 +20,14 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
 
-import org.testng.annotations.BeforeClass;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
@@ -54,28 +53,21 @@ public class NewlineLeadTrailValidationTests
 
    private NewlineLeadTrailValidation newlineLeadTrailValidation;
 
+   @Mock
    private ValidationMessages mockMessages;
-
-   @BeforeClass
-   public void mockMessages()
-   {
-      mockMessages = createMock(ValidationMessages.class);
-
-      expect(mockMessages.newlineValidatorName()).andReturn(MOCK_NEWLINE_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.newlineValidatorDescription()).andReturn(MOCK_NEWLINE_VALIDATOR_DESCRIPTION).anyTimes();
-
-      expect(mockMessages.leadingNewlineAdded()).andReturn(MOCK_LEADING_NEWLINE_ADDED_MESSAGE).anyTimes();
-      expect(mockMessages.leadingNewlineMissing()).andReturn(MOCK_LEADING_NEWLINE_MISSING_MESSAGE).anyTimes();
-      expect(mockMessages.trailingNewlineAdded()).andReturn(MOCK_TRAILING_NEWLINE_ADDED_MESSAGE).anyTimes();
-      expect(mockMessages.trailingNewlineMissing()).andReturn(MOCK_TRAILING_NEWLINE_MISSING_MESSAGE).anyTimes();
-
-      replay(mockMessages);
-   }
 
    @BeforeMethod
    public void init()
    {
+      MockitoAnnotations.initMocks(this);
       newlineLeadTrailValidation = null;
+      when(mockMessages.newlineValidatorName()).thenReturn(MOCK_NEWLINE_VALIDATOR_NAME);
+      when(mockMessages.newlineValidatorDescription()).thenReturn(MOCK_NEWLINE_VALIDATOR_DESCRIPTION);
+
+      when(mockMessages.leadingNewlineAdded()).thenReturn(MOCK_LEADING_NEWLINE_ADDED_MESSAGE);
+      when(mockMessages.leadingNewlineMissing()).thenReturn(MOCK_LEADING_NEWLINE_MISSING_MESSAGE);
+      when(mockMessages.trailingNewlineAdded()).thenReturn(MOCK_TRAILING_NEWLINE_ADDED_MESSAGE);
+      when(mockMessages.trailingNewlineMissing()).thenReturn(MOCK_TRAILING_NEWLINE_MISSING_MESSAGE);
    }
 
    @Test

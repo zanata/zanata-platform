@@ -67,7 +67,7 @@ import static org.zanata.model.TestFixture.makeTransUnit;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-test")
+@Test(groups = "unit-tests")
 public class TransMemoryMergePresenterTest
 {
    private TransMemoryMergePresenter presenter;

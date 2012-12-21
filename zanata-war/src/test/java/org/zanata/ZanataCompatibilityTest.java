@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 import org.zanata.rest.client.TestProxyFactory;
 import org.zanata.rest.service.SeamMockClientExecutor;
 
-@Test(groups="compatibility-tests")
+@Test(groups= {"compatibility-tests", "seam-tests"} )
 public abstract class ZanataCompatibilityTest extends ZanataRawRestTest
 {
    

@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response.Status;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class ProjectIterationCompatibilityTest extends ZanataCompatibilityTest
 {
 

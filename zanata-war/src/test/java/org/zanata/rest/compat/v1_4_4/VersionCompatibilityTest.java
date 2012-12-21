@@ -28,6 +28,7 @@ import org.zanata.ZanataCompatibilityTest;
 import org.zanata.v1_4_4.rest.client.IVersion;
 import org.zanata.v1_4_4.rest.dto.VersionInfo;
 
+@Test(groups = {"compatibility-tests", "seam-tests"} )
 public class VersionCompatibilityTest extends ZanataCompatibilityTest
 {
 
