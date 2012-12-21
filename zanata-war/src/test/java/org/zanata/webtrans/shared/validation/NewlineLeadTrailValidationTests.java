@@ -89,14 +89,27 @@ public class NewlineLeadTrailValidationTests
    }
 
    @Test
-   public void internalNewlinesDontCount()
+   public void internalNewlineAdded()
+   {
+      String source = "String without an internal newline.";
+      String target = "Different string \n containing a newline";
+      newlineLeadTrailValidation.validate(source, target);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.linesAdded(1, 2)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
+   }
+
+   @Test
+   public void internalNewlineRemoved()
    {
       String source = "String with an \n internal newline.";
       String target = "Different string lacking the newline";
       newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(false));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(0));
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.linesRemoved(2, 1)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
    }
 
    @Test
@@ -107,8 +120,8 @@ public class NewlineLeadTrailValidationTests
       newlineLeadTrailValidation.validate(source, target);
 
       assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.leadingNewlineMissing()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineMissing(), messages.linesRemoved(2, 1)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
    }
 
    @Test
@@ -119,8 +132,8 @@ public class NewlineLeadTrailValidationTests
       newlineLeadTrailValidation.validate(source, target);
 
       assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.leadingNewlineAdded()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineAdded(), messages.linesAdded(1, 2)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
    }
 
    @Test
@@ -131,8 +144,8 @@ public class NewlineLeadTrailValidationTests
       newlineLeadTrailValidation.validate(source, target);
 
       assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.trailingNewlineMissing()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.trailingNewlineMissing(), messages.linesRemoved(2, 1)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
    }
 
    @Test
@@ -143,8 +156,8 @@ public class NewlineLeadTrailValidationTests
       newlineLeadTrailValidation.validate(source, target);
 
       assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.trailingNewlineAdded()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.trailingNewlineAdded(), messages.linesAdded(1, 2)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
    }
 
    @Test
@@ -155,8 +168,8 @@ public class NewlineLeadTrailValidationTests
       newlineLeadTrailValidation.validate(source, target);
 
       assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineAdded()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineAdded(), messages.linesAdded(1, 3)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(3));
    }
 
    @Test
@@ -167,8 +180,8 @@ public class NewlineLeadTrailValidationTests
       newlineLeadTrailValidation.validate(source, target);
 
       assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineMissing()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineMissing(), messages.linesRemoved(3, 1)));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(3));
    }
 
    @Test

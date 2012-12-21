@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.validation.action;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -39,9 +40,11 @@ public class NewlineLeadTrailValidation extends AbstractValidation
 
    private final static String leadNewlineRegex = "^\n";
    private final static String endNewlineRegex = "\n$";
+   private final static String newlineRegex = "\n";
 
    private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
    private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
+   private final static RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
 
    @Override
    public void doValidate(String source, String target)
@@ -66,6 +69,18 @@ public class NewlineLeadTrailValidation extends AbstractValidation
       {
 
          addError(getMessages().trailingNewlineAdded());
+      }
+
+      int sourceLines = 1 + countNewlines(source);
+      int targetLines = 1 + countNewlines(target);
+      if (sourceLines < targetLines)
+      {
+         addError(getMessages().linesAdded(sourceLines, targetLines));
+      }
+
+      if (targetLines < sourceLines)
+      {
+         addError(getMessages().linesRemoved(sourceLines, targetLines));
       }
    }
 
@@ -107,5 +122,17 @@ public class NewlineLeadTrailValidation extends AbstractValidation
       }
       // no newline so can't fail
       return true;
+   }
+
+   private int countNewlines(String string)
+   {
+      int count = 0;
+      MatchResult matchResult = newlineRegExp.exec(string);
+      while (matchResult != null)
+      {
+         count++;
+         matchResult = newlineRegExp.exec(string);
+      }
+      return count;
    }
 }

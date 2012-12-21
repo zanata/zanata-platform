@@ -46,6 +46,13 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Target has more tabs (\\t) than source (source: {0}, target: {1})")
    String targetHasMoreTabs(int sourceTabs, int targetTabs);
 
+   @DefaultMessage("Too many lines in translation (expected {0}, found {1})")
+   String linesAdded(int expected, int actual);
+
+   @DefaultMessage("Not enouth lines in translation (expected {0}, found {1})")
+   String linesRemoved(int expected, int actual);
+
+
    // Printf variables validator
 
    @DefaultMessage("Printf variables")
@@ -156,6 +163,5 @@ public interface ValidationMessages extends Messages
 
    @DefaultMessage("Possible XML entity [ {0} ] does not match with pre-defined [ {1} ]")
    String invalidPredefinedEnity(String word, String preDefinedEntity);
-
 
 }
