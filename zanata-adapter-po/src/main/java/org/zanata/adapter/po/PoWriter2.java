@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -20,6 +23,8 @@ import org.fedorahosted.tennera.jgettext.PoWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
+import org.zanata.common.io.DigestWriter;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -147,13 +152,28 @@ public class PoWriter2
     * @param poFile file to be written
     * @param doc a source Resource whose translation is to be written
     * @param targetDoc translated document to be written
+    * @return
     * @throws IOException
     */
-   public void writePoToFile(File poFile, Resource doc, TranslationsResource targetDoc) throws IOException
+   public FileDetails writePoToFile(File poFile, Resource doc, TranslationsResource targetDoc) throws IOException
    {
       makeDirs(poFile.getParentFile());
+      MessageDigest md5Digest = null;
+      try
+      {
+         md5Digest = MessageDigest.getInstance("MD5");
+      }
+      catch (NoSuchAlgorithmException e)
+      {
+         throw new RuntimeException(e);
+      }
       FileWriter fWriter = new FileWriter(poFile);
-      write(fWriter, "UTF-8", doc, targetDoc);
+      DigestWriter dWriter = new DigestWriter(fWriter, md5Digest);
+      write(dWriter, "UTF-8", doc, targetDoc);
+
+      FileDetails details = new FileDetails(poFile);
+      details.setMd5(new String(Hex.encodeHex(md5Digest.digest())));
+      return details;
    }
    
    /**
