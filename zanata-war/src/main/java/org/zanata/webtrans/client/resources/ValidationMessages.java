@@ -17,23 +17,40 @@ public interface ValidationMessages extends Messages
 {
    // Newline validator
 
-   @DefaultMessage("Leading/trailing newline (¶)")
+   @DefaultMessage("Leading/trailing newline (\\n)")
    String newlineValidatorName();
 
-   @DefaultMessage("Check for consistent leading and trailing newline (¶)")
+   @DefaultMessage("Check for consistent leading and trailing newline (\\n)")
    String newlineValidatorDescription();
 
-   @DefaultMessage("Leading newline (¶) is missing")
+   @DefaultMessage("Leading newline (\\n) is missing")
    String leadingNewlineMissing();
 
-   @DefaultMessage("Unexpected leading newline (¶)")
+   @DefaultMessage("Unexpected leading newline (\\n)")
    String leadingNewlineAdded();
 
-   @DefaultMessage("Trailing newline (¶) is missing")
+   @DefaultMessage("Trailing newline (\\n) is missing")
    String trailingNewlineMissing();
 
-   @DefaultMessage("Unexpected trailing newline (¶)")
+   @DefaultMessage("Unexpected trailing newline (\\n)")
    String trailingNewlineAdded();
+
+   // Tab validator
+   @DefaultMessage("Tab characters (\\t)")
+   String tabValidatorName();
+   @DefaultMessage("Check whether source and target have the same number of tabs")
+   String tabValidatorDescription();
+
+   @DefaultMessage("Target has fewer tabs (\\t) than source (source: {0}, target: {1})")
+   String targetHasFewerTabs(int sourceTabs, int targetTabs);
+   @DefaultMessage("Target has more tabs (\\t) than source (source: {0}, target: {1})")
+   String targetHasMoreTabs(int sourceTabs, int targetTabs);
+
+   @DefaultMessage("Too many lines in translation (expected {0}, found {1})")
+   String linesAdded(int expected, int actual);
+
+   @DefaultMessage("Not enouth lines in translation (expected {0}, found {1})")
+   String linesRemoved(int expected, int actual);
 
 
    // Printf variables validator
@@ -146,6 +163,5 @@ public interface ValidationMessages extends Messages
 
    @DefaultMessage("Possible XML entity [ {0} ] does not match with pre-defined [ {1} ]")
    String invalidPredefinedEnity(String word, String preDefinedEntity);
-
 
 }

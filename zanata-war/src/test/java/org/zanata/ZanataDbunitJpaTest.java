@@ -49,7 +49,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       this.binaryDir = binaryDir;
    }
 
-   public String getBinaryDir()
+   protected String getBinaryDir()
    {
       return binaryDir;
    }
@@ -63,7 +63,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       this.replaceNull = replaceNull;
    }
 
-   public Boolean isReplaceNull()
+   protected Boolean isReplaceNull()
    {
       return replaceNull;
    }

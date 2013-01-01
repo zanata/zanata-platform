@@ -117,6 +117,7 @@ import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
+import org.zanata.webtrans.shared.validation.action.TabValidation;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 import com.google.common.collect.ImmutableList;
@@ -233,6 +234,7 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation(valMessages);
       NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation(valMessages);
+      TabValidation tabValidation = new TabValidation(valMessages);
       JavaVariablesValidation javaVariablesValidation = new JavaVariablesValidation(valMessages);
       XmlEntityValidation xmlEntityValidation = new XmlEntityValidation(valMessages);
       PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(valMessages);
@@ -242,6 +244,7 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       builder.put(htmlxmlValidation.getId(), htmlxmlValidation);
       builder.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);
+      builder.put(tabValidation.getId(), tabValidation);
       builder.put(printfVariablesValidation.getId(), printfVariablesValidation);
       builder.put(positionalPrintfValidation.getId(), positionalPrintfValidation);
       builder.put(javaVariablesValidation.getId(), javaVariablesValidation);

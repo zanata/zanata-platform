@@ -47,6 +47,8 @@ import static org.mockito.Mockito.when;
 @Test(groups = { "unit-tests" })
 public class HtmlXmlTagValidationTests
 {
+   // TODO use TestMessages
+
    // mock message strings
    private static final String MOCK_XML_HTML_VALIDATOR_DESCRIPTION = "test xml html validator description";
    private static final String MOCK_XML_HTML_VALIDATOR_NAME = "test xml html validator name";

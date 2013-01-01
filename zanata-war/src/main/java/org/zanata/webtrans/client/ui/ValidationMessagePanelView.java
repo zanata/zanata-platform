@@ -55,8 +55,6 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
       String container();
 
       String header();
-
-      String hasError();
    }
 
    @UiField
@@ -98,7 +96,6 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
          contents.add(errorLabel);
       }
       headerLabel.setText(messages.validationWarningsHeading(errors.size()));
-      headerLabel.addStyleName(style.hasError());
       setVisible(true);
    }
 
@@ -106,7 +103,6 @@ public class ValidationMessagePanelView extends Composite implements HasUpdateVa
    {
       contents.clear();
       headerLabel.setText(messages.validationWarningsHeading(0));
-      headerLabel.removeStyleName(style.hasError());
       setVisible(false);
    }
 

@@ -17,31 +17,34 @@
         {
 			font-size: 11px;
 			font-weight: bold;
-			text-decoration: underline;
+			color:#FFFFFF;
 		}
 
         .label {
             font-size: 11px;
+            color:#D14836;
         }
 
         .header {
-            width: 100%;
             text-indent: 5px;
             cursor: pointer;
-            color: #686868;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+            background:#D14836;
         }
+        
+        .header tr:hover
+        {
+			background:#D14836;
+			color:#FFFFFF;
+			text-decoration:underline;
+		}
 
         .content {
             color: #D14836;
         }
-
-        .hasError {
-            color: #D14836;
-            font-weight: bold;
-        }
+      
     </ui:style>
 
 	

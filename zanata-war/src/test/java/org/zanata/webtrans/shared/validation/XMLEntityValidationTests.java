@@ -39,6 +39,8 @@ import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 @Test(groups = { "unit-tests" })
 public class XMLEntityValidationTests
 {
+   // TODO use TestMessages
+
    // mock message strings
    private static final String MOCK_ENTITY_VALIDATOR_NAME = "test xml entity validator name";
    private static final String MOCK_ENTITY_VALIDATOR_DESCRIPTION = "test xml entity validator description";
