@@ -20,6 +20,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -136,14 +137,21 @@ public class ETagUtils
       try
       {
          doc.writeHashState(hashBuffer);
-         doc.getPoHeader().writeHashState(hashBuffer);
+         if( doc.getPoHeader() != null )
+         {
+            doc.getPoHeader().writeHashState(hashBuffer);
+         }
          // TODO This might need to be a query to avoid N+1 problems
          for( HTextFlow tf : doc.getTextFlows() )
          {
             if( tf.getTargets().containsKey( locale.getId() ) )
             {
-               tf.getTargets().get( locale.getId() ).writeHashState(hashBuffer);
-               tf.getTargets().get( locale.getId() ).getComment().writeHashState(hashBuffer);
+               HTextFlowTarget textFlowTarget = tf.getTargets().get(locale.getId());
+               textFlowTarget.writeHashState(hashBuffer);
+               if( textFlowTarget.getComment() != null )
+               {
+                  textFlowTarget.getComment().writeHashState(hashBuffer);
+               }
             }
          }
       }

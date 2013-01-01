@@ -209,7 +209,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       resourceUtils.validateExtensions(extensions);
 
       // Check Etag header
-      EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration, id, hLocale, extensions);;
+      EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration, id, hLocale, extensions);
       List<String> requestedEtag = headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
       if( requestedEtag != null )
       {
