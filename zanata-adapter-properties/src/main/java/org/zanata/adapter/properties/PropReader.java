@@ -182,8 +182,12 @@ public class PropReader
       return 0;
    }
 
-   private String getID(String key, String val)
+   private String getID(String key, String val) throws IOException
    {
+      if (key.length() > 255)
+      {
+         throw new IOException("Zanata does not support properties key exceeding 255 characters");
+      }
       return key;
    }
 
