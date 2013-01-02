@@ -6,7 +6,7 @@ import org.zanata.client.commands.PublicanPullCommand;
 import org.zanata.client.commands.PublicanPullOptions;
 
 /**
- * Pulls translated text from Zanata. DEPRECATED: please use generic "pull"
+ * Pulls translated text from Zanata. DEPRECATED: use 'pull' with projectType 'podir'
  * goal.
  * 
  * @goal publican-pull

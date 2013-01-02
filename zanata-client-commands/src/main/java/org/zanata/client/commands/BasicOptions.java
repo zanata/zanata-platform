@@ -47,7 +47,8 @@ public interface BasicOptions
 
    /**
     * Used to generate the command line interface and its usage help. This name
-    * should match the Maven Mojo's 'goal' annotation.
+    * should match the Maven Mojo's 'goal' annotation must match the optionsMap
+    * key in ZanataClient.
     * 
     * @return
     */

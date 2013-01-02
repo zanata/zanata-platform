@@ -105,7 +105,7 @@ public class GetStatisticsOptionsImpl extends ConfigurableProjectOptionsImpl imp
    @Override
    public String getCommandName()
    {
-      return "getstatistics";
+      return "stats";
    }
 
    @Override

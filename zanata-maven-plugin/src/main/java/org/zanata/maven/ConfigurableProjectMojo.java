@@ -50,6 +50,9 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> ext
     * Type of project ("properties" = Java .properties, "podir" = publican-style
     * gettext directories, "raw" = EXPERIMENTAL raw documents of various types).
     * 
+    * If 'raw' is used, transDir must not be that same as or nested within srcDir,
+    * and vice versa.
+    * 
     * @parameter expression="${zanata.projectType}"
     */
    private String projectType;

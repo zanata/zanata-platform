@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>7</version>
+    <version>9-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -19,12 +19,17 @@
 	</scm>
 
     <properties>
-      <zanata.api.version>2.0.0</zanata.api.version>
+      <zanata.api.version>2.0.2-SNAPSHOT</zanata.api.version>
       <zanata.common.version>1.8.6-SNAPSHOT</zanata.common.version>
     </properties>
 
    <dependencyManagement>
       <dependencies>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-client-commands</artifactId>
@@ -60,13 +65,32 @@
             <artifactId>zanata-adapter-xliff</artifactId>
             <version>${zanata.common.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-common-util</artifactId>
+            <version>${zanata.common.version}</version>
+        </dependency>
       </dependencies>
    </dependencyManagement>
 
+   <dependencies>
+      <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+      </dependency>
+      <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-common-util</artifactId>
+            <version>${zanata.common.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+      </dependency>
+   </dependencies>
+
   <modules>
+    <module>zanata-cli</module>
     <module>zanata-client-commands</module>
-    <module>zanata-client-ant-po</module>
-    <module>zanata-client-ant-properties</module>
     <module>zanata-maven-plugin</module>
     <module>zanata-rest-client</module>
   </modules>

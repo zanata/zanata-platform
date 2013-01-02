@@ -6,7 +6,7 @@ import org.zanata.client.commands.PutUserOptions;
 /**
  * Creates or updates a Zanata user.
  * 
- * @goal putuser
+ * @goal put-user
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
@@ -170,6 +170,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements Put
    @Override
    public String getCommandName()
    {
-      return "putuser";
+      return "put-user";
    }
 }

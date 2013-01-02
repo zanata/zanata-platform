@@ -12,7 +12,7 @@ public class ListRemoteOptionsImpl extends ConfigurableProjectOptionsImpl
    @Override
    public String getCommandName()
    {
-      return "listremote";
+      return "list-remote";
    }
 
    @Override

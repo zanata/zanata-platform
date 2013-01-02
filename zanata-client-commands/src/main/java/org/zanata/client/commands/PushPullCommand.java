@@ -22,6 +22,10 @@
 package org.zanata.client.commands;
 
 import java.io.Console;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
@@ -31,10 +35,13 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.UnmarshalException;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.etag.ETagCache;
+import org.zanata.client.etag.ETagCacheReaderWriter;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
@@ -54,6 +61,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
    protected final ISourceDocResource sourceDocResource;
    protected final ITranslatedDocResource translationResources;
    protected URI uri;
+   protected ETagCache eTagCache;
    private Marshaller marshaller;
    private String modulePrefix;
 
@@ -64,6 +72,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
       this.translationResources = translationResources;
       this.uri = uri;
       this.modulePrefix = opts.getEnableModules() ? getOpts().getCurrentModule() + opts.getModuleSuffix() : "";
+      this.loadETagCache();
    }
 
    private PushPullCommand(O opts, ZanataProxyFactory factory)
@@ -183,6 +192,47 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
       ClientUtility.checkResult(getResponse, uri);
       List<ResourceMeta> remoteDocList = getResponse.getEntity();
       return remoteDocList;
+   }
+
+   protected void loadETagCache()
+   {
+      try
+      {
+         String location = ".zanata-cache" + File.separator + "etag-cache.xml";
+         if( modulePrefix != null && !modulePrefix.trim().isEmpty() )
+         {
+            location = modulePrefix + File.separator + location;
+         }
+         eTagCache = ETagCacheReaderWriter.readCache( new FileInputStream(location));
+      }
+      catch (Exception e)
+      {
+         // could not read for some reason, use a new one
+         eTagCache = new ETagCache();
+      }
+   }
+
+   protected void storeETagCache()
+   {
+      try
+      {
+         String location = ".zanata-cache" + File.separator + "etag-cache.xml";
+         if( modulePrefix != null && !modulePrefix.trim().isEmpty() )
+         {
+            location = modulePrefix + File.separator + location;
+         }
+
+         File targetFile = new File(location);
+         if( !targetFile.exists() )
+         {
+            targetFile.getParentFile().mkdirs();
+         }
+         ETagCacheReaderWriter.writeCache(this.eTagCache, new FileOutputStream(location));
+      }
+      catch (FileNotFoundException e)
+      {
+         log.warn("Could not create Zanata ETag cache file. Will proceed without it.");
+      }
    }
 
 }

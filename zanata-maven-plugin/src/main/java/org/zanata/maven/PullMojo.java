@@ -24,7 +24,7 @@ import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.RawPullCommand;
-import org.zanata.client.commands.push.PushPullType;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -64,6 +64,23 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    private boolean includeFuzzy = false;
 
    /**
+    * Whether to purge the cache before performing the pull operation. This means that all
+    * documents will be fetched from the server anew.
+    *
+    * @parameter expression="${zanata.purgeCache}" default-value="false"
+    */
+   private boolean purgeCache;
+
+   /**
+    * Whether to use an Entity cache when fetching documents. When using the cache, documents
+    * that have been retrieved previously and have not changed since then will not be retrieved
+    * again.
+    *
+    * @parameter expression="${zanata.useCache}" default-value="true"
+    */
+   private boolean useCache;
+
+   /**
     * Type of pull to perform from the server: "source" pulls source documents only.
     * "trans" pulls translation documents only.
     * "both" pulls both source and translation documents.
@@ -83,6 +100,12 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
 
    // Cached copy of the effective locales to avoid calculating it more than once
    private LocaleList effectiveLocales;
+
+   /**
+    * Whether tabs should be encoded as \t (true) or left as tabs (false).
+    * @parameter expression="${zanata.encodeTabs}" default-value="true"
+    */
+   private boolean encodeTabs = true;
 
 
    public PullMojo() throws Exception
@@ -109,9 +132,27 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    }
 
    @Override
+   public boolean getEncodeTabs()
+   {
+      return encodeTabs;
+   }
+
+   @Override
    public boolean getIncludeFuzzy()
    {
       return includeFuzzy;
+   }
+
+   @Override
+   public boolean getPurgeCache()
+   {
+      return purgeCache;
+   }
+
+   @Override
+   public boolean getUseCache()
+   {
+      return useCache;
    }
 
    @Override

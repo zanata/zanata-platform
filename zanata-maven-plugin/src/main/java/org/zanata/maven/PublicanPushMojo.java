@@ -7,7 +7,7 @@ import org.zanata.client.commands.PublicanPushOptions;
 
 /**
  * Pushes publican source text to a Zanata project version so that it can be
- * translated. DEPRECATED: please use generic "push" goal.
+ * translated. DEPRECATED: use 'push' with projectType 'podir'.
  * 
  * @goal publican-push
  * @requiresOnline true

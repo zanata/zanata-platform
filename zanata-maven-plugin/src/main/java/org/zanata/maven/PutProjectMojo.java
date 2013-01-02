@@ -6,7 +6,7 @@ import org.zanata.client.commands.PutProjectOptions;
 /**
  * Creates or updates a Zanata project.
  * 
- * @goal putproject
+ * @goal put-project
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
@@ -81,6 +81,6 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
    @Override
    public String getCommandName()
    {
-      return "putproject";
+      return "put-project";
    }
 }

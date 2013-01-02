@@ -12,7 +12,7 @@ public class ListLocalOptionsImpl extends ConfigurableProjectOptionsImpl
    @Override
    public String getCommandName()
    {
-      return "listlocal";
+      return "list-local";
    }
 
    @Override

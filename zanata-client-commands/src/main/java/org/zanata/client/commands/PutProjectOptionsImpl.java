@@ -16,7 +16,7 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    @Override
    public String getCommandName()
    {
-      return "putproject";
+      return "put-project";
    }
 
    @Override

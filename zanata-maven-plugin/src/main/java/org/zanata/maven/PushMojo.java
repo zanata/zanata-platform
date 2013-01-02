@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
-import org.zanata.client.commands.push.PushPullType;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
@@ -72,7 +72,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 
    /**
     * Whether the server should copy latest translations from equivalent
-    * messages/documents in the database (only applies to new documents)
+    * messages/documents in the database
     * 
     * @parameter expression="${zanata.copyTrans}" default-value="true"
     */
@@ -94,7 +94,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private String merge;
 
    /**
-    * Wildcard pattern to include file and directory. This parameter is only
+    * Wildcard pattern to include files and directories. This parameter is only
     * needed for some project types, eg XLIFF, Properties. Usage
     * -Dzanata.includes="src/myfile*.xml,**&#47*.xliff.xml"
     * 
@@ -103,7 +103,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private String includes;
 
    /**
-    * Wildcard pattern to exclude file and directory. Usage
+    * Wildcard pattern to exclude files and directories. Usage
     * -Dzanata.excludes="Pattern1,Pattern2,Pattern3"
     * 
     * @parameter expression="${zanata.excludes}"
@@ -111,7 +111,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private String excludes;
 
    /**
-    * Add default excludes to the exclude filters.
+    * Add default excludes (.svn, .git, etc) to the exclude filters.
     * 
     * @parameter expression="${zanata.defaultExcludes}" default-value="true"
     */
@@ -174,8 +174,8 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    
    
    /**
-    * Run validation check against file. Only apply to Xliff project type.
-    * "CONTENT" - content validation check. "XSD" - validation check against
+    * Run validation check against file. Only applies to XLIFF project type.
+    * "CONTENT" - content validation check (quick). "XSD" - validation check against
     * xliff 1.1 schema -
     * http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd.
     * 

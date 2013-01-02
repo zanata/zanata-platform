@@ -32,7 +32,7 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl impl
    @Override
    public String getCommandDescription()
    {
-      return "Pulls translated text from Zanata.";
+      return "Pulls translated text from Zanata. DEPRECATED: use 'pull' with projectType 'podir'";
    }
 
    @Option(aliases = { "-d" }, name = "--dst", metaVar = "DIR", required = true, usage = "Base directory for publican files (with subdirectory \"pot\" and locale directories)")

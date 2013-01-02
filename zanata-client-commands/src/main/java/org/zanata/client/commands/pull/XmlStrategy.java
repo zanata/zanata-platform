@@ -29,6 +29,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -38,15 +39,15 @@ import org.zanata.util.PathUtil;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class XmlStrategy implements PullStrategy
+public class XmlStrategy extends AbstractPullStrategy
 {
    private JAXBContext jaxbContext;
    private Marshaller marshaller;
-   private PullOptions pullOptions;
    StringSet extensions = new StringSet("comment;gettext");
 
-   public XmlStrategy()
+   protected XmlStrategy(PullOptions opts)
    {
+      super(opts);
       try
       {
          jaxbContext = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
@@ -57,12 +58,6 @@ public class XmlStrategy implements PullStrategy
       {
          throw new RuntimeException(e);
       }
-   }
-
-   @Override
-   public void setPullOptions(PullOptions opts)
-   {
-      this.pullOptions = opts;
    }
 
    @Override
@@ -87,7 +82,7 @@ public class XmlStrategy implements PullStrategy
       try
       {
          String filename = docNameToFilename(doc.getName());
-         File srcFile = new File(pullOptions.getSrcDir(), filename);
+         File srcFile = new File(getOpts().getSrcDir(), filename);
          PathUtil.makeParents(srcFile);
          marshaller.marshal(doc, srcFile);
       }
@@ -98,14 +93,22 @@ public class XmlStrategy implements PullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping locale, TranslationsResource targetDoc) throws IOException
+   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
+   {
+      String filename = docNameToFilename(docName, localeMapping);
+      File transFile = new File(getOpts().getTransDir(), filename);
+      return transFile;
+   }
+
+   @Override
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locale, TranslationsResource targetDoc) throws IOException
    {
       try
       {
-         String filename = docNameToFilename(docName, locale);
-         File transFile = new File(pullOptions.getTransDir(), filename);
+         File transFile = getTransFileToWrite(docName, locale);
          PathUtil.makeParents(transFile);
          marshaller.marshal(targetDoc, transFile);
+         return null;
       }
       catch (JAXBException e)
       {

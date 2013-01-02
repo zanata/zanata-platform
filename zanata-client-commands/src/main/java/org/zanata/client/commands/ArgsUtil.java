@@ -5,6 +5,8 @@ package org.zanata.client.commands;
 
 import java.io.PrintStream;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
@@ -20,17 +22,14 @@ public class ArgsUtil
    private final AppAbortStrategy abortStrategy;
    private final PrintStream out;
    private final PrintStream err;
+   private final String clientName;
 
-   public ArgsUtil(AppAbortStrategy strategy, PrintStream out, PrintStream err)
+   public ArgsUtil(AppAbortStrategy strategy, PrintStream out, PrintStream err, String clientName)
    {
       this.abortStrategy = strategy;
       this.out = out;
       this.err = err;
-   }
-
-   public static void processArgs(String[] args, BasicOptions opts)
-   {
-      new ArgsUtil(new SystemExitStrategy(), System.out, System.err).process(args, opts);
+      this.clientName = clientName;
    }
 
    public void process(String[] args, BasicOptions opts)
@@ -74,13 +73,13 @@ public class ArgsUtil
       {
          if (opts instanceof ConfigurableOptions)
             OptionsUtil.applyConfigFiles((ConfigurableOptions) opts);
-         ZanataCommand cmd = opts.initCommand();
          // just in case the logging options were changed by a config file:
          setLogLevels(opts);
          if (opts.getErrors())
          {
             log.info("Error stacktraces are turned on.");
          }
+         ZanataCommand cmd = opts.initCommand();
          cmd.run();
       }
       catch (Exception e)
@@ -93,11 +92,11 @@ public class ArgsUtil
    {
       if (opts.getDebug())
       {
-         enableDebugLogging();
+         enableDebugLogging(opts);
       }
       else if (opts.getQuiet())
       {
-         enableQuietLogging();
+         enableQuietLogging(opts);
       }
    }
 
@@ -106,10 +105,9 @@ public class ArgsUtil
     * slf4j framework doesn't provide any way of doing this, so we have to go to
     * the underlying framework (assumed to be log4j).
     */
-   private static void enableDebugLogging()
+   private static void enableDebugLogging(BasicOptions opts)
    {
-      org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
-      root.setLevel(org.apache.log4j.Level.DEBUG);
+      setRootLoggerLevel("DEBUG", opts);
    }
 
    /**
@@ -117,15 +115,30 @@ public class ArgsUtil
     * slf4j framework doesn't provide any way of doing this, so we have to go to
     * the underlying framework (assumed to be log4j).
     */
-   private static void enableQuietLogging()
+   private static void enableQuietLogging(BasicOptions opts)
    {
-      org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
-      root.setLevel(org.apache.log4j.Level.ERROR);
+      setRootLoggerLevel("ERROR", opts);
    }
 
-   private static void printHelp(BasicOptions cmd, PrintStream output)
+   private static void setRootLoggerLevel(String level, BasicOptions opts)
    {
-      output.println("Usage: " + cmd.getCommandName() + " [options]");
+      try
+      {
+         LogManager.getRootLogger().setLevel(Level.toLevel(level));
+      }
+      catch (Exception e)
+      {
+         System.err.println("Unable to change logging level: "+e.toString());
+         if (opts.getErrors())
+         {
+            e.printStackTrace();
+         }
+      }
+   }
+
+   private void printHelp(BasicOptions cmd, PrintStream output)
+   {
+      output.println("Usage: " + clientName + " " + cmd.getCommandName() + " [options]");
       output.println(cmd.getCommandDescription());
       output.println();
    }
