@@ -47,6 +47,8 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    private boolean dryRun;
    private boolean encodeTabs;
    private boolean includeFuzzy;
+   private boolean useCache;
+   private boolean purgeCache;
 
    @Override
    public ZanataCommand initCommand()
@@ -202,5 +204,17 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    public void setIncludeFuzzy(boolean includeFuzzy)
    {
       this.includeFuzzy = includeFuzzy;
+   }
+
+   @Override
+   public boolean getPurgeCache()
+   {
+      return purgeCache;
+   }
+
+   @Override
+   public boolean getUseCache()
+   {
+      return useCache;
    }
 }

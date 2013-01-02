@@ -66,7 +66,7 @@ public class PropertiesStrategy extends AbstractPullStrategy
    public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
    {
       // TODO This is the same as PropWriter's file, but code is duplicated
-      return new File(getPullOptions().getTransDir(), docName + "_" + localeMapping.getJavaLocale() + ".properties");
+      return new File(getOpts().getTransDir(), docName + "_" + localeMapping.getJavaLocale() + ".properties");
    }
 
    @Override
@@ -76,7 +76,7 @@ public class PropertiesStrategy extends AbstractPullStrategy
       if (createSkeletons)
          PropWriter.write(doc, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
-         PropWriter.write(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+         PropWriter.write(null, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
 
       return null;
    }

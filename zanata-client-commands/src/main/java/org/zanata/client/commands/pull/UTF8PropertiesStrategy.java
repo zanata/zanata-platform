@@ -54,7 +54,7 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy
       if (createSkeletons)
          PropWriter.writeUTF8(doc, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
-         PropWriter.writeUTF8(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+         PropWriter.writeUTF8(null, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
 
       return null;
    }

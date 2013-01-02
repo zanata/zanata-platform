@@ -96,7 +96,7 @@ public class XmlStrategy extends AbstractPullStrategy
    public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
    {
       String filename = docNameToFilename(docName, localeMapping);
-      File transFile = new File(pullOptions.getTransDir(), filename);
+      File transFile = new File(getOpts().getTransDir(), filename);
       return transFile;
    }
 

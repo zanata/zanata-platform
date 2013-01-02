@@ -66,13 +66,13 @@ public class XliffStrategy extends AbstractPullStrategy
    public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
    {
       // TODO This is the same as XliffWriter's used file, but code is duplicated
-      return new File(opts.getTransDir(), docName + "_" + localeMapping.getLocalLocale().replace('-', '_') + ".xml");
+      return new File(getOpts().getTransDir(), docName + "_" + localeMapping.getLocalLocale().replace('-', '_') + ".xml");
    }
 
    @Override
    public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      XliffWriter.write(opts.getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, opts.getCreateSkeletons());
+      XliffWriter.write(getOpts().getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, getOpts().getCreateSkeletons());
       return null;
    }
 
