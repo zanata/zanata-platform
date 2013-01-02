@@ -186,7 +186,7 @@ public class PropReader
    {
       if (key.length() > 255)
       {
-         throw new IOException("Zanata does not support properties key exceeding 255 characters");
+         throw new IOException("Zanata does not support property keys exceeding 255 characters");
       }
       return key;
    }
