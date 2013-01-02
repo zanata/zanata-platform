@@ -1119,6 +1119,12 @@ a.version_link:hover {
 	font-weight:bold;
 	color:#595959;
 }
+
+a.table_link span.nativeName, span.nativeName
+{
+	font-size:11px;	
+	font-style:italic;
+}
 /* -----------------------  End project iteration CSS  -------------------------*/
 
 /* -----------------------  Project Iteration Files CSS  -----------------------------*/

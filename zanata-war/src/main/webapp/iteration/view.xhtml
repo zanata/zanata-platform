@@ -60,24 +60,14 @@
 								<f:param name="localeId" value="#{stats.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
 								<h:outputText value="#{stats.locale}" />
+								<rich:spacer width="5px"/>
+								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
 							</h:outputLink>
-							<h:outputText value="#{stats.locale}"
-								rendered="#{not identity.loggedIn}" />
-						</rich:column>
-						<rich:column sortBy="#{stats.nativeName}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">#{messages['jsf.Name']}</f:facet>
-							<h:outputLink rendered="#{identity.loggedIn}"
-								value="#{request.contextPath}/webtrans/Application.seam"
-								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<f:param name="locale" value="#{locale.language}" />
-								<h:outputText value="#{stats.nativeName}" />
-							</h:outputLink>
-							<h:outputText value="#{stats.nativeName}"
-								rendered="#{not identity.loggedIn}" />
+							<s:fragment rendered="#{not identity.loggedIn}" >
+								<h:outputText value="#{stats.locale}" />
+								<rich:spacer width="5px"/>
+								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
+							</s:fragment>	
 						</rich:column>
 						<rich:column id="files"
 							rendered="#{identity.loggedIn}"

@@ -61,7 +61,7 @@
 	            <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
 	            <span class="#{identityManager.isUserEnabled(user) ? 'icon-ok checkmark' : 'icon-remove cross'}"/>
 	          </h:column>
-	          <h:column width="auto">
+	          <h:column width="100px">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
 	              <h:commandButton value="#{messages['jsf.Edit']}" action="#{userAction.editUser(userSearch.selectedUser)}"/>
