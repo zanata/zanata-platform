@@ -71,7 +71,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
       {
          throw new RuntimeException("unknown project type: " + getOpts().getProjectType());
       }
-      Constructor<? extends PullStrategy> ctor = clazz.getConstructor(PullOptions.class);
+      Constructor<? extends PullStrategy> ctor = clazz.getDeclaredConstructor(PullOptions.class);
       assert ctor != null: "strategy must have constructor which accepts PullOptions";
       return ctor.newInstance(getOpts());
    }
