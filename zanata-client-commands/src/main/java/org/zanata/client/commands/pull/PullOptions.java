@@ -34,4 +34,6 @@ public interface PullOptions extends PushPullOptions
    boolean getCreateSkeletons();
    boolean getEncodeTabs();
    boolean getIncludeFuzzy();
+   boolean getPurgeCache();
+   boolean getUseCache();
 }

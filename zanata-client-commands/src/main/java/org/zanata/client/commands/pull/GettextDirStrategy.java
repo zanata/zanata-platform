@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -40,13 +41,20 @@ public class GettextDirStrategy extends AbstractGettextPullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
    {
-      String localLocale = locMapping.getLocalLocale();
+      String localLocale = localeMapping.getLocalLocale();
       // write the PO file to $locale/$name.po
       File localeDir = new File(getOpts().getTransDir(), localLocale);
-      File transFile = new File(localeDir, doc.getName() + ".po");
-      getPoWriter().writePoToFile(transFile, doc, targetDoc);
+      File transFile = new File(localeDir, docName + ".po");
+      return transFile;
+   }
+
+   @Override
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   {
+      File transFile = getTransFileToWrite(docName, locMapping);
+      return getPoWriter().writePoToFile(transFile, doc, targetDoc);
    }
 
 }

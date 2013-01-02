@@ -19,7 +19,7 @@
 	</scm>
 
     <properties>
-      <zanata.api.version>2.0.0</zanata.api.version>
+      <zanata.api.version>2.0.2-SNAPSHOT</zanata.api.version>
       <zanata.common.version>1.8.6-SNAPSHOT</zanata.common.version>
     </properties>
 
@@ -63,6 +63,11 @@
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-xliff</artifactId>
+            <version>${zanata.common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-common-util</artifactId>
             <version>${zanata.common.version}</version>
         </dependency>
       </dependencies>

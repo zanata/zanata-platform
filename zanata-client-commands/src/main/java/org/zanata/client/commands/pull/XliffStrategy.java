@@ -21,10 +21,12 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.xliff.XliffWriter;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -61,9 +63,17 @@ public class XliffStrategy extends AbstractPullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
+   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
    {
-      XliffWriter.write(getOpts().getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, getOpts().getCreateSkeletons());
+      // TODO This is the same as XliffWriter's used file, but code is duplicated
+      return new File(opts.getTransDir(), docName + "_" + localeMapping.getLocalLocale().replace('-', '_') + ".xml");
+   }
+
+   @Override
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
+   {
+      XliffWriter.write(opts.getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, opts.getCreateSkeletons());
+      return null;
    }
 
 }

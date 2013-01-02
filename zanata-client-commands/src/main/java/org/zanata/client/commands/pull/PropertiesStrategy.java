@@ -21,10 +21,12 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -61,13 +63,22 @@ public class PropertiesStrategy extends AbstractPullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
+   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
+   {
+      // TODO This is the same as PropWriter's file, but code is duplicated
+      return new File(getPullOptions().getTransDir(), docName + "_" + localeMapping.getJavaLocale() + ".properties");
+   }
+
+   @Override
+   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
       boolean createSkeletons = getOpts().getCreateSkeletons();
       if (createSkeletons)
          PropWriter.write(doc, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
-         PropWriter.write(null, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+         PropWriter.write(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+
+      return null;
    }
 
 }
