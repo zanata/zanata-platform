@@ -28,8 +28,10 @@ import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -43,6 +45,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
@@ -68,6 +71,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @UiField
    RadioButton statsByMsg, statsByWord;
 
+   @UiField
+   PushButton downloadAllFiles;
+
    @UiField(provided = true)
    DocumentListPager pager;
 
@@ -75,14 +81,16 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
 
    private final Resources resources;
    private final WebTransMessages messages;
+   private final UserWorkspaceContext userworkspaceContext;
 
    private ListDataProvider<DocumentNode> dataProvider;
 
    @Inject
-   public DocumentListView(Resources resources, WebTransMessages messages)
+   public DocumentListView(Resources resources, WebTransMessages messages, UserWorkspaceContext userworkspaceContext)
    {
       this.resources = resources;
       this.messages = messages;
+      this.userworkspaceContext = userworkspaceContext;
 
       dataProvider = new ListDataProvider<DocumentNode>();
 
@@ -92,6 +100,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
 
       initWidget(uiBinder.createAndBindUi(this));
       
+      downloadAllFiles.setText("Download all files (zip)");
+
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
       statsByMsg.setText(messages.byMessage());
@@ -173,6 +183,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       }
    }
 
+   @UiHandler("downloadAllFiles")
+   public void onDownloadAllFilesClick(ClickEvent event)
+   {
+      listener.downloadAllFiles();
+   }
+
    @Override
    public void setStatsFilter(String option)
    {
@@ -208,7 +224,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @Override
    public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
    {
-      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel);
+      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
       dataProvider.addDataDisplay(documentListTable);
 
       documentListContainer.clear();

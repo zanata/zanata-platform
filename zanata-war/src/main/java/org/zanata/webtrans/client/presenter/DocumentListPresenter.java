@@ -32,6 +32,7 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -40,6 +41,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
@@ -48,9 +50,13 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -67,6 +73,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
+   
+   private final CachingDispatchAsync dispatcher;
 
    /**
     * For quick lookup of document id by full path (including document name).
@@ -100,9 +108,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    };
 
    @Inject
-   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
+   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
+      this.dispatcher = dispatcher;
       this.userworkspaceContext = userworkspaceContext;
       this.messages = messages;
       this.history = history;
@@ -374,5 +383,25 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       {
          display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       }
+   }
+
+   @Override
+   public void downloadAllFiles()
+   {
+      WorkspaceId workspaceId = userworkspaceContext.getWorkspaceContext().getWorkspaceId();
+      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId()), new AsyncCallback<NoOpResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable generate all files to download"));
+         }
+
+         @Override
+         public void onSuccess(NoOpResult result)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded all files"));
+         }
+      });
    }
 }

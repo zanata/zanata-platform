@@ -22,11 +22,12 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
 
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.table.column.RemainingHoursColumn;
+import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
-import org.zanata.webtrans.client.ui.table.column.TranslatedColumn;
-import org.zanata.webtrans.client.ui.table.column.UntranslatedColumn;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.cell.client.IconCellDecorator;
 import com.google.gwt.cell.client.TextCell;
@@ -37,6 +38,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -86,12 +88,12 @@ public class DocumentListTable extends CellTable<DocumentNode>
    private final StatisticColumn statisticColumn;
    private final RemainingHoursColumn remainingColumn;
    
-   private final TextColumn<DocumentNode> lastModifiedDateColumn;
-   private final TextColumn<DocumentNode> lastModifiedByColumn;
+   private final TextColumn<DocumentNode> lastModifiedColumn;
+   private final StaticWidgetColumn<DocumentNode, Anchor> actionColumn;
 
    private final StatisticHeader statisticColumnHeader;
 
-   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final SingleSelectionModel<DocumentNode> selectionModel)
+   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final SingleSelectionModel<DocumentNode> selectionModel, final WorkspaceId workspaceId)
    {
       super(15, (CellTableResources) GWT.create(CellTableResources.class));
 
@@ -119,26 +121,32 @@ public class DocumentListTable extends CellTable<DocumentNode>
       statisticColumn = new StatisticColumn(messages);
       remainingColumn = new RemainingHoursColumn(messages);
       
-      lastModifiedDateColumn = new TextColumn<DocumentNode>()
+      lastModifiedColumn = new TextColumn<DocumentNode>()
       {
          @Override
          public String getValue(DocumentNode object)
          {
+            String date = "";
             if(object.getDocInfo().getLastChanged() != null)
             {
-               String date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
-               return date;
+               date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
             }
-            return "";
+
+            String modifiedBy = object.getDocInfo().getLastModifiedBy();
+
+            return modifiedBy + " " + date;
          }
       };
-      
-      lastModifiedByColumn = new TextColumn<DocumentNode>()
+
+      actionColumn = new StaticWidgetColumn<DocumentNode, Anchor>()
       {
          @Override
-         public String getValue(DocumentNode object)
+         public Anchor getValue(DocumentNode object)
          {
-            return object.getDocInfo().getLastModifiedBy();
+            Anchor anchor = new Anchor(".po");
+            anchor.setHref(Application.getFileDownloadURL(workspaceId, object.getDocInfo().getName()));
+
+            return anchor;
          }
       };
 
@@ -146,7 +154,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
       documentColumn.setSortable(true);
       statisticColumn.setSortable(true);
       remainingColumn.setSortable(true);
-      lastModifiedDateColumn.setSortable(true);
+      lastModifiedColumn.setSortable(true);
       
       
       addColumn(directoryColumn, messages.columnHeaderDirectory());
@@ -163,11 +171,11 @@ public class DocumentListTable extends CellTable<DocumentNode>
       remainingColumn.setCellStyleNames("remainingCol");
       addColumn(remainingColumn, messages.columnHeaderRemaining());
       
-      lastModifiedDateColumn.setCellStyleNames("lastModifiedDateCol");
-      addColumn(lastModifiedDateColumn, "Last Modified Date");
-      
-      lastModifiedByColumn.setCellStyleNames("lastModifiedByCol");
-      addColumn(lastModifiedByColumn, "Last Modified By");
+      lastModifiedColumn.setCellStyleNames("lastModifiedCol");
+      addColumn(lastModifiedColumn, "Last Modified");
+
+      // actionColumn.setCellStyleNames("actionCol");
+      // addColumn(actionColumn, "Action");
 
       addSorting(dataProvider);
    }
@@ -222,6 +230,26 @@ public class DocumentListTable extends CellTable<DocumentNode>
                return 0;
             }
             return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
+         }
+      });
+
+      columnSortHandler.setComparator(lastModifiedColumn, new Comparator<DocumentNode>()
+      {
+         public int compare(DocumentNode o1, DocumentNode o2)
+         {
+            if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+            {
+               return 0;
+            }
+            if (o1.getDocInfo().getLastChanged() == null)
+            {
+               return -1;
+            }
+            if (o2.getDocInfo().getLastChanged() == null)
+            {
+               return 1;
+            }
+            return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
          }
       });
       addColumnSortHandler(columnSortHandler);

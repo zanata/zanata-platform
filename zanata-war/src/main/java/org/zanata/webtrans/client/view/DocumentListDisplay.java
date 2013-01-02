@@ -67,6 +67,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void fireFilterToken(String value);
 
       void fireDocumentSelection(DocumentInfo doc);
+
+      void downloadAllFiles();
    }
 
    void setThemes(String style);

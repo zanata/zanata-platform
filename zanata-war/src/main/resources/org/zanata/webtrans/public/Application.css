@@ -547,24 +547,15 @@ td.ApprovedStateDecoration div div div
 	text-align:center;
 }
 
-.DocumentListTable td.translatedCol {
-	font-weight:bold;
-	font-size:14px;
-	color:#006200;
-	text-align:center;
-}
-
-.DocumentListTable td.untranslatedCol {
-	font-weight:bold;
-	font-size:14px;
-	color:#818181;
-	text-align:center;
-}
-
 .DocumentListTable td.remainingCol {
 	font-weight:bold;
 	font-size:14px;
 	color:#910000;
+	text-align:center;
+}
+
+.DocumentListTable td.lastModifiedCol { 
+	font-size:12px;
 	text-align:center;
 }
 
