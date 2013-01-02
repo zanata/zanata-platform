@@ -532,7 +532,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   break;
 
                case Running:
-                  ConsoleUtils.setProgressFeedbackMessage(status.getPercentageComplete() + "%");
+                  ConsoleUtils.setProgressFeedbackMessage(status.getPercentageComplete() + "%%");
                   break;
 
                case Waiting:
@@ -641,7 +641,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          {
             log.warn("Interrupted while waiting for Copy Trans to finish.");
          }
-         ConsoleUtils.setProgressFeedbackMessage(copyTransStatus.getPercentageComplete() + "%");
+         ConsoleUtils.setProgressFeedbackMessage(copyTransStatus.getPercentageComplete() + "%%");
          copyTransStatus =
                this.copyTransResource.getCopyTransStatus(getOpts().getProj(), getOpts().getProjectVersion(), docName);
       }
