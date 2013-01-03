@@ -24,6 +24,8 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
+import org.zanata.webtrans.client.ui.HasDownloadFileHandler;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
@@ -53,7 +55,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListView extends Composite implements DocumentListDisplay, HasSelectionHandlers<DocumentInfo>
+public class DocumentListView extends Composite implements DocumentListDisplay, HasSelectionHandlers<DocumentInfo>, HasDownloadFileHandler
 {
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
 
@@ -79,6 +81,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
 
    private DocumentListTable documentListTable;
 
+   private final DownloadFilesConfirmationBox confirmationBox;
+
    private final Resources resources;
    private final WebTransMessages messages;
    private final UserWorkspaceContext userworkspaceContext;
@@ -93,7 +97,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       this.userworkspaceContext = userworkspaceContext;
 
       dataProvider = new ListDataProvider<DocumentNode>();
-
+      confirmationBox = new DownloadFilesConfirmationBox(false, this);
       pager = new DocumentListPager(TextLocation.CENTER, false, true);
       searchField = new SearchField(this);
       searchField.setTextBoxTitle(messages.docListFilterDescription());
@@ -186,7 +190,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @UiHandler("downloadAllFiles")
    public void onDownloadAllFilesClick(ClickEvent event)
    {
-      listener.downloadAllFiles();
+      confirmationBox.center();
    }
 
    @Override
@@ -275,5 +279,29 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @Override
    public void onSearchFieldClick()
    {
+   }
+
+   @Override
+   public void onOkButtonClicked()
+   {
+      listener.downloadAllFiles();
+   }
+
+   @Override
+   public void onCancelButtonClicked()
+   {
+      hideConfirmation();
+   }
+
+   @Override
+   public void hideConfirmation()
+   {
+      confirmationBox.hide();
+   }
+
+   @Override
+   public void updateFileDownloadProgress(int currentProgress, int maxProgress)
+   {
+      confirmationBox.setProgressMessage(currentProgress + " of " + maxProgress);
    }
 }

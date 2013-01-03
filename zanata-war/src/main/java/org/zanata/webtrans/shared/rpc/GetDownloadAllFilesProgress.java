@@ -20,41 +20,31 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class DownloadAllFilesAction implements DispatchAction<DownloadAllFilesResult>
+public class GetDownloadAllFilesProgress implements DispatchAction<GetDownloadAllFilesProgressResult>
 {
    private static final long serialVersionUID = 1L;
 
-   private String projectSlug, versionSlug, localeId;
+   String processId;
+
    @SuppressWarnings("unused")
-   private DownloadAllFilesAction()
+   private GetDownloadAllFilesProgress()
    {
    }
 
-   public DownloadAllFilesAction(String projectSlug, String versionSlug, String localeId)
+   public GetDownloadAllFilesProgress(String processId)
    {
-      this.projectSlug = projectSlug;
-      this.versionSlug = versionSlug;
-      this.localeId = localeId;
+      this.processId = processId;
    }
 
-   public String getProjectSlug()
+   public String getProcessId()
    {
-      return projectSlug;
-   }
-
-   public String getVersionSlug()
-   {
-      return versionSlug;
-   }
-
-   public String getLocaleId()
-   {
-      return localeId;
+      return processId;
    }
 
 }

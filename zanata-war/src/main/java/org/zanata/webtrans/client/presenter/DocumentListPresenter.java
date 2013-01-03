@@ -29,6 +29,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
@@ -52,10 +53,13 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
-import org.zanata.webtrans.shared.rpc.NoOpResult;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
+import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
+import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -389,18 +393,66 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void downloadAllFiles()
    {
       WorkspaceId workspaceId = userworkspaceContext.getWorkspaceContext().getWorkspaceId();
-      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId()), new AsyncCallback<NoOpResult>()
+      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId()), new AsyncCallback<DownloadAllFilesResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable generate all files to download"));
+            display.hideConfirmation();
          }
 
          @Override
-         public void onSuccess(NoOpResult result)
+         public void onSuccess(DownloadAllFilesResult result)
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded all files"));
+            if (result.isPrepared())
+            {
+               processId = result.getProcessId();
+               timer.scheduleRepeating(1000);
+            }
+            else
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Permission denied for this action"));
+               display.hideConfirmation();
+            }
+         }
+      });
+   }
+
+   private String processId;
+
+   private Timer timer = new Timer()
+   {
+      public void run()
+      {
+         Log.info("run");
+         updateDownloadFileProgress();
+      }
+   };
+
+   public void updateDownloadFileProgress()
+   {
+      dispatcher.execute(new GetDownloadAllFilesProgress(processId), new AsyncCallback<GetDownloadAllFilesProgressResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable get progress of file preparation"));
+            display.hideConfirmation();
+         }
+
+         @Override
+         public void onSuccess(GetDownloadAllFilesProgressResult result)
+         {
+            display.updateFileDownloadProgress(result.getCurrentProgress(), result.getMaxProgress());
+
+            if (result.isDone())
+            {
+               timer.cancel();
+               display.hideConfirmation();
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download"));
+               Application.openURL(Application.getAllFilesDownloadURL(result.getDownloadId()));
+            }
          }
       });
    }

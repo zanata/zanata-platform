@@ -37,7 +37,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ProcessManagerService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
-import org.zanata.webtrans.shared.rpc.NoOpResult;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
 
 /**
  * 
@@ -47,7 +47,7 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 @Name("webtrans.gwt.DownloadAllFilesHandler")
 @Scope(ScopeType.CONVERSATION)
 @ActionHandlerFor(DownloadAllFilesAction.class)
-public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFilesAction, NoOpResult>
+public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult>
 {
    @In
    private ZanataIdentity identity;
@@ -58,11 +58,10 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
    @In
    private ProjectIterationDAO projectIterationDAO;
 
-
    private ProcessHandle zipFilePrepHandle;
 
    @Override
-   public NoOpResult execute(DownloadAllFilesAction action, ExecutionContext context) throws ActionException
+   public DownloadAllFilesResult execute(DownloadAllFilesAction action, ExecutionContext context) throws ActionException
    {
       HProjectIteration version = projectIterationDAO.getBySlug(action.getProjectSlug(), action.getVersionSlug());
       if (identity.hasPermission(version, "download-all"))
@@ -83,15 +82,24 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
 
          // Fire the zip file building process and wait until it is ready to
          // return
-         this.processManagerServiceImpl.startProcess(new IterationZipFileBuildProcess(), processHandle);
+         processManagerServiceImpl.startProcess(new IterationZipFileBuildProcess(), processHandle);
          processHandle.waitUntilReady();
+
+         return new DownloadAllFilesResult(true, processHandle.getId());
       }
 
-      return new NoOpResult();
+      return new DownloadAllFilesResult(false, null);
+
    }
 
    @Override
-   public void rollback(DownloadAllFilesAction action, NoOpResult result, ExecutionContext context) throws ActionException
+   public void rollback(DownloadAllFilesAction action, DownloadAllFilesResult result, ExecutionContext context) throws ActionException
    {
    }
+
+   public ProcessHandle getZipFilePrepHandle()
+   {
+      return zipFilePrepHandle;
+   }
+
 }

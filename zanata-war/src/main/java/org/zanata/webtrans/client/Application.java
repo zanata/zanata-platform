@@ -255,9 +255,18 @@ public class Application implements EntryPoint
       return getModuleParentBaseUrl() + "rest/file/translation/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId() + "/po?docId=" + docId;
    }
 
+   public static String getAllFilesDownloadURL(String downloadId)
+   {
+      return getModuleParentBaseUrl() + "rest/file/download/" + downloadId;
+   }
+
    public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
    }-*/;
+   
+   public static native void openURL(String url)/*-{
+                                                $wnd.open(url);
+                                                }-*/;
 
    public static WorkspaceId getWorkspaceId()
    {
