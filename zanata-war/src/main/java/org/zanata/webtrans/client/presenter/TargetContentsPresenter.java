@@ -237,13 +237,21 @@ public class TargetContentsPresenter implements
    @Override
    public void validate(ToggleEditor editor)
    {
-      RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
-      if (hasSelectedRow())
+      TransUnitId sourceId = sourceContentsPresenter.getCurrentTransUnitIdOrNull();
+      if (equal(sourceId, currentTransUnitId))
       {
-         event.addWidget(display);
+         RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
+         if (hasSelectedRow() && equal(display.getId(), sourceId))
+         {
+            event.addWidget(display);
+         }
+         if (equal(sourceId, editor.getId()))
+         {
+            event.addWidget(editor);
+         }
+         eventBus.fireEvent(event);
       }
-      event.addWidget(editor);
-      eventBus.fireEvent(event);
+
    }
 
    /**
