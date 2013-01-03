@@ -65,4 +65,15 @@ public class PathDocumentFilterTest
    {
       assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(true));
    }
+
+   @Test
+   public void testSetPatternAgainWillClearPreviousPattern() throws Exception
+   {
+      filter.setPattern("a");
+      assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(true));
+
+      filter.setPattern("b");
+      assertThat(filter.accept(docInfo("b", "/pot/")), Matchers.equalTo(true));
+      assertThat(filter.accept(docInfo("a", "/pot/")), Matchers.equalTo(false));
+   }
 }
