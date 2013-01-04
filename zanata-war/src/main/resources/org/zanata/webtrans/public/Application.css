@@ -822,7 +822,7 @@ td.ApprovedStateDecoration div div div
 	cursor:move;
 }
 
-.DownloadFileDialogBox .img span
+.DownloadFileDialogBox .info span
 {
 	font-size:20px;
 	color:#00264C;
@@ -831,7 +831,7 @@ td.ApprovedStateDecoration div div div
 
 .DownloadFileDialogBox .buttonPanel
 {
-	margin-top:20px;
+	margin-top:8px;
 }
 
 .DownloadFileDialogBox .buttonPanel td

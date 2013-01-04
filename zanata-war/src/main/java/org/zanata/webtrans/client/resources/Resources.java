@@ -40,4 +40,7 @@ public interface Resources extends ClientBundle
 
    @Source("images/loading-lg.gif")
    ImageResource spinnerLarge();
+   
+   @Source("images/loader.gif")
+   ImageResource progressLoading();
 }

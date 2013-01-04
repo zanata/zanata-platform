@@ -1,11 +1,15 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.resources.Resources;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
@@ -18,12 +22,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class DownloadFilesConfirmationBox extends DialogBox
 {
-   private final PushButton cancelButton;
-   private final PushButton okButton;
-   private final Label message;
+   
+   private final HorizontalPanel infoPanel;
+   private final HorizontalPanel progressPanel;
    private final Label progressMessage;
+   private final Anchor downloadLink;
 
-   public DownloadFilesConfirmationBox(boolean autoHide, final HasDownloadFileHandler handler)
+   private final String defaultMessage = "Your download will be prepared and may take a few minutes to complete. Is this ok?";
+   
+   public DownloadFilesConfirmationBox(boolean autoHide, final HasDownloadFileHandler handler, final Resources resources)
    {
       super(autoHide);
       setText("Download All Files");
@@ -31,34 +38,51 @@ public class DownloadFilesConfirmationBox extends DialogBox
       setStyleName("DownloadFileDialogBox");
 
       VerticalPanel panel = new VerticalPanel();
-
-      message = new Label("Your download will be prepared and may take a few minutes to complete. Is this ok?");
-      progressMessage = new Label();
-      cancelButton = new PushButton("Cancel");
-      cancelButton.addStyleName("button");
-      okButton = new PushButton("OK");
-      okButton.addStyleName("button");
-
-      HorizontalPanel infoPanel = new HorizontalPanel();
-      infoPanel.setStyleName("img");
+      
+      Label infoMessage = new Label(defaultMessage);
       InlineLabel infoImg = new InlineLabel();
       infoImg.setStyleName("icon-help-circle");
+      
+      infoPanel = new HorizontalPanel();
+      infoPanel.setStyleName("info");
       infoPanel.add(infoImg);
-      infoPanel.add(message);
-      infoPanel.setCellVerticalAlignment(message, HasVerticalAlignment.ALIGN_MIDDLE);
+      infoPanel.add(infoMessage);
+      infoPanel.setCellVerticalAlignment(infoMessage, HasVerticalAlignment.ALIGN_MIDDLE);
 
+      PushButton cancelButton = new PushButton("Cancel");
+      cancelButton.addStyleName("button");
+      
+      PushButton okButton = new PushButton("OK");
+      okButton.addStyleName("button");
+      
       HorizontalPanel buttonPanel = new HorizontalPanel();
       buttonPanel.setStyleName("buttonPanel");
       buttonPanel.add(cancelButton);
       buttonPanel.add(okButton);
       
+      Image progressImage = new Image(resources.progressLoading());
+      progressMessage = new Label();
+      
+      progressPanel = new HorizontalPanel();
+      progressPanel.setSpacing(5);
+      progressPanel.setStyleName("progress");
+      progressPanel.setVisible(false);
+      progressPanel.add(progressImage);
+      progressPanel.add(progressMessage);
+      progressPanel.setCellVerticalAlignment(progressImage, HasVerticalAlignment.ALIGN_MIDDLE);
+      progressPanel.setCellVerticalAlignment(progressMessage, HasVerticalAlignment.ALIGN_MIDDLE);
+      
       panel.add(infoPanel);
-      panel.add(progressMessage);
+      panel.add(progressPanel);
       panel.add(buttonPanel);
       
+      panel.setCellHorizontalAlignment(infoPanel, HasHorizontalAlignment.ALIGN_CENTER);
+      panel.setCellHorizontalAlignment(progressPanel, HasHorizontalAlignment.ALIGN_CENTER);
       panel.setCellHorizontalAlignment(buttonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 
       add(panel);
+      
+      downloadLink = new Anchor("Click here to download");
       
       cancelButton.addClickHandler(new ClickHandler()
       {
@@ -82,12 +106,22 @@ public class DownloadFilesConfirmationBox extends DialogBox
 
    public void setProgressMessage(String text)
    {
-      progressMessage.setText(text);
+	   progressMessage.setText(text);
+   }
+   
+   public void setInProgress(boolean inProgress)
+   {
+      progressPanel.setVisible(inProgress);
    }
 
    public void hide()
    {
-      setProgressMessage("");
-      super.hide();
+	  setInProgress(false);
+     super.hide();
+   }
+
+   public void setDownloadLink(String url)
+   {
+      downloadLink.setHref(url);
    }
 }

@@ -60,6 +60,7 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -425,13 +426,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       public void run()
       {
-         Log.info("run");
          updateDownloadFileProgress();
       }
    };
 
    public void updateDownloadFileProgress()
    {
+      display.setDownloadInProgress(true);
       dispatcher.execute(new GetDownloadAllFilesProgress(processId), new AsyncCallback<GetDownloadAllFilesProgressResult>()
       {
          @Override
@@ -449,9 +450,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             if (result.isDone())
             {
                timer.cancel();
-               display.hideConfirmation();
+//               display.hideConfirmation();
+               String url = Application.getAllFilesDownloadURL(result.getDownloadId());
+               display.setFilesDownloadLink(url);
                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download"));
-               Application.openURL(Application.getAllFilesDownloadURL(result.getDownloadId()));
+               Application.openURL(url, "", "menubar=0,resizable=0,location=0,status=0,toolbar=0,width=200,height=200");
             }
          }
       });

@@ -97,7 +97,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       this.userworkspaceContext = userworkspaceContext;
 
       dataProvider = new ListDataProvider<DocumentNode>();
-      confirmationBox = new DownloadFilesConfirmationBox(false, this);
+      confirmationBox = new DownloadFilesConfirmationBox(false, this, resources);
       pager = new DocumentListPager(TextLocation.CENTER, false, true);
       searchField = new SearchField(this);
       searchField.setTextBoxTitle(messages.docListFilterDescription());
@@ -303,5 +303,17 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    public void updateFileDownloadProgress(int currentProgress, int maxProgress)
    {
       confirmationBox.setProgressMessage(currentProgress + " of " + maxProgress);
+   }
+
+   @Override
+   public void setDownloadInProgress(boolean inProgress)
+   {
+      confirmationBox.setInProgress(inProgress);
+   }
+
+   @Override
+   public void setFilesDownloadLink(String url)
+   {
+      confirmationBox.setDownloadLink(url);
    }
 }

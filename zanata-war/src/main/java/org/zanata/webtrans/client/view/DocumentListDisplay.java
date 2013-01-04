@@ -76,4 +76,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void hideConfirmation();
 
    void updateFileDownloadProgress(int currentProgress, int maxProgress);
+
+   void setDownloadInProgress(boolean inProgress);
+
+   void setFilesDownloadLink(String url);
 }
