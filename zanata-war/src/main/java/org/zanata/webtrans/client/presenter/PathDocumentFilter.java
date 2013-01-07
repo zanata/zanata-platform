@@ -44,10 +44,9 @@ public final class PathDocumentFilter
 
    public PathDocumentFilter setPattern(String pattern)
    {
-      patterns.clear();
       Splitter splitter = Splitter.on(DOCUMENT_FILTER_LIST_DELIMITER).trimResults().omitEmptyStrings();
-      Iterables.addAll(patterns, splitter.split(pattern));
-      Iterables.addAll(patternsInLowerCase, splitter.split(pattern.toLowerCase()));
+      patterns = Sets.newHashSet(splitter.split(pattern));
+      patternsInLowerCase = Sets.newHashSet(splitter.split(pattern.toLowerCase()));
       return this;
    }
 

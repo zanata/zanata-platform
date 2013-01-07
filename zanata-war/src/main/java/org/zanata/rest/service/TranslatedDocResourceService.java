@@ -177,11 +177,16 @@ public class TranslatedDocResourceService implements TranslatedDocResource
     * @param locale The locale for which to get translations.
     * @param extensions The translation extensions to retrieve (e.g. "comment"). This parameter
     * allows multiple values.
+    * @param skeletons Indicates whether to generate untranslated entries or not.
+    * @param eTag An Entity tag identifier. Based on this identifier (if provided), the server will decide if it needs
+    *             to send a response to the client or not (See return section).
     * @return The following response status codes will be returned from this operation:<br>
     * OK(200) - Successfully retrieved translations. The data will be contained in the response.<br>
     * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters. Also
     *                  if no translations are found for the given document and locale.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.<br/>
+    * NOT_MODIFIED(304) - If the provided ETag matches the server's stored ETag, it will reply with this code, indicating
+    *                     that the last received response is still valid and should be reused.
     */
    @Override
    @GET
@@ -192,19 +197,29 @@ public class TranslatedDocResourceService implements TranslatedDocResource
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
          @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") @DefaultValue("false") boolean skeletons
+         @QueryParam("skeletons") @DefaultValue("false") boolean skeletons,
+         @HeaderParam(HttpHeaders.IF_NONE_MATCH) String eTag
          )
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
+      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
 
       resourceUtils.validateExtensions(extensions);
 
-      // TODO create valid etag
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+      // Check Etag header
+      EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration, id, hLocale, extensions);
+      List<String> requestedEtag = headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
+      if( requestedEtag != null )
+      {
+         if( generatedEtag.getValue().equals( requestedEtag ) )
+         {
+            return Response.notModified(generatedEtag).build();
+         }
+      }
 
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      ResponseBuilder response = request.evaluatePreconditions(generatedEtag);
       if (response != null)
       {
          return response.build();
@@ -216,7 +231,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       TranslationsResource translationResource = new TranslationsResource();
       // TODO avoid queries for better cacheability
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
@@ -229,7 +243,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       }
 
       // TODO lastChanged
-      return Response.ok().entity(translationResource).tag(etag).build();
+      return Response.ok().entity(translationResource).tag(generatedEtag).build();
    }
 
    /**

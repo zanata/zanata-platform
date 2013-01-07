@@ -1,10 +1,9 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.OBSOLETE;
-
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,11 +17,16 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.util.HashUtil;
+
+import static org.zanata.common.EntityStatus.OBSOLETE;
 
 @Name("eTagUtils")
 @Scope(ScopeType.STATELESS)
@@ -120,5 +124,42 @@ public class ETagUtils
       hashcode = hashcode * 31 + extHash;
 
       return EntityTag.valueOf(String.valueOf(hashcode));
+   }
+
+   public EntityTag generateETagForTranslatedDocument(HProjectIteration iteration, String id, HLocale locale, Set<String> extensions)
+   {
+      HDocument doc = documentDAO.getByDocIdAndIteration(iteration, id);
+      if (doc == null)
+         throw new NoSuchEntityException("Document '" + id + "' not found.");
+
+      ByteArrayOutputStream hashBuffer = new ByteArrayOutputStream();
+
+      try
+      {
+         doc.writeHashState(hashBuffer);
+         if( doc.getPoHeader() != null )
+         {
+            doc.getPoHeader().writeHashState(hashBuffer);
+         }
+         // TODO This might need to be a query to avoid N+1 problems
+         for( HTextFlow tf : doc.getTextFlows() )
+         {
+            if( tf.getTargets().containsKey( locale.getId() ) )
+            {
+               HTextFlowTarget textFlowTarget = tf.getTargets().get(locale.getId());
+               textFlowTarget.writeHashState(hashBuffer);
+               if( textFlowTarget.getComment() != null )
+               {
+                  textFlowTarget.getComment().writeHashState(hashBuffer);
+               }
+            }
+         }
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("Problem writing to ETag buffer.", e);
+      }
+
+      return EntityTag.valueOf(HashUtil.md5Hex(hashBuffer.toString()));
    }
 }

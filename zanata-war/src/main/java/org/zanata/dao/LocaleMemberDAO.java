@@ -76,4 +76,19 @@ public class LocaleMemberDAO extends AbstractDAOImpl<HLocaleMember, HLocaleMembe
       query.setComment("LocaleMemberDAO.isLocaleMember");
       return query.list().size() > 0;
    }
+
+   /*
+    * NB: Override the base class method because it is not generating a 'delete' statement.
+    * By having an HQL statement, this is guaranteed. THis could be because of the entity in question
+    * having a composite primary key. Need to try this in a later version of Hibernate. 
+    */
+   @Override
+   public void makeTransient(HLocaleMember entity)
+   {
+      getSession().createQuery("delete HLocaleMember as m where m.id.supportedLanguage = :locale " +
+            "and m.id.person = :person")
+            .setParameter("locale", entity.getSupportedLanguage())
+            .setParameter("person", entity.getPerson())
+            .executeUpdate();
+   }
 }

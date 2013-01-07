@@ -20,6 +20,7 @@
  */
 package org.zanata.model.po;
 
+import java.nio.ByteBuffer;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
@@ -28,6 +29,7 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
+import org.zanata.model.HashableState;
 import org.zanata.model.ModelEntityBase;
 
 import lombok.Setter;
@@ -42,7 +44,7 @@ import lombok.ToString;
 @MappedSuperclass
 @Setter
 @ToString
-public abstract class PoHeaderBase extends ModelEntityBase
+public abstract class PoHeaderBase extends ModelEntityBase implements HashableState
 {
 
    private static final long serialVersionUID = 4675225923343857779L;

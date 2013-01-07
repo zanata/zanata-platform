@@ -70,7 +70,6 @@ public class LanguageTeamAction implements Serializable
    Log log;
    
    private String language;
-   private HLocale locale;
    private String searchTerm;
    private List<HPerson> searchResults;
 
@@ -99,12 +98,6 @@ public class LanguageTeamAction implements Serializable
       return searchResults;
    }
 
-   public void initLocale()
-   {
-      locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
-      log.debug("init language: {0}", locale.getLocaleId().getId());
-   }
-
    public boolean isUserInTeam()
    {
       return authenticatedAccount != null && this.isPersonInTeam( this.authenticatedAccount.getId() );
@@ -119,9 +112,10 @@ public class LanguageTeamAction implements Serializable
        * access the 'members' collection from inside the security listener's postLoad method to
        * evaluate rules.
        */
+      HLocale locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
       if( locale != null )
       {
-         this.locale.getMembers();
+         locale.getMembers();
       }
       return locale;
    }
@@ -141,7 +135,7 @@ public class LanguageTeamAction implements Serializable
          languageTeamServiceImpl.joinLanguageTeam(this.language, authenticatedAccount.getPerson().getId());
          Events.instance().raiseEvent("personJoinedTribe");
          log.info("{0} joined tribe {1}", authenticatedAccount.getUsername(), this.language);
-         FacesMessages.instance().add("You are now a member of the {0} language team", this.locale.retrieveNativeName());
+         FacesMessages.instance().add("You are now a member of the {0} language team", getLocale().retrieveNativeName());
       }
       catch (Exception e)
       {
@@ -161,13 +155,13 @@ public class LanguageTeamAction implements Serializable
       languageTeamServiceImpl.leaveLanguageTeam(this.language, authenticatedAccount.getPerson().getId());
       Events.instance().raiseEvent("personLeftTribe");
       log.info("{0} left tribe {1}", authenticatedAccount.getUsername(), this.language);
-      FacesMessages.instance().add("You have left the {0} language team", this.locale.retrieveNativeName());
+      FacesMessages.instance().add("You have left the {0} language team", getLocale().retrieveNativeName());
    }
    
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void saveTeamCoordinator( HLocaleMember member )
    {
-      this.localeDAO.makePersistent(this.locale);
+      this.localeDAO.makePersistent(getLocale());
       this.localeDAO.flush();
       if( member.isCoordinator() )
       {
@@ -183,20 +177,17 @@ public class LanguageTeamAction implements Serializable
    public void addTeamMember( final Long personId )
    {
       this.languageTeamServiceImpl.joinLanguageTeam(this.language, personId);
-      // reload the locale for changes
-      this.locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
    }
 
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void removeMembership( HLocaleMember member )
    {
       this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member.getPerson().getId());
-      this.locale.getMembers().remove(member);
    }
    
    public boolean isPersonInTeam( final Long personId )
    {
-      for( HLocaleMember lm : this.locale.getMembers() )
+      for( HLocaleMember lm : getLocale().getMembers() )
       {
          if( lm.getPerson().getId().equals( personId ) )
          {

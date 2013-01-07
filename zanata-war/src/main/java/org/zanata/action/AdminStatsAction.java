@@ -115,26 +115,6 @@ public class AdminStatsAction implements Serializable
       return personDAO.getTotalTranslator();
    }
 
-   public int getTotalWords()
-   {
-      return textFlowDAO.getTotalWords();
-   }
-
-   public int getTotalApprovedWords()
-   {
-      return textFlowTargetDAO.getTotalApprovedWords();
-   }
-
-   public int getTotalNeedReviewWords()
-   {
-      return textFlowTargetDAO.getTotalNeedReviewWords();
-   }
-
-   public int getTotalUntranslatedWords()
-   {
-      return getTotalWords() - (getTotalNeedReviewWords() + getTotalApprovedWords());
-   }
-
    public int getTotalDocuments()
    {
       return documentDAO.getTotalDocument();

@@ -229,6 +229,12 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
+   public TransUnitId getId()
+   {
+      return id;
+   }
+
+   @Override
    public void showCopySourceButton(boolean displayButtons)
    {
       copyIcon.setVisible(displayButtons);
