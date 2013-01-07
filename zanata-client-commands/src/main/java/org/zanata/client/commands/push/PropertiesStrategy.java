@@ -87,7 +87,7 @@ public class PropertiesStrategy extends AbstractPushStrategy
       return localDocNames;
    }
 
-   private Resource loadResource(String docName, File propFile) throws IOException
+   private Resource loadResource(String docName, File propFile) throws IOException, RuntimeException
    {
       Resource doc = new Resource(docName);
       // doc.setContentType(contentType);
@@ -96,14 +96,14 @@ public class PropertiesStrategy extends AbstractPushStrategy
    }
 
    @Override
-   public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
+   public Resource loadSrcDoc(File sourceDir, String docName) throws IOException, RuntimeException
    {
       String filename = docNameToFilename(docName);
       File propFile = new File(sourceDir, filename);
       return loadResource(docName, propFile);
    }
 
-   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile) throws IOException
+   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile) throws IOException, RuntimeException
    {
       TranslationsResource targetDoc = new TranslationsResource();
       propReader.extractTarget(targetDoc, new FileInputStream(transFile));
@@ -111,7 +111,7 @@ public class PropertiesStrategy extends AbstractPushStrategy
    }
 
    @Override
-   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
+   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException, RuntimeException
    {
       for (LocaleMapping locale : getOpts().getLocaleMapList())
       {

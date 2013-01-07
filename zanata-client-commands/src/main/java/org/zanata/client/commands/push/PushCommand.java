@@ -257,7 +257,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       return obsoleteDocs;
    }
 
-   private void pushCurrentModule() throws IOException
+   private void pushCurrentModule() throws IOException, RuntimeException
    {
       File sourceDir = getOpts().getSrcDir();
 
