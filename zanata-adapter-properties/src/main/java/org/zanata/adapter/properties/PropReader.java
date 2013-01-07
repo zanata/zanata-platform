@@ -52,7 +52,7 @@ public class PropReader
    }
 
    // pre: template already extracted
-   public void extractTarget(TranslationsResource doc, InputStream in) throws IOException
+   public void extractTarget(TranslationsResource doc, InputStream in) throws IOException, RuntimeException
    {
       Properties props = loadProps(in);
       for (String key : props.keySet())
@@ -95,7 +95,7 @@ public class PropReader
     * @throws InvalidPropertiesFormatException
     */
    // TODO add documentation on exceptions thrown
-   public void extractTemplate(Resource doc, InputStream in) throws IOException
+   public void extractTemplate(Resource doc, InputStream in) throws IOException, RuntimeException
    {
       List<TextFlow> resources = doc.getTextFlows();
       Properties props = loadProps(in);
@@ -182,16 +182,16 @@ public class PropReader
       return 0;
    }
 
-   private String getID(String key, String val) throws IOException
+   private String getID(String key, String val) throws RuntimeException
    {
       if (key.length() > 255)
       {
-         throw new IOException("Zanata does not support property keys exceeding 255 characters");
+         throw new RuntimeException("Zanata does not support property keys exceeding 255 characters");
       }
       return key;
    }
 
-   private Properties loadProps(InputStream in) throws IOException
+   private Properties loadProps(InputStream in) throws IOException, RuntimeException
    {
       Reader reader = new InputStreamReader(in, charset);
       try
