@@ -49,7 +49,7 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Too many lines in translation (expected {0}, found {1})")
    String linesAdded(int expected, int actual);
 
-   @DefaultMessage("Not enouth lines in translation (expected {0}, found {1})")
+   @DefaultMessage("Not enough lines in translation (expected {0}, found {1})")
    String linesRemoved(int expected, int actual);
 
 
