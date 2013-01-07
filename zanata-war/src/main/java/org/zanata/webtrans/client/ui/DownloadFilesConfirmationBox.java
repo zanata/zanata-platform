@@ -27,6 +27,7 @@ public class DownloadFilesConfirmationBox extends DialogBox
    private final HorizontalPanel progressPanel;
    private final Label progressMessage;
    private final Anchor downloadLink;
+   private final Image progressImage;
 
    private final String defaultMessage = "Your download will be prepared and may take a few minutes to complete. Is this ok?";
    
@@ -60,17 +61,15 @@ public class DownloadFilesConfirmationBox extends DialogBox
       buttonPanel.add(cancelButton);
       buttonPanel.add(okButton);
       
-      Image progressImage = new Image(resources.progressLoading());
+      progressImage = new Image(resources.progressLoading());
       progressMessage = new Label();
       
       progressPanel = new HorizontalPanel();
       progressPanel.setSpacing(5);
       progressPanel.setStyleName("progress");
       progressPanel.setVisible(false);
-      progressPanel.add(progressImage);
-      progressPanel.add(progressMessage);
-      progressPanel.setCellVerticalAlignment(progressImage, HasVerticalAlignment.ALIGN_MIDDLE);
-      progressPanel.setCellVerticalAlignment(progressMessage, HasVerticalAlignment.ALIGN_MIDDLE);
+      showDownloadLink(false);
+      
       
       panel.add(infoPanel);
       panel.add(progressPanel);
@@ -104,6 +103,23 @@ public class DownloadFilesConfirmationBox extends DialogBox
       });
    }
 
+   public void showDownloadLink(boolean show)
+   {
+      progressPanel.clear();
+      if(show)
+      {
+         progressPanel.add(downloadLink);
+      }
+      else
+      {
+         progressPanel.add(progressImage);
+         progressPanel.add(progressMessage);
+         
+         progressPanel.setCellVerticalAlignment(progressImage, HasVerticalAlignment.ALIGN_MIDDLE);
+         progressPanel.setCellVerticalAlignment(progressMessage, HasVerticalAlignment.ALIGN_MIDDLE);
+      }
+   }
+   
    public void setProgressMessage(String text)
    {
 	   progressMessage.setText(text);
@@ -117,6 +133,7 @@ public class DownloadFilesConfirmationBox extends DialogBox
    public void hide()
    {
 	  setInProgress(false);
+	  showDownloadLink(false);
      super.hide();
    }
 

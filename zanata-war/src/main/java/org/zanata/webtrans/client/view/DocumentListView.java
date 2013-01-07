@@ -312,8 +312,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    }
 
    @Override
-   public void setFilesDownloadLink(String url)
+   public void setAndShowFilesDownloadLink(String url)
    {
       confirmationBox.setDownloadLink(url);
+      confirmationBox.showDownloadLink(true);
    }
 }

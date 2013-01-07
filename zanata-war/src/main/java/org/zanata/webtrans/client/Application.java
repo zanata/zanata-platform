@@ -264,10 +264,6 @@ public class Application implements EntryPoint
 		$wnd.location = url;
    }-*/;
    
-   public static native String openURL(String url, String name, String options)/*-{
-    	$wnd.open(url, name , options)
-   }-*/;
-   
    public static WorkspaceId getWorkspaceId()
    {
       if (workspaceId == null)
