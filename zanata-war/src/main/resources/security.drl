@@ -123,16 +123,15 @@ rule UpdateProjectOrAddIteration
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(action == "update" || action == "add-iteration", granted == false)
-  authenticatedPerson: HPerson() 
-  eval(authenticatedPerson != null)
-  $project: HProject(
-    eval(authenticatedPerson.isMaintainer($project))
-  )
+	check: PermissionCheck(action == "update" || action == "add-iteration", granted == false)
+	authenticatedPerson: HPerson() 
+	eval(authenticatedPerson != null)
+ 	$project: HProject()
+  	HPerson( id == authenticatedPerson.id ) from $project.maintainers 
 then
-  check.grant();
-end
-
+  	check.grant();
+ end
+ 
 
 /* 
   Project maintainers may create or edit (but not delete) a project iteration 

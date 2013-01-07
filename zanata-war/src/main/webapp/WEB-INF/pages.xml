@@ -600,6 +600,15 @@
     <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageMaintainers'])}"/>
+    
+    <navigation from-action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}">
+    	<rule if="#{not s:hasPermission(projectMaintainerManageAction.project, 'update')}">
+	    	<redirect view-id="/project/home.xhtml">
+	    		<message severity="info">#{messages['jsf.YouAreNoLongerMaintainerForThisProject']}</message>
+	    		<param name="slug" value="#{projectMaintainerManageAction.slug}"/>
+	    	</redirect>
+    	</rule>
+    </navigation>
   </page>
 
   <page view-id="/project/add_iteration.xhtml">
