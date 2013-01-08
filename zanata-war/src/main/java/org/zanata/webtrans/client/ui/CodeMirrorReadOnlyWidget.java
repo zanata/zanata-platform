@@ -48,13 +48,12 @@ public class CodeMirrorReadOnlyWidget extends Composite implements SourceContent
    @Override
    public void setText(String text)
    {
-      content = text;
-      String displayText = text == null ? "" : text.replaceAll("\n", "¶\n");
-      textArea.setValue(displayText);
+      textArea.setValue(text);
       if (codeMirror == null)
       {
          codeMirror = initCodeMirror(textArea);
       }
+      content = text;
    }
 
    public native void refresh() /*-{
