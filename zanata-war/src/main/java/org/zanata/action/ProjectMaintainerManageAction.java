@@ -14,6 +14,8 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.RunAsOperation;
+import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
@@ -29,6 +31,9 @@ public class ProjectMaintainerManageAction implements Serializable
    List<HPerson> allList;
    @DataModelSelection
    HPerson selectedPerson;
+
+   @In
+   private IdentityManager identityManager;
 
    private String slug;
 
@@ -68,7 +73,7 @@ public class ProjectMaintainerManageAction implements Serializable
    public void deleteMaintainer(HPerson person)
    {
       log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
-      HProject project = projectDAO.getBySlug(this.slug);
+      final HProject project = projectDAO.getBySlug(this.slug);
       Set<HPerson> personList = project.getMaintainers();
       for (HPerson l : personList)
       {
@@ -80,8 +85,14 @@ public class ProjectMaintainerManageAction implements Serializable
          }
       }
 
-      projectDAO.makePersistent(project);
-      projectDAO.flush();
+      new RunAsOperation()
+      {
+         public void execute()
+         {
+            projectDAO.makePersistent(project);
+            projectDAO.flush();
+         }
+      }.addRole("admin").run();
    }
 
    @Restrict("#{s:hasPermission(projectMaintainerManageAction.project, 'update')}")
