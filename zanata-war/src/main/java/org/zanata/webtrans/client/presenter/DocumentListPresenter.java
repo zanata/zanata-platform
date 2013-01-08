@@ -46,7 +46,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
-import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -61,11 +60,7 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -159,7 +154,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
-
+   
    @Override
    public void fireDocumentSelection(DocumentInfo doc)
    {
@@ -456,29 +451,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                timer.cancel();
                final String url = Application.getAllFilesDownloadURL(result.getDownloadId());
                display.setAndShowFilesDownloadLink(url);
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download", new InlineLink()
-               {
-                  @Override
-                  public Widget asWidget()
-                  {
-                     // TODO Auto-generated method stub
-                     Anchor anchor = new Anchor();
-                     anchor.setStyleName("icon-download");
-                     anchor.setHref(url);
-                     return anchor;
-                  }
-                  
-                  @Override
-                  public void setLinkStyle(String styleName)
-                  {
-                   
-                  }
-                  @Override
-                  public void setDisabledStyle(String styleName)
-                  {
-                     
-                  }
-               }));
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download", display.getDownloadAllFilesInlineLink(url)));
             }
          }
       });

@@ -82,7 +82,8 @@ public class DownloadFilesConfirmationBox extends DialogBox
       add(panel);
       
       downloadLink = new Anchor("Click here to download");
-      
+      downloadLink.setTarget("_blank");
+
       cancelButton.addClickHandler(new ClickHandler()
       {
          @Override

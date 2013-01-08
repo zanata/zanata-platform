@@ -846,6 +846,13 @@ td.ApprovedStateDecoration div div div
 	text-align:center;
 }
 
+a.downloadLink
+{
+	color:orange;
+	font-size:0.9em;
+	cursor:pointer;
+}
+
 
 /* -------------- GWT Dialog Box ----------------*/
 .GWTDialogBox

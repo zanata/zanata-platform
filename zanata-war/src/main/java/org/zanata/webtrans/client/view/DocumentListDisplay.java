@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
@@ -80,4 +81,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void setDownloadInProgress(boolean inProgress);
 
    void setAndShowFilesDownloadLink(String url);
+
+   InlineLink getDownloadAllFilesInlineLink(String url);
 }

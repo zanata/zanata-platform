@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.HasDownloadFileHandler;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
+import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -43,6 +44,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -316,5 +318,34 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    {
       confirmationBox.setDownloadLink(url);
       confirmationBox.showDownloadLink(true);
+   }
+
+   @Override
+   public InlineLink getDownloadAllFilesInlineLink(final String url)
+   {
+      return new InlineLink()
+      {
+         @Override
+         public Widget asWidget()
+         {
+            Anchor anchor = new Anchor();
+            anchor.setStyleName("icon-download");
+            anchor.addStyleName("downloadLink");
+            anchor.setHref(url);
+            anchor.setTarget("_blank");
+            return anchor;
+         }
+         
+         @Override
+         public void setLinkStyle(String styleName)
+         {
+          
+         }
+         @Override
+         public void setDisabledStyle(String styleName)
+         {
+            
+         }
+      };
    }
 }

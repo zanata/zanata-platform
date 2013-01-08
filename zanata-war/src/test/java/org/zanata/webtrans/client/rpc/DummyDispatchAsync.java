@@ -7,9 +7,13 @@ import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
 import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
+import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
+import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
@@ -19,8 +23,6 @@ import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
-import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
-import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -130,6 +132,18 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final EventServiceConnectedAction _action = (EventServiceConnectedAction) action;
          AsyncCallback<NoOpResult> _callback = (AsyncCallback<NoOpResult>) callback;
          Scheduler.get().scheduleDeferred(new DummyEventServiceConnectedCommand(_action, _callback));
+      }
+      else if (action instanceof DownloadAllFilesAction)
+      {
+         final DownloadAllFilesAction _action = (DownloadAllFilesAction) action;
+         AsyncCallback<DownloadAllFilesResult> _callback = (AsyncCallback<DownloadAllFilesResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyDownloadAllFilesCommand(_action, _callback));
+      }
+      else if (action instanceof GetDownloadAllFilesProgress)
+      {
+         final GetDownloadAllFilesProgress _action = (GetDownloadAllFilesProgress) action;
+         AsyncCallback<GetDownloadAllFilesProgressResult> _callback = (AsyncCallback<GetDownloadAllFilesProgressResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyGetDownloadAllFilesProgressCommand(_action, _callback));
       }
 
 //      else if (action instanceof GetTransUnitsNavigation)

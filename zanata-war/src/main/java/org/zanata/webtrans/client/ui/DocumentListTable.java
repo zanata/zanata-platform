@@ -174,8 +174,8 @@ public class DocumentListTable extends CellTable<DocumentNode>
       lastModifiedColumn.setCellStyleNames("lastModifiedCol");
       addColumn(lastModifiedColumn, "Last Modified");
 
-      // actionColumn.setCellStyleNames("actionCol");
-      // addColumn(actionColumn, "Action");
+      actionColumn.setCellStyleNames("actionCol");
+      addColumn(actionColumn, "Action");
 
       addSorting(dataProvider);
    }
