@@ -79,7 +79,7 @@ public class ConsoleUtils
             currentState = 0;
          }
          String output = SEQUENCE[currentState++] + this.suffix;
-         printf("\r" + output);
+         printf("\r%s", output);
          lastOutput = output.trim();
       }
 
@@ -93,7 +93,7 @@ public class ConsoleUtils
             {
                endMssg.append(" ");
             }
-            printf("\r" + endMssg + "\n");
+            printf("\r%s\n", endMssg);
          }
          return super.cancel();
       }
