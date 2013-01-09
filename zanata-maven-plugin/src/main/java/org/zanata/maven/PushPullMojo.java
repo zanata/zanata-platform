@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullOptions;
 import org.zanata.client.config.LocaleList;
-import org.zanata.client.config.LocaleMapping;
-import org.zanata.client.exceptions.ConfigException;
 
 /**
  * @requiresOnline true
@@ -184,35 +183,7 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    {
       if( effectiveLocales == null )
       {
-         if(locales != null && locales.length > 0)
-         {
-            // filter the locales that are specified in both the global config and the parameter list
-            effectiveLocales = new LocaleList();
-
-            for( String locale : locales )
-            {
-               boolean foundLocale = false;
-               for(LocaleMapping lm : super.getLocaleMapList())
-               {
-                  if( lm.getLocale().equals(locale) ||
-                        (lm.getMapFrom() != null && lm.getMapFrom().equals( locale )) )
-                  {
-                     effectiveLocales.add(lm);
-                     foundLocale = true;
-                     break;
-                  }
-               }
-
-               if(!foundLocale)
-               {
-                  throw new ConfigException("Specified locale '" + locale + "' was not found in zanata.xml!" );
-               }
-            }
-         }
-         else
-         {
-            effectiveLocales = super.getLocaleMapList();
-         }
+         effectiveLocales = PushPullCommand.getLocaleMapList(super.getLocaleMapList(), locales);
       }
 
       return effectiveLocales;
