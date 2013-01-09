@@ -32,7 +32,7 @@ import org.zanata.client.commands.PushPullType;
  * @goal pull
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
+public class PullMojo extends AbstractPushPullMojo<PullOptions> implements PullOptions
 {
 
    /**

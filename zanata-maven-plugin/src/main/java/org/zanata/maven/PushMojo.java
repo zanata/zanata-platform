@@ -20,7 +20,7 @@ import org.zanata.client.commands.push.RawPushCommand;
  * @goal push
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
+public class PushMojo extends AbstractPushPullMojo<PushOptions> implements PushOptions
 {
 
    public PushMojo() throws Exception

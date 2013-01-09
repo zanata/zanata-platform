@@ -14,7 +14,7 @@ import org.zanata.client.config.LocaleList;
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public abstract class PushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
+public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
 {
 
    /**
@@ -139,7 +139,7 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
 
    private LocaleList effectiveLocales;
 
-   public PushPullMojo() throws Exception
+   public AbstractPushPullMojo() throws Exception
    {
       super();
    }
