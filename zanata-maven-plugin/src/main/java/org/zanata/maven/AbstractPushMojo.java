@@ -87,14 +87,6 @@ public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions>
    private boolean copyTrans;
 
    /**
-    * Obsolete option, only for backwards compatibility
-    * 
-    * @parameter expression="${zanata.useSrcOrder}" default-value="false"
-    */
-   @Deprecated
-   private boolean useSrcOrder;
-
-   /**
     * Merge type: "auto" (default) or "import" (DANGER!).
     * 
     * @parameter expression="${zanata.merge}" default-value="auto"
@@ -124,11 +116,6 @@ public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions>
     * @parameter expression="${zanata.defaultExcludes}" default-value="true"
     */
    private boolean defaultExcludes = true;
-
-   /**
-    * @parameter expression="${zanata.deleteObsoleteModules}" default-value="false"
-    */
-   private boolean deleteObsoleteModules;
 
    /**
     * Maximum size, in bytes, of document chunks to transmit when using project type 'raw'. Documents smaller
@@ -208,12 +195,6 @@ public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions>
    public String getMergeType()
    {
       return merge;
-   }
-
-   @Override
-   public boolean getDeleteObsoleteModules()
-   {
-      return this.deleteObsoleteModules;
    }
 
    @Override

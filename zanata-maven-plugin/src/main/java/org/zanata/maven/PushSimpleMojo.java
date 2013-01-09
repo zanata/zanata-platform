@@ -12,6 +12,21 @@ import org.zanata.client.commands.push.PushOptions;
  */
 public class PushSimpleMojo extends AbstractPushMojo implements PushOptions
 {
+   /**
+    * Obsolete option, only for backwards compatibility
+    *
+    * @parameter expression="${zanata.useSrcOrder}" default-value="false"
+    */
+   @Deprecated
+   private boolean useSrcOrder;
+
+   /**
+    * Whether module processing should be enabled. This option is obsolete. Please
+    * use push-module instead.
+    * @parameter expression="${zanata.enableModules}"
+    */
+   private boolean enableModules = false;
+
 
    public PushSimpleMojo()
    {
@@ -21,15 +36,15 @@ public class PushSimpleMojo extends AbstractPushMojo implements PushOptions
       }
    }
 
-   /**
-    * Whether module processing should be enabled
-    * @parameter expression="${zanata.enableModules}"
-    */
-   private boolean enableModules = false;
-
    @Override
    public boolean getEnableModules()
    {
       return false;
+   }
+
+   @Override
+   public boolean getDeleteObsoleteModules()
+   {
+      return false;  // False for Simple push
    }
 }

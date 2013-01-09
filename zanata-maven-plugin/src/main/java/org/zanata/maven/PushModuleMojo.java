@@ -27,14 +27,27 @@ package org.zanata.maven;
  * If deleteObsoleteModules is true, documents belonging to unknown/obsolete modules will be deleted as well.
  *
  * @goal push-module
- * @requiresProject false
+ * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public class PushModuleMojo extends AbstractPushMojo
 {
+   /**
+    * Remove modules that are found in the server but not locally.
+    *
+    * @parameter expression="${zanata.deleteObsoleteModules}" default-value="false"
+    */
+   private boolean deleteObsoleteModules;
+
    @Override
    public boolean getEnableModules()
    {
       return true;
+   }
+
+   @Override
+   public boolean getDeleteObsoleteModules()
+   {
+      return this.deleteObsoleteModules;
    }
 }

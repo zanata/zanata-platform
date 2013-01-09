@@ -32,7 +32,8 @@ public class PullSimpleMojo extends AbstractPullMojo implements PullOptions
 {
 
    /**
-    * Whether module processing should be enabled
+    * Whether module processing should be enabled. This option is obsolete. Please
+    * use pull-module instead.
     * @parameter expression="${zanata.enableModules}"
     */
    private boolean enableModules = false;
