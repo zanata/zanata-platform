@@ -30,16 +30,11 @@ import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -54,10 +49,10 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListView extends Composite implements DocumentListDisplay, HasSelectionHandlers<DocumentInfo>, HasDownloadFileHandler
+public class DocumentListView extends Composite implements DocumentListDisplay, HasDownloadFileHandler
 {
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
 
@@ -112,14 +107,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
       statsByMsg.setText(messages.byMessage());
       statsByWord.setText(messages.byWords());
-      this.addSelectionHandler(new SelectionHandler<DocumentInfo>()
-      {
-         @Override
-         public void onSelection(SelectionEvent<DocumentInfo> event)
-         {
-            listener.fireDocumentSelection(event.getSelectedItem());
-         }
-      });
    }
 
    @Override
@@ -145,12 +132,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    public HasData<DocumentNode> getDocumentListTable()
    {
       return documentListTable;
-   }
-
-   @Override
-   public HandlerRegistration addSelectionHandler(SelectionHandler<DocumentInfo> handler)
-   {
-      return addHandler(handler, SelectionEvent.getType());
    }
 
    @Override
@@ -228,19 +209,13 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    }
 
    @Override
-   public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
+   public void renderTable(NoSelectionModel<DocumentNode> selectionModel)
    {
-      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
+      documentListTable = new DocumentListTable(resources, messages, dataProvider, listener, selectionModel, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
       dataProvider.addDataDisplay(documentListTable);
 
       documentListContainer.clear();
       documentListContainer.add(documentListTable);
-   }
-
-   @Override
-   public HasSelectionHandlers<DocumentInfo> getDocumentList()
-   {
-      return this;
    }
 
    @Override

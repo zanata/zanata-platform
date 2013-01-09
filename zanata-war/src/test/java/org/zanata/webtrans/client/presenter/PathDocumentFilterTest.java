@@ -1,6 +1,9 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.Date;
+import java.util.HashMap;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
@@ -9,8 +12,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-
-import static org.hamcrest.MatcherAssert.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -28,7 +29,7 @@ public class PathDocumentFilterTest
 
    private static DocumentInfo docInfo(String name, String path)
    {
-      return new DocumentInfo(new DocumentId(1L), name, path, LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
+      return new DocumentInfo(new DocumentId(1L), name, path, LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>());
    }
 
    @Test

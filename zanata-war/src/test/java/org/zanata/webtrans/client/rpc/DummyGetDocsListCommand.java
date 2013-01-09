@@ -5,6 +5,7 @@ package org.zanata.webtrans.client.rpc;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -46,20 +47,20 @@ final class DummyGetDocsListCommand implements Command
    private ArrayList<DocumentInfo> generateTransUnitSampleData()
    {
       ArrayList<DocumentInfo> names = new ArrayList<DocumentInfo>();
-      names.add(new DocumentInfo(new DocumentId(0), "name0", "", LocaleId.EN_US, newStats(0), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(1), "path1name1", "path/1", LocaleId.EN_US, newStats(1), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(2), "path1name2", "path/1", LocaleId.EN_US, newStats(2), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(3), "path2name1", "path/2", LocaleId.EN_US, newStats(3), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(4), "path2name2", "path/2", LocaleId.EN_US, newStats(4), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(5), "name2", "", LocaleId.EN_US, newStats(5), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(6), "name1", "", LocaleId.EN_US, newStats(6), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(7), "long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "", LocaleId.EN_US, newStats(7), "Translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(8), "another long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "long path, a path which is, again, really quite long, and also too wide to be displayed without scrolling (in most cases)", LocaleId.EN_US, newStats(8), "Translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(0), "name0", "", LocaleId.EN_US, newStats(0), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(1), "path1name1", "path/1", LocaleId.EN_US, newStats(1), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(2), "path1name2", "path/1", LocaleId.EN_US, newStats(2), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(3), "path2name1", "path/2", LocaleId.EN_US, newStats(3), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(4), "path2name2", "path/2", LocaleId.EN_US, newStats(4), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(5), "name2", "", LocaleId.EN_US, newStats(5), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(6), "name1", "", LocaleId.EN_US, newStats(6), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(7), "long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "", LocaleId.EN_US, newStats(7), "Translator", new Date(), new HashMap<String, String>()));
+      names.add(new DocumentInfo(new DocumentId(8), "another long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "long path, a path which is, again, really quite long, and also too wide to be displayed without scrolling (in most cases)", LocaleId.EN_US, newStats(8), "Translator", new Date(), new HashMap<String, String>()));
       for (int n = 0; n < 100; n++)
       {
          // two digit numbers, to make sorting happier
           names.add(new DocumentInfo(new DocumentId(n), "multi" + n, "",
-          LocaleId.EN_US, newStats(n), "Translator", new Date()));
+ LocaleId.EN_US, newStats(n), "Translator", new Date(), new HashMap<String, String>()));
       }
       return names;
    }

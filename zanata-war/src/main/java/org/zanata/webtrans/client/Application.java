@@ -250,9 +250,9 @@ public class Application implements EntryPoint
       return getModuleParentBaseUrl() + "iteration/files/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId();
    }
 
-   public static String getFileDownloadURL(WorkspaceId workspaceId, String docId)
+   public static String getFileDownloadURL(WorkspaceId workspaceId, String downloadExtension)
    {
-      return getModuleParentBaseUrl() + "rest/file/translation/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId() + "/po?docId=" + docId;
+      return getModuleParentBaseUrl() + "rest/file/translation/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId() + "/" + downloadExtension;
    }
 
    public static String getAllFilesDownloadURL(String downloadId)

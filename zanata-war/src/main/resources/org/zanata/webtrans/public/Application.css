@@ -534,12 +534,13 @@ td.ApprovedStateDecoration div div div
 	padding:20px 5px;
 }
 
-.DocumentListTable td.directoryCol {
+.DocumentListTable td.pathCol {
 	width: 25%;
 }
 
 .DocumentListTable td.documentCol {
 	width: 25%;
+	text-decoration:underline;
 }
 
 .DocumentListTable td.statisticCol {
@@ -844,6 +845,12 @@ td.ApprovedStateDecoration div div div
 	border-radius:3px;
 	width:60px;
 	text-align:center;
+}
+
+a.downloadFileLink
+{
+	color:#0085CC;
+	font-size:0.9em;
 }
 
 a.downloadLink

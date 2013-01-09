@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -51,7 +52,7 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
@@ -114,7 +115,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onBind();
 
-      verify(mockDisplay).renderTable(isA(SingleSelectionModel.class));
+      verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
       verify(mockDisplay).setStatsFilter("Words");
       verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
@@ -331,7 +332,7 @@ public class DocumentListPresenterTest
       documentListPresenter.bind();
 
       // simulate document click on second document
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>());
       documentListPresenter.fireDocumentSelection(docInfo);
 
       verify(mockHistory).newItem(capturedHistoryToken.capture());
@@ -450,10 +451,10 @@ public class DocumentListPresenterTest
       verify(mockDataProvider).refresh();
 
       DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()))));
 
       docInfo = documentListPresenter.getDocumentInfo(new DocumentId(3333L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()))));
    }
 
    @Test
@@ -487,13 +488,13 @@ public class DocumentListPresenterTest
       TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
       TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
 
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(2222L), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date());
+      docInfo = new DocumentInfo(new DocumentId(2222L), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(3333L), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date());
+      docInfo = new DocumentInfo(new DocumentId(3333L), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
       docList.add(docInfo);
 
       return docList;

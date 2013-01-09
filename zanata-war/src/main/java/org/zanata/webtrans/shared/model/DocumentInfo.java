@@ -1,6 +1,7 @@
 package org.zanata.webtrans.shared.model;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
@@ -16,6 +17,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    private TranslationStats stats;
    private String lastModifiedBy;
    private Date lastChanged;
+   private Map<String, String> downloadExtensions;
    
 
    // for GWT
@@ -24,7 +26,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    {
    }
 
-   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats, String lastModifiedBy, Date lastChanged)
+   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats, String lastModifiedBy, Date lastChanged, Map<String, String> downloadExtensions)
    {
       this.id = id;
       this.name = name;
@@ -33,6 +35,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       this.sourceLocale = sourceLocale;
       this.lastChanged = lastChanged;
       this.lastModifiedBy = lastModifiedBy;
+      this.downloadExtensions = downloadExtensions;
    }
 
    public DocumentId getId()
@@ -68,6 +71,11 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    public Date getLastChanged()
    {
       return lastChanged;
+   }
+
+   public Map<String, String> getDownloadExtensions()
+   {
+      return downloadExtensions;
    }
 
    @Override

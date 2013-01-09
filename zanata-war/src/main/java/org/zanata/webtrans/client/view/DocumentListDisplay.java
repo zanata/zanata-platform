@@ -27,10 +27,9 @@ import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 
 /**
  *
@@ -41,13 +40,11 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 {
    void updatePageSize(int pageSize);
 
-   HasSelectionHandlers<DocumentInfo> getDocumentList();
-
    HasData<DocumentNode> getDocumentListTable();
 
    ListDataProvider<DocumentNode> getDataProvider();
 
-   void renderTable(SingleSelectionModel<DocumentNode> selectionModel);
+   void renderTable(NoSelectionModel<DocumentNode> selectionModel);
 
    String getSelectedStatsOption();
 

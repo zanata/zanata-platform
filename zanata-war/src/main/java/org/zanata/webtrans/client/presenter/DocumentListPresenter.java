@@ -58,12 +58,10 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
@@ -90,26 +88,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private TranslationStats projectStats;
 
-   private final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>()
-   {
-      @Override
-      public void setSelected(DocumentNode object, boolean selected)
-      {
-         if (selected && (super.getSelectedObject() != null))
-         {
-            if (object.getDocInfo().getId().equals(super.getSelectedObject().getDocInfo().getId()))
-            {
-               // switch to editor (via history) on re-selection
-               HistoryToken token = history.getHistoryToken();
-               token.setView(MainView.Editor);
-               token.setDocumentPath(object.getDocInfo().getPath() + object.getDocInfo().getName());
-               history.newItem(token);
-               userworkspaceContext.setSelectedDoc(object.getDocInfo());
-            }
-         }
-         super.setSelected(object, selected);
-      }
-   };
+   private final NoSelectionModel<DocumentNode> selectionModel = new NoSelectionModel<DocumentNode>();
 
    @Inject
    public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
@@ -129,19 +108,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    protected void onBind()
    {
       dataProvider = display.getDataProvider();
-      display.renderTable(selectionModel);
+      display.setListener(this);
 
-      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
-      {
-         public void onSelectionChange(SelectionChangeEvent event)
-         {
-            DocumentNode selectedNode = selectionModel.getSelectedObject();
-            if (selectedNode != null)
-            {
-               SelectionEvent.fire(display.getDocumentList(), selectedNode.getDocInfo());
-            }
-         }
-      });
+      display.renderTable(selectionModel);
 
       setStatsFilter(STATS_OPTION_WORDS);
 
@@ -149,7 +118,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
-      display.setListener(this);
+
 
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
@@ -327,7 +296,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          userworkspaceContext.setSelectedDoc(node.getDocInfo());
          // required in order to show the document selected in doclist when
          // loading from bookmarked history token
-         display.getDocumentListTable().getSelectionModel().setSelected(node, true);
+         fireDocumentSelection(node.getDocInfo());
       }
    }
 

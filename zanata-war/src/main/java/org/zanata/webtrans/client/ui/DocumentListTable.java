@@ -21,26 +21,32 @@
 package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
+import java.util.Map;
 
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.table.column.RemainingHoursColumn;
 import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
+import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import com.google.gwt.cell.client.ClickableTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.IconCellDecorator;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 
 public class DocumentListTable extends CellTable<DocumentNode>
 {
@@ -83,24 +89,24 @@ public class DocumentListTable extends CellTable<DocumentNode>
       }
    }
 
-   private final TextColumn<DocumentNode> directoryColumn;
-   private final TextColumn<DocumentNode> documentColumn;
+   private final TextColumn<DocumentNode> pathColumn;
+   private final Column<DocumentNode, String> documentColumn;
    private final StatisticColumn statisticColumn;
    private final RemainingHoursColumn remainingColumn;
    
    private final TextColumn<DocumentNode> lastModifiedColumn;
-   private final StaticWidgetColumn<DocumentNode, Anchor> actionColumn;
+   private final StaticWidgetColumn<DocumentNode, HorizontalPanel> actionColumn;
 
    private final StatisticHeader statisticColumnHeader;
 
-   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final SingleSelectionModel<DocumentNode> selectionModel, final WorkspaceId workspaceId)
+   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final DocumentListDisplay.Listener listener, final NoSelectionModel<DocumentNode> selectionModel, final WorkspaceId workspaceId)
    {
       super(15, (CellTableResources) GWT.create(CellTableResources.class));
-
+      setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
       setStylePrimaryName("DocumentListTable");
       setSelectionModel(selectionModel);
 
-      directoryColumn = new TextColumn<DocumentNode>()
+      pathColumn = new TextColumn<DocumentNode>()
       {
          @Override
          public String getValue(DocumentNode object)
@@ -108,8 +114,8 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return object.getDocInfo().getPath();
          }
       };
-
-      documentColumn = new TextColumn<DocumentNode>()
+      
+      documentColumn = new Column<DocumentNode, String>(new ClickableTextCell())
       {
          @Override
          public String getValue(DocumentNode object)
@@ -117,6 +123,15 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return object.getDocInfo().getName();
          }
       };
+
+      documentColumn.setFieldUpdater(new FieldUpdater<DocumentNode, String>()
+      {
+         @Override
+         public void update(int index, DocumentNode object, String value)
+         {
+            listener.fireDocumentSelection(object.getDocInfo());
+         }
+      });
 
       statisticColumn = new StatisticColumn(messages);
       remainingColumn = new RemainingHoursColumn(messages);
@@ -138,27 +153,31 @@ public class DocumentListTable extends CellTable<DocumentNode>
          }
       };
 
-      actionColumn = new StaticWidgetColumn<DocumentNode, Anchor>()
+      actionColumn = new StaticWidgetColumn<DocumentNode, HorizontalPanel>()
       {
          @Override
-         public Anchor getValue(DocumentNode object)
+         public HorizontalPanel getValue(DocumentNode object)
          {
-            Anchor anchor = new Anchor(".po");
-            anchor.setHref(Application.getFileDownloadURL(workspaceId, object.getDocInfo().getName()));
-
-            return anchor;
+            HorizontalPanel downloadPanel = new HorizontalPanel();
+            for (Map.Entry<String, String> entry : object.getDocInfo().getDownloadExtensions().entrySet())
+            {
+               Anchor anchor = new Anchor(entry.getKey());
+               anchor.setStyleName("downloadFileLink");
+               anchor.setHref(Application.getFileDownloadURL(workspaceId, entry.getValue()));
+               downloadPanel.add(anchor);
+            }
+            return downloadPanel;
          }
       };
 
-      directoryColumn.setSortable(true);
+      pathColumn.setSortable(true);
       documentColumn.setSortable(true);
       statisticColumn.setSortable(true);
       remainingColumn.setSortable(true);
       lastModifiedColumn.setSortable(true);
-      
-      
-      addColumn(directoryColumn, messages.columnHeaderDirectory());
-      directoryColumn.setCellStyleNames("directoryCol");
+
+      addColumn(pathColumn, messages.columnHeaderPath());
+      pathColumn.setCellStyleNames("pathCol");
 
       DocumentHeader documentColumnHeader = new DocumentHeader(images, messages);
       documentColumn.setCellStyleNames("documentCol");
@@ -190,7 +209,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
    private void addSorting(final ListDataProvider<DocumentNode> dataProvider)
    {
       ListHandler<DocumentNode> columnSortHandler = new ListHandler<DocumentNode>(dataProvider.getList());
-      columnSortHandler.setComparator(directoryColumn, new Comparator<DocumentNode>()
+      columnSortHandler.setComparator(pathColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
@@ -253,6 +272,6 @@ public class DocumentListTable extends CellTable<DocumentNode>
          }
       });
       addColumnSortHandler(columnSortHandler);
-      getColumnSortList().push(directoryColumn);
+      getColumnSortList().push(pathColumn);
    }
 }
