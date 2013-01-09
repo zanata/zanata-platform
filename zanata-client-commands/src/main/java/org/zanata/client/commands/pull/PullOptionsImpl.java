@@ -24,13 +24,13 @@ package org.zanata.client.commands.pull;
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.BooleanValueHandler;
 import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.PushPullType;
-import org.zanata.util.StringUtil;
+import org.zanata.client.config.LocaleList;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -49,6 +49,8 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    private boolean includeFuzzy;
    private boolean useCache;
    private boolean purgeCache;
+   private String[] locales;
+   private LocaleList effectiveLocales;
 
    @Override
    public ZanataCommand initCommand()
@@ -68,11 +70,28 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
       return "Pull translated text from Zanata.";
    }
 
-//   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALES", usage = "Locales to pull from the server.\n" +
-//   		"By default all locales in zanata.xml will be pulled.")
+   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALE1,LOCALE2", usage = "Locales to pull from the server.\n" +
+       "By default all locales in zanata.xml will be pulled.")
    public void setLocales(String locales)
    {
-      // FIXME implement -l for target locales
+      this.locales = locales.split(",");
+   }
+
+   /**
+    * Override the parent method as the pull
+    * command can have locales specified via command line.
+    *
+    * @return The locale map list taking into account the global locales in zanata.xml as well as the command line
+    * argument ones.
+    */
+   @Override
+   public LocaleList getLocaleMapList()
+   {
+      if(effectiveLocales == null)
+      {
+         effectiveLocales = PushPullCommand.getLocaleMapList(super.getLocaleMapList(), locales);
+      }
+      return effectiveLocales;
    }
 
    @Override
