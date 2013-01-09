@@ -30,9 +30,11 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Throwables;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -46,16 +48,13 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class Application implements EntryPoint
 {
-
+   private static final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
    private static final String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
 
-   private static boolean IS_DEBUG = false;
    private static WorkspaceId workspaceId;
    private static UserWorkspaceContext userWorkspaceContext;
-
    private static Identity identity;
 
-   private final static WebTransGinjector injector = GWT.create(WebTransGinjector.class);
    private UncaughtExceptionHandlerImpl exceptionHandler;
 
    public void onModuleLoad()
@@ -209,14 +208,7 @@ public class Application implements EntryPoint
       {
          return null;
       }
-      try
-      {
-         return new ProjectIterationId(projectSlug, iterationSlug);
-      }
-      catch (NumberFormatException nfe)
-      {
-         return null;
-      }
+      return new ProjectIterationId(projectSlug, iterationSlug);
    }
 
    public static LocaleId getLocaleId()
@@ -309,16 +301,12 @@ public class Application implements EntryPoint
       FlowPanel layoutPanel = new FlowPanel();
       layoutPanel.add(messageLabel);
 
-      if (IS_DEBUG && e != null)
+      if (!GWT.isProdMode() && e != null)
       {
-         String stackTrace = "Stack trace for the error:<br/>\n";
-         for (StackTraceElement ste : e.getStackTrace())
-         {
-            stackTrace += ste.toString() + "<br/>\n";
-         }
-         Label stackTraceLabel = new Label();
-         stackTraceLabel.getElement().setInnerHTML(stackTrace);
-
+         String stackTrace = UncaughtExceptionHandlerImpl.buildStackTraceMessages(e);
+         SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+         safeHtmlBuilder.appendHtmlConstant("<pre>").appendEscaped(stackTrace).appendHtmlConstant("</pre>");
+         Label stackTraceLabel = new Label(safeHtmlBuilder.toSafeHtml().asString());
          DisclosurePanel stackTracePanel = new DisclosurePanel("More detail:");
          stackTracePanel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
          stackTracePanel.add(stackTraceLabel);
