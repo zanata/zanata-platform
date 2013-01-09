@@ -1,3 +1,24 @@
+/*
+ * Copyright 2012, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.zanata.maven;
 
 import java.util.ArrayList;
@@ -7,26 +28,24 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
-import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.RawPushCommand;
 
 /**
- * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
- * NB: Any documents which exist on the server but not locally will be deleted as obsolete.
- * If deleteObsoleteModules is true, documents belonging to unknown/obsolete modules will be deleted as well.
- * 
- * @goal push
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
  */
-public class PushMojo extends AbstractPushPullMojo<PushOptions> implements PushOptions
+public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions> implements PushOptions
 {
 
-   public PushMojo() throws Exception
-   {
-      super();
-   }
+   /**
+    * Language of source documents
+    * 
+    * @parameter expression="${zanata.sourceLang}" default-value="en-US"
+    */
+   private String sourceLang = "en-US";
 
    @Override
    public PushPullCommand<PushOptions> initCommand()
@@ -42,20 +61,12 @@ public class PushMojo extends AbstractPushPullMojo<PushOptions> implements PushO
    }
 
    /**
-    * Language of source documents
-    * 
-    * @parameter expression="${zanata.sourceLang}" default-value="en-US"
-    */
-   private String sourceLang = "en-US";
-
-   /**
     * Push translations from local files to the server (merge or import: see
     * mergeType). This option is deprecated, replaced by pushType.
     *
     * @parameter expression="${zanata.pushTrans}"
     */
    @Deprecated
-   // Using string instead of boolean to know when pushTrans has been explicitly used.
    private String pushTrans;
 
    /**
@@ -156,8 +167,7 @@ public class PushMojo extends AbstractPushPullMojo<PushOptions> implements PushO
     * @parameter expression="${zanata.excludeLocaleFilenames}" default-value="true"
     */
    private boolean excludeLocaleFilenames = true;
-   
-   
+
    /**
     * Run validation check against file. Only applies to XLIFF project type.
     * "CONTENT" - content validation check (quick). "XSD" - validation check against
@@ -167,7 +177,6 @@ public class PushMojo extends AbstractPushPullMojo<PushOptions> implements PushO
     * @parameter expression="${zanata.validate}" default-value="content"
     */
    private String validate = "content";
-
 
    @Override
    public String getSourceLang()
@@ -272,4 +281,5 @@ public class PushMojo extends AbstractPushPullMojo<PushOptions> implements PushO
    {
       return validate;
    }
+
 }

@@ -13,7 +13,7 @@ import org.zanata.client.commands.PublicanPushOptions;
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  * @deprecated
- * @see PushMojo
+ * @see PushSimpleMojo
  */
 public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushOptions> implements PublicanPushOptions
 {

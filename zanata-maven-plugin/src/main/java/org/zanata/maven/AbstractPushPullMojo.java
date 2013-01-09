@@ -44,7 +44,7 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    @Override
    public String getCurrentModule()
    {
-      if (project == null || !enableModules)
+      if (project == null || !getEnableModules())
       {
          return "";
       }
@@ -82,12 +82,6 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    {
       return module.getGroupId() + MODULE_SEPARATOR + module.getArtifactId();
    }
-
-   /**
-    * Whether module processing should be enabled
-    * @parameter expression="${zanata.enableModules}"
-    */
-   private boolean enableModules = false;
 
    /**
     * @parameter expression="${project}"
@@ -139,7 +133,7 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
 
    private LocaleList effectiveLocales;
 
-   public AbstractPushPullMojo() throws Exception
+   public AbstractPushPullMojo()
    {
       super();
    }
@@ -151,12 +145,6 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    public boolean isDryRun()
    {
       return dryRun;
-   }
-
-   @Override
-   public boolean getEnableModules()
-   {
-      return enableModules;
    }
 
    @Override

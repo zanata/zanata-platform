@@ -18,21 +18,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.zanata.maven;
 
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.RawPullCommand;
-import org.zanata.client.commands.PushPullType;
 
 /**
- * Pulls translated text from Zanata.
- * 
- * @goal pull
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
  */
-public class PullMojo extends AbstractPushPullMojo<PullOptions> implements PullOptions
+public abstract class AbstractPullMojo extends AbstractPushPullMojo<PullOptions> implements PullOptions
 {
 
    /**
@@ -42,7 +41,6 @@ public class PullMojo extends AbstractPushPullMojo<PullOptions> implements PullO
     * @parameter expression="${zanata.pullSrc}"
     */
    @Deprecated
-   // Using string instead of boolean to know when pullSrc has been explicitly used.
    private String pullSrc;
 
    /**
@@ -92,8 +90,10 @@ public class PullMojo extends AbstractPushPullMojo<PullOptions> implements PullO
     */
    private boolean encodeTabs = true;
 
-
-   public PullMojo() throws Exception
+   /**
+    * 
+    */
+   public AbstractPullMojo()
    {
       super();
    }

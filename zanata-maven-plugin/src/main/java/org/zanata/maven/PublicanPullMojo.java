@@ -13,7 +13,7 @@ import org.zanata.client.commands.PublicanPullOptions;
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  * @deprecated
- * @see PullMojo
+ * @see PullSimpleMojo
  */
 public class PublicanPullMojo extends ConfigurableProjectMojo<PublicanPullOptions> implements PublicanPullOptions
 {

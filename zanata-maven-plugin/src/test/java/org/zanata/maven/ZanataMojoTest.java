@@ -37,7 +37,7 @@ public abstract class ZanataMojoTest<M extends Mojo, C extends ZanataCommand> ex
    {
       File testPom = getTestFile("src/test/resources/push-test/" + pomFile);
       // This will work with "mvn test", but not with Eclipse's JUnit runner:
-      // PushMojo mojo = (PushMojo) lookupMojo("push", testPom);
+      // PushSimpleMojo mojo = (PushSimpleMojo) lookupMojo("push", testPom);
       // assertNotNull(mojo);
       getMockCommand().run();
       EasyMock.expectLastCall();
