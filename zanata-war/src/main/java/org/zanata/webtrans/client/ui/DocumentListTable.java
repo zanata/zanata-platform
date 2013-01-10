@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.IconCellDecorator;
@@ -95,7 +96,8 @@ public class DocumentListTable extends CellTable<DocumentNode>
    private final RemainingHoursColumn remainingColumn;
    
    private final TextColumn<DocumentNode> lastModifiedColumn;
-   private final StaticWidgetColumn<DocumentNode, HorizontalPanel> actionColumn;
+   private final StaticWidgetColumn<DocumentNode, HorizontalPanel> downloadColumn;
+   private final Column<DocumentNode, String> uploadColumn;
 
    private final StatisticHeader statisticColumnHeader;
 
@@ -153,7 +155,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          }
       };
 
-      actionColumn = new StaticWidgetColumn<DocumentNode, HorizontalPanel>()
+      downloadColumn = new StaticWidgetColumn<DocumentNode, HorizontalPanel>()
       {
          @Override
          public HorizontalPanel getValue(DocumentNode object)
@@ -169,6 +171,23 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return downloadPanel;
          }
       };
+
+      uploadColumn = new Column<DocumentNode, String>(new ButtonCell())
+      {
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            return "Upload";
+         }
+      };
+      uploadColumn.setFieldUpdater(new FieldUpdater<DocumentNode, String>()
+      {
+         @Override
+         public void update(int index, DocumentNode object, String value)
+         {
+            listener.showUploadDialog(object.getDocInfo());
+         }
+      });
 
       pathColumn.setSortable(true);
       documentColumn.setSortable(true);
@@ -193,8 +212,11 @@ public class DocumentListTable extends CellTable<DocumentNode>
       lastModifiedColumn.setCellStyleNames("lastModifiedCol");
       addColumn(lastModifiedColumn, "Last Modified");
 
-      actionColumn.setCellStyleNames("actionCol");
-      addColumn(actionColumn, "Action");
+      downloadColumn.setCellStyleNames("downloadCol");
+      addColumn(downloadColumn, "Download");
+
+      uploadColumn.setCellStyleNames("uploadCol");
+      addColumn(uploadColumn, "Upload");
 
       addSorting(dataProvider);
    }

@@ -3,8 +3,6 @@
  */
 package org.zanata.webtrans.client.rpc;
 
-import java.util.ArrayList;
-
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -42,7 +40,7 @@ final class DummyUpdateTransUnitCommand implements Command
             .setLocaleId(LocaleId.EN_US)
             .setSources(firstTu.getNewContents())
             .build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(0), tu, 5, firstTu.getBaseTranslationVersion(), ContentState.NeedReview);
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(0, ""), tu, 5, firstTu.getBaseTranslationVersion(), ContentState.NeedReview);
       UpdateTransUnitResult result = new UpdateTransUnitResult(updateInfo);
       callback.onSuccess(result);
       Log.info("EXIT DummyUpdateTransUnitCommand.execute()");

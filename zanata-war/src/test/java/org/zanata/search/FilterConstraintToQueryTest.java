@@ -1,8 +1,13 @@
 package org.zanata.search;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.Matchers;
 import org.hibernate.Query;
@@ -14,12 +19,6 @@ import org.zanata.model.HLocale;
 import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -37,7 +36,7 @@ public class FilterConstraintToQueryTest
    private Query query;
    @Mock
    private HLocale hLocale;
-   private DocumentId documentId = new DocumentId(1);
+   private DocumentId documentId = new DocumentId(1, "");
 
    @BeforeMethod
    public void beforeMethod()

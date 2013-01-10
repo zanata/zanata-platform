@@ -1,5 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.HashMap;
 
 import org.hamcrest.Matchers;
@@ -23,12 +27,9 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -77,7 +78,7 @@ public class GetDocumentListHandlerTest
       verify(identity).checkLoggedIn();
       assertThat(result.getDocuments(), Matchers.hasSize(1));
       DocumentInfo documentInfo = result.getDocuments().get(0);
-      assertThat(documentInfo.getId(), Matchers.equalTo(new DocumentId(1)));
+      assertThat(documentInfo.getId(), Matchers.equalTo(new DocumentId(1, "")));
       assertThat(documentInfo.getPath(), Matchers.equalTo("/dot/"));
       assertThat(documentInfo.getName(), Matchers.equalTo("a.po"));
    }

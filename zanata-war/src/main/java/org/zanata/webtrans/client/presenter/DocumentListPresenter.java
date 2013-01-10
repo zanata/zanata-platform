@@ -34,6 +34,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -58,14 +59,18 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
 {
+   private static final String UPLOAD_ACTION_URL = Application.getModuleParentBaseUrl() + "iteration/files/upload";
+
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
@@ -108,7 +113,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    protected void onBind()
    {
       dataProvider = display.getDataProvider();
-      display.setListener(this);
+      display.setListener(this, UPLOAD_ACTION_URL);
 
       display.renderTable(selectionModel);
 
@@ -117,8 +122,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
-
-
 
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
@@ -130,20 +133,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       // generate history token
       HistoryToken token = history.getHistoryToken();
 
-      // prevent feedback loops between history and selection
-      boolean isNewSelection;
-      DocumentId docId = getDocumentId(token.getDocumentPath());
-      isNewSelection = (docId == null || !docId.equals(doc.getId()));
+      currentDocument = doc;
+      token.setDocumentPath(doc.getPath() + doc.getName());
+      token.setView(MainView.Editor);
+      // don't carry searches over to the next document
+      token.setSearchText("");
+      history.newItem(token);
 
-      if (isNewSelection)
-      {
-         currentDocument = doc;
-         token.setDocumentPath(doc.getPath() + doc.getName());
-         token.setView(MainView.Editor);
-         // don't carry searches over to the next document
-         token.setSearchText("");
-         history.newItem(token);
-      }
       userworkspaceContext.setSelectedDoc(doc);
    }
 
@@ -388,6 +384,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       });
    }
 
+   @Override
+   public void cancelDownloadAllFiles()
+   {
+      display.hideConfirmation();
+   }
+
    private String processId;
 
    private Timer timer = new Timer()
@@ -425,4 +427,34 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          }
       });
    }
+
+   @Override
+   public void showUploadDialog(DocumentInfo docInfo)
+   {
+
+      display.showUploadDialog(docInfo, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
+   }
+
+   @Override
+   public void cancelFileUpload()
+   {
+      display.closeFileUpload();
+   }
+
+   @Override
+   public void onFileUploadComplete(SubmitCompleteEvent event)
+   {
+      eventBus.fireEvent(new NotificationEvent(Severity.Info, "File " + display.getSelectedUploadFileName() + " uploaded"));
+      display.closeFileUpload();
+   }
+
+   @Override
+   public void onUploadFile()
+   {
+      if (!Strings.isNullOrEmpty(display.getSelectedUploadFileName()))
+      {
+         display.submitUploadForm();
+      }
+   }
+
 }

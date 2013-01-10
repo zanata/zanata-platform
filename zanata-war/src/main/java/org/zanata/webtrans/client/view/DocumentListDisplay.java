@@ -26,7 +26,9 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
@@ -50,7 +52,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void setStatsFilter(String option);
 
-   void setListener(Listener documentListPresenter);
+   void setListener(Listener documentListPresenter, String uploadFileURL);
 
    void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText);
 
@@ -64,9 +66,19 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
       void fireFilterToken(String value);
 
-      void fireDocumentSelection(DocumentInfo doc);
+      void fireDocumentSelection(DocumentInfo docInfo);
 
       void downloadAllFiles();
+
+      void showUploadDialog(DocumentInfo docInfo);
+
+      void cancelDownloadAllFiles();
+
+      void cancelFileUpload();
+
+      void onFileUploadComplete(SubmitCompleteEvent event);
+
+      void onUploadFile();
    }
 
    void setThemes(String style);
@@ -80,4 +92,12 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void setAndShowFilesDownloadLink(String url);
 
    InlineLink getDownloadAllFilesInlineLink(String url);
+
+   void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId);
+
+   void closeFileUpload();
+
+   String getSelectedUploadFileName();
+
+   void submitUploadForm();
 }

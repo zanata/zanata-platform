@@ -59,7 +59,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       {
          if (action.getFilters() == null || action.getFilters().isEmpty() || action.getFilters().contains(hDoc.getPath() + hDoc.getName()))
          {
-            DocumentId docId = new DocumentId(hDoc.getId());
+            DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
             String lastModifiedBy = "";
             HPerson person = hDoc.getLastModifiedBy();

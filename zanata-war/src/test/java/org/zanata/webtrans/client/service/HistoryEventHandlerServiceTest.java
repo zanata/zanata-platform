@@ -1,5 +1,12 @@
 package org.zanata.webtrans.client.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -17,15 +24,9 @@ import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.shared.model.DocumentId;
+
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.GwtEvent;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -92,7 +93,7 @@ public class HistoryEventHandlerServiceTest
    {
       HistoryToken token = new HistoryToken();
       token.setDocumentPath("doc/a.po");
-      DocumentId documentId = new DocumentId(1);
+      DocumentId documentId = new DocumentId(1, "");
       when(documentListPresenter.getDocumentId("doc/a.po")).thenReturn(documentId);
 
       service.processForAppPresenter(token);
@@ -180,9 +181,9 @@ public class HistoryEventHandlerServiceTest
       token.setDocumentPath("doc/path");
       token.setProjectSearchReplacement("replacement");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(1);
+      DocumentId documentId = new DocumentId(1, "");
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
-      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(99));
+      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(99, ""));
 
       // When:
       service.onValueChange(historyChangeEvent);

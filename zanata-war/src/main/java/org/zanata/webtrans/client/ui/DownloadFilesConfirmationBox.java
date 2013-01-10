@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.view.DocumentListDisplay;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,9 +30,12 @@ public class DownloadFilesConfirmationBox extends DialogBox
    private final Anchor downloadLink;
    private final Image progressImage;
 
+   private final PushButton cancelButton;
+   private final PushButton okButton;
+
    private final String defaultMessage = "Your download will be prepared and may take a few minutes to complete. Is this ok?";
    
-   public DownloadFilesConfirmationBox(boolean autoHide, final HasDownloadFileHandler handler, final Resources resources)
+   public DownloadFilesConfirmationBox(boolean autoHide, final Resources resources)
    {
       super(autoHide);
       setText("Download All Files");
@@ -50,10 +54,10 @@ public class DownloadFilesConfirmationBox extends DialogBox
       infoPanel.add(infoMessage);
       infoPanel.setCellVerticalAlignment(infoMessage, HasVerticalAlignment.ALIGN_MIDDLE);
 
-      PushButton cancelButton = new PushButton("Cancel");
+      cancelButton = new PushButton("Cancel");
       cancelButton.addStyleName("button");
       
-      PushButton okButton = new PushButton("OK");
+      okButton = new PushButton("OK");
       okButton.addStyleName("button");
       
       HorizontalPanel buttonPanel = new HorizontalPanel();
@@ -83,13 +87,16 @@ public class DownloadFilesConfirmationBox extends DialogBox
       
       downloadLink = new Anchor("Click here to download");
       downloadLink.setTarget("_blank");
+   }
 
+   public void registerHandler(final DocumentListDisplay.Listener listener)
+   {
       cancelButton.addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            handler.onCancelButtonClicked();
+            listener.cancelDownloadAllFiles();
          }
       });
       
@@ -99,7 +106,7 @@ public class DownloadFilesConfirmationBox extends DialogBox
          @Override
          public void onClick(ClickEvent event)
          {
-            handler.onOkButtonClicked();
+            listener.downloadAllFiles();
          }
       });
    }

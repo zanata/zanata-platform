@@ -519,7 +519,6 @@ td.ApprovedStateDecoration div div div
 
 .DocumentListTable td {
 	font-size: 16px;
-	cursor: pointer;
 }
 
 .THEMES_COMPACT .DocumentListTable td {
@@ -541,6 +540,7 @@ td.ApprovedStateDecoration div div div
 .DocumentListTable td.documentCol {
 	width: 25%;
 	text-decoration:underline;
+	cursor:pointer;
 }
 
 .DocumentListTable td.statisticCol {
@@ -557,6 +557,13 @@ td.ApprovedStateDecoration div div div
 
 .DocumentListTable td.lastModifiedCol { 
 	font-size:12px;
+	text-align:center;
+}
+
+.DocumentListTable td.downloadCol { 
+}
+
+.DocumentListTable td.uploadCol { 
 	text-align:center;
 }
 
@@ -851,6 +858,7 @@ a.downloadFileLink
 {
 	color:#0085CC;
 	font-size:0.9em;
+	cursor:pointer;
 }
 
 a.downloadLink

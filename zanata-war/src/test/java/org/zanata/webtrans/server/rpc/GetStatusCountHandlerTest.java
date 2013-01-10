@@ -1,11 +1,14 @@
 package org.zanata.webtrans.server.rpc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hamcrest.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.TestFixture;
@@ -15,10 +18,6 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetStatusCount;
 import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -48,7 +47,7 @@ public class GetStatusCountHandlerTest
    @Test
    public void testExecute() throws Exception
    {
-      DocumentId documentId = new DocumentId(1);
+      DocumentId documentId = new DocumentId(1, "");
       WorkspaceId workspaceId = TestFixture.workspaceId();
       GetStatusCount action = new GetStatusCount(documentId);
       action.setWorkspaceId(workspaceId);

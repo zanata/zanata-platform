@@ -25,12 +25,14 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
-import org.zanata.webtrans.client.ui.HasDownloadFileHandler;
+import org.zanata.webtrans.client.ui.FileUploadDialog;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -52,7 +54,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListView extends Composite implements DocumentListDisplay, HasDownloadFileHandler
+public class DocumentListView extends Composite implements DocumentListDisplay
 {
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
 
@@ -66,7 +68,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
 
    @UiField
    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
-   
+
    @UiField
    RadioButton statsByMsg, statsByWord;
 
@@ -79,6 +81,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    private DocumentListTable documentListTable;
 
    private final DownloadFilesConfirmationBox confirmationBox;
+   private final FileUploadDialog fileUploadDialog;
 
    private final Resources resources;
    private final WebTransMessages messages;
@@ -94,13 +97,14 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
       this.userworkspaceContext = userworkspaceContext;
 
       dataProvider = new ListDataProvider<DocumentNode>();
-      confirmationBox = new DownloadFilesConfirmationBox(false, this, resources);
+      confirmationBox = new DownloadFilesConfirmationBox(false, resources);
+      fileUploadDialog = new FileUploadDialog();
       pager = new DocumentListPager(TextLocation.CENTER, false, true);
       searchField = new SearchField(this);
       searchField.setTextBoxTitle(messages.docListFilterDescription());
 
       initWidget(uiBinder.createAndBindUi(this));
-      
+
       downloadAllFiles.setText("Download all files (zip)");
 
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
@@ -219,9 +223,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    }
 
    @Override
-   public void setListener(Listener documentListPresenter)
+   public void setListener(Listener documentListPresenter, String uploadFileURL)
    {
       this.listener = documentListPresenter;
+      confirmationBox.registerHandler(listener);
+      fileUploadDialog.registerHandler(listener, uploadFileURL);
    }
 
    @Override
@@ -256,18 +262,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
    @Override
    public void onSearchFieldClick()
    {
-   }
-
-   @Override
-   public void onOkButtonClicked()
-   {
-      listener.downloadAllFiles();
-   }
-
-   @Override
-   public void onCancelButtonClicked()
-   {
-      hideConfirmation();
    }
 
    @Override
@@ -310,17 +304,43 @@ public class DocumentListView extends Composite implements DocumentListDisplay, 
             anchor.setTarget("_blank");
             return anchor;
          }
-         
+
          @Override
          public void setLinkStyle(String styleName)
          {
-          
+
          }
+
          @Override
          public void setDisabledStyle(String styleName)
          {
-            
+
          }
       };
+   }
+
+   @Override
+   public void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId)
+   {
+      fileUploadDialog.setDocumentInfo(info, workspaceId);
+      fileUploadDialog.center();
+   }
+
+   @Override
+   public void closeFileUpload()
+   {
+      fileUploadDialog.hide();
+   }
+
+   @Override
+   public String getSelectedUploadFileName()
+   {
+      return fileUploadDialog.getUploadFileName();
+   }
+
+   @Override
+   public void submitUploadForm()
+   {
+      fileUploadDialog.submitForm();
    }
 }

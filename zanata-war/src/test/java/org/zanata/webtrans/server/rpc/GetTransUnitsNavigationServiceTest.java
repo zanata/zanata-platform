@@ -1,5 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import lombok.extern.slf4j.Slf4j;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
@@ -18,9 +21,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
-import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.*;
-
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -29,7 +29,7 @@ import static org.hamcrest.MatcherAssert.*;
 public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
 {
    private GetTransUnitsNavigationService service;
-   private final DocumentId documentId = new DocumentId(1);
+   private final DocumentId documentId = new DocumentId(1, "");
    private HLocale jaLocale;
 
    @Override

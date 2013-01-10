@@ -40,16 +40,8 @@
 		.listContainer
 		{
 			padding:10px;
-			margin-top:25px;
 		}
 		
-		.downloadAllFiles
-		{
-			width:130px;
-			margin-top:5px;
-			position:absolute;
-			right:5px;
-		}
 		
     </ui:style>
     <g:LayoutPanel>
@@ -75,16 +67,16 @@
                 		</g:cell>
                 	</g:HorizontalPanel>
                 </g:layer>
-                <g:layer top='32px' bottom="0px">
-                	<g:HTMLPanel>
-                		<g:PushButton ui:field="downloadAllFiles" addStyleNames="{style.downloadAllFiles}"/>
-	                	<g:ScrollPanel styleName="{style.listContainer}">
-	                		<g:HTMLPanel width="100%">
-		                		<g:FlowPanel ui:field="documentListContainer"/>
-		                		<fui:table.DocumentListPager ui:field="pager"/> 
-		                    </g:HTMLPanel>
-	                    </g:ScrollPanel> 
-                    </g:HTMLPanel>
+                <g:layer top="35px" height="22px" right="23px" width="142px">
+                	<g:PushButton ui:field="downloadAllFiles"/>
+                </g:layer>
+                <g:layer top='52px' bottom="0px">
+                	<g:ScrollPanel styleName="{style.listContainer}">
+                		<g:HTMLPanel width="100%">
+	                		<g:FlowPanel ui:field="documentListContainer"/>
+	                		<fui:table.DocumentListPager ui:field="pager"/> 
+	                    </g:HTMLPanel>
+                    </g:ScrollPanel> 
                 </g:layer>
             </g:LayoutPanel>
         </g:layer>

@@ -1,5 +1,11 @@
 package org.zanata.webtrans.server.rpc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import org.hamcrest.Matchers;
@@ -28,10 +34,6 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.collect.Lists;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -69,7 +71,7 @@ public class RevertTransUnitUpdatesHandlerTest
    @Test
    public void testExecute() throws Exception
    {
-      List<TransUnitUpdateInfo> updatesToRevert = Lists.newArrayList(new TransUnitUpdateInfo(true, true, new DocumentId(1), TestFixture.makeTransUnit(1), 0, 0, ContentState.Approved));
+      List<TransUnitUpdateInfo> updatesToRevert = Lists.newArrayList(new TransUnitUpdateInfo(true, true, new DocumentId(1, ""), TestFixture.makeTransUnit(1), 0, 0, ContentState.Approved));
       RevertTransUnitUpdates action = new RevertTransUnitUpdates(updatesToRevert);
       when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY)).thenReturn(checkResult);
       when(checkResult.getLocale()).thenReturn(new HLocale(LocaleId.EN_US));

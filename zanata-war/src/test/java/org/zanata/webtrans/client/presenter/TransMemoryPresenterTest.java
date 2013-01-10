@@ -183,7 +183,7 @@ public class TransMemoryPresenterTest
    public void createTMRequestForTransUnit()
    {
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>());
 
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("query");
@@ -208,7 +208,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
 
       // When:
       presenter.createTMRequestForTransUnit(TestFixture.makeTransUnit(1));
@@ -253,7 +253,7 @@ public class TransMemoryPresenterTest
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, targetLocale), "workspaceName", targetLocale.getId()));
       LocaleId sourceLocale = new LocaleId("en-US");
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", sourceLocale, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", sourceLocale, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("search query");
       when(display.getSearchType()).thenReturn(searchType);
@@ -281,7 +281,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(display.getSearchType()).thenReturn(searchType);
 
@@ -306,7 +306,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("search query");
       when(display.getSearchType()).thenReturn(searchType);
@@ -335,7 +335,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(display.getSearchType()).thenReturn(searchType);
       when(searchType.getValue()).thenReturn(SearchType.FUZZY);

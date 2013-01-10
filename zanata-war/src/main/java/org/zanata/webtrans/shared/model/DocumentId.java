@@ -6,15 +6,18 @@ public class DocumentId implements Identifier<Long>, IsSerializable
 {
    private long id;
 
+   private String docId;
+
    // for GWT
    @SuppressWarnings("unused")
    private DocumentId()
    {
    }
 
-   public DocumentId(long id)
+   public DocumentId(long id, String docId)
    {
       this.id = id;
+      this.docId = docId;
    }
 
    @Override
@@ -38,6 +41,11 @@ public class DocumentId implements Identifier<Long>, IsSerializable
    public long getId()
    {
       return id;
+   }
+
+   public String getDocId()
+   {
+      return docId;
    }
 
    @Override
