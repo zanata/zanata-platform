@@ -1,0 +1,43 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion">
+<head>
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js">
+//        <!-- avoid Concordion collapsing this script! -->
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('span').filter(function () {
+                return $(this).attr('c:execute');
+            }).each(function () {
+                        $(this).addClass("concordion-execute");
+                    });
+        });
+        $(document).ready(function () {
+            $('span').filter(function () {
+                return $(this).attr('c:set');
+            }).each(function () {
+                        $(this).addClass("concordion-data");
+                    });
+        });
+    </script>
+    <style type="text/css">
+        .concordion-execute {
+            color: maroon;
+            font-style: italic;
+        }
+        .concordion-data {
+            color: #0000ff;
+        }
+    </style>
+</head>
+<body>
+    <p>
+        As a user, when I use
+        username: <span c:set="#username">admin</span>
+        and password: <span c:set="#password">admin</span>
+        to <span c:execute="#result = signInAs(#username, #password)">sign in</span>,
+
+        then I should be <span c:assertTrue="#result">logged in</span>.
+        My logged in name will appear as <span c:assertEquals="getLoggedInUsername()">admin</span>
+    </p>
+</body>
+</html>

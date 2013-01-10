@@ -3,7 +3,7 @@ package org.zanata.feature;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectPage;
@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "functional")
 @Slf4j
 public class VersionGroupTest
 {
@@ -37,16 +36,17 @@ public class VersionGroupTest
       assertThat(groupNames, Matchers.contains("group one"));
    }
 
-   @Test(dependsOnMethods = "canCreateVersionGroup")
+   @Test
    public void canAddProjectVersionsToGroup() {
+      canCreateVersionGroup();
       // given two projects and versions are created
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
       ProjectPage projectA = projectWorkFlow.createNewProject("group-project-a", "project a to be grouped");
-      projectWorkFlow.createNewProjectVersion(projectA, "master");
+      projectWorkFlow.createNewProjectVersion("project a to be grouped", "master");
 
       ProjectPage projectB = projectWorkFlow.createNewProject("group-project-b", "project b to be grouped");
-      projectWorkFlow.createNewProjectVersion(projectB, "master");
+      projectWorkFlow.createNewProjectVersion("project b to be grouped", "master");
 
       VersionGroupPage versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup("group one");
       List<TableRow> searchResult = versionGroupPage.addProjectVersion().searchProject("group");

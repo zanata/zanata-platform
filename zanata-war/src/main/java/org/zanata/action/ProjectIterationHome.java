@@ -29,11 +29,9 @@ import javax.persistence.EntityNotFoundException;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HIterationProject;
@@ -42,7 +40,10 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Name("projectIterationHome")
+@Slf4j
 public class ProjectIterationHome extends SlugHome<HProjectIteration>
 {
 
@@ -64,9 +65,6 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
 
    @In
    SlugEntityService slugEntityServiceImpl;
-
-   @Logger
-   Log log;
 
    @In(create = true)
    ProjectDAO projectDAO;
@@ -188,7 +186,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
       if (iterationOverrideLocales != null)
       {
          getInstance().setOverrideLocales(iterationOverrideLocales);
-         if (!iterationOverrideLocales.booleanValue())
+         if (!iterationOverrideLocales)
          {
             getInstance().getCustomizedLocales().clear();
          }

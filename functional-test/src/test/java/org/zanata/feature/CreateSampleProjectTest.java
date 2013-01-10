@@ -25,13 +25,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.IOException;
 import java.util.List;
 
+import org.concordion.api.extension.Extensions;
+import org.concordion.ext.ScreenshotExtension;
+import org.concordion.ext.TimestampFormatterExtension;
+import org.concordion.integration.junit4.ConcordionRunner;
 import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.WebTranPage;
-import org.zanata.util.Constants;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -39,36 +43,51 @@ import org.zanata.workflow.ProjectWorkFlow;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Test(groups = "functional")
 @Slf4j
+@RunWith(ConcordionRunner.class)
+@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class})
 public class CreateSampleProjectTest
 {
-   @Test
-   public void canCreateProjectAndVersion()
+
+   private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+
+   @Before
+   public void beforeMethod()
    {
-      final String projectId = "plurals";
-      final String projectVersion = "master";
-      final String projectName = "plural project";
-
       new LoginWorkFlow().signIn("admin", "admin");
-      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      List<String> projects = projectWorkFlow.goToHome().goToProjects().getProjectNamesOnCurrentPage();
-      log.info("current projects: {}", projects);
-
-      ProjectPage projectPage = projectWorkFlow.createNewProject(projectId, projectName);
-
-      assertThat(projectPage.getProjectId(), Matchers.equalTo(projectId));
-      assertThat(projectPage.getProjectName(), Matchers.equalTo(projectName));
-
-      ProjectVersionPage projectVersionPage = projectWorkFlow.createNewProjectVersion(projectPage, projectVersion);
-
-      // can go to project version page
-      projectPage = projectWorkFlow.goToProjectByName(projectName);
-      projectVersionPage = projectPage.goToVersion(projectVersion);
-
    }
 
-   @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "This Project ID is not available")
+   public ProjectPage createNewProject(String projectSlug, String projectName)
+   {
+      return projectWorkFlow.createNewProject(projectSlug, projectName);
+   }
+
+   public ProjectPage createNewProjectVersion(String projectName, String versionSlug)
+   {
+      projectWorkFlow.createNewProjectVersion(projectName, versionSlug);
+      return projectWorkFlow.goToProjectByName(projectName);
+   }
+
+//   public void canCreateProjectAndVersion(String projectSlug, String projectName, String versionSlug)
+//   {
+//      ProjectsPage projectsPage = getCurrentPage();
+//      List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
+//      log.info("current projects: {}", projects);
+//
+//      ProjectPage projectPage = projectWorkFlow.createNewProject(projectSlug, projectName);
+//
+//      assertThat(projectPage.getProjectId(), Matchers.equalTo(projectSlug));
+//      assertThat(projectPage.getProjectName(), Matchers.equalTo(projectName));
+//
+//      ProjectVersionPage projectVersionPage = projectWorkFlow.createNewProjectVersion(projectPage, versionSlug);
+//
+//      // can go to project version page
+//      projectPage = projectWorkFlow.goToProjectByName(projectName);
+//      projectVersionPage = projectPage.goToVersion(versionSlug);
+//
+//   }
+
+//   @Test(expected = RuntimeException.class)
    public void cannotCreateProjectWithSameProjectId() {
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
@@ -79,7 +98,7 @@ public class CreateSampleProjectTest
       projectWorkFlow.createNewProject("project-a", "project with same slug/project id");
    }
 
-   @Test
+//   @Test
    public void canCreateSameVersionIdOnDifferentProjects() {
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
@@ -94,24 +113,23 @@ public class CreateSampleProjectTest
       assertThat(projectVersionPage.getTitle(), Matchers.equalTo("Zanata:project-c:master"));
    }
 
-   @Test
-   public void canAddLanguage()
+   public List<String> addLanguage(String localeId)
    {
       new LoginWorkFlow().signIn("admin", "admin");
       LanguageWorkFlow workFlow = new LanguageWorkFlow();
-      workFlow.addLanguageAndJoin("en-US");
-      workFlow.addLanguageAndJoin("pl");
-      workFlow.addLanguageAndJoin("zh");
+      workFlow.addLanguageAndJoin(localeId);
+//      workFlow.addLanguageAndJoin("pl");
+//      workFlow.addLanguageAndJoin("zh");
 
       ManageLanguagePage languagePage = workFlow.goToHome().goToAdministration().goToManageLanguagePage();
-      List<String> languageLocales = languagePage.getLanguageLocales();
-
-      assertThat(languageLocales, Matchers.hasItems("en-US", "pl", "zh"));
+      return languagePage.getLanguageLocales();
    }
 
-   @Test(dependsOnMethods = { "canCreateProjectAndVersion", "canAddLanguage" }, invocationTimeOut = Constants.FIFTY_SEC)
+//   @Test(timeout = Constants.FIFTY_SEC)
    public void canPush() throws IOException
    {
+//      canCreateProjectAndVersion("plurals", "master", "plural project");
+//      canAddLanguage("en-US");
       ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
       int exitCode = clientPushWorkFlow.mvnPush("plural");
 
@@ -121,8 +139,10 @@ public class CreateSampleProjectTest
       assertThat(projectVersionPage.getTranslatableLocales(), Matchers.hasItems("en-US", "pl", "zh"));
    }
 
-   @Test(dependsOnMethods = "canPush")
-   public void canSeeDocumentList() {
+//   @Test
+   public void canSeeDocumentList() throws IOException
+   {
+      canPush();
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToVersion("master");
       WebTranPage webTranPage = projectVersionPage.translate("pl");

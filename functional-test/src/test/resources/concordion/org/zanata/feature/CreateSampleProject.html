@@ -1,0 +1,57 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js" >
+//        <!-- avoid Concordion collapsing this script! -->
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('span').filter(function () {
+                return $(this).attr('c:execute');
+            }).each(function () {
+                        $(this).addClass("concordion-execute");
+                    });
+        });
+        $(document).ready(function () {
+            $('span').filter(function () {
+                return $(this).attr('c:set');
+            }).each(function () {
+                        $(this).addClass("concordion-data");
+                    });
+        });
+    </script>
+    <style type="text/css">
+        .concordion-execute {
+            color: maroon;
+            font-style: italic;
+        }
+        .concordion-data {
+            display: inline-block;
+            border-left: #0000ff solid 1px;
+            border-right: #0000ff solid 1px;
+            background-color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <p>
+        As a user logged in as admin,
+        when I want to create a project with
+        id: <span c:set="#projectSlug">plurals</span> and name <span c:set="#projectName">plural projects</span>,
+        I go to projects page, click on <span c:execute="#projectPage = createNewProject(#projectSlug, #projectName)">create new project</span> link and fill in the data.
+        then I should have project <span ext:screenshot="linked" style="text-decoration: underline;">created as</span>
+        id <span c:assertEquals="#projectPage.projectId">plurals</span> and name <span c:assertEquals="#projectPage.projectName">plural projects</span>.
+    </p>
+
+    <p>
+        After I have created the project, I should have an empty versions list <span c:echo="#projectPage.versions" />
+    </p>
+    <p>
+        When I input <span c:set="#versionSlug">master</span> after click on <span c:execute="#projectPage = createNewProjectVersion(#projectName, #versionSlug)">Create Version</span> link and save,
+        then I should have versions listed as
+        <table c:verifyRows="#version : #projectPage.versions">
+            <tr><th c:assertEquals="#version">version in project</th></tr>
+            <tr><td>master</td></tr>
+        </table>
+    </p>
+</body>
+</html>

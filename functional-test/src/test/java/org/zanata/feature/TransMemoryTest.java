@@ -22,7 +22,7 @@
 package org.zanata.feature;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.util.Constants;
 import org.zanata.workflow.ClientPushWorkFlow;
@@ -35,11 +35,11 @@ import static org.hamcrest.MatcherAssert.*;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "manual-run", description = "This test class only sets up test data on server. It's not verifying any TM features.")
+//@Test(groups = "manual-run", description = "This test class only sets up test data on server. It's not verifying any TM features.")
 public class TransMemoryTest
 {
 
-   @Test(timeOut = Constants.FIFTY_SEC)
+   @Test(timeout = Constants.FIFTY_SEC)
    public void pushTransMemoryProject() {
       new LoginWorkFlow().signIn("admin", "admin");
       LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
@@ -48,14 +48,14 @@ public class TransMemoryTest
 
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
       ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory", "trans memory test");
-      projectWorkFlow.createNewProjectVersion(projectPage, "master");
+      projectWorkFlow.createNewProjectVersion("trans memory test", "master");
 
       int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.merge=import", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Both");
 
       assertThat(exitCode, Matchers.equalTo(0));
    }
 
-   @Test(timeOut = Constants.FIFTY_SEC)
+   @Test(timeout = Constants.FIFTY_SEC)
    public void pushTransMemoryProjectWithDifferentProjectName() {
       new LoginWorkFlow().signIn("admin", "admin");
       LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
@@ -64,7 +64,7 @@ public class TransMemoryTest
 
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
       ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory-v2", "trans memory test v2");
-      projectWorkFlow.createNewProjectVersion(projectPage, "master");
+      projectWorkFlow.createNewProjectVersion("trans memory test v2", "master");
 
       // @formatter:off
       int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",

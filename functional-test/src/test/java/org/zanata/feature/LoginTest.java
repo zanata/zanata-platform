@@ -20,28 +20,34 @@
  */
 package org.zanata.feature;
 
+import org.concordion.api.extension.Extensions;
+import org.concordion.ext.ScreenshotExtension;
+import org.concordion.ext.TimestampFormatterExtension;
+import org.concordion.integration.junit4.ConcordionRunner;
 import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
-import org.zanata.workflow.LoginWorkFlow;
+import org.junit.runner.RunWith;
 import org.zanata.page.HomePage;
+import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Test(groups = "functional")
+
+@RunWith(ConcordionRunner.class)
+@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class})
 public class LoginTest
 {
-   @Test
-   public void canLogIn() {
-      LoginWorkFlow loginWorkFlow = new LoginWorkFlow();
-      HomePage homePage = loginWorkFlow.signIn("admin", "admin");
+   public boolean signInAs(String username, String password)
+   {
+      HomePage homePage = new LoginWorkFlow().signIn(username, password);
 
       assertThat(homePage.getTitle(), Matchers.equalTo("Zanata:Home"));
-      assertThat(homePage.hasLoggedIn(), Matchers.is(true));
-      assertThat(homePage.loggedInAs(), Matchers.equalTo("admin"));
+      return homePage.hasLoggedIn();
+   }
 
-      //try to log in again won't cause any problem
-      loginWorkFlow.signIn("admin", "admin");
-      assertThat(homePage.loggedInAs(), Matchers.equalTo("admin"));
+   public String getLoggedInUsername()
+   {
+      HomePage homePage = new LoginWorkFlow().goToHome();
+      return homePage == null ? null : homePage.loggedInAs();
    }
 
 }
