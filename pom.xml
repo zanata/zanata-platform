@@ -40,6 +40,12 @@
 			<artifactId>zanata-common-api</artifactId>
 			<version>${zanata.api.version}</version>
 		</dependency>
+      <dependency>
+         <groupId>org.zanata</groupId>
+         <artifactId>zanata-common-api</artifactId>
+         <type>test-jar</type>
+         <version>${zanata.api.version}</version>
+      </dependency>
         <dependency>
           <groupId>org.zanata</groupId>
           <artifactId>zanata-rest-client</artifactId>
@@ -81,8 +87,7 @@
       </dependency>
       <dependency>
             <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-util</artifactId>
-            <version>${zanata.common.version}</version>
+            <artifactId>zanata-common-api</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
       </dependency>

@@ -89,7 +89,15 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    }
 
    @Override
-   @Option(name = "--project-type", metaVar = "PROJTYPE", usage = "Type of project ('properties' = Java .properties, 'podir' = publican-style gettext directories)")
+   @Option(name = "--project-type", metaVar = "PROJTYPE",
+   usage = "Type of project:\n" +
+       "    \"properties\" = Java .properties,\n" +
+       "    \"podir\" = publican-style gettext directories,\n" +
+       "    \"utf8properties\" = UTF-8 .properties files,\n" +
+       "    \"gettext\" = gettext PO files,\n" +
+       "    \"raw\" = EXPERIMENTAL raw documents of various types).\n" +
+       "If 'raw' is used, transDir must not be the same as or nested within srcDir,\n" +
+       "and vice versa.")
    public void setProjectType(String projectType)
    {
       this.projectType = projectType;

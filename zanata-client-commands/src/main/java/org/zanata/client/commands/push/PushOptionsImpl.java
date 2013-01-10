@@ -29,8 +29,10 @@ import java.util.Set;
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.BooleanValueHandler;
 import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.config.LocaleList;
 import org.zanata.util.StringUtil;
 
 /**
@@ -60,6 +62,8 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
 
    private String validate;
    private boolean dryRun;
+   private String[] locales;
+   private LocaleList effectiveLocales;
 
    @Override
    public ZanataCommand initCommand()
@@ -91,11 +95,28 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
       this.sourceLang = sourceLang;
    }
 
-//   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALES", usage = "Locales to push to the server.\n" +
-//   		"By default all locales in zanata.xml will be pushed.")
+   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALE1,LOCALE2,...", usage = "Locales to push to the server.\n" +
+       "By default all locales in zanata.xml will be pushed.")
    public void setLocales(String locales)
    {
-      // FIXME implement -l for target locales
+      this.locales = locales.split(",");
+   }
+
+   /**
+    * Override the parent method as the push
+    * command can have locales specified via command line.
+    *
+    * @return The locale map list taking into account the global locales in zanata.xml as well as the command line
+    * argument ones.
+    */
+   @Override
+   public LocaleList getLocaleMapList()
+   {
+      if(effectiveLocales == null)
+      {
+         effectiveLocales = PushPullCommand.getLocaleMapList(super.getLocaleMapList(), locales);
+      }
+      return effectiveLocales;
    }
 
    @Override
