@@ -24,12 +24,6 @@
       <version>${zanata.api.version}</version>
     </dependency>
     <dependency>
-        <groupId>org.zanata</groupId>
-        <artifactId>zanata-common-util</artifactId>
-        <type>test-jar</type>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.fedorahosted.openprops</groupId>
       <artifactId>openprops</artifactId>
     </dependency>
