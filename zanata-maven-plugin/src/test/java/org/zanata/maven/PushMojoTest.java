@@ -5,10 +5,10 @@ import java.util.Arrays;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.PushPullType;
 
-public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
+public class PushMojoTest extends ZanataMojoTest<PushSimpleMojo, PushCommand>
 {
    PushCommand mockCommand = control.createMock(PushCommand.class);
-   PushMojo pushMojo = new PushMojo()
+   PushSimpleMojo pushMojo = new PushSimpleMojo()
    {
       @Override
       public PushCommand initCommand()
@@ -22,7 +22,7 @@ public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
    }
 
    @Override
-   protected PushMojo getMojo()
+   protected PushSimpleMojo getMojo()
    {
       return pushMojo;
    }

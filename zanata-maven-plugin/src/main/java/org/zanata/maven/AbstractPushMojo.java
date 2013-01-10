@@ -1,3 +1,24 @@
+/*
+ * Copyright 2012, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.zanata.maven;
 
 import java.util.ArrayList;
@@ -7,29 +28,24 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
-import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.RawPushCommand;
-import org.zanata.client.config.LocaleList;
-import org.zanata.client.config.LocaleMapping;
-import org.zanata.client.exceptions.ConfigException;
 
 /**
- * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
- * NB: Any documents which exist on the server but not locally will be deleted as obsolete.
- * If deleteObsoleteModules is true, documents belonging to unknown/obsolete modules will be deleted as well.
- * 
- * @goal push
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
  */
-public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
+public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions> implements PushOptions
 {
 
-   public PushMojo() throws Exception
-   {
-      super();
-   }
+   /**
+    * Language of source documents
+    * 
+    * @parameter expression="${zanata.sourceLang}" default-value="en-US"
+    */
+   private String sourceLang = "en-US";
 
    @Override
    public PushPullCommand<PushOptions> initCommand()
@@ -45,20 +61,12 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    }
 
    /**
-    * Language of source documents
-    * 
-    * @parameter expression="${zanata.sourceLang}" default-value="en-US"
-    */
-   private String sourceLang = "en-US";
-
-   /**
     * Push translations from local files to the server (merge or import: see
     * mergeType). This option is deprecated, replaced by pushType.
     *
     * @parameter expression="${zanata.pushTrans}"
     */
    @Deprecated
-   // Using string instead of boolean to know when pushTrans has been explicitly used.
    private String pushTrans;
 
    /**
@@ -77,14 +85,6 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     * @parameter expression="${zanata.copyTrans}" default-value="true"
     */
    private boolean copyTrans;
-
-   /**
-    * Obsolete option, only for backwards compatibility
-    * 
-    * @parameter expression="${zanata.useSrcOrder}" default-value="false"
-    */
-   @Deprecated
-   private boolean useSrcOrder;
 
    /**
     * Merge type: "auto" (default) or "import" (DANGER!).
@@ -116,23 +116,6 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     * @parameter expression="${zanata.defaultExcludes}" default-value="true"
     */
    private boolean defaultExcludes = true;
-
-   /**
-    * @parameter expression="${zanata.deleteObsoleteModules}" default-value="false"
-    */
-   private boolean deleteObsoleteModules;
-
-   /**
-    * Locales to push to the server.
-    * By default all locales in zanata.xml will be pushed.
-    * Usage: -Dzanata.locales=locale1,locale2,locale3
-    *
-    * @parameter expression="${zanata.locales}"
-    */
-   private String[] locales;
-
-   // Cached copy of the effective locales to avoid calculating it more than once
-   private LocaleList effectiveLocales;
 
    /**
     * Maximum size, in bytes, of document chunks to transmit when using project type 'raw'. Documents smaller
@@ -171,8 +154,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     * @parameter expression="${zanata.excludeLocaleFilenames}" default-value="true"
     */
    private boolean excludeLocaleFilenames = true;
-   
-   
+
    /**
     * Run validation check against file. Only applies to XLIFF project type.
     * "CONTENT" - content validation check (quick). "XSD" - validation check against
@@ -182,7 +164,6 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     * @parameter expression="${zanata.validate}" default-value="content"
     */
    private String validate = "content";
-
 
    @Override
    public String getSourceLang()
@@ -217,12 +198,6 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    }
 
    @Override
-   public boolean getDeleteObsoleteModules()
-   {
-      return this.deleteObsoleteModules;
-   }
-
-   @Override
    public List<String> getIncludes()
    {
       String[] includeList = StringUtils.split(includes, ",");
@@ -250,52 +225,6 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    public boolean getDefaultExcludes()
    {
       return defaultExcludes;
-   }
-
-   /**
-    * Override the default {@link org.zanata.maven.ConfigurableProjectMojo#getLocaleMapList()} method as the push
-    * command can have locales specified via command line.
-    *
-    * @return The locale map list taking into account the global locales in zanata.xml as well as the command line
-    * argument ones.
-    */
-   @Override
-   public LocaleList getLocaleMapList()
-   {
-      if( effectiveLocales == null )
-      {
-         if(locales != null && locales.length > 0)
-         {
-            // filter the locales that are specified in both the global config and the parameter list
-            effectiveLocales = new LocaleList();
-
-            for( String locale : locales )
-            {
-               boolean foundLocale = false;
-               for(LocaleMapping lm : super.getLocaleMapList())
-               {
-                  if( lm.getLocale().equals(locale) ||
-                        (lm.getMapFrom() != null && lm.getMapFrom().equals( locale )) )
-                  {
-                     effectiveLocales.add(lm);
-                     foundLocale = true;
-                     break;
-                  }
-               }
-
-               if(!foundLocale)
-               {
-                  throw new ConfigException("Specified locale '" + locale + "' was not found in zanata.xml!" );
-               }
-            }
-         }
-         else
-         {
-            effectiveLocales = super.getLocaleMapList();
-         }
-      }
-
-      return effectiveLocales;
    }
 
    @Override
@@ -333,4 +262,5 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    {
       return validate;
    }
+
 }

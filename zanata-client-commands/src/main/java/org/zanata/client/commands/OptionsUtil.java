@@ -160,8 +160,4 @@ public class OptionsUtil
       }
    }
 
-   public boolean parseBoolean(String s)
-   {
-      return Boolean.parseBoolean(s);
-   }
 }

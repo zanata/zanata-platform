@@ -35,13 +35,15 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.UnmarshalException;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.config.LocaleList;
+import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.etag.ETagCache;
 import org.zanata.client.etag.ETagCacheReaderWriter;
+import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
@@ -192,6 +194,46 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
       ClientUtility.checkResult(getResponse, uri);
       List<ResourceMeta> remoteDocList = getResponse.getEntity();
       return remoteDocList;
+   }
+
+   /**
+    * Filters the project's list of locales
+    * @param projectLocales locales defined by the project's zanata.xml
+    * @param locales locales requested by the user (eg Maven param, command line option)
+    * @return the filtered list of locales
+    * @throws ConfigException if one of the locales was not found in zanata.xml
+    */
+   public static LocaleList getLocaleMapList(LocaleList projectLocales, String[] locales)
+   {
+      if(locales == null || locales.length <= 0)
+      {
+         return projectLocales;
+      }
+      else
+      {
+         // filter the locales that are specified in both the global config and the parameter list
+         LocaleList effectiveLocales = new LocaleList();
+         for( String locale : locales )
+         {
+            boolean foundLocale = false;
+            for(LocaleMapping lm : projectLocales)
+            {
+               if( lm.getLocale().equals(locale) ||
+                     (lm.getMapFrom() != null && lm.getMapFrom().equals( locale )) )
+               {
+                  effectiveLocales.add(lm);
+                  foundLocale = true;
+                  break;
+               }
+            }
+
+            if(!foundLocale)
+            {
+               throw new ConfigException("Specified locale '" + locale + "' was not found in zanata.xml!" );
+            }
+         }
+         return effectiveLocales;
+      }
    }
 
    protected void loadETagCache()

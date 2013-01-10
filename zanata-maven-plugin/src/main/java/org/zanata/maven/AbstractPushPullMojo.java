@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullOptions;
+import org.zanata.client.config.LocaleList;
 
 /**
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public abstract class PushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
+public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
 {
 
    /**
@@ -42,7 +44,7 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    @Override
    public String getCurrentModule()
    {
-      if (project == null || !enableModules)
+      if (project == null || !getEnableModules())
       {
          return "";
       }
@@ -80,12 +82,6 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    {
       return module.getGroupId() + MODULE_SEPARATOR + module.getArtifactId();
    }
-
-   /**
-    * Whether module processing should be enabled
-    * @parameter expression="${zanata.enableModules}"
-    */
-   private boolean enableModules = false;
 
    /**
     * @parameter expression="${project}"
@@ -126,7 +122,18 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
     */
    private File transDir;
 
-   public PushPullMojo() throws Exception
+   /**
+    * Locales to push to/pull from the server.
+    * By default all locales in zanata.xml will be pushed/pulled.
+    * Usage: -Dzanata.locales=locale1,locale2,locale3
+    *
+    * @parameter expression="${zanata.locales}"
+    */
+   private String[] locales;
+
+   private LocaleList effectiveLocales;
+
+   public AbstractPushPullMojo()
    {
       super();
    }
@@ -141,12 +148,6 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    }
 
    @Override
-   public boolean getEnableModules()
-   {
-      return enableModules;
-   }
-
-   @Override
    public File getSrcDir()
    {
       return srcDir;
@@ -156,6 +157,24 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    public File getTransDir()
    {
       return transDir;
+   }
+
+   /**
+    * Override the default {@link org.zanata.maven.ConfigurableProjectMojo#getLocaleMapList()} method as the push
+    * command can have locales specified via command line.
+    *
+    * @return The locale map list taking into account the global locales in zanata.xml as well as the command line
+    * argument ones.
+    */
+   @Override
+   public LocaleList getLocaleMapList()
+   {
+      if( effectiveLocales == null )
+      {
+         effectiveLocales = PushPullCommand.getLocaleMapList(super.getLocaleMapList(), locales);
+      }
+
+      return effectiveLocales;
    }
 
 }
