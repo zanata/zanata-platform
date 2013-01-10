@@ -53,14 +53,6 @@
 			<version>${zanata.api.version}</version>
 		</dependency>
 
-      <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-util</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-      </dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
