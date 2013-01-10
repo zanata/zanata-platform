@@ -1205,6 +1205,11 @@
             <version>0.18</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-plaintext</artifactId>
+            <version>0.18</version>
+        </dependency>
 
 		<!-- Other -->
 
