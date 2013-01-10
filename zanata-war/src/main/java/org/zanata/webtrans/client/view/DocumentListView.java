@@ -215,7 +215,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    @Override
    public void renderTable(NoSelectionModel<DocumentNode> selectionModel)
    {
-      documentListTable = new DocumentListTable(resources, messages, dataProvider, listener, selectionModel, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
+      documentListTable = new DocumentListTable(resources, messages, dataProvider, listener, selectionModel, userworkspaceContext);
       dataProvider.addDataDisplay(documentListTable);
 
       documentListContainer.clear();

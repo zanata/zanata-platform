@@ -23,6 +23,8 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletResponse;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -60,6 +62,7 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -69,7 +72,7 @@ import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
 {
-   private static final String UPLOAD_ACTION_URL = Application.getModuleParentBaseUrl() + "iteration/files/upload";
+   private static final String UPLOAD_ACTION_URL = GWT.getModuleBaseURL() + "files/upload";
 
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
@@ -431,7 +434,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void showUploadDialog(DocumentInfo docInfo)
    {
-
       display.showUploadDialog(docInfo, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
    }
 
@@ -444,8 +446,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void onFileUploadComplete(SubmitCompleteEvent event)
    {
-      eventBus.fireEvent(new NotificationEvent(Severity.Info, "File " + display.getSelectedUploadFileName() + " uploaded"));
       display.closeFileUpload();
+      if(event.getResults().contains("200"))
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, event.getResults()));
+      }
+      else
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Error, event.getResults()));
+      }
    }
 
    @Override

@@ -134,20 +134,31 @@ public class FileUploadServlet extends HttpServlet
                extensions = Collections.<String> emptySet();
             }
             List<String> warnings = translationServiceImpl.translateAllInDoc(params.get("projectSlug").getString(), params.get("versionSlug").getString(), params.get("docId").getString(), new LocaleId(params.get("targetLocale").getString()), transRes, extensions, Boolean.parseBoolean(params.get("merge").getString()) ? MergeType.AUTO : MergeType.IMPORT);
-
-            // StringBuilder facesInfoMssg = new
-            // StringBuilder("File {0} uploaded.");
-            // if (!warnings.isEmpty())
-            // {
-            // facesInfoMssg.append(" There were some warnings, see below.");
-            // }
-            //
-            // FacesMessages.instance().add(Severity.INFO,
-            // facesInfoMssg.toString(), translationFileUpload.getFileName());
-            // for (String warning : warnings)
-            // {
-            // FacesMessages.instance().add(Severity.WARN, warning);
-            // }
+            
+            
+            StringBuilder response = new StringBuilder();
+            response.append("Status code: ");
+            response.append(HttpServletResponse.SC_OK);
+            response.append(" File " + params.get("fileName") + " uploaded. \n");
+            if(!warnings.isEmpty())
+            {
+               response.append("Warnings:\n");
+               for (String warning : warnings)
+               {
+                  response.append(warning + "\n");
+               }
+            }
+            resp.setContentLength(response.toString().length());
+            resp.setContentType("text/plain");
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setCharacterEncoding("utf8");
+            
+//            resp.getOutputStream().println("testing");
+//            resp.getOutputStream().flush();
+            
+            resp.getWriter().print(response.toString());
+            resp.getWriter().flush();
+            
          }
          catch (Exception e)
          {

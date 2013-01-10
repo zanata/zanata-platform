@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.ui.table.column.RemainingHoursColumn;
 import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.cell.client.ButtonCell;
@@ -101,7 +102,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
 
    private final StatisticHeader statisticColumnHeader;
 
-   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final DocumentListDisplay.Listener listener, final NoSelectionModel<DocumentNode> selectionModel, final WorkspaceId workspaceId)
+   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final DocumentListDisplay.Listener listener, final NoSelectionModel<DocumentNode> selectionModel, final UserWorkspaceContext userWorkspaceContext)
    {
       super(15, (CellTableResources) GWT.create(CellTableResources.class));
       setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
@@ -165,7 +166,8 @@ public class DocumentListTable extends CellTable<DocumentNode>
             {
                Anchor anchor = new Anchor(entry.getKey());
                anchor.setStyleName("downloadFileLink");
-               anchor.setHref(Application.getFileDownloadURL(workspaceId, entry.getValue()));
+               anchor.setHref(Application.getFileDownloadURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId(), entry.getValue()));
+               anchor.setTarget("_blank");
                downloadPanel.add(anchor);
             }
             return downloadPanel;
@@ -216,7 +218,10 @@ public class DocumentListTable extends CellTable<DocumentNode>
       addColumn(downloadColumn, "Download");
 
       uploadColumn.setCellStyleNames("uploadCol");
-      addColumn(uploadColumn, "Upload");
+      if(userWorkspaceContext.hasWriteAccess())
+      {
+         addColumn(uploadColumn, "Upload");
+      }
 
       addSorting(dataProvider);
    }

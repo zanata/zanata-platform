@@ -248,7 +248,7 @@
   
   	<servlet-mapping>
     	<servlet-name>uploadServlet</servlet-name>
-    	<url-pattern>/iteration/files/upload</url-pattern>
+    	<url-pattern>/webtrans/files/upload</url-pattern>
   	</servlet-mapping>
   	
 	<!-- Uncomment this to enable the H2Console
