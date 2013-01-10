@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>7</version>
+    <version>9-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -18,21 +18,10 @@
 		<url>https://github.com/zanata/zanata-api</url>
 	</scm>
 
-    <properties>
-      <zanata.common.version>1.8.6-SNAPSHOT</zanata.common.version>
-    </properties>
-
    <dependencies>
       <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-      </dependency>
-      <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-util</artifactId>
-            <version>${zanata.common.version}</version>
-            <type>test-jar</type>
             <scope>test</scope>
       </dependency>
    </dependencies>
