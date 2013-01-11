@@ -22,6 +22,7 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -42,20 +43,24 @@ import org.zanata.util.StringUtil;
 public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOptions
 {
 
-   private List<String> includes;
-   private List<String> excludes;
-   private List<String> fileTypes;
    private static final boolean DEF_EXCLUDES = true;
-   private boolean defaultExcludes = DEF_EXCLUDES;
-   private String mergeType;
    private static final boolean DEF_CASE_SENSITIVE = true;
+   private static final boolean DEF_EXCLUDE_LOCALES = true;
+   private static final boolean DEF_COPYTRANS = true;
+   /** @see org.zanata.common.MergeType for options */
+   private static final String DEF_MERGE_TYPE = "AUTO";
+   private static final String DEF_PUSH_TYPE = "trans";
+
+   private List<String> includes = new ArrayList<String>();
+   private List<String> excludes = new ArrayList<String>();
+   private List<String> fileTypes;
+   private boolean defaultExcludes = DEF_EXCLUDES;
+   private String mergeType = DEF_MERGE_TYPE;
    private boolean caseSensitive = DEF_CASE_SENSITIVE;
    private int chunkSize = 1024 * 1024;
-   private static final boolean DEF_EXCLUDE_LOCALES = true;
    private boolean excludeLocaleFilenames = DEF_EXCLUDE_LOCALES;
-   private static final boolean DEF_COPYTRANS = true;
    private boolean copyTrans = DEF_COPYTRANS;
-   private String pushType;
+   private String pushType = DEF_PUSH_TYPE;
    private File transDir;
    private File srcDir;
    private String sourceLang = "en-US";
