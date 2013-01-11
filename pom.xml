@@ -708,6 +708,10 @@
 				<version>${resteasy.version}</version>
 				<exclusions>
 					<exclusion>
+						<groupId>org.scannotation</groupId>
+						<artifactId>scannotation</artifactId>
+					</exclusion>
+					<exclusion>
 						<groupId>org.slf4j</groupId>
 						<artifactId>jcl-over-slf4j</artifactId>
 					</exclusion>
