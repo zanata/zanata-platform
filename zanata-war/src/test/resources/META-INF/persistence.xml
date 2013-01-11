@@ -17,7 +17,7 @@
 			See also zanata-model/src/test/resources/META-INF/persistence.xml.
 		 -->
 		 
-		<mapping-file>META-INF/orm.xml</mapping-file>
+<!-- 		<mapping-file>META-INF/orm.xml</mapping-file> -->
 		 
 		<class>org.zanata.model.HAccountActivationKey</class>
 		<class>org.zanata.model.HAccount</class>
