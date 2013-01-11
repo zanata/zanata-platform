@@ -114,13 +114,29 @@ public class ManualRunHelper
       }
       else
       {
-         insertAdminUser();
+         runScript("create_admin_user.sql");
       }
    }
 
-   private void insertAdminUser() throws Exception
+   @Test
+   public void addTranslatorToDB() throws Exception
    {
-      List<String> scripts = readLines("create_admin_user.sql");
+      ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'translator'");
+      resultSet.next();
+      int translator = resultSet.getInt(1);
+      if (translator == 1)
+      {
+         log.info("user [translator] already exists. ignored.");
+      }
+      else
+      {
+         runScript("create_translator_user.sql");
+      }
+   }
+
+   private static void runScript(String scriptName) throws Exception
+   {
+      List<String> scripts = readLines(scriptName);
 
       for (String script : scripts)
       {

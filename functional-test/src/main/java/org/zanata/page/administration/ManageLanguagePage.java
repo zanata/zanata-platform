@@ -96,21 +96,6 @@ public class ManageLanguagePage extends AbstractPage
       return matchedRow;
    }
 
-   public ManageLanguagePage joinLanguageTeam()
-   {
-      // Waiting 10 seconds for an element to be present on the page, checking
-      // for its presence once every 1 second.
-      WebElement joinLanguageTeamLink = waitForTenSec().until(new Function<WebDriver, WebElement>()
-      {
-         public WebElement apply(WebDriver driver)
-         {
-            return driver.findElement(By.linkText("Join Language Team"));
-         }
-      });
-      joinLanguageTeamLink.click();
-      return this;
-   }
-
    public ManageLanguagePage enableLanguageByDefault(String localeId)
    {
       TableRow matchedRow = findRowByLocale(localeId);

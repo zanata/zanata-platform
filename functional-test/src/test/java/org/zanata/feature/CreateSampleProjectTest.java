@@ -33,9 +33,11 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.zanata.page.administration.ManageLanguagePage;
+import org.zanata.page.administration.ManageLanguageTeamMemberPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.WebTranPage;
+import org.zanata.util.TableRow;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -50,6 +52,7 @@ public class CreateSampleProjectTest
 {
 
    private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+   private final LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
 
    @Before
    public void beforeMethod()
@@ -68,24 +71,39 @@ public class CreateSampleProjectTest
       return projectWorkFlow.goToProjectByName(projectName);
    }
 
-//   public void canCreateProjectAndVersion(String projectSlug, String projectName, String versionSlug)
-//   {
-//      ProjectsPage projectsPage = getCurrentPage();
-//      List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
-//      log.info("current projects: {}", projects);
-//
-//      ProjectPage projectPage = projectWorkFlow.createNewProject(projectSlug, projectName);
-//
-//      assertThat(projectPage.getProjectId(), Matchers.equalTo(projectSlug));
-//      assertThat(projectPage.getProjectName(), Matchers.equalTo(projectName));
-//
-//      ProjectVersionPage projectVersionPage = projectWorkFlow.createNewProjectVersion(projectPage, versionSlug);
-//
-//      // can go to project version page
-//      projectPage = projectWorkFlow.goToProjectByName(projectName);
-//      projectVersionPage = projectPage.goToVersion(versionSlug);
-//
-//   }
+   public List<String> getLanguages()
+   {
+      return languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().getLanguageLocales();
+   }
+
+   public void addNewLanguage(String locale)
+   {
+      languageWorkFlow.addLanguage(locale);
+   }
+
+   public List<String> manageLanguage(String locale)
+   {
+      return languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().manageTeamMembersFor(locale).getMemberUsernames();
+   }
+
+   public void joinLanguageAsAdmin(String locale)
+   {
+      languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().manageTeamMembersFor(locale).joinLanguageTeam();
+   }
+
+   public void addToLanguage(String person, String locale)
+   {
+      ManageLanguageTeamMemberPage teamMemberPage = languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().manageTeamMembersFor(locale).clickAddTeamMember();
+      List<TableRow> searchResult = teamMemberPage.searchPerson(person);
+      if (searchResult.size() > 0)
+      {
+         teamMemberPage.addToTeam(searchResult.get(0));
+      }
+      else
+      {
+         throw new RuntimeException(person + " not found");
+      }
+   }
 
 //   @Test(expected = RuntimeException.class)
    public void cannotCreateProjectWithSameProjectId() {
@@ -111,18 +129,6 @@ public class CreateSampleProjectTest
             .clickCreateVersionLink().inputVersionId("master").saveVersion();
 
       assertThat(projectVersionPage.getTitle(), Matchers.equalTo("Zanata:project-c:master"));
-   }
-
-   public List<String> addLanguage(String localeId)
-   {
-      new LoginWorkFlow().signIn("admin", "admin");
-      LanguageWorkFlow workFlow = new LanguageWorkFlow();
-      workFlow.addLanguageAndJoin(localeId);
-//      workFlow.addLanguageAndJoin("pl");
-//      workFlow.addLanguageAndJoin("zh");
-
-      ManageLanguagePage languagePage = workFlow.goToHome().goToAdministration().goToManageLanguagePage();
-      return languagePage.getLanguageLocales();
    }
 
 //   @Test(timeout = Constants.FIFTY_SEC)

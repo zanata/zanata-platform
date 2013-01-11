@@ -30,6 +30,12 @@
             border-right: #0000ff solid 1px;
             background-color: #cccccc;
         }
+        .info {
+            display: block;
+            border: solid thin #808080;
+            background-color: #adff2f;
+            color: #00008b;
+        }
     </style>
 </head>
 <body>
@@ -37,13 +43,13 @@
         As a user logged in as admin,
         when I want to create a project with
         id: <span c:set="#projectSlug">plurals</span> and name <span c:set="#projectName">plural projects</span>,
-        I go to projects page, click on <span c:execute="#projectPage = createNewProject(#projectSlug, #projectName)">create new project</span> link and fill in the data.
+        I go to projects page, click on <span c:execute="#projectPage = createNewProject(#projectSlug, #projectName)">Create project</span> link and fill in the data.
         then I should have project <span ext:screenshot="linked" style="text-decoration: underline;">created as</span>
         id <span c:assertEquals="#projectPage.projectId">plurals</span> and name <span c:assertEquals="#projectPage.projectName">plural projects</span>.
     </p>
 
-    <p>
-        After I have created the project, I should have an empty versions list <span c:echo="#projectPage.versions" />
+    <p class="info">
+        After I have created the project, the versions list is <span c:echo="#projectPage.versions" />
     </p>
     <p>
         When I input <span c:set="#versionSlug">master</span> after click on <span c:execute="#projectPage = createNewProjectVersion(#projectName, #versionSlug)">Create Version</span> link and save,
@@ -52,6 +58,43 @@
             <tr><th c:assertEquals="#version">version in project</th></tr>
             <tr><td>master</td></tr>
         </table>
+    </p>
+    <p>
+        As an admin I can create languages on the server.
+        When I go to menu More->Administration-><span c:execute="#languages = getLanguages()">Manage Languages</span>, default source language should be there.
+        <table c:verifyRows="#lang : #languages">
+            <tr><th c:assertEquals="#lang">language locale</th></tr>
+            <tr><td>en-US</td></tr>
+        </table>
+        <span ext:screenshot="" />
+    </p>
+    <p>
+        When I input <span c:set="#language">pl</span> after click <span c:execute="addNewLanguage(#language)">Add New Language</span>,
+        then I should have
+        <table c:verifyRows="#lang : getLanguages()">
+            <tr><th c:assertEquals="#lang">language locale</th></tr>
+            <tr><td>en-US</td></tr>
+            <tr><td>pl</td></tr>
+        </table>
+        and as admin I can click on <span c:execute="joinLanguageAsAdmin(#language)">Join Language Team</span> to join it.
+        <span ext:screenshot="" />
+    </p>
+    <p class="info">
+        As a translator, I need to request to join a language before I can start translating. Suppose my request email has been reviewed by an admin or language coordinator.
+        TODO automate this part.
+    </p>
+    <p>
+        As an admin after I receive user named <span c:set="#translator">translator</span>'s request,
+        when I go to menu More->Administration-><span c:execute="#languages = getLanguages()">Manage Languages</span>,
+        on row of locale <span c:set="#locale">pl</span>, click on <span c:execute="#members = manageLanguage(#locale)">Team Members</span>,
+        then I should see
+        <table c:verifyRows="#member : #members">
+            <tr><th c:assertEquals="#member">members for language</th></tr>
+            <tr><td>admin</td></tr>
+        </table>
+    </p>
+    <p>
+        I can then add <span c:set="#person">translator</span> after click on <span c:execute="addToLanguage(#person, #locale)">Add Team Member</span>.
     </p>
 </body>
 </html>

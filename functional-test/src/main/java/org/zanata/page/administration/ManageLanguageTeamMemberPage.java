@@ -11,6 +11,8 @@ import org.zanata.page.AbstractPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
+import com.google.common.base.Function;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,7 +31,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       super(driver);
    }
 
-   public String getMembersInfo()
+   private String getMembersInfo()
    {
       WebElement memberInfo = memberPanelBody.findElement(By.xpath(".//p"));
       return memberInfo.getText();
@@ -39,10 +41,84 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
    {
       if (getMembersInfo().contains("0 members"))
       {
-         ManageLanguageTeamMemberPage.log.info("no members yet for this language");
+         log.info("no members yet for this language");
          return Collections.emptyList();
       }
       List<TableRow> languageMembersTable = WebElementUtil.getTableRows(memberPanelBody.findElement(By.xpath(".//table")));
       return WebElementUtil.getColumnContents(languageMembersTable, USERNAME_COLUMN);
+   }
+
+   public ManageLanguageTeamMemberPage joinLanguageTeam()
+   {
+      // Waiting 10 seconds for an element to be present on the page, checking
+      // for its presence once every 1 second.
+      WebElement joinLanguageTeamLink = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      {
+         public WebElement apply(WebDriver driver)
+         {
+            return driver.findElement(By.linkText("Join Language Team"));
+         }
+      });
+      joinLanguageTeamLink.click();
+      return this;
+   }
+
+   public ManageLanguageTeamMemberPage clickAddTeamMember()
+   {
+      WebElement addTeamMemberLink = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      {
+         public WebElement apply(WebDriver driver)
+         {
+            return driver.findElement(By.linkText("Add Team Member"));
+         }
+      });
+      addTeamMemberLink.click();
+      return this;
+   }
+
+   public List<TableRow> searchPerson(final String personName)
+   {
+      WebElement searchInput = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      {
+         public WebElement apply(WebDriver driver)
+         {
+            return driver.findElement(By.xpath("//input[@type='text' and contains(@id, 'personSearch')]"));
+         }
+      });
+      searchInput.sendKeys(personName);
+      WebElement searchButton = getDriver().findElement(By.xpath("//input[@type='button' and @value='Search']"));
+      searchButton.click();
+
+//      final WebElement searchResultDiv = getDriver().findElement(By.id("personSearch:searchResults"));
+      WebElement searchResultTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      {
+         @Override
+         public WebElement apply(WebDriver driver)
+         {
+            WebElement table = driver.findElement(By.xpath("//table[contains(@id, ':personTable')]"));
+            List<TableRow> tableRows = WebElementUtil.getTableRows(table);
+            //we want to wait until search result comes back
+            if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(0).contains(personName))
+            {
+               log.debug("waiting for search result refresh...");
+               return null;
+            }
+            return table;
+         }
+      });
+
+      return WebElementUtil.getTableRows(searchResultTable);
+   }
+
+   public ManageLanguageTeamMemberPage addToTeam(TableRow personRow)
+   {
+      List<WebElement> cells = personRow.getCells();
+      WebElement lastColumn = cells.get(cells.size() - 1);
+      if (!lastColumn.getText().contains("Already in Team"))
+      {
+         WebElement addButton = lastColumn.findElement(By.xpath(".//input[@value='Add']"));
+         addButton.click();
+      }
+      return this;
    }
 }
