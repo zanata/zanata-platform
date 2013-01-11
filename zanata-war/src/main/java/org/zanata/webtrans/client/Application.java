@@ -259,6 +259,12 @@ public class Application implements EntryPoint
    {
       return getModuleParentBaseUrl() + "rest/file/download/" + downloadId;
    }
+   
+   public static String getUploadFileUrl()
+   {
+      return GWT.getModuleBaseURL() + "files/upload";
+   }
+
 
    public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
@@ -287,7 +293,7 @@ public class Application implements EntryPoint
    {
       return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
    }
-
+   
    /**
     * Display an error message instead of the web app. Shows a link if both text
     * and url are provided. Provides a stack trace if a {@link Throwable} is

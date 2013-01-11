@@ -77,22 +77,7 @@
 			color:#DBDBDB;
 			font-size:12px;
 		}
-		
-		.error
-		{
-			color:#F62817;
-		}
-		
-		.warning
-		{
-			color:#FF9E5E;
-		}
-		
-		.info
-		{
-			color:#43C6DB;
-		}
-		
+	
 		.severity
 		{
 			font-size:13px;

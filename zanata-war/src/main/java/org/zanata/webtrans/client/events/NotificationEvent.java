@@ -32,12 +32,16 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler>
 
    private final Severity severity;
    private final String message;
+   private final String summary;
+   private boolean displayAsHtml;
    private InlineLink inlineLink;
 
    public NotificationEvent(Severity severity, String message)
    {
       this.severity = severity;
       this.message = message;
+      this.summary = message;
+      displayAsHtml = false;
    }
 
    public NotificationEvent(Severity severity, String message, InlineLink inlineLink)
@@ -45,6 +49,17 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler>
       this.severity = severity;
       this.message = message;
       this.inlineLink = inlineLink;
+      this.summary = message;
+      displayAsHtml = false;
+   }
+   
+   public NotificationEvent(Severity severity, String summary, String message, boolean displayAsHtml, InlineLink inlineLink)
+   {
+      this.severity = severity;
+      this.message = message;
+      this.inlineLink = inlineLink;
+      this.summary = summary;
+      this.displayAsHtml = displayAsHtml;
    }
 
    public Severity getSeverity()
@@ -61,6 +76,16 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler>
    {
       return inlineLink;
    }
+   
+   public String getSummary()
+   {
+      return summary;
+   }
+
+   public boolean isDisplayAsHtml()
+   {
+      return displayAsHtml;
+   }
 
    @Override
    protected void dispatch(NotificationEventHandler handler)
@@ -73,5 +98,4 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler>
    {
       return getType();
    }
-
 }

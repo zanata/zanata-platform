@@ -1,11 +1,13 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -16,6 +18,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -25,6 +28,7 @@ public class FileUploadDialog extends DialogBox
    private final CheckBox merge;
    private final PushButton cancelButton;
    private final PushButton uploadButton;
+   private final Image loadingIcon;
    private final FormPanel form;
 
    private final Hidden projectSlug;
@@ -34,14 +38,17 @@ public class FileUploadDialog extends DialogBox
    private final Hidden targetLocale;
    private final Hidden mergeTranslation;
 
-   public FileUploadDialog()
+   public FileUploadDialog(Resources resources)
    {
       setText("File upload");
       setGlassEnabled(true);
       setAutoHideEnabled(true);
-      setStyleName("DownloadFileDialogBox");
+      setStyleName("ZanataDialogBox");
 
       VerticalPanel panel = new VerticalPanel();
+      
+      loadingIcon = new Image(resources.spinner());
+      loadingIcon.setVisible(false);
 
       upload = new FileUpload();
       upload.setName("uploadFileElement");
@@ -50,10 +57,13 @@ public class FileUploadDialog extends DialogBox
       merge.setValue(true);
 
       cancelButton = new PushButton("Cancel");
+      cancelButton.addStyleName("button");
       uploadButton = new PushButton("Upload");
+      uploadButton.addStyleName("button");
 
       HorizontalPanel buttonPanel = new HorizontalPanel();
       buttonPanel.setStyleName("buttonPanel");
+      buttonPanel.add(loadingIcon);
       buttonPanel.add(cancelButton);
       buttonPanel.add(uploadButton);
 
@@ -123,7 +133,7 @@ public class FileUploadDialog extends DialogBox
    {
       fileName.setValue(getUploadFileName());
       mergeTranslation.setValue(merge.getValue().toString());
-
+      loadingIcon.setVisible(true);
       form.submit();
    }
 
@@ -154,6 +164,7 @@ public class FileUploadDialog extends DialogBox
    @Override
    public void hide()
    {
+      loadingIcon.setVisible(false);
       DOM.setElementProperty(upload.getElement(), "value", "");
       super.hide();
    }

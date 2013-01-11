@@ -52,7 +52,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void setStatsFilter(String option);
 
-   void setListener(Listener documentListPresenter, String uploadFileURL);
+   void setListener(Listener documentListPresenter);
 
    void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText);
 
@@ -79,6 +79,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void onFileUploadComplete(SubmitCompleteEvent event);
 
       void onUploadFile();
+
+      void updateDownloadFileProgress();
    }
 
    void setThemes(String style);
@@ -100,4 +102,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    String getSelectedUploadFileName();
 
    void submitUploadForm();
+
+   void startGetDownloadStatus(int periodMillis);
+
+   void stopGetDownloadStatus();
 }

@@ -114,7 +114,7 @@ public class FileUploadServlet extends HttpServlet
             HashMap<String, FileItem> params = new HashMap<String, FileItem>();
             for (FileItem item : items)
             {
-               LOGGER.debug("param- " + item.getFieldName() + " value-" + item.getString());
+               LOGGER.info("param- " + item.getFieldName() + " value-" + item.getString());
                params.put(item.getFieldName(), item);
             }
 
@@ -139,7 +139,7 @@ public class FileUploadServlet extends HttpServlet
             StringBuilder response = new StringBuilder();
             response.append("Status code: ");
             response.append(HttpServletResponse.SC_OK);
-            response.append(" File " + params.get("fileName") + " uploaded. \n");
+            response.append(" File '" + params.get("fileName").getString() + "' uploaded. \n");
             if(!warnings.isEmpty())
             {
                response.append("Warnings:\n");
@@ -152,9 +152,6 @@ public class FileUploadServlet extends HttpServlet
             resp.setContentType("text/plain");
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setCharacterEncoding("utf8");
-            
-//            resp.getOutputStream().println("testing");
-//            resp.getOutputStream().flush();
             
             resp.getWriter().print(response.toString());
             resp.getWriter().flush();

@@ -809,7 +809,7 @@ td.ApprovedStateDecoration div div div
 }
 
 /* -------------- Download file dialog box ---------------*/
-.DownloadFileDialogBox
+.ZanataDialogBox
 {
 	background:#F2F2F2;
 	border:1px solid #C0C0C0;
@@ -818,7 +818,7 @@ td.ApprovedStateDecoration div div div
 	box-shadow:1px 1px 3px #5C5C5C;
 }
 
-.DownloadFileDialogBox .Caption
+.ZanataDialogBox .Caption
 {
 	padding:4px;
 	margin-bottom:10px;
@@ -830,28 +830,78 @@ td.ApprovedStateDecoration div div div
 	cursor:move;
 }
 
-.DownloadFileDialogBox .info span
+.ZanataDialogBox .info span
 {
 	font-size:20px;
 	color:#00264C;
 }
 
 
-.DownloadFileDialogBox .buttonPanel
+.ZanataDialogBox .message
+{
+	max-width:500px;
+	max-height:500px;
+	overflow:auto;'
+}
+
+
+.ZanataDialogBox .buttonPanel
 {
 	margin-top:8px;
 }
 
-.DownloadFileDialogBox .buttonPanel td
+.ZanataDialogBox .buttonPanel td
 {
 	padding:2px;
 }
 
-.DownloadFileDialogBox .buttonPanel .button
+.ZanataDialogBox .buttonPanel .button
 {
 	border-radius:3px;
 	width:60px;
 	text-align:center;
+}
+
+.ZanataDialogBox span.time_label
+{
+	font-size:12px;
+}
+
+.ZanataDialogBox span.severity_icon
+{
+	font-size:18px;
+}
+
+.ZanataDialogBox a.downloadLink
+{
+	color:#575757;
+	font-size:22px;
+	cursor:pointer;
+}
+
+.ZanataDialogBox form
+{
+	margin:0;
+}
+
+.ZanataDialogBox .message_label
+{
+	padding:8px;
+}
+
+span.severity_info
+{
+	color:#3090C7;
+}
+
+span.severity_warning
+{
+	color:#F88158;
+}
+
+span.severity_error
+{
+	color:#F62817;
 }
 
 a.downloadFileLink

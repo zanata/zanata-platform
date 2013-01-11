@@ -84,9 +84,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay> 
    }
 
 
-   private void appendNotification(Severity severity, String msg, InlineLink inlineLink)
+   private void appendNotification(Severity severity, String summary, String msg, boolean displayAsHtml, InlineLink inlineLink)
    {
-      display.appendMessage(severity, msg, inlineLink);
+      display.appendMessage(severity, summary, msg, displayAsHtml, inlineLink);
       if (severity == Severity.Error)
       {
          listener.showNotification();
@@ -106,7 +106,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay> 
    @Override
    public void onNotification(NotificationEvent event)
    {
-      appendNotification(event.getSeverity(), event.getMessage(), event.getInlineLink());
+      appendNotification(event.getSeverity(), event.getSummary(), event.getMessage(), event.isDisplayAsHtml(), event.getInlineLink());
       Log.info("Notification:" + event.getMessage());
       listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
    }

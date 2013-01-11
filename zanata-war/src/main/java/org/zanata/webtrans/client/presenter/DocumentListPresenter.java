@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.servlet.http.HttpServletResponse;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -62,8 +60,6 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -72,8 +68,6 @@ import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
 {
-   private static final String UPLOAD_ACTION_URL = GWT.getModuleBaseURL() + "files/upload";
-
    private final UserWorkspaceContext userworkspaceContext;
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
@@ -116,7 +110,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    protected void onBind()
    {
       dataProvider = display.getDataProvider();
-      display.setListener(this, UPLOAD_ACTION_URL);
+      display.setListener(this);
 
       display.renderTable(selectionModel);
 
@@ -376,7 +370,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             if (result.isPrepared())
             {
                processId = result.getProcessId();
-               timer.scheduleRepeating(1000);
+               display.updateFileDownloadProgress(0, 0);
+               display.setDownloadInProgress(true);
+               display.startGetDownloadStatus(1000);
             }
             else
             {
@@ -395,17 +391,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private String processId;
 
-   private Timer timer = new Timer()
-   {
-      public void run()
-      {
-         updateDownloadFileProgress();
-      }
-   };
-
+   @Override
    public void updateDownloadFileProgress()
    {
-      display.setDownloadInProgress(true);
       dispatcher.execute(new GetDownloadAllFilesProgress(processId), new AsyncCallback<GetDownloadAllFilesProgressResult>()
       {
          @Override
@@ -422,10 +410,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
             if (result.isDone())
             {
-               timer.cancel();
+               display.stopGetDownloadStatus();
                final String url = Application.getAllFilesDownloadURL(result.getDownloadId());
                display.setAndShowFilesDownloadLink(url);
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download", display.getDownloadAllFilesInlineLink(url)));
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download",  display.getDownloadAllFilesInlineLink(url)));
             }
          }
       });
@@ -449,11 +437,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       display.closeFileUpload();
       if(event.getResults().contains("200"))
       {
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, event.getResults()));
+         if(event.getResults().contains("Warning"))
+         {
+            eventBus.fireEvent(new NotificationEvent(Severity.Warning, "File uploaded.", event.getResults(), true, null));
+         }
+         else
+         {
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, "File uploaded.", event.getResults(), true, null));
+         }
       }
       else
       {
-         eventBus.fireEvent(new NotificationEvent(Severity.Error, event.getResults()));
+         eventBus.fireEvent(new NotificationEvent(Severity.Error, "File upload failed.", event.getResults(), true, null));
       }
    }
 

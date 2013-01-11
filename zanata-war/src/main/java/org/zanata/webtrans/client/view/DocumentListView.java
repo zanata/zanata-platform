@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
@@ -41,6 +42,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -88,6 +90,14 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    private final UserWorkspaceContext userworkspaceContext;
 
    private ListDataProvider<DocumentNode> dataProvider;
+   
+   private Timer timer = new Timer()
+   {
+      public void run()
+      {
+         getDownloadStatus();
+      }
+   };
 
    @Inject
    public DocumentListView(Resources resources, WebTransMessages messages, UserWorkspaceContext userworkspaceContext)
@@ -98,7 +108,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
 
       dataProvider = new ListDataProvider<DocumentNode>();
       confirmationBox = new DownloadFilesConfirmationBox(false, resources);
-      fileUploadDialog = new FileUploadDialog();
+      fileUploadDialog = new FileUploadDialog(resources);
       pager = new DocumentListPager(TextLocation.CENTER, false, true);
       searchField = new SearchField(this);
       searchField.setTextBoxTitle(messages.docListFilterDescription());
@@ -223,11 +233,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void setListener(Listener documentListPresenter, String uploadFileURL)
+   public void setListener(Listener documentListPresenter)
    {
       this.listener = documentListPresenter;
       confirmationBox.registerHandler(listener);
-      fileUploadDialog.registerHandler(listener, uploadFileURL);
+      fileUploadDialog.registerHandler(listener, Application.getUploadFileUrl());
    }
 
    @Override
@@ -342,5 +352,22 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    public void submitUploadForm()
    {
       fileUploadDialog.submitForm();
+   }
+   
+   @Override
+   public void startGetDownloadStatus(int periodMillis)
+   {
+      timer.scheduleRepeating(periodMillis);
+   }
+   
+   public void getDownloadStatus()
+   {
+      listener.updateDownloadFileProgress();
+   }
+   
+   @Override
+   public void stopGetDownloadStatus()
+   {
+      timer.cancel();
    }
 }

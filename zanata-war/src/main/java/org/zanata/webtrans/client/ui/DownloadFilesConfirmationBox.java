@@ -40,7 +40,7 @@ public class DownloadFilesConfirmationBox extends DialogBox
       super(autoHide);
       setText("Download All Files");
       setGlassEnabled(true);
-      setStyleName("DownloadFileDialogBox");
+      setStyleName("ZanataDialogBox");
 
       VerticalPanel panel = new VerticalPanel();
       
