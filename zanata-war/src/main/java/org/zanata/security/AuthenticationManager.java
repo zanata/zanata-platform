@@ -163,6 +163,7 @@ public class AuthenticationManager
          if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation())
          {
             spNegoIdentity.login();
+            this.onLoginCompleted(AuthenticationType.KERBEROS);
          }
       }
    }
