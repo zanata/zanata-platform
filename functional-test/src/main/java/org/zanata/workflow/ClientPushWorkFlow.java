@@ -52,11 +52,7 @@ public class ClientPushWorkFlow
 
    public int mvnPush(String sampleProject, String... extraPushOptions)
    {
-      String baseDir = properties.getProperty(Constants.sampleProjects.value());
-      Preconditions.checkState(!(Strings.isNullOrEmpty(sampleProject) || Strings.isNullOrEmpty(baseDir)), "base dir and sample project can't be empty");
-
-      File projectDir = new File(baseDir, sampleProject);
-      log.info("about to push project at: {}", projectDir.getAbsolutePath());
+      File projectDir = getProjectRootPath(sampleProject);
 
       Process process = null;
       try
@@ -77,6 +73,16 @@ public class ClientPushWorkFlow
          log.error("exception", e);
          return 1;
       }
+   }
+
+   public File getProjectRootPath(String sampleProject)
+   {
+      String baseDir = properties.getProperty(Constants.sampleProjects.value());
+      Preconditions.checkState(!(Strings.isNullOrEmpty(sampleProject) || Strings.isNullOrEmpty(baseDir)), "base dir and sample project can't be empty");
+
+      File projectDir = new File(baseDir, sampleProject);
+      log.info("about to push project at: {}", projectDir.getAbsolutePath());
+      return projectDir;
    }
 
    private static List<String> zanataMavenPushCommand(String... extraPushOptions)

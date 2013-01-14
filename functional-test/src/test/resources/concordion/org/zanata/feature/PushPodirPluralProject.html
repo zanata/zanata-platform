@@ -1,0 +1,14 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+</head>
+<body>
+    <p class="info">
+        sample project <span c:set="#project">plural</span> (project type podir) under <span c:echo="projectRootPath(#project)"/>.
+    </p>
+    <p>
+        As an admin user (TODO project maintainer will be more appropriate),
+        when I execute <span c:execute="push()">push</span>,
+        then I should get result <span c:assertTure="pushSucceed()"></span>.
+    </p>
+</body>
+</html>
