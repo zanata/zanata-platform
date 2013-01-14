@@ -26,6 +26,7 @@ import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.hamcrest.Matchers;
 import org.junit.runner.RunWith;
+import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.page.HomePage;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -33,7 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class})
+@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
 public class LoginTest
 {
    public boolean signInAs(String username, String password)

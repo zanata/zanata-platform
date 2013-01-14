@@ -32,10 +32,14 @@ import org.concordion.integration.junit4.ConcordionRunner;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.zanata.page.HomePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.administration.ManageLanguageTeamMemberPage;
+import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.webtrans.WebTranPage;
 import org.zanata.util.TableRow;
 import org.zanata.workflow.ClientPushWorkFlow;
@@ -46,64 +50,10 @@ import org.zanata.workflow.ProjectWorkFlow;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class})
+@RunWith(Suite.class)
+@Suite.SuiteClasses({CreateNewProjectTest.class, CreateVersionAndAddToProjectTest.class, AddLanguageTest.class, TranslatorJoinsLanguageTeamTest.class})
 public class CreateSampleProjectTest
 {
-
-   private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-   private final LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
-
-   @Before
-   public void beforeMethod()
-   {
-      new LoginWorkFlow().signIn("admin", "admin");
-   }
-
-   public ProjectPage createNewProject(String projectSlug, String projectName)
-   {
-      return projectWorkFlow.createNewProject(projectSlug, projectName);
-   }
-
-   public ProjectPage createNewProjectVersion(String projectName, String versionSlug)
-   {
-      projectWorkFlow.createNewProjectVersion(projectName, versionSlug);
-      return projectWorkFlow.goToProjectByName(projectName);
-   }
-
-   public List<String> getLanguages()
-   {
-      return languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().getLanguageLocales();
-   }
-
-   public void addNewLanguage(String locale)
-   {
-      languageWorkFlow.addLanguage(locale);
-   }
-
-   public List<String> manageLanguage(String locale)
-   {
-      return languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().manageTeamMembersFor(locale).getMemberUsernames();
-   }
-
-   public void joinLanguageAsAdmin(String locale)
-   {
-      languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().manageTeamMembersFor(locale).joinLanguageTeam();
-   }
-
-   public void addToLanguage(String person, String locale)
-   {
-      ManageLanguageTeamMemberPage teamMemberPage = languageWorkFlow.goToHome().goToAdministration().goToManageLanguagePage().manageTeamMembersFor(locale).clickAddTeamMember();
-      List<TableRow> searchResult = teamMemberPage.searchPerson(person);
-      if (searchResult.size() > 0)
-      {
-         teamMemberPage.addToTeam(searchResult.get(0));
-      }
-      else
-      {
-         throw new RuntimeException(person + " not found");
-      }
-   }
 
 //   @Test(expected = RuntimeException.class)
    public void cannotCreateProjectWithSameProjectId() {

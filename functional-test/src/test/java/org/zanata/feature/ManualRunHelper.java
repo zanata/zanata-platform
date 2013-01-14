@@ -103,8 +103,6 @@ public class ManualRunHelper
    @Test
    public void addAdminToDB() throws Exception
    {
-
-
       ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'admin'");
       resultSet.next();
       int adminUser = resultSet.getInt(1);

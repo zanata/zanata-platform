@@ -3,6 +3,8 @@ package org.zanata.page.administration;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -60,7 +62,17 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
          }
       });
       joinLanguageTeamLink.click();
-      return this;
+      // we need to wait for this join to finish before returning the page
+      waitForTenSec().until(new Function<WebDriver, Boolean>()
+      {
+         @Override
+         public Boolean apply(WebDriver driver)
+         {
+            List<WebElement> joinLanguageTeam = driver.findElements(By.linkText("Join Language Team"));
+            return joinLanguageTeam.isEmpty();
+         }
+      });
+      return new ManageLanguageTeamMemberPage(getDriver());
    }
 
    public ManageLanguageTeamMemberPage clickAddTeamMember()
@@ -118,6 +130,9 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       {
          WebElement addButton = lastColumn.findElement(By.xpath(".//input[@value='Add']"));
          addButton.click();
+         WebElement closeButton = getDriver().findElement(By.xpath("//input[@type='button' and @value='Search']"));
+         closeButton.click();
+         return new ManageLanguageTeamMemberPage(getDriver());
       }
       return this;
    }

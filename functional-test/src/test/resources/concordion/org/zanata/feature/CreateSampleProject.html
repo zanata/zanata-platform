@@ -44,8 +44,9 @@
         when I want to create a project with
         id: <span c:set="#projectSlug">plurals</span> and name <span c:set="#projectName">plural projects</span>,
         I go to projects page, click on <span c:execute="#projectPage = createNewProject(#projectSlug, #projectName)">Create project</span> link and fill in the data.
-        then I should have project <span ext:screenshot="linked" style="text-decoration: underline;">created as</span>
+        then I should have project created as
         id <span c:assertEquals="#projectPage.projectId">plurals</span> and name <span c:assertEquals="#projectPage.projectName">plural projects</span>.
+        <span ext:screenshot="" />
     </p>
 
     <p class="info">
@@ -58,6 +59,7 @@
             <tr><th c:assertEquals="#version">version in project</th></tr>
             <tr><td>master</td></tr>
         </table>
+        <span ext:screenshot="" />
     </p>
     <p>
         As an admin I can create languages on the server.
