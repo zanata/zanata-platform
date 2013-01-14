@@ -31,7 +31,7 @@ public class NotificationDetailsBox extends DialogBox
    public NotificationDetailsBox()
    {
       super(true);
-      setStyleName("ZanataDialogBox");
+      setStyleName("gwt-DialogBox-NoFixedSize");
 
       topPanel = new HorizontalPanel();
       severityLabel = new InlineLabel();

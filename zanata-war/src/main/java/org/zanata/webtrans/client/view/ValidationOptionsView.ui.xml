@@ -23,7 +23,7 @@
     	<g:layer top="5px" bottom="0" left="5px" right="5px">
     		 <g:ScrollPanel styleName="{style.mainPanel}">
 		        <g:VerticalPanel width="100%">
-		            <g:Label ui:field="validationOptionsHeader" styleName="sideMenuHeader"/>
+		            <g:Label ui:field="validationOptionsHeader" styleName="gwt-sideMenu-header"/>
 		            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
 		        </g:VerticalPanel>
 		    </g:ScrollPanel>

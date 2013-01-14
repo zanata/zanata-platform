@@ -42,7 +42,7 @@
 	<g:VerticalPanel styleName="{style.mainPanel}">
 		<g:cell>
 			<g:VerticalPanel width="100%">
-	            <g:Label ui:field="editorOptionHeader" styleName="sideMenuHeader"/>
+	            <g:Label ui:field="editorOptionHeader" styleName="gwt-sideMenu-header"/>
 	            <g:CheckBox ui:field="editorButtonsChk"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
 	            <g:CheckBox ui:field="enterChk"><ui:msg>'Enter' key saves immediately</ui:msg></g:CheckBox>
 	            <g:CheckBox ui:field="useCodeMirrorChk" ><ui:msg>Use CodeMirror Editor</ui:msg></g:CheckBox>
@@ -53,14 +53,14 @@
         
         <g:cell>
         	<g:VerticalPanel width="100%">
-        	 	<g:Label ui:field="navOptionHeader" styleName="sideMenuHeader"/>
+        	 	<g:Label ui:field="navOptionHeader" styleName="gwt-sideMenu-header"/>
                 <g:VerticalPanel ui:field="optionsContainer" />
             </g:VerticalPanel>
         </g:cell>
 
         <g:cell>
             <g:VerticalPanel width="100%">
-                <g:Label ui:field="transMemoryHeader" styleName="sideMenuHeader"/>
+                <g:Label ui:field="transMemoryHeader" styleName="gwt-sideMenu-header"/>
                 <g:RadioButton name="transMemoryDisplayMode" ui:field="diffModeDiff" />
                 <g:RadioButton name="transMemoryDisplayMode" ui:field="diffModeHighlight" />
             </g:VerticalPanel>
@@ -70,7 +70,7 @@
         
         <g:cell>
         	<g:VerticalPanel width="100%">
-                <g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
+                <g:Label ui:field="pageSizeHeader" styleName="gwt-sideMenu-header"/>
                 <g:HTMLPanel styleName="{style.pageSizeContainer}">
                     <g:InlineLabel ui:field="five" >5</g:InlineLabel>
                     <g:InlineLabel ui:field="ten" >10</g:InlineLabel>
@@ -82,7 +82,7 @@
 
         <g:cell>
             <g:VerticalPanel width="100%">
-                <g:Label ui:field="displayHeader" styleName="sideMenuHeader"/>
+                <g:Label ui:field="displayHeader" styleName="gwt-sideMenu-header"/>
                 <g:CheckBox ui:field="showTMChk" />
                 <g:CheckBox ui:field="showGlossaryChk" />
                 <g:CheckBox ui:field="showOptionalTransUnitDetailsChk" />

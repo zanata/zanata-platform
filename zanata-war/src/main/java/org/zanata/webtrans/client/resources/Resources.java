@@ -28,10 +28,6 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface Resources extends ClientBundle
 {
-
-   @Source("org/zanata/webtrans/WebTransStyles.css")
-   WebTransStyles style();
-
    @Source("images/crystal_project/_16x16/filesystems/file_doc.png")
    ImageResource documentImage();
 

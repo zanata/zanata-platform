@@ -43,7 +43,7 @@ public class FileUploadDialog extends DialogBox
       setText("File upload");
       setGlassEnabled(true);
       setAutoHideEnabled(true);
-      setStyleName("ZanataDialogBox");
+      setStyleName("gwt-DialogBox-NoFixedSize");
 
       VerticalPanel panel = new VerticalPanel();
       

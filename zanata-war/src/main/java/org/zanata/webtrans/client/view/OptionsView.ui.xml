@@ -37,7 +37,7 @@
     	
     	<g:cell verticalAlignment="ALIGN_TOP" height="80px">
     		<g:VerticalPanel width="100%">
-	    		<g:Label ui:field="advancedUserConfig" styleName="sideMenuHeader"/>
+	    		<g:Label ui:field="advancedUserConfig" styleName="gwt-sideMenu-header"/>
 	    		<g:cell>
 	    			<g:HTMLPanel>
 	    				<g:InlineLabel><ui:msg>Theme</ui:msg></g:InlineLabel>
