@@ -1363,10 +1363,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+<!--
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
-			<!-- TODO does this need to use ${hibernate.scope} for jboss7 profile? -->
+			TODO does this need to use ${hibernate.scope} for jboss7 profile?
 			<scope>provided</scope>
 		</dependency>
 
@@ -1375,6 +1376,7 @@
 			<artifactId>ejb-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+-->
 
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
@@ -1406,11 +1408,13 @@
             <scope>test</scope>
         </dependency>
 
+<!--
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<scope>provided</scope>
 		</dependency>
+-->
 
 <!--
 		<dependency>
@@ -1437,13 +1441,13 @@
 			<artifactId>stax-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+<!-- 
 		<dependency>
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3_min</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+ -->
 		<!-- Container dependencies - provided by jboss -->
 
 		<dependency>
@@ -1710,6 +1714,71 @@
 			<version>4.2.2.GA</version>
 			<scope>provided</scope>
 		</dependency>
+
+      <!--  missing dependencies identified by mvn dependency:analyze: -->
+
+        <dependency>
+          <groupId>org.fedorahosted.tennera</groupId>
+          <artifactId>jgettext</artifactId>
+          <version>0.11</version>
+        </dependency>
+        <dependency>
+          <groupId>joda-time</groupId>
+          <artifactId>joda-time</artifactId>
+          <version>1.6</version>
+        </dependency>
+        <dependency>
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.beust</groupId>
+          <artifactId>jcommander</artifactId>
+          <version>1.12</version>
+        </dependency>
+        <dependency>
+          <groupId>net.sf.okapi</groupId>
+          <artifactId>okapi-core</artifactId>
+          <version>0.18</version>
+        </dependency>
+        <dependency>
+          <groupId>de.novanic.gwteventservice</groupId>
+          <artifactId>eventservice-rpc</artifactId>
+          <version>1.2.1</version>
+        </dependency>
+        <dependency>
+          <groupId>org.openid4java</groupId>
+          <artifactId>openid4java-nodeps</artifactId>
+          <version>0.9.5</version>
+        </dependency>
+        <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>2.0.1</version>
+        </dependency>
+        <dependency>
+          <groupId>de.novanic.gwteventservice</groupId>
+          <artifactId>eventservice</artifactId>
+          <version>1.2.1</version>
+        </dependency>
+        <dependency>
+          <groupId>javax.inject</groupId>
+          <artifactId>javax.inject</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>jaxrs-api</artifactId>
+          <version>2.1.0.GA</version>
+        </dependency>
+        <dependency>
+          <groupId>javax.validation</groupId>
+          <artifactId>validation-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </dependency>
 	</dependencies>
 
 </project>
