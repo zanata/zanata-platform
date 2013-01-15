@@ -20,19 +20,14 @@
  */
 package org.zanata.feature;
 
-import org.hamcrest.Matchers;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.zanata.page.projects.ProjectPage;
-import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.workflow.LoginWorkFlow;
-import org.zanata.workflow.ProjectWorkFlow;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 @RunWith(Suite.class)
+// @formatter:off
 @Suite.SuiteClasses({
       CreateNewProjectTest.class,
       CreateVersionAndAddToProjectTest.class,
@@ -41,33 +36,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
       PushPodirPluralProjectTest.class,
       DocumentListInWebTransTest.class
 })
+// @formatter:on
 public class CreateSampleProjectTestSuite
 {
-
-//   @Test(expected = RuntimeException.class)
-   public void cannotCreateProjectWithSameProjectId() {
-      new LoginWorkFlow().signIn("admin", "admin");
-      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      ProjectPage projectPage = projectWorkFlow.createNewProject("project-a", "project a");
-      assertThat(projectPage.getTitle(), Matchers.containsString("Zanata:project a"));
-
-      //second time
-      projectWorkFlow.createNewProject("project-a", "project with same slug/project id");
-   }
-
-//   @Test
-   public void canCreateSameVersionIdOnDifferentProjects() {
-      new LoginWorkFlow().signIn("admin", "admin");
-      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      projectWorkFlow.createNewProject("project-b", "project b")
-            .clickCreateVersionLink().inputVersionId("master").saveVersion();
-
-      //second time
-      ProjectVersionPage projectVersionPage = projectWorkFlow
-            .createNewProject("project-c", "project with same version slug/version id")
-            .clickCreateVersionLink().inputVersionId("master").saveVersion();
-
-      assertThat(projectVersionPage.getTitle(), Matchers.equalTo("Zanata:project-c:master"));
-   }
 
 }
