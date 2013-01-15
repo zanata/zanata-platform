@@ -20,38 +20,29 @@
  */
 package org.zanata.feature;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.io.IOException;
-import java.util.List;
 
-import org.concordion.api.extension.Extensions;
-import org.concordion.ext.ScreenshotExtension;
-import org.concordion.ext.TimestampFormatterExtension;
-import org.concordion.integration.junit4.ConcordionRunner;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.zanata.page.HomePage;
-import org.zanata.page.administration.ManageLanguagePage;
-import org.zanata.page.administration.ManageLanguageTeamMemberPage;
-import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.webtrans.WebTranPage;
-import org.zanata.util.TableRow;
-import org.zanata.workflow.ClientPushWorkFlow;
-import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
 import lombok.extern.slf4j.Slf4j;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 @RunWith(Suite.class)
-@Suite.SuiteClasses({CreateNewProjectTest.class, CreateVersionAndAddToProjectTest.class, AddLanguageTest.class, TranslatorJoinsLanguageTeamTest.class})
+@Suite.SuiteClasses({
+      CreateNewProjectTest.class,
+      CreateVersionAndAddToProjectTest.class,
+      AddLanguageTest.class,
+      TranslatorJoinsLanguageTeamTest.class,
+      PushPodirPluralProjectTest.class
+})
 public class CreateSampleProjectTest
 {
 
@@ -81,24 +72,9 @@ public class CreateSampleProjectTest
       assertThat(projectVersionPage.getTitle(), Matchers.equalTo("Zanata:project-c:master"));
    }
 
-//   @Test(timeout = Constants.FIFTY_SEC)
-   public void canPush() throws IOException
-   {
-//      canCreateProjectAndVersion("plurals", "master", "plural project");
-//      canAddLanguage("en-US");
-      ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
-      int exitCode = clientPushWorkFlow.mvnPush("plural");
-
-      assertThat(exitCode, Matchers.equalTo(0));
-
-      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToVersion("master");
-      assertThat(projectVersionPage.getTranslatableLocales(), Matchers.hasItems("en-US", "pl", "zh"));
-   }
-
 //   @Test
    public void canSeeDocumentList() throws IOException
    {
-      canPush();
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToVersion("master");
       WebTranPage webTranPage = projectVersionPage.translate("pl");

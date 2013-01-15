@@ -28,15 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.util.Constants;
-
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.CharStreams;
+import com.google.common.io.InputSupplier;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,18 +52,17 @@ public class ClientPushWorkFlow
    public int mvnPush(String sampleProject, String... extraPushOptions)
    {
       File projectDir = getProjectRootPath(sampleProject);
+      List<String> command = zanataMavenPushCommand(extraPushOptions);
 
       Process process = null;
       try
       {
-         List<String> command = zanataMavenPushCommand(extraPushOptions);
          Joiner joiner = Joiner.on(" ");
          log.info("execute command: \n{}\n", joiner.join(command));
 
          process = invokeMaven(projectDir, command);
          process.waitFor();
 
-         printOutput(process);
          return process.exitValue();
 
       }
@@ -85,7 +83,7 @@ public class ClientPushWorkFlow
       return projectDir;
    }
 
-   private static List<String> zanataMavenPushCommand(String... extraPushOptions)
+   public static List<String> zanataMavenPushCommand(String... extraPushOptions)
    {
       String userConfig = getUserConfigPath();
       // @formatter:off
@@ -107,7 +105,7 @@ public class ClientPushWorkFlow
       return resource.getPath();
    }
 
-   private synchronized static Process invokeMaven(File projectDir, List<String> command) throws IOException
+   public synchronized static Process invokeMaven(File projectDir, List<String> command) throws IOException
    {
       ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
       Map<String, String> env = processBuilder.environment();
@@ -119,14 +117,17 @@ public class ClientPushWorkFlow
       return processBuilder.start();
    }
 
-   private static void printOutput(Process process) throws IOException
+   public static List<String> getOutput(Process process) throws IOException
    {
-      InputStream inputStream = process.getInputStream();
-      List<String> lines = IOUtils.readLines(inputStream);
-      for (String line : lines)
+      final InputStream inputStream = process.getInputStream();
+
+      return CharStreams.readLines(CharStreams.newReaderSupplier(new InputSupplier<InputStream>()
       {
-         log.info(line);
-      }
-      IOUtils.closeQuietly(inputStream);
+         @Override
+         public InputStream getInput() throws IOException
+         {
+            return inputStream;
+         }
+      }, Charsets.UTF_8));
    }
 }

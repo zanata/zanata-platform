@@ -2,6 +2,9 @@ package org.zanata.feature;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,60 +16,84 @@ import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.hamcrest.Matchers;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.util.Constants;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.SimpleTimeLimiter;
+
+import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Slf4j
 @RunWith(ConcordionRunner.class)
 @Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class, LoggingTooltipExtension.class})
 public class PushPodirPluralProjectTest
 {
-   private final static Logger log = Logger.getLogger(PushPodirPluralProjectTest.class.getName());
+   private final static Logger tooltipLog = Logger.getLogger(PushPodirPluralProjectTest.class.getName());
 
    @Extension
    public ConcordionExtension extension = new LoggingTooltipExtension(PushPodirPluralProjectTest.class.getName(), Level.INFO, false);
 
    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
-   private int exitCode;
-   private String project;
 
-   public String projectRootPath(String project)
+   public List<String> push(final String project) throws Exception
    {
-      log.info("blah blah");
-      this.project = project;
-      return clientPushWorkFlow.getProjectRootPath(project).getAbsolutePath();
+      final File projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+      tooltipLog.info("project root path:" + projectRootPath.getAbsolutePath());
+
+      final List<String> commands = ClientPushWorkFlow.zanataMavenPushCommand();
+      tooltipLog.info("command to execute:" + Joiner.on(" ").join(commands));
+
+      SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
+      Callable<List<String>> work = new Callable<List<String>>()
+      {
+         @Override
+         public List<String> call() throws Exception
+         {
+            Process process = ClientPushWorkFlow.invokeMaven(projectRootPath, commands);
+            process.waitFor();
+            List<String> output = ClientPushWorkFlow.getOutput(process);
+            logOutputLines(output);
+            tooltipLog.info("process exit code: " + process.exitValue());
+            return output;
+         }
+      };
+      return timeLimiter.callWithTimeout(work, 50, TimeUnit.SECONDS, true);
    }
 
-   @Test(timeout = 10)
-   public void push()
+   public boolean isPushSuccessful(List<String> output)
    {
-      exitCode = clientPushWorkFlow.mvnPush(project);
+      Optional<String> successOutput = Iterables.tryFind(output, new Predicate<String>()
+      {
+         @Override
+         public boolean apply(String input)
+         {
+            return input.contains("BUILD SUCCESS");
+         }
+      });
+      return successOutput.isPresent();
    }
 
-   public boolean pushSucceed()
+   public String resultByLines(List<String> output)
    {
-      return exitCode == 0;
+      return Joiner.on("\n").join(output);
    }
 
-
-   public void canPush() throws IOException
+   private void logOutputLines(List<String> output)
    {
-//      canCreateProjectAndVersion("plurals", "master", "plural project");
-//      canAddLanguage("en-US");
-      int exitCode = clientPushWorkFlow.mvnPush("plural");
-
-      assertThat(exitCode, Matchers.equalTo(0));
-
-      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToVersion("master");
-      assertThat(projectVersionPage.getTranslatableLocales(), Matchers.hasItems("en-US", "pl", "zh"));
+      for (String line : output)
+      {
+         log.info(line);
+      }
    }
 }
