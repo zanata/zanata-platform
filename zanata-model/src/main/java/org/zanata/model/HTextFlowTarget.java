@@ -58,7 +58,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
 import org.zanata.hibernate.search.ContentStateBridge;

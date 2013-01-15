@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
@@ -51,7 +51,7 @@ public class PasswordResetAction implements Serializable
    }
 
    @NotEmpty
-   @Length(min = 6, max = 20)
+   @Size(min = 6, max = 20)
    // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
    // message="Password is not secure enough!")
    public String getPassword()

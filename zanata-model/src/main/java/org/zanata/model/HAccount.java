@@ -46,7 +46,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.jboss.seam.annotations.security.management.UserEnabled;
 import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
@@ -136,7 +136,7 @@ public class HAccount extends ModelEntityBase implements Serializable
    }
 
    @UserApiKey
-   @Length(min = 32, max = 32)
+   @Size(min = 32, max = 32)
    public String getApiKey()
    {
       return apiKey;

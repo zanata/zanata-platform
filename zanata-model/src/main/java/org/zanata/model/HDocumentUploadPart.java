@@ -33,7 +33,7 @@ import javax.persistence.ManyToOne;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @NoArgsConstructor // is this necessary?

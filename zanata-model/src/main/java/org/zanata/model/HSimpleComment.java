@@ -31,7 +31,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;

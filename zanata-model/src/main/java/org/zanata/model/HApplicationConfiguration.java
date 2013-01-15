@@ -29,9 +29,9 @@ import lombok.Setter;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Setter
@@ -60,7 +60,7 @@ public class HApplicationConfiguration extends ModelEntityBase
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @NotEmpty
-   @Length(max = 255)
+   @Size(max = 255)
    @Column(name = "config_key", nullable = false)
    public String getKey()
    {

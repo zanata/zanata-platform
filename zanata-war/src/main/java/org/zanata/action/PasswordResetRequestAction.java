@@ -3,9 +3,9 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import org.hibernate.validator.Email;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Pattern;
+import javax.validation.constraints.Pattern;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
@@ -55,8 +55,8 @@ public class PasswordResetRequestAction implements Serializable
    }
 
    @NotEmpty
-   @Length(min = 3, max = 20)
-   @Pattern(regex = "^[a-z\\d_]{3,20}$")
+   @Size(min = 3, max = 20)
+   @Pattern(regexp = "^[a-z\\d_]{3,20}$")
    public String getUsername()
    {
       return username;

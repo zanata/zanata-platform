@@ -56,9 +56,9 @@ import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
@@ -187,7 +187,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    // TODO make this case sensitive
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @Length(max = 255)
+   @Size(max = 255)
    @NotEmpty
    public String getResId()
    {

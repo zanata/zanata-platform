@@ -36,7 +36,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Email;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
 import org.zanata.rest.dto.Person;
 
@@ -69,7 +69,7 @@ public class HPerson extends ModelEntityBase implements Serializable
 
 
    @NotEmpty
-   @Length(min = 2, max = 80)
+   @Size(min = 2, max = 80)
    public String getName()
    {
       return name;

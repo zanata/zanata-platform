@@ -26,9 +26,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.hibernate.validator.Email;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Pattern;
+import javax.validation.constraints.Pattern;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -98,8 +98,8 @@ public class RegisterAction implements Serializable
    }
 
    @NotEmpty
-   @Length(min = 3, max = 20)
-   @Pattern(regex = "^[a-z\\d_]{3,20}$")
+   @Size(min = 3, max = 20)
+   @Pattern(regexp = "^[a-z\\d_]{3,20}$")
    public String getUsername()
    {
       return username;
@@ -124,7 +124,7 @@ public class RegisterAction implements Serializable
    }
 
    @NotEmpty
-   @Length(min = 6, max = 20)
+   @Size(min = 6, max = 20)
    // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
    // message="Password is not secure enough!")
    public String getPassword()

@@ -26,7 +26,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
 
 import lombok.Setter;
@@ -39,7 +39,7 @@ public class AccountKeyBase
    private HAccount account;
 
    @NotEmpty
-   @Length(min = 32, max = 32)
+   @Size(min = 32, max = 32)
    @Id
    public String getKeyHash()
    {

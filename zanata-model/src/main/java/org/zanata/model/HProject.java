@@ -41,7 +41,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
@@ -83,7 +83,7 @@ public abstract class HProject extends SlugEntityBase implements Serializable
 
    private Set<HAccountRole> allowedRoles;
 
-   @Length(max = 80)
+   @Size(max = 80)
    @NotEmpty
    @Field(index = Index.TOKENIZED)
    public String getName()
@@ -101,7 +101,7 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       return restrictedByRoles;
    }
 
-   @Length(max = 100)
+   @Size(max = 100)
    @Field(index = Index.TOKENIZED)
    public String getDescription()
    {

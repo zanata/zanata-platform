@@ -46,9 +46,9 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
-import org.hibernate.validator.Length;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.contexts.Contexts;
@@ -144,7 +144,7 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
 
    // TODO make this case sensitive
    @NaturalId
-   @Length(max = 255)
+   @Size(max = 255)
    @NotEmpty
    public String getDocId()
    {

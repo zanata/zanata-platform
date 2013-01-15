@@ -43,7 +43,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
 import org.zanata.hibernate.search.GroupSearchBridge;
