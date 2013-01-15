@@ -28,13 +28,13 @@
       <icu4j.version>4.8</icu4j.version>
       <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
       <lucene.version>2.9.2</lucene.version>
-      <seam.version>2.2.2.Final</seam.version>
+      <seam.version>2.3.0.Final</seam.version>
 
       <zanata.api.version>2.1.0</zanata.api.version>
       <zanata.client.version>1.6.0</zanata.client.version>
       <zanata.common.version>2.1.1</zanata.common.version>
 
-	  <richfaces.version>3.3.3.Final</richfaces.version>
+	  <richfaces.version>4.1.0.Final</richfaces.version>
 
 	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 	  <!-- see also the jboss7 profile below -->
@@ -180,7 +180,7 @@
 
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
-				<artifactId>root</artifactId>
+				<artifactId>jboss-seam-parent</artifactId>
 				<version>${seam.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -254,24 +254,11 @@
           
 
 		<dependency>
-			<groupId>org.richfaces.framework</groupId>
-			<artifactId>richfaces-api</artifactId>
+			<groupId>org.richfaces</groupId>
+			<artifactId>richfaces-bom</artifactId>
 			<version>${richfaces.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.richfaces.framework</groupId>
-			<artifactId>richfaces-impl</artifactId>
-<!-- 
-			<artifactId>richfaces-impl-jsf2</artifactId>
- -->
-			<version>${richfaces.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>richfaces-ui</artifactId>
-			<version>${richfaces.version}</version>
+			<scope>import</scope>
+			<type>pom</type>
 		</dependency>
 
             <dependency>

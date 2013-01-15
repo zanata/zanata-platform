@@ -1045,6 +1045,20 @@
             <classifier>v1.5.0</classifier>
         </dependency>
         
+
+      <!-- GWT Dependencies -->
+      <dependency>
+         <groupId>com.google.gwt</groupId>
+         <artifactId>gwt-servlet</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.gwt</groupId>
+         <artifactId>gwt-user</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -1125,27 +1139,26 @@
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
+			<exclusions>
+			    <exclusion>
+			        <artifactId>ecj</artifactId>
+			        <groupId>org.eclipse.jdt.core.compiler</groupId>
+			    </exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Richfaces -->
-
+<!--
 		<dependency>
-			<groupId>org.richfaces.framework</groupId>
-			<artifactId>richfaces-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.richfaces.framework</groupId>
-			<artifactId>richfaces-impl</artifactId>
-<!-- 
-			<artifactId>richfaces-impl-jsf2</artifactId>
- -->
+			<groupId>org.richfaces.core</groupId>
+			<artifactId>richfaces-core-impl</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.richfaces.ui</groupId>
-			<artifactId>richfaces-ui</artifactId>
+			<artifactId>richfaces-components-ui</artifactId>
 		</dependency>
+-->
 
 		<!-- Hibernate / JPA -->
 
@@ -1399,6 +1412,7 @@
 			<scope>provided</scope>
 		</dependency>
 
+<!--
 		<dependency>
 			<groupId>javax.faces</groupId>
 			<artifactId>jsf-api</artifactId>
@@ -1406,10 +1420,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.faces</groupId>
+			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
 			<scope>provided</scope>
 		</dependency>
+-->
 
 		<dependency>
 			<groupId>javax.annotation</groupId>
@@ -1565,18 +1580,6 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-servlet</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
