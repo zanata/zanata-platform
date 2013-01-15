@@ -296,6 +296,7 @@
                                     <!-- specify your SQL commands, can be all of the following configurations -->
                                     <srcFiles>
                                         <srcFile>${project.build.testOutputDirectory}/create_admin_user.sql</srcFile>
+                                        <srcFile>${project.build.testOutputDirectory}/create_translator_user.sql</srcFile>
                                     </srcFiles>
                                     <autocommit>true</autocommit>
                                 </configuration>
@@ -325,7 +326,7 @@
                             <printSummary>true</printSummary>
                             <forkMode>always</forkMode>
                             <includes>
-                                <include>**/*Test</include>
+                                <include>**/*TestSuite</include>
                             </includes>
                         </configuration>
                     </plugin>

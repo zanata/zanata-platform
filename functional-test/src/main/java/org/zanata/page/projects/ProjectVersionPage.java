@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
-import org.zanata.page.webtrans.WebTranPage;
+import org.zanata.page.webtrans.DocumentsViewPage;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -46,6 +46,7 @@ public class ProjectVersionPage extends AbstractPage
       super(driver);
    }
 
+   @SuppressWarnings("unused")
    public List<String> getTranslatableLocales()
    {
       List<String> rows = Lists.transform(localeTableRows, new Function<WebElement, String>()
@@ -55,32 +56,50 @@ public class ProjectVersionPage extends AbstractPage
          {
             log.debug("table row: {}", tr.getText());
             List<WebElement> links = tr.findElements(By.tagName("a"));
-            return getLocaleLinkText(links);
+            return getLocaleLinkText(links.get(0));
          }
       });
 
       return ImmutableList.copyOf(rows);
    }
 
-   public WebTranPage translate(String locale)
+   @SuppressWarnings("unused")
+   public List<String> getTranslatableLanguages()
+   {
+      List<String> rows = Lists.transform(localeTableRows, new Function<WebElement, String>()
+      {
+         @Override
+         public String apply(WebElement tr)
+         {
+            log.debug("table row: {}", tr.getText());
+            WebElement nativeName = tr.findElement(By.className("nativeName"));
+            return nativeName.getText();
+         }
+      });
+
+      return ImmutableList.copyOf(rows);
+   }
+
+   private static String getLocaleLinkText(WebElement languageLink)
+   {
+      String nativeName = languageLink.findElement(By.className("nativeName")).getText();
+      return languageLink.getText().replace(nativeName, "");
+   }
+
+   public DocumentsViewPage translate(String locale)
    {
 
       for (WebElement tableRow : localeTableRows)
       {
          List<WebElement> links = tableRow.findElements(By.tagName("a"));
-         Preconditions.checkState(links.size() == 3, "each translatable locale row should have 4 links");
+         Preconditions.checkState(links.size() == 2, "each translatable locale row should have 2 links");
          WebElement localeCell = links.get(0);
-         if (localeCell.getText().equals(locale))
+         if (getLocaleLinkText(localeCell).equals(locale))
          {
             localeCell.click();
-            return new WebTranPage(getDriver());
+            return new DocumentsViewPage(getDriver());
          }
       }
       throw new IllegalArgumentException("can not translate locale: " + locale);
-   }
-
-   private static String getLocaleLinkText(List<WebElement> links)
-   {
-      return links.get(0).getText();
    }
 }

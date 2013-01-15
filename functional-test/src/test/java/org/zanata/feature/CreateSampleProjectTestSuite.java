@@ -20,14 +20,11 @@
  */
 package org.zanata.feature;
 
-import java.io.IOException;
-
 import org.hamcrest.Matchers;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.page.webtrans.WebTranPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -41,9 +38,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
       CreateVersionAndAddToProjectTest.class,
       AddLanguageTest.class,
       TranslatorJoinsLanguageTeamTest.class,
-      PushPodirPluralProjectTest.class
+      PushPodirPluralProjectTest.class,
+      DocumentListInWebTransTest.class
 })
-public class CreateSampleProjectTest
+public class CreateSampleProjectTestSuite
 {
 
 //   @Test(expected = RuntimeException.class)
@@ -70,16 +68,6 @@ public class CreateSampleProjectTest
             .clickCreateVersionLink().inputVersionId("master").saveVersion();
 
       assertThat(projectVersionPage.getTitle(), Matchers.equalTo("Zanata:project-c:master"));
-   }
-
-//   @Test
-   public void canSeeDocumentList() throws IOException
-   {
-      new LoginWorkFlow().signIn("admin", "admin");
-      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToVersion("master");
-      WebTranPage webTranPage = projectVersionPage.translate("pl");
-
-      log.info("document list table: {}", webTranPage.getDocumentListTableContent());
    }
 
 }
