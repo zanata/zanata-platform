@@ -39,6 +39,9 @@
         <!-- Groovy and Gmaven properties -->
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
         <groovyVersion>2.0.5</groovyVersion>
+
+      <richfaces.version>3.3.3.Final</richfaces.version>
+
 	</properties>
 
 	<build>
@@ -1147,17 +1150,23 @@
 		</dependency>
 
 		<!-- Richfaces -->
-<!--
 		<dependency>
-			<groupId>org.richfaces.core</groupId>
-			<artifactId>richfaces-core-impl</artifactId>
+			<groupId>org.richfaces.framework</groupId>
+			<artifactId>richfaces-api</artifactId>
+			<version>${richfaces.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.richfaces.framework</groupId>
+			<artifactId>richfaces-impl-jsf2</artifactId>
+			<version>${richfaces.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.richfaces.ui</groupId>
-			<artifactId>richfaces-components-ui</artifactId>
+			<artifactId>richfaces-ui</artifactId>
+			<version>${richfaces.version}</version>
 		</dependency>
--->
 
 		<!-- Hibernate / JPA -->
 
@@ -1346,7 +1355,7 @@
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 

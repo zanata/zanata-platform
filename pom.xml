@@ -34,8 +34,6 @@
       <zanata.client.version>1.6.0</zanata.client.version>
       <zanata.common.version>2.1.1</zanata.common.version>
 
-	  <richfaces.version>4.1.0.Final</richfaces.version>
-
 	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 	  <!-- see also the jboss7 profile below -->
 	  <hibernate.scope>provided</hibernate.scope>
@@ -241,14 +239,6 @@
                   </exclusion>
               </exclusions>
           </dependency>
-
-		<dependency>
-			<groupId>org.richfaces</groupId>
-			<artifactId>richfaces-bom</artifactId>
-			<version>${richfaces.version}</version>
-			<scope>import</scope>
-			<type>pom</type>
-		</dependency>
 
             <dependency>
                <groupId>net.customware.gwt.presenter</groupId>
