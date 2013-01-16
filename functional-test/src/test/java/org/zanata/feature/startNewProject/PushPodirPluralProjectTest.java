@@ -89,7 +89,7 @@ public class PushPodirPluralProjectTest
    {
       for (String line : output)
       {
-         PushPodirPluralProjectTest.log.info(line);
+         log.info(line);
       }
    }
 }

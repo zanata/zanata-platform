@@ -44,6 +44,9 @@
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
 
         <webdriver.log.file>${project.build.directory}/browser_console.log</webdriver.log.file>
+
+        <!-- controls concordion output location-->
+        <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
     </properties>
 
     <dependencies>
@@ -325,8 +328,9 @@
                             <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <printSummary>true</printSummary>
                             <forkMode>always</forkMode>
+                            <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
                             <includes>
-                                <include>**/*TestSuite</include>
+                                <include>**/*TestSuite.java</include>
                             </includes>
                         </configuration>
                     </plugin>

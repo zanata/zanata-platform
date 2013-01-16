@@ -44,7 +44,7 @@ public class AddLanguageTest
       List<String> locales = manageLanguagePage.getLanguageLocales();
       if (locales.contains(locale))
       {
-         AddLanguageTest.log.warn("{} has already been added, enabling by default", locale);
+         log.warn("{} has already been added, enabling by default", locale);
          manageLanguagePage = manageLanguagePage.enableLanguageByDefault(locale);
       }
       else
@@ -60,7 +60,7 @@ public class AddLanguageTest
       ManageLanguageTeamMemberPage teamMemberPage = manageLanguagePage.manageTeamMembersFor(locale);
       if (teamMemberPage.getMemberUsernames().contains("admin"))
       {
-         AddLanguageTest.log.warn("admin has already joined the language [{}]", locale);
+         log.warn("admin has already joined the language [{}]", locale);
          return teamMemberPage;
       }
       else

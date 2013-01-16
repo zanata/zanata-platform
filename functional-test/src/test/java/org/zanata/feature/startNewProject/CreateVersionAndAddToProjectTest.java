@@ -37,7 +37,7 @@ public class CreateVersionAndAddToProjectTest
       ProjectPage projectPage = projectsPage.goToProject(projectName);
       if (projectPage.getVersions().contains(versionSlug))
       {
-         CreateVersionAndAddToProjectTest.log.warn("{} has already been created. Presumably you are running test manually and more than once.", versionSlug);
+         log.warn("{} has already been created. Presumably you are running test manually and more than once.", versionSlug);
          return projectPage;
       }
       else

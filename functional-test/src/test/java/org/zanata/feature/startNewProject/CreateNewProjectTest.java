@@ -37,7 +37,7 @@ public class CreateNewProjectTest
    {
       ProjectsPage projectsPage = homePage.goToProjects();
       List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
-      CreateNewProjectTest.log.info("current projects: {}", projects);
+      log.info("current projects: {}", projects);
 
       if (projects.contains(projectName))
       {
