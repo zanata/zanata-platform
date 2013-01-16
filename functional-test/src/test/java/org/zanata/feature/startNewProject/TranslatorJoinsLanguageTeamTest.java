@@ -1,4 +1,4 @@
-package org.zanata.feature;
+package org.zanata.feature.startNewProject;
 
 import java.util.List;
 

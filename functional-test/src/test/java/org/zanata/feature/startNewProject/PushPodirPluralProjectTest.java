@@ -1,7 +1,6 @@
-package org.zanata.feature;
+package org.zanata.feature.startNewProject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -15,12 +14,9 @@ import org.concordion.ext.LoggingTooltipExtension;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
-import org.hamcrest.Matchers;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
-import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.workflow.ClientPushWorkFlow;
-import org.zanata.workflow.ProjectWorkFlow;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -93,7 +89,7 @@ public class PushPodirPluralProjectTest
    {
       for (String line : output)
       {
-         log.info(line);
+         PushPodirPluralProjectTest.log.info(line);
       }
    }
 }

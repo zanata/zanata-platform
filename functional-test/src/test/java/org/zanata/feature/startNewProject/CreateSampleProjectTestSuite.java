@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature;
+package org.zanata.feature.startNewProject;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RunWith(Suite.class)
 // @formatter:off
 @Suite.SuiteClasses({
+      StartNewProjectTest.class,
       CreateNewProjectTest.class,
       CreateVersionAndAddToProjectTest.class,
       AddLanguageTest.class,

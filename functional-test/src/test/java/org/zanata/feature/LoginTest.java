@@ -51,4 +51,9 @@ public class LoginTest
       return homePage == null ? null : homePage.loggedInAs();
    }
 
+   public void signOut()
+   {
+      new LoginWorkFlow().goToHome().signOut();
+   }
+
 }

@@ -1,4 +1,6 @@
-package org.zanata.feature;
+package org.zanata.feature.startNewProject;
+
+import java.util.List;
 
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
@@ -8,9 +10,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.page.HomePage;
-import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectPage;
-import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -22,8 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RunWith(ConcordionRunner.class)
 @Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
-public class CreateVersionAndAddToProjectTest
+public class CreateNewProjectTest
 {
+
    private HomePage homePage;
 
    @Before
@@ -31,23 +32,23 @@ public class CreateVersionAndAddToProjectTest
    {
       homePage = new LoginWorkFlow().signIn("admin", "admin");
    }
-   public ProjectPage createNewProjectVersion(String projectName, String versionSlug)
+
+   public ProjectPage createNewProject(String projectSlug, String projectName)
    {
       ProjectsPage projectsPage = homePage.goToProjects();
-      ProjectPage projectPage = projectsPage.goToProject(projectName);
-      if (projectPage.getVersions().contains(versionSlug))
+      List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
+      CreateNewProjectTest.log.info("current projects: {}", projects);
+
+      if (projects.contains(projectName))
       {
-         log.warn("{} has already been created. Presumably you are running test manually and more than once.", versionSlug);
-         return projectPage;
+         CreateNewProjectTest.log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectSlug);
+         //since we can't create same project multiple times,
+         //if we run this test more than once manually, we don't want it to fail
+         return projectsPage.goToProject(projectName);
       }
       else
       {
-         CreateVersionPage createVersionPage = projectPage.clickCreateVersionLink().inputVersionId(versionSlug);
-         createVersionPage.selectStatus("READONLY");
-         createVersionPage.selectStatus("ACTIVE");
-         ProjectVersionPage projectVersionPage = createVersionPage.saveVersion();
-         projectsPage = projectVersionPage.goToPage("Projects", ProjectsPage.class);
-         return projectsPage.goToProject(projectName);
+         return projectsPage.clickOnCreateProjectLink().inputProjectId(projectSlug).inputProjectName(projectName).saveProject();
       }
    }
 }

@@ -1,4 +1,4 @@
-package org.zanata.feature;
+package org.zanata.feature.startNewProject;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class AddLanguageTest
       List<String> locales = manageLanguagePage.getLanguageLocales();
       if (locales.contains(locale))
       {
-         log.warn("{} has already been added, enabling by default", locale);
+         AddLanguageTest.log.warn("{} has already been added, enabling by default", locale);
          manageLanguagePage = manageLanguagePage.enableLanguageByDefault(locale);
       }
       else
@@ -60,7 +60,7 @@ public class AddLanguageTest
       ManageLanguageTeamMemberPage teamMemberPage = manageLanguagePage.manageTeamMembersFor(locale);
       if (teamMemberPage.getMemberUsernames().contains("admin"))
       {
-         log.warn("admin has already joined the language [{}]", locale);
+         AddLanguageTest.log.warn("admin has already joined the language [{}]", locale);
          return teamMemberPage;
       }
       else
