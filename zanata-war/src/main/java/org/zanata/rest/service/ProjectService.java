@@ -10,7 +10,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -44,9 +43,6 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.rest.dto.ProjectType;
-import org.zanata.rest.dto.Replace;
-import org.zanata.rest.dto.UpdateProject;
 
 import com.google.common.base.Objects;
 
@@ -157,76 +153,6 @@ public class ProjectService implements ProjectResource
       }
    }
 
-   private Response checkIfProjectActive(HProject hProject)
-   {
-      // Project is obsolete
-      if (Objects.equal(hProject.getStatus(), OBSOLETE))
-      {
-         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is obsolete.").build();
-      }
-      // Project is ReadOnly
-      else if (Objects.equal(hProject.getStatus(), READONLY))
-      {
-         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
-      }
-      return null;
-   }
-
-   /**
-    * modifies a Project.
-    * 
-    * @param UpdateProject The project's information.
-    * @return The following response status codes will be returned from this
-    *         method:<br>
-    *         OK(200) - If an already existing project was updated as a result
-    *         of this operation.<br>
-    *         FORBIDDEN(403) - If the user was not allowed to create/modify the
-    *         project. In this case an error message is contained in the
-    *         response.<br>
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
-   @Override
-   @POST
-   @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response post(UpdateProject updateProject)
-   {
-      ResponseBuilder response;
-      EntityTag etag;
-
-      HProject hProject = projectDAO.getBySlug(projectSlug);
-      if (hProject == null)
-      {
-         return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' not found.").build();
-      }
-
-      Response checkResponse = checkIfProjectActive(hProject);
-      if (checkResponse != null)
-      {
-         return checkResponse;
-      }
-
-      identity.checkPermission(hProject, "update");
-      etag = eTagUtils.generateTagForProject(projectSlug);
-      response = request.evaluatePreconditions(etag);
-      if (response != null)
-      {
-         return response.build();
-      }
-
-      response = Response.ok();
-
-      transfer(updateProject, hProject);
-
-      hProject = projectDAO.makePersistent(hProject);
-      projectDAO.flush();
-
-      etag = eTagUtils.generateTagForProject(projectSlug);
-      return response.tag(etag).build();
-   }
-
    /**
     * Creates or modifies a Project.
     * 
@@ -268,27 +194,29 @@ public class ProjectService implements ProjectResource
 
          response = Response.created(uri.getAbsolutePath());
       }
+      // Project is obsolete
+      else if (Objects.equal(hProject.getStatus(), OBSOLETE))
+      {
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is obsolete.").build();
+      }
+      // Project is ReadOnly
+      else if (Objects.equal(hProject.getStatus(), READONLY))
+      {
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
+      }
       else
       {
-         Response checkResponse = checkIfProjectActive(hProject);
-         if (checkResponse != null)
+         // must be an update operation
+         // pre-emptive entity permission check
+         identity.checkPermission(hProject, "update");
+         etag = eTagUtils.generateTagForProject(projectSlug);
+         response = request.evaluatePreconditions(etag);
+         if (response != null)
          {
-            return checkResponse;
+            return response.build();
          }
-         else
-         {
-            // must be an update operation
-            // pre-emptive entity permission check
-            identity.checkPermission(hProject, "update");
-            etag = eTagUtils.generateTagForProject(projectSlug);
-            response = request.evaluatePreconditions(etag);
-            if (response != null)
-            {
-               return response.build();
-            }
 
-            response = Response.ok();
-         }
+         response = Response.ok();
       }
 
       transfer(project, hProject);
@@ -309,27 +237,6 @@ public class ProjectService implements ProjectResource
       etag = eTagUtils.generateTagForProject(projectSlug);
       return response.tag(etag).build();
 
-   }
-
-   public static void transfer(UpdateProject from, HProject to)
-   {
-      for (Replace replaceOp : from.getReplaceList())
-      {
-         String fieldName = replaceOp.getSel();
-
-         if (fieldName.equals("name"))
-         {
-            to.setName(replaceOp.getValue());
-         }
-         else if (fieldName.equals("description"))
-         {
-            to.setDescription(replaceOp.getValue());
-         }
-         else if (fieldName.equals("defaultType"))
-         {
-            to.setDefaultProjectType(ProjectType.valueOf(replaceOp.getValue()));
-         }
-      }
    }
 
    public static void transfer(Project from, HProject to)

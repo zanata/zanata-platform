@@ -28,7 +28,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -56,7 +55,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.rest.dto.UpdateProjectIteration;
 
 import com.google.common.base.Objects;
 
@@ -214,8 +212,17 @@ public class ProjectIterationService implements ProjectIterationResource
          }
          hProjectIteration = new HProjectIteration();
          hProjectIteration.setSlug(iterationSlug);
-         HProject hIterProject = (HProject) hProject;
-         hIterProject.addIteration(hProjectIteration);
+
+         if (projectIteration.getProjectType() != null)
+         {
+            hProjectIteration.setProjectType(projectIteration.getProjectType());
+         }
+         else
+         {
+            hProjectIteration.setProjectType(hProject.getDefaultProjectType());
+         }
+
+         hProject.addIteration(hProjectIteration);
          // pre-emptive entity permission check
          // identity.checkPermission(hProject, "add-iteration");
          identity.checkPermission(hProjectIteration, "insert");
@@ -237,6 +244,15 @@ public class ProjectIterationService implements ProjectIterationResource
       { // must be an update operation
          // pre-emptive entity permission check
          identity.checkPermission(hProjectIteration, "update");
+
+         if (projectIteration.getProjectType() != null)
+         {
+            hProjectIteration.setProjectType(projectIteration.getProjectType());
+         }
+         else
+         {
+            hProjectIteration.setProjectType(hProject.getDefaultProjectType());
+         }
          etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
          response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -244,6 +260,7 @@ public class ProjectIterationService implements ProjectIterationResource
             return response.build();
          }
          response = Response.ok();
+         changed = true;
       }
 
 
@@ -257,21 +274,6 @@ public class ProjectIterationService implements ProjectIterationResource
 
    }
 
-   private Response checkIfVersionActive(HProjectIteration hProjectIteration)
-   {
-      // Iteration is Obsolete
-      if (Objects.equal(hProjectIteration.getStatus(), OBSOLETE))
-      {
-         return Response.status(Status.FORBIDDEN).entity("Project Iiteration '" + projectSlug + ":" + iterationSlug + "' is obsolete.").build();
-      }
-      // Iteration is ReadOnly
-      else if(Objects.equal(hProjectIteration.getStatus(), READONLY))
-      {
-         return Response.status(Status.FORBIDDEN).entity("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.").build();
-      }
-      return null;
-   }
-
 
    public static void transfer(HProjectIteration from, ProjectIteration to)
    {
@@ -279,45 +281,4 @@ public class ProjectIterationService implements ProjectIterationResource
       to.setStatus(from.getStatus());
       to.setProjectType(from.getProjectType());
    }
-
-   @Override
-   @POST
-   @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response post(UpdateProjectIteration updateProjectIteration)
-   {
-      ResponseBuilder response;
-      EntityTag etag;
-
-      HProject hProject = projectDAO.getBySlug(projectSlug);
-
-      if (hProject == null)
-      {
-         return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' not found.").build();
-      }
-
-      Response checkResponse = checkIfVersionActive(hProject);
-      if (checkResponse != null)
-      {
-         return checkResponse;
-      }
-
-      identity.checkPermission(hProject, "update");
-      etag = eTagUtils.generateTagForProject(projectSlug);
-      response = request.evaluatePreconditions(etag);
-      if (response != null)
-      {
-         return response.build();
-      }
-
-      response = Response.ok();
-
-      transfer(updateProjectIteration, hProject);
-
-      hProject = projectDAO.makePersistent(hProject);
-      projectDAO.flush();
-
-      etag = eTagUtils.generateTagForProject(projectSlug);
-      return response.tag(etag).build();
-   }
-
 }
