@@ -24,36 +24,28 @@ import org.zanata.rest.MediaTypes.Format;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-@XmlType(name = "updateProjectType", propOrder = { "id", "replaceList" })
-@XmlRootElement(name = "updateProject")
+@XmlType(name = "updateProjectIterationType", propOrder = { "id", "replaceList" })
+@XmlRootElement(name = "updateProjectIteration")
 @JsonPropertyOrder({ "id", "replaceList" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class UpdateProject implements Serializable, HasCollectionSample<UpdateProject>, HasMediaType
+public class UpdateProjectIteration implements Serializable, HasCollectionSample<UpdateProjectIteration>, HasMediaType
 {
    private static final long serialVersionUID = 1L;
    private String id;
    private List<Replace> replaceList = new ArrayList<Replace>();
 
-   public UpdateProject()
+   public UpdateProjectIteration()
    {
    }
 
-   public UpdateProject(String id, String name, String description, ProjectType defaultType)
+   public UpdateProjectIteration(String id, ProjectType projectType)
    {
       this.id = id;
 
-      if(name != null)
+      if (projectType != null)
       {
-         replaceList.add(new Replace("name", name));
-      }
-      if (description != null)
-      {
-         replaceList.add(new Replace("description", description));
-      }
-      if (defaultType != null)
-      {
-         replaceList.add(new Replace("defaultType", defaultType.toString()));
+         replaceList.add(new Replace("defaultType", projectType.toString()));
       }
    }
 
@@ -81,17 +73,17 @@ public class UpdateProject implements Serializable, HasCollectionSample<UpdatePr
    }
 
    @Override
-   public UpdateProject createSample()
+   public UpdateProjectIteration createSample()
    {
-      return new UpdateProject("sample-project", "Sample Project", "Sample Project Description", ProjectType.Gettext);
+      return new UpdateProjectIteration("sample-iteration", ProjectType.Gettext);
    }
 
    @Override
-   public Collection<UpdateProject> createSamples()
+   public Collection<UpdateProjectIteration> createSamples()
    {
-      Collection<UpdateProject> entities = new ArrayList<UpdateProject>();
+      Collection<UpdateProjectIteration> entities = new ArrayList<UpdateProjectIteration>();
       entities.add(createSample());
-      UpdateProject p2 = new UpdateProject("another-project", "Another Sample Project", "Another Sample Project Description", ProjectType.Gettext);
+      UpdateProjectIteration p2 = new UpdateProjectIteration("sample-iteration", ProjectType.Gettext);
       entities.add(p2);
       return entities;
    }
@@ -129,11 +121,11 @@ public class UpdateProject implements Serializable, HasCollectionSample<UpdatePr
       {
          return false;
       }
-      if (!(obj instanceof UpdateProject))
+      if (!(obj instanceof UpdateProjectIteration))
       {
          return false;
       }
-      UpdateProject other = (UpdateProject) obj;
+      UpdateProjectIteration other = (UpdateProjectIteration) obj;
 
       if (id == null)
       {

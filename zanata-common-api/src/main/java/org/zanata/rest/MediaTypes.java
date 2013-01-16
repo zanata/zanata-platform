@@ -27,7 +27,7 @@ public class MediaTypes
 
    private static final String APPLICATION_VND_ZANATA = "application/vnd.zanata";
    
-   public static final String APPLICATION_ZANATA_UPDATE_PROJECT = APPLICATION_VND_ZANATA + XML;
+   public static final String APPLICATION_ZANATA_XML = APPLICATION_VND_ZANATA + XML;
 
    public static final String APPLICATION_ZANATA_PROJECT = APPLICATION_VND_ZANATA + ".project";
    public static final String APPLICATION_ZANATA_PROJECT_XML = APPLICATION_ZANATA_PROJECT + XML;
