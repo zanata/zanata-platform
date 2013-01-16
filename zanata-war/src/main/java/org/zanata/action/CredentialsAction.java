@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 
-import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;

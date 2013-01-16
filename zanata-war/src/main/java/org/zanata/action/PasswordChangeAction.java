@@ -23,7 +23,8 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import javax.validation.constraints.Size;
-import org.hibernate.validator.NotEmpty;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;

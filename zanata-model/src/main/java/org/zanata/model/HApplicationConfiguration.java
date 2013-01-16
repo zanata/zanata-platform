@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,9 +31,7 @@ import lombok.Setter;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import javax.validation.constraints.Size;
-import org.hibernate.validator.NotEmpty;
-import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Setter

@@ -2,23 +2,41 @@ package org.zanata.rest.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyReader;
 
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Name("restUtils")
 public class RestUtils
 {
    private static final Logger log = LoggerFactory.getLogger(RestUtils.class);
+
+   @In
+   ValidatorFactory validatorFactory;
+
+   @SuppressWarnings("unused")
+   private RestUtils()
+   {
+   }
+
+   public RestUtils(ValidatorFactory validatorFactory)
+   {
+      this.validatorFactory = validatorFactory;
+   }
 
    /**
     * Validate Hibernate Validator based constraints.
@@ -30,33 +48,28 @@ public class RestUtils
     * @param entity Hibernate-validator annotated entity
     */
    @SuppressWarnings("unchecked")
-   public static <T> void validateEntity(T entity)
+   public <T> void validateEntity(T entity)
    {
-      @SuppressWarnings("rawtypes")
-      ClassValidator<T> validator = new ClassValidator(entity.getClass());
-      if (validator.hasValidationRules())
+      Validator validator = validatorFactory.getValidator();
+      validator.getConstraintsForClass(entity.getClass());
+      Set<ConstraintViolation<T>> violations = validator.validate(entity);
+      if (!violations.isEmpty())
       {
-         InvalidValue[] invalidValues = validator.getInvalidValues(entity);
-         if (invalidValues.length != 0)
+         StringBuilder message = new StringBuilder();
+         message.append("Request body contains invalid values:\n");
+         for (ConstraintViolation<T> violation : violations)
          {
-            StringBuilder message = new StringBuilder();
-            message.append("Request body contains invalid values:\n");
-            for (InvalidValue invalidValue : invalidValues)
-            {
-               message.append(invalidValue.getPropertyPath());
-               message.append(">");
-               message.append(invalidValue.getPropertyName());
-               message.append(": ");
-               message.append(invalidValue.getMessage());
-               message.append("\n");
-            }
-            log.debug("Bad Request: {}", message);
-            throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(message.toString()).build());
+            message.append(violation.getPropertyPath());
+            message.append(": ");
+            message.append(violation.getMessage());
+            message.append("\n");
          }
+         log.debug("Bad Request: {}", message);
+         throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(message.toString()).build());
       }
    }
 
-   public static <T> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String, String> requestHeaders)
+   public <T> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String, String> requestHeaders)
    {
       MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance().getMessageBodyReader(entityClass, entityClass, entityClass.getAnnotations(), requestContentType);
       if (reader == null)

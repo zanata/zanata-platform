@@ -28,6 +28,7 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.jboss.resteasy.spi.interception.MessageBodyReaderContext;
 import org.jboss.resteasy.spi.interception.MessageBodyReaderInterceptor;
+import org.jboss.seam.annotations.In;
 import org.zanata.rest.service.RestUtils;
 
 /**
@@ -41,12 +42,14 @@ import org.zanata.rest.service.RestUtils;
 @ServerInterceptor
 public class HibernateValidationInterceptor implements MessageBodyReaderInterceptor
 {
+   @In
+   RestUtils restUtils;
 
    @Override
    public Object read(MessageBodyReaderContext context) throws IOException, WebApplicationException
    {
       Object unmarshalledMssgBody = context.proceed();
-      RestUtils.validateEntity(unmarshalledMssgBody);
+      restUtils.validateEntity(unmarshalledMssgBody);
       
       return unmarshalledMssgBody;
    }

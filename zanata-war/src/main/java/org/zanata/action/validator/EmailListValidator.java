@@ -21,23 +21,25 @@
 package org.zanata.action.validator;
 
 import java.io.Serializable;
-import org.hibernate.validator.EmailValidator;
-import org.hibernate.validator.Validator;
 
-public class EmailListValidator implements Validator<EmailList>, Serializable
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.internal.constraintvalidators.EmailValidator;
+
+// FIXME don't use org.hibernate.validator.internal.*
+public class EmailListValidator implements ConstraintValidator<EmailList, String>, Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private EmailValidator emailValidator;
+   private ConstraintValidator<Email, CharSequence> emailValidator;
 
    @Override
-   public boolean isValid(Object value)
+   public boolean isValid(String s, ConstraintValidatorContext context)
    {
-      if (value == null)
+      if (s == null)
          return true;
-      if (!(value instanceof String))
-         return false;
-      String s = (String) value;
       if (s.length() == 0)
          return true;
 
@@ -45,7 +47,7 @@ public class EmailListValidator implements Validator<EmailList>, Serializable
       // first email address
       for (String email : s.trim().split("\\s*,\\s*"))
       {
-         if (!emailValidator.isValid(email))
+         if (!emailValidator.isValid(email, context))
             return false;
       }
       return true;

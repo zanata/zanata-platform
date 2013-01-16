@@ -27,9 +27,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.hibernate.validator.ValidatorClass;
+import javax.validation.Constraint;
 
-@ValidatorClass(DuplicateEmailValidator.class)
+@Constraint(validatedBy = {DuplicateEmailValidator.class})
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface NotDuplicateEmail

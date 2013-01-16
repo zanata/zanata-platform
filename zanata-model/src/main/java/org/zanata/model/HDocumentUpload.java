@@ -36,7 +36,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.hibernate.annotations.IndexColumn;
-import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
 
 

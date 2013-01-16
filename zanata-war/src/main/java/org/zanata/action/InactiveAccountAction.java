@@ -3,8 +3,8 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.Email;
-import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

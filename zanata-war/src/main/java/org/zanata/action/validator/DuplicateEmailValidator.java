@@ -22,23 +22,22 @@ package org.zanata.action.validator;
 
 import java.io.Serializable;
 
-import org.hibernate.validator.Validator;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.zanata.dao.PersonDAO;
 
-public class DuplicateEmailValidator implements Validator<NotDuplicateEmail>, Serializable
+public class DuplicateEmailValidator implements ConstraintValidator<NotDuplicateEmail, String>, Serializable
 {
    private static final long serialVersionUID = 1L;
 
    @Override
-   public boolean isValid(Object value)
+   public boolean isValid(String string, ConstraintValidatorContext context)
    {
-      if (value == null)
+      if (string == null)
          return true;
-      if (!(value instanceof String))
-         return false;
-      String string = (String) value;
       if (string.length() == 0)
          return true;
       PersonDAO personDAO = (PersonDAO) Component.getInstance(PersonDAO.class, ScopeType.STATELESS);

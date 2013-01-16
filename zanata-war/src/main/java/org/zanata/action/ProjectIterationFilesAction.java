@@ -40,12 +40,12 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.faces.context.FacesContext;
+import javax.validation.ConstraintViolationException;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import org.hibernate.Hibernate;
-import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -300,7 +300,7 @@ public class ProjectIterationFilesAction implements Serializable
       {
          FacesMessages.instance().add(Severity.ERROR, e.getMessage(), documentFileUpload.getFileName());
       }
-      catch (InvalidStateException e)
+      catch (ConstraintViolationException e)
       {
          FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
       }

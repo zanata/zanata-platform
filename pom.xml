@@ -40,11 +40,10 @@
 	  <!-- see also the jboss7 profile below -->
 	  <hibernate.scope>provided</hibernate.scope>
 	  <hibernate.version>3.3.2.GA</hibernate.version>
- 	  <hibernate.jmx.version>${hibernate.version}</hibernate.jmx.version>
 	  <hibernate.search.version>3.1.1.GA</hibernate.search.version>
-	  <hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
 	  <hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
       <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
+      <hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
     </properties>
 
    <dependencyManagement>
@@ -172,6 +171,12 @@
 				</exclusions>
 			</dependency>
 
+         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+         </dependency>
+
 			<dependency>
 				<groupId>org.jboss.el</groupId>
 				<artifactId>jboss-el</artifactId>
@@ -236,22 +241,6 @@
                   </exclusion>
               </exclusions>
           </dependency>
-
-		<!-- TODO remove annotations and jmx after we move to v3.6 (AS7) -->
-          
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>${hibernate.annotations.version}</version>
-			<scope>provided</scope>
-		</dependency>
-	        <dependency>
-	            <groupId>org.hibernate</groupId>
-	            <artifactId>hibernate-jmx</artifactId>
-	            <version>${hibernate.jmx.version}</version>
-	            <scope>provided</scope>
-	        </dependency>
-          
 
 		<dependency>
 			<groupId>org.richfaces</groupId>
@@ -405,35 +394,6 @@
 			<id>jboss7</id>
 			<properties>
 				<hibernate.scope>compile</hibernate.scope>
-				<!-- more recent hibernate versions -->
-				<hibernate.version>3.6.8.Final</hibernate.version>
-				<hibernate.search.version>3.4.1.Final</hibernate.search.version>
-				<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
-				<!-- not needed, merged into hibernate-core 3.6: -->
-				<hibernate.annotations.version>3.5.6-Final</hibernate.annotations.version>
-				<hibernate.entitymanager.version>3.6.8.Final</hibernate.entitymanager.version>
-				<!-- not needed, merged into hibernate-core 3.6: -->
-				<hibernate.jmx.version>3.5.6-Final</hibernate.jmx.version>
-
-				<!-- slightly newer versions:
-				
-				<hibernate.version>3.6.10.Final</hibernate.version>
-				<hibernate.search.version>3.4.2.Final</hibernate.search.version>
-
-				<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
-
-				If this is used, <artifactId>hibernate-validator-legacy</artifactId>
-					may need to be added to each dependency element for validator.
-					If this is done, make a note to remove -legacy from artifactId when
-					moving to 4.2.0.GA for real
-				<hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
-				
-
-				<hibernate.entitymanager.version>3.6.10.Final</hibernate.entitymanager.version>
-				 -->
-
-				<lucene.version>3.1.0</lucene.version>
-
 		        <war_bundles_jsf_impl>true</war_bundles_jsf_impl>
 			</properties>
          <dependencies>

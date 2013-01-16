@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -26,6 +28,9 @@ import com.allen_sauer.gwt.log.client.Log;
 @Test(groups = { "unit-tests" })
 public class RestUtilsTest
 {
+   static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+   RestUtils restUtils = new RestUtils(factory);
+
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
    private TranslationsResourceTestObjectFactory transTestFactory = new TranslationsResourceTestObjectFactory();
    private final Logger log = LoggerFactory.getLogger(RestUtilsTest.class);
@@ -69,7 +74,7 @@ public class RestUtilsTest
          log.info("expect:" + testStr);
 
          messageBody = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
-         T unmarshall = (T) RestUtils.unmarshall(type, messageBody, MediaType.APPLICATION_XML_TYPE, null);
+         T unmarshall = restUtils.unmarshall(type, messageBody, MediaType.APPLICATION_XML_TYPE, null);
          Log.info("got:" + unmarshall.toString());
          assertThat(entity.toString(), is(testStr));
       }
@@ -100,7 +105,7 @@ public class RestUtilsTest
          String testStr = "{\"textFlowTargets\":[{\"resId\":\"rest1\",\"state\":\"Approved\",\"translator\":{\"email\":\"root@localhost\",\"name\":\"Admin user\"},\"content\": \"<title>\u8bbf\u95ee\u5b58\u53d6\u63a7\u5236\u5217\u8868</title>\"},{\"resId\":\"rest2\",\"state\":\"Approved\",\"translator\":{\"email\":\"root@localhost\",\"name\":\"Admin user\"},\"content\":\"hello world\"}]}";
 
          messageBody = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
-         TranslationsResource unmarshall = (TranslationsResource) RestUtils.unmarshall(TranslationsResource.class, messageBody, MediaType.APPLICATION_JSON_TYPE, null);
+         TranslationsResource unmarshall = restUtils.unmarshall(TranslationsResource.class, messageBody, MediaType.APPLICATION_JSON_TYPE, null);
          log.info("got:" + unmarshall.toString());
       }
       catch (UnsupportedEncodingException e)

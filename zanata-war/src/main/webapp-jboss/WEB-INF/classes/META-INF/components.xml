@@ -121,6 +121,8 @@
   <web:multipart-filter create-temp-files="true"
       max-request-size="10000000" url-pattern="*.seam"/>
 
+  <component name="validatorFactory" jndi-name="java:comp/ValidatorFactory" />
+
   <component name="essentialDataCreator" class="org.zanata.util.EssentialDataCreator" installed="true">
   	<property name="username">admin</property>
   	<property name="password">admin</property>

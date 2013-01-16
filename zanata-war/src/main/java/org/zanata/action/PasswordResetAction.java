@@ -3,9 +3,9 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
-
 import javax.validation.constraints.Size;
-import org.hibernate.validator.NotEmpty;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -19,8 +19,8 @@ import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
-import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.exception.KeyNotFoundException;
+import org.zanata.model.HAccountResetPasswordKey;
 
 @Name("passwordReset")
 @Scope(ScopeType.CONVERSATION)

@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.hibernate.validator.ValidatorClass;
+import javax.validation.Constraint;
 
 /**
  * A slug is a short label for something, containing only letters, numbers,
@@ -34,7 +34,7 @@ import org.hibernate.validator.ValidatorClass;
  * @author asgeirf
  * 
  */
-@ValidatorClass(SlugValidator.class)
+@Constraint(validatedBy= {SlugValidator.class})
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Slug

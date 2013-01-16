@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.hibernate.validator.ValidatorClass;
+import javax.validation.Constraint;
 
 /**
  * Implements unique validation on JPA entities when it's not possible to do so at the database level.
@@ -34,7 +34,7 @@ import org.hibernate.validator.ValidatorClass;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@ValidatorClass(UniqueValidator.class)
+@Constraint(validatedBy = {UniqueValidator.class})
 @Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Unique

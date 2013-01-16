@@ -22,7 +22,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import org.hibernate.validator.Email;
+import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -38,7 +38,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
-import org.zanata.model.validator.UrlNoSlash;
+import org.zanata.model.validator.Url;
 
 @Name("serverConfigurationBean")
 @Scope(ScopeType.PAGE)
@@ -190,7 +190,7 @@ public class ServerConfigurationBean implements Serializable
       this.registerUrl = registerUrl;
    }
 
-   @UrlNoSlash
+   @Url(canEndInSlash=false)
    public String getServerUrl()
    {
       return serverUrl;

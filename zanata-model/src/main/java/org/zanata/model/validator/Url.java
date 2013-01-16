@@ -25,12 +25,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.hibernate.validator.ValidatorClass;
+import javax.validation.Constraint;
 
-@ValidatorClass(UrlValidator.class)
+@Constraint(validatedBy = {UrlValidator.class})
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Url
 {
    String message() default "{validator.url}";
+   boolean canEndInSlash() default true;
 }

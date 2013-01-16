@@ -21,43 +21,31 @@
 package org.zanata.model.validator;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.hibernate.validator.Validator;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
-public class UrlValidator<U extends Annotation> implements Validator<U>, Serializable
+public class UrlValidator implements ConstraintValidator<Url, String>, Serializable
 {
    private static final long serialVersionUID = 1L;
 
    private boolean canEndInSlash;
 
    @Override
-   public void initialize(U u)
+   public void initialize(Url u)
    {
-      if (u instanceof Url || u instanceof UrlNoSlash)
-      {
-         this.canEndInSlash = u instanceof Url;
-      }
-      else
-      {
-         throw new RuntimeException("UrlValidator: unknown annotation " + u);
-      }
+      this.canEndInSlash = u.canEndInSlash();
    }
 
    @Override
-   public boolean isValid(Object value)
+   public boolean isValid(String string, ConstraintValidatorContext context)
    {
-      if (value == null)
+      if (string == null)
       {
          return true;
       }
-      if (!(value instanceof String))
-      {
-         return false;
-      }
-      String string = (String) value;
       if (!canEndInSlash && string.endsWith("/"))
       {
          return false;

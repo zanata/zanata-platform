@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.faces.context.FacesContext;
+import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -95,11 +95,11 @@ public class GlossaryAction implements Serializable
          }
          FacesMessages.instance().add(Severity.INFO, "Glossary file {0} uploaded.", this.glossaryFileUpload.getFileName());
       }
-      catch (ZanataServiceException zex)
+      catch (ZanataServiceException e)
       {
-         FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), this.glossaryFileUpload.getFileName());
+         FacesMessages.instance().add(Severity.ERROR, e.getMessage(), this.glossaryFileUpload.getFileName());
       }
-      catch (InvalidStateException isex)
+      catch (ConstraintViolationException e)
       {
          FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
       }

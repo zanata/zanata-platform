@@ -23,6 +23,8 @@ package org.zanata.model.validator;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 import org.hibernate.EntityMode;
 import org.hibernate.FlushMode;
@@ -32,7 +34,6 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.validator.Validator;
 import org.jboss.seam.Component;
 
 /**
@@ -42,12 +43,12 @@ import org.jboss.seam.Component;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see {@link Unique}
  */
-public class UniqueValidator implements Validator<Unique>
+public class UniqueValidator implements ConstraintValidator<Unique, Object>
 {
    private Unique parameters;
 
    @Override
-   public boolean isValid(Object value)
+   public boolean isValid(Object value, ConstraintValidatorContext context)
    {
       if( value == null )
       {
