@@ -68,7 +68,7 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
    public void traverseProjectGraph() throws Exception
    {
       EntityManager em = getEm();
-      HIterationProject project = em.find(HIterationProject.class, 1l);
+      HProject project = em.find(HProject.class, 1l);
       assertThat(project, notNullValue());
 
       List<HProjectIteration> projectTargets = project.getProjectIterations();
@@ -82,7 +82,7 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
    public void checkPositionsNotNull() throws Exception
    {
       EntityManager em = getEm();
-      HIterationProject project = em.find(HIterationProject.class, 1l);
+      HProject project = em.find(HProject.class, 1l);
       // assertThat( project, notNullValue() );
 
       HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, en_US);
@@ -137,7 +137,7 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
    public void ensureHistoryOnTextFlow()
    {
       EntityManager em = getEm();
-      HIterationProject project = em.find(HIterationProject.class, 1l);
+      HProject project = em.find(HProject.class, 1l);
       // assertThat( project, notNullValue() );
 
       HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, en_US);

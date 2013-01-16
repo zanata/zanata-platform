@@ -24,7 +24,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -144,7 +144,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    }
 
    @Observer(ProjectHome.PROJECT_UPDATE)
-   public void projectUpdate(HIterationProject project)
+   public void projectUpdate(HProject project)
    {
       String projectSlug = project.getSlug();
       log.info("Project {} updated, status={}", projectSlug, project.getStatus());

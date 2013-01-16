@@ -1,9 +1,12 @@
 package org.zanata.rest.service;
 
+import static org.zanata.common.EntityStatus.OBSOLETE;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,8 +28,6 @@ import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.util.HashUtil;
-
-import static org.zanata.common.EntityStatus.OBSOLETE;
 
 @Name("eTagUtils")
 @Scope(ScopeType.STATELESS)

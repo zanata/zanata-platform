@@ -36,8 +36,8 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
@@ -75,8 +75,9 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    protected HProjectIteration createInstance()
    {
       HProjectIteration iteration = new HProjectIteration();
-      HIterationProject project = (HIterationProject) projectDAO.getBySlug(projectSlug);
+      HProject project = (HProject) projectDAO.getBySlug(projectSlug);
       project.addIteration(iteration);
+      iteration.setProjectType(project.getDefaultProjectType());
       return iteration;
    }
 

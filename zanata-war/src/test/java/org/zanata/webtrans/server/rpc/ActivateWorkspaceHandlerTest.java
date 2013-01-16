@@ -18,7 +18,7 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -120,7 +120,7 @@ public class ActivateWorkspaceHandlerTest
       HLocale hLocale = new HLocale(workspaceId.getLocaleId());
       when(localeServiceImpl.getByLocaleId(workspaceId.getLocaleId())).thenReturn(hLocale);
       ProjectIterationId projectIterationId = workspaceId.getProjectIterationId();
-      HIterationProject hProject = new HIterationProject();
+      HProject hProject = new HProject();
       when(projectDAO.getBySlug(projectIterationId.getProjectSlug())).thenReturn(hProject);
       HProjectIteration hProjectIteration = new HProjectIteration();
       when(projectIterationDAO.getBySlug(projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(hProjectIteration);

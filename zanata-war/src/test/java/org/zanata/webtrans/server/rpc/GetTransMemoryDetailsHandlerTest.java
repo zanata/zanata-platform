@@ -11,7 +11,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
@@ -88,7 +88,7 @@ public class GetTransMemoryDetailsHandlerTest
    {
       HProjectIteration projectIteration = new HProjectIteration();
       projectIteration.setSlug(iterationSlug);
-      HIterationProject project = new HIterationProject();
+      HProject project = new HProject();
       project.setName(projectSlug);
       projectIteration.setProject(project);
       hTextFlow.getDocument().setProjectIteration(projectIteration);

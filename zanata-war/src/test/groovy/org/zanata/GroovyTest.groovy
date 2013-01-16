@@ -1,7 +1,7 @@
 package org.zanata
 
 import org.testng.annotations.Test
-import org.zanata.model.HIterationProject
+import org.zanata.model.HProject
 import org.zanata.test.data.ProjectData
 
 import static org.hamcrest.MatcherAssert.assertThat
@@ -28,7 +28,7 @@ class GroovyTest extends ZanataGroovyJpaTest
    List getEntitiesToCreate()
    {
       [
-         new HIterationProject(slug: "test-proj", name: "Test Project", description: "A Test Project")
+         new HProject(slug: "test-proj", name: "Test Project", description: "A Test Project")
       ];
    }
 

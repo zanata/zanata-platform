@@ -52,7 +52,7 @@ import org.zanata.model.HProject;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.ProjectType;
+
 import com.google.common.base.Objects;
 
 @Name("projectsService")
@@ -100,7 +100,7 @@ public class ProjectsService implements ProjectsResource
          // Ignore Obsolete projects
          if( !Objects.equal(hProject.getStatus(), OBSOLETE))
          {
-            Project project = new Project(hProject.getSlug(), hProject.getName(), ProjectType.IterationProject);
+            Project project = new Project(hProject.getSlug(), hProject.getName(), hProject.getDefaultProjectType());
             project.setStatus( hProject.getStatus() );
             project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT, accept)));
             projectRefs.add(project);

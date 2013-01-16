@@ -40,7 +40,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.StatusCount;
@@ -69,12 +69,12 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       Criteria crit = getSession().createCriteria(HProject.class);
       crit.add(Restrictions.naturalId().set("slug", projectSlug));
       crit.setCacheable(true).setComment("ProjectIterationDAO.getBySlugs");
-      HIterationProject project = (HIterationProject) crit.uniqueResult();
+      HProject project = (HProject) crit.uniqueResult();
 
       return getBySlug(project, iterationSlug);
    }
 
-   public HProjectIteration getBySlug(HIterationProject project, String iterationSlug)
+   public HProjectIteration getBySlug(HProject project, String iterationSlug)
    {
       Criteria crit = getSession().createCriteria(HProjectIteration.class);
       crit.add(Restrictions.naturalId().set("project", project).set("slug", iterationSlug));

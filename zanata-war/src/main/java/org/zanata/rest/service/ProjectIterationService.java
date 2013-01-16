@@ -50,12 +50,12 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.model.HIterationProject;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
+
 import com.google.common.base.Objects;
 
 @Name("projectIterationService")
@@ -212,7 +212,7 @@ public class ProjectIterationService implements ProjectIterationResource
          }
          hProjectIteration = new HProjectIteration();
          hProjectIteration.setSlug(iterationSlug);
-         HIterationProject hIterProject = (HIterationProject) hProject;
+         HProject hIterProject = (HProject) hProject;
          hIterProject.addIteration(hProjectIteration);
          // pre-emptive entity permission check
          // identity.checkPermission(hProject, "add-iteration");
@@ -260,6 +260,7 @@ public class ProjectIterationService implements ProjectIterationResource
    {
       to.setId(from.getSlug());
       to.setStatus(from.getStatus());
+      to.setProjectType(from.getProjectType());
    }
 
 }

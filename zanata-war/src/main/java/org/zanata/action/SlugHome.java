@@ -32,6 +32,7 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.EntityStatus;
+import org.zanata.rest.dto.ProjectType;
 
 /**
  * This implementation uses a field 'slug' to refer to the id of the object.
@@ -44,6 +45,7 @@ public abstract class SlugHome<E> extends EntityHome<E>
    private static final long serialVersionUID = 1L;
 
    private List<SelectItem> statusList = new ArrayList<SelectItem>();
+   private List<SelectItem> projectTypeList = new ArrayList<SelectItem>();
 
    @SuppressWarnings("unchecked")
    @Override
@@ -84,6 +86,19 @@ public abstract class SlugHome<E> extends EntityHome<E>
          }
       }
       return statusList;
+   }
+
+   public List<SelectItem> getProjectTypeList()
+   {
+      if (projectTypeList.isEmpty())
+      {
+         for (ProjectType projectType : ProjectType.values())
+         {
+            SelectItem option = new SelectItem(projectType, projectType.name());
+            projectTypeList.add(option);
+         }
+      }
+      return projectTypeList;
    }
 
 }
