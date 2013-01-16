@@ -7,5 +7,5 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum(String.class)
 public enum ProjectType
 {
-   IterationProject, ProjectCollection;
+   UTF8properties, Properties, Gettext, Podir, Xliff, XML, Raw;
 }

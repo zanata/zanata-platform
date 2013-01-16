@@ -37,11 +37,11 @@ import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
-@XmlType(name = "projectIterationType", propOrder = { "links", "status" })
+@XmlType(name = "projectIterationType", propOrder = { "links", "status", "projectType" })
 @XmlRootElement(name = "project-iteration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-@JsonPropertyOrder({ "id", "links", "status" })
+@JsonPropertyOrder({ "id", "links", "status", "projectType" })
 public class ProjectIteration implements Serializable, HasCollectionSample<ProjectIteration>, HasMediaType
 {
 
@@ -52,6 +52,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
    private String id;
    private Links links;
    private EntityStatus status;
+   private ProjectType projectType;
 
    public ProjectIteration()
    {
@@ -110,6 +111,17 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
       this.status = status;
    }
 
+   @XmlElement(name = "projectType", required = false, namespace = Namespaces.ZANATA_OLD)
+   public ProjectType getProjectType()
+   {
+      return projectType;
+   }
+
+   public void setProjectType(ProjectType projectType)
+   {
+      this.projectType = projectType;
+   }
+
    @Override
    public ProjectIteration createSample()
    {
@@ -147,6 +159,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
       result = prime * result + ((id == null) ? 0 : id.hashCode());
       result = prime * result + ((links == null) ? 0 : links.hashCode());
       result = prime * result + ((status == null) ? 0 : status.hashCode());
+      result = prime * result + ((projectType == null) ? 0 : projectType.hashCode());
       return result;
    }
 
@@ -189,6 +202,10 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
          return false;
       }
       if( status != other.status )
+      {
+         return false;
+      }
+      if (projectType != other.projectType)
       {
          return false;
       }

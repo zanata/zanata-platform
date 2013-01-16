@@ -29,9 +29,9 @@ import org.zanata.rest.MediaTypes.Format;
  * @author asgeirf
  * 
  */
-@XmlType(name = "projectType", propOrder = { "name", "description", "links", "iterations", "status" })
+@XmlType(name = "projectType", propOrder = { "name", "defaultType", "description", "links", "iterations", "status" })
 @XmlRootElement(name = "project")
-@JsonPropertyOrder( { "id", "type", "name", "description", "links", "iterations", "status" })
+@JsonPropertyOrder({ "id", "defaultType", "name", "description", "links", "iterations", "status" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 public class Project implements Serializable, HasCollectionSample<Project>, HasMediaType
@@ -39,7 +39,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
 
    private String id;
    private String name;
-   private ProjectType type = ProjectType.IterationProject;
+   private ProjectType defaultType;
    private String description;
    private EntityStatus status = EntityStatus.ACTIVE;
 
@@ -51,11 +51,11 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    {
    }
 
-   public Project(String id, String name, ProjectType type)
+   public Project(String id, String name, ProjectType defaultType)
    {
       this.id = id;
       this.name = name;
-      this.type = type;
+      this.defaultType = defaultType;
    }
 
    public Project(String id, String name, ProjectType type, String description)
@@ -75,15 +75,15 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       this.id = id;
    }
 
-   @XmlAttribute(name = "type", required = true)
-   public ProjectType getType()
+   @XmlElement(name = "defaultType", required = true, namespace = Namespaces.ZANATA_OLD)
+   public ProjectType getDefaultType()
    {
-      return type;
+      return defaultType;
    }
 
-   public void setType(ProjectType type)
+   public void setDefaultType(ProjectType defaultType)
    {
-      this.type = type;
+      this.defaultType = defaultType;
    }
 
    @NotEmpty
@@ -167,7 +167,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       entity.setId("sample-project");
       entity.setName("Sample Project");
       entity.setDescription("Sample Project Description");
-      entity.setType(ProjectType.IterationProject);
+      entity.setDefaultType(ProjectType.Gettext);
       entity.getIterations(true).addAll(new ProjectIteration().createSamples());
       return entity;
    }
@@ -181,8 +181,15 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       p2.setId("another-project");
       p2.setName("Another Sample Project");
       p2.setDescription("Another Sample Project Description");
+      p2.setDefaultType(ProjectType.Gettext);
       entities.add(p2);
       return entities;
+   }
+
+   public static void main(String args[])
+   {
+      Project test = new Project();
+      System.out.println(test.createSample().toString());
    }
 
    @Override
@@ -207,7 +214,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       result = prime * result + ((iterations == null) ? 0 : iterations.hashCode());
       result = prime * result + ((links == null) ? 0 : links.hashCode());
       result = prime * result + ((name == null) ? 0 : name.hashCode());
-      result = prime * result + ((type == null) ? 0 : type.hashCode());
+      result = prime * result + ((defaultType == null) ? 0 : defaultType.hashCode());
       result = prime * result + ((status == null) ? 0 : status.hashCode());
       return result;
    }
@@ -283,7 +290,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       {
          return false;
       }
-      if (type != other.type)
+      if (defaultType != other.defaultType)
       {
          return false;
       }
