@@ -36,6 +36,15 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
     * @required
     */
    private String projectDesc;
+   
+   /**
+    * Default Project type {UTF8properties, Properties, Gettext, Podir, Xliff,
+    * XML, Raw}
+    * 
+    * @parameter expression="${zanata.defaultProjectType}"
+    * @required
+    */
+   private String defaultProjectType;
 
    public PutProjectMojo() throws Exception
    {
@@ -77,6 +86,15 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
       this.projectDesc = projectDesc;
    }
 
+   public String getDefaultProjectType()
+   {
+      return defaultProjectType;
+   }
+
+   public void setDefaultProjectType(String defaultProjectType)
+   {
+      this.defaultProjectType = defaultProjectType;
+   }
 
    @Override
    public String getCommandName()

@@ -29,6 +29,15 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions> implemen
     */
    private String versionSlug;
 
+   /**
+    * Project type {UTF8properties, Properties, Gettext, Podir, Xliff, XML, Raw}
+    * 
+    * @parameter expression="${zanata.projectType}"
+    *            default-value=inherits-from-project
+    * 
+    */
+   private String projectType;
+
 
    public PutVersionMojo() throws Exception
    {
@@ -58,6 +67,16 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions> implemen
    public void setVersionSlug(String versionSlug)
    {
       this.versionSlug = versionSlug;
+   }
+
+   public String getProjectType()
+   {
+      return projectType;
+   }
+
+   public void setProjectType(String projectType)
+   {
+      this.projectType = projectType;
    }
 
    @Override

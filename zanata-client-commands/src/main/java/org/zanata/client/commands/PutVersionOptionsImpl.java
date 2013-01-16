@@ -10,6 +10,7 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
 {
    private String versionProject;
    private String versionSlug;
+   private String projectType;
 
    @Override
    public String getCommandName()
@@ -44,6 +45,13 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
    }
 
    @Override
+   @Option(name = "--project-type", metaVar = "TYPE", usage = "Project Type", required = false)
+   public void setProjectType(String type)
+   {
+      this.projectType = type;
+   }
+
+   @Override
    public String getVersionProject()
    {
       return versionProject;
@@ -55,5 +63,10 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
       return versionSlug;
    }
 
+   @Override
+   public String getProjectType()
+   {
+      return projectType;
+   }
 
 }

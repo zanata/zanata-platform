@@ -14,10 +14,15 @@ public interface PutProjectOptions extends ConfigurableOptions
    @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Project description")
    public void setProjectDesc(String desc);
 
+   @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type")
+   public void setDefaultProjectType(String type);
+
    public String getProjectSlug();
 
    public String getProjectDesc();
 
    public String getProjectName();
+
+   public String getDefaultProjectType();
 
 }

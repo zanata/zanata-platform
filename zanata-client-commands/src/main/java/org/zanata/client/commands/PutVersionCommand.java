@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.IProjectIterationResource;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.rest.dto.ProjectType;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -27,6 +28,7 @@ public class PutVersionCommand extends ConfigurableCommand<PutVersionOptions>
    {
       ProjectIteration version = new ProjectIteration();
       version.setId(getOpts().getVersionSlug());
+      version.setProjectType(ProjectType.valueOf(getOpts().getProjectType()));
       log.debug("{}", version);
 
       IProjectIterationResource iterResource = getRequestFactory().getProjectIteration(getOpts().getVersionProject(), getOpts().getVersionSlug());

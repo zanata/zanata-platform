@@ -12,6 +12,7 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    private String projectSlug;
    private String projectName;
    private String projectDesc;
+   private String defaultProjectType;
 
    @Override
    public String getCommandName()
@@ -53,6 +54,13 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    }
 
    @Override
+   @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type")
+   public void setDefaultProjectType(String defaultProjectType)
+   {
+      this.defaultProjectType = defaultProjectType;
+   }
+
+   @Override
    public String getProjectSlug()
    {
       return projectSlug;
@@ -68,6 +76,12 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    public String getProjectName()
    {
       return projectName;
+   }
+
+   @Override
+   public String getDefaultProjectType()
+   {
+      return defaultProjectType;
    }
 
 }

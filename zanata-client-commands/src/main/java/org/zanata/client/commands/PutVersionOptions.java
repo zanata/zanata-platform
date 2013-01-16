@@ -11,8 +11,13 @@ public interface PutVersionOptions extends ConfigurableOptions
    @Option(name = "--version-slug", metaVar = "VER", usage = "Project version ID", required = true)
    public void setVersionSlug(String id);
 
+   @Option(name = "--project-type", metaVar = "TYPE", usage = "Project Type", required = false)
+   public void setProjectType(String type);
+
    public String getVersionProject();
 
    public String getVersionSlug();
+
+   public String getProjectType();
 
 }
