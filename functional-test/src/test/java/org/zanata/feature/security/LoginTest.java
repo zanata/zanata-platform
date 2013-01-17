@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature;
+package org.zanata.feature.security;
 
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
