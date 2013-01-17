@@ -20,7 +20,9 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * This overrides ClassPathSource. It ignores the classpath resource and generates one on the fly.
+ *
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
 */
 @Slf4j
 class GeneratedIndexSource extends ClassPathSource
@@ -36,6 +38,17 @@ class GeneratedIndexSource extends ClassPathSource
       this.descriptionHeading = descriptionHeading;
    }
 
+   /**
+    * It will generate an index page for a package.
+    * Package name will be parsed to sentence as title.
+    * Description heading will come from field. If null will use generated title.
+    * If test suite class is set, it will use test suite classes to generate an ordered list as links to individual test.
+    * If test suite class is not set, it will find all spec files under the package and generate a unordered list of links.
+    *
+    * @param resource resource of the package index class. See http://www.concordion.org/dist/1.4.2/test-output/concordion/spec/concordion/results/breadcrumbs/Breadcrumbs.html
+    * @return a input stream that contains the generated index page.
+    * @throws IOException
+    */
    @Override
    public InputStream createInputStream(Resource resource) throws IOException
    {
