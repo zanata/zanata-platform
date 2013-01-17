@@ -39,12 +39,7 @@ public class VersionGroupPage extends AbstractPage
    public VersionGroupPage addProjectVersion()
    {
       addProjectVersionsLink.click();
-      return this;
-   }
-
-   public List<TableRow> searchProject(final String projectName)
-   {
-      WebElement searchField = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          @Override
          public WebElement apply(WebDriver driver)
@@ -52,8 +47,14 @@ public class VersionGroupPage extends AbstractPage
             return addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
          }
       });
+      return new VersionGroupPage(getDriver());
+   }
 
+   public List<TableRow> searchProject(final String projectName)
+   {
+      WebElement searchField = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
       searchField.sendKeys(projectName);
+
       WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
       searchButton.click();
 
@@ -80,11 +81,14 @@ public class VersionGroupPage extends AbstractPage
    public VersionGroupPage addToGroup(TableRow projectVersionRow)
    {
       List<WebElement> cells = projectVersionRow.getCells();
-      int selectVersionIndex = cells.size() - 1;
-      WebElement selectCheckBox = cells.get(selectVersionIndex).findElement(By.xpath(".//input[@type='checkbox']"));
-      if (!selectCheckBox.isSelected())
+      WebElement actionCell = cells.get(cells.size() - 1);
+      if (!actionCell.getText().contains("Already in Group"))
       {
-         selectCheckBox.click();
+         WebElement selectCheckBox = actionCell.findElement(By.xpath(".//input[@type='checkbox']"));
+         if (!selectCheckBox.isSelected())
+         {
+            selectCheckBox.click();
+         }
       }
 
       WebElement addSelected = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Add Selected']"));
