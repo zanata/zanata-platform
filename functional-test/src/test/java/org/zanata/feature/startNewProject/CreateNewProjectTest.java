@@ -13,6 +13,7 @@ import org.zanata.page.HomePage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,30 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 public class CreateNewProjectTest
 {
 
-   private HomePage homePage;
-
    @Before
    public void beforeMethod()
    {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
+      new LoginWorkFlow().signIn("admin", "admin");
    }
 
    public ProjectPage createNewProject(String projectSlug, String projectName)
    {
-      ProjectsPage projectsPage = homePage.goToProjects();
-      List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
-      log.info("current projects: {}", projects);
-
-      if (projects.contains(projectName))
-      {
-         CreateNewProjectTest.log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectSlug);
-         //since we can't create same project multiple times,
-         //if we run this test more than once manually, we don't want it to fail
-         return projectsPage.goToProject(projectName);
-      }
-      else
-      {
-         return projectsPage.clickOnCreateProjectLink().inputProjectId(projectSlug).inputProjectName(projectName).saveProject();
-      }
+      return new ProjectWorkFlow().createNewProject(projectSlug, projectName);
    }
 }

@@ -13,6 +13,7 @@ import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,30 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 @Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
 public class CreateVersionAndAddToProjectTest
 {
-   private HomePage homePage;
 
    @Before
    public void beforeMethod()
    {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
+      new LoginWorkFlow().signIn("admin", "admin");
    }
    public ProjectPage createNewProjectVersion(String projectName, String versionSlug)
    {
-      ProjectsPage projectsPage = homePage.goToProjects();
-      ProjectPage projectPage = projectsPage.goToProject(projectName);
-      if (projectPage.getVersions().contains(versionSlug))
-      {
-         log.warn("{} has already been created. Presumably you are running test manually and more than once.", versionSlug);
-         return projectPage;
-      }
-      else
-      {
-         CreateVersionPage createVersionPage = projectPage.clickCreateVersionLink().inputVersionId(versionSlug);
-         createVersionPage.selectStatus("READONLY");
-         createVersionPage.selectStatus("ACTIVE");
-         ProjectVersionPage projectVersionPage = createVersionPage.saveVersion();
-         projectsPage = projectVersionPage.goToPage("Projects", ProjectsPage.class);
-         return projectsPage.goToProject(projectName);
-      }
+      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().createNewProjectVersion(projectName, versionSlug);
+      ProjectsPage projectsPage = projectVersionPage.goToPage("Projects", ProjectsPage.class);
+      return projectsPage.goToProject(projectName);
    }
 }
