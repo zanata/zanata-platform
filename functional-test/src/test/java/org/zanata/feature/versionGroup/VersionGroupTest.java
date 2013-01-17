@@ -1,4 +1,4 @@
-package org.zanata.feature;
+package org.zanata.feature.versionGroup;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class VersionGroupTest
 
       VersionGroupPage versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup("group one");
       List<TableRow> searchResult = versionGroupPage.addProjectVersion().searchProject("group");
-      log.info("come back {} rows in search result", searchResult.size());
+      VersionGroupTest.log.info("come back {} rows in search result", searchResult.size());
 
       //add first row from search result into group
       TableRow versionToBeAdd = searchResult.get(0);
