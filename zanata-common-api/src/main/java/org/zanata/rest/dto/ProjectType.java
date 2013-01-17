@@ -7,5 +7,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum(String.class)
 public enum ProjectType
 {
-   UTF8properties, Properties, Gettext, Podir, Xliff, XML, Raw;
+   utf8properties, properties, gettext, podir, xliff, xml, raw;
+   
+   public static ProjectType getValueOf(String type) throws Exception
+   {
+      try
+      {
+         return valueOf(type.toLowerCase());
+      }
+      catch(Exception e)
+      {
+         throw new Exception("Projec type '" + type + "' not supported");
+      }
+   }
 }

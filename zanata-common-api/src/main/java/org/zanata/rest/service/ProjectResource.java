@@ -32,7 +32,6 @@ import javax.ws.rs.core.Response;
 
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.UpdateProject;
 
 
 /**
@@ -53,9 +52,4 @@ public interface ProjectResource
    @PUT
    @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(Project project);
-
-   @POST
-   @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response post(UpdateProject updateProject);
-
 }

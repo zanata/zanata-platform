@@ -167,7 +167,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       entity.setId("sample-project");
       entity.setName("Sample Project");
       entity.setDescription("Sample Project Description");
-      entity.setDefaultType(ProjectType.Gettext);
+      entity.setDefaultType(ProjectType.gettext);
       entity.getIterations(true).addAll(new ProjectIteration().createSamples());
       return entity;
    }
@@ -181,7 +181,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       p2.setId("another-project");
       p2.setName("Another Sample Project");
       p2.setDescription("Another Sample Project Description");
-      p2.setDefaultType(ProjectType.Gettext);
+      p2.setDefaultType(ProjectType.gettext);
       entities.add(p2);
       return entities;
    }
