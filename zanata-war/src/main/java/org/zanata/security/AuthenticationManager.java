@@ -160,7 +160,7 @@ public class AuthenticationManager
       {
          SpNegoIdentity spNegoIdentity = (SpNegoIdentity) Component.getInstance(SpNegoIdentity.class, ScopeType.SESSION);
          spNegoIdentity.authenticate();
-         if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation())
+         if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation() && isAccountEnabledAndActivated())
          {
             spNegoIdentity.login();
             this.onLoginCompleted(AuthenticationType.KERBEROS);
