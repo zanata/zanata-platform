@@ -20,70 +20,20 @@
  */
 package org.zanata.model.type;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.hibernate.EntityMode;
-import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.type.ImmutableType;
+import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.type.LiteralType;
 import org.hibernate.type.StringType;
 import org.zanata.common.ContentType;
 
-public class ContentTypeType extends ImmutableType implements LiteralType
+public class ContentTypeType extends AbstractSingleColumnStandardBasicType<ContentType> implements LiteralType<ContentType>
 {
 
    private static final long serialVersionUID = 1251881884197592346L;
 
-   @Override
-   public Object get(ResultSet rs, String name) throws HibernateException, SQLException
+   public ContentTypeType()
    {
-      return fromStringValue((String) new StringType().get(rs, name));
-   }
-
-   @Override
-   public void set(PreparedStatement st, Object value, int index) throws HibernateException, SQLException
-   {
-      new StringType().set(st, value.toString(), index);
-   }
-
-   @Override
-   public Object fromStringValue(String string)
-   {
-      if (string == null)
-      {
-         return null;
-      }
-      else
-      {
-         return new ContentType(string);
-      }
-   }
-
-   @Override
-   public int compare(Object x, Object y, EntityMode entityMode)
-   {
-      return x.toString().compareTo(y.toString());
-   }
-
-   @Override
-   public int sqlType()
-   {
-      return new StringType().sqlType();
-   }
-
-   @Override
-   public String toString(Object value) throws HibernateException
-   {
-      return value.toString();
-   }
-
-   @Override
-   public Class<?> getReturnedClass()
-   {
-      return ContentType.class;
+      super(StringType.INSTANCE.getSqlTypeDescriptor(), ContentTypeTypeDescriptor.INSTANCE);
    }
 
    @Override
@@ -93,9 +43,9 @@ public class ContentTypeType extends ImmutableType implements LiteralType
    }
 
    @Override
-   public String objectToSQLString(Object value, Dialect dialect) throws Exception
+   public String objectToSQLString(ContentType value, Dialect dialect) throws Exception
    {
-      return new StringType().objectToSQLString(value.toString(), dialect);
+      return "\'" + toString(value) + "\'";
    }
 
 }

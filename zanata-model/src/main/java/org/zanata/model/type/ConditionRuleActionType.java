@@ -30,16 +30,18 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.type.ImmutableType;
 import org.hibernate.type.LiteralType;
 import org.zanata.model.HCopyTransOptions;
+import org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class ConditionRuleActionType extends ImmutableType implements LiteralType
+// FIXME convert to AbstractStandardBasicType approach
+public class ConditionRuleActionType extends ImmutableType implements LiteralType<ConditionRuleAction>
 {
    @Override
-   public String objectToSQLString(Object value, Dialect dialect) throws Exception
+   public String objectToSQLString(ConditionRuleAction value, Dialect dialect) throws Exception
    {
-      return "'" + ((HCopyTransOptions.ConditionRuleAction) value).getInitial() + "'";
+      return "'" + value.getInitial() + "'";
    }
 
    @Override

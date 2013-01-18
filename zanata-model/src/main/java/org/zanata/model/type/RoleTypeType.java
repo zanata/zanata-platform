@@ -30,16 +30,17 @@ import org.hibernate.MappingException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.type.DiscriminatorType;
 import org.hibernate.type.ImmutableType;
-import org.hibernate.type.LiteralType;
 import org.zanata.model.HAccountRole;
+import org.zanata.model.HAccountRole.RoleType;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class RoleTypeType extends ImmutableType implements LiteralType, DiscriminatorType
+// FIXME convert to AbstractStandardBasicType approach
+public class RoleTypeType extends ImmutableType implements DiscriminatorType<RoleType>
 {
    @Override
-   public Object stringToObject(String xml) throws Exception
+   public RoleType stringToObject(String xml) throws Exception
    {
       if (xml.length() != 1)
       {
@@ -49,9 +50,9 @@ public class RoleTypeType extends ImmutableType implements LiteralType, Discrimi
    }
 
    @Override
-   public String objectToSQLString(Object value, Dialect dialect) throws Exception
+   public String objectToSQLString(RoleType value, Dialect dialect) throws Exception
    {
-      return "'" + ((HAccountRole.RoleType) value).getInitial() + "'";
+      return "'" + value.getInitial() + "'";
    }
 
    @Override

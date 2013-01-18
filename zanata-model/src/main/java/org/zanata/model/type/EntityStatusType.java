@@ -31,14 +31,14 @@ import org.hibernate.MappingException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.type.DiscriminatorType;
 import org.hibernate.type.ImmutableType;
-import org.hibernate.type.LiteralType;
 import org.zanata.common.EntityStatus;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class EntityStatusType extends ImmutableType implements LiteralType, DiscriminatorType
+// FIXME convert to AbstractStandardBasicType approach
+public class EntityStatusType extends ImmutableType implements DiscriminatorType<EntityStatus>
 {
 
    private static final long serialVersionUID = 9055584208831741141L;
@@ -82,12 +82,13 @@ public class EntityStatusType extends ImmutableType implements LiteralType, Disc
       return "entityStatus";
    }
 
-   public String objectToSQLString(Object value, Dialect dialect) throws Exception
+   @Override
+   public String objectToSQLString(EntityStatus value, Dialect dialect) throws Exception
    {
-      return "'" + ((EntityStatus) value).getInitial() + "'";
+      return "'" + value.getInitial() + "'";
    }
 
-   public Object stringToObject(String xml) throws Exception
+   public EntityStatus stringToObject(String xml) throws Exception
    {
       if (xml.length() != 1)
       {
