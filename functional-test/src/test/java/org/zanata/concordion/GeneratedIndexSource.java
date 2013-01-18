@@ -2,11 +2,15 @@ package org.zanata.concordion;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.concordion.api.Resource;
 import org.concordion.internal.ClassPathSource;
@@ -15,6 +19,8 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +50,7 @@ class GeneratedIndexSource extends ClassPathSource
     * Description heading will come from field. If null will use generated title.
     * If test suite class is set, it will use test suite classes to generate an ordered list as links to individual test.
     * If test suite class is not set, it will find all spec files under the package and generate a unordered list of links.
+    * Subpackages will generate links according to Concordion breadcrumb rule.
     *
     * @param resource resource of the package index class. See http://www.concordion.org/dist/1.4.2/test-output/concordion/spec/concordion/results/breadcrumbs/Breadcrumbs.html
     * @return a input stream that contains the generated index page.
@@ -67,9 +74,22 @@ class GeneratedIndexSource extends ClassPathSource
       {
          specFiles = getSpecFilesUnderPackage(resource);
       }
-      log.info("index page will include following files: {}", specFiles);
+      log.info("specification files found: {}", specFiles);
+      List<Link> specLinks = Lists.transform(specFiles, new Function<String, Link>()
+      {
+         @Override
+         public Link apply(String input)
+         {
+            String name = input.substring(0, input.length() - 5);
+            return new Link(input, CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name).replaceAll("_", " "));
+         }
+      });
 
-      String list = createListOfLinksToSpecFiles(specFiles, testSuiteClass != null);
+      List<Link> subPackageIndexNames = getSubPackageIndexNames(resource);
+      log.info("sub packages found: {}", subPackageIndexNames);
+
+      List<Link> allLinks = ImmutableList.<Link>builder().addAll(subPackageIndexNames).addAll(specLinks).build();
+      String list = createListOfLinksToSpecFiles(allLinks, testSuiteClass != null);
 
       return new ByteArrayInputStream(String.format(TEMPLATE, title, descriptionHeading, list).getBytes("UTF-8"));
    }
@@ -80,7 +100,7 @@ class GeneratedIndexSource extends ClassPathSource
       return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, packageName).replaceAll("_", " ");
    }
 
-   private static List<String> getSpecFilesUnderPackage(Resource resource)
+   private static List<String> getSpecFilesUnderPackage(final Resource resource)
    {
       String parentPath = getParentPath(resource);
       URL parentUrl = Thread.currentThread().getContextClassLoader().getResource(parentPath);
@@ -90,10 +110,37 @@ class GeneratedIndexSource extends ClassPathSource
          @Override
          public boolean accept(File dir, String name)
          {
-            return name.endsWith(".html");
+            return name.endsWith(".html") && !name.equalsIgnoreCase(resource.getName());
          }
       });
       return Lists.newArrayList(specFiles);
+   }
+
+   private static List<Link> getSubPackageIndexNames(Resource resource)
+   {
+      String parentPath = getParentPath(resource);
+      URL parentUrl = Thread.currentThread().getContextClassLoader().getResource(parentPath);
+      File parentDir = new File(parentUrl.getFile());
+
+      List<File> packages = Lists.newArrayList(parentDir.listFiles(new FileFilter()
+      {
+         @Override
+         public boolean accept(File pathName)
+         {
+            return pathName.isDirectory();
+         }
+      }));
+      return Lists.transform(packages, new Function<File, Link>()
+      {
+         @Override
+         public Link apply(File input)
+         {
+            String pageName = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, input.getName()) + ".html";
+            String url = input.getName() + "/" + pageName;
+            String text = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, input.getName()).replaceAll("_", " ");
+            return new Link(url, text);
+         }
+      });
    }
 
    private static String getParentPath(Resource resource)
@@ -120,20 +167,19 @@ class GeneratedIndexSource extends ClassPathSource
       return specFiles;
    }
 
-   private static String createListOfLinksToSpecFiles(List<String> specFiles, boolean useOrderedList)
+   private static String createListOfLinksToSpecFiles(List<Link> links, boolean useOrderedList)
    {
-      if (specFiles.isEmpty())
+      if (links.isEmpty())
       {
          log.warn("empty spec file list!!!");
          return "";
       }
-      List<String> listItems = Lists.transform(specFiles, new Function<String, String>()
+      List<String> listItems = Lists.transform(links, new Function<Link, String>()
       {
          @Override
-         public String apply(String input)
+         public String apply(Link input)
          {
-            // TODO the text for link is using file name. Should improve a bit
-            return String.format("<li><a href='%s'>%s</a></li>", input, input);
+            return String.format("<li><a href='%s'>%s</a></li>", input.url, input.text);
          }
       });
       String specJoined = Joiner.on("\n").join(listItems);
@@ -144,6 +190,18 @@ class GeneratedIndexSource extends ClassPathSource
       else
       {
          return "<ul>" + specJoined + "</ul>";
+      }
+   }
+
+   private static class Link
+   {
+      private String url;
+      private String text;
+
+      private Link(String url, String text)
+      {
+         this.url = url;
+         this.text = text;
       }
    }
 }

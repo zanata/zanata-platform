@@ -331,6 +331,8 @@
                             <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
                             <includes>
                                 <include>**/*TestSuite.java</include>
+                                <!--index page-->
+                                <include>**/FeatureTest.java</include>
                             </includes>
                         </configuration>
                     </plugin>

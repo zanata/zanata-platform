@@ -5,8 +5,6 @@ import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.IndexPageBuilderExtension;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * This is the index page for startNewProject package.
  *
@@ -15,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(ConcordionRunner.class)
 public class StartNewProjectTest
 {
