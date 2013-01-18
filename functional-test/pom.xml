@@ -134,17 +134,6 @@
                 <ds.username>root</ds.username>
                 <ds.password />
             </properties>
-        </profile>
-        <profile>
-            <id>run-functional-test</id>
-            <activation>
-                <file>
-                    <exists>${zanata.target.war}</exists>
-                </file>
-                <property>
-                    <name>functional-test</name>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -165,7 +154,21 @@
                             <commandlineArgs>-u root -e "source create_database.sql"</commandlineArgs>
                         </configuration>
                     </plugin>
-
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>run-functional-test</id>
+            <activation>
+                <file>
+                    <exists>${zanata.target.war}</exists>
+                </file>
+                <property>
+                    <name>functional-test</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven2-plugin</artifactId>
