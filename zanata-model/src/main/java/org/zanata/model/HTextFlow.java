@@ -35,6 +35,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -59,11 +60,11 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.HasContents;
@@ -233,7 +234,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @AccessType("field")
-   @Field(index = Index.UN_TOKENIZED)
+   @Field(analyze = Analyze.NO)
    @FieldBridge(impl = ContainingWorkspaceBridge.class)
    public HDocument getDocument()
    {
@@ -396,9 +397,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    }
 
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
-   @org.hibernate.annotations.MapKey( columns = {
-         @Column(name = "locale")
-   })
+   @MapKeyColumn(name = "locale")
    @BatchSize(size = 10)
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    public Map<Long, HTextFlowTarget> getTargets()

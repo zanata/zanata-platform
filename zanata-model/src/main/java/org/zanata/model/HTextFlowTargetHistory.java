@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,7 +38,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.AccessType;
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -144,7 +144,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
    @Override
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
+   @ElementCollection(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowTargetContentHistory", 
       joinColumns = @JoinColumn(name = "text_flow_target_history_id")
    )

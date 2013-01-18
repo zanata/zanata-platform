@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -250,17 +251,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
          hQuery.setParameterList("locales", localeIds);
       }
 
-      List<Map> stats = hQuery.list();
-      Map totalCounts = (Map) session.createQuery(
-            "select new map ( count(tf) as count, sum(tf.wordCount) as wordCount ) " +
-                  "from HTextFlow tf " +
-                  "where tf.document.id = :id and tf.obsolete = false")
-            .setParameter("id", docId)
-            .setComment("DocumentDAO.getStatisticsMultipleLocales-words")
-            .setCacheable(true).uniqueResult();
-
+      List<Map<String, Object>> stats = hQuery.list();
       // Collect the results for all states
-      for (Map row : stats)
+      for (Map<String, Object> row : stats)
       {
          ContentState state = (ContentState)row.get("state");
          Long count = (Long)row.get("count");
@@ -284,6 +277,14 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
          transUnitCount.set( state, count.intValue() );
          transUnitWords.set( state, wordCount.intValue() );
       }
+
+      Map<String, Object> totalCounts = (Map<String, Object>) session.createQuery(
+            "select new map ( count(tf) as count, sum(tf.wordCount) as wordCount ) " +
+                  "from HTextFlow tf " +
+                  "where tf.document.id = :id and tf.obsolete = false")
+            .setParameter("id", docId)
+            .setComment("DocumentDAO.getStatisticsMultipleLocales-words")
+            .setCacheable(true).uniqueResult();
 
       // Calculate the 'New' counts
       Long totalCount = (Long)totalCounts.get("count");
@@ -405,5 +406,10 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       doc.setRawDocument(rawDoc);
       makePersistent(doc);
       return rawDoc;
+   }
+
+   public LobHelper getLobHelper()
+   {
+      return getSession().getLobHelper();
    }
 }

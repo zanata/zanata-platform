@@ -45,7 +45,7 @@ import javax.validation.ConstraintViolationException;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.hibernate.Hibernate;
+import org.hibernate.LobHelper;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -386,7 +386,8 @@ public class ProjectIterationFilesAction implements Serializable
          try
          {
             tempFileStream = new FileInputStream(tempFile);
-            Blob fileContents = Hibernate.createBlob(tempFileStream, (int) tempFile.length());
+            LobHelper lobHelper = documentDAO.getLobHelper();
+            Blob fileContents = lobHelper.createBlob(tempFileStream, (int) tempFile.length());
             rawDocument.setContent(fileContents);
             documentDAO.addRawDocument(document, rawDocument);
             documentDAO.flush();
@@ -539,7 +540,6 @@ public class ProjectIterationFilesAction implements Serializable
    public List<String> getTranslationDeniedReasonMessages()
    {
       List<String> displayMessages = new ArrayList<String>(5);
-      final String separator = "<br/>";
 
       // Account not logged in
       if (identity == null)

@@ -5,10 +5,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.rpc.holders.ObjectHolder;
 
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
@@ -22,6 +26,8 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jdbc.Work;
+import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.collection.AbstractCollectionPersister;
 import org.hibernate.persister.entity.EntityPersister;
 import org.testng.annotations.AfterMethod;
@@ -108,7 +114,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       SessionFactory sessionFactory = session.getSessionFactory();
       
       // Clear the Entity cache
-      Map classMetadata = sessionFactory.getAllClassMetadata();
+      Map<String, ClassMetadata> classMetadata = sessionFactory.getAllClassMetadata();
       for( Object obj : classMetadata.values() )
       {
          EntityPersister p = (EntityPersister)obj;
@@ -119,7 +125,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       }
       
       // Clear the Collection cache
-      Map collMetadata = sessionFactory.getAllCollectionMetadata();
+      Map<?, ?> collMetadata = sessionFactory.getAllCollectionMetadata();
       for( Object obj : collMetadata.values() )
       {
          AbstractCollectionPersister p = (AbstractCollectionPersister)obj;
@@ -293,14 +299,23 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
     * 
     * @return a DBUnit database connection (wrapped)
     */
+   // FIXME very nasty, almost certainly broken
    protected IDatabaseConnection getConnection()
    {
+      final IDatabaseConnection[] holder = new IDatabaseConnection[1];
       try
       {
-         @SuppressWarnings("deprecation")
-         IDatabaseConnection dbUnitCon = new DatabaseConnection(getSession().connection());
-         editConfig(dbUnitCon.getConfig());
-         return dbUnitCon;
+         getSession().doWork(new Work()
+         {
+            @Override
+            public void execute(Connection connection) throws SQLException
+            {
+               IDatabaseConnection dbUnitCon = new DatabaseConnection(connection);
+               editConfig(dbUnitCon.getConfig());
+               holder[0] = dbUnitCon;
+            }
+         });
+         return holder[0];
       }
       catch (Exception ex)
       {
@@ -447,35 +462,38 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       }
       File file = new File(getResourceURL(getBinaryDir() + "/" + filename).toURI());
       InputStream is = new FileInputStream(file);
-
-      // Get the size of the file
-      long length = file.length();
-
-      if (length > Integer.MAX_VALUE)
+      try
       {
-         // File is too large
+
+         // Get the size of the file
+         long length = file.length();
+   
+         if (length > Integer.MAX_VALUE)
+         {
+            // File is too large
+         }
+   
+         // Create the byte array to hold the data
+         byte[] bytes = new byte[(int) length];
+   
+         // Read in the bytes
+         int offset = 0;
+         int numRead;
+         while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
+         {
+            offset += numRead;
+         }
+         // Ensure all the bytes have been read in
+         if (offset < bytes.length)
+         {
+            throw new IOException("Could not completely read file " + file.getName());
+         }
+         return bytes;
       }
-
-      // Create the byte array to hold the data
-      byte[] bytes = new byte[(int) length];
-
-      // Read in the bytes
-      int offset = 0;
-      int numRead;
-      while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
+      finally
       {
-         offset += numRead;
+         is.close();
       }
-
-      // Ensure all the bytes have been read in
-      if (offset < bytes.length)
-      {
-         throw new IOException("Could not completely read file " + file.getName());
-      }
-
-      // Close the input stream and return bytes
-      is.close();
-      return bytes;
    }
 
    /**

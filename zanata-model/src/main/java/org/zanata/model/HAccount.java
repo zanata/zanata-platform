@@ -44,7 +44,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import javax.validation.constraints.Size;
 import org.jboss.seam.annotations.security.management.UserEnabled;
@@ -111,7 +110,7 @@ public class HAccount extends ModelEntityBase implements Serializable
 
    @NaturalId
    @UserPrincipal
-   @Field(index = Index.TOKENIZED)
+   @Field()
    public String getUsername()
    {
       return username;

@@ -37,12 +37,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import javax.validation.constraints.NotNull;
 import org.zanata.hibernate.search.LocaleFilterFactory;
@@ -81,7 +81,7 @@ public class HGlossaryTerm extends ModelEntityBase
 
    @NotNull
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = StandardAnalyzer.class))
+   @Field(analyzer = @Analyzer(impl = StandardAnalyzer.class))
    public String getContent()
    {
       return content;
@@ -113,7 +113,7 @@ public class HGlossaryTerm extends ModelEntityBase
    @NaturalId
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "localeId", nullable = false)
-   @Field(index = Index.UN_TOKENIZED)
+   @Field(analyze = Analyze.NO)
    @FieldBridge(impl = LocaleIdBridge.class)
    public HLocale getLocale()
    {

@@ -57,7 +57,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
+import org.hibernate.LobHelper;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
@@ -97,6 +97,8 @@ import org.zanata.service.FileSystemService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
+
+import com.google.common.io.ByteStreams;
 
 @Name("fileService")
 @Path(FileResource.FILE_RESOURCE)
@@ -347,7 +349,8 @@ public class FileService implements FileResource
                .entity("Error saving uploaded document on server, download in original format may fail.\n")
                .build();
       }
-      Blob fileContents = Hibernate.createBlob(tempFileStream, (int)tempFile.length());
+      LobHelper lobHelper = documentDAO.getLobHelper();
+      Blob fileContents = lobHelper.createBlob(tempFileStream, (int)tempFile.length());
       rawDocument.setContent(fileContents);
       documentDAO.addRawDocument(document, rawDocument);
       documentDAO.flush();
@@ -363,7 +366,6 @@ public class FileService implements FileResource
       {
          partStreams.add(part.getContent().getBinaryStream());
       }
-      InputStream combinedParts = new SequenceInputStream(partStreams.elements());
 
       MessageDigest md;
       try
@@ -375,6 +377,7 @@ public class FileService implements FileResource
          log.error("MD5 algorithm not available.", e);
          throw new RuntimeException(e);
       }
+      InputStream combinedParts = new SequenceInputStream(partStreams.elements());
       combinedParts = new DigestInputStream(combinedParts, md);
       File tempFile = translationFileServiceImpl.persistToTempFile(combinedParts);
       String md5hash = new String(Hex.encodeHex(md.digest()));
@@ -419,7 +422,8 @@ public class FileService implements FileResource
    private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload) throws IOException
    {
       Blob partContent;
-      partContent = Hibernate.createBlob(uploadForm.getFileStream());
+      byte[] fileData=ByteStreams.toByteArray(uploadForm.getFileStream());
+      partContent = session.getLobHelper().createBlob(fileData);
       HDocumentUploadPart newPart = new HDocumentUploadPart();
       newPart.setContent(partContent);
       upload.getParts().add(newPart);
@@ -1079,12 +1083,13 @@ public class FileService implements FileResource
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
          FileInputStream input = new FileInputStream(this.file);
-         byte[] buffer = new byte[4096]; // To hold file contents
-         int bytesRead; // How many bytes in buffer
-
-         while ((bytesRead = input.read(buffer)) != -1)
+         try
          {
-            output.write(buffer, 0, bytesRead);
+            ByteStreams.copy(input, output);
+         }
+         finally
+         {
+            input.close();
          }
       }
    }

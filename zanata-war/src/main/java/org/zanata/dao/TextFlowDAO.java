@@ -37,15 +37,14 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.transform.ResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -164,7 +163,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       // @formatter:on
       log.debug("get navigation SQL query: {}", queryBuilder);
       Query query = getSession().createSQLQuery(queryBuilder.toString())
-            .addScalar("id", Hibernate.LONG)
+            .addScalar("id", StandardBasicTypes.LONG)
             .addScalar("state")
             .setParameter("docId", documentId)
             .setParameter("locale", hLocale.getId());

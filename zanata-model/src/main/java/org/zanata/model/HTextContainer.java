@@ -31,13 +31,11 @@ import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.NGramTokenizerFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
 import org.apache.solr.analysis.StandardTokenizerFactory;
-import org.apache.solr.analysis.StopFilterFactory;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.AnalyzerDefs;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
@@ -76,7 +74,6 @@ abstract class HTextContainer implements HasContents, Serializable
 
    @SuppressWarnings("unused")
    @Field(name=IndexFieldLabels.CONTENT,
-          index = Index.TOKENIZED,
           bridge = @FieldBridge(impl = StringListBridge.class,
                                 params = {@Parameter(name="case", value="fold"),
                                           @Parameter(name="ngrams", value="multisize")}))

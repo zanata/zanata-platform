@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
@@ -57,7 +57,7 @@ public abstract class AbstractDAOImpl<T, ID extends Serializable> implements Gen
       T entity;
       if (lock)
       {
-         entity = (T) getSession().load(getPersistentClass(), id, LockMode.UPGRADE);
+         entity = (T) getSession().load(getPersistentClass(), id, LockOptions.UPGRADE);
       }
       else
       {

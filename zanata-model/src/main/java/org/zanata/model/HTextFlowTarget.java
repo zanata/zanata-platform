@@ -51,6 +51,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -124,7 +125,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "locale", nullable = false)
-   @Field(index = Index.UN_TOKENIZED)
+   @Field(analyze = Analyze.NO)
    @FieldBridge(impl = LocaleIdBridge.class)
    public HLocale getLocale()
    {
@@ -132,7 +133,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    }
 
    @NotNull
-   @Field(index = Index.UN_TOKENIZED)
+   @Field(analyze = Analyze.NO)
    @FieldBridge(impl = ContentStateBridge.class)
    @Override
    public ContentState getState()
@@ -196,7 +197,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @NotEmpty
    // TODO extend HTextContainer and remove this
    @Field(name=IndexFieldLabels.CONTENT,
-         index = Index.TOKENIZED,
          bridge = @FieldBridge(impl = StringListBridge.class,
                params = {@Parameter(name="case", value="fold"),
                      @Parameter(name="ngrams", value="multisize")}))

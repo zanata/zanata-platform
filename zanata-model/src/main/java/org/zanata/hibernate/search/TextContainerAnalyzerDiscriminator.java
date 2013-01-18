@@ -20,9 +20,7 @@
  */
 package org.zanata.hibernate.search;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.util.Version;
 import org.hibernate.search.analyzer.Discriminator;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
@@ -42,11 +40,6 @@ public class TextContainerAnalyzerDiscriminator implements Discriminator
 {
 
    @Override
-   public String getAnanyzerDefinitionName(Object value, Object entity, String field)
-   {
-      return getAnalyzerDefinitionName(value, entity, field);
-   }
-
    public String getAnalyzerDefinitionName(Object value, Object entity, String field)
    {
       LocaleId localeId;

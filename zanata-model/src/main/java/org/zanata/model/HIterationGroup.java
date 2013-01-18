@@ -32,7 +32,6 @@ import javax.validation.constraints.Size;
 import lombok.Setter;
 
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -54,14 +53,14 @@ public class HIterationGroup extends SlugEntityBase
 
    @Size(max = 80)
    @NotEmpty
-   @Field(index = Index.TOKENIZED)
+   @Field()
    public String getName()
    {
       return name;
    }
 
    @Size(max = 100)
-   @Field(index = Index.TOKENIZED)
+   @Field()
    public String getDescription()
    {
       return description;

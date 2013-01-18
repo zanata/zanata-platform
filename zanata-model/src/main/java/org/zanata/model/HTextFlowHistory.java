@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -34,7 +35,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.AccessType;
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -110,7 +110,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    @NotEmpty
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
+   @ElementCollection(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowContentHistory", 
       joinColumns = @JoinColumn(name = "text_flow_history_id")
    )

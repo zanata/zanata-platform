@@ -34,9 +34,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
@@ -83,7 +83,7 @@ public class HGlossaryEntry extends ModelEntityBase
 
    @OneToOne
    @JoinColumn(name = "srcLocaleId", nullable = false)
-   @Field(index = Index.UN_TOKENIZED)
+   @Field(analyze = Analyze.NO)
    @FieldBridge(impl = LocaleIdBridge.class)
    public HLocale getSrcLocale()
    {
