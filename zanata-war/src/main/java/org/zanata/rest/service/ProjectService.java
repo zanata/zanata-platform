@@ -149,7 +149,7 @@ public class ProjectService implements ProjectResource
       }
       catch (NoSuchEntityException e)
       {
-         return Response.noContent().build();
+         return Response.status(Status.NOT_FOUND).build();
       }
    }
 
