@@ -213,14 +213,7 @@ public class ProjectIterationService implements ProjectIterationResource
          hProjectIteration = new HProjectIteration();
          hProjectIteration.setSlug(iterationSlug);
 
-         if (projectIteration.getProjectType() != null)
-         {
-            hProjectIteration.setProjectType(projectIteration.getProjectType());
-         }
-         else
-         {
-            hProjectIteration.setProjectType(hProject.getDefaultProjectType());
-         }
+         transferProjectType(projectIteration, hProjectIteration, hProject);
 
          hProject.addIteration(hProjectIteration);
          // pre-emptive entity permission check
@@ -245,14 +238,8 @@ public class ProjectIterationService implements ProjectIterationResource
          // pre-emptive entity permission check
          identity.checkPermission(hProjectIteration, "update");
 
-         if (projectIteration.getProjectType() != null)
-         {
-            hProjectIteration.setProjectType(projectIteration.getProjectType());
-         }
-         else
-         {
-            hProjectIteration.setProjectType(hProject.getDefaultProjectType());
-         }
+         transferProjectType(projectIteration, hProjectIteration, null);
+        
          etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
          response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -262,7 +249,6 @@ public class ProjectIterationService implements ProjectIterationResource
          response = Response.ok();
          changed = true;
       }
-
 
       if (changed)
       {
@@ -274,6 +260,20 @@ public class ProjectIterationService implements ProjectIterationResource
 
    }
 
+   public static void transferProjectType(ProjectIteration from, HProjectIteration to, HProject hProject)
+   {
+      if (from.getProjectType() != null)
+      {
+         to.setProjectType(from.getProjectType());
+      }
+      else
+      {
+         if(hProject != null)
+         {
+            to.setProjectType(hProject.getDefaultProjectType());
+         }
+      }
+   }
 
    public static void transfer(HProjectIteration from, ProjectIteration to)
    {

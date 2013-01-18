@@ -132,7 +132,7 @@ public class ProjectRestTest extends ZanataRestTest
       when(mockIdentity.getCredentials()).thenReturn(mockCredentials);
       when(mockCredentials.getUsername()).thenReturn("admin");
 
-      Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.Gettext, PROJECT_DESC);
+      Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.gettext, PROJECT_DESC);
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
 
@@ -169,7 +169,7 @@ public class ProjectRestTest extends ZanataRestTest
    {
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG_INVALID));
 
-      Project project = new Project(PROJECT_SLUG_INVALID, PROJECT_NAME, ProjectType.Gettext, PROJECT_DESC);
+      Project project = new Project(PROJECT_SLUG_INVALID, PROJECT_NAME, ProjectType.gettext, PROJECT_DESC);
       Response response = projectService.put(project);
 
       assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
@@ -179,7 +179,7 @@ public class ProjectRestTest extends ZanataRestTest
    public void createProjectWithInvalidData()
    {
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
-      Project project1 = new Project(PROJECT_SLUG, PROJECT_NAME_INVALID, ProjectType.Gettext, PROJECT_DESC);
+      Project project1 = new Project(PROJECT_SLUG, PROJECT_NAME_INVALID, ProjectType.gettext, PROJECT_DESC);
       Response response1 = projectService.put(project1);
 
       assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
@@ -188,7 +188,7 @@ public class ProjectRestTest extends ZanataRestTest
    @Test
    public void updateProjectWithInvalidData()
    {
-      Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", ProjectType.Gettext, "Project Name exceeds 80");
+      Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", ProjectType.gettext, "Project Name exceeds 80");
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
 
@@ -200,7 +200,7 @@ public class ProjectRestTest extends ZanataRestTest
    @Test
    public void updateProject()
    {
-      Project project = new Project("sample-project", "My Project Update", ProjectType.Gettext, "Update project");
+      Project project = new Project("sample-project", "My Project Update", ProjectType.gettext, "Update project");
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
 
