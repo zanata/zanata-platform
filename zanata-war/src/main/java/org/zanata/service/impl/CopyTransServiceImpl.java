@@ -236,12 +236,6 @@ public class CopyTransServiceImpl implements CopyTransService
                   originalTf.getDocument().getProjectIteration().getProject().getId().equals( matchingTarget.getTextFlow().getDocument().getProjectIteration().getProject().getId() ),
                   originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
                   options);
-
-            if (matchingTarget.getId() == 1292404 || matchingTarget.getId() == 831736)
-            {
-               log.info("\n\n\nTargetId: " + matchingTarget.getId() + " ContentState:" + copyState + " shouldOverwrite:" + shouldOverwrite(hTarget, copyState));
-               log.info("shouldOverwrite: " + shouldOverwrite(hTarget, copyState));
-            }
             
             if( shouldOverwrite(hTarget, copyState) )
             {
