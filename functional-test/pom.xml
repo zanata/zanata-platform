@@ -330,7 +330,7 @@
                         <configuration>
                             <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <printSummary>true</printSummary>
-                            <forkMode>always</forkMode>
+                            <!--<forkMode>always</forkMode>-->
                             <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
                             <includes>
                                 <include>**/*TestSuite.java</include>
