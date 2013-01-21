@@ -226,8 +226,10 @@ public class CopyTransServiceImpl implements CopyTransService
 
          while( results.next() )
          {
-            HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
-            HTextFlow originalTf = (HTextFlow)results.get(1);
+            // HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
+            HTextFlowTarget matchingTarget = textFlowTargetDAO.findById((Long) results.get(1), false);
+
+            HTextFlow originalTf = (HTextFlow) results.get(0);
             HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
             ContentState copyState = determineContentState(
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
@@ -235,6 +237,12 @@ public class CopyTransServiceImpl implements CopyTransService
                   originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
                   options);
 
+            if (matchingTarget.getId() == 1292404 || matchingTarget.getId() == 831736)
+            {
+               log.info("\n\n\nTargetId: " + matchingTarget.getId() + " ContentState:" + copyState + " shouldOverwrite:" + shouldOverwrite(hTarget, copyState));
+               log.info("shouldOverwrite: " + shouldOverwrite(hTarget, copyState));
+            }
+            
             if( shouldOverwrite(hTarget, copyState) )
             {
 

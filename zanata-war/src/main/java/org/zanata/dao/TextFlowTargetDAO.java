@@ -204,7 +204,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    public ScrollableResults findMatchingTranslations(HDocument document, HLocale locale, boolean checkContext, boolean checkDocument, boolean checkProject)
    {
       StringBuilder queryStr = new StringBuilder(
-            "select match, textFlow, max(match.id) " +
+"select textFlow, max(match.id) " +
             "from HTextFlowTarget match, HTextFlow textFlow " +
       // "join fetch match.textFlow " +
             "where " +
@@ -230,7 +230,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       {
          queryStr.append("and match.textFlow.document.projectIteration.project = textFlow.document.projectIteration.project ");
       }
-      queryStr.append("group by textFlow, match");
+      queryStr.append("group by textFlow");
 
       Query q = getSession().createQuery( queryStr.toString() );
 
