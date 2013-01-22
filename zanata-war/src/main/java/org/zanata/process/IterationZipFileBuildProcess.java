@@ -29,16 +29,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.jboss.seam.Component;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -64,6 +63,8 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
    
    private TextFlowTargetDAO textFlowTargetDAO;
    
+   private ProjectIterationDAO projectIterationDAO;
+
    private FileSystemService fileSystemServiceImpl;
    
    private ConfigurationService configurationServiceImpl;
@@ -75,8 +76,10 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
       localeDAO = (LocaleDAO)Component.getInstance(LocaleDAO.class);
       resourceUtils = (ResourceUtils)Component.getInstance(ResourceUtils.class);
       textFlowTargetDAO = (TextFlowTargetDAO)Component.getInstance(TextFlowTargetDAO.class);
+      projectIterationDAO = (ProjectIterationDAO) Component.getInstance(ProjectIterationDAO.class);
       fileSystemServiceImpl = (FileSystemService) Component.getInstance(FileSystemServiceImpl.class);
       configurationServiceImpl = (ConfigurationService)Component.getInstance(ConfigurationServiceImpl.class);
+
    }
 
    @Override
@@ -84,9 +87,11 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
    {
       final String projectSlug = zipHandle.getProjectSlug();
       final String iterationSlug = zipHandle.getIterationSlug();
-      final String projectType = "podir";
       final String localeId = zipHandle.getLocaleId();
       final String userName = zipHandle.getInitiatingUserName();
+
+      HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      final String projectType = version.getProjectType().name().toLowerCase();
 
       final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
       zipHandle.setMaxProgress(allIterationDocs.size() + 1);

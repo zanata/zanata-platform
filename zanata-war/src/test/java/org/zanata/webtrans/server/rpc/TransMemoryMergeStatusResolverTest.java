@@ -27,7 +27,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
@@ -67,7 +67,7 @@ public class TransMemoryMergeStatusResolverTest
 
       HDocument document = new HDocument(docId, "message.po", "/po", ContentType.PO, new HLocale(new LocaleId("en")));
       HProjectIteration projectIteration = new HProjectIteration();
-      HIterationProject project = new HIterationProject();
+      HProject project = new HProject();
       project.setName(projectName);
       projectIteration.setProject(project);
       document.setProjectIteration(projectIteration);

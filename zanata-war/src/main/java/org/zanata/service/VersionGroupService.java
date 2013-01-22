@@ -55,12 +55,12 @@ public interface VersionGroupService
 
    boolean isGroupInVersion(String groupSlug, Long id);
 
-   public final class SelectableHIterationProject
+   public final class SelectableHProject
    {
       private HProjectIteration projectIteration;
       private boolean selected;
 
-      public SelectableHIterationProject(HProjectIteration projectIteration, boolean selected)
+      public SelectableHProject(HProjectIteration projectIteration, boolean selected)
       {
          this.projectIteration = projectIteration;
          this.selected = selected;

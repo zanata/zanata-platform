@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-	<HProject projecttype="iteration" 
+	<HProject defaultProjectType="Gettext" 
 	    versionNum="1"
 	    id="1"
 		creationDate="2009-09-01 20:30:16"

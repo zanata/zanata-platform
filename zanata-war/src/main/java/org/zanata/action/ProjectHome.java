@@ -51,7 +51,7 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
@@ -59,7 +59,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 
 @Name("projectHome")
-public class ProjectHome extends SlugHome<HIterationProject>
+public class ProjectHome extends SlugHome<HProject>
 {
    private static final long serialVersionUID = 1L;
 
@@ -114,18 +114,18 @@ public class ProjectHome extends SlugHome<HIterationProject>
    private EntityManager entityManager;
 
    @Override
-   protected HIterationProject loadInstance()
+   protected HProject loadInstance()
    {
       Session session = (Session) getEntityManager().getDelegate();
       Criteria cr = session.createCriteria(getEntityClass());
       cr.add(Restrictions.naturalId().set("slug", getSlug()));
       cr.setCacheable(true);
-      return (HIterationProject) cr.uniqueResult();
+      return (HProject) cr.uniqueResult();
    }
 
    public void validateSuppliedId()
    {
-      HIterationProject ip = getInstance(); // this will raise an EntityNotFound
+      HProject ip = getInstance(); // this will raise an EntityNotFound
                                             // exception
       // when id is invalid and conversation will not
       // start
@@ -154,7 +154,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public boolean isSlugAvailable(String slug)
    {
-      return slugEntityServiceImpl.isSlugAvailable(slug, HIterationProject.class);
+      return slugEntityServiceImpl.isSlugAvailable(slug, HProject.class);
    }
 
    @Override

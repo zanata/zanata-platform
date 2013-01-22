@@ -1,5 +1,16 @@
 package org.zanata.rest.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -12,22 +23,11 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.rest.client.IProjectResource;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectType;
 import org.zanata.seam.SeamAutowire;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class ProjectRestTest extends ZanataRestTest
 {
@@ -132,7 +132,7 @@ public class ProjectRestTest extends ZanataRestTest
       when(mockIdentity.getCredentials()).thenReturn(mockCredentials);
       when(mockCredentials.getUsername()).thenReturn("admin");
 
-      Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC);
+      Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.Gettext, PROJECT_DESC);
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
 
@@ -155,7 +155,7 @@ public class ProjectRestTest extends ZanataRestTest
       assertThat(projectRes.getName(), is(PROJECT_NAME));
       assertThat(projectRes.getId(), is(PROJECT_SLUG));
       assertThat(projectRes.getDescription(), is(PROJECT_DESC));
-      verify(mockIdentity).checkPermission(any(HIterationProject.class), eq("insert"));
+      verify(mockIdentity).checkPermission(any(HProject.class), eq("insert"));
    }
 
    final String PROJECT_SLUG = "my-new-project";
@@ -169,7 +169,7 @@ public class ProjectRestTest extends ZanataRestTest
    {
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG_INVALID));
 
-      Project project = new Project(PROJECT_SLUG_INVALID, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC);
+      Project project = new Project(PROJECT_SLUG_INVALID, PROJECT_NAME, ProjectType.Gettext, PROJECT_DESC);
       Response response = projectService.put(project);
 
       assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
@@ -179,7 +179,7 @@ public class ProjectRestTest extends ZanataRestTest
    public void createProjectWithInvalidData()
    {
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
-      Project project1 = new Project(PROJECT_SLUG, PROJECT_NAME_INVALID, ProjectType.IterationProject, PROJECT_DESC);
+      Project project1 = new Project(PROJECT_SLUG, PROJECT_NAME_INVALID, ProjectType.Gettext, PROJECT_DESC);
       Response response1 = projectService.put(project1);
 
       assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
@@ -188,7 +188,7 @@ public class ProjectRestTest extends ZanataRestTest
    @Test
    public void updateProjectWithInvalidData()
    {
-      Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", ProjectType.IterationProject, "Project Name exceeds 80");
+      Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", ProjectType.Gettext, "Project Name exceeds 80");
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
 
@@ -200,7 +200,7 @@ public class ProjectRestTest extends ZanataRestTest
    @Test
    public void updateProject()
    {
-      Project project = new Project("sample-project", "My Project Update", ProjectType.IterationProject, "Update project");
+      Project project = new Project("sample-project", "My Project Update", ProjectType.Gettext, "Update project");
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
 
@@ -216,7 +216,7 @@ public class ProjectRestTest extends ZanataRestTest
 
       assertThat(projectRes.getName(), is("My Project Update"));
       assertThat(projectRes.getDescription(), is("Update project"));
-      verify(mockIdentity).checkPermission(any(HIterationProject.class), eq("update"));
+      verify(mockIdentity).checkPermission(any(HProject.class), eq("update"));
    }
 
 }

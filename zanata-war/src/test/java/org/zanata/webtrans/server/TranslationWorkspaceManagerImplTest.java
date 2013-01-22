@@ -1,5 +1,16 @@
 package org.zanata.webtrans.server;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 
 import org.hamcrest.Matchers;
@@ -15,9 +26,9 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
@@ -29,18 +40,8 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
-import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import com.google.common.collect.Lists;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -81,7 +82,7 @@ public class TranslationWorkspaceManagerImplTest
    private static HProjectIteration makeHProjectIteration(String projectSlugAndName, String iterationSlug)
    {
       HProjectIteration projectIteration = new HProjectIteration();
-      HIterationProject project = new HIterationProject();
+      HProject project = new HProject();
       project.setSlug(projectSlugAndName);
       project.setName(projectSlugAndName);
       projectIteration.setProject(project);
@@ -190,7 +191,7 @@ public class TranslationWorkspaceManagerImplTest
       HProjectIteration master = makeHProjectIteration("project", "master");
       HProjectIteration iteration1 = makeHProjectIteration("project", "1");
       HProjectIteration iteration2 = makeHProjectIteration("project", "2");
-      HIterationProject project = master.getProject();
+      HProject project = master.getProject();
       project.getProjectIterations().clear();
       project.getProjectIterations().add(master);
       project.getProjectIterations().add(iteration1);

@@ -39,7 +39,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
-import org.zanata.service.VersionGroupService.SelectableHIterationProject;
+import org.zanata.service.VersionGroupService.SelectableHProject;
 
 @Name("versionGroupAction")
 @Scope(ScopeType.PAGE)
@@ -61,7 +61,7 @@ public class VersionGroupAction implements Serializable
 
    private List<HIterationGroup> allVersionGroups;
 
-   private List<SelectableHIterationProject> searchResults;
+   private List<SelectableHProject> searchResults;
 
    private HIterationGroup group;
 
@@ -89,7 +89,7 @@ public class VersionGroupAction implements Serializable
 
    public void addSelected()
    {
-      for (SelectableHIterationProject selectableVersion : getSearchResults())
+      for (SelectableHProject selectableVersion : getSearchResults())
       {
          if (selectableVersion.isSelected())
          {
@@ -100,7 +100,7 @@ public class VersionGroupAction implements Serializable
 
    public void selectAll()
    {
-      for (SelectableHIterationProject selectableVersion : getSearchResults())
+      for (SelectableHProject selectableVersion : getSearchResults())
       {
          if (!isVersionInGroup(selectableVersion.getProjectIteration().getId()))
          {
@@ -126,7 +126,7 @@ public class VersionGroupAction implements Serializable
                HProjectIteration projectVersion = versionGroupServiceImpl.getProjectIterationBySlug(paramSet[0],  paramSet[1]);
                if (projectVersion != null)
                {
-                  getSearchResults().add(new SelectableHIterationProject(projectVersion, true));
+                  getSearchResults().add(new SelectableHProject(projectVersion, true));
                }
             }
          }
@@ -148,11 +148,11 @@ public class VersionGroupAction implements Serializable
       this.searchTerm = searchTerm;
    }
 
-   public List<SelectableHIterationProject> getSearchResults()
+   public List<SelectableHProject> getSearchResults()
    {
       if (searchResults == null)
       {
-         searchResults = new ArrayList<SelectableHIterationProject>();
+         searchResults = new ArrayList<SelectableHProject>();
       }
       return searchResults;
    }
@@ -183,7 +183,7 @@ public class VersionGroupAction implements Serializable
       List<HProjectIteration> result = versionGroupServiceImpl.searchLikeSlugOrProjectSlug(this.searchTerm);
       for (HProjectIteration version : result)
       {
-         getSearchResults().add(new SelectableHIterationProject(version, false));
+         getSearchResults().add(new SelectableHProject(version, false));
       }
    }
 
