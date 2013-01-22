@@ -8,7 +8,6 @@ import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.page.HomePage;
@@ -16,11 +15,8 @@ import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.util.TableRow;
-import org.zanata.util.WebElementUtil;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
-import com.google.common.collect.ImmutableList;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -70,7 +66,7 @@ public class VersionGroupBasicTest
    {
       versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup(groupName);
       versionGroupPage = versionGroupPage.addProjectVersion();
-      return versionGroupPage.searchProject(searchTerm);
+      return versionGroupPage.searchProject(searchTerm, 2);
    }
 
    public VersionGroupPage addProjectToVersionGroup(List<TableRow> table, int row)
@@ -92,7 +88,7 @@ public class VersionGroupBasicTest
       projectWorkFlow.createNewProjectVersion("project b to be grouped", "master");
 
       VersionGroupPage versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup("group one");
-      List<TableRow> searchResult = versionGroupPage.addProjectVersion().searchProject("group");
+      List<TableRow> searchResult = versionGroupPage.addProjectVersion().searchProject("group", 2);
       VersionGroupBasicTest.log.info("come back {} rows in search result", searchResult.size());
 
       //add first row from search result into group

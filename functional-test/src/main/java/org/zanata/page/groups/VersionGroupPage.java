@@ -50,7 +50,7 @@ public class VersionGroupPage extends AbstractPage
       return new VersionGroupPage(getDriver());
    }
 
-   public List<TableRow> searchProject(final String projectName)
+   public List<TableRow> searchProject(final String projectName, final int expectedResultNum)
    {
       WebElement searchField = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
       searchField.sendKeys(projectName);
@@ -58,24 +58,24 @@ public class VersionGroupPage extends AbstractPage
       WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
       searchButton.click();
 
-      WebElement searchResultTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      return waitForTenSec().until(new Function<WebDriver, List<TableRow>>()
       {
          @Override
-         public WebElement apply(WebDriver driver)
+         public List<TableRow> apply(WebDriver driver)
          {
             WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(table);
-            //we want to wait until search result comes back
-            if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(0).contains(projectName))
+            // we want to wait until search result comes back. There is no way we can tell whether search result has come back and table refreshed.
+            // To avoid the org.openqa.selenium.StaleElementReferenceException (http://seleniumhq.org/exceptions/stale_element_reference.html),
+            // we have to set expected result num
+            if (tableRows.size() != expectedResultNum)
             {
                log.debug("waiting for search result refresh...");
                return null;
             }
-            return table;
+            return tableRows;
          }
       });
-
-      return WebElementUtil.getTableRows(searchResultTable);
    }
 
    public VersionGroupPage addToGroup(TableRow projectVersionRow)
