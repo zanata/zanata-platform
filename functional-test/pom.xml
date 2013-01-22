@@ -47,6 +47,7 @@
 
         <!-- controls concordion output location-->
         <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
+        <cargo.debug.jvm.args> -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE</cargo.debug.jvm.args>
     </properties>
 
     <dependencies>
@@ -246,7 +247,7 @@
 
                                     <cargo.jvmargs>
                                         <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE
+                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled ${cargo.debug.jvm.args}
                                     </cargo.jvmargs>
                                 </properties>
                             </configuration>
