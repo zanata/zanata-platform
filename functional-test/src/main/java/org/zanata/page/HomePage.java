@@ -65,8 +65,8 @@ public class HomePage extends AbstractPage
 
    public boolean hasLoggedIn()
    {
-      List<WebElement> signOutLink = getDriver().findElements(BY_SIGN_OUT);
-      return signOutLink.size() > 0;
+      List<WebElement> signOutLink = getDriver().findElements(BY_SIGN_IN);
+      return signOutLink.size() == 0;
    }
 
    public String loggedInAs()

@@ -59,13 +59,13 @@ public class SignInPage extends AbstractPage
       signInButton.click();
       try
       {
-         waitForSeconds(getDriver(), 3).until(new Predicate<WebDriver>()
+         waitForTenSec().until(new Predicate<WebDriver>()
          {
             @Override
             public boolean apply(WebDriver driver)
             {
-               List<WebElement> signOutLink = driver.findElements(By.id("Sign_out"));
-               return signOutLink.size() == 1;
+               List<WebElement> signOutLink = driver.findElements(By.id("Sign_in"));
+               return signOutLink.size() == 0;
             }
          });
       }
