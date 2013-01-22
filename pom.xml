@@ -167,10 +167,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <hamcrest.version>1.2.1</hamcrest.version>
-		<resteasy.version>2.1.0.GA</resteasy.version>
+		<resteasy.version>2.3.3.Final</resteasy.version>
 		<guava.version>11.0.2</guava.version>
-		<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
-		<jackson.version>1.5.0</jackson.version>
+		<jackson.version>1.9.2</jackson.version>
 
 		<javadoc.skip>true</javadoc.skip>
 
@@ -692,12 +691,6 @@
 				<groupId>javax.xml.stream</groupId>
 				<artifactId>stax-api</artifactId>
 				<version>1.0</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate.validator.version}</version>
 			</dependency>
 
 			<!-- RestEasy dependencies -->
