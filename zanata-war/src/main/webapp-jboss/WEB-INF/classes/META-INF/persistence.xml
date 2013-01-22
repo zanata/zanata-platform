@@ -77,7 +77,7 @@
       
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
-               value="org.hibernate.search.store.FSDirectoryProvider"/>
+               value="org.hibernate.search.store.impl.FSDirectoryProvider"/>
       <property name="hibernate.search.worker.batch_size" value="50"/>
       
       <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
@@ -94,7 +94,7 @@
       <!-- NB: for Hibernate 4 / AS 7, we may need to use org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory.
            See http://stackoverflow.com/a/8701914
       -->
-      <property name="hibernate.cache.region.factory_class" value="net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory"/>
+      <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
       <property name="hibernate.cache.region_prefix" value="" />
       
       <property name="net.sf.ehcache.configurationResourceName" value="/META-INF/ehcache.xml"/>

@@ -1051,6 +1051,12 @@
       <!-- GWT Dependencies -->
       <dependency>
          <groupId>com.google.gwt</groupId>
+         <artifactId>gwt-dev</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.gwt</groupId>
          <artifactId>gwt-servlet</artifactId>
          <scope>runtime</scope>
       </dependency>
@@ -1099,43 +1105,35 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-multipart-provider</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-jaxrs</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 
@@ -1183,6 +1181,11 @@
 			<artifactId>hibernate-core</artifactId>
 			<scope>${hibernate.scope}</scope>
 		</dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-ehcache</artifactId>
+    </dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -1314,11 +1317,10 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-common</artifactId>
-        </dependency>
+		  <dependency>
+			    <groupId>org.apache.solr</groupId>
+			    <artifactId>solr-solrj</artifactId>
+		  </dependency>
 		
 		<!-- JBoss 5 Provided Dependencies -->
 		<dependency>
@@ -1338,6 +1340,11 @@
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-analyzers</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
 			<artifactId>ejb3-persistence</artifactId>
 			<version>1.0.2.GA</version>
 			<scope>provided</scope>
@@ -1346,7 +1353,6 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -1665,6 +1671,16 @@
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java</artifactId>
 			<version>0.9.5</version>
+			<exclusions>
+							<exclusion>
+											<artifactId>
+															spring-jdbc
+											</artifactId>
+											<groupId>
+															org.springframework
+											</groupId>
+							</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -1720,6 +1736,13 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
+
+        <dependency>
+          <groupId>antlr</groupId>
+          <artifactId>antlr</artifactId>
+          <version>2.7.7</version>
+          <scope>provided</scope>
+        </dependency>
 
       <!--  missing dependencies identified by mvn dependency:analyze: -->
 

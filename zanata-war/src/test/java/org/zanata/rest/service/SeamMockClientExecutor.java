@@ -215,4 +215,9 @@ public class SeamMockClientExecutor implements ClientExecutor
       }
    }
 
+   @Override
+   public void close() throws Exception
+   {
+   }
+
 }

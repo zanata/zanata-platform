@@ -20,8 +20,8 @@
      xmlns:mail="http://jboss.com/products/seam/mail"
      xmlns:framework="http://jboss.com/products/seam/framework"
      xmlns:resteasy="http://jboss.com/products/seam/resteasy"
-     xmlns:async="http://jboss.com/products/seam/async"
 >
+<!--      xmlns:async="http://jboss.org/seam/async" -->
 
   <core:init
       debug="@env.debug@"
@@ -35,7 +35,9 @@
       conversation-id-parameter="cid" parent-conversation-id-parameter="pid"/>
       
   <!-- Asynchronous processing -->
-  <async:quartz-dispatcher />
+<!--   <async:quartz-dispatcher /> -->
+<!--   <component name="org.jboss.seam.async.dispatcher" class="org.jboss.seam.async.QuartzDispatcher"/> -->
+  <component class="org.jboss.seam.async.QuartzDispatcher"/>
 
   <resteasy:application resource-path-prefix="/restv1" />
   

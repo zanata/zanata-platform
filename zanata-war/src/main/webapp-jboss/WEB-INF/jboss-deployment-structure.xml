@@ -4,29 +4,17 @@
 <jboss-deployment-structure>
    <deployment>
         <dependencies>
-          <module name="com.google.guava" />
-          <module name="com.sun.jsf-impl" />
           <module name="javax.annotation.api" />
           <module name="javax.el.api" />
           <module name="javax.faces.api" />
           <module name="javax.mail.api" />
           <module name="javax.servlet.api" />
           <module name="org.apache.commons.logging" />
-          <module name="org.apache.commons.collections" />
           <module name="org.apache.log4j" />
-          <module name="org.codehaus.jackson.jackson-core-asl" />
-          <module name="org.codehaus.jackson.jackson-jaxrs" />
-          <module name="org.codehaus.jackson.jackson-mapper-asl" />
-          <module name="org.codehaus.jackson.jackson-xc" />
           <module name="org.dom4j" />
           <module name="org.hibernate" />
           <module name="org.hibernate.validator" />
 <!--           <module name="org.jboss.as.jpa.hibernate" /> -->
-          <module name="org.jboss.resteasy.resteasy-jackson-provider" />
-          <module name="org.jboss.resteasy.resteasy-jaxb-provider" />
-          <module name="org.jboss.resteasy.resteasy-jaxrs" />
-          <module name="org.jboss.resteasy.resteasy-multipart-provider" />
-          <module name="org.javassist" />
           <module name="org.slf4j" />
           <module name="org.zanata.settings" />
         </dependencies>
