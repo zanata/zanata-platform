@@ -91,7 +91,7 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
       final String userName = zipHandle.getInitiatingUserName();
 
       HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      final String projectType = version.getProjectType().name();
+      final String projectType = version.getProjectType().name().toLowerCase();
 
       final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
       zipHandle.setMaxProgress(allIterationDocs.size() + 1);

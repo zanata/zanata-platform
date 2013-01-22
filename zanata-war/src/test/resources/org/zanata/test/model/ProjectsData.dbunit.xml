@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-        <HProject defaultProjectType="gettext" 
+        <HProject defaultProjectType="Gettext" 
 	          id="1"
           versionNum="1"
 		  creationDate="2009-09-01 20:30:16"
@@ -38,7 +38,7 @@
         />
         
         <!-- Retired Project -->
-        <HProject defaultProjectType="gettext" 
+        <HProject defaultProjectType="Gettext" 
 	          id="2"
 	          versionNum="1"
 			  creationDate="2009-09-01 20:30:16"
@@ -63,7 +63,7 @@
         />
         
         <!-- Obsolete Project -->
-        <HProject defaultProjectType="gettext" 
+        <HProject defaultProjectType="Gettext" 
 	          id="3"
 	          versionNum="1"
 			  creationDate="2009-09-01 20:30:16"
@@ -88,7 +88,7 @@
         />
         
         <!-- Current Project with retired iteration -->
-        <HProject defaultProjectType="gettext" 
+        <HProject defaultProjectType="Gettext" 
 	          id="4"
 	          versionNum="1"
 			  creationDate="2009-09-01 20:30:16"

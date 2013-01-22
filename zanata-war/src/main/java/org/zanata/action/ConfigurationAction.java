@@ -63,7 +63,7 @@ public class ConfigurationAction implements Serializable
          ServletOutputStream os = response.getOutputStream();
 
          os.write(
-			this.configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug, projectType.name()).getBytes());
+this.configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug, projectType.name().toLowerCase()).getBytes());
          os.flush();
          os.close();
          FacesContext.getCurrentInstance().responseComplete();
