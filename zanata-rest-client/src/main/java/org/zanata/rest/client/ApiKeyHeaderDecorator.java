@@ -34,9 +34,9 @@ public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor
    @Override
    public ClientResponse execute(ClientExecutionContext ctx) throws Exception
    {
-      ctx.getRequest().getHeaders().add(RestConstant.HEADER_USERNAME, username);
-      ctx.getRequest().getHeaders().add(RestConstant.HEADER_API_KEY, apiKey);
-      ctx.getRequest().getHeaders().add(RestConstant.HEADER_VERSION_NO, ver);
+      ctx.getRequest().getHeadersAsObjects().add(RestConstant.HEADER_USERNAME, username);
+      ctx.getRequest().getHeadersAsObjects().add(RestConstant.HEADER_API_KEY, apiKey);
+      ctx.getRequest().getHeadersAsObjects().add(RestConstant.HEADER_VERSION_NO, ver);
       try
       {
          return ctx.proceed();
