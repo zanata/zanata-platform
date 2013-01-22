@@ -10,6 +10,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -307,10 +309,10 @@ public class AppPresenterTest
    {
       // Given:
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
-      DocumentId docId = new DocumentId(1L);
+      DocumentId docId = new DocumentId(1L, "");
       // newly selected document has new stats
       TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3), new TransUnitWords(4, 5, 6));
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats);
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, "Translator", new Date(), new HashMap<String, String>());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       // current view is editor
       presenter.showView(MainView.Editor);
@@ -331,10 +333,10 @@ public class AppPresenterTest
    {
       // Given:
       presenter.setStatesForTest(projectStats, selectedDocumentStats, MainView.Documents, null);
-      DocumentId docId = new DocumentId(1L);
+      DocumentId docId = new DocumentId(1L, "");
       // newly selected document has new stats
       TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3), new TransUnitWords(4, 5, 6));
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats);
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, "Translator", new Date(), new HashMap<String, String>());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
 
       // When:
@@ -353,7 +355,7 @@ public class AppPresenterTest
    {
       assertThat(presenter.getSelectedDocumentInfoOrNull(), Matchers.is(Matchers.nullValue()));
 
-      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L), new TranslationStats()));
+      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L, ""), new TranslationStats()));
 
       verifyZeroInteractions(display);
    }
@@ -363,10 +365,10 @@ public class AppPresenterTest
    {
       // Given: current view is null and selected doc id 2
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
-      presenter.selectDocument(new DocumentId(2L));
+      presenter.selectDocument(new DocumentId(2L, ""));
 
       // When:
-      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L), new TranslationStats()));
+      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L, ""), new TranslationStats()));
 
       
       // Then:
@@ -379,8 +381,8 @@ public class AppPresenterTest
       // Given: current view is Editor and selected doc id 1
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
       presenter.showView(MainView.Editor);
-      DocumentId docId = new DocumentId(1L);
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats);
+      DocumentId docId = new DocumentId(1L, "");
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats, "Translator", new Date(), new HashMap<String, String>());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       presenter.selectDocument(docId);
       verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
@@ -433,8 +435,8 @@ public class AppPresenterTest
    public void onDocumentsClickWillFireNewHistoryItemAndSwitchToDocumentView()
    {
       // Given: current token is search view and has selected doc
-      DocumentId docId = new DocumentId(1L);
-      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats);
+      DocumentId docId = new DocumentId(1L, "");
+      DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), selectedDocumentStats, "Translator", new Date(), new HashMap<String, String>());
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       when(history.getToken()).thenReturn("view:search;doc:pot/a.po");
       presenter.selectDocument(docId);

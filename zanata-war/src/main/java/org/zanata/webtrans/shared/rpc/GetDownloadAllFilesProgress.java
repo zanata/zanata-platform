@@ -18,25 +18,33 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.resources;
+package org.zanata.webtrans.shared.rpc;
 
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
 
 /**
- * Resources used by the entire application.
+ * 
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * 
  */
-public interface Resources extends ClientBundle
+public class GetDownloadAllFilesProgress implements DispatchAction<GetDownloadAllFilesProgressResult>
 {
-   @Source("images/crystal_project/_16x16/filesystems/file_doc.png")
-   ImageResource documentImage();
+   private static final long serialVersionUID = 1L;
 
-   @Source("images/loading.gif")
-   ImageResource spinner();
+   String processId;
 
-   @Source("images/loading-lg.gif")
-   ImageResource spinnerLarge();
-   
-   @Source("images/loader.gif")
-   ImageResource progressLoading();
+   @SuppressWarnings("unused")
+   private GetDownloadAllFilesProgress()
+   {
+   }
+
+   public GetDownloadAllFilesProgress(String processId)
+   {
+      this.processId = processId;
+   }
+
+   public String getProcessId()
+   {
+      return processId;
+   }
+
 }

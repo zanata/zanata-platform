@@ -7,8 +7,6 @@
     ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
     ui:generateLocales="en">
 	
-	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
-	
 	<ui:style type="org.zanata.webtrans.client.view.AppView.Styles">
 		.rootContainer
 		{

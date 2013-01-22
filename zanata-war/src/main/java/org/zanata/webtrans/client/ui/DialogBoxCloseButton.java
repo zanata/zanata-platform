@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.WebTransMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -17,7 +18,7 @@ public class DialogBoxCloseButton extends PushButton
    public DialogBoxCloseButton(final DialogBox dialogBox)
    {
       super(MESSAGES.close());
-      addStyleName("dialogBoxCloseButton");
+      addStyleName("gwt-DialogBox-CloseButton");
       addClickHandler(new ClickHandler()
       {
          @Override

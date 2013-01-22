@@ -250,10 +250,26 @@ public class Application implements EntryPoint
       return getModuleParentBaseUrl() + "iteration/files/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId();
    }
 
+   public static String getFileDownloadURL(WorkspaceId workspaceId, String downloadExtension)
+   {
+      return getModuleParentBaseUrl() + "rest/file/translation/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId() + "/" + downloadExtension;
+   }
+
+   public static String getAllFilesDownloadURL(String downloadId)
+   {
+      return getModuleParentBaseUrl() + "rest/file/download/" + downloadId;
+   }
+   
+   public static String getUploadFileUrl()
+   {
+      return GWT.getModuleBaseURL() + "files/upload";
+   }
+
+
    public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
    }-*/;
-
+   
    public static WorkspaceId getWorkspaceId()
    {
       if (workspaceId == null)
@@ -277,7 +293,7 @@ public class Application implements EntryPoint
    {
       return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
    }
-
+   
    /**
     * Display an error message instead of the web app. Shows a link if both text
     * and url are provided. Provides a stack trace if a {@link Throwable} is

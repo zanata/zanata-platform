@@ -37,7 +37,7 @@
 	
 	<g:VerticalPanel styleName="{style.mainPanel}">
 		<g:cell>
-				<g:Label ui:field="pageSizeHeader" styleName="sideMenuHeader"/>
+				<g:Label ui:field="pageSizeHeader" styleName="gwt-sideMenu-header"/>
         </g:cell>
         <g:cell>
         	<g:HTMLPanel styleName="{style.pageSizeContainer}">

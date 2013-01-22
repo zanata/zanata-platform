@@ -21,12 +21,9 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -63,13 +60,12 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    SplitLayoutPanel tmGlossaryPanel;
 
    @Inject
-   public TranslationView(Resources resources, TranslationEditorDisplay translationEditorView, TranslationMemoryDisplay transMemoryView, GlossaryDisplay glossaryView)
+   public TranslationView(TranslationEditorDisplay translationEditorView, TranslationMemoryDisplay transMemoryView, GlossaryDisplay glossaryView)
    {
       this.transMemoryView = transMemoryView;
       this.glossaryView = glossaryView;
       resizeButton = translationEditorView.getResizeButton();
 
-      StyleInjector.inject(resources.style().getText(), true);
       southPanelContainer = new LayoutPanel();
 
       tmGlossaryPanel = new SplitLayoutPanel(2);

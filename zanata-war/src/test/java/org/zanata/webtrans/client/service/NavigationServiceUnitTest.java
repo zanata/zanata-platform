@@ -1,7 +1,19 @@
 package org.zanata.webtrans.client.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
 import java.util.List;
 import java.util.Map;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -30,20 +42,10 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.event.shared.GwtEvent;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -91,7 +93,7 @@ public class NavigationServiceUnitTest
 
       pageModel.setData(data.subList(0, configHolder.getState().getEditorPageSize()));
       navigationStateHolder.init(idStateMap, idIndexList);
-      initContext = new GetTransUnitActionContext(new DocumentId(1)).changeCount(configHolder.getState().getEditorPageSize());
+      initContext = new GetTransUnitActionContext(new DocumentId(1, "")).changeCount(configHolder.getState().getEditorPageSize());
    }
 
    private void initData()
@@ -277,7 +279,7 @@ public class NavigationServiceUnitTest
    @Test
    public void testOnDocumentSelected() throws Exception
    {
-      DocumentId documentId = new DocumentId(2);
+      DocumentId documentId = new DocumentId(2, "");
       service.onDocumentSelected(new DocumentSelectionEvent(documentId));
 
       verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());

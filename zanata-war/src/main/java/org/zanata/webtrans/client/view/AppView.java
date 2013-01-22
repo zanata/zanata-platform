@@ -25,15 +25,12 @@ import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
-import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -86,9 +83,6 @@ public class AppView extends Composite implements AppDisplay
    @UiField
    LayoutPanel sideMenuContainer, rootContainer, contentContainer;
    
-   @UiField(provided = true)
-   final Resources resources;
-
    @UiField
    TabLayoutPanel content;
 
@@ -101,12 +95,8 @@ public class AppView extends Composite implements AppDisplay
    private Listener listener;
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
+   public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
    {
-      this.resources = resources;
-
-      StyleInjector.inject(resources.style().getText(), true);
-
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
       translationStatsBar = new TransUnitCountBar(messages);

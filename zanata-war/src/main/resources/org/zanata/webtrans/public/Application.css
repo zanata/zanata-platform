@@ -1,4 +1,3 @@
-/** Add css rules here for your application. */
 body {
 	background-color: #f8f9fa;
 }
@@ -26,163 +25,8 @@ Removes some of the styling on the page-level splitters
 	background:#E5E5E5;
 }
 
-.CenterDiv {
-	margin-right: auto;
-	margin-left: auto;
-	width: auto;
-}
-
-#DocumentListView,#WorkspaceUsersView {
-	padding-bottom: 5px;
-	width: 100%;
-}
-
-.DocumentListViewMainPanel { //
-	width: 100%;
-	width: 205px;
-}
-
-#WestNavigationView {
-	padding-left: 3px;
-	padding-right: 3px;
-	height: 100%;
-	width: 220px;
-	overflow: hidden;
-}
-
-.LeftContentNavBar {
-	
-}
-
-.LeftContentNavBar .gwt-CaptionPanel {
-	margin-bottom: 3px;
-}
-
-.gwt-Button {
+.gwt-Button, .gwt-PushButton {
 	outline:none;
-}
-
-.gwt-CollapsiblePanel { //
-	width: 220px;
-}
-
-.gwt-HeadingPanel .topLeftInner,.gwt-HeadingPanel .topRightInner {
-	height: 40px;
-	width: 5px;
-	background-color: #d0e4f6;
-}
-
-.gwt-HeadingPanel .topCenterInner {
-	height: 40px;
-	background-color: #d0e4f6;
-}
-
-.gwt-HeadingPanelTitle {
-	font-size: 15px;
-	color: grey;
-}
-
-.FilterTree {
-	width: 100%;
-}
-
-.gwt-FilterBox {
-	font-size: 12px;
-	width: 100%;
-}
-
-.gwt-FilterBox-Vacant {
-	font-style: italic;
-	color: grey;
-}
-
-.gwt-FilterBox-Occupied {
-	font-style: plain;
-	color: black;
-}
-
-.gwt-CaptionPanel-Heading {
-	font-weight: bold;
-	width: 100%;
-	background-color: d0e4f6;
-	padding-bottom: 5px;
-}
-
-.gwt-TreeItem-selected .gwt-Label {
-	background-color: #C3D9FF;;
-}
-
-.gwt-TreeItem-selected {
-	background-color: #C3D9FF;;
-}
-
-.gwt-CaptionPanel-Collapse {
-	background-color: #d5e9fa;
-	border: 1px solid #c8dbec;
-	padding: 1px;
-	margin: 0px;
-	font-family: monospace;
-}
-
-.gwt-CaptionPanel tr.middle td.middleCenter {
-	width: 100%;
-}
-
-.gwt-ProgressBar-shell {
-	border: 2px solid #faf9f7;
-	background-color: #AAAAAA;
-	height: 14pt;
-	width: 100%;
-}
-
-.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
-	background-color: #67A7E3;
-}
-
-.gwt-ProgressBar-shell .gwt-ProgressBar-text {
-	padding: 0px;
-	margin: 0px;
-	color: white;
-}
-
-.WebTransEditor-Outer tr.middle td.middleCenter {
-	height: 100%;
-	width: 100%;
-}
-
-.WebTransEditor-Outer tr.middle td.middleCenter div.middleCenterInner {
-	height: 100%;
-	width: 100%;
-}
-
-.WebTransEditor {
-	height: 100%;
-	width: 100%;
-}
-
-.WebTransEditorMenu {
-	background-color: #D0E4F6;
-	width: 100%;
-	height: 25px;
-}
-
-.WebTransEditorMenu-left {
-	left: 0px;
-	display: inline;
-}
-
-.float-right-div {
-	float: right;
-}
-
-.FilterView {
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-
-.WebTransEditorMenu-right {
-	right: 0px;
-	display: inline;
 }
 
 .THEMES_COMPACT .transUnitCol {
@@ -300,8 +144,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 /* Search-replace page
  * TODO arrange for these to share styles with editor table
  */
-
-
 
 .gwt-ListBox
 {
@@ -519,7 +361,6 @@ td.ApprovedStateDecoration div div div
 
 .DocumentListTable td {
 	font-size: 16px;
-	cursor: pointer;
 }
 
 .THEMES_COMPACT .DocumentListTable td {
@@ -534,12 +375,14 @@ td.ApprovedStateDecoration div div div
 	padding:20px 5px;
 }
 
-.DocumentListTable td.directoryCol {
+.DocumentListTable td.pathCol {
 	width: 25%;
 }
 
 .DocumentListTable td.documentCol {
 	width: 25%;
+	text-decoration:underline;
+	cursor:pointer;
 }
 
 .DocumentListTable td.statisticCol {
@@ -547,24 +390,22 @@ td.ApprovedStateDecoration div div div
 	text-align:center;
 }
 
-.DocumentListTable td.translatedCol {
-	font-weight:bold;
-	font-size:14px;
-	color:#006200;
-	text-align:center;
-}
-
-.DocumentListTable td.untranslatedCol {
-	font-weight:bold;
-	font-size:14px;
-	color:#818181;
-	text-align:center;
-}
-
 .DocumentListTable td.remainingCol {
 	font-weight:bold;
 	font-size:14px;
 	color:#910000;
+	text-align:center;
+}
+
+.DocumentListTable td.lastModifiedCol { 
+	font-size:12px;
+	text-align:center;
+}
+
+.DocumentListTable td.downloadCol { 
+}
+
+.DocumentListTable td.uploadCol { 
 	text-align:center;
 }
 
@@ -750,11 +591,6 @@ td.ApprovedStateDecoration div div div
 	border:none;
 }
 
-.boldFont
-{
-	font-weight:bold;
-}
-
 #gwt-debug-TMMerge {
 	width:auto;
 	height:auto;
@@ -792,14 +628,7 @@ td.ApprovedStateDecoration div div div
 }
 /* end translation history style*/
 
-.indexLabel
-{
-	font-size:0.8em;
-	color:#808080;
-	text-decoration:underline;
-}
-
-.sideMenuHeader {
+.gwt-sideMenu-header {
     font-weight:bold;
     font-size:13px;
     text-align:center;
@@ -809,8 +638,119 @@ td.ApprovedStateDecoration div div div
     color:#FFFFFF;
 }
 
-/* -------------- GWT Dialog Box ----------------*/
-.GWTDialogBox
+/* -------------- No fixed size dialog box ---------------*/
+.gwt-DialogBox-NoFixedSize
+{
+	background:#F2F2F2;
+	border:1px solid #C0C0C0;
+	border-radius:3px;
+	padding:5px;
+	box-shadow:1px 1px 3px #5C5C5C;
+}
+
+.gwt-DialogBox-NoFixedSize .Caption
+{
+	padding:4px;
+	margin-bottom:10px;
+	font-weight:bold;
+	font-size:1.1em;
+	border-radius:3px;
+	background:#575757;
+	color:#FFFFFF;
+	cursor:move;
+}
+
+.gwt-DialogBox-NoFixedSize .info span
+{
+	font-size:20px;
+	color:#00264C;
+}
+
+
+.gwt-DialogBox-NoFixedSize .message
+{
+	max-width:500px;
+	max-height:500px;
+	overflow:auto;'
+}
+
+
+.gwt-DialogBox-NoFixedSize .buttonPanel
+{
+	margin-top:8px;
+}
+
+.gwt-DialogBox-NoFixedSize .buttonPanel td
+{
+	padding:2px;
+}
+
+.gwt-DialogBox-NoFixedSize .buttonPanel .button
+{
+	border-radius:3px;
+	width:60px;
+	text-align:center;
+}
+
+.gwt-DialogBox-NoFixedSize span.time_label
+{
+	font-size:12px;
+}
+
+.gwt-DialogBox-NoFixedSize span.severity_icon
+{
+	font-size:18px;
+}
+
+.gwt-DialogBox-NoFixedSize a.downloadLink
+{
+	color:#575757;
+	font-size:22px;
+	cursor:pointer;
+}
+
+.gwt-DialogBox-NoFixedSize form
+{
+	margin:0;
+}
+
+.gwt-DialogBox-NoFixedSize .message_label
+{
+	padding:8px;
+}
+
+span.severity_info
+{
+	color:#3090C7;
+}
+
+span.severity_warning
+{
+	color:#F88158;
+}
+
+span.severity_error
+{
+	color:#F62817;
+}
+
+a.downloadFileLink
+{
+	color:#0085CC;
+	font-size:0.9em;
+	cursor:pointer;
+}
+
+a.downloadLink
+{
+	color:orange;
+	font-size:0.9em;
+	cursor:pointer;
+}
+
+
+/* -------------- Fixed size dialog box ---------------*/
+.gwt-DialogBox-fixedSize
 {
 	width:600px;
 	height:400px;
@@ -821,7 +761,7 @@ td.ApprovedStateDecoration div div div
 	box-shadow:1px 1px 3px #5C5C5C;
 }
 
-.GWTDialogBox .Caption
+.gwt-DialogBox-fixedSize .Caption
 {
 	padding:4px;
 	font-weight:bold;
@@ -832,42 +772,43 @@ td.ApprovedStateDecoration div div div
 	cursor:move;
 }
 
-.GWTDialogBox table
+.gwt-DialogBox-fixedSize table
 {
 	width:100%;
 }
 
-.GWTDialogBox .headerLabel
+.gwt-DialogBox-fixedSize .headerLabel
 {
 	padding-right:5px;
 	color:#C35817;
 	font-weight:bold;
 }
 
-.GWTDialogBox .alignTop
+.gwt-DialogBox-fixedSize .alignTop
 {
 	vertical-align:top;
 }
 
-.GWTDialogBox .lastModifiedLabel
+.gwt-DialogBox-fixedSize .lastModifiedLabel
 {
 	color:#C35817;
 	font-weight:bold;
 }
 
-.GWTDialogBox .button
+.gwt-DialogBox-fixedSize .button
 {
 	width:70px;
 	margin:1px;
 	padding:2px;
 }
 
-.dialogBoxCloseButton
+.gwt-DialogBox-CloseButton
 {
     width: 5em;
     margin: 10px 5px 5px 0;
     float: right;
     text-align: center;
+    border-radius:5px;
 }
 
 /* custom webkit scroll bar */

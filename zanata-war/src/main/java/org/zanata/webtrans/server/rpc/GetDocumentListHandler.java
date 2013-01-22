@@ -2,23 +2,25 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.TranslationFileService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -40,6 +42,9 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    @In
    private DocumentDAO documentDAO;
 
+   @In
+   private TranslationFileService translationFileServiceImpl;
+
    @Override
    public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
    {
@@ -54,9 +59,24 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       {
          if (action.getFilters() == null || action.getFilters().isEmpty() || action.getFilters().contains(hDoc.getPath() + hDoc.getName()))
          {
-            DocumentId docId = new DocumentId(hDoc.getId());
+            DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
-            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats);
+            String lastModifiedBy = "";
+            HPerson person = hDoc.getLastModifiedBy();
+            if(person != null)
+            {
+               lastModifiedBy = person.getAccount().getUsername();
+            }
+
+            Map<String, String> downloadExtensions = new HashMap<String, String>();
+            downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
+            if (translationFileServiceImpl.hasPersistedDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName()))
+            {
+               String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
+               downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
+            }
+
+            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions);
             docs.add(doc);
          }
       }

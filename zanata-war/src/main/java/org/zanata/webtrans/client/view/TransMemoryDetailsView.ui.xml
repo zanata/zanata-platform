@@ -34,7 +34,7 @@
 
     </ui:style>
 	
-	<g:DialogBox autoHide="true" modal="true" styleName="GWTDialogBox">
+	<g:DialogBox autoHide="true" modal="true" styleName="gwt-DialogBox-fixedSize">
 		<g:LayoutPanel>
 			<g:layer top="5px" height="90px" left="0" right="0">
 				<g:HTMLPanel>

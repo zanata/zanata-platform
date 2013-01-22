@@ -14,6 +14,8 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -37,6 +39,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
@@ -49,7 +52,7 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
@@ -72,6 +75,8 @@ public class DocumentListPresenterTest
    private UserWorkspaceContext mockUserWorkspaceContext;
    @Mock
    private UserOptionsService mockUserOptionsService;
+   @Mock
+   private CachingDispatchAsync mockDispatcher;
 
    private UserConfigHolder configHolder;
 
@@ -98,7 +103,7 @@ public class DocumentListPresenterTest
       configHolder = new UserConfigHolder();
       when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
       dataProviderList = new ArrayList<DocumentNode>();
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
    }
 
    @Test
@@ -110,7 +115,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onBind();
 
-      verify(mockDisplay).renderTable(isA(SingleSelectionModel.class));
+      verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
       verify(mockDisplay).setStatsFilter("Words");
       verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
@@ -156,7 +161,7 @@ public class DocumentListPresenterTest
       targets.add("this is the target");
 
       TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder().setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural).setSources(sources).setSourceComment("this is the source comment").setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy").setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1).setVerNum(1).build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""), newTransUnit, 3, 0, ContentState.NeedReview);
       TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
 
       when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
@@ -190,7 +195,7 @@ public class DocumentListPresenterTest
       assertThat("a document stats event should be fired when a TU update event occurs, not found", docStatsEvent, notNullValue());
 
       // document stats
-      assertThat("document id in document stats event shoudl match updated TU document id", docStatsEvent.getDocId(), equalTo(new DocumentId(2222L)));
+      assertThat("document id in document stats event shoudl match updated TU document id", docStatsEvent.getDocId(), equalTo(new DocumentId(2222L, "")));
 
       // check actual counts (approved/fuzzy/untranslated)
       // default TUs: 1/2/3
@@ -217,7 +222,7 @@ public class DocumentListPresenterTest
       targets.add("this is the target");
 
       TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder().setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural).setSources(sources).setSourceComment("this is the source comment").setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy").setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1).setVerNum(1).build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""), newTransUnit, 3, 0, ContentState.NeedReview);
       TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
 
       when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
@@ -327,7 +332,7 @@ public class DocumentListPresenterTest
       documentListPresenter.bind();
 
       // simulate document click on second document
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L, ""), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>());
       documentListPresenter.fireDocumentSelection(docInfo);
 
       verify(mockHistory).newItem(capturedHistoryToken.capture());
@@ -445,11 +450,11 @@ public class DocumentListPresenterTest
 
       verify(mockDataProvider).refresh();
 
-      DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats()))));
+      DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L, ""));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L, ""), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()))));
 
-      docInfo = documentListPresenter.getDocumentInfo(new DocumentId(3333L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats()))));
+      docInfo = documentListPresenter.getDocumentInfo(new DocumentId(3333L, ""));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L, ""), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()))));
    }
 
    @Test
@@ -483,13 +488,13 @@ public class DocumentListPresenterTest
       TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
       TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
 
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount));
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L, ""), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(2222L), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount));
+      docInfo = new DocumentInfo(new DocumentId(2222L, ""), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(3333L), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount));
+      docInfo = new DocumentInfo(new DocumentId(3333L, ""), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
       docList.add(docInfo);
 
       return docList;

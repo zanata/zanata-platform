@@ -23,13 +23,15 @@ package org.zanata.webtrans.client.view;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 
 /**
  *
@@ -40,13 +42,11 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 {
    void updatePageSize(int pageSize);
 
-   HasSelectionHandlers<DocumentInfo> getDocumentList();
-
    HasData<DocumentNode> getDocumentListTable();
 
    ListDataProvider<DocumentNode> getDataProvider();
 
-   void renderTable(SingleSelectionModel<DocumentNode> selectionModel);
+   void renderTable(NoSelectionModel<DocumentNode> selectionModel);
 
    String getSelectedStatsOption();
 
@@ -66,8 +66,44 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
       void fireFilterToken(String value);
 
-      void fireDocumentSelection(DocumentInfo doc);
+      void fireDocumentSelection(DocumentInfo docInfo);
+
+      void downloadAllFiles();
+
+      void showUploadDialog(DocumentInfo docInfo);
+
+      void cancelDownloadAllFiles();
+
+      void cancelFileUpload();
+
+      void onFileUploadComplete(SubmitCompleteEvent event);
+
+      void onUploadFile();
+
+      void updateDownloadFileProgress();
    }
 
    void setThemes(String style);
+
+   void hideConfirmation();
+
+   void updateFileDownloadProgress(int currentProgress, int maxProgress);
+
+   void setDownloadInProgress(boolean inProgress);
+
+   void setAndShowFilesDownloadLink(String url);
+
+   InlineLink getDownloadAllFilesInlineLink(String url);
+
+   void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId);
+
+   void closeFileUpload();
+
+   String getSelectedUploadFileName();
+
+   void submitUploadForm();
+
+   void startGetDownloadStatus(int periodMillis);
+
+   void stopGetDownloadStatus();
 }

@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.ui.table.cell;
 import org.zanata.webtrans.client.ui.TransUnitCountGraph;
 
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 
@@ -35,17 +36,17 @@ public class TransUnitCountGraphCell extends StaticWidgetCell<TransUnitCountGrap
 {
    public TransUnitCountGraphCell()
    {
-      super("mouseover", "mouseout");
+      super(BrowserEvents.MOUSEOVER, BrowserEvents.MOUSEOUT);
    }
 
    @Override
    public void onBrowserEvent(Context context, Element parent, TransUnitCountGraph value, NativeEvent event, ValueUpdater<TransUnitCountGraph> valueUpdater)
    {
-      if (event.getType().equalsIgnoreCase("mouseover"))
+      if (event.getType().equalsIgnoreCase(BrowserEvents.MOUSEOVER))
       {
          value.onMouseOver(parent.getFirstChildElement());
       }
-      else if (event.getType().equalsIgnoreCase("mouseout"))
+      else if (event.getType().equalsIgnoreCase(BrowserEvents.MOUSEOUT))
       {
          value.onMouseOut();
       }

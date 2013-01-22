@@ -21,22 +21,34 @@
 package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
+import java.util.Map;
 
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.table.column.RemainingHoursColumn;
+import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
-import org.zanata.webtrans.client.ui.table.column.TranslatedColumn;
-import org.zanata.webtrans.client.ui.table.column.UntranslatedColumn;
+import org.zanata.webtrans.client.view.DocumentListDisplay;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.ClickableTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.IconCellDecorator;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 
 public class DocumentListTable extends CellTable<DocumentNode>
 {
@@ -79,73 +91,25 @@ public class DocumentListTable extends CellTable<DocumentNode>
       }
    }
 
-   private final class TranslatedHeader extends Header<String> implements HasStatsFilter
-   {
-      private final WebTransMessages messages;
-      private String statsOption = STATS_OPTION_WORDS;
-
-      public TranslatedHeader(WebTransMessages messages)
-      {
-         super(new TextCell());
-         this.messages = messages;
-      }
-
-      @Override
-      public String getValue()
-      {
-         return messages.columnHeaderTranslated(statsOption);
-      }
-
-      @Override
-      public void setStatsFilter(String option)
-      {
-         statsOption = option;
-      }
-   }
-
-   private final class UntranslatedHeader extends Header<String> implements HasStatsFilter
-   {
-      private final WebTransMessages messages;
-      private String statsOption = STATS_OPTION_WORDS;
-
-      public UntranslatedHeader(WebTransMessages messages)
-      {
-         super(new TextCell());
-         this.messages = messages;
-      }
-
-      @Override
-      public String getValue()
-      {
-         return messages.columnHeaderUntranslated(statsOption);
-      }
-
-      @Override
-      public void setStatsFilter(String option)
-      {
-         statsOption = option;
-      }
-   }
-
-   private final TextColumn<DocumentNode> directoryColumn;
-   private final TextColumn<DocumentNode> documentColumn;
+   private final TextColumn<DocumentNode> pathColumn;
+   private final Column<DocumentNode, String> documentColumn;
    private final StatisticColumn statisticColumn;
-   private final TranslatedColumn translatedColumn;
-   private final UntranslatedColumn untranslatedColumn;
    private final RemainingHoursColumn remainingColumn;
+   
+   private final TextColumn<DocumentNode> lastModifiedColumn;
+   private final StaticWidgetColumn<DocumentNode, HorizontalPanel> downloadColumn;
+   private final Column<DocumentNode, String> uploadColumn;
 
-   private final TranslatedHeader translatedColumnHeader;
-   private final UntranslatedHeader untranslatedColumnHeader;
    private final StatisticHeader statisticColumnHeader;
 
-   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final SingleSelectionModel<DocumentNode> selectionModel)
+   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final DocumentListDisplay.Listener listener, final NoSelectionModel<DocumentNode> selectionModel, final UserWorkspaceContext userWorkspaceContext)
    {
       super(15, (CellTableResources) GWT.create(CellTableResources.class));
-
+      setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
       setStylePrimaryName("DocumentListTable");
       setSelectionModel(selectionModel);
 
-      directoryColumn = new TextColumn<DocumentNode>()
+      pathColumn = new TextColumn<DocumentNode>()
       {
          @Override
          public String getValue(DocumentNode object)
@@ -153,8 +117,8 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return object.getDocInfo().getPath();
          }
       };
-
-      documentColumn = new TextColumn<DocumentNode>()
+      
+      documentColumn = new Column<DocumentNode, String>(new ClickableTextCell())
       {
          @Override
          public String getValue(DocumentNode object)
@@ -163,21 +127,78 @@ public class DocumentListTable extends CellTable<DocumentNode>
          }
       };
 
-      statisticColumn = new StatisticColumn(messages);
-      translatedColumn = new TranslatedColumn();
-      untranslatedColumn = new UntranslatedColumn();
-      remainingColumn = new RemainingHoursColumn(messages);
+      documentColumn.setFieldUpdater(new FieldUpdater<DocumentNode, String>()
+      {
+         @Override
+         public void update(int index, DocumentNode object, String value)
+         {
+            listener.fireDocumentSelection(object.getDocInfo());
+         }
+      });
 
-      directoryColumn.setSortable(true);
+      statisticColumn = new StatisticColumn(messages);
+      remainingColumn = new RemainingHoursColumn(messages);
+      
+      lastModifiedColumn = new TextColumn<DocumentNode>()
+      {
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            String date = "";
+            if(object.getDocInfo().getLastChanged() != null)
+            {
+               date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
+            }
+
+            String modifiedBy = object.getDocInfo().getLastModifiedBy();
+
+            return modifiedBy + " " + date;
+         }
+      };
+
+      downloadColumn = new StaticWidgetColumn<DocumentNode, HorizontalPanel>()
+      {
+         @Override
+         public HorizontalPanel getValue(DocumentNode object)
+         {
+            HorizontalPanel downloadPanel = new HorizontalPanel();
+            for (Map.Entry<String, String> entry : object.getDocInfo().getDownloadExtensions().entrySet())
+            {
+               Anchor anchor = new Anchor(entry.getKey());
+               anchor.setStyleName("downloadFileLink");
+               anchor.setHref(Application.getFileDownloadURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId(), entry.getValue()));
+               anchor.setTarget("_blank");
+               downloadPanel.add(anchor);
+            }
+            return downloadPanel;
+         }
+      };
+
+      uploadColumn = new Column<DocumentNode, String>(new ButtonCell())
+      {
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            return "Upload";
+         }
+      };
+      uploadColumn.setFieldUpdater(new FieldUpdater<DocumentNode, String>()
+      {
+         @Override
+         public void update(int index, DocumentNode object, String value)
+         {
+            listener.showUploadDialog(object.getDocInfo());
+         }
+      });
+
+      pathColumn.setSortable(true);
       documentColumn.setSortable(true);
       statisticColumn.setSortable(true);
-      translatedColumn.setSortable(true);
-      untranslatedColumn.setSortable(true);
       remainingColumn.setSortable(true);
-      
-      
-      addColumn(directoryColumn, messages.columnHeaderDirectory());
-      directoryColumn.setCellStyleNames("directoryCol");
+      lastModifiedColumn.setSortable(true);
+
+      addColumn(pathColumn, messages.columnHeaderPath());
+      pathColumn.setCellStyleNames("pathCol");
 
       DocumentHeader documentColumnHeader = new DocumentHeader(images, messages);
       documentColumn.setCellStyleNames("documentCol");
@@ -187,36 +208,35 @@ public class DocumentListTable extends CellTable<DocumentNode>
       statisticColumn.setCellStyleNames("statisticCol");
       addColumn(statisticColumn, statisticColumnHeader);
 
-      translatedColumnHeader = new TranslatedHeader(messages);
-      translatedColumn.setCellStyleNames("translatedCol");
-      addColumn(translatedColumn, translatedColumnHeader);
-
-      untranslatedColumnHeader = new UntranslatedHeader(messages);
-      untranslatedColumn.setCellStyleNames("untranslatedCol");
-      addColumn(untranslatedColumn, untranslatedColumnHeader);
-
       remainingColumn.setCellStyleNames("remainingCol");
       addColumn(remainingColumn, messages.columnHeaderRemaining());
+      
+      lastModifiedColumn.setCellStyleNames("lastModifiedCol");
+      addColumn(lastModifiedColumn, "Last Modified");
+
+      downloadColumn.setCellStyleNames("downloadCol");
+      addColumn(downloadColumn, "Download");
+
+      uploadColumn.setCellStyleNames("uploadCol");
+      if(userWorkspaceContext.hasWriteAccess())
+      {
+         addColumn(uploadColumn, "Upload");
+      }
 
       addSorting(dataProvider);
    }
 
    public void setStatsFilter(String option)
    {
-      translatedColumnHeader.setStatsFilter(option);
-      untranslatedColumnHeader.setStatsFilter(option);
       statisticColumnHeader.setStatsFilter(option);
-
       statisticColumn.setStatsFilter(option);
-      translatedColumn.setStatsFilter(option);
-      untranslatedColumn.setStatsFilter(option);
       remainingColumn.setStatsFilter(option);
    }
 
    private void addSorting(final ListDataProvider<DocumentNode> dataProvider)
    {
       ListHandler<DocumentNode> columnSortHandler = new ListHandler<DocumentNode>(dataProvider.getList());
-      columnSortHandler.setComparator(directoryColumn, new Comparator<DocumentNode>()
+      columnSortHandler.setComparator(pathColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
@@ -247,20 +267,6 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) - o2.getDocInfo().getStats().getApprovedPercent(statsByWords);
          }
       });
-      columnSortHandler.setComparator(translatedColumn, new Comparator<DocumentNode>()
-      {
-         public int compare(DocumentNode o1, DocumentNode o2)
-         {
-            return o1.getDocInfo().getStats().getWordCount().getApproved() - o2.getDocInfo().getStats().getWordCount().getApproved();
-         }
-      });
-      columnSortHandler.setComparator(untranslatedColumn, new Comparator<DocumentNode>()
-      {
-         public int compare(DocumentNode o1, DocumentNode o2)
-         {
-            return o1.getDocInfo().getStats().getWordCount().getUntranslated() - o2.getDocInfo().getStats().getWordCount().getUntranslated();
-         }
-      });
       columnSortHandler.setComparator(remainingColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
@@ -272,7 +278,27 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
          }
       });
+
+      columnSortHandler.setComparator(lastModifiedColumn, new Comparator<DocumentNode>()
+      {
+         public int compare(DocumentNode o1, DocumentNode o2)
+         {
+            if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+            {
+               return 0;
+            }
+            if (o1.getDocInfo().getLastChanged() == null)
+            {
+               return -1;
+            }
+            if (o2.getDocInfo().getLastChanged() == null)
+            {
+               return 1;
+            }
+            return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
+         }
+      });
       addColumnSortHandler(columnSortHandler);
-      getColumnSortList().push(directoryColumn);
+      getColumnSortList().push(pathColumn);
    }
 }

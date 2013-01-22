@@ -243,7 +243,18 @@
 		<servlet-name>EventService</servlet-name>
 		<url-pattern>/webtrans/gwteventservice</url-pattern>
 	</servlet-mapping>
-
+	
+	<!--  GWT File upload service -->
+	<servlet>
+    	<servlet-name>uploadServlet</servlet-name>
+    	<servlet-class>org.zanata.servlet.FileUploadServlet</servlet-class>
+  	</servlet>
+  
+  	<servlet-mapping>
+    	<servlet-name>uploadServlet</servlet-name>
+    	<url-pattern>/webtrans/files/upload</url-pattern>
+  	</servlet-mapping>
+  	
 	<!-- Uncomment this to enable the H2Console
 	
 	<servlet>

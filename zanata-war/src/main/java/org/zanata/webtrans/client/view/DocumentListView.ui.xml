@@ -42,6 +42,7 @@
 			padding:10px;
 		}
 		
+		
     </ui:style>
     <g:LayoutPanel>
         <g:layer top="0px" bottom="0px">
@@ -66,7 +67,10 @@
                 		</g:cell>
                 	</g:HorizontalPanel>
                 </g:layer>
-                <g:layer top='32px' bottom="0px">
+                <g:layer top="35px" height="22px" right="23px" width="142px">
+                	<g:PushButton ui:field="downloadAllFiles"/>
+                </g:layer>
+                <g:layer top='52px' bottom="0px">
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:HTMLPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>

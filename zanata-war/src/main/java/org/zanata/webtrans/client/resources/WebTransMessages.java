@@ -71,8 +71,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Failed to load document from Server")
    String loadDocFailed();
 
-   @DefaultMessage("Directory")
-   String columnHeaderDirectory();
+   @DefaultMessage("Path")
+   String columnHeaderPath();
 
    @DefaultMessage("Document")
    String columnHeaderDocument();

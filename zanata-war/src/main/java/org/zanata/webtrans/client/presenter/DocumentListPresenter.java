@@ -29,9 +29,12 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -40,6 +43,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
@@ -48,12 +52,18 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
+import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
+import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.common.base.Strings;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
@@ -67,6 +77,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
+   
+   private final CachingDispatchAsync dispatcher;
 
    /**
     * For quick lookup of document id by full path (including document name).
@@ -78,31 +90,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private TranslationStats projectStats;
 
-   private final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>()
-   {
-      @Override
-      public void setSelected(DocumentNode object, boolean selected)
-      {
-         if (selected && (super.getSelectedObject() != null))
-         {
-            if (object.getDocInfo().getId().equals(super.getSelectedObject().getDocInfo().getId()))
-            {
-               // switch to editor (via history) on re-selection
-               HistoryToken token = history.getHistoryToken();
-               token.setView(MainView.Editor);
-               token.setDocumentPath(object.getDocInfo().getPath() + object.getDocInfo().getName());
-               history.newItem(token);
-               userworkspaceContext.setSelectedDoc(object.getDocInfo());
-            }
-         }
-         super.setSelected(object, selected);
-      }
-   };
+   private final NoSelectionModel<DocumentNode> selectionModel = new NoSelectionModel<DocumentNode>();
 
    @Inject
-   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
+   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
+      this.dispatcher = dispatcher;
       this.userworkspaceContext = userworkspaceContext;
       this.messages = messages;
       this.history = history;
@@ -116,19 +110,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    protected void onBind()
    {
       dataProvider = display.getDataProvider();
-      display.renderTable(selectionModel);
+      display.setListener(this);
 
-      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
-      {
-         public void onSelectionChange(SelectionChangeEvent event)
-         {
-            DocumentNode selectedNode = selectionModel.getSelectedObject();
-            if (selectedNode != null)
-            {
-               SelectionEvent.fire(display.getDocumentList(), selectedNode.getDocInfo());
-            }
-         }
-      });
+      display.renderTable(selectionModel);
 
       setStatsFilter(STATS_OPTION_WORDS);
 
@@ -136,32 +120,23 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
-      display.setListener(this);
-
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
-
+   
    @Override
    public void fireDocumentSelection(DocumentInfo doc)
    {
       // generate history token
       HistoryToken token = history.getHistoryToken();
 
-      // prevent feedback loops between history and selection
-      boolean isNewSelection;
-      DocumentId docId = getDocumentId(token.getDocumentPath());
-      isNewSelection = (docId == null || !docId.equals(doc.getId()));
+      currentDocument = doc;
+      token.setDocumentPath(doc.getPath() + doc.getName());
+      token.setView(MainView.Editor);
+      // don't carry searches over to the next document
+      token.setSearchText("");
+      history.newItem(token);
 
-      if (isNewSelection)
-      {
-         currentDocument = doc;
-         token.setDocumentPath(doc.getPath() + doc.getName());
-         token.setView(MainView.Editor);
-         // don't carry searches over to the next document
-         token.setSearchText("");
-         history.newItem(token);
-      }
       userworkspaceContext.setSelectedDoc(doc);
    }
 
@@ -314,7 +289,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          userworkspaceContext.setSelectedDoc(node.getDocInfo());
          // required in order to show the document selected in doclist when
          // loading from bookmarked history token
-         display.getDocumentListTable().getSelectionModel().setSelected(node, true);
+         fireDocumentSelection(node.getDocInfo());
       }
    }
 
@@ -375,4 +350,115 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       }
    }
+
+   @Override
+   public void downloadAllFiles()
+   {
+      WorkspaceId workspaceId = userworkspaceContext.getWorkspaceContext().getWorkspaceId();
+      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId()), new AsyncCallback<DownloadAllFilesResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable generate all files to download"));
+            display.hideConfirmation();
+         }
+
+         @Override
+         public void onSuccess(DownloadAllFilesResult result)
+         {
+            if (result.isPrepared())
+            {
+               processId = result.getProcessId();
+               display.updateFileDownloadProgress(0, 0);
+               display.setDownloadInProgress(true);
+               display.startGetDownloadStatus(1000);
+            }
+            else
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Permission denied for this action"));
+               display.hideConfirmation();
+            }
+         }
+      });
+   }
+
+   @Override
+   public void cancelDownloadAllFiles()
+   {
+      display.hideConfirmation();
+   }
+
+   private String processId;
+
+   @Override
+   public void updateDownloadFileProgress()
+   {
+      dispatcher.execute(new GetDownloadAllFilesProgress(processId), new AsyncCallback<GetDownloadAllFilesProgressResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable get progress of file preparation"));
+            display.hideConfirmation();
+         }
+
+         @Override
+         public void onSuccess(GetDownloadAllFilesProgressResult result)
+         {
+            display.updateFileDownloadProgress(result.getCurrentProgress(), result.getMaxProgress());
+
+            if (result.isDone())
+            {
+               display.stopGetDownloadStatus();
+               final String url = Application.getAllFilesDownloadURL(result.getDownloadId());
+               display.setAndShowFilesDownloadLink(url);
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download",  display.getDownloadAllFilesInlineLink(url)));
+            }
+         }
+      });
+   }
+
+   @Override
+   public void showUploadDialog(DocumentInfo docInfo)
+   {
+      display.showUploadDialog(docInfo, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
+   }
+
+   @Override
+   public void cancelFileUpload()
+   {
+      display.closeFileUpload();
+   }
+
+   @Override
+   public void onFileUploadComplete(SubmitCompleteEvent event)
+   {
+      display.closeFileUpload();
+      if(event.getResults().contains("200"))
+      {
+         if(event.getResults().contains("Warning"))
+         {
+            eventBus.fireEvent(new NotificationEvent(Severity.Warning, "File uploaded.", event.getResults(), true, null));
+         }
+         else
+         {
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, "File uploaded.", event.getResults(), true, null));
+         }
+      }
+      else
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Error, "File upload failed.", event.getResults(), true, null));
+      }
+   }
+
+   @Override
+   public void onUploadFile()
+   {
+      if (!Strings.isNullOrEmpty(display.getSelectedUploadFileName()))
+      {
+         display.submitUploadForm();
+      }
+   }
+
 }

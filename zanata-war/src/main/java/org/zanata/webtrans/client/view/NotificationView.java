@@ -26,9 +26,11 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.ui.NotificationDetailsBox;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.CssResource;
@@ -37,6 +39,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -80,12 +83,6 @@ public class NotificationView extends Composite implements NotificationDisplay
       String msgLabel();
 
       String disabledInlineLink();
-
-      String error();
-
-      String warning();
-
-      String info();
    }
 
    @UiField
@@ -105,6 +102,8 @@ public class NotificationView extends Composite implements NotificationDisplay
 
    private int messagesToKeep;
    private Listener listener;
+   
+   private final NotificationDetailsBox detailBox;
 
    private DisplayOrder displayOrder = DisplayOrder.ASCENDING;
 
@@ -112,13 +111,13 @@ public class NotificationView extends Composite implements NotificationDisplay
    public NotificationView()
    {
       initWidget(uiBinder.createAndBindUi(this));
+      detailBox = new NotificationDetailsBox();
    }
 
    @UiHandler("clearLink")
    public void onClearButtonClick(ClickEvent event)
    {
       listener.onClearClick();
-
    }
 
    @Override
@@ -134,7 +133,7 @@ public class NotificationView extends Composite implements NotificationDisplay
    }
 
    @Override
-   public void appendMessage(Severity severity, String msg, InlineLink inlineLink)
+   public void appendMessage(final Severity severity, final String summary, final String msg, final boolean displayAsHtml, final InlineLink inlineLink)
    {
       HorizontalPanel panel = new HorizontalPanel();
       panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
@@ -146,13 +145,24 @@ public class NotificationView extends Composite implements NotificationDisplay
       severityImg = createSeverityImage(severity);
       panel.add(severityImg);
 
-      String time = "[" + DateTimeFormat.getFormat(PredefinedFormat.HOUR24_MINUTE_SECOND).format(new Date()) + "]";
+      final String time = "[" + DateTimeFormat.getFormat(PredefinedFormat.HOUR24_MINUTE_SECOND).format(new Date()) + "]";
       Label timeLabel = new Label(time);
       timeLabel.setStyleName(style.timeLabel());
       panel.add(timeLabel);
 
-      Label msgLabel = new Label(msg);
+      Label msgLabel = new Label(summary);
       msgLabel.setStyleName(style.msgLabel());
+      msgLabel.addStyleName("pointer");
+      
+      msgLabel.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            detailBox.setMessageDetails(severity, summary, time, msg, displayAsHtml, inlineLink);
+            detailBox.center();
+         }
+      });
       
       panel.add(msgLabel);
       if (inlineLink != null)
@@ -200,15 +210,15 @@ public class NotificationView extends Composite implements NotificationDisplay
 
       if (severity == Severity.Error)
       {
-         severityImg.addStyleName(style.error());
+         severityImg.addStyleName("severity_error");
       }
       else if (severity == Severity.Warning)
       {
-         severityImg.addStyleName(style.warning());
+         severityImg.addStyleName("severity_warning");
       }
       else
       {
-         severityImg.addStyleName(style.info());
+         severityImg.addStyleName("severity_info");
       }
 
       return severityImg;

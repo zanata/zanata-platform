@@ -35,7 +35,7 @@ public interface NotificationDisplay extends WidgetDisplay
 {
    void clearMessages();
 
-   void appendMessage(Severity severity, String message, InlineLink inlineLink);
+   void appendMessage(Severity severity, String summary, String message, boolean displayAsHtml, InlineLink inlineLink);
 
    void setMessagesToKeep(int count);
 
