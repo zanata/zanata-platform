@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <dataset>
     <!-- Original Project -->
-    <HProject projecttype="iteration"
+    <HProject defaultProjectType="gettext"
               id="100"
               versionNum="1"
               creationDate="2009-09-01 20:30:16"
@@ -92,7 +92,7 @@
 
 
     <!-- Different Empty Project -->
-    <HProject projecttype="iteration"
+    <HProject defaultProjectType="gettext"
               id="1000"
               versionNum="1"
               creationDate="2009-09-01 20:30:16"
