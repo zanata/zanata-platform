@@ -138,13 +138,13 @@ public class XliffReader extends XliffCommon
                // at the moment, ignore comments
                // extractComment(xmlr);
             }
-            else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_FILE))
+            else if (xmlr.isStartElement() && getLocalName(xmlr).equals(ELE_FILE))
             {
                // srcLang is passed as en-us by default
                // srcLang = new LocaleId(getAttributeValue(xmlr,
                // ATTRI_SOURCE_LANGUAGE));
             }
-            else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_TRANS_UNIT))
+            else if (xmlr.isStartElement() && getLocalName(xmlr).equals(ELE_TRANS_UNIT))
             {
                if (document != null)
                {
@@ -166,7 +166,7 @@ public class XliffReader extends XliffCommon
                   }
                }
             }
-            else if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_FILE))
+            else if (xmlr.isEndElement() && getLocalName(xmlr).equals(ELE_FILE))
             {
                // this is to ensure only 1 <file> element in each xliff document
                // FIXME it only ensures that we silently ignore extra file elements!
@@ -192,7 +192,7 @@ public class XliffReader extends XliffCommon
       while (xmlr.hasNext() && !endTransUnit)
       {
          xmlr.next();
-         String localName = xmlr.getLocalName();
+         String localName = getLocalName(xmlr);
          boolean endElement = xmlr.isEndElement();
          if (endElement && localName.equals(ELE_TRANS_UNIT))
          {
@@ -228,7 +228,7 @@ public class XliffReader extends XliffCommon
       {
          xmlr.next();
          boolean endElement = xmlr.isEndElement();
-         String localName = xmlr.getLocalName();
+         String localName = getLocalName(xmlr);
          if (endElement && localName.equals(ELE_TRANS_UNIT))
          {
             endTransUnit = true;
@@ -265,7 +265,7 @@ public class XliffReader extends XliffCommon
       while (xmlr.hasNext() && !endContextGroup)
       {
          xmlr.next();// move to context tag
-         String localName = xmlr.getLocalName();
+         String localName = getLocalName(xmlr);
          boolean endElement = xmlr.isEndElement();
          if (endElement && localName.equals(ELE_CONTEXT_GROUP))
             endContextGroup = true;
@@ -301,7 +301,7 @@ public class XliffReader extends XliffCommon
 
       reader.next();
 
-      String localName = reader.getLocalName();
+      String localName = getLocalName(reader);
       if ((reader.isEndElement() || reader.isStartElement()) && localName.equals(elementName))
       {
          keepReading = false;
@@ -329,7 +329,7 @@ public class XliffReader extends XliffCommon
             }
          }
          reader.next();
-         localName = reader.getLocalName();
+         localName = getLocalName(reader);
 
          if ((reader.isEndElement() || reader.isStartElement()) && localName.equals(elementName))
          {
@@ -337,6 +337,12 @@ public class XliffReader extends XliffCommon
          }
       }
       return contents.toString();
+   }
+
+   private static String getLocalName(XMLStreamReader xmlr)
+   {
+      if (xmlr.isCharacters()) return "";
+      return xmlr.getLocalName();
    }
 
    /**
