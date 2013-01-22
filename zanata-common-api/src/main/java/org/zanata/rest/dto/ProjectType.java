@@ -7,5 +7,25 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum(String.class)
 public enum ProjectType
 {
-   UTF8properties, Properties, Gettext, Podir, Xliff, XML, Raw;
+   Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, Raw;
+
+   /**
+    * @param projectType
+    * @return
+    * @throws Exception
+    */
+   public static ProjectType getValueOf(String projectType) throws Exception
+   {
+      if (projectType != null && !projectType.isEmpty())
+      {
+         for (ProjectType pt : ProjectType.values())
+         {
+            if (pt.name().equalsIgnoreCase(projectType))
+            {
+               return pt;
+            }
+         }
+      }
+      throw new Exception("Unsupported project type '" + projectType + "'");
+   }
 }
