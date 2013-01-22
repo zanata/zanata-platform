@@ -203,5 +203,11 @@ class GeneratedIndexSource extends ClassPathSource
          this.url = url;
          this.text = text;
       }
+
+      @Override
+      public String toString()
+      {
+         return text + "@" + url;
+      }
    }
 }
