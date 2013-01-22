@@ -28,11 +28,11 @@ public class PutVersionCommand extends ConfigurableCommand<PutVersionOptions>
    {
       ProjectIteration version = new ProjectIteration();
       version.setId(getOpts().getVersionSlug());
+	  
       if (getOpts().getProjectType() != null)
       {
          version.setProjectType(ProjectType.getValueOf(getOpts().getProjectType()));
       }
-
       log.debug("{}", version);
 
       IProjectIterationResource iterResource = getRequestFactory().getProjectIteration(getOpts().getVersionProject(), getOpts().getVersionSlug());

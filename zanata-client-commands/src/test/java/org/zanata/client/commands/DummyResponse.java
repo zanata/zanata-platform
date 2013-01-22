@@ -2,6 +2,7 @@ package org.zanata.client.commands;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -107,5 +108,16 @@ public class DummyResponse<T> extends ClientResponse<T>
    public MultivaluedMap<String, Object> getMetadata()
    {
       return null;
+   }
+
+   @Override
+   public Map<String, Object> getAttributes()
+   {
+      return null;
+   }
+
+   @Override
+   public void resetStream()
+   {
    }
 }
