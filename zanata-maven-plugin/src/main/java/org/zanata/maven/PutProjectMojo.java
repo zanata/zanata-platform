@@ -38,8 +38,8 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
    private String projectDesc;
    
    /**
-    * Default Project type {UTF8properties, Properties, Gettext, Podir, Xliff,
-    * XML, Raw}
+    * Default Project type {utf8properties, properties, gettext, podir, xliff,
+    * xml, raw}
     * 
     * @parameter expression="${zanata.defaultProjectType}"
     * @required
