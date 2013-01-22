@@ -47,7 +47,10 @@
 
         <!-- controls concordion output location-->
         <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
+        <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
         <cargo.debug.jvm.args> -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE</cargo.debug.jvm.args>
+        <!-- this property can be used to control what test needs to be run by failsafe -->
+        <include.test.patterns>**/*TestSuite.java</include.test.patterns>
     </properties>
 
     <dependencies>
@@ -334,7 +337,7 @@
                             <!--<forkMode>always</forkMode>-->
                             <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
                             <includes>
-                                <include>**/*TestSuite.java</include>
+                                <include>${include.test.patterns}</include>
                                 <!--index page-->
                                 <include>**/FeatureTest.java</include>
                             </includes>
@@ -404,6 +407,8 @@
                                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
                                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
                                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
+                                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
+                                <echo>-Dinclude.test.patterns : by default is **/*TestSuite.java. Can be used to control what test to run.</echo>
                                 <echo>==========================================================</echo>
                             </target>
                         </configuration>
