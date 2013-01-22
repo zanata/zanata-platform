@@ -116,7 +116,7 @@ public class AppView extends Composite implements AppDisplay
       
       projectLink.setHref(Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
       versionLink.setHref(Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      versionFilesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      // versionFilesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
       
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
@@ -253,6 +253,12 @@ public class AppView extends Composite implements AppDisplay
          enableTab(editorTab, enable);
          break;
       }
+   }
+
+   @UiHandler("versionFilesLink")
+   public void onversionFilesLinkClick(ClickEvent event)
+   {
+      listener.onDocumentListClicked();
    }
 
    @UiHandler("documentListTab")
