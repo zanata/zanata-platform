@@ -58,10 +58,10 @@ public class VersionGroupPage extends AbstractPage
       WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
       searchButton.click();
 
-      return waitForTenSec().until(new Function<WebDriver, List<TableRow>>()
+      waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          @Override
-         public List<TableRow> apply(WebDriver driver)
+         public WebElement apply(WebDriver driver)
          {
             WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(table);
@@ -73,9 +73,11 @@ public class VersionGroupPage extends AbstractPage
                log.debug("waiting for search result refresh...");
                return null;
             }
-            return tableRows;
+            return table;
          }
       });
+      WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+      return WebElementUtil.getTableRows(table);
    }
 
    public VersionGroupPage addToGroup(TableRow projectVersionRow)
