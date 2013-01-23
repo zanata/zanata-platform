@@ -14,9 +14,15 @@
 <ui:define name="center_content">
     <s:decorate id="main_content">
 
-    <s:div styleClass="content_box" rendered="#{not empty projectHome.instance.homeContent or not empty projectHome.instance.description}">
+    <s:div styleClass="content_box" rendered="#{not empty projectHome.instance.homeContent or not empty projectHome.instance.description or not empty projectHome.instance.sourceViewURL}">
         <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"/>
         <s:formattedText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
+        <p>
+            <h:outputText rendered="#{not empty projectHome.instance.sourceViewURL}" value="#{messages['jsf.viewSourceFiles']}: "/>
+            <h:outputLink value="#{projectHome.instance.sourceViewURL}">
+                <h:outputText value="#{projectHome.instance.sourceViewURL}"/>
+            </h:outputLink>
+        </p>
     </s:div>
 
    	<div class="iterations">

@@ -19,7 +19,7 @@
                          valueChangeListener="#{projectHome.verifySlugAvailable}">
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
-            
+
             <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
             	<rich:toolTip>
 	          		<em><code>#{messages['jsf.ProjectIdExample']}</code></em>
@@ -46,6 +46,17 @@
 	        </h:selectOneMenu>
         </s:decorate>
 
+        <s:decorate id="humanViewableSourceUrlField" template="edit.xhtml">
+            <ui:define name="label">#{messages['jsf.SourceUrlHumanReadable']}</ui:define>
+            <h:inputText id="humanViewableSourceUrl" required="false"
+                         value="#{projectHome.instance.sourceViewURL}" style="width:400px;"/>
+            <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
+                <rich:toolTip>
+                   <em><code>#{messages['jsf.SourceUrlHumanReadableExample']}</code></em>
+                </rich:toolTip>
+            </s:span>
+        </s:decorate>
+
         <s:decorate id="homeContentField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.HomepageContent']}</ui:define>
              <rich:editor id="homeContent" 
@@ -65,7 +76,7 @@
 	            <f:selectItems value="#{projectHome.statusList}"/>
 	        </h:selectOneMenu>
 	    </s:decorate>
-                        
+
         <div style="clear:both"></div>
 
     </rich:panel>
