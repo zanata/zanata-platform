@@ -55,7 +55,7 @@ public class VersionGroupPage extends AbstractPage
       return new VersionGroupPage(getDriver());
    }
 
-   public List<TableRow> searchProject(final String projectName, final int expectedResultNum)
+   public List<List<String>> searchProject(final String projectName, final int expectedResultNum)
    {
       WebElement searchField = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
       searchField.sendKeys(projectName);
@@ -63,10 +63,10 @@ public class VersionGroupPage extends AbstractPage
       WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
       searchButton.click();
 
-      waitForTenSec().until(new Function<WebDriver, WebElement>()
+      return waitForTenSec().until(new Function<WebDriver, List<List<String>>>()
       {
          @Override
-         public WebElement apply(WebDriver driver)
+         public List<List<String>> apply(WebDriver driver)
          {
             WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(table);
@@ -88,16 +88,16 @@ public class VersionGroupPage extends AbstractPage
                log.debug("waiting for search result refresh...");
                return null;
             }
-            return table;
+            return tableContents;
          }
       });
-      WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
-      return WebElementUtil.getTableRows(table);
    }
 
-   public VersionGroupPage addToGroup(TableRow projectVersionRow)
+   public VersionGroupPage addToGroup(int rowIndex)
    {
-      List<WebElement> cells = projectVersionRow.getCells();
+      WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+
+      List<WebElement> cells = WebElementUtil.getTableRows(table).get(rowIndex).getCells();
       WebElement actionCell = cells.get(cells.size() - 1);
       if (!actionCell.getText().contains("Already in Group"))
       {

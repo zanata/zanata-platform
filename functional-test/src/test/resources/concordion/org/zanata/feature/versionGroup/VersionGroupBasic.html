@@ -41,7 +41,7 @@
         When I click <span c:execute="#searchResult = searchProjectToAddToVersionGroup(#groupName, #searchTerm)">Add Project Versions link and search <span c:set="#searchTerm">group</span></span>,
         I should get
     <table c:verifyRows="#row : #searchResult">
-        <tr><th c:assertEquals="#row.cellContents">row content (List.toString)</th></tr>
+        <tr><th c:assertEquals="#row">row content (List.toString)</th></tr>
         <tr><td>[project a to be grouped, master, ]</td></tr>
         <tr><td>[project b to be grouped, master, ]</td></tr>
     </table>
@@ -49,7 +49,7 @@
     </p>
 
     <p>
-        When I check row <span c:set="#row">1</span> from search result and <span c:execute="#versionGroupPage = addProjectToVersionGroup(#searchResult, #row)">add to version group</span>,
+        When I check row <span c:set="#row">1</span> from search result and <span c:execute="#versionGroupPage = addProjectToVersionGroup(#row)">add to version group</span>,
         I should have
     <table c:verifyRows="#projectVersion : #versionGroupPage.projectVersionsInGroup">
         <tr><th c:assertEquals="#projectVersion">project name, version</th></tr>
