@@ -41,7 +41,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
    @In
    private DocumentDAO documentDAO;
-
+   
    @In
    private TranslationFileService translationFileServiceImpl;
 
@@ -61,6 +61,8 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          {
             DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
+            LastTranslatedInfo lastTranslatedInfo = documentDAO.getLastTranslated(hDoc.getId(), localeId);
+            
             String lastModifiedBy = "";
             HPerson person = hDoc.getLastModifiedBy();
             if(person != null)

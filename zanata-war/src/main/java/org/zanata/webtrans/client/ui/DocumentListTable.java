@@ -55,6 +55,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
    private final class DocumentHeader extends Header<String>
    {
       private final WebTransMessages messages;
+
       public DocumentHeader(org.zanata.webtrans.client.resources.Resources images, WebTransMessages messages)
       {
          super(new IconCellDecorator<String>(images.documentImage(), new TextCell()));
@@ -67,7 +68,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          return messages.columnHeaderDocument();
       }
    }
-   
+
    private final class StatisticHeader extends Header<String> implements HasStatsFilter
    {
       private final WebTransMessages messages;
@@ -78,6 +79,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          super(new TextCell());
          this.messages = messages;
       }
+
       @Override
       public String getValue()
       {
@@ -95,8 +97,9 @@ public class DocumentListTable extends CellTable<DocumentNode>
    private final Column<DocumentNode, String> documentColumn;
    private final StatisticColumn statisticColumn;
    private final RemainingHoursColumn remainingColumn;
-   
+
    private final TextColumn<DocumentNode> lastModifiedColumn;
+   private final TextColumn<DocumentNode> lastTranslatedColumn;
    private final StaticWidgetColumn<DocumentNode, HorizontalPanel> downloadColumn;
    private final Column<DocumentNode, String> uploadColumn;
 
@@ -117,7 +120,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return object.getDocInfo().getPath();
          }
       };
-      
+
       documentColumn = new Column<DocumentNode, String>(new ClickableTextCell())
       {
          @Override
@@ -138,20 +141,33 @@ public class DocumentListTable extends CellTable<DocumentNode>
 
       statisticColumn = new StatisticColumn(messages);
       remainingColumn = new RemainingHoursColumn(messages);
-      
+
       lastModifiedColumn = new TextColumn<DocumentNode>()
       {
          @Override
          public String getValue(DocumentNode object)
          {
             String date = "";
-            if(object.getDocInfo().getLastChanged() != null)
+            if (object.getDocInfo().getLastChanged() != null)
             {
                date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
             }
-
             String modifiedBy = object.getDocInfo().getLastModifiedBy();
+            return modifiedBy + " " + date;
+         }
+      };
 
+      lastTranslatedColumn = new TextColumn<DocumentNode>()
+      {
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            String date = "";
+            if (object.getDocInfo().getLastChanged() != null)
+            {
+               date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
+            }
+            String modifiedBy = object.getDocInfo().getLastModifiedBy();
             return modifiedBy + " " + date;
          }
       };
@@ -196,6 +212,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
       statisticColumn.setSortable(true);
       remainingColumn.setSortable(true);
       lastModifiedColumn.setSortable(true);
+      lastTranslatedColumn.setSortable(true);
 
       addColumn(pathColumn, messages.columnHeaderPath());
       pathColumn.setCellStyleNames("pathCol");
@@ -210,15 +227,18 @@ public class DocumentListTable extends CellTable<DocumentNode>
 
       remainingColumn.setCellStyleNames("remainingCol");
       addColumn(remainingColumn, messages.columnHeaderRemaining());
-      
+
       lastModifiedColumn.setCellStyleNames("lastModifiedCol");
       addColumn(lastModifiedColumn, "Last Modified");
+      
+      lastTranslatedColumn.setCellStyleNames("lastTranslatedCol");
+      addColumn(lastTranslatedColumn, "Last Translated");
 
       downloadColumn.setCellStyleNames("downloadCol");
       addColumn(downloadColumn, "Download");
 
       uploadColumn.setCellStyleNames("uploadCol");
-      if(userWorkspaceContext.hasWriteAccess())
+      if (userWorkspaceContext.hasWriteAccess())
       {
          addColumn(uploadColumn, "Upload");
       }
@@ -298,6 +318,26 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
          }
       });
+      
+      columnSortHandler.setComparator(lastTranslatedColumn, new Comparator<DocumentNode>()
+            {
+               public int compare(DocumentNode o1, DocumentNode o2)
+               {
+                  if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+                  {
+                     return 0;
+                  }
+                  if (o1.getDocInfo().getLastChanged() == null)
+                  {
+                     return -1;
+                  }
+                  if (o2.getDocInfo().getLastChanged() == null)
+                  {
+                     return 1;
+                  }
+                  return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
+               }
+            });
       addColumnSortHandler(columnSortHandler);
       getColumnSortList().push(pathColumn);
    }
