@@ -14,7 +14,7 @@
 <ui:define name="center_content">
     <s:decorate id="main_content">
 
-    <s:div styleClass="content_box" rendered="#{not empty projectHome.instance.homeContent or not empty projectHome.instance.description or not empty projectHome.instance.sourceViewURL}">
+    <s:div styleClass="content_box" rendered="#{not empty projectHome.instance.homeContent or not empty projectHome.instance.description or not empty projectHome.instance.sourceViewURL or not empty projectHome.instance.sourceCheckoutURL}">
         <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"/>
         <s:formattedText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
         <p>
@@ -23,6 +23,7 @@
                 <h:outputText value="#{projectHome.instance.sourceViewURL}"/>
             </h:outputLink>
         </p>
+        <s:formattedText id="source-checkout-url" rendered="#{not empty projectHome.instance.sourceCheckoutURL}" value="#{messages['jsf.SourceCheckoutUrl']}: #{projectHome.instance.sourceCheckoutURL}"/>
     </s:div>
 
    	<div class="iterations">

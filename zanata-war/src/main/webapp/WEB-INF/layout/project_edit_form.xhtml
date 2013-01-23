@@ -50,9 +50,20 @@
             <ui:define name="label">#{messages['jsf.SourceUrlHumanReadable']}</ui:define>
             <h:inputText id="humanViewableSourceUrl" required="false"
                          value="#{projectHome.instance.sourceViewURL}" style="width:400px;"/>
-            <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
+            <s:span styleClass="icon-info-circle-2 input_help" id="humanSourceUrlHelp">
                 <rich:toolTip>
                    <em><code>#{messages['jsf.SourceUrlHumanReadableExample']}</code></em>
+                </rich:toolTip>
+            </s:span>
+        </s:decorate>
+
+        <s:decorate id="machineReadableSourceUrlField" template="edit.xhtml">
+            <ui:define name="label">#{messages['jsf.SourceUrlMachineReadable']}</ui:define>
+            <h:inputText id="machineReadableSourceUrl" required="false"
+                         value="#{projectHome.instance.sourceCheckoutURL}" style="width:400px;"/>
+            <s:span styleClass="icon-info-circle-2 input_help" id="machineSourceUrlHelp">
+                <rich:toolTip>
+                   <em><code>#{messages['jsf.SourceUrlMachineReadableExample']}</code></em>
                 </rich:toolTip>
             </s:span>
         </s:decorate>
