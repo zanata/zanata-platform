@@ -31,7 +31,10 @@ public class CreateVersionPage extends AbstractPage
    @FindBy(id = "iterationForm:slugField:slug")
    private WebElement versionIdField;
 
-   @FindBy(tagName = "select")
+   @FindBy(id = "iterationForm:projectTypeField:projectType")
+   private WebElement projectTypeSelection;
+
+   @FindBy(id = "iterationForm:statusField:status")
    private WebElement statusSelection;
 
    @FindBy(id = "iterationForm:save")
@@ -45,6 +48,12 @@ public class CreateVersionPage extends AbstractPage
    public CreateVersionPage inputVersionId(String versionId)
    {
       versionIdField.sendKeys(versionId);
+      return this;
+   }
+
+   public CreateVersionPage selectProjectType(String projectType)
+   {
+      new Select(projectTypeSelection).selectByVisibleText(projectType);
       return this;
    }
 

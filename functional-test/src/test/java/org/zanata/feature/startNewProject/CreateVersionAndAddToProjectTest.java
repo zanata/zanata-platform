@@ -7,8 +7,6 @@ import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
-import org.zanata.page.HomePage;
-import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.projects.ProjectsPage;
