@@ -2,6 +2,8 @@ package org.zanata.page.groups;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,6 +14,9 @@ import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -68,7 +73,17 @@ public class VersionGroupPage extends AbstractPage
             // we want to wait until search result comes back. There is no way we can tell whether search result has come back and table refreshed.
             // To avoid the org.openqa.selenium.StaleElementReferenceException (http://seleniumhq.org/exceptions/stale_element_reference.html),
             // we have to set expected result num
-            if (tableRows.size() != expectedResultNum)
+
+            List<List<String>> tableContents = WebElementUtil.transformToTwoDimensionList(tableRows);
+            Iterable<List<String>> filter = Iterables.filter(tableContents, new Predicate<List<String>>()
+            {
+               @Override
+               public boolean apply(List<String> input)
+               {
+                  return input.get(0).contains(projectName);
+               }
+            });
+            if (Iterables.size(filter) != expectedResultNum)
             {
                log.debug("waiting for search result refresh...");
                return null;
