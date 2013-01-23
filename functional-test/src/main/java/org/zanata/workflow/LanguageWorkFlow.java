@@ -31,18 +31,17 @@ import lombok.extern.slf4j.Slf4j;
 public class LanguageWorkFlow extends AbstractWebWorkFlow
 {
 
-   public ManageLanguagePage addLanguageAndJoin(String localeId)
+   public void addLanguageAndJoin(String localeId)
    {
       ManageLanguagePage manageLanguagePage = addLanguage(localeId);
       ManageLanguageTeamMemberPage teamMemberPage = manageLanguagePage.manageTeamMembersFor(localeId);
       if (!teamMemberPage.getMemberUsernames().contains("admin"))
       {
-         return manageLanguagePage.joinLanguageTeam();
+         teamMemberPage.joinLanguageTeam();
       }
       else
       {
          log.warn("admin has already joined the language [{}]", localeId);
-         return manageLanguagePage;
       }
    }
 

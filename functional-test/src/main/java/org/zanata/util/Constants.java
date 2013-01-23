@@ -29,6 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Objects;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public enum Constants
 {
    // constants used by page and workflow objects
@@ -40,7 +43,6 @@ public enum Constants
    sampleProjects("zanata.sample.projects.basedir"),
    zanataApiKey("zanata.apikey");
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(Constants.class);
    public static final int FIFTY_SEC = 50000;
    private String value;
 
@@ -72,7 +74,7 @@ public enum Constants
       }
       catch (IOException e)
       {
-         LOGGER.error("can't load {}", propFile);
+         log.error("can't load {}", propFile);
          throw new IllegalStateException("can't load setup.properties");
       }
    }

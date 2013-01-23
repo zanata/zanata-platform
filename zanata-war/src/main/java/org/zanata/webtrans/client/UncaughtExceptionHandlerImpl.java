@@ -100,7 +100,7 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
       return e;
    }
 
-   private static String buildStackTraceMessages(Throwable e)
+   protected static String buildStackTraceMessages(Throwable e)
    {
       StringBuilder builder = new StringBuilder();
       builder.append(e.getMessage()).append("\n");

@@ -1,0 +1,41 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+</head>
+<body>
+    <p>
+        As a user, when I use
+        username: <span c:set="#username">translator</span> and password: <span c:set="#password">translator</span>
+        to <span c:execute="#result = signInAs(#username, #password)">sign in</span>,
+        then I should be <span c:assertTrue="#result">logged in</span>.
+    </p>
+    <span ext:screenshot="" />
+
+    <p>
+        As a user, when I go to <span c:set="#projectName">plural projects</span> and version <span c:set="#versionSlug">master</span>,
+        I should see <span c:execute="#projectVersionPage = goToProjectVersion(#projectName, #versionSlug)">project version page with my languages</span> listed:
+    </p>
+    <table c:verifyRows="#language : #projectVersionPage.translatableLanguages">
+        <tr><th c:assertEquals="#language">language</th></tr>
+        <tr><td>polski</td></tr>
+    </table>
+    <span ext:screenshot="" />
+
+    <p>
+        When I <span c:execute="#documentsViewPage = translate(#locale)">click on the language or locale <span c:set="#locale">pl</span></span>,
+        I should see translation workspace open up with 1 document in <span c:execute="#documentTable = getDocumentListTableContents(#documentsViewPage)">document list</span>.
+    </p>
+    <span ext:screenshot="" />
+    <ul>
+        <li>
+            On row <span c:set="#row">1</span>, column <span c:set="#column">1</span>, it should have the document path as <span c:assertEquals="getTableCellValue(#documentTable, #row, #column)"></span>
+        </li>
+        <li>
+            On row <span c:set="#row">1</span>, column <span c:set="#column">2</span>, it should have the document name as <span c:assertEquals="getTableCellValue(#documentTable, #row, #column)">test</span>
+        </li>
+        <li>
+            On row <span c:set="#row">1</span>, column <span c:set="#column">3</span>, it should have stats as <span c:assertEquals="getTableCellValue(#documentTable, #row, #column)">0%</span>
+        </li>
+    </ul>
+
+</body>
+</html>

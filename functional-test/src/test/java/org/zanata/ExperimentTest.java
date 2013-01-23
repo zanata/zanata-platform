@@ -21,7 +21,7 @@
 package org.zanata;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -37,7 +37,7 @@ public class ExperimentTest
       assertThat(matches, Matchers.equalTo(true));
    }
    
-   @Test(enabled = false)
+//   @Test
    public void canDoCampbell() {
       //#. Tag: para
       //#, no-c-format

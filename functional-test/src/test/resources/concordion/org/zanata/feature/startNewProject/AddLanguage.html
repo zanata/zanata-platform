@@ -1,0 +1,37 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+</head>
+<body>
+    <p>
+        As an admin I can create languages on the server.
+        When I go to menu More->Administration-><span c:execute="#manageLanguagePage = goToManageLanguagePage()">Manage Languages</span>, default source language should be there.
+    </p>
+    <table c:verifyRows="#lang : #manageLanguagePage.languageLocales">
+        <tr><th c:assertEquals="#lang">language locale</th></tr>
+        <tr><td>en-US</td></tr>
+    </table>
+    <span ext:screenshot="" />
+
+    <p>
+        When I input <span c:set="#language">pl</span> after click <span c:execute="#manageLanguagePage = addNewLanguage(#language)">Add New Language</span>,
+        then I should have
+    </p>
+    <table c:verifyRows="#lang : #manageLanguagePage.languageLocales">
+        <tr><th c:assertEquals="#lang">language locale</th></tr>
+        <tr><td>en-US</td></tr>
+        <tr><td>pl</td></tr>
+    </table>
+    <span ext:screenshot="" />
+
+    <p>
+        As admin I can click on <span c:execute="#manageLanguageTeamMemberPage = joinLanguageAsAdmin(#language)">Join Language Team</span> to join it.
+        Then for language <span c:echo="#language"/>, the members are:
+    </p>
+    <table c:verifyRows="#username : #manageLanguageTeamMemberPage.memberUsernames">
+        <tr><th c:assertEquals="#username">Member Username</th></tr>
+        <tr><td>admin</td></tr>
+    </table>
+    <span ext:screenshot="" />
+
+</body>
+</html>

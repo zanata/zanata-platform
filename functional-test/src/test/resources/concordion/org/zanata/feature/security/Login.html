@@ -1,0 +1,26 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+    <title>Internal authentication</title>
+</head>
+<body>
+    <p>
+        As a user, when I use
+        username: <span c:set="#username">admin</span>
+        and password: <span c:set="#password">admin</span>
+        to <span c:execute="#result = signInAs(#username, #password)">sign in</span>,
+
+        then I should be <span c:assertTrue="#result">logged in</span>.
+        My logged in name will appear as <span c:assertEquals="getLoggedInUsername()">admin</span>
+    </p>
+    <span ext:screenshot="" />
+
+    <p>
+        As a user, after I've logged in, I should be able to <span c:execute="signOut()">sign out</span>.
+        Then I should be able to log in as another user:
+        username: <span c:set="#username">translator</span>
+        and password: <span c:set="#password">translator</span>,
+        to <span c:execute="#result = signInAs(#username, #password)">sign in</span>.
+        My logged in name will appear as <span c:assertEquals="getLoggedInUsername()">translator</span>
+    </p>
+</body>
+</html>

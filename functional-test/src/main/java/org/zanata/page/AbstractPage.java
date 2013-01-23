@@ -28,13 +28,13 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
@@ -52,26 +52,20 @@ public class AbstractPage
    private final FluentWait<WebDriver> ajaxWaitForTenSec;
    private List<WebElement> navMenuItems = Collections.emptyList();
 
+   @FindBy(className = "navBar")
+   WebElement navBar;
+
    public AbstractPage(final WebDriver driver)
    {
-      this(driver, PageContext.jsf);
-   }
-
-   public AbstractPage(final  WebDriver driver, PageContext pageContext)
-   {
-      PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), this);
+      PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
       this.driver = driver;
       ajaxWaitForTenSec = waitForSeconds(driver, 10);
-      if (pageContext == PageContext.jsf)
-      {
-         //webTran and jsp don't share same page layout
-         navMenuItems = driver.findElement(By.className("navBar")).findElements(By.tagName("a"));
-      }
+      navMenuItems = navBar.findElements(By.tagName("a"));
    }
 
    public static FluentWait<WebDriver> waitForSeconds(WebDriver webDriver, int durationInSec)
    {
-      return new FluentWait<WebDriver>(webDriver).withTimeout(durationInSec, SECONDS).pollingEvery(1, SECONDS).ignoring(NoSuchElementException.class);
+      return new FluentWait<WebDriver>(webDriver).withTimeout(durationInSec, SECONDS).pollingEvery(1, SECONDS).ignoring(NoSuchElementException.class, StaleElementReferenceException.class);
    }
 
    public WebDriver getDriver()
@@ -145,8 +139,4 @@ public class AbstractPage
       return WebElementUtil.elementsToText(errorSpans);
    }
 
-   public enum PageContext
-   {
-      jsf, webTran
-   }
 }

@@ -28,8 +28,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,21 +51,14 @@ public class SignInPage extends AbstractPage
 
    public <P extends AbstractPage> P signInAndGoToPage(String username, String password, Class<P> pageClass)
    {
-      log.info("log in as username: {}", username);
-      usernameField.sendKeys(username);
-      passwordField.sendKeys(password);
-      signInButton.click();
       try
       {
-         waitForSeconds(getDriver(), 3).until(new Predicate<WebDriver>()
-         {
-            @Override
-            public boolean apply(WebDriver driver)
-            {
-               List<WebElement> signOutLink = driver.findElements(By.id("Sign_out"));
-               return signOutLink.size() == 1;
-            }
-         });
+         doSignIn(username, password);
+      }
+      catch (IllegalAccessError iae)
+      {
+         log.warn("Login failed. May due to some weired issue. Will Try again.");
+         doSignIn(username, password);
       }
       catch (TimeoutException e)
       {
@@ -75,5 +66,28 @@ public class SignInPage extends AbstractPage
          throw e;
       }
       return PageFactory.initElements(getDriver(), pageClass);
+   }
+
+   private void doSignIn(String username, String password)
+   {
+      log.info("log in as username: {}", username);
+      usernameField.sendKeys(username);
+      passwordField.sendKeys(password);
+      log.info("after input, username is: {}, password is: {}", usernameField.getText(), passwordField.getText());
+      signInButton.click();
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver driver)
+         {
+            List<WebElement> messages = driver.findElements(By.id("messages"));
+            if (messages.size() > 0 && messages.get(0).getText().contains("Login failed"))
+            {
+               throw new IllegalAccessError("Login failed");
+            }
+            List<WebElement> signIn = driver.findElements(By.id("Sign_in"));
+            return signIn.size() == 0;
+         }
+      });
    }
 }

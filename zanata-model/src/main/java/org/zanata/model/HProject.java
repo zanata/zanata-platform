@@ -20,21 +20,29 @@
  */
 package org.zanata.model;
 
+import static org.jboss.seam.security.EntityAction.DELETE;
+import static org.jboss.seam.security.EntityAction.INSERT;
+import static org.jboss.seam.security.EntityAction.UPDATE;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
+
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -42,17 +50,12 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.search.annotations.Indexed;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.Project;
-
-import lombok.Setter;
-import lombok.ToString;
-
-import static org.jboss.seam.security.EntityAction.DELETE;
-import static org.jboss.seam.security.EntityAction.INSERT;
-import static org.jboss.seam.security.EntityAction.UPDATE;
+import org.zanata.rest.dto.ProjectType;
 
 /**
  * @see Project
@@ -60,27 +63,43 @@ import static org.jboss.seam.security.EntityAction.UPDATE;
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
 @EntityRestrict({INSERT, UPDATE, DELETE})
 @Setter
+@Indexed
 @ToString(callSuper = true, of = "name")
-public abstract class HProject extends SlugEntityBase implements Serializable
+public class HProject extends SlugEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
    private String name;
    private String description;
    private String homeContent;
+   private String sourceViewURL;
    private boolean overrideLocales = false;
    private boolean restrictedByRoles = false;
    private HCopyTransOptions defaultCopyTransOpts;
    private Set<HLocale> customizedLocales;
+   private ProjectType defaultProjectType;
 
    private Set<HPerson> maintainers;
 
    private Set<HAccountRole> allowedRoles;
+
+   private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
+
+   @OneToMany(mappedBy = "project")
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+   public List<HProjectIteration> getProjectIterations()
+   {
+      return projectIterations;
+   }
+
+   public void addIteration(HProjectIteration iteration)
+   {
+      projectIterations.add(iteration);
+      iteration.setProject(this);
+   }
 
    @Size(max = 80)
    @NotEmpty
@@ -100,6 +119,12 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       return restrictedByRoles;
    }
 
+   @Enumerated(EnumType.STRING)
+   public ProjectType getDefaultProjectType()
+   {
+      return defaultProjectType;
+   }
+
    @Size(max = 100)
    @Field()
    public String getDescription()
@@ -111,6 +136,11 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public String getHomeContent()
    {
       return homeContent;
+   }
+
+   public String getSourceViewURL()
+   {
+      return sourceViewURL;
    }
 
    @OneToOne(fetch = FetchType.LAZY, optional = true)

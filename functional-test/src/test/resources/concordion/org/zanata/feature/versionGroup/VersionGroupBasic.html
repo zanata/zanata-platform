@@ -1,0 +1,62 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+    <title>Version Group Basic</title>
+</head>
+<body>
+    <p>
+        As an admin,
+        I want to create a version group with group id <span c:set="#groupId">group1</span> and name <span c:set="#groupName">group one</span>.
+        When I go to Groups menu item, click on <span c:execute="#versionGroupsPage = createNewVersionGroup(#groupId, #groupName)">Create New Group</span>,
+        put in the above data and save,
+        then I should have the group created.
+    </p>
+    <table c:verifyRows="#groupName : #versionGroupsPage.groupNames">
+        <tr><th c:assertEquals="#groupName">version group name</th></tr>
+        <tr><td>group one</td></tr>
+    </table>
+    <span ext:screenshot="" />
+
+    <p>
+        Given two projects and versions are created:
+    </p>
+    <table>
+        <tr>
+            <th>Project Id</th>
+            <th>Project Name</th>
+            <th>Version Id</th>
+        </tr>
+        <tr c:execute="createProjectAndVersion(#projectId, #projectName, #versionId)">
+            <td c:set="#projectId">group-project-a</td>
+            <td c:set="#projectName">project a to be grouped</td>
+            <td c:set="#versionId">master</td>
+        </tr>
+        <tr c:execute="createProjectAndVersion(#projectId, #projectName, #versionId)">
+            <td c:set="#projectId">group-project-b</td>
+            <td c:set="#projectName">project b to be grouped</td>
+            <td c:set="#versionId">master</td>
+        </tr>
+    </table>
+
+    <p>
+        When I click <span c:execute="#searchResult = searchProjectToAddToVersionGroup(#groupName, #searchTerm)">Add Project Versions link and search <span c:set="#searchTerm">group</span></span>,
+        I should get
+    <table c:verifyRows="#row : #searchResult">
+        <tr><th c:assertEquals="#row">row content (List.toString)</th></tr>
+        <tr><td>[project a to be grouped, master, ]</td></tr>
+        <tr><td>[project b to be grouped, master, ]</td></tr>
+    </table>
+    <span ext:screenshot="" />
+    </p>
+
+    <p>
+        When I check row <span c:set="#row">1</span> from search result and <span c:execute="#versionGroupPage = addProjectToVersionGroup(#row)">add to version group</span>,
+        I should have
+    <table c:verifyRows="#projectVersion : #versionGroupPage.projectVersionsInGroup">
+        <tr><th c:assertEquals="#projectVersion">project name, version</th></tr>
+        <tr><td>[project a to be grouped, master, ]</td></tr>
+    </table>
+    <span ext:screenshot="" />
+    </p>
+
+</body>
+</html>

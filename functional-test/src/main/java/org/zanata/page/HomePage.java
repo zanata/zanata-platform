@@ -31,10 +31,15 @@ import org.slf4j.LoggerFactory;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
+import com.google.common.base.Function;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HomePage extends AbstractPage
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(HomePage.class);
+   private static final By BY_SIGN_IN = By.id("Sign_in");
+   private static final By BY_SIGN_OUT = By.id("Sign_out");
 
    @FindBy(id = "Projects")
    private WebElement projectsLink;
@@ -52,23 +57,38 @@ public class HomePage extends AbstractPage
 
    public SignInPage clickSignInLink()
    {
-      LOGGER.info("header text: {}", userColumn.getText());
-      WebElement signInLink = userColumn.findElement(By.id("Sign_in"));
+      log.info("header text: {}", userColumn.getText());
+      WebElement signInLink = userColumn.findElement(BY_SIGN_IN);
       signInLink.click();
-      // else already signed in, no op
       return new SignInPage(getDriver());
    }
 
    public boolean hasLoggedIn()
    {
-      List<WebElement> signOutLink = getDriver().findElements(By.id("Sign_out"));
-      return signOutLink.size() > 0;
+      List<WebElement> signOutLink = getDriver().findElements(BY_SIGN_IN);
+      return signOutLink.size() == 0;
    }
 
    public String loggedInAs()
    {
-      String[] parts = userColumn.getText().split("\\s");
-      return parts[0];
+      WebElement username = userColumn.findElement(By.className("username"));
+      return username.getText().trim();
+   }
+
+   public HomePage signOut()
+   {
+      WebElement signOut = getDriver().findElement(BY_SIGN_OUT);
+      signOut.click();//first click will just expand the drop down
+      signOut.click();//second click will sign out. We may consider to go straight to /zanata/account/sign_out url
+      waitForTenSec().until(new Function<WebDriver, WebElement>()
+      {
+         @Override
+         public WebElement apply(WebDriver driver)
+         {
+            return driver.findElement(BY_SIGN_IN);
+         }
+      });
+      return new HomePage(getDriver());
    }
 
    public ProjectsPage goToProjects()

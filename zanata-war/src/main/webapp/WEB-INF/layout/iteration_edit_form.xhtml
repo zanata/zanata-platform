@@ -22,9 +22,16 @@
             </h:inputText>
         </s:decorate>
         
+        <s:decorate id="projectTypeField" template="edit.xhtml">
+            <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
+            <h:selectOneMenu id="projectType" value="#{projectIterationHome.instance.projectType}">
+                <f:selectItems value="#{projectIterationHome.projectTypeList}"/>
+            </h:selectOneMenu>
+        </s:decorate>
+        
         <s:decorate id="statusField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.Status']}</ui:define>
-            <h:selectOneMenu value="#{projectIterationHome.instance.status}">
+            <h:selectOneMenu id="status" value="#{projectIterationHome.instance.status}">
                 <f:selectItems value="#{projectIterationHome.statusList}"/>
             </h:selectOneMenu>
         </s:decorate>

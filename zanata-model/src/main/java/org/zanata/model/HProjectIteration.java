@@ -20,13 +20,20 @@
  */
 package org.zanata.model;
 
+import static org.jboss.seam.security.EntityAction.DELETE;
+import static org.jboss.seam.security.EntityAction.INSERT;
+import static org.jboss.seam.security.EntityAction.UPDATE;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -34,6 +41,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -49,14 +60,7 @@ import org.zanata.annotation.EntityRestrict;
 import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.ProjectIteration;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import static org.jboss.seam.security.EntityAction.DELETE;
-import static org.jboss.seam.security.EntityAction.INSERT;
-import static org.jboss.seam.security.EntityAction.UPDATE;
+import org.zanata.rest.dto.ProjectType;
 
 /**
  * 
@@ -76,7 +80,7 @@ public class HProjectIteration extends SlugEntityBase
 {
 
    private static final long serialVersionUID = 182037127575991478L;
-   private HIterationProject project;
+   private HProject project;
 
    private HProjectIteration parent;
    private List<HProjectIteration> children;
@@ -87,6 +91,8 @@ public class HProjectIteration extends SlugEntityBase
    private boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
    private Set<HIterationGroup> groups;
+
+   private ProjectType projectType;
 
    public boolean getOverrideLocales()
    {
@@ -99,9 +105,15 @@ public class HProjectIteration extends SlugEntityBase
    @NaturalId
    @Field
    @FieldBridge(impl = GroupSearchBridge.class)
-   public HIterationProject getProject()
+   public HProject getProject()
    {
       return project;
+   }
+
+   @Enumerated(EnumType.STRING)
+   public ProjectType getProjectType()
+   {
+      return projectType;
    }
 
    @ManyToMany

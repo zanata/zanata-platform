@@ -1,0 +1,16 @@
+.concordion-execute {
+    color: maroon;
+    font-style: italic;
+}
+.concordion-data {
+    display: inline-block;
+    border-left: #0000ff solid 1px;
+    border-right: #0000ff solid 1px;
+    background-color: #cccccc;
+}
+.info {
+    display: block;
+    border: solid thin #808080;
+    background-color: #adff2f;
+    color: #00008b;
+}

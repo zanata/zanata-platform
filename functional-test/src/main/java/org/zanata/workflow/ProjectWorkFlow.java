@@ -49,15 +49,24 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow
       return projectsPage.clickOnCreateProjectLink().inputProjectId(projectId).inputProjectName(projectName).saveProject();
    }
 
-   public ProjectVersionPage createNewProjectVersion(ProjectPage projectPage, String projectVersion)
+   /**
+    * By default this will create a podir project version
+    * @param projectName project name
+    * @param projectVersion project version id
+    * @return project version page
+    */
+   public ProjectVersionPage createNewProjectVersion(String projectName, String projectVersion)
    {
+      ProjectPage projectPage = goToProjectByName(projectName);
       if (projectPage.getVersions().contains(projectVersion))
       {
          log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectVersion);
          return projectPage.goToVersion(projectVersion);
       }
       CreateVersionPage createVersionPage = projectPage.clickCreateVersionLink().inputVersionId(projectVersion);
-
+      createVersionPage.selectProjectType("Podir");
+      createVersionPage.selectStatus("READONLY");
+      createVersionPage.selectStatus("ACTIVE");
       return createVersionPage.saveVersion();
    }
 

@@ -39,7 +39,7 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.*;
 import org.zanata.service.VersionGroupService;
-import org.zanata.service.VersionGroupService.SelectableHIterationProject;
+import org.zanata.service.VersionGroupService.SelectableHProject;
 
 @Name("versionGroupJoinAction")
 @Scope(ScopeType.PAGE)
@@ -65,7 +65,7 @@ public class VersionGroupJoinAction implements Serializable
    @Logger
    Log log;
 
-   private List<SelectableHIterationProject> projectVersions;
+   private List<SelectableHProject> projectVersions;
 
    private HIterationGroup group;
 
@@ -82,7 +82,7 @@ public class VersionGroupJoinAction implements Serializable
       {
          for (HProjectIteration projectIteration : projectDAO.getAllIterations(project.getSlug()))
          {
-            getProjectVersions().add(new SelectableHIterationProject(projectIteration, false));
+            getProjectVersions().add(new SelectableHProject(projectIteration, false));
          }
       }
    }
@@ -94,17 +94,17 @@ public class VersionGroupJoinAction implements Serializable
           HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
           if(projectIteration != null)
           {
-            getProjectVersions().add(new SelectableHIterationProject(projectIteration, true));
+            getProjectVersions().add(new SelectableHProject(projectIteration, true));
           }
 
       }
    }
 
-   public List<SelectableHIterationProject> getProjectVersions()
+   public List<SelectableHProject> getProjectVersions()
    {
       if (projectVersions == null)
       {
-         projectVersions = new ArrayList<SelectableHIterationProject>();
+         projectVersions = new ArrayList<SelectableHProject>();
       }
       return projectVersions;
    }
@@ -122,7 +122,7 @@ public class VersionGroupJoinAction implements Serializable
    public String send()
    {
       boolean isAnyVersionSelected = false;
-      for (SelectableHIterationProject projectVersion : getProjectVersions())
+      for (SelectableHProject projectVersion : getProjectVersions())
       {
          if (projectVersion.isSelected())
          {
@@ -196,7 +196,7 @@ public class VersionGroupJoinAction implements Serializable
 
          for (int i = 0; i < getProjectVersions().size(); i++)
          {
-            SelectableHIterationProject projectVersion = getProjectVersions().get(i);
+            SelectableHProject projectVersion = getProjectVersions().get(i);
             if (projectVersion.isSelected())
             {
                if (i != 0)

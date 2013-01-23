@@ -13,7 +13,6 @@
 
     <properties>
         <selenium.version>2.26.0</selenium.version>
-        <commons-io.version>1.3.2</commons-io.version>
 
         <!--Cargo Settings -->
         <cargo.wait>false</cargo.wait>
@@ -25,24 +24,16 @@
         <context.path>zanata</context.path>
 
         <!--data source-->
-        <!--<jdbc.groupId>com.h2database</jdbc.groupId>-->
-        <!--<jdbc.artifactId>h2</jdbc.artifactId>-->
-        <!--<jdbc.version>1.2.144</jdbc.version>-->
-        <jdbc.groupId>mysql</jdbc.groupId>
-        <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
-        <jdbc.version>5.1.9</jdbc.version>
-
+        <jdbc.groupId>com.h2database</jdbc.groupId>
+        <jdbc.artifactId>h2</jdbc.artifactId>
+        <jdbc.version>1.2.144</jdbc.version>
 
         <ds.jndi.name>zanataDatasource</ds.jndi.name>
         <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
-        <!--<ds.driver.class>org.h2.Driver</ds.driver.class>-->
-        <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-        <!--<ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1;</ds.connection.url>-->
-        <!--<ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '${project.build.testOutputDirectory}/init.sql'</ds.connection.url>-->
-        <!--<ds.connection.url>jdbc:h2:tcp://localhost:9092/${project.build.directory}/h2/zanata;AUTO_RECONNECT=TRUE;AUTO_SERVER=TRUE</ds.connection.url>-->
-        <!--<ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE</ds.connection.url>-->
-        <ds.connection.url>jdbc:mysql://localhost:3306/zanata_functional?characterEncoding=UTF-8</ds.connection.url>
-        <ds.username>root</ds.username>
+        <!-- use profile -Pusemysql to switch to mysql database -->
+        <ds.driver.class>org.h2.Driver</ds.driver.class>
+        <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE</ds.connection.url>
+        <ds.username>sa</ds.username>
         <ds.password />
 
         <!--target zanata instance-->
@@ -53,6 +44,13 @@
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
 
         <webdriver.log.file>${project.build.directory}/browser_console.log</webdriver.log.file>
+
+        <!-- controls concordion output location-->
+        <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
+        <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
+        <cargo.debug.jvm.args> -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE</cargo.debug.jvm.args>
+        <!-- this property can be used to control what test needs to be run by failsafe -->
+        <include.test.patterns>**/*TestSuite.java</include.test.patterns>
     </properties>
 
     <dependencies>
@@ -75,11 +73,18 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
+            <groupId>org.concordion</groupId>
+            <artifactId>concordion</artifactId>
+            <version>1.4.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.concordion</groupId>
+            <artifactId>concordion-extensions</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -87,17 +92,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -131,15 +125,19 @@
 
     <profiles>
         <profile>
-            <id>run-functional-test</id>
+            <id>usemysql</id>
             <activation>
-                <file>
-                    <exists>${zanata.target.war}</exists>
-                </file>
-                <property>
-                    <name>functional-test</name>
-                </property>
+                <activeByDefault>false</activeByDefault>
             </activation>
+            <properties>
+                <jdbc.groupId>mysql</jdbc.groupId>
+                <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
+                <jdbc.version>5.1.9</jdbc.version>
+                <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
+                <ds.connection.url>jdbc:mysql://localhost:3306/zanata_functional?characterEncoding=UTF-8</ds.connection.url>
+                <ds.username>root</ds.username>
+                <ds.password />
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -160,7 +158,21 @@
                             <commandlineArgs>-u root -e "source create_database.sql"</commandlineArgs>
                         </configuration>
                     </plugin>
-
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>run-functional-test</id>
+            <activation>
+                <file>
+                    <exists>${zanata.target.war}</exists>
+                </file>
+                <property>
+                    <name>functional-test</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven2-plugin</artifactId>
@@ -238,7 +250,7 @@
 
                                     <cargo.jvmargs>
                                         <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE
+                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled ${cargo.debug.jvm.args}
                                     </cargo.jvmargs>
                                 </properties>
                             </configuration>
@@ -294,6 +306,7 @@
                                     <!-- specify your SQL commands, can be all of the following configurations -->
                                     <srcFiles>
                                         <srcFile>${project.build.testOutputDirectory}/create_admin_user.sql</srcFile>
+                                        <srcFile>${project.build.testOutputDirectory}/create_translator_user.sql</srcFile>
                                     </srcFiles>
                                     <autocommit>true</autocommit>
                                 </configuration>
@@ -321,10 +334,13 @@
                         <configuration>
                             <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <printSummary>true</printSummary>
-                            <forkMode>always</forkMode>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${basedir}/src/test/resources/functional-test.tng.xml</suiteXmlFile>
-                            </suiteXmlFiles>
+                            <!--<forkMode>always</forkMode>-->
+                            <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
+                            <includes>
+                                <include>${include.test.patterns}</include>
+                                <!--index page-->
+                                <include>**/FeatureTest.java</include>
+                            </includes>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -363,6 +379,13 @@
                     <exclude>**/pom.xml</exclude>
                 </excludes>
             </testResource>
+            <testResource>
+                <directory>src/test/resources/concordion</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </testResource>
         </testResources>
         <plugins>
             <plugin>
@@ -384,6 +407,8 @@
                                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
                                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
                                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
+                                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
+                                <echo>-Dinclude.test.patterns : by default is **/*TestSuite.java. Can be used to control what test to run.</echo>
                                 <echo>==========================================================</echo>
                             </target>
                         </configuration>

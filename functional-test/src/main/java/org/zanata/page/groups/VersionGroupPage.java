@@ -2,6 +2,8 @@ package org.zanata.page.groups;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,6 +14,9 @@ import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,12 +44,7 @@ public class VersionGroupPage extends AbstractPage
    public VersionGroupPage addProjectVersion()
    {
       addProjectVersionsLink.click();
-      return this;
-   }
-
-   public List<TableRow> searchProject(final String projectName)
-   {
-      WebElement searchField = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          @Override
          public WebElement apply(WebDriver driver)
@@ -52,39 +52,60 @@ public class VersionGroupPage extends AbstractPage
             return addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
          }
       });
+      return new VersionGroupPage(getDriver());
+   }
 
+   public List<List<String>> searchProject(final String projectName, final int expectedResultNum)
+   {
+      WebElement searchField = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
       searchField.sendKeys(projectName);
+
       WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
       searchButton.click();
 
-      WebElement searchResultTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      return waitForTenSec().until(new Function<WebDriver, List<List<String>>>()
       {
          @Override
-         public WebElement apply(WebDriver driver)
+         public List<List<String>> apply(WebDriver driver)
          {
             WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(table);
-            //we want to wait until search result comes back
-            if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(0).contains(projectName))
+            // we want to wait until search result comes back. There is no way we can tell whether search result has come back and table refreshed.
+            // To avoid the org.openqa.selenium.StaleElementReferenceException (http://seleniumhq.org/exceptions/stale_element_reference.html),
+            // we have to set expected result num
+
+            List<List<String>> tableContents = WebElementUtil.transformToTwoDimensionList(tableRows);
+            Iterable<List<String>> filter = Iterables.filter(tableContents, new Predicate<List<String>>()
+            {
+               @Override
+               public boolean apply(List<String> input)
+               {
+                  return input.get(0).contains(projectName);
+               }
+            });
+            if (Iterables.size(filter) != expectedResultNum)
             {
                log.debug("waiting for search result refresh...");
                return null;
             }
-            return table;
+            return tableContents;
          }
       });
-
-      return WebElementUtil.getTableRows(searchResultTable);
    }
 
-   public VersionGroupPage addToGroup(TableRow projectVersionRow)
+   public VersionGroupPage addToGroup(int rowIndex)
    {
-      List<WebElement> cells = projectVersionRow.getCells();
-      int selectVersionIndex = cells.size() - 1;
-      WebElement selectCheckBox = cells.get(selectVersionIndex).findElement(By.xpath(".//input[@type='checkbox']"));
-      if (!selectCheckBox.isSelected())
+      WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+
+      List<WebElement> cells = WebElementUtil.getTableRows(table).get(rowIndex).getCells();
+      WebElement actionCell = cells.get(cells.size() - 1);
+      if (!actionCell.getText().contains("Already in Group"))
       {
-         selectCheckBox.click();
+         WebElement selectCheckBox = actionCell.findElement(By.xpath(".//input[@type='checkbox']"));
+         if (!selectCheckBox.isSelected())
+         {
+            selectCheckBox.click();
+         }
       }
 
       WebElement addSelected = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Add Selected']"));

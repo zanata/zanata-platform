@@ -5,7 +5,7 @@ import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.zanata.model.HDocument;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 
@@ -43,7 +43,7 @@ public class ContainingWorkspaceBridge implements FieldBridge
       }
 
       HProjectIteration iteration = doc.getProjectIteration();
-      HIterationProject project = iteration.getProject();
+      HProject project = iteration.getProject();
 
       addStringField(IndexFieldLabels.PROJECT_FIELD, project.getSlug(), luceneDocument, luceneOptions);
       addStringField(IndexFieldLabels.ITERATION_FIELD, iteration.getSlug(), luceneDocument, luceneOptions);

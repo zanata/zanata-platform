@@ -41,6 +41,8 @@ import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -158,13 +160,11 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    @Override
    protected void onUnbind()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override
    protected void onRevealDisplay()
    {
-      // TODO Auto-generated method stub
    }
 
    public void setContextActive(ShortcutContext context, boolean active)
@@ -197,10 +197,9 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
     */
    public HandlerRegistration register(KeyShortcut shortcut)
    {
-      Log.debug("Registering key shortcut. Key codes follow:");
+      Log.debug("Registering key shortcut. Key codes follow:" + Iterables.toString(shortcut.getAllKeys()));
       for (Keys keys : shortcut.getAllKeys())
       {
-         Log.debug("    " + keys.toString());
          Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keys);
          if (shortcuts == null)
          {
@@ -215,7 +214,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    /**
     * Register a {@link SurplusKeyListener} to catch all non-shortcut key events for a context.
     * 
-    * @param listener
+    * @param listener surplus key listener
     * @return a {@link HandlerRegistration} that can be used to un-register the listener
     */
    public HandlerRegistration register(SurplusKeyListener listener)
@@ -236,7 +235,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
     * triggered, fire any registered {@link SurplusKeyListener}
     * events.
     * 
-    * @param evt
+    * @param evt native event
     */
    private void processKeyEvent(NativeEvent evt)
    {
@@ -301,27 +300,27 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       String contextName = "";
       switch (context)
       {
-      case Application:
-         contextName = messages.applicationScope();
-         break;
-      case ProjectWideSearch:
-         contextName = messages.projectWideSearchAndReplace();
-         break;
-      case Edit:
-         contextName = messages.editScope();
-         break;
-      case Navigation:
-         contextName = messages.navigationScope();
-         break;
-      case TM:
-         contextName = messages.tmScope();
-         break;
-      case Glossary:
-         contextName = messages.glossaryScope();
-         break; 
-      case Chat:
-         contextName = messages.chatScope();
-         break; 
+         case Application:
+            contextName = messages.applicationScope();
+            break;
+         case ProjectWideSearch:
+            contextName = messages.projectWideSearchAndReplace();
+            break;
+         case Edit:
+            contextName = messages.editScope();
+            break;
+         case Navigation:
+            contextName = messages.navigationScope();
+            break;
+         case TM:
+            contextName = messages.tmScope();
+            break;
+         case Glossary:
+            contextName = messages.glossaryScope();
+            break;
+         case Chat:
+            contextName = messages.chatScope();
+            break;
       }
       return contextName;
    }
@@ -344,30 +343,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       return shortcutMap;
    }
 
-   private class KeyShortcutHandlerRegistration implements HandlerRegistration
-   {
-
-      private KeyShortcut shortcut;
-
-      public KeyShortcutHandlerRegistration(KeyShortcut shortcut)
-      {
-         this.shortcut = shortcut;
-      }
-
-      @Override
-      public void removeHandler()
-      {
-         for (Keys keys : shortcut.getAllKeys())
-         {
-            Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keys);
-            if (shortcuts != null)
-            {
-               shortcuts.remove(shortcut);
-            }
-         }
-      }
-
-   }
    private Map<ShortcutContext, Set<SurplusKeyListener>> ensureSurplusKeyListenerMap()
    {
       if (surplusKeyMap == null)
@@ -398,6 +373,31 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          Collections.sort(dataProvider.getList());
       }
       display.showPanel();
+   }
+
+   private class KeyShortcutHandlerRegistration implements HandlerRegistration
+   {
+
+      private KeyShortcut shortcut;
+
+      public KeyShortcutHandlerRegistration(KeyShortcut shortcut)
+      {
+         this.shortcut = shortcut;
+      }
+
+      @Override
+      public void removeHandler()
+      {
+         for (Keys keys : shortcut.getAllKeys())
+         {
+            Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keys);
+            if (shortcuts != null)
+            {
+               shortcuts.remove(shortcut);
+            }
+         }
+      }
+
    }
 
    private class SurplusKeyListenerHandlerRegistration implements HandlerRegistration

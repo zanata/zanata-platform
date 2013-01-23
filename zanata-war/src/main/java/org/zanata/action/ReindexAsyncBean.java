@@ -28,7 +28,7 @@ import org.jboss.seam.log.Log;
 import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -74,7 +74,7 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
       indexables.add(HAccount.class);
       indexables.add(HGlossaryEntry.class);
       indexables.add(HGlossaryTerm.class);
-      indexables.add(HIterationProject.class);
+      indexables.add(HProject.class);
       indexables.add(HProjectIteration.class);
 
       // NB we put the largest tables at the bottom, so that the small

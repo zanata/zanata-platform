@@ -32,6 +32,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 public class WebElementUtil
 {
@@ -65,12 +66,12 @@ public class WebElementUtil
       Preconditions.checkArgument(table.getTagName().equalsIgnoreCase("table"), "By query must return a table");
 
       List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr"));
-      return ImmutableList.copyOf(Collections2.transform(rows, WebElementTableRowFunction.FUNCTION));
+      return ImmutableList.copyOf(Lists.transform(rows, WebElementTableRowFunction.FUNCTION));
    }
 
    public static List<String> getColumnContents(List<TableRow> tableRows, final int columnIndex)
    {
-      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, String>()
+      return ImmutableList.copyOf(Lists.transform(tableRows, new Function<TableRow, String>()
       {
          @Override
          public String apply(TableRow from)
@@ -84,7 +85,7 @@ public class WebElementUtil
 
    public static ImmutableList<List<String>> transformToTwoDimensionList(List<TableRow> tableRows)
    {
-      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, List<String>>()
+      return ImmutableList.copyOf(Lists.transform(tableRows, new Function<TableRow, List<String>>()
       {
          @Override
          public List<String> apply(TableRow from)

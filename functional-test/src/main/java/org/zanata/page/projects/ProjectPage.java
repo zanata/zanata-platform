@@ -45,24 +45,25 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectPage extends AbstractPage
 {
 
-   public static final String ACTIVE_VERSIONS_TABLE_ID = "main_content:activeIterations";
    @FindBy(id = "main_content")
    private WebElement mainContent;
 
-   @FindBy(linkText = "Create Version")
-   private WebElement createVersionLink;
+   @FindBy(id = "loggedIn_body")
+   private WebElement loggedInBody;
 
    public ProjectPage(final WebDriver driver)
    {
       super(driver);
    }
 
+   @SuppressWarnings("unused")
    public String getProjectId()
    {
       List<String> breadcrumbs = getBreadcrumbs();
       return breadcrumbs.get(breadcrumbs.size() - 1);
    }
 
+   @SuppressWarnings("unused")
    public String getProjectName()
    {
       return getTitle().replaceAll("Zanata:", "");
@@ -70,7 +71,7 @@ public class ProjectPage extends AbstractPage
 
    public CreateVersionPage clickCreateVersionLink()
    {
-      createVersionLink.click();
+      loggedInBody.findElement(By.linkText("Create Version")).click();
       return new CreateVersionPage(getDriver());
    }
 
@@ -103,15 +104,5 @@ public class ProjectPage extends AbstractPage
       }
 
       return WebElementUtil.elementsToText(versionLinks);
-//      return Lists.transform(versions, new Function<String, String>()
-//      {
-//         @Override
-//         public String apply(String from)
-//         {
-//            String replaceLineBreak = from.replaceAll("\\n", " ");
-//            log.debug("version text: {}", replaceLineBreak);
-//            return replaceLineBreak.split("\\s")[0];
-//         }
-//      });
    }
 }

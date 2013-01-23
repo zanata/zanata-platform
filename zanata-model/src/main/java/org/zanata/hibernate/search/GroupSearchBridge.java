@@ -24,7 +24,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -36,7 +36,7 @@ public class GroupSearchBridge implements FieldBridge
    @Override
    public void set(String name, Object value, Document document, LuceneOptions luceneOptions)
    {
-      HIterationProject project = (HIterationProject) value;
+      HProject project = (HProject) value;
 
       Field field = new Field(PROJECT_FIELD, project.getSlug(), luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
       field.setBoost(luceneOptions.getBoost());

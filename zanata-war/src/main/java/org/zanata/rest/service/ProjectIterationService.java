@@ -50,12 +50,12 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.model.HIterationProject;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
+
 import com.google.common.base.Objects;
 
 @Name("projectIterationService")
@@ -212,8 +212,10 @@ public class ProjectIterationService implements ProjectIterationResource
          }
          hProjectIteration = new HProjectIteration();
          hProjectIteration.setSlug(iterationSlug);
-         HIterationProject hIterProject = (HIterationProject) hProject;
-         hIterProject.addIteration(hProjectIteration);
+
+         transferProjectType(projectIteration, hProjectIteration, hProject);
+
+         hProject.addIteration(hProjectIteration);
          // pre-emptive entity permission check
          // identity.checkPermission(hProject, "add-iteration");
          identity.checkPermission(hProjectIteration, "insert");
@@ -235,6 +237,9 @@ public class ProjectIterationService implements ProjectIterationResource
       { // must be an update operation
          // pre-emptive entity permission check
          identity.checkPermission(hProjectIteration, "update");
+
+         transferProjectType(projectIteration, hProjectIteration, null);
+        
          etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
          response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -242,8 +247,8 @@ public class ProjectIterationService implements ProjectIterationResource
             return response.build();
          }
          response = Response.ok();
+         changed = true;
       }
-
 
       if (changed)
       {
@@ -255,11 +260,25 @@ public class ProjectIterationService implements ProjectIterationResource
 
    }
 
+   public static void transferProjectType(ProjectIteration from, HProjectIteration to, HProject hProject)
+   {
+      if (from.getProjectType() != null)
+      {
+         to.setProjectType(from.getProjectType());
+      }
+      else
+      {
+         if(hProject != null)
+         {
+            to.setProjectType(hProject.getDefaultProjectType());
+         }
+      }
+   }
 
    public static void transfer(HProjectIteration from, ProjectIteration to)
    {
       to.setId(from.getSlug());
       to.setStatus(from.getStatus());
+      to.setProjectType(from.getProjectType());
    }
-
 }

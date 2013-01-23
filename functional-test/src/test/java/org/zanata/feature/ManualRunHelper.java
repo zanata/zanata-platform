@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 
@@ -24,20 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "manual-run", description = "When you use cargo.wait and want to manually run functional tests, this class should be used to do things.")
+//@Test(groups = "manual-run", description = "When you use cargo.wait and want to manually run functional tests, this class should be used to do things.")
 @Slf4j
 public class ManualRunHelper
 {
-   private Pattern tagPattern = Pattern.compile("\\s*<.+>(.+)</.+>\\s*");
-   private String url;
-   private String driver;
-   private String username;
-   private String password = "";
-   private Connection connection;
-   private Statement statement;
+   private static final Pattern TAG_PATTERN = Pattern.compile("\\s*<.+>(.+)</.+>\\s*");
+   private static String url;
+   private static String driver;
+   private static String username;
+   private static String password = "";
+   private static Connection connection;
+   private static Statement statement;
 
    @BeforeClass
-   public void setUpDatabase() throws Exception
+   public static void setUpDatabase() throws Exception
    {
       extractConnectionInfo();
       Class.forName(driver);
@@ -46,7 +47,7 @@ public class ManualRunHelper
    }
 
    @AfterClass
-   public void cleanUp()
+   public static void cleanUp()
    {
       try
       {
@@ -65,13 +66,13 @@ public class ManualRunHelper
       }
    }
 
-   private void extractConnectionInfo() throws IOException
+   private static void extractConnectionInfo() throws IOException
    {
       // poor man's xml parsing
       List<String> lines = readLines("datasource/zanata-ds.xml");
       for (String line : lines)
       {
-         Matcher matcher = tagPattern.matcher(line);
+         Matcher matcher = TAG_PATTERN.matcher(line);
          if (!matcher.matches())
          {
             continue;
@@ -90,7 +91,7 @@ public class ManualRunHelper
             username = tagValue;
          }
       }
-      log.info("driver: {}, url: {}, username: {}, password: {}", new String[] {driver, url, username, password});
+      log.info("driver: {}, url: {}, username: {}, password: {}", driver, url, username, password);
    }
 
    private static List<String> readLines(String relativeFilePath) throws IOException
@@ -102,8 +103,6 @@ public class ManualRunHelper
    @Test
    public void addAdminToDB() throws Exception
    {
-
-
       ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'admin'");
       resultSet.next();
       int adminUser = resultSet.getInt(1);
@@ -113,13 +112,29 @@ public class ManualRunHelper
       }
       else
       {
-         insertAdminUser();
+         runScript("create_admin_user.sql");
       }
    }
 
-   private void insertAdminUser() throws Exception
+   @Test
+   public void addTranslatorToDB() throws Exception
    {
-      List<String> scripts = readLines("create_admin_user.sql");
+      ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'translator'");
+      resultSet.next();
+      int translator = resultSet.getInt(1);
+      if (translator == 1)
+      {
+         log.info("user [translator] already exists. ignored.");
+      }
+      else
+      {
+         runScript("create_translator_user.sql");
+      }
+   }
+
+   private static void runScript(String scriptName) throws Exception
+   {
+      List<String> scripts = readLines(scriptName);
 
       for (String script : scripts)
       {
@@ -136,5 +151,13 @@ public class ManualRunHelper
       statement.executeUpdate("delete from HIterationGroup_ProjectIteration");
       statement.executeUpdate("delete from HIterationGroup_Maintainer");
       statement.executeUpdate("delete from HIterationGroup");
+   }
+
+   @Test
+   public void deleteProjectAndVersion() throws SQLException
+   {
+      statement.executeUpdate("delete from HProject_Maintainer");
+      statement.executeUpdate("delete from HProjectIteration");
+      statement.executeUpdate("delete from HProject");
    }
 }

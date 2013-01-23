@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="alex.eng@redhat.com">
+        <comment>Add projectType column to HProject</comment>
+        <addColumn tableName="HProject">
+            <column name="defaultProjectType" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="2" author="alex.eng@redhat.com">
+        <comment>drop projecttype column in HProject</comment>
+        <dropColumn tableName="HProject" columnName="projecttype"/>
+    </changeSet>
+    
+    <changeSet id="3" author="alex.eng@redhat.com">
+        <comment>Add projectType column to HProjectIteration</comment>
+        <addColumn tableName="HProjectIteration">
+            <column name="projectType" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1" author="damason@redhat.com">
+        <comment>Add source control URL column to HProject.</comment>
+        <addColumn tableName="HProject">
+            <column name="sourceViewURL" type="longtext">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -21,6 +21,8 @@
 package org.zanata.workflow;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.zanata.page.AbstractPage;
 import org.zanata.page.HomePage;
 import org.zanata.page.WebDriverFactory;
 
@@ -64,5 +66,10 @@ public class AbstractWebWorkFlow
          return relativeUrl.substring(1, relativeUrl.length());
       }
       return relativeUrl;
+   }
+
+   public <P extends AbstractPage> P getCurrentPage(Class<P> pageClass)
+   {
+      return PageFactory.initElements(driver, pageClass);
    }
 }

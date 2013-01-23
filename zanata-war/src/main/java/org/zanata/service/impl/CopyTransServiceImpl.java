@@ -226,15 +226,17 @@ public class CopyTransServiceImpl implements CopyTransService
 
          while( results.next() )
          {
-            HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
-            HTextFlow originalTf = (HTextFlow)results.get(1);
+            // HTextFlowTarget matchingTarget = (HTextFlowTarget)results.get(0);
+            HTextFlowTarget matchingTarget = textFlowTargetDAO.findById((Long) results.get(1), false);
+
+            HTextFlow originalTf = (HTextFlow) results.get(0);
             HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
             ContentState copyState = determineContentState(
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
                   originalTf.getDocument().getProjectIteration().getProject().getId().equals( matchingTarget.getTextFlow().getDocument().getProjectIteration().getProject().getId() ),
                   originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
                   options);
-
+            
             if( shouldOverwrite(hTarget, copyState) )
             {
 

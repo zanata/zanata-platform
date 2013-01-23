@@ -70,7 +70,7 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HDocument;
-import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
@@ -567,7 +567,7 @@ public class ProjectIterationFilesAction implements Serializable
       }
 
       // User not part of the allowed roles
-      HIterationProject project = getProjectIteration().getProject();
+      HProject project = getProjectIteration().getProject();
       if (!SecurityFunctions.isUserAllowedAccess(project))
       {
          // jsf.iteration.files.translateDenied.UserNotInProjectRole
