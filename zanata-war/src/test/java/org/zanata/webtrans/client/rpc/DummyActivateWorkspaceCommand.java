@@ -38,7 +38,7 @@ public class DummyActivateWorkspaceCommand implements Command
       Log.info("ENTER DummyActivateWorkspaceCommand.execute()");
       WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish");
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(context, true, true, true);
-      userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(1, "Dummy path/Dummy doc"), "Dummy doc", "Dummy path", LocaleId.EN_US, null, "Translator", new Date(), new HashMap<String, String>()));
+      userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(1, "Dummy path/Dummy doc"), "Dummy doc", "Dummy path", LocaleId.EN_US, null, "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
       callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState()));

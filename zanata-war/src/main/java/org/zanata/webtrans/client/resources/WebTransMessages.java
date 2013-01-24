@@ -89,6 +89,18 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Remaining hours")
    String columnHeaderRemaining();
 
+   @DefaultMessage("Last Upload")
+   String columnHeaderLastUpload();
+
+   @DefaultMessage("Last Translated")
+   String columnHeaderLastTranslated();
+
+   @DefaultMessage("Download")
+   String columnHeaderDownload();
+
+   @DefaultMessage("Upload")
+   String columnHeaderUpload();
+
    @DefaultMessage("No document selected")
    String noDocumentSelected();
 

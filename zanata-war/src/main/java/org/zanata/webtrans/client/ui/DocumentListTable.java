@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Map;
 
 import org.zanata.webtrans.client.Application;
@@ -30,8 +31,8 @@ import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -147,13 +148,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          @Override
          public String getValue(DocumentNode object)
          {
-            String date = "";
-            if (object.getDocInfo().getLastChanged() != null)
-            {
-               date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
-            }
-            String modifiedBy = object.getDocInfo().getLastModifiedBy();
-            return modifiedBy + " " + date;
+            return getAuditInfo(object.getDocInfo().getLastModifiedBy(), object.getDocInfo().getLastChanged());
          }
       };
 
@@ -162,13 +157,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          @Override
          public String getValue(DocumentNode object)
          {
-            String date = "";
-            if (object.getDocInfo().getLastChanged() != null)
-            {
-               date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
-            }
-            String modifiedBy = object.getDocInfo().getLastModifiedBy();
-            return modifiedBy + " " + date;
+            return getAuditInfo(object.getDocInfo().getLastTranslatedBy(), object.getDocInfo().getLastTranslatedDate());
          }
       };
 
@@ -228,22 +217,39 @@ public class DocumentListTable extends CellTable<DocumentNode>
       remainingColumn.setCellStyleNames("remainingCol");
       addColumn(remainingColumn, messages.columnHeaderRemaining());
 
-      lastModifiedColumn.setCellStyleNames("lastModifiedCol");
-      addColumn(lastModifiedColumn, "Last Modified");
+      lastModifiedColumn.setCellStyleNames("auditCol");
+      addColumn(lastModifiedColumn, messages.columnHeaderLastUpload());
       
-      lastTranslatedColumn.setCellStyleNames("lastTranslatedCol");
-      addColumn(lastTranslatedColumn, "Last Translated");
+      lastTranslatedColumn.setCellStyleNames("auditCol");
+      addColumn(lastTranslatedColumn, messages.columnHeaderLastTranslated());
 
       downloadColumn.setCellStyleNames("downloadCol");
-      addColumn(downloadColumn, "Download");
+      addColumn(downloadColumn, messages.columnHeaderDownload());
 
       uploadColumn.setCellStyleNames("uploadCol");
       if (userWorkspaceContext.hasWriteAccess())
       {
-         addColumn(uploadColumn, "Upload");
+         addColumn(uploadColumn, messages.columnHeaderUpload());
       }
 
       addSorting(dataProvider);
+   }
+
+   private String getAuditInfo(String by, Date date)
+   {
+      StringBuilder sb = new StringBuilder();
+
+      if (date != null)
+      {
+         sb.append(DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(date));
+      }
+      if (!Strings.isNullOrEmpty(by))
+      {
+         sb.append(" by ");
+         sb.append(by);
+      }
+
+      return sb.toString();
    }
 
    public void setStatsFilter(String option)

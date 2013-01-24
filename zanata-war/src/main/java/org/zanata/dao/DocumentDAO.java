@@ -1,6 +1,5 @@
 package org.zanata.dao;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,10 +20,9 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.StatusCount;
 
 @Name("documentDAO")
@@ -151,27 +149,24 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       
    }
 
-   public void getLastTranslated(long docId, LocaleId localeId)
+   public HTextFlowTarget getLastTranslated(long docId, LocaleId localeId)
    {
-      StringBuilder queryStr = new StringBuilder(
-            "select lastChanged, lastModifiedBy.name, max(id) " + 
-            "from HTextFlowTarget " + 
-            "where tft.lastChanged = (" + 
-                  "select max(lastChanged) from HTextFlowTarget AS tft JOIN HTextFlow AS tf ON tft.tf_id = tf.id " + 
-                  "where tf.document_id = :docId and tft.locale.localeId = :localeId)"
-      );
+       StringBuilder queryStr = new StringBuilder(
+             "select tft, max(tft.lastChanged)" +
+             "from HTextFlowTarget tft " +
+             "where tft.textFlow.document.id = :docId " +
+             "and tft.locale.localeId = :localeId"
+
+       );
       
       Query q = getSession().createQuery( queryStr.toString() );
       q.setParameter("docId", docId);
       q.setParameter("localeId", localeId);
+      q.setCacheable(true);
+      q.setComment("DocumentDAO.getLastTranslated");
       
-      @SuppressWarnings("unchecked")
-      Object[] obj = (Object[])q.uniqueResult();
-      
-      Date lastChanged = (Date) obj[0];
-      String person = (String) obj[1];
-      Long textFlowTargetId = (Long) obj[2];
-      
+      Object[] obj = (Object[]) q.uniqueResult();
+      return (HTextFlowTarget) obj[0];
    }
    
    

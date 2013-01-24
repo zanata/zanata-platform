@@ -397,10 +397,11 @@ td.ApprovedStateDecoration div div div
 	text-align:center;
 }
 
-.DocumentListTable td.lastModifiedCol { 
+.DocumentListTable td.auditCol { 
 	font-size:12px;
 	text-align:center;
 }
+
 
 .DocumentListTable td.downloadCol { 
 }

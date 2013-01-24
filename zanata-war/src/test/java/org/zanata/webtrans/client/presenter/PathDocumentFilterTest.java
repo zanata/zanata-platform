@@ -29,7 +29,7 @@ public class PathDocumentFilterTest
 
    private static DocumentInfo docInfo(String name, String path)
    {
-      return new DocumentInfo(new DocumentId(1L, ""), name, path, LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>());
+      return new DocumentInfo(new DocumentId(1L, ""), name, path, LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
    }
 
    @Test

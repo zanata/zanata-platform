@@ -332,7 +332,7 @@ public class DocumentListPresenterTest
       documentListPresenter.bind();
 
       // simulate document click on second document
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L, ""), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L, ""), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       documentListPresenter.fireDocumentSelection(docInfo);
 
       verify(mockHistory).newItem(capturedHistoryToken.capture());
@@ -451,10 +451,10 @@ public class DocumentListPresenterTest
       verify(mockDataProvider).refresh();
 
       DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L, ""));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L, ""), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L, ""), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()))));
 
       docInfo = documentListPresenter.getDocumentInfo(new DocumentId(3333L, ""));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L, ""), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L, ""), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()))));
    }
 
    @Test
@@ -488,13 +488,13 @@ public class DocumentListPresenterTest
       TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
       TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
 
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L, ""), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L, ""), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(2222L, ""), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
+      docInfo = new DocumentInfo(new DocumentId(2222L, ""), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(3333L, ""), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>());
+      docInfo = new DocumentInfo(new DocumentId(3333L, ""), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       docList.add(docInfo);
 
       return docList;
