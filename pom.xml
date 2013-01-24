@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>9</version>
+    <version>10-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -19,7 +19,7 @@
 	</scm>
 
   <properties>
-      <zanata.api.version>2.1.0</zanata.api.version>
+      <zanata.api.version>2.1.1-SNAPSHOT</zanata.api.version>
   </properties>
   
   <dependencyManagement>
@@ -48,14 +48,31 @@
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
       </dependency>
-      <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-api</artifactId>
-            <version>${zanata.api.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-      </dependency>
    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>analyze</id>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>true</failOnWarning>
+                            <usedDependencies>
+                                <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
+                            </usedDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
   <modules>
     <module>zanata-common-util</module>
