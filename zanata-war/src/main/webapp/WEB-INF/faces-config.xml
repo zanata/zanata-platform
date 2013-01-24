@@ -16,9 +16,11 @@
          <supported-locale>qc</supported-locale>
       </locale-config>
 
-      <!-- this may or may not help for AS7 deployment:
-      <view-handler>org.ajax4jsf.application.AjaxViewHandler</view-handler>
+      <!-- Workaround for RichFaces 3.3.3 bug.
+           See http://stackoverflow.com/questions/5030182/illegal-attempt-to-set-viewhandler-after-a-response-has-been-rendered
+           https://issues.jboss.org/browse/JBAS-8375?focusedCommentId=12550006&page=com.atlassian.jira.plugin.system.issuetabpanels%3acomment-tabpanel#comment-12550006
       -->
+      <view-handler>org.ajax4jsf.application.AjaxViewHandler</view-handler>
 
       <lifecycle>
     	<phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
