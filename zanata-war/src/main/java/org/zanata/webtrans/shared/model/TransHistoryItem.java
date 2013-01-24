@@ -1,8 +1,10 @@
 package org.zanata.webtrans.shared.model;
 
+import java.util.Date;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -16,14 +18,14 @@ public class TransHistoryItem implements IsSerializable
    private List<String> contents;
    private ContentState status;
    private String modifiedBy;
-   private String modifiedDate;
+   private Date modifiedDate;
 
    @SuppressWarnings("unused")
    private TransHistoryItem()
    {
    }
 
-   public TransHistoryItem(String versionNum, List<String> contents, ContentState status, String modifiedBy, String modifiedDate)
+   public TransHistoryItem(String versionNum, List<String> contents, ContentState status, String modifiedBy, Date modifiedDate)
    {
       this.versionNum = versionNum;
       //targetHistory.getContents will return Hibernate persistentList which RPC can't handle
@@ -53,7 +55,7 @@ public class TransHistoryItem implements IsSerializable
       return modifiedBy;
    }
 
-   public String getModifiedDate()
+   public Date getModifiedDate()
    {
       return modifiedDate;
    }

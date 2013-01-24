@@ -103,7 +103,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          List<String> newTargets = targetContentsPresenter.getNewTargets();
          if (!Objects.equal(latest.getContents(), newTargets))
          {
-            listDataProvider.getList().add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "", ""));
+            listDataProvider.getList().add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "", null));
          }
          listDataProvider.getList().add(latest);
       }

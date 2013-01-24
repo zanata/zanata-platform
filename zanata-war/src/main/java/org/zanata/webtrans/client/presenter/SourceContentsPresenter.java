@@ -22,10 +22,15 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.Collections;
 import java.util.List;
+
 import javax.inject.Provider;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
@@ -33,6 +38,7 @@ import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
@@ -43,13 +49,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.inject.Inject;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler
+public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
 {
    private final EventBus eventBus;
    private final Provider<SourceContentsDisplay> displayProvider;
@@ -67,6 +71,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
       this.displayProvider = displayProvider;
       this.configHolder = configHolder;
       eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
+      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
    }
 
    /**
@@ -179,5 +184,13 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
       {
           sourceContentsDisplay.toggleTransUnitDetails(configHolder.getState().isShowOptionalTransUnitDetails());
       }
+   }
+
+   @Override
+   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+   {
+      SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(event.getUpdateInfo().getTransUnit().getId()));
+      sourceContentsView.setValue(event.getUpdateInfo().getTransUnit());
+
    }
 }

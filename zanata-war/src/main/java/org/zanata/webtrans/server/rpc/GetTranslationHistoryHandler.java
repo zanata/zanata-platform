@@ -1,7 +1,10 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.text.SimpleDateFormat;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -24,10 +27,6 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -68,17 +67,16 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
       Map<Integer,HTextFlowTargetHistory> history = Maps.newHashMap();
       TransHistoryItem latest = null;
-      SimpleDateFormat dateFormat = new SimpleDateFormat();
       if (hTextFlowTarget != null)
       {
          String lastModifiedBy = nameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
          latest = new TransHistoryItem(hTextFlowTarget.getVersionNum().toString(), hTextFlowTarget.getContents(),
-               hTextFlowTarget.getState(), lastModifiedBy, dateFormat.format(hTextFlowTarget.getLastChanged()));
+               hTextFlowTarget.getState(), lastModifiedBy, hTextFlowTarget.getLastChanged());
          // history translation
          history = hTextFlowTarget.getHistory();
       }
 
-      Iterable<TransHistoryItem> historyItems = Iterables.transform(history.values(), new TargetHistoryToTransHistoryItemFunction(dateFormat));
+      Iterable<TransHistoryItem> historyItems = Iterables.transform(history.values(), new TargetHistoryToTransHistoryItemFunction());
       log.debug("found {} history for text flow id {}", Iterables.size(historyItems), action.getTransUnitId());
       return new GetTranslationHistoryResult(historyItems, latest);
    }
@@ -95,19 +93,12 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
 
    private static class TargetHistoryToTransHistoryItemFunction implements Function<HTextFlowTargetHistory, TransHistoryItem>
    {
-      private final SimpleDateFormat dateFormat;
-
-      public TargetHistoryToTransHistoryItemFunction(SimpleDateFormat simpleDateFormat)
-      {
-         this.dateFormat = simpleDateFormat;
-      }
-
       @Override
       public TransHistoryItem apply(HTextFlowTargetHistory targetHistory)
       {
          return new TransHistoryItem(targetHistory.getVersionNum().toString(), targetHistory.getContents(),
                targetHistory.getState(), nameOrEmptyString(targetHistory.getLastModifiedBy()),
-               dateFormat.format(targetHistory.getLastChanged()));
+               targetHistory.getLastChanged());
       }
    }
 }

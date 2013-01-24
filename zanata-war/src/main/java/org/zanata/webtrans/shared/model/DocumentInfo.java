@@ -93,6 +93,16 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       return lastTranslatedBy;
    }
 
+   public void setLastTranslatedDate(Date lastTranslatedDate)
+   {
+      this.lastTranslatedDate = lastTranslatedDate;
+   }
+
+   public void setLastTranslatedBy(String lastTranslatedBy)
+   {
+      this.lastTranslatedBy = lastTranslatedBy;
+   }
+
    @Override
    public String toString()
    {
