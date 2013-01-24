@@ -81,7 +81,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       {
          public WebElement apply(WebDriver driver)
          {
-            return driver.findElement(By.linkText("Add Team Member"));
+            return driver.findElement(By.id("addTeamMemberLink"));
          }
       });
       addTeamMemberLink.click();
@@ -94,20 +94,19 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       {
          public WebElement apply(WebDriver driver)
          {
-            return driver.findElement(By.xpath("//input[@type='text' and contains(@id, 'personSearch')]"));
+            return driver.findElement(By.id("personSearch:form:searchField"));
          }
       });
       searchInput.sendKeys(personName);
-      WebElement searchButton = getDriver().findElement(By.xpath("//input[@type='button' and @value='Search']"));
+      WebElement searchButton = getDriver().findElement(By.id("personSearch:form:searchBtn"));
       searchButton.click();
 
-//      final WebElement searchResultDiv = getDriver().findElement(By.id("personSearch:searchResults"));
       WebElement searchResultTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          @Override
          public WebElement apply(WebDriver driver)
          {
-            WebElement table = driver.findElement(By.xpath("//table[contains(@id, ':personTable')]"));
+            WebElement table = driver.findElement(By.id("personSearch:searchResult:personTable"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(table);
             //we want to wait until search result comes back
             if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(0).contains(personName))
@@ -130,7 +129,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       {
          WebElement addButton = lastColumn.findElement(By.xpath(".//input[@value='Add']"));
          addButton.click();
-         WebElement closeButton = getDriver().findElement(By.xpath("//input[@type='button' and @value='Search']"));
+         WebElement closeButton = getDriver().findElement(By.id("personSearch:form:closeBtn"));
          closeButton.click();
          return new ManageLanguageTeamMemberPage(getDriver());
       }
