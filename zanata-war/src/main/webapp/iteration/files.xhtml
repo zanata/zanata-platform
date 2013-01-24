@@ -104,13 +104,13 @@
 						<h:outputLink
 	                            title="#{messages['jsf.Open']}" styleClass="table_link" 
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-	                       		<span class="icon-eye" title="#{messages['jsf.Open']}"/>
+	                       		<span class="icon-eye icon" title="#{messages['jsf.Open']}"/>
 	                    </h:outputLink>
                     </div>
                     <div>
 	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
+		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>
@@ -126,13 +126,13 @@
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
 	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
 	                       		
-	                            <span class="icon-eye" title="#{messages['jsf.OpenGWTDevMode']}"/>
+	                            <span class="icon-eye icon" title="#{messages['jsf.OpenGWTDevMode']}"/>
 	                    </h:outputLink>
                     </div>
                     <div>
 	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
+		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>
@@ -146,13 +146,13 @@
 						<h:outputLink
 	                            title="#{messages['jsf.Translate']}" styleClass="table_link" 
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-	                       		<span class="icon-edit" title="#{messages['jsf.Translate']}	"/>
+	                       		<span class="icon-edit icon" title="#{messages['jsf.Translate']}	"/>
 	                    </h:outputLink>
                     </div>
                     <div>
 	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
+		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>
@@ -168,13 +168,13 @@
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
 	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
 	                       		
-	                            <span class="icon-edit" title="#{messages['jsf.TranslateGWTDevMode']}"/>
+	                            <span class="icon-edit icon" title="#{messages['jsf.TranslateGWTDevMode']}"/>
 	                    </h:outputLink>
                     </div>
                     <div>
 	                    <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload" title="#{messages['jsf.Upload.Title']}"/> 
+		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
 	                    </s:fragment>
                     </div>

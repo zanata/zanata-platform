@@ -73,14 +73,19 @@
 							rendered="#{identity.loggedIn}"
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
 							<f:facet name="header">#{messages['jsf.Documents']}</f:facet>
-							
-							<h:outputLink value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link">
+							<s:link view="/iteration/files.xhtml" propagation="none" styleClass="table_link">
+								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
+								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
+								<f:param name="localeId" value="#{stats.locale}" />
+								<span class="icon-docs icon"/>
+							</s:link>
+							<!--  <h:outputLink value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
 								<span class="icon-docs icon"/>
-							</h:outputLink>
+							</h:outputLink> -->
 						</rich:column>
 						<rich:column
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">

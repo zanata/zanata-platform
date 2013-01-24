@@ -2,6 +2,8 @@ package org.zanata.page.groups;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,6 +14,9 @@ import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,45 +49,55 @@ public class VersionGroupPage extends AbstractPage
          @Override
          public WebElement apply(WebDriver driver)
          {
-            return addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
+            return addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:searchField"));
          }
       });
       return new VersionGroupPage(getDriver());
    }
 
-   public List<TableRow> searchProject(final String projectName, final int expectedResultNum)
+   public List<List<String>> searchProject(final String projectName, final int expectedResultNum)
    {
-      WebElement searchField = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
+      WebElement searchField = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:searchField"));
       searchField.sendKeys(projectName);
 
-      WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
+      WebElement searchButton = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:searchBtn"));
       searchButton.click();
 
-      waitForTenSec().until(new Function<WebDriver, WebElement>()
+      return waitForTenSec().until(new Function<WebDriver, List<List<String>>>()
       {
          @Override
-         public WebElement apply(WebDriver driver)
+         public List<List<String>> apply(WebDriver driver)
          {
-            WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+            WebElement table = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:resultTable"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(table);
             // we want to wait until search result comes back. There is no way we can tell whether search result has come back and table refreshed.
             // To avoid the org.openqa.selenium.StaleElementReferenceException (http://seleniumhq.org/exceptions/stale_element_reference.html),
             // we have to set expected result num
-            if (tableRows.size() != expectedResultNum)
+
+            List<List<String>> tableContents = WebElementUtil.transformToTwoDimensionList(tableRows);
+            Iterable<List<String>> filter = Iterables.filter(tableContents, new Predicate<List<String>>()
+            {
+               @Override
+               public boolean apply(List<String> input)
+               {
+                  return input.get(0).contains(projectName);
+               }
+            });
+            if (Iterables.size(filter) != expectedResultNum)
             {
                log.debug("waiting for search result refresh...");
                return null;
             }
-            return table;
+            return tableContents;
          }
       });
-      WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
-      return WebElementUtil.getTableRows(table);
    }
 
-   public VersionGroupPage addToGroup(TableRow projectVersionRow)
+   public VersionGroupPage addToGroup(int rowIndex)
    {
-      List<WebElement> cells = projectVersionRow.getCells();
+      WebElement table = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:resultTable"));
+
+      List<WebElement> cells = WebElementUtil.getTableRows(table).get(rowIndex).getCells();
       WebElement actionCell = cells.get(cells.size() - 1);
       if (!actionCell.getText().contains("Already in Group"))
       {
@@ -93,24 +108,26 @@ public class VersionGroupPage extends AbstractPage
          }
       }
 
-      WebElement addSelected = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Add Selected']"));
+      WebElement addSelected = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:addSelectedBtn"));
       addSelected.click();
       return this;
    }
 
    public VersionGroupPage closeSearchResult()
    {
-      WebElement closeButton = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Close']"));
+      WebElement closeButton = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:closeBtn"));
       closeButton.click();
       return this;
    }
 
+   @SuppressWarnings("unused")
    public List<List<String>> getProjectVersionsInGroup()
    {
       List<TableRow> tableRows = WebElementUtil.getTableRows(groupDataTable);
       return WebElementUtil.transformToTwoDimensionList(tableRows);
    }
 
+   @SuppressWarnings("unused")
    public List<List<String>> getNotEmptyProjectVersionsInGroup()
    {
       FluentWait<WebDriver> fluentWait = waitForTenSec();

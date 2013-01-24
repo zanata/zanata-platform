@@ -50,7 +50,7 @@ public class ProjectsPage extends AbstractPage
          @Override
          public WebElement apply(WebDriver driver)
          {
-            return driver.findElement(By.linkText("Create project"));
+            return driver.findElement(By.id("createProjectLink"));
          }
       });
       createProjectActionLink.click();
@@ -72,7 +72,7 @@ public class ProjectsPage extends AbstractPage
          return Collections.emptyList();
       }
 
-      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.className("rich-table"));
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.id("main_content:form:projectList"));
 
       return WebElementUtil.getColumnContents(tableRows, PROJECT_NAME_COLUMN);
    }

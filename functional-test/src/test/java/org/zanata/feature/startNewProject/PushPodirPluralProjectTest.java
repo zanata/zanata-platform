@@ -1,6 +1,8 @@
 package org.zanata.feature.startNewProject;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +23,10 @@ import org.zanata.workflow.ClientPushWorkFlow;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,14 +46,29 @@ public class PushPodirPluralProjectTest
    public ConcordionExtension extension = new LoggingTooltipExtension(PushPodirPluralProjectTest.class.getName(), Level.INFO, false);
 
    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+   private File projectRootPath;
 
-   public List<String> push(final String project) throws Exception
+   public String getUserConfigPath()
    {
-      final File projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
-      tooltipLog.info("project root path:" + projectRootPath.getAbsolutePath());
+      return ClientPushWorkFlow.getUserConfigPath();
+   }
 
-      final List<String> commands = ClientPushWorkFlow.zanataMavenPushCommand();
-      tooltipLog.info("command to execute:" + Joiner.on(" ").join(commands));
+   public String getUserConfigContent(String path) throws IOException
+   {
+      List<String> lines = Files.readLines(new File(path), Charset.defaultCharset());
+      return Joiner.on("\n").join(lines);
+   }
+
+   public String getProjectLocation(String project)
+   {
+      projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+      tooltipLog.info("project root path:" + projectRootPath.getAbsolutePath());
+      return projectRootPath.getAbsolutePath();
+   }
+
+   public List<String> push(String command, String configPath) throws Exception
+   {
+      final List<String> commands = Lists.newArrayList(Splitter.on(" ").split(command + configPath));
 
       SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
       Callable<List<String>> work = new Callable<List<String>>()
@@ -56,7 +76,7 @@ public class PushPodirPluralProjectTest
          @Override
          public List<String> call() throws Exception
          {
-            Process process = ClientPushWorkFlow.invokeMaven(projectRootPath, commands);
+            Process process = ClientPushWorkFlow.invokeClient(projectRootPath, commands);
             process.waitFor();
             List<String> output = ClientPushWorkFlow.getOutput(process);
             logOutputLines(output);
@@ -66,6 +86,8 @@ public class PushPodirPluralProjectTest
       };
       return timeLimiter.callWithTimeout(work, 50, TimeUnit.SECONDS, true);
    }
+
+
 
    public boolean isPushSuccessful(List<String> output)
    {

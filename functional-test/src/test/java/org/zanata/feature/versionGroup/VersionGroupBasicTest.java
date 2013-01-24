@@ -62,45 +62,16 @@ public class VersionGroupBasicTest
       }
    }
 
-   public List<TableRow> searchProjectToAddToVersionGroup(String groupName, String searchTerm)
+   public List<List<String>> searchProjectToAddToVersionGroup(String groupName, String searchTerm)
    {
       versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup(groupName);
       versionGroupPage = versionGroupPage.addProjectVersion();
       return versionGroupPage.searchProject(searchTerm, 2);
    }
 
-   public VersionGroupPage addProjectToVersionGroup(List<TableRow> table, int row)
+   public VersionGroupPage addProjectToVersionGroup(int row)
    {
-
-      TableRow versionToBeAdd = table.get(row - 1);
-      return versionGroupPage.addToGroup(versionToBeAdd).closeSearchResult();
-   }
-
-//   @Test
-   public void canAddProjectVersionsToGroup() {
-      // given two projects and versions are created
-      new LoginWorkFlow().signIn("admin", "admin");
-      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      ProjectPage projectA = projectWorkFlow.createNewProject("group-project-a", "project a to be grouped");
-      projectWorkFlow.createNewProjectVersion("project a to be grouped", "master");
-
-      ProjectPage projectB = projectWorkFlow.createNewProject("group-project-b", "project b to be grouped");
-      projectWorkFlow.createNewProjectVersion("project b to be grouped", "master");
-
-      VersionGroupPage versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup("group one");
-      List<TableRow> searchResult = versionGroupPage.addProjectVersion().searchProject("group", 2);
-      VersionGroupBasicTest.log.info("come back {} rows in search result", searchResult.size());
-
-      //add first row from search result into group
-      TableRow versionToBeAdd = searchResult.get(0);
-      List<String> projectAndVersion = versionToBeAdd.getCellContents();
-      assertThat(projectAndVersion.get(0), Matchers.equalTo("project a to be grouped"));
-
-      VersionGroupPage groupPage = versionGroupPage.addToGroup(versionToBeAdd).closeSearchResult();
-
-      List<List<String>> projectVersions = groupPage.getNotEmptyProjectVersionsInGroup();
-      assertThat(projectVersions, Matchers.hasSize(1));
-      assertThat(projectVersions.get(0), Matchers.equalTo(projectAndVersion));
+      return versionGroupPage.addToGroup(row - 1).closeSearchResult();
    }
 
 }

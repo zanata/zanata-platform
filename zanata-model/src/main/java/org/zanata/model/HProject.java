@@ -77,6 +77,7 @@ public class HProject extends SlugEntityBase implements Serializable
    private String description;
    private String homeContent;
    private String sourceViewURL;
+   private String sourceCheckoutURL;
    private boolean overrideLocales = false;
    private boolean restrictedByRoles = false;
    private HCopyTransOptions defaultCopyTransOpts;
@@ -142,6 +143,11 @@ public class HProject extends SlugEntityBase implements Serializable
    public String getSourceViewURL()
    {
       return sourceViewURL;
+   }
+
+   public String getSourceCheckoutURL()
+   {
+      return sourceCheckoutURL;
    }
 
    @OneToOne(fetch = FetchType.LAZY, optional = true)
