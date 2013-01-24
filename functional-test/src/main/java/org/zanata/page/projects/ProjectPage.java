@@ -71,7 +71,7 @@ public class ProjectPage extends AbstractPage
 
    public CreateVersionPage clickCreateVersionLink()
    {
-      loggedInBody.findElement(By.linkText("Create Version")).click();
+      loggedInBody.findElement(By.id("addIterationLink")).click();
       return new CreateVersionPage(getDriver());
    }
 

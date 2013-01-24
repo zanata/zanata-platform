@@ -41,7 +41,7 @@
         
          <s:decorate id="projectTypeField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
-            <h:selectOneMenu value="#{projectHome.instance.defaultProjectType}">
+            <h:selectOneMenu id="selectField" value="#{projectHome.instance.defaultProjectType}">
 	            <f:selectItems value="#{projectHome.projectTypeList}"/>
 	        </h:selectOneMenu>
         </s:decorate>
@@ -83,7 +83,7 @@
 	
 	    <s:decorate id="statusField" template="edit.xhtml">
 	        <ui:define name="label">#{messages['jsf.Status']}</ui:define>
-	        <h:selectOneMenu value="#{projectHome.instance.status}">
+	        <h:selectOneMenu id="selectField" value="#{projectHome.instance.status}">
 	            <f:selectItems value="#{projectHome.statusList}"/>
 	        </h:selectOneMenu>
 	    </s:decorate>
