@@ -29,9 +29,9 @@ import org.zanata.rest.MediaTypes.Format;
  * @author asgeirf
  * 
  */
-@XmlType(name = "projectType", propOrder = { "name", "defaultType", "description", "links", "iterations", "status" })
+@XmlType(name = "projectType", propOrder = { "name", "defaultType", "description", "sourceViewURL", "sourceCheckoutURL", "links", "iterations", "status" })
 @XmlRootElement(name = "project")
-@JsonPropertyOrder({ "id", "defaultType", "name", "description", "links", "iterations", "status" })
+@JsonPropertyOrder({ "id", "defaultType", "name", "description", "sourceViewURL", "sourceCheckoutURL", "links", "iterations", "status" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 public class Project implements Serializable, HasCollectionSample<Project>, HasMediaType
@@ -41,6 +41,8 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    private String name;
    private ProjectType defaultType;
    private String description;
+   private String sourceViewURL;
+   private String sourceCheckoutURL;
    private EntityStatus status = EntityStatus.ACTIVE;
 
    private Links links;
@@ -109,6 +111,28 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    public void setDescription(String description)
    {
       this.description = description;
+   }
+
+   @XmlElement(name= "sourceViewURL", required = false, namespace = Namespaces.ZANATA_API)
+   public String getSourceViewURL()
+   {
+      return sourceViewURL;
+   }
+
+   public void setSourceViewURL(String sourceViewURL)
+   {
+      this.sourceViewURL = sourceViewURL;
+   }
+
+   @XmlElement(name= "sourceCheckoutURL", required = false, namespace = Namespaces.ZANATA_API)
+   public String getSourceCheckoutURL()
+   {
+      return sourceCheckoutURL;
+   }
+
+   public void setSourceCheckoutURL(String sourceCheckoutURL)
+   {
+      this.sourceCheckoutURL = sourceCheckoutURL;
    }
 
    @XmlElement(name = "link", namespace = Namespaces.ZANATA_API)
