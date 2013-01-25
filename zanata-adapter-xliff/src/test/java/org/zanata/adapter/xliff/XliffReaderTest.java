@@ -9,6 +9,8 @@ import static org.hamcrest.Matchers.not;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
@@ -21,6 +23,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Test(groups = { "unit-tests" })
 public class XliffReaderTest
 {
+   private static final Logger log = LoggerFactory.getLogger(XliffReaderTest.class);
+
    private static final String TEST_DIR = "src/test/resources/";
    private static final String DOC_NAME = "StringResource_en_US.xml";
    private XliffReader reader;

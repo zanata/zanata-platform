@@ -18,11 +18,7 @@
 	</scm>
 
   <dependencies>
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>zanata-common-api</artifactId>
-      <version>${zanata.api.version}</version>
-    </dependency>
+
  	<dependency>
 		<groupId>net.sf.opencsv</groupId>
 		<artifactId>opencsv</artifactId>
@@ -31,26 +27,7 @@
       		<groupId>org.fedorahosted.tennera</groupId>
 	      	<artifactId>jgettext</artifactId>
 	</dependency>
-	<dependency>
-		<groupId>org.easymock</groupId>
-		<artifactId>easymock</artifactId>
-		<scope>test</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-api</artifactId>
-		</dependency>
-   	<dependency>
-		<groupId>org.testng</groupId>
-		<artifactId>testng</artifactId>
-		<scope>test</scope>
-	</dependency>
 
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <scope>test</scope>
-      </dependency>
       <dependency>
           <groupId>commons-lang</groupId>
           <artifactId>commons-lang</artifactId>
@@ -58,7 +35,6 @@
       <dependency>
           <groupId>commons-io</groupId>
           <artifactId>commons-io</artifactId>
-          <version>2.0.1</version>
       </dependency>
 
 

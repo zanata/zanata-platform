@@ -29,13 +29,12 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
-import org.junit.Assert;
-import org.testng.annotations.BeforeMethod;
+import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *
@@ -45,21 +44,6 @@ import org.zanata.rest.dto.GlossaryEntry;
 @Test(groups = "unit-tests")
 public class GlossaryCSVReaderTest
 {
-   GlossaryCSVReader reader;
-
-   IMocksControl control = EasyMock.createControl();
-
-   @BeforeMethod
-   void beforeMethod()
-   {
-      control.reset();
-   }
-
-   <T> T createMock(String name, Class<T> toMock)
-   {
-      T mock = control.createMock(name, toMock);
-      return mock;
-   }
 
    @Test
    public void extractGlossaryTest1() throws IOException
@@ -77,13 +61,13 @@ public class GlossaryCSVReaderTest
 
       List<Glossary> glossaries = reader.extractGlossary(br);
       // System.out.println(glossary);
-      Assert.assertEquals(1, glossaries.size());
+      assertThat(glossaries.size(), Matchers.equalTo(1));
 
-      Assert.assertEquals(2, glossaries.get(0).getGlossaryEntries().size());
+      assertThat(glossaries.get(0).getGlossaryEntries().size(), Matchers.equalTo(2));
 
       for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries())
       {
-         Assert.assertEquals(3, entry.getGlossaryTerms().size());
+         assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
       }
 
    }
@@ -105,13 +89,13 @@ public class GlossaryCSVReaderTest
 
       List<Glossary> glossaries = reader.extractGlossary(br);
       // System.out.println(glossary);
-      Assert.assertEquals(1, glossaries.size());
+      assertThat(glossaries.size(), Matchers.equalTo(1));
 
-      Assert.assertEquals(2, glossaries.get(0).getGlossaryEntries().size());
+      assertThat(glossaries.get(0).getGlossaryEntries().size(), Matchers.equalTo(2));
 
       for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries())
       {
-         Assert.assertEquals(3, entry.getGlossaryTerms().size());
+         assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
       }
 
    }

@@ -28,13 +28,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
-import org.junit.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 /**
  * 
@@ -44,8 +43,6 @@ import org.zanata.rest.dto.Glossary;
 @Test(groups = "unit-tests")
 public class GlossaryPoReaderTest
 {
-   IMocksControl control = EasyMock.createControl();
-
    private final File sourceFile = new File("src/test/resources/glossary/fuel_hi.po"); // 578
                                                                                        // glossary
                                                                                        // entries
@@ -58,18 +55,6 @@ public class GlossaryPoReaderTest
 
    private final int BATCH_SIZE = 50;
 
-   @BeforeMethod
-   void beforeMethod()
-   {
-      control.reset();
-   }
-
-   <T> T createMock(String name, Class<T> toMock)
-   {
-      T mock = control.createMock(name, toMock);
-      return mock;
-   }
-
    @Test
    public void extractGlossaryTest() throws IOException
    {
@@ -79,12 +64,11 @@ public class GlossaryPoReaderTest
       BufferedReader br = new BufferedReader(inputStreamReader);
 
       List<Glossary> glossaries = reader.extractGlossary(br);
-      Assert.assertEquals(Math.ceil(sourceSize1 / BATCH_SIZE), glossaries.size(), BATCH_SIZE);
-      Assert.assertEquals(BATCH_SIZE, glossaries.get(0).getGlossaryEntries().size());
-      Assert.assertEquals(BATCH_SIZE, glossaries.get(1).getGlossaryEntries().size());
+      assertThat(glossaries.size(), equalTo((int) Math.ceil(sourceSize1 * 1F / BATCH_SIZE)));
+      assertThat(glossaries.get(0).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
+      assertThat(glossaries.get(1).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
 
-      Assert.assertEquals(sourceSize1 % BATCH_SIZE, glossaries.get(glossaries.size() - 1).getGlossaryEntries().size());
-
+      assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries().size(), equalTo(sourceSize1 % BATCH_SIZE));
    }
 
    @Test
@@ -95,11 +79,9 @@ public class GlossaryPoReaderTest
       BufferedReader br = new BufferedReader(inputStreamReader);
 
       List<Glossary> glossaries = reader.extractGlossary(br);
-      Assert.assertEquals(Math.ceil(sourceSize2 / BATCH_SIZE), glossaries.size(), BATCH_SIZE);
-      Assert.assertEquals(BATCH_SIZE, glossaries.get(0).getGlossaryEntries().size());
-      Assert.assertEquals(BATCH_SIZE, glossaries.get(1).getGlossaryEntries().size());
-
-      Assert.assertEquals(sourceSize2 % BATCH_SIZE, glossaries.get(glossaries.size() - 1).getGlossaryEntries().size());
-
+      assertThat(glossaries.size(), equalTo((int) Math.ceil(sourceSize2 * 1F / BATCH_SIZE)));
+      assertThat(glossaries.get(0).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
+      assertThat(glossaries.get(1).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
+      assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries().size(), equalTo(sourceSize2 % BATCH_SIZE));
    }
 }

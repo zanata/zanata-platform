@@ -24,6 +24,11 @@
   
   <dependencyManagement>
       <dependencies>
+          <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>zanata-common-api</artifactId>
+              <version>${zanata.api.version}</version>
+          </dependency>
         <dependency>
           <groupId>org.fedorahosted.tennera</groupId>
           <artifactId>jgettext</artifactId>
@@ -39,15 +44,52 @@
           <artifactId>opencsv</artifactId>
           <version>2.1</version>
        </dependency>
+          <dependency>
+              <groupId>commons-io</groupId>
+              <artifactId>commons-io</artifactId>
+              <version>2.0.1</version>
+          </dependency>
+
+          <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-impl</artifactId>
+              <version>2.1.12</version>
+          </dependency>
       </dependencies>
    </dependencyManagement>
 
    <dependencies>
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>zanata-common-api</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>org.slf4j</groupId>
+           <artifactId>slf4j-api</artifactId>
+       </dependency>
       <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
       </dependency>
+       <dependency>
+           <groupId>org.hamcrest</groupId>
+           <artifactId>hamcrest-core</artifactId>
+           <scope>test</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>org.hamcrest</groupId>
+           <artifactId>hamcrest-library</artifactId>
+           <scope>test</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>org.testng</groupId>
+           <artifactId>testng</artifactId>
+           <scope>test</scope>
+       </dependency>
+
    </dependencies>
 
     <build>
