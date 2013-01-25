@@ -81,9 +81,7 @@ public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossary
             targetComments.add(termComment.getComment());
          }
          
-         SimpleDateFormat dateFormat = new SimpleDateFormat();
-         
-         items.add(new GlossaryDetails(srcTerm.getContent(), hGlossaryTerm.getContent(), srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId(), hGlossaryTerm.getVersionNum(), dateFormat.format(hGlossaryTerm.getLastChanged())));
+         items.add(new GlossaryDetails(srcTerm.getContent(), hGlossaryTerm.getContent(), srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId(), hGlossaryTerm.getVersionNum(), hGlossaryTerm.getLastChanged()));
       }
 
       return new GetGlossaryDetailsResult(items);

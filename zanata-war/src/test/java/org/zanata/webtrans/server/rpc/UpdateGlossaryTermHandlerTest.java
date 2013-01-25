@@ -63,7 +63,7 @@ public class UpdateGlossaryTermHandlerTest
    @Test
    public void testExecute() throws Exception
    {
-      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, "12/10/2012");
+      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, new Date());
       UpdateGlossaryTermAction action = new UpdateGlossaryTermAction(selectedDetailEntry, "new target", Lists.newArrayList("new comment"));
       when(glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource())).thenReturn(hGlossaryEntry);
       when(localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale())).thenReturn(targetHLocale);
@@ -90,7 +90,7 @@ public class UpdateGlossaryTermHandlerTest
    @Test(expectedExceptions = ActionException.class)
    public void testExecuteWhenTargetTermNotFound() throws Exception
    {
-      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, "12/10/2012");
+      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, new Date());
       UpdateGlossaryTermAction action = new UpdateGlossaryTermAction(selectedDetailEntry, "new target", Lists.newArrayList("new comment"));
       when(glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource())).thenReturn(hGlossaryEntry);
       when(localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale())).thenReturn(targetHLocale);
@@ -102,7 +102,7 @@ public class UpdateGlossaryTermHandlerTest
    @Test(expectedExceptions = ActionException.class)
    public void testExecuteWhenTargetTermVersionNotMatch() throws Exception
    {
-      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, "12/10/2012");
+      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, new Date());
       UpdateGlossaryTermAction action = new UpdateGlossaryTermAction(selectedDetailEntry, "new target", Lists.newArrayList("new comment"));
       when(glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource())).thenReturn(hGlossaryEntry);
       when(localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale())).thenReturn(targetHLocale);

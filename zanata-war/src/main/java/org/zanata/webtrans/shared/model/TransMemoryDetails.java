@@ -1,5 +1,7 @@
 package org.zanata.webtrans.shared.model;
 
+import java.util.Date;
+
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -14,14 +16,14 @@ public class TransMemoryDetails implements IsSerializable
    private String resId;
    private String msgContext;
    private String lastModifiedBy;
-   private String lastModifiedDate;
+   private Date lastModifiedDate;
 
    @SuppressWarnings("unused")
    private TransMemoryDetails()
    {
    }
 
-   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext, String lastModifiedBy, String lastModifiedDate)
+   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext, String lastModifiedBy, Date lastModifiedDate)
    {
       this.sourceComment = sourceComment;
       this.targetComment = targetComment;
@@ -75,7 +77,7 @@ public class TransMemoryDetails implements IsSerializable
       return lastModifiedBy;
    }
 
-   public String getLastModifiedDate()
+   public Date getLastModifiedDate()
    {
       return lastModifiedDate;
    }

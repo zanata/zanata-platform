@@ -153,6 +153,9 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Last modified on {0}")
    String lastModifiedOn(String date);
+   
+   @DefaultMessage("Last modified on {0} by {1}")
+   String lastModified(String date, String by);
 
    @DefaultMessage("Searching...")
    String searching();

@@ -8,6 +8,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.presenter.TransHistoryVersionComparator;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 import com.google.common.base.Strings;
@@ -287,7 +288,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
          @Override
          public String getValue(TransHistoryItem historyItem)
          {
-            return historyItem.getModifiedDate();
+            return DateUtil.formatShortDate(historyItem.getModifiedDate());
          }
       };
    }

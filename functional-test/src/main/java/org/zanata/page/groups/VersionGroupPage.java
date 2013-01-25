@@ -49,7 +49,7 @@ public class VersionGroupPage extends AbstractPage
          @Override
          public WebElement apply(WebDriver driver)
          {
-            return addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
+            return addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:searchField"));
          }
       });
       return new VersionGroupPage(getDriver());
@@ -57,10 +57,10 @@ public class VersionGroupPage extends AbstractPage
 
    public List<List<String>> searchProject(final String projectName, final int expectedResultNum)
    {
-      WebElement searchField = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
+      WebElement searchField = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:searchField"));
       searchField.sendKeys(projectName);
 
-      WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
+      WebElement searchButton = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:searchBtn"));
       searchButton.click();
 
       return waitForTenSec().until(new Function<WebDriver, List<List<String>>>()
@@ -68,7 +68,7 @@ public class VersionGroupPage extends AbstractPage
          @Override
          public List<List<String>> apply(WebDriver driver)
          {
-            WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+            WebElement table = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:resultTable"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(table);
             // we want to wait until search result comes back. There is no way we can tell whether search result has come back and table refreshed.
             // To avoid the org.openqa.selenium.StaleElementReferenceException (http://seleniumhq.org/exceptions/stale_element_reference.html),
@@ -95,7 +95,7 @@ public class VersionGroupPage extends AbstractPage
 
    public VersionGroupPage addToGroup(int rowIndex)
    {
-      WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+      WebElement table = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:resultTable"));
 
       List<WebElement> cells = WebElementUtil.getTableRows(table).get(rowIndex).getCells();
       WebElement actionCell = cells.get(cells.size() - 1);
@@ -108,24 +108,26 @@ public class VersionGroupPage extends AbstractPage
          }
       }
 
-      WebElement addSelected = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Add Selected']"));
+      WebElement addSelected = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:addSelectedBtn"));
       addSelected.click();
       return this;
    }
 
    public VersionGroupPage closeSearchResult()
    {
-      WebElement closeButton = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Close']"));
+      WebElement closeButton = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:closeBtn"));
       closeButton.click();
       return this;
    }
 
+   @SuppressWarnings("unused")
    public List<List<String>> getProjectVersionsInGroup()
    {
       List<TableRow> tableRows = WebElementUtil.getTableRows(groupDataTable);
       return WebElementUtil.transformToTwoDimensionList(tableRows);
    }
 
+   @SuppressWarnings("unused")
    public List<List<String>> getNotEmptyProjectVersionsInGroup()
    {
       FluentWait<WebDriver> fluentWait = waitForTenSec();

@@ -1,10 +1,13 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.Date;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
+import org.zanata.webtrans.client.util.DateUtil;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,11 +57,14 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
    @UiField
    SimplePanel targetTextContainer;
 
+   private final UiMessages messages;
+   
    @Inject
    public TransMemoryDetailsView(UiMessages messages)
    {
       dialogBox = uiBinder.createAndBindUi(this);
       dialogBox.setText(messages.translationMemoryDetails());
+      this.messages = messages;
       dismissButton.setText(messages.dismiss());
    }
 
@@ -109,9 +115,16 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
    }
 
    @Override
-   public void setLastModified(String lastModified)
+   public void setLastModified(String lastModifiedBy, Date lastModifiedDate)
    {
-      this.lastModified.setText(lastModified);
+      if (!Strings.isNullOrEmpty(lastModifiedBy))
+      {
+         lastModified.setText(messages.lastModified(DateUtil.formatShortDate(lastModifiedDate), lastModifiedBy));
+      }
+      else
+      {
+         lastModified.setText(messages.lastModifiedOn(DateUtil.formatShortDate(lastModifiedDate)));
+      }
    }
 
    @Override

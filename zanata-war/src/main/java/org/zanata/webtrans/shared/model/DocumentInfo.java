@@ -19,6 +19,9 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    private Date lastChanged;
    private Map<String, String> downloadExtensions;
    
+   private Date lastTranslatedDate;
+   private String lastTranslatedBy;
+   
 
    // for GWT
    @SuppressWarnings("unused")
@@ -26,7 +29,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    {
    }
 
-   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats, String lastModifiedBy, Date lastChanged, Map<String, String> downloadExtensions)
+   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats, String lastModifiedBy, Date lastChanged, Map<String, String> downloadExtensions, String lastTranslatedBy, Date lastTranslatedDate)
    {
       this.id = id;
       this.name = name;
@@ -36,6 +39,8 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       this.lastChanged = lastChanged;
       this.lastModifiedBy = lastModifiedBy;
       this.downloadExtensions = downloadExtensions;
+      this.lastTranslatedDate = lastTranslatedDate;
+      this.lastTranslatedBy = lastTranslatedBy;
    }
 
    public DocumentId getId()
@@ -76,6 +81,26 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    public Map<String, String> getDownloadExtensions()
    {
       return downloadExtensions;
+   }
+
+   public Date getLastTranslatedDate()
+   {
+      return lastTranslatedDate;
+   }
+
+   public String getLastTranslatedBy()
+   {
+      return lastTranslatedBy;
+   }
+
+   public void setLastTranslatedDate(Date lastTranslatedDate)
+   {
+      this.lastTranslatedDate = lastTranslatedDate;
+   }
+
+   public void setLastTranslatedBy(String lastTranslatedBy)
+   {
+      this.lastTranslatedBy = lastTranslatedBy;
    }
 
    @Override

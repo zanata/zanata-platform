@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Map;
 
 import org.zanata.webtrans.client.Application;
@@ -28,10 +29,11 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.table.column.RemainingHoursColumn;
 import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
+import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -55,6 +57,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
    private final class DocumentHeader extends Header<String>
    {
       private final WebTransMessages messages;
+
       public DocumentHeader(org.zanata.webtrans.client.resources.Resources images, WebTransMessages messages)
       {
          super(new IconCellDecorator<String>(images.documentImage(), new TextCell()));
@@ -67,7 +70,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          return messages.columnHeaderDocument();
       }
    }
-   
+
    private final class StatisticHeader extends Header<String> implements HasStatsFilter
    {
       private final WebTransMessages messages;
@@ -78,6 +81,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          super(new TextCell());
          this.messages = messages;
       }
+
       @Override
       public String getValue()
       {
@@ -95,8 +99,9 @@ public class DocumentListTable extends CellTable<DocumentNode>
    private final Column<DocumentNode, String> documentColumn;
    private final StatisticColumn statisticColumn;
    private final RemainingHoursColumn remainingColumn;
-   
+
    private final TextColumn<DocumentNode> lastModifiedColumn;
+   private final TextColumn<DocumentNode> lastTranslatedColumn;
    private final StaticWidgetColumn<DocumentNode, HorizontalPanel> downloadColumn;
    private final Column<DocumentNode, String> uploadColumn;
 
@@ -117,7 +122,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return object.getDocInfo().getPath();
          }
       };
-      
+
       documentColumn = new Column<DocumentNode, String>(new ClickableTextCell())
       {
          @Override
@@ -138,21 +143,22 @@ public class DocumentListTable extends CellTable<DocumentNode>
 
       statisticColumn = new StatisticColumn(messages);
       remainingColumn = new RemainingHoursColumn(messages);
-      
+
       lastModifiedColumn = new TextColumn<DocumentNode>()
       {
          @Override
          public String getValue(DocumentNode object)
          {
-            String date = "";
-            if(object.getDocInfo().getLastChanged() != null)
-            {
-               date = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(object.getDocInfo().getLastChanged());
-            }
+            return getAuditInfo(object.getDocInfo().getLastModifiedBy(), object.getDocInfo().getLastChanged());
+         }
+      };
 
-            String modifiedBy = object.getDocInfo().getLastModifiedBy();
-
-            return modifiedBy + " " + date;
+      lastTranslatedColumn = new TextColumn<DocumentNode>()
+      {
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            return getAuditInfo(object.getDocInfo().getLastTranslatedBy(), object.getDocInfo().getLastTranslatedDate());
          }
       };
 
@@ -196,6 +202,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
       statisticColumn.setSortable(true);
       remainingColumn.setSortable(true);
       lastModifiedColumn.setSortable(true);
+      lastTranslatedColumn.setSortable(true);
 
       addColumn(pathColumn, messages.columnHeaderPath());
       pathColumn.setCellStyleNames("pathCol");
@@ -210,20 +217,40 @@ public class DocumentListTable extends CellTable<DocumentNode>
 
       remainingColumn.setCellStyleNames("remainingCol");
       addColumn(remainingColumn, messages.columnHeaderRemaining());
+
+      lastModifiedColumn.setCellStyleNames("auditCol");
+      addColumn(lastModifiedColumn, messages.columnHeaderLastUpload());
       
-      lastModifiedColumn.setCellStyleNames("lastModifiedCol");
-      addColumn(lastModifiedColumn, "Last Modified");
+      lastTranslatedColumn.setCellStyleNames("auditCol");
+      addColumn(lastTranslatedColumn, messages.columnHeaderLastTranslated());
 
       downloadColumn.setCellStyleNames("downloadCol");
-      addColumn(downloadColumn, "Download");
+      addColumn(downloadColumn, messages.columnHeaderDownload());
 
       uploadColumn.setCellStyleNames("uploadCol");
-      if(userWorkspaceContext.hasWriteAccess())
+      if (userWorkspaceContext.hasWriteAccess())
       {
-         addColumn(uploadColumn, "Upload");
+         addColumn(uploadColumn, messages.columnHeaderUpload());
       }
 
       addSorting(dataProvider);
+   }
+
+   private String getAuditInfo(String by, Date date)
+   {
+      StringBuilder sb = new StringBuilder();
+
+      if (date != null)
+      {
+         sb.append(DateUtil.formatShortDate(date));
+      }
+      if (!Strings.isNullOrEmpty(by))
+      {
+         sb.append(" by ");
+         sb.append(by);
+      }
+
+      return sb.toString();
    }
 
    public void setStatsFilter(String option)
@@ -298,6 +325,26 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
          }
       });
+      
+      columnSortHandler.setComparator(lastTranslatedColumn, new Comparator<DocumentNode>()
+            {
+               public int compare(DocumentNode o1, DocumentNode o2)
+               {
+                  if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+                  {
+                     return 0;
+                  }
+                  if (o1.getDocInfo().getLastChanged() == null)
+                  {
+                     return -1;
+                  }
+                  if (o2.getDocInfo().getLastChanged() == null)
+                  {
+                     return 1;
+                  }
+                  return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
+               }
+            });
       addColumnSortHandler(columnSortHandler);
       getColumnSortList().push(pathColumn);
    }

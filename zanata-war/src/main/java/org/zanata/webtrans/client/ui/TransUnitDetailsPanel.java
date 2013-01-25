@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.base.Strings;
@@ -54,7 +55,7 @@ public class TransUnitDetailsPanel extends Composite
       else
       {
          lastModifiedBy.setText(person);
-         lastModifiedTime.setText(transUnit.getLastModifiedTime());
+         lastModifiedTime.setText(DateUtil.formatShortDate(transUnit.getLastModifiedTime()));
       }
 
       StringBuilder headerSummary = new StringBuilder();

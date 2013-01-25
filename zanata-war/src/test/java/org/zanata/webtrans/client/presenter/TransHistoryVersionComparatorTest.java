@@ -3,6 +3,8 @@ package org.zanata.webtrans.client.presenter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.webtrans.client.presenter.TransHistoryVersionComparator.COMPARATOR;
 
+import java.util.Date;
+
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
@@ -68,6 +70,6 @@ public class TransHistoryVersionComparatorTest
 
    private static TransHistoryItem createHistoryItem(String versionNum)
    {
-      return new TransHistoryItem(versionNum, Lists.<String> newArrayList(), ContentState.Approved, "admin", "12/12/12");
+      return new TransHistoryItem(versionNum, Lists.<String> newArrayList(), ContentState.Approved, "admin", new Date());
    }
 }

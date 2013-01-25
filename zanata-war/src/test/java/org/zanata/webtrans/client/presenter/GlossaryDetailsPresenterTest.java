@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -99,8 +100,6 @@ public class GlossaryDetailsPresenterTest
    @Mock
    private HasText lastModified;
    @Mock
-   private HasText sourceText;
-   @Mock
    private HasText sourceLabel;
    @Mock
    private HasText targetLabel;
@@ -156,6 +155,7 @@ public class GlossaryDetailsPresenterTest
    public void onSaveClickAndCallbackSuccess()
    {
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
+      Date lastModifiedDate = new Date();
       when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
       when(display.getTargetText()).thenReturn(targetText);
       when(targetText.getText()).thenReturn("new target Text");
@@ -169,14 +169,13 @@ public class GlossaryDetailsPresenterTest
       AsyncCallback<UpdateGlossaryTermResult> callback = updateGlossarycallbackCaptor.getValue();
       GlossaryDetails newDetails = mock(GlossaryDetails.class);
       when(display.getSrcRef()).thenReturn(srcRef);
-      when(display.getLastModified()).thenReturn(lastModified);
       callback.onSuccess(new UpdateGlossaryTermResult(newDetails));
 
       verify(glossaryListener).fireSearchEvent();
       verify(srcRef).setText(newDetails.getSourceRef());
       verify(display).setSourceComment(newDetails.getSourceComment());
       verify(display).setTargetComment(newDetails.getTargetComment());
-      verify(lastModified).setText(anyString());
+      verify(display).setLastModifiedDate(newDetails.getLastModifiedDate());
       verify(display).showLoading(false);
    }
 
@@ -268,19 +267,17 @@ public class GlossaryDetailsPresenterTest
       when(glossaryDetails.getTargetLocale()).thenReturn(new LocaleId("zh"));
       when(glossaryDetails.getTarget()).thenReturn("source text");
       when(display.getSrcRef()).thenReturn(srcRef);
-      when(display.getSourceText()).thenReturn(sourceText);
       when(display.getTargetText()).thenReturn(targetText);
       when(display.getSourceLabel()).thenReturn(sourceLabel);
       when(display.getTargetLabel()).thenReturn(targetLabel);
-      when(display.getLastModified()).thenReturn(lastModified);
       when(messages.entriesLabel(1)).thenReturn("1");
 
       callback.onSuccess(new GetGlossaryDetailsResult(Lists.newArrayList(glossaryDetails)));
 
-      verify(sourceText).setText(item.getSource());
+      verify(display).setSourceText(item.getSource());
       verify(targetText).setText(item.getSource());
       verify(display).clearEntries();
-      verify(sourceLabel).setText(anyString());
+      verify(display).setSourceText(anyString());
       verify(targetLabel).setText(anyString());
       verify(display).addEntry("1");
       verify(display).show();

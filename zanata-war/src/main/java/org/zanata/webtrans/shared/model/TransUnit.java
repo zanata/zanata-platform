@@ -1,7 +1,7 @@
 package org.zanata.webtrans.shared.model;
 
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -28,7 +28,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
    private List<String> targets;
    private String msgContext;
    private String lastModifiedBy;
-   private String lastModifiedTime;
+   private Date lastModifiedTime;
    private int rowIndex;
    private int verNum;
    private String targetComment;
@@ -159,12 +159,12 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       this.lastModifiedBy = lastModifiedBy;
    }
 
-   public String getLastModifiedTime()
+   public Date getLastModifiedTime()
    {
       return lastModifiedTime;
    }
 
-   void setLastModifiedTime(String lastModifiedTime)
+   void setLastModifiedTime(Date lastModifiedTime)
    {
       this.lastModifiedTime = lastModifiedTime;
    }
@@ -220,7 +220,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       private List<String> targets = Lists.newArrayList();
       private String msgContext;
       private String lastModifiedBy;
-      private String lastModifiedTime;
+      private Date lastModifiedTime;
       private int rowIndex;
       private int verNum = -1; // to fail check if not set before build
       private String targetComment;
@@ -256,7 +256,6 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          Preconditions.checkState(verNum >= 0);
 
          lastModifiedBy = Strings.nullToEmpty(lastModifiedBy);
-         lastModifiedTime = Strings.nullToEmpty(lastModifiedTime);
          status = Objects.firstNonNull(status, ContentState.New);
 
          return new TransUnit(this);
@@ -361,7 +360,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          return this;
       }
 
-      public Builder setLastModifiedTime(String lastModifiedTime)
+      public Builder setLastModifiedTime(Date lastModifiedTime)
       {
          this.lastModifiedTime = lastModifiedTime;
          return this;

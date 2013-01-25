@@ -23,6 +23,7 @@ import org.zanata.common.TranslationStats;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.StatusCount;
 
 @Name("documentDAO")
@@ -149,6 +150,27 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       
    }
 
+   public HTextFlowTarget getLastTranslated(long docId, LocaleId localeId)
+   {
+       StringBuilder queryStr = new StringBuilder(
+             "select tft, max(tft.lastChanged)" +
+             "from HTextFlowTarget tft " +
+             "where tft.textFlow.document.id = :docId " +
+             "and tft.locale.localeId = :localeId"
+
+       );
+      
+      Query q = getSession().createQuery( queryStr.toString() );
+      q.setParameter("docId", docId);
+      q.setParameter("localeId", localeId);
+      q.setCacheable(true);
+      q.setComment("DocumentDAO.getLastTranslated");
+      
+      Object[] obj = (Object[]) q.uniqueResult();
+      return (HTextFlowTarget) obj[0];
+   }
+   
+   
    /**
     * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
     * @param docId

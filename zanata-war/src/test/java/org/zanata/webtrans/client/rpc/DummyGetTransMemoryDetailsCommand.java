@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.rpc;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
@@ -27,7 +28,7 @@ public class DummyGetTransMemoryDetailsCommand implements Command
       ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>();
       for (int i = 0; i < 4; i++)
       {
-         items.add(new TransMemoryDetails("source " + i + " comment", "target " + i + " comment", "workspace " + i, "iteration "+ i, "doc id:" + + i, "resId", "msgContext", "Bob", "28/2/2000 18:58"));
+         items.add(new TransMemoryDetails("source " + i + " comment", "target " + i + " comment", "workspace " + i, "iteration "+ i, "doc id:" + + i, "resId", "msgContext", "Bob", new Date()));
       }
       
       callback.onSuccess(new TransMemoryDetailsList(items));

@@ -34,4 +34,13 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="2" author="damason@redhat.com">
+        <comment>Add machine-readable source control URL column to HProject.</comment>
+        <addColumn tableName="HProject">
+            <column name="sourceCheckoutURL" type="longtext">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
+import java.util.Date;
 import java.util.List;
 
 import org.zanata.common.LocaleId;
@@ -16,7 +17,7 @@ public class GlossaryDetails implements IsSerializable
    private Integer targetVersionNum;
    private String source;
    private String target;
-   private String lastModifiedOn;
+   private Date lastModifiedDate;
 
    @SuppressWarnings("unused")
    private GlossaryDetails()
@@ -24,7 +25,7 @@ public class GlossaryDetails implements IsSerializable
       this(null, null, null, null, null, null, null, null, null);
    }
 
-   public GlossaryDetails(String source, String target, List<String> sourceComment, List<String> targetComment, String sourceRef, LocaleId srcLocale, LocaleId targetLocale, Integer targetVersionNum, String lastModifiedOn)
+   public GlossaryDetails(String source, String target, List<String> sourceComment, List<String> targetComment, String sourceRef, LocaleId srcLocale, LocaleId targetLocale, Integer targetVersionNum, Date lastModifiedDate)
    {
       this.source = source;
       this.target = target;
@@ -34,7 +35,7 @@ public class GlossaryDetails implements IsSerializable
       this.srcLocale = srcLocale;
       this.targetLocale = targetLocale;
       this.targetVersionNum = targetVersionNum;
-      this.lastModifiedOn = lastModifiedOn;
+      this.lastModifiedDate = lastModifiedDate;
    }
 
    public List<String> getSourceComment()
@@ -77,8 +78,8 @@ public class GlossaryDetails implements IsSerializable
       return target;
    }
 
-   public String getLastModified()
+   public Date getLastModifiedDate()
    {
-      return lastModifiedOn;
+      return lastModifiedDate;
    }
 }

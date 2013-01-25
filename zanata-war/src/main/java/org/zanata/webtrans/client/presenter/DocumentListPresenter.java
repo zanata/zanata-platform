@@ -50,6 +50,7 @@ import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -317,6 +318,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
       adjustStats(updatedDoc.getStats(), updateInfo);
+      updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
       eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
 
       // refresh document list table
@@ -325,6 +327,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       // update project stats, forward to AppPresenter
       adjustStats(projectStats, updateInfo);
       eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+   }
+
+   private void updateLastTranslatedInfo(DocumentInfo doc, TransUnit updatedTransUnit)
+   {
+      doc.setLastTranslatedBy(updatedTransUnit.getLastModifiedBy());
+      doc.setLastTranslatedDate(updatedTransUnit.getLastModifiedTime());
    }
 
    /**

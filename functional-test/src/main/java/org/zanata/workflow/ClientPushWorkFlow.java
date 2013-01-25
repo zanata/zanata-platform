@@ -60,7 +60,7 @@ public class ClientPushWorkFlow
          Joiner joiner = Joiner.on(" ");
          log.info("execute command: \n{}\n", joiner.join(command));
 
-         process = invokeMaven(projectDir, command);
+         process = invokeClient(projectDir, command);
          process.waitFor();
 
          return process.exitValue();
@@ -91,21 +91,19 @@ public class ClientPushWorkFlow
             .add("mvn").add("--batch-mode")
             .add("zanata:push")
             .add("-Dzanata.userConfig=" + userConfig)
-            .add("-Dzanata.username=admin")
-            .add("-Dzanata.key=" + properties.getProperty(Constants.zanataApiKey.value()))
             .add(extraPushOptions);
       // @formatter:on
       return builder.build();
    }
 
-   private static String getUserConfigPath()
+   public static String getUserConfigPath()
    {
       URL resource = Thread.currentThread().getContextClassLoader().getResource("zanata-autotest.ini");
       Preconditions.checkNotNull(resource, "userConfig can not be found.");
       return resource.getPath();
    }
 
-   public synchronized static Process invokeMaven(File projectDir, List<String> command) throws IOException
+   public synchronized static Process invokeClient(File projectDir, List<String> command) throws IOException
    {
       ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
       Map<String, String> env = processBuilder.environment();

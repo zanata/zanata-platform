@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.Date;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -11,20 +13,13 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDetailsDisplay> implements TransMemoryDetailsDisplay.Listener
 {
    private final CachingDispatchAsync dispatcher;
-
+   
    private TransMemoryDetailsList tmDetails;
 
    @Inject
@@ -95,7 +90,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       String iteration = "";
       String doc = "";
       String lastModifiedBy = "";
-      String lastModifiedDate = "";
+      Date lastModifiedDate = null;
 
       if (selected >= 0)
       {
@@ -114,14 +109,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       display.setProjectIterationName(project + " / " + iteration);
       display.setDocumentName(doc);
 
-      if (!Strings.isNullOrEmpty(lastModifiedBy))
-      {
-         display.setLastModified("Last modified by " + lastModifiedBy + " on " + lastModifiedDate);
-      }
-      else
-      {
-         display.setLastModified("Last modified on " + lastModifiedDate);
-      }
+      display.setLastModified(lastModifiedBy, lastModifiedDate);
    }
 
    /**

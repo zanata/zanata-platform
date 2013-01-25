@@ -22,6 +22,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.Matchers;
@@ -286,7 +287,7 @@ public class TransMemoryMergeHandlerTest
             .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
       // Given: tm detail of text flow id 11 which has different doc id
-      TransMemoryDetails tmDetails = new TransMemoryDetails("", "", "project a", "master", "different/doc/id", "resId", "", "", "");
+      TransMemoryDetails tmDetails = new TransMemoryDetails("", "", "project a", "master", "different/doc/id", "resId", "", "", new Date());
       when(getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmResultSource)).thenReturn(tmDetails);
 
       // When: execute the action

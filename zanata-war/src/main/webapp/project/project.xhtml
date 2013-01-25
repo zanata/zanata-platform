@@ -14,7 +14,7 @@
 <ui:define name="center_content">
     <s:decorate id="main_content">
 
-    <s:div styleClass="content_box" rendered="#{not empty projectHome.instance.homeContent or not empty projectHome.instance.description or not empty projectHome.instance.sourceViewURL}">
+    <s:div styleClass="content_box" rendered="#{not empty projectHome.instance.homeContent or not empty projectHome.instance.description or not empty projectHome.instance.sourceViewURL or not empty projectHome.instance.sourceCheckoutURL}">
         <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"/>
         <s:formattedText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
         <p>
@@ -23,6 +23,7 @@
                 <h:outputText value="#{projectHome.instance.sourceViewURL}"/>
             </h:outputLink>
         </p>
+        <s:formattedText id="source-checkout-url" rendered="#{not empty projectHome.instance.sourceCheckoutURL}" value="#{messages['jsf.SourceCheckoutUrl']}: #{projectHome.instance.sourceCheckoutURL}"/>
     </s:div>
 
    	<div class="iterations">
@@ -125,7 +126,7 @@
     <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="#{messages['jsf.project.EditHomePage.label']}" view="/project/homepage_edit.xhtml" title="#{messages['jsf.project.EditHomePage.tooltip']}" propagation="none">
       <f:param name="slug" value="#{projectHome.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration') and projectHome.isProjectActive()}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
+    <s:link id="addIterationLink" styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration') and projectHome.isProjectActive()}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.slug}"/>
     </s:link>
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">

@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.NotificationDetailsBox;
+import org.zanata.webtrans.client.util.DateUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -145,7 +146,7 @@ public class NotificationView extends Composite implements NotificationDisplay
       severityImg = createSeverityImage(severity);
       panel.add(severityImg);
 
-      final String time = "[" + DateTimeFormat.getFormat(PredefinedFormat.HOUR24_MINUTE_SECOND).format(new Date()) + "]";
+      final String time = "[" + DateUtil.formatTime(new Date()) + "]";
       Label timeLabel = new Label(time);
       timeLabel.setStyleName(style.timeLabel());
       panel.add(timeLabel);

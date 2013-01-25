@@ -93,22 +93,22 @@
  
     <rich:modalPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
-            <a4j:form>
+            <a4j:form id="searchForm">
                 <h1>Find Project Version</h1>
                 <p>
-                    <h:inputText value="#{versionGroupAction.searchTerm}"
+                    <h:inputText id="searchField" value="#{versionGroupAction.searchTerm}"
                                  onkeydown="return submitSearchOnEnter(event)"/>
                     <a4j:commandButton id="searchBtn"
                                        value="#{messages['jsf.Search']}"
                                        action="#{versionGroupAction.searchProjectAndVersion}"
                                        reRender="searchResults" />
                                        
-                    <a4j:commandButton value="#{messages['jsf.Close']}"
+                    <a4j:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
                                      onclick="#{rich:component('versionAddPanel')}.hide(); return false;" />
 
                 </p>
             </a4j:form>
-            <a4j:region>
+            <a4j:region id="region">
                 <a4j:form id="searchResults">
                     <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <a4j:outputPanel  layout="block" style="overflow:auto;height:320px" rendered="#{not empty versionGroupAction.searchResults}">

@@ -41,14 +41,12 @@ public class ManageLanguagePage extends AbstractPage
 {
 
    public static final int LOCALE_COLUMN = 0;
-   @FindBy(id = "main_body_content")
-   private WebElement mainBody;
-   private final WebElement languageTable;
+   @FindBy(id = "languageForm:threads")
+   private WebElement languageTable;
 
    public ManageLanguagePage(WebDriver driver)
    {
       super(driver);
-      languageTable = mainBody.findElement(By.xpath(".//table"));
    }
 
    public AddLanguagePage addNewLanguage()

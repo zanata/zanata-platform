@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.jboss.seam.ScopeType;
@@ -78,7 +77,7 @@ public class TransUnitTransformer
          {
             builder.setLastModifiedBy(target.getLastModifiedBy().getName());
          }
-         builder.setLastModifiedTime(new SimpleDateFormat().format(target.getLastChanged()));
+         builder.setLastModifiedTime(target.getLastChanged());
       }
       return builder.build();
    }
