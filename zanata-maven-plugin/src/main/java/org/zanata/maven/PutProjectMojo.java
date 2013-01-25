@@ -36,7 +36,21 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
     * @required
     */
    private String projectDesc;
-   
+
+   /**
+    * URL for original source in a human-readable format, e.g. https://github.com/zanata/zanata
+    * 
+    * @parameter expression="${zanata.sourceViewUrl}"
+    */
+   private String sourceViewUrl;
+
+   /**
+    * URL for original source in a machine-readable format, e.g. git@github.com:zanata/zanata.git
+    * 
+    * @parameter expression="${zanata.sourceCheckoutUrl}"
+    */
+   private String sourceCheckoutUrl;
+
    /**
     * Default Project type {utf8properties, properties, gettext, podir, xliff,
     * xml, raw}
@@ -84,6 +98,30 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
    public void setProjectDesc(String projectDesc)
    {
       this.projectDesc = projectDesc;
+   }
+
+   @Override
+   public String getSourceViewUrl()
+   {
+      return sourceViewUrl;
+   }
+
+   @Override
+   public void setSourceViewUrl(String sourceViewUrl)
+   {
+      this.sourceViewUrl = sourceViewUrl;
+   }
+
+   @Override
+   public String getSourceCheckoutUrl()
+   {
+      return sourceCheckoutUrl;
+   }
+
+   @Override
+   public void setSourceCheckoutUrl(String sourceCheckoutUrl)
+   {
+      this.sourceCheckoutUrl = sourceCheckoutUrl;
    }
 
    public String getDefaultProjectType()

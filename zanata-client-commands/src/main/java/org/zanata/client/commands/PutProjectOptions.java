@@ -14,6 +14,12 @@ public interface PutProjectOptions extends ConfigurableOptions
    @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Project description")
    public void setProjectDesc(String desc);
 
+   @Option(name = "--source-view-url", metaVar = "SRCVURL", required = false, usage = "URL for original source in a human-readable format, e.g. https://github.com/zanata/zanata")
+   public void setSourceViewUrl(String sourceViewUrl);
+
+   @Option(name = "--source-checkout-url", metaVar = "SRCURL", required = false, usage = "URL for original source in a machine-readable format, e.g. git@github.com:zanata/zanata.git")
+   public void setSourceCheckoutUrl(String sourceCheckoutUrl);
+
    @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type")
    public void setDefaultProjectType(String type);
 
@@ -22,6 +28,10 @@ public interface PutProjectOptions extends ConfigurableOptions
    public String getProjectDesc();
 
    public String getProjectName();
+
+   public String getSourceViewUrl();
+
+   public String getSourceCheckoutUrl();
 
    public String getDefaultProjectType();
 

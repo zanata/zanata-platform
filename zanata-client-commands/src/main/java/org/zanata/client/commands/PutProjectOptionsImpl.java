@@ -12,6 +12,8 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    private String projectSlug;
    private String projectName;
    private String projectDesc;
+   private String sourceViewUrl;
+   private String sourceCheckoutUrl;
    private String defaultProjectType;
 
    @Override
@@ -54,6 +56,20 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    }
 
    @Override
+   @Option(name = "--source-view-url", metaVar = "SRCVURL", required = false, usage = "URL for original source in a human-readable format, e.g. https://github.com/zanata/zanata")
+   public void setSourceViewUrl(String sourceViewUrl)
+   {
+      this.sourceViewUrl = sourceViewUrl;
+   }
+
+   @Override
+   @Option(name = "--source-checkout-url", metaVar = "SRCURL", required = false, usage = "URL for original source in a machine-readable format, e.g. git@github.com:zanata/zanata.git")
+   public void setSourceCheckoutUrl(String sourceCheckoutUrl)
+   {
+      this.sourceCheckoutUrl = sourceCheckoutUrl;
+   }
+
+   @Override
    @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type")
    public void setDefaultProjectType(String defaultProjectType)
    {
@@ -76,6 +92,18 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    public String getProjectName()
    {
       return projectName;
+   }
+
+   @Override
+   public String getSourceViewUrl()
+   {
+      return sourceViewUrl;
+   }
+
+   @Override
+   public String getSourceCheckoutUrl()
+   {
+      return sourceCheckoutUrl;
    }
 
    @Override

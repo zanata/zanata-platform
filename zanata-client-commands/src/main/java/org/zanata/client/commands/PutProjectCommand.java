@@ -34,6 +34,8 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions>
       project.setId(getOpts().getProjectSlug());
       project.setName(getOpts().getProjectName());
       project.setDescription(getOpts().getProjectDesc());
+      project.setSourceViewURL(getOpts().getSourceViewUrl());
+      project.setSourceCheckoutURL(getOpts().getSourceCheckoutUrl());
       project.setDefaultType(ProjectType.getValueOf(getOpts().getDefaultProjectType()));
 
       log.debug("{}", project);
