@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.table.column.RemainingHoursColumn;
 import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
+import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
@@ -241,7 +242,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
 
       if (date != null)
       {
-         sb.append(DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(date));
+         sb.append(DateUtil.formatShortDate(date));
       }
       if (!Strings.isNullOrEmpty(by))
       {

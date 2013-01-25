@@ -80,13 +80,12 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       String iterationName = tf.getDocument().getProjectIteration().getSlug();
       String projectName = tf.getDocument().getProjectIteration().getProject().getName();
       String msgContext = (tf.getPotEntryData() == null) ? null : tf.getPotEntryData().getContext();
-      SimpleDateFormat dateFormat = new SimpleDateFormat();
       String username  = null;
       if(tft.getLastModifiedBy() != null && tft.getLastModifiedBy().hasAccount())
       {
          username = tft.getLastModifiedBy().getAccount().getUsername();
       }
-      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, username, dateFormat.format(tft.getLastChanged()));
+      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, username, tft.getLastChanged());
    }
 
    @Override

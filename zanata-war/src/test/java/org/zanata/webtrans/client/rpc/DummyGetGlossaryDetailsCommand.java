@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.rpc;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
@@ -44,7 +45,7 @@ public class DummyGetGlossaryDetailsCommand implements Command
          targetComments.add("Target Comment " + (5 + i));
          targetComments.add("Target Comment " + (6 + i));
          
-         GlossaryDetails details = new GlossaryDetails("source content:" + (i + 1), "target content:" + (i + 1), srcComments, targetComments, "Dummy source ref " + (i + 1), new LocaleId("en-us"), action.getWorkspaceId().getLocaleId(), i, "8/08/8888 12:00");
+         GlossaryDetails details = new GlossaryDetails("source content:" + (i + 1), "target content:" + (i + 1), srcComments, targetComments, "Dummy source ref " + (i + 1), new LocaleId("en-us"), action.getWorkspaceId().getLocaleId(), i, new Date());
          items.add(details);
       }
       

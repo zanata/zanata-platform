@@ -1,10 +1,12 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.util.DateUtil;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -72,6 +74,8 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay
    
    private final int VISIBLE_COMMENTS = 4;
    private Listener listener;
+   
+   private final UiMessages messages;
 
    private boolean hasGlossaryUpdateAccess;
 
@@ -121,6 +125,7 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay
 
       loadingIcon.setResource(resources.spinner());
       loadingIcon.setVisible(false);
+      this.messages = messages;
    }
 
    public void hide()
@@ -151,9 +156,9 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay
    }
 
    @Override
-   public HasText getSourceText()
+   public void setSourceText(String source)
    {
-      return sourceText;
+      sourceText.setText(source);
    }
 
    private FlowPanel getTargetCommentRow(String comment)
@@ -271,12 +276,6 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay
    }
 
    @Override
-   public HasText getLastModified()
-   {
-      return lastModified;
-   }
-
-   @Override
    public HasText getNewCommentText()
    {
       return newTargetComment;
@@ -309,6 +308,12 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay
    public void setListener(Listener listener)
    {
       this.listener = listener;
+   }
+   
+   @Override
+   public void setLastModifiedDate(Date lastModifiedDate)
+   {
+      lastModified.setText(messages.lastModifiedOn(DateUtil.formatShortDate(lastModifiedDate)));
    }
 
 }

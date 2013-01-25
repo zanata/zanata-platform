@@ -84,9 +84,7 @@ public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGloss
             targetComments.add(termComment.getComment());
          }
          
-         SimpleDateFormat dateFormat = new SimpleDateFormat();
-
-         GlossaryDetails details = new GlossaryDetails(entryResult.getGlossaryTerms().get(entryResult.getSrcLocale()).getContent(), entryResult.getGlossaryTerms().get(targetLocale).getContent(), srcComments, targetComments, entryResult.getSourceRef(), selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getTargetLocale(), targetTerm.getVersionNum(), dateFormat.format(targetTerm.getLastChanged()));
+         GlossaryDetails details = new GlossaryDetails(entryResult.getGlossaryTerms().get(entryResult.getSrcLocale()).getContent(), entryResult.getGlossaryTerms().get(targetLocale).getContent(), srcComments, targetComments, entryResult.getSourceRef(), selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getTargetLocale(), targetTerm.getVersionNum(), targetTerm.getLastChanged());
          
          return new UpdateGlossaryTermResult(details);
       }

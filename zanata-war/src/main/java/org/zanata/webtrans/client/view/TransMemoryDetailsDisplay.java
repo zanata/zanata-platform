@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.HasChangeHandlers;
@@ -31,7 +32,7 @@ public interface TransMemoryDetailsDisplay extends WidgetDisplay
 
    void setDocumentName(String documentName);
 
-   void setLastModified(String lastModified);
+   void setLastModified(String lastModifiedBy, Date lastModifiedDate);
 
    void clearSourceAndTarget();
 

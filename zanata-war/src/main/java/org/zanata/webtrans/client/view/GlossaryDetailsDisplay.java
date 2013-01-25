@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
+import java.util.Date;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -39,7 +40,7 @@ public interface GlossaryDetailsDisplay extends WidgetDisplay
 
    HasText getNewCommentText();
 
-   HasText getSourceText();
+   void setSourceText(String sourceText);
 
    HasText getTargetText();
 
@@ -48,8 +49,6 @@ public interface GlossaryDetailsDisplay extends WidgetDisplay
    HasText getTargetLabel();
 
    HasText getSrcRef();
-
-   HasText getLastModified();
 
    void addRowIntoTargetComment(int index, String text);
 
@@ -79,6 +78,8 @@ public interface GlossaryDetailsDisplay extends WidgetDisplay
 
       void onSaveClick();
    }
+
+   void setLastModifiedDate(Date lastModifiedDate);
 
 
 }

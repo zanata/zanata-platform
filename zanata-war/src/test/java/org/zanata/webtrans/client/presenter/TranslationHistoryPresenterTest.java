@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -85,7 +86,7 @@ public class TranslationHistoryPresenterTest
 
    private static TransHistoryItem historyItem(String versionNum)
    {
-      return new TransHistoryItem(versionNum, Lists.newArrayList("a"), ContentState.Approved, "admin", "12/12/12");
+      return new TransHistoryItem(versionNum, Lists.newArrayList("a"), ContentState.Approved, "admin", new Date());
    }
 
    @Test

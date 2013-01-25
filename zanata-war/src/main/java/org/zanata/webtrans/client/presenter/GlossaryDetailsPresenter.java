@@ -121,7 +121,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsDis
          public void onSuccess(GetGlossaryDetailsResult result)
          {
             glossaryDetails = result;
-            display.getSourceText().setText(item.getSource());
+            display.setSourceText(item.getSource());
             display.getTargetText().setText(item.getTarget());
             display.clearEntries();
 
@@ -144,7 +144,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsDis
       display.getSrcRef().setText(selectedDetailEntry.getSourceRef());
       display.setSourceComment(selectedDetailEntry.getSourceComment());
       display.setTargetComment(selectedDetailEntry.getTargetComment());
-      display.getLastModified().setText(messages.lastModifiedOn(selectedDetailEntry.getLastModified()));
+      display.setLastModifiedDate(selectedDetailEntry.getLastModifiedDate());
    }
 
    @Override
