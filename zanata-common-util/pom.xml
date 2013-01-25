@@ -37,7 +37,7 @@
 
 		<dependency>
 			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<artifactId>junit-dep</artifactId>
 			<scope>test</scope>
 		</dependency>
 
