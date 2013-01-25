@@ -246,6 +246,8 @@ public class ProjectService implements ProjectResource
       to.setDefaultProjectType(from.getDefaultType());
       // TODO Currently all Projects are created as Current
       // to.setStatus(from.getStatus());
+      to.setSourceViewURL(from.getSourceViewURL());
+      to.setSourceCheckoutURL(from.getSourceCheckoutURL());
    }
 
    public static void transfer(HProject from, Project to)
@@ -255,6 +257,8 @@ public class ProjectService implements ProjectResource
       to.setDescription(from.getDescription());
       to.setStatus(from.getStatus());
       to.setDefaultType(from.getDefaultProjectType());
+      to.setSourceViewURL(from.getSourceViewURL());
+      to.setSourceCheckoutURL(from.getSourceCheckoutURL());
    }
 
    public static Project toResource(HProject hProject, MediaType mediaType)
