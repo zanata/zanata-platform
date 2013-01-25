@@ -66,6 +66,14 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+            <!--this is needed for now. Aftet AS7 upgrade may need to revisit this-->
+            <version>3.1.0.GA</version>
 		</dependency>
 
 		<dependency>
@@ -124,11 +132,6 @@
         <dependency>
             <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
         </dependency>
 
         <dependency>
