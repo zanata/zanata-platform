@@ -219,6 +219,8 @@
 			    </configuration>
 			</plugin>
 
+
+
          <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>versions-maven-plugin</artifactId>
@@ -573,6 +575,12 @@
 			<dependency>
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
 				<version>6.4</version>
 			</dependency>
 			<dependency>
@@ -642,7 +650,7 @@
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>1.2.134</version>
+				<version>1.2.144</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -800,6 +808,7 @@
                 <artifactId>quartz</artifactId>
                 <version>1.5.2</version>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
