@@ -82,6 +82,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-common-api</artifactId>
         </dependency>
