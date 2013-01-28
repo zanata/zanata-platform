@@ -119,7 +119,7 @@ public class AppPresenterTest
       
       verify(display).setProjectLinkLabel(workspaceId.getProjectIterationId().getProjectSlug());
       verify(display).setVersionLinkLabel(workspaceId.getProjectIterationId().getIterationSlug());
-      verify(display).setVersionFilesLabel("Documents (" + localeId + ")");
+      verify(display).setFilesLinkLabel("Documents (" + localeId + ")");
       
       
       verify(display).setReadOnlyVisible(userWorkspace.hasReadOnlyAccess());

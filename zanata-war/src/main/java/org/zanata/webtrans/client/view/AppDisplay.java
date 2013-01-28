@@ -22,7 +22,7 @@ public interface AppDisplay extends WidgetDisplay
    
    void setProjectLinkLabel(String text);
 
-   void setVersionFilesLabel(String text);
+   void setFilesLinkLabel(String text);
    
    void setVersionLinkLabel(String text);
 
