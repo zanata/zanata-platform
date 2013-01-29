@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.table.column.RemainingHoursColumn;
 import org.zanata.webtrans.client.ui.table.column.StaticWidgetColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
+import org.zanata.webtrans.client.ui.table.column.TooltipColumn;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -40,8 +41,6 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.IconCellDecorator;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
@@ -95,8 +94,8 @@ public class DocumentListTable extends CellTable<DocumentNode>
       }
    }
 
-   private final TextColumn<DocumentNode> pathColumn;
-   private final Column<DocumentNode, String> documentColumn;
+   private final TooltipColumn<DocumentNode, String> pathColumn;
+   private final TooltipColumn<DocumentNode, String> documentColumn;
    private final StatisticColumn statisticColumn;
    private final RemainingHoursColumn remainingColumn;
 
@@ -114,19 +113,32 @@ public class DocumentListTable extends CellTable<DocumentNode>
       setStylePrimaryName("DocumentListTable");
       setSelectionModel(selectionModel);
 
-      pathColumn = new TextColumn<DocumentNode>()
+      
+      pathColumn = new TooltipColumn<DocumentNode, String>(new TextCell())
       {
          @Override
          public String getValue(DocumentNode object)
          {
             return object.getDocInfo().getPath();
          }
+
+         @Override
+         public String getTitle(DocumentNode object)
+         {
+            return object.getDocInfo().getPath();
+         }
       };
 
-      documentColumn = new Column<DocumentNode, String>(new ClickableTextCell())
+      documentColumn = new TooltipColumn<DocumentNode, String>(new ClickableTextCell())
       {
          @Override
          public String getValue(DocumentNode object)
+         {
+            return object.getDocInfo().getName();
+         }
+
+         @Override
+         public String getTitle(DocumentNode object)
          {
             return object.getDocInfo().getName();
          }
@@ -187,6 +199,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          {
             return "Upload";
          }
+         
       };
       uploadColumn.setFieldUpdater(new FieldUpdater<DocumentNode, String>()
       {
