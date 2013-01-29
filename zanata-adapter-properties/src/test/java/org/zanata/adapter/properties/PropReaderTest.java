@@ -32,6 +32,7 @@ public class PropReaderTest
    private static final Logger log = LoggerFactory.getLogger(PropReaderTest.class);
    private static final String TEST_OUTPUT_DIR_STRING = "target/test-output";
    private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_DIR_STRING);
+   private static final String SYSTEM_LINE_ENDING = System.getProperty("line.separator");
    PropReader propReader;
    static final String ISO_8859_1 = "ISO-8859-1";
    String locale = "fr";
@@ -105,11 +106,12 @@ public class PropReaderTest
       InputStream origStream = getResourceAsStream(docName);
 
       String origContent = IOUtils.toString(origStream);
+      String newlineAdjustedOrigContent = origContent.replaceAll("\n", SYSTEM_LINE_ENDING);
       String newContent = IOUtils.toString(newStream);
 
       // note: this does not allow for differences in whitespace, so if tests
       // start failing this should be updated to use a less strict comparison
-      assertThat(newContent, Matchers.equalTo(origContent));
+      assertThat(newContent, Matchers.equalTo(newlineAdjustedOrigContent));
    }
 
    private InputStream getResourceAsStream(String relativeResourceName) throws FileNotFoundException
