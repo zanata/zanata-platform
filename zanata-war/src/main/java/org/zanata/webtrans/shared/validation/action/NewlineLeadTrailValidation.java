@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -33,9 +34,10 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class NewlineLeadTrailValidation extends AbstractValidation
 {
-   public NewlineLeadTrailValidation(final ValidationMessages messages)
+   public NewlineLeadTrailValidation(final ZanataMessages messages)
    {
-      super(messages.newlineValidatorName(), messages.newlineValidatorDescription(), true, messages);
+//      super(messages.newlineValidatorName(), messages.newlineValidatorDescription(), true, messages);
+      super(messages.getMessage("jsf.validation.newlineValidator.name"), messages.getMessage("jsf.validation.newlineValidator.desc"), true, messages);
    }
 
    private final static String leadNewlineRegex = "^\n";
@@ -51,36 +53,36 @@ public class NewlineLeadTrailValidation extends AbstractValidation
    {
       if (notShareLeading(source, target))
       {
-         addError(getMessages().leadingNewlineMissing());
+         addError(getMessages().getMessage("jsf.validation.newlineValidator.leadingNewlineMissing"));
       }
 
       if (notShareLeading(target, source))
       {
-         addError(getMessages().leadingNewlineAdded());
+         addError(getMessages().getMessage("jsf.validation.newlineValidator.leadingNewlineAdded"));
       }
 
       if (notShareTrailing(source, target))
       {
 
-         addError(getMessages().trailingNewlineMissing());
+         addError(getMessages().getMessage("jsf.validation.newlineValidator.trailingNewlineMissing"));
       }
 
       if (notShareTrailing(target, source))
       {
 
-         addError(getMessages().trailingNewlineAdded());
+         addError(getMessages().getMessage("jsf.validation.newlineValidator.trailingNewlineAdded"));
       }
 
       int sourceLines = 1 + countNewlines(source);
       int targetLines = 1 + countNewlines(target);
       if (sourceLines < targetLines)
       {
-         addError(getMessages().linesAdded(sourceLines, targetLines));
+         addError(getMessages().getMessage("jsf.validation.linesAdded", sourceLines, targetLines));
       }
 
       if (targetLines < sourceLines)
       {
-         addError(getMessages().linesRemoved(sourceLines, targetLines));
+         addError(getMessages().getMessage("jsf.validation.linesRemoved", sourceLines, targetLines));
       }
    }
 

@@ -20,15 +20,16 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
 import com.google.common.base.CharMatcher;
 
 public class TabValidation extends AbstractValidation
 {
-   public TabValidation(final ValidationMessages messages)
+   public TabValidation(final ZanataMessages messages)
    {
-      super(messages.tabValidatorName(), messages.tabValidatorDescription(), true, messages);
+      super(messages.getMessage("jsf.validation.tabValidator.name"), messages.getMessage("jsf.validation.tabValidator.desc"), true, messages);
    }
 
    @Override

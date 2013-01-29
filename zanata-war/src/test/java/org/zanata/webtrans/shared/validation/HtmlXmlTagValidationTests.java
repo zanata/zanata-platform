@@ -28,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 
@@ -59,7 +60,7 @@ public class HtmlXmlTagValidationTests
    private HtmlXmlTagValidation htmlXmlTagValidation;
 
    @Mock
-   private ValidationMessages mockMessages;
+   private ZanataMessages mockMessages;
 
    // captured tag lists sent to messages
    @Captor

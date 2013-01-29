@@ -20,10 +20,9 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
 import com.google.common.base.Strings;
@@ -41,12 +40,12 @@ public abstract class AbstractValidation implements ValidationObject
    
    private final String description;
 
-   private ValidationMessages messages;
+   private ZanataMessages messages;
 
    private List<String> errorList = Lists.newArrayList();
    private List<ValidationObject> exclusiveValidations = Lists.newArrayList();
 
-   public AbstractValidation(String id, String description, boolean enabled, final ValidationMessages messages)
+   public AbstractValidation(String id, String description, boolean enabled, final ZanataMessages messages)
    {
       this.id = id;
       this.description = description;
@@ -63,7 +62,7 @@ public abstract class AbstractValidation implements ValidationObject
       }
    }
 
-   protected ValidationMessages getMessages()
+   protected ZanataMessages getMessages()
    {
       return messages;
    }
