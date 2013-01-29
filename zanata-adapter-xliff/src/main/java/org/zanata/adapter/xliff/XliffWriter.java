@@ -1,6 +1,7 @@
 package org.zanata.adapter.xliff;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -175,7 +176,7 @@ public class XliffWriter extends XliffCommon
          XMLOutputFactory output = XMLOutputFactory.newInstance();
          File outFile = new File(baseDir, doc.getName() + "_" + locale.replace('-', '_') + ".xml");
          PathUtil.makeParents(outFile);
-         XMLStreamWriter xmlStreamWriter = output.createXMLStreamWriter(new FileWriter(outFile));
+         XMLStreamWriter xmlStreamWriter = output.createXMLStreamWriter(new FileOutputStream(outFile), "utf-8");
          IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(xmlStreamWriter);
 
          if (targetDoc != null)
