@@ -377,12 +377,24 @@ td.ApprovedStateDecoration div div div
 
 .DocumentListTable td.pathCol {
 	width: 25%;
+	max-width:100px;
+}
+
+.DocumentListTable td.pathCol div{
+	text-overflow:ellipsis;
+	overflow:hidden;
 }
 
 .DocumentListTable td.documentCol {
+	max-width:100px;
 	width: 25%;
 	text-decoration:underline;
 	cursor:pointer;
+}
+
+.DocumentListTable td.documentCol div{
+	text-overflow:ellipsis;
+	overflow:hidden;
 }
 
 .DocumentListTable td.statisticCol {
