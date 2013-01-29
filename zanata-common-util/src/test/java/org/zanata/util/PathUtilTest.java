@@ -16,21 +16,21 @@ public class PathUtilTest
    {
       File dir = new File(".");
       File file = new File(dir, "sub/myfile.pot");
-      assertThat(PathUtil.getSubPath(file, dir), is("sub/myfile.pot"));
+      assertThat(PathUtil.getSubPath(file, dir), is("sub" + File.separator + "myfile.pot"));
    }
 
    public void testSubPath2() throws Exception
    {
       File dir = new File("pot");
       File file = new File("pot/sub/myfile.pot");
-      assertThat(PathUtil.getSubPath(file, dir), is("sub/myfile.pot"));
+      assertThat(PathUtil.getSubPath(file, dir), is("sub" + File.separator + "myfile.pot"));
    }
 
    public void testSubPath3() throws Exception
    {
       File dir = new File("/tmp/pot");
       File file = new File("/tmp/pot/sub/myfile.pot");
-      assertThat(PathUtil.getSubPath(file, dir), is("sub/myfile.pot"));
+      assertThat(PathUtil.getSubPath(file, dir), is("sub" + File.separator + "myfile.pot"));
    }
 
 
