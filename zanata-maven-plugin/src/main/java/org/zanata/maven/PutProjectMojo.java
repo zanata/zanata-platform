@@ -52,8 +52,11 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implemen
    private String sourceCheckoutUrl;
 
    /**
-    * Default Project type {utf8properties, properties, gettext, podir, xliff,
-    * xml, raw}
+    * Default Project type. Versions under this project that do not
+    * specify a project type will use this default. Valid values are
+    * {utf8properties, properties, gettext, podir, xliff, xml, raw}.
+    * 
+    * See https://github.com/zanata/zanata/wiki/Project-Types
     * 
     * @parameter expression="${zanata.defaultProjectType}"
     * @required

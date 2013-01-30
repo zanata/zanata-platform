@@ -20,7 +20,7 @@ public interface PutProjectOptions extends ConfigurableOptions
    @Option(name = "--source-checkout-url", metaVar = "SRCURL", required = false, usage = "URL for original source in a machine-readable format, e.g. git@github.com:zanata/zanata.git")
    public void setSourceCheckoutUrl(String sourceCheckoutUrl);
 
-   @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type")
+   @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type. Versions under this project that do not specify a project type will use this default. Valid values are : Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, Raw. See https://github.com/zanata/zanata/wiki/Project-Types")
    public void setDefaultProjectType(String type);
 
    public String getProjectSlug();
