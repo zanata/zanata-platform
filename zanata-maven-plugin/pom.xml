@@ -68,6 +68,13 @@
        <scope>test</scope>
     </dependency>
 
+      <!-- We do not need slf4j-api in this module. But parent module defines it.-->
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <scope>provided</scope>
+      </dependency>
+
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
@@ -114,15 +121,36 @@
 			</extractors>
         </configuration>
       </plugin>
-      
+
       <!-- This is just to tell Maven about our plugin prefix: -->
-<!--  But Maven 3 won't like it without a version... 
+<!--  But Maven 3 won't like it without a version...
       <plugin>
         <groupId>${groupId}</groupId>
         <artifactId>${artifactId}</artifactId>
         <version>${version}</version>
       </plugin>
  -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>analyze</id>
+                    <goals>
+                        <goal>analyze-only</goal>
+                    </goals>
+                    <configuration>
+                        <failOnWarning>true</failOnWarning>
+                        <usedDependencies>
+                            <usedDependency>org.slf4j:slf4j-api</usedDependency>
+                            <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
+                            <usedDependency>org.zanata:zanata-common-api</usedDependency>
+                            <usedDependency>org.codehaus.plexus:plexus-utils</usedDependency>
+                        </usedDependencies>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
 
     </plugins>
   </build>
