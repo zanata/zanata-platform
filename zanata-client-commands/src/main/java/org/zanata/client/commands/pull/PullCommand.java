@@ -222,6 +222,9 @@ public class PullCommand extends PushPullCommand<PullOptions>
                   if (!createSkeletons)
                   {
                      log.info("No translations found in locale {} for document {}", locale, localDocName);
+                     // We need to release connection.
+                     // see http://stackoverflow.com/questions/4612573/exception-using-httprequest-execute-invalid-use-of-singleclientconnmanager-c
+                     transResponse.releaseConnection();
                      continue;
                   }
                }
