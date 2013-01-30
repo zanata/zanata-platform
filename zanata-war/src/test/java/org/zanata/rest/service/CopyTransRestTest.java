@@ -96,7 +96,7 @@ public class CopyTransRestTest extends ZanataRestTest
    {
       CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
 
-      copyTransResource.startCopyTrans("sample-project", "1.0", "/my/path/document.txt");
+      copyTransResource.startCopyTrans("sample-project", "1.0", "my/path/document.txt");
       verify(mockIdentity).getCredentials();
    }
 
@@ -105,10 +105,10 @@ public class CopyTransRestTest extends ZanataRestTest
    {
       CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
 
-      copyTransResource.startCopyTrans("sample-project", "1.0", "/my/path/document.txt");
+      copyTransResource.startCopyTrans("sample-project", "1.0", "my/path/document.txt");
       verify(mockIdentity).getCredentials();
 
-      CopyTransStatus status = copyTransResource.getCopyTransStatus("sample-project", "1.0", "/my/path/document.txt");
+      CopyTransStatus status = copyTransResource.getCopyTransStatus("sample-project", "1.0", "my/path/document.txt");
       assertThat(status, notNullValue());
       verify(mockIdentity, atLeast(1)).checkPermission(eq("copy-trans"), anyVararg());
    }
@@ -137,7 +137,7 @@ public class CopyTransRestTest extends ZanataRestTest
 
       try
       {
-         copyTransResource.startCopyTrans("sample-project", "1.0", "/my/path/document.txt");
+         copyTransResource.startCopyTrans("sample-project", "1.0", "my/path/document.txt");
          assertThat("startCopyTrans should have returned 401 in the form of an exception.", false);
       }
       catch (ClientResponseFailure failure)
