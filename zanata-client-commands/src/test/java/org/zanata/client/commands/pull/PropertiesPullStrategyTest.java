@@ -1,23 +1,22 @@
 package org.zanata.client.commands.pull;
 
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.fedorahosted.openprops.Properties;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 
-@Test
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 public class PropertiesPullStrategyTest
 {
    File outDir = new File("target/test-output/writeprops/");
@@ -28,7 +27,7 @@ public class PropertiesPullStrategyTest
 
    private Resource doc;
 
-   @BeforeTest
+   @Before
    public void prepare()
    {
       outDir.mkdirs();
@@ -37,7 +36,7 @@ public class PropertiesPullStrategyTest
       doc.getTextFlows().add(newTextFlow("unicode", "レス"));
    }
 
-   @BeforeMethod
+   @Before
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);

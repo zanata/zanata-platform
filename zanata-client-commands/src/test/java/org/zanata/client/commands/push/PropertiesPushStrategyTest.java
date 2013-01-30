@@ -1,8 +1,8 @@
 package org.zanata.client.commands.push;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,14 +10,13 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.fedorahosted.openprops.Properties;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 import org.zanata.rest.dto.resource.Resource;
 
-@Test
 public class PropertiesPushStrategyTest
 {
    private File outDir = new File("target/test-output/readprops/");
@@ -26,7 +25,7 @@ public class PropertiesPushStrategyTest
    @Mock
    private PushOptions opts;
 
-   @BeforeTest
+   @Before
    public void prepare()
    {
       outDir.mkdirs();
@@ -35,7 +34,7 @@ public class PropertiesPushStrategyTest
       props.setProperty("unicode", "レス");
    }
 
-   @BeforeMethod
+   @Before
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);

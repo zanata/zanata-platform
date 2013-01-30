@@ -13,18 +13,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-@Test(groups = "unit-tests")
 public class XliffPushStrategyTest
 {
    @Mock
@@ -41,14 +39,14 @@ public class XliffPushStrategyTest
 
    private final String sourceLocale = "en-US";
 
-   @BeforeTest
+   @Before
    public void prepare()
    {
       locales.add(new LocaleMapping("de"));
       locales.add(new LocaleMapping("fr"));
    }
 
-   @BeforeMethod
+   @Before
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);

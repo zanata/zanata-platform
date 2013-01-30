@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-@org.testng.annotations.Test(groups = "unit-tests")
 public class ZanataConfigTest
 {
    JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);

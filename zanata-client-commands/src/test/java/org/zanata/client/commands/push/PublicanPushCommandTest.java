@@ -13,10 +13,10 @@ import java.util.List;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.client.commands.DummyResponse;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.PublicanPushCommand;
@@ -33,7 +33,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-@Test(groups = "unit-tests")
 public class PublicanPushCommandTest
 {
    @Mock
@@ -42,8 +41,8 @@ public class PublicanPushCommandTest
    @Mock
    ITranslatedDocResource mockTranslationResources;
 
-   @BeforeMethod
-   void beforeMethod()
+   @Before
+   public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
    }

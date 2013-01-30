@@ -10,10 +10,10 @@ import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.client.commands.DummyResponse;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.PublicanPullCommand;
@@ -32,7 +32,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-@Test(groups = "unit-tests")
 public class PublicanPullCommandTest
 {
    @Mock
@@ -41,17 +40,19 @@ public class PublicanPullCommandTest
    @Mock
    private ITranslatedDocResource mockTranslationResources;
 
-   @BeforeMethod
+   @Before
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
    }
 
+   @Test
    public void publicanPullPo() throws Exception
    {
       publicanPull(false, false);
    }
 
+   @Test
    public void publicanPullPotAndPo() throws Exception
    {
       publicanPull(true, false);

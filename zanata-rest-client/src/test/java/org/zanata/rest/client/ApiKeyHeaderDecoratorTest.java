@@ -35,7 +35,7 @@ import static org.testng.AssertJUnit.*;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Test(groups = { "unit-tests" })
+@Test
 public class ApiKeyHeaderDecoratorTest
 {
    @Test

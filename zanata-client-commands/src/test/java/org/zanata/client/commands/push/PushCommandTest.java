@@ -1,11 +1,11 @@
 package org.zanata.client.commands.push;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.net.URI;
@@ -15,8 +15,9 @@ import java.util.List;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Assert;
+import org.junit.Test;
 import org.mockito.Mock;
-import org.testng.annotations.Test;
 import org.zanata.client.commands.DummyResponse;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;
@@ -36,7 +37,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 
-@Test(groups = "unit-tests")
 public class PushCommandTest
 {
    @Mock
