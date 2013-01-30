@@ -5,23 +5,23 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.com/products/seam/taglib"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j">
 <html>
 
-	<head>
+	<h:head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>#{messages['jsf.ZanataMainTitle']}: <ui:insert name="page_title" /></title>
 		<link rel="shortcut icon"
 		  href="#{request.contextPath}/images/favicon.ico" type="image/x-icon" />
-		<a:loadStyle src="/stylesheet/zanata.css" />
-		<a:loadStyle src="/stylesheet/menu.css" />
-		<a:loadStyle src="/images/fontello/css/fontello.css" />
+        <h:outputStylesheet library="css" name="zanata.css" />
+        <h:outputStylesheet library="css" name="menu.css" />
+        <h:outputStylesheet library="css" name="fontello.css" />
 		<ui:insert name="head" />
-	</head>
+	</h:head>
 
-	<body>
+	<h:body>
 		<div class="header">
 			<ui:include src="menu.xhtml" />	
 		</div>
@@ -97,6 +97,6 @@
 			//]]></script>
 			<!-- End Piwik Code -->
 		</s:fragment>
-	</body>
+	</h:body>
 </html>
 </f:view>

@@ -9,6 +9,7 @@
           <module name="javax.faces.api" />
           <module name="javax.mail.api" />
           <module name="javax.servlet.api" />
+          <module name="org.antlr" />
           <module name="org.apache.commons.logging" />
           <module name="org.apache.log4j" />
           <module name="org.dom4j" />

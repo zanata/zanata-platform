@@ -25,20 +25,20 @@
 
 	<!-- RichFaces -->
 	<context-param>
-		<param-name>org.richfaces.SKIN</param-name>
+		<param-name>org.richfaces.skin</param-name>
 		<param-value>classic</param-value>
 	</context-param>
 
 	<!-- Suppress spurious stylesheets -->
 
 	<context-param>
-		<param-name>org.richfaces.CONTROL_SKINNING</param-name>
-		<param-value>disable</param-value>
+		<param-name>org.richfaces.enableControlSkinning</param-name>
+		<param-value>false</param-value>
 	</context-param>
 
 	<context-param>
-		<param-name>org.richfaces.CONTROL_SKINNING_CLASSES</param-name>
-		<param-value>disable</param-value>
+		<param-name>org.richfaces.enableControlSkinningClasses</param-name>
+		<param-value>false</param-value>
 	</context-param>
 
 	<!--
@@ -47,29 +47,24 @@
 	-->
 
 	<context-param>
-		<param-name>org.richfaces.LoadStyleStrategy</param-name>
+		<param-name>org.richfaces.resourceOptimization.enabled</param-name>
 		<!--
 			TODO: When this is set to all, css from custom Richfaces components
 			such as zanata-richfaces-ui components are not loaded.
 		-->
-		<param-value>all</param-value>
+		<param-value>false</param-value>
 	</context-param>
 
-	<context-param>
+	<!--<context-param>
 		<param-name>org.richfaces.LoadScriptStrategy</param-name>
 		<param-value>DEFAULT</param-value>
-	</context-param>
+	</context-param>-->
 	
 	<context-param>
       <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
       <param-value>${war_bundles_jsf_impl}</param-value>
 	</context-param>
 
-    <!-- RichFaces 3.3 does not support JSF 2.0's VDL -->
-    <context-param>
-         <param-name>javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER</param-name>
-         <param-value>true</param-value>
-    </context-param>
 
 	<!-- 
 	Make sure Liquibase is the first listener, so that it can update the database schema before
@@ -198,13 +193,12 @@
 	</servlet-mapping>
 
 	<!-- Facelets development mode (disable in production)
-	To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :
+	To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :-->
 
 	<context-param>
 		<param-name>facelets.DEVELOPMENT</param-name>
 		<param-value>true</param-value>
 	</context-param>
--->
 
 	<!-- JSF -->
 
@@ -212,6 +206,11 @@
 		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
 		<param-value>.xhtml</param-value>
 	</context-param>
+
+    <context-param>
+        <param-name>facelets.VIEW_MAPPINGS</param-name>
+        <param-value>*.xhtml</param-value>
+    </context-param>
 
 <!-- This would eliminate ViewExpiredException when sessions expire, but may hurt performance:
 	<context-param>

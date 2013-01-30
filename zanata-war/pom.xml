@@ -40,7 +40,7 @@
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
         <groovyVersion>2.0.5</groovyVersion>
 
-      <richfaces.version>3.3.3.Final</richfaces.version>
+      <richfaces.version>4.2.3.Final</richfaces.version>
 
 	</properties>
 
@@ -980,6 +980,18 @@
 
 	</profiles>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.richfaces</groupId>
+                <artifactId>richfaces-bom</artifactId>
+                <version>${richfaces.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 	<dependencies>
 
         <!-- Zanata-specific dependencies -->
@@ -1156,7 +1168,25 @@
 		</dependency>
 
 		<!-- Richfaces -->
-		<dependency>
+
+        <dependency>
+            <groupId>org.richfaces.ui</groupId>
+            <artifactId>richfaces-components-ui</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.richfaces.core</groupId>
+            <artifactId>richfaces-core-impl</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>2.1.13</version>
+        </dependency>
+		<!--<dependency>
 			<groupId>org.richfaces.framework</groupId>
 			<artifactId>richfaces-api</artifactId>
 			<version>${richfaces.version}</version>
@@ -1172,7 +1202,7 @@
 			<groupId>org.richfaces.ui</groupId>
 			<artifactId>richfaces-ui</artifactId>
 			<version>${richfaces.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- Hibernate / JPA -->
 
