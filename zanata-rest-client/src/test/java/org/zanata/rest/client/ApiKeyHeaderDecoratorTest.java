@@ -26,16 +26,17 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import org.zanata.rest.RestConstant;
 
-import static org.testng.AssertJUnit.*;
+import static org.junit.Assert.assertEquals;
+
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Test
 public class ApiKeyHeaderDecoratorTest
 {
    @Test
