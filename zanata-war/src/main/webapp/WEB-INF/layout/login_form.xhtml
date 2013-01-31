@@ -1,12 +1,13 @@
 <h:form id="login"
   xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.com/products/seam/taglib"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
->
+  xmlns:richext="http://java.sun.com/jsf/composite/richext">
+
     <!-- Load jQuery -->
     <rich:jQuery query="jquery"/>
 
@@ -40,7 +41,7 @@
             <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Password']}</span></ui:define>
             <h:inputSecret id="password"
                         value="#{loginAction.password}" class="loginForm_input"/>
-            <rich:spacer width="10px"/>
+            <richext:spacer width="10"/>
         </s:decorate>
         <s:decorate id="rememberMeField" template="edit.xhtml" rendered="#{!applicationConfiguration.openIdAuth}">
             <ui:define name="label">#{messages['jsf.RememberMe']}</ui:define>

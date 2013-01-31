@@ -1,7 +1,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:s="http://jboss.org/schema/seam/taglib"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -47,7 +47,7 @@
             }
         }
       </script>
-			<a4j:form id="languageForm">
+			<h:form id="languageForm">
 				<s:token allowMultiplePosts="true" />
 				<rich:dataTable id="threads" value="#{allLanguages}"
 					var="language">
@@ -70,23 +70,19 @@
                                  styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
                         <f:facet name="header">Enabled By Default</f:facet>
                         <h:selectBooleanCheckbox value="#{language.enabledByDefault}">
-                            <a4j:support event="onclick"
-                                         ajaxSingle="true"
-                                         ignoreDupResponses="true"
-                                         onsubmit="if(!confirmEnabledByDefaultChange(this)){ return false; }"
-                                         reRender="threads"
-                                         action="#{languageSearchAction.selectedLocaleChanged}"/>
+                            <a4j:ajax event="click"
+                                         onbeforesubmit="if(!confirmEnabledByDefaultChange(this)){ return false; }"
+                                         render="threads"
+                                         listener="#{languageSearchAction.selectedLocaleChanged}"/>
                         </h:selectBooleanCheckbox>
                     </rich:column>
                     <rich:column styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
                         <f:facet name="header">#{messages['jsf.Active']}</f:facet>
                         <h:selectBooleanCheckbox value="#{language.active}">
-                            <a4j:support event="onclick"
-                                         ajaxSingle="true"
-                                         ignoreDupResponses="true"
-                                         onsubmit="if(!confirmEnabledChange(this)){ return false; }"
-                                         reRender="threads"
-                                         action="#{languageSearchAction.selectedLocaleActivatedOrDeactivated}"/>
+                            <a4j:ajax event="click"
+                                         onbeforesubmit="if(!confirmEnabledChange(this)){ return false; }"
+                                         render="threads"
+                                         listener="#{languageSearchAction.selectedLocaleActivatedOrDeactivated}"/>
                         </h:selectBooleanCheckbox>
                     </rich:column>
 					<rich:column styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
@@ -97,7 +93,7 @@
 						</h:commandButton>
 					</rich:column>
 				</rich:dataTable>
-			</a4j:form>
+			</h:form>
 	</ui:define>
 
 </ui:composition>

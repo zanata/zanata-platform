@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"> 
+
+<composite:interface>
+	<composite:attribute name="width" default="0" type="java.lang.Integer"/>
+	<composite:attribute name="height" default="0" type="java.lang.Integer"/>
+</composite:interface>
+<composite:implementation>
+	
+	<h:panelGroup rendered="#{cc.attrs.height > 0}">
+		<br/>
+	</h:panelGroup>
+	
+	<h:graphicImage library="images" 
+					name="spacer.gif"
+					width="#{cc.attrs.width}px"
+					height="#{cc.attrs.height}px"/>
+</composite:implementation>
+</html>

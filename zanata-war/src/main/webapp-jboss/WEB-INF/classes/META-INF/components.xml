@@ -7,6 +7,11 @@
       xmlns:cache="http://jboss.org/schema/seam/cache"
       xmlns:web="http://jboss.org/schema/seam/web"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:drools="http://jboss.org/schema/seam/drools"
+      xmlns:bpm="http://jboss.org/schema/seam/bpm"
+      xmlns:mail="http://jboss.org/schema/seam/mail"
+      xmlns:framework="http://jboss.org/schema/seam/framework"
+      xmlns:resteasy="http://jboss.org/schema/seam/resteasy"
       xsi:schemaLocation=
           "http://jboss.org/schema/seam/core http://jboss.org/schema/seam/core-2.3.xsd
            http://jboss.org/schema/seam/persistence http://jboss.org/schema/seam/persistence-2.3.xsd
@@ -14,13 +19,12 @@
            http://jboss.org/schema/seam/theme http://jboss.org/schema/seam/theme-2.3.xsd
            http://jboss.org/schema/seam/cache http://jboss.org/schema/seam/cache-2.3.xsd
            http://jboss.org/schema/seam/web http://jboss.org/schema/seam/web-2.3.xsd
-           http://jboss.org/schema/seam/components http://jboss.org/schema/seam/components-2.3.xsd"
-     xmlns:drools="http://jboss.com/products/seam/drools"
-     xmlns:bpm="http://jboss.com/products/seam/bpm"
-     xmlns:mail="http://jboss.com/products/seam/mail"
-     xmlns:framework="http://jboss.com/products/seam/framework"
-     xmlns:resteasy="http://jboss.com/products/seam/resteasy"
->
+           http://jboss.org/schema/seam/drools http://jboss.org/schema/seam/drools-2.3.xsd
+           http://jboss.org/schema/seam/bpm http://jboss.org/schema/seam/bpm-2.3.xsd
+           http://jboss.org/schema/seam/mail http://jboss.org/schema/seam/mail-2.3.xsd
+           http://jboss.org/schema/seam/framework http://jboss.org/schema/seam/framework-2.3.xsd
+           http://jboss.org/schema/seam/resteasy http://jboss.org/schema/seam/resteasy-2.3.xsd
+           http://jboss.org/schema/seam/components http://jboss.org/schema/seam/components-2.3.xsd">
 <!--      xmlns:async="http://jboss.org/seam/async" -->
 
   <core:init

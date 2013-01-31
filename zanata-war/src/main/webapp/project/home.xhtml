@@ -1,12 +1,13 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
 
   <ui:define name="page_title">Projects</ui:define>
@@ -27,10 +28,10 @@
     <s:fragment rendered="#{projectAction.getEmpty()}">
 	   <h:outputText value="#{messages['jsf.NoProjectExists']}" />
     </s:fragment>
-    <s:fragment rendered="#{!projectAction.getEmpty()}">
-      <a4j:form id="form">
+    <s:fragment rendered="#{!projectAction.getEmpty()}" id="projectList">
+      <h:form id="form">
       
-	<rich:datascroller align="center" for="projectList" maxPages="10"
+	<rich:dataScroller align="center" for="projectList" maxPages="10"
 		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2"
             fastControls="hide">
         <f:facet name="first">
@@ -64,26 +65,26 @@
         <f:facet name="last_disabled">
             <h:outputText value="" styleClass="icon-to-end"/>
         </f:facet>
-    </rich:datascroller>
-	<rich:spacer height="15" />
+    </rich:dataScroller>
+	<richext:spacer height="15" />
         
         <s:div styleClass="float-right">
 	        <a4j:region>
 	            <h:selectBooleanCheckbox title="Filter active projects" value="#{projectAction.showActive}">
-	                <a4j:support event="onchange" reRender="main_content" />
+	                <a4j:ajax event="change" render="projectList" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.Active']}"/>
 	            
-	            <rich:spacer width="5" />
+	            <richext:spacer width="5" />
 	            <h:selectBooleanCheckbox title="Filter read-only projects" value="#{projectAction.showReadOnly}">
-	                <a4j:support event="onchange" reRender="main_content" />
+	                <a4j:ajax event="change" render="projectList" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.ReadOnly']}"/>
 	            
-	            <rich:spacer width="5" />
+	            <richext:spacer width="5" />
 	            <s:fragment rendered="#{s:hasPermission('HProject','view-obsolete')}">
 		            <h:selectBooleanCheckbox title="Filter obsolete projects" value="#{projectAction.showObsolete}">
-		                <a4j:support event="onchange" reRender="main_content" />
+		                <a4j:ajax event="change" render="projectList" />
 		            </h:selectBooleanCheckbox>
 	                <h:outputText value="#{messages['jsf.Obsolete']}"/>
 	            </s:fragment>
@@ -126,8 +127,8 @@
                     </rich:column>
         </rich:dataTable>
         
-        <rich:spacer height="15" />
-	    <rich:datascroller align="center" for="projectList" maxPages="10"
+        <richext:spacer height="15" />
+	    <rich:dataScroller align="center" for="projectList" maxPages="10"
 		    page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller"
             fastControls="hide">
             <f:facet name="first">
@@ -155,8 +156,8 @@
             <f:facet name="last_disabled">
                 <h:outputText value="" styleClass="icon-to-end"/>
             </f:facet>
-        </rich:datascroller>
-	</a4j:form>
+        </rich:dataScroller>
+	</h:form>
 </s:fragment>
     </s:decorate>
   </ui:define>

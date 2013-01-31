@@ -1,17 +1,18 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="page_title">#{messages['jsf.ManageSearch']}</ui:define>
     <ui:define name="center_content">
-        <a4j:form>
+        <h:form>
           <s:token allowMultiplePosts="true" />
           <a4j:region>
 
@@ -23,7 +24,7 @@
                   <rich:column width="auto" styleClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.AllActions']}</f:facet>
                     <h:selectBooleanCheckbox value="#{clazz.selectAll}">
-                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                      <a4j:ajax event="click" render="actions" />
                     </h:selectBooleanCheckbox>
                   </rich:column>
                   <rich:column width="270px">
@@ -35,57 +36,57 @@
                     <f:facet name="header">#{messages['jsf.manageSearch.purge']}</f:facet>
                     <f:facet name="footer">
                       <h:selectBooleanCheckbox value="#{reindexAction.purgeAll}">
-                         <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                         <a4j:ajax event="click" render="actions" />
                       </h:selectBooleanCheckbox>
                     </f:facet>
-                    <rich:toolTip showDelay="800" styleClass="leftalign">
+                    <rich:tooltip showDelay="800" styleClass="leftalign">
                       <p>#{messages['jsf.manageSearch.purge.Description']}</p>
                       <p>#{messages['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
                       <p>#{messages['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
-                    </rich:toolTip>
+                    </rich:tooltip>
                     <h:selectBooleanCheckbox value="#{clazz.purge}">
-                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                      <a4j:ajax event="click" render="actions" />
                     </h:selectBooleanCheckbox>
                   </rich:column>
                   <rich:column width="auto" styleClass="centered" footerClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.reindex']}</f:facet>
                     <f:facet name="footer">
                       <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}">
-                         <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                         <a4j:ajax event="click" render="actions" />
                       </h:selectBooleanCheckbox>
                     </f:facet>
-                    <rich:toolTip showDelay="800" styleClass="leftalign">
+                    <rich:tooltip showDelay="800" styleClass="leftalign">
                       <p>#{messages['jsf.manageSearch.reindex.Description']}</p>
                       <p>#{messages['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
                       <p>#{messages['jsf.manageSearch.reindex.AllRowsWillBeReindexed']}</p>
                       <p>#{messages['jsf.manageSearch.reindex.IndexedRowsWillBeUpdated']}</p>
                       <p><em>#{messages['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em></p>
                       <p><em>#{messages['jsf.manageSearch.reindex.RunDuringOffPeak']}</em></p>
-                    </rich:toolTip>
+                    </rich:tooltip>
                     <h:selectBooleanCheckbox value="#{clazz.reindex}">
-                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                      <a4j:ajax event="click" render="actions" />
                     </h:selectBooleanCheckbox>
                   </rich:column>
                   <rich:column width="auto" styleClass="centered" footerClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.optimize']}</f:facet>
                     <f:facet name="footer">
                       <h:selectBooleanCheckbox value="#{reindexAction.optimizeAll}">
-                         <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                         <a4j:ajax event="click" render="actions" />
                       </h:selectBooleanCheckbox>
                     </f:facet>
-                    <rich:toolTip showDelay="800" styleClass="leftalign">
+                    <rich:tooltip showDelay="800" styleClass="leftalign">
                       <p>#{messages['jsf.manageSearch.optimize.Description']}</p>
                       <p>#{messages['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
                       <p>#{messages['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
                       <p><em>#{messages['jsf.manageSearch.optimize.TempFileWarning']}</em></p>
-                    </rich:toolTip>
+                    </rich:tooltip>
                     <h:selectBooleanCheckbox value="#{clazz.optimize}">
-                      <a4j:support event="onclick" reRender="actions" ajaxSingle="true"/>
+                      <a4j:ajax event="click" render="actions" />
                     </h:selectBooleanCheckbox>
                   </rich:column>
                 </rich:dataTable>
 
-                <rich:spacer height="10px" width="100%"/>
+                <richext:spacer height="10"/>
 
                 <a4j:commandButton id="selectNone"
                     value="#{messages['jsf.ManageSearch.SelectNone']}"
@@ -151,7 +152,7 @@
             </a4j:outputPanel>
 
           </a4j:region>
-        </a4j:form>
+        </h:form>
     </ui:define>
     
 </ui:composition>

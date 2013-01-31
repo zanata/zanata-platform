@@ -143,8 +143,7 @@ when
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $iter: HProjectIteration(
-    $project: project -> 
-    (authenticatedPerson.isMaintainer($project))
+    $project : project, authenticatedPerson.isMaintainer($project)
   )
   check: PermissionCheck(
     target == $iter, 
@@ -295,9 +294,7 @@ when
   HLocaleMember()
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
-  $member: HLocaleMember(
-    $locale: supportedLanguage -> (isUserCoordinatorOfLanguageTeam($locale))
-  )
+  $member: HLocaleMember( $locale : supportedLanguage, isUserCoordinatorOfLanguageTeam($locale) )
   check: PermissionCheck(
     target == $member, 
     action == "insert" || action == "update" || action == "delete", 
