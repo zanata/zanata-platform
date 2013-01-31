@@ -200,7 +200,7 @@
 
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
-				<artifactId>jboss-seam-parent</artifactId>
+				<artifactId>bom</artifactId>
 				<version>${seam.version}</version>
 				<type>pom</type>
 				<scope>import</scope>

@@ -26,6 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
+import javax.validation.Payload;
 
 /**
  * A slug is a short label for something, containing only letters, numbers,
@@ -39,6 +40,7 @@ import javax.validation.Constraint;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Slug
 {
-
+   Class<?>[] groups() default {};
    String message() default "{validator.slug}";
+   Class<? extends Payload>[] payload() default {};
 }

@@ -342,7 +342,7 @@
 					<classpathDependencyExcludes>
 						<classpathDependencyExclude>
 							<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
-							org.jboss.security:jbosssx
+							org.picketbox:picketbox
 						</classpathDependencyExclude>
 					</classpathDependencyExcludes>
 				</configuration>
@@ -1746,20 +1746,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>jboss</groupId>
-			<artifactId>jbosssx</artifactId>
-			<version>4.2.2.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>jboss</groupId>
-			<artifactId>jboss-jmx</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>jboss</groupId>
-			<artifactId>jboss-system</artifactId>
-			<scope>provided</scope>
+			<groupId>org.picketbox</groupId>
+			<artifactId>picketbox</artifactId>
+			<version>4.0.14.Final</version>
 		</dependency>
 
 		<dependency>

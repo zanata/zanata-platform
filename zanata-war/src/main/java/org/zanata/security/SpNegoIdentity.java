@@ -36,7 +36,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Identity;
-import org.jboss.security.SecurityAssociation;
+import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,11 +89,11 @@ public class SpNegoIdentity implements Serializable
 
          Field field = Identity.class.getDeclaredField(PRINCIPAL);
          field.setAccessible(true);
-         field.set(identity, SecurityAssociation.getCallerPrincipal());
+         field.set(identity, SecurityContextAssociation.getPrincipal());
 
          field = Identity.class.getDeclaredField(SUBJECT);
          field.setAccessible(true);
-         field.set(identity, SecurityAssociation.getSubject());
+         field.set(identity, SecurityContextAssociation.getSubject());
       }
       catch (Exception e)
       {

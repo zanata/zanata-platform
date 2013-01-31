@@ -9,7 +9,14 @@ in case changes are required for production deployment (eg cfengine).
 
 <jboss-web>
 
-    <security-domain>java:/jaas/zanata</security-domain>
+<!--
+    <resource-ref>
+      <res-ref-name>jdbc/TheDataSource</res-ref-name>
+      <jndi-name>java:/DefaultDS</jndi-name>
+    </resource-ref>
+ -->
+
+    <security-domain>zanata</security-domain>
 
 	<!-- This is where the webapp context root (eg /zanata or /) can be overridden: -->
     <!-- _context_root_ -->
