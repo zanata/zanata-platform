@@ -113,7 +113,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       this.description = description;
    }
 
-   @XmlElement(name= "sourceViewURL", required = false, namespace = Namespaces.ZANATA_API)
+   @XmlElement(name= "sourceViewURL", required = false, nillable = true, namespace = Namespaces.ZANATA_API)
    public String getSourceViewURL()
    {
       return sourceViewURL;
@@ -124,7 +124,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       this.sourceViewURL = sourceViewURL;
    }
 
-   @XmlElement(name= "sourceCheckoutURL", required = false, namespace = Namespaces.ZANATA_API)
+   @XmlElement(name= "sourceCheckoutURL", required = false, nillable = true, namespace = Namespaces.ZANATA_API)
    public String getSourceCheckoutURL()
    {
       return sourceCheckoutURL;
