@@ -156,6 +156,11 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       return new ArrayList<ValidationAction>(validationList.values());
    }
 
+   public Map<ValidationId, ValidationAction> getValidationMap()
+   {
+      return validationList;
+   }
+
    /**
     * Clear all validation plugin's error messages
     */

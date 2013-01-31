@@ -4,15 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Matchers.any;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -30,7 +30,6 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationRule;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 /**
@@ -58,8 +57,7 @@ public class ValidationServiceTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      validationRule = new ValidationRule(ValidationId.HTML_XML, "Description", true);
-
+      validationRule = new ValidationRule(ValidationId.PRINTF_VARIABLES, "Description", true);
       List<ValidationRule> validationRules = Lists.newArrayList();
       validationRules.add(validationRule);
 
@@ -67,7 +65,6 @@ public class ValidationServiceTest
       service.setValidationRules(validationRules);
 
       when(messages.notifyValidationError()).thenReturn("validation error");
-
       verify(eventBus).addHandler(RunValidationEvent.getType(), service);
       verify(eventBus).addHandler(TransUnitSelectionEvent.getType(), service);
       verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
@@ -76,17 +73,14 @@ public class ValidationServiceTest
    @Test
    public void onValidate()
    {
+      when(validationMessages.varsAdded(isA(List.class))).thenReturn("Unexpected variable");
+
       RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
       event.addWidget(validationMessagePanel);
-      when(validationRules.isEnabled()).thenReturn(true);
-      ArrayList<String> errors = Lists.newArrayList("var added %s");
-      when(validationRules.getError()).thenReturn(errors);
+      ArrayList<String> errors = Lists.newArrayList("Unexpected variable");
 
       service.onValidate(event);
 
-      InOrder inOrder = Mockito.inOrder(validationObject);
-      inOrder.verify(validationObject).clearErrorMessage();
-      inOrder.verify(validationObject).validate("source", "target %s");
       verify(validationMessagePanel).updateValidationWarning(errors);
    }
 
@@ -117,7 +111,12 @@ public class ValidationServiceTest
    {
       service.clearAllMessage();
 
-      verify(validationObject).clearErrorMessage();
+      List<ValidationAction> validationList = service.getValidationList();
+
+      for (ValidationAction action : validationList)
+      {
+         assertThat(action.getError().size(), Matchers.equalTo(0));
+      }
    }
 
    @Test
@@ -125,7 +124,9 @@ public class ValidationServiceTest
    {
       service.updateStatus(VAL_KEY, false);
 
-      verify(validationObject).setEnabled(false);
+      ValidationAction validationAction = service.getValidationMap().get(VAL_KEY);
+
+      assertThat(validationAction.isEnabled(), Matchers.equalTo(false));
       verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
    }
 
@@ -133,8 +134,8 @@ public class ValidationServiceTest
    public void canGetValidationList()
    {
       List<ValidationAction> validationList = service.getValidationList();
-
-      assertThat(validationList, Matchers.contains(validationObject));
+      
+      assertThat(validationList.size(), Matchers.equalTo(7));
    }
 
 }
