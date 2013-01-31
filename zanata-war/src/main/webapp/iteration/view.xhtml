@@ -38,7 +38,7 @@
             <ui:param name="regionId" value="langTableRegion"/>
         </ui:include>
 
-			<a4j:form>
+			<h:form>
 				<a4j:region id="langTableRegion">
 					<s:token allowMultiplePosts="true" />
 					
@@ -109,7 +109,7 @@
 	
 					</rich:dataTable>
 				</a4j:region>
-			</a4j:form>
+			</h:form>
 	</ui:define>
 
 	<ui:define name="right_content">
@@ -160,7 +160,7 @@
 			</ui:repeat>	
 		</rich:panel>
 		
-        <a4j:form>
+        <h:form>
             <ui:param name="pHandle" value="#{viewAllStatusAction.copyTransProcessHandle}"/>
             <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
             
@@ -198,11 +198,11 @@
                 </a4j:outputPanel>
             </a4j:outputPanel>
 
-        </a4j:form>
+        </h:form>
 
         <rich:modalPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
             <f:subview id="versionSearch">
-                <a4j:form>
+                <h:form>
                     <h1>Find Group</h1>
                     <p>
                         <h:inputText value="#{viewAllStatusAction.searchTerm}"
@@ -216,10 +216,10 @@
                                            onclick="#{rich:component('versionSearchPanel')}.hide(); return false;" />
 
                     </p>
-                </a4j:form>
+                </h:form>
                 <a4j:region>
                     <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-                    <a4j:form id="searchResults">
+                    <h:form id="searchResults">
                         <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
                         <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
                             <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
@@ -246,7 +246,7 @@
                                 </rich:column>
                             </rich:dataTable>
                         </a4j:outputPanel>
-                    </a4j:form>
+                    </h:form>
                 </a4j:region>
             </f:subview>
         </rich:modalPanel>

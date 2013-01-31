@@ -25,7 +25,7 @@
     </ui:define>
 
     <ui:define name="center_content">
-        <a4j:form id="memberPanel">
+        <h:form id="memberPanel">
                 <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
                 <p>#{messages['jsf.SizeMembers']}</p>
                 <rich:dataTable
@@ -69,7 +69,7 @@
                           reRender="memberPanel,actionPanel, userAddPanel" />
                   </rich:column>
                 </rich:dataTable>
-        </a4j:form>
+        </h:form>
     </ui:define>
 
     <ui:define name="right_content">
@@ -78,7 +78,7 @@
         <f:facet name="header">
           #{messages['jsf.Actions']}
         </f:facet>
-        <a4j:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,memberPanel">
+        <h:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,memberPanel">
           <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.isUserInTeam() and s:hasRole('admin')}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
@@ -92,12 +92,12 @@
           <h:outputText rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
             <a id="addTeamMemberLink" href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show();#{rich:element('searchField')}.focus();">#{messages['jsf.AddTeamMember']}</a>
           </h:outputText>
-        </a4j:form>
+        </h:form>
       </rich:panel>
 
       <rich:modalPanel id="userAddPanel" width="530" height="420">
         <f:subview id="personSearch">
-          <a4j:form id="form">
+          <h:form id="form">
             <h1>Find Users To Add</h1>
             <p>
               <h:inputText value="#{languageTeamAction.searchTerm}" id="searchField"
@@ -110,7 +110,7 @@
               <h:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
                                onclick="#{rich:component('userAddPanel')}.hide(); return false;" />
             </p>
-          </a4j:form>
+          </h:form>
           <a4j:region id="region">
             <a4j:status id="searchStatus" startText="Searching..." stopText="" />
             <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">

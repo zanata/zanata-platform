@@ -30,7 +30,7 @@
       <s:fragment rendered="#{!empty versionGroupAction.allVersionGroups}">
         <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
 
-          <a4j:form>
+          <h:form>
               <s:token allowMultiplePosts="true" />
               
               <rich:spacer height="15" />
@@ -93,7 +93,7 @@
                     </rich:column>
                     
               </rich:dataTable>
-          </a4j:form>
+          </h:form>
       </s:fragment>
     </ui:define>
     

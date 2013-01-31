@@ -27,7 +27,7 @@
     </s:div>
 
    	<div class="iterations">
-   		<a4j:form>
+   		<h:form>
    		<rich:dataTable id="iterations" value="#{projectHome.versions}" var="_version">
             <rich:column sortBy="#{_version.slug}" id="column">
             	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
@@ -111,7 +111,7 @@
             </rich:column>
         </rich:dataTable>
         
-        </a4j:form>
+        </h:form>
    	</div>
     </s:decorate>
 </ui:define>

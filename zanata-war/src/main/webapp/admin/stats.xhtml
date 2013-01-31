@@ -10,40 +10,40 @@
 
     <ui:define name="page_title">Statistics</ui:define>
     <ui:define name="center_content">
-		<rich:simpleTogglePanel switchType="client" label="#{messages['jsf.TotalTranslators']} : #{adminStatsAction.totalTranslator}" opened="#{true}">
-        </rich:simpleTogglePanel>
+		<rich:collapsiblePanel switchType="client" header="#{messages['jsf.TotalTranslators']} : #{adminStatsAction.totalTranslator}" expanded="#{true}">
+        </rich:collapsiblePanel>
         <br/>
-        <rich:simpleTogglePanel switchType="client" label="#{messages['jsf.TotalProjects']} : #{adminStatsAction.totalProjectCount}" opened="#{true}">
+        <rich:collapsiblePanel switchType="client" header="#{messages['jsf.TotalProjects']} : #{adminStatsAction.totalProjectCount}" expanded="#{true}">
         	<table>
 				<tr><td><h3>#{messages['jsf.Active']}:</h3></td><td><h3>#{adminStatsAction.totalActiveProjectCount}</h3></td></tr>        	
 				<tr><td><h3>#{messages['jsf.ReadOnly']}:</h3></td><td><h3>#{adminStatsAction.totalReadOnlyProjectCount}</h3></td></tr>        	
 				<tr><td><h3>#{messages['jsf.Obsolete']}:</h3></td><td><h3>#{adminStatsAction.totalObsoleteProjectCount}</h3></td></tr>
 			</table>  
-        </rich:simpleTogglePanel>
+        </rich:collapsiblePanel>
         <br/>
-        <rich:simpleTogglePanel switchType="client" label="#{messages['jsf.TotalProjectVersion']} : #{adminStatsAction.totalProjectIterCount}" opened="#{true}">
+        <rich:collapsiblePanel switchType="client" header="#{messages['jsf.TotalProjectVersion']} : #{adminStatsAction.totalProjectIterCount}" expanded="#{true}">
         	<table>
 		        <tr><td><h3>#{messages['jsf.Active']}:</h3></td><td><h3>#{adminStatsAction.totalActiveProjectIterCount}</h3></td></tr>
 		        <tr><td><h3>#{messages['jsf.ReadOnly']}:</h3></td><td><h3>#{adminStatsAction.totalReadOnlyProjectIterCount}</h3></td></tr>
 		        <tr><td><h3>#{messages['jsf.Obsolete']}:</h3></td><td><h3>#{adminStatsAction.totalObsoleteProjectIterCount}</h3></td></tr>        	
 			</table>  
-        </rich:simpleTogglePanel>
+        </rich:collapsiblePanel>
         <br/>
-        <rich:simpleTogglePanel switchType="client" label="#{messages['jsf.TotalDocuments']} : #{adminStatsAction.totalDocuments}" opened="#{true}">
+        <rich:collapsiblePanel switchType="client" header="#{messages['jsf.TotalDocuments']} : #{adminStatsAction.totalDocuments}" expanded="#{true}">
         	<table>
 				<tr><td><h3>#{messages['jsf.Active']}:</h3></td><td><h3>#{adminStatsAction.totalActiveDocuments}</h3></td></tr>
 				<tr><td><h3>#{messages['jsf.Obsolete']}:</h3></td><td><h3>#{adminStatsAction.totalObsoleteDocuments}</h3></td></tr>
 			</table>  
-        </rich:simpleTogglePanel>
+        </rich:collapsiblePanel>
         <br/>
-        <rich:simpleTogglePanel switchType="client" label="#{messages['jsf.TotalTextFlows']} : #{adminStatsAction.totalTextFlows}" opened="#{true}">
+        <rich:collapsiblePanel switchType="client" header="#{messages['jsf.TotalTextFlows']} : #{adminStatsAction.totalTextFlows}" expanded="#{true}">
         	<table>
 				<tr><td><h3>#{messages['jsf.Active']}:</h3></td><td><h3>#{adminStatsAction.totalActiveTextFlows}</h3></td></tr>
 				<tr><td><h3>#{messages['jsf.Obsolete']}:</h3></td><td><h3>#{adminStatsAction.totalObsoleteTextFlows}</h3></td></tr>
 			</table>  
-        </rich:simpleTogglePanel>
+        </rich:collapsiblePanel>
         <br/>
-        <rich:simpleTogglePanel switchType="client" label="#{messages['jsf.TotalTextFlowTargets']} : #{adminStatsAction.totalTextFlowTargets}" opened="#{true}">
+        <rich:collapsiblePanel switchType="client" header="#{messages['jsf.TotalTextFlowTargets']} : #{adminStatsAction.totalTextFlowTargets}" expanded="#{true}">
         	<table>
 				<tr><td><h3>#{messages['jsf.Active']}:</h3></td><td><h3>#{adminStatsAction.totalActiveTextFlowTargets}</h3></td></tr>
 				<tr><td><h3>#{messages['jsf.Obsolete']}:</h3></td><td><h3>#{adminStatsAction.totalObsoleteTextFlowTargets}</h3></td></tr>
@@ -51,6 +51,6 @@
 				<tr><td><h3>#{messages['jsf.NeedReview']}:</h3></td><td><h3>#{adminStatsAction.totalNeedReviewTextFlowTargets}</h3></td></tr>
 				<tr><td><h3>#{messages['jsf.Untranslated']}:</h3></td><td><h3>#{adminStatsAction.totalUntranslatedTextFlowTargets}</h3></td></tr>
 			</table>  
-        </rich:simpleTogglePanel>
+        </rich:collapsiblePanel>
     </ui:define>
 </ui:composition>

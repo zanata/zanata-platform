@@ -24,7 +24,7 @@
           return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
         }
       </script>
-        <a4j:form>
+        <h:form>
             <s:token allowMultiplePosts="true" />
 	        <rich:dataTable 
 	            id="threads"
@@ -41,9 +41,10 @@
                     <h:inputText id="username_filter_input"
                                  value="#{userAction.usernameFilter}"
                                  styleClass="filter_input">
-                        <a4j:support event="onkeyup" reRender="threads"
-                                     ignoreDupResponses="true" requestDelay="700"
-                                     focus="username_filter_input"/>
+                        <a4j:ajax event="keyup" render="threads"
+                                  oncomplete="username_filter_input.focus()">
+                            <a4j:attachQueue ignoreDupResponses="true" requestDelay="700"/>
+                        </a4j:ajax>
                     </h:inputText>
                   </h:panelGroup>
                 </f:facet>
@@ -71,7 +72,7 @@
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
 	  	    </rich:dataTable>
-        </a4j:form>
+        </h:form>
     </ui:define>
     
   </ui:composition>

@@ -125,7 +125,7 @@
             <f:facet name="header">
                 <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
             </f:facet>
-            <a4j:form>
+            <h:form>
                 <rich:progressBar id="downloadProgressBar"
                                   value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
                                   interval="500"
@@ -152,7 +152,7 @@
                                                attachTo="closeProgressPanelButton" operation="hide" event="onclick"/>
                     </a4j:commandButton>
                 </div>
-            </a4j:form>
+            </h:form>
         </rich:modalPanel>
 
 
@@ -162,14 +162,14 @@
 
         <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <a4j:form>
+            <h:form>
 
                 <a4j:commandLink styleClass="action_link"
                                  rendered="#{projectIterationFilesAction.documentUploadAllowed}"
                                  value="#{messages['jsf.iteration.files.UploadDocument']}"
                                  title="#{messages['jsf.SupportedUploadFormats']}"
                                  onclick="openUploadDocPanel()"/>
-            </a4j:form>
+            </h:form>
         </rich:panel>
 
         <!-- uploads a new version of an existing source document -->

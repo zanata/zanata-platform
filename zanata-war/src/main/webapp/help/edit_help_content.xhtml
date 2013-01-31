@@ -13,7 +13,7 @@
 <ui:define name="center_content" >
     <h1>#{messages['jsf.Help']}</h1>
 
-<a4j:form>
+<h:form>
     <s:token allowMultiplePosts="true" />
     <rich:panel id="loggedIn" >
              <rich:editor id="homeContent" 
@@ -40,7 +40,7 @@
                        action="#{serverConfigurationBean.cancel}"/>
     </div>
 
-</a4j:form>
+</h:form>
 </ui:define>
 
 </ui:composition>

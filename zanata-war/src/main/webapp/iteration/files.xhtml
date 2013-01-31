@@ -36,7 +36,7 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
     <ui:define name="center_content">
-        <a4j:form onkeydown="if(event.keyCode==13) { return false;}">
+        <h:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
             <rich:datascroller id="data_table_scroller" align="center" for="data_table" fastControls="hide"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
@@ -213,7 +213,7 @@
                     </ui:include>
                 </rich:column>
             </rich:dataTable>
-        </a4j:form>
+        </h:form>
 
         <rich:modalPanel id="downloadProgressPanel"
                          moveable="#{false}"
@@ -223,7 +223,7 @@
             <f:facet name="header">
                 <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
             </f:facet>
-            <a4j:form>
+            <h:form>
                 <rich:progressBar id="downloadProgressBar"
                                   value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
                                   interval="500"
@@ -250,7 +250,7 @@
                                                attachTo="closeProgressPanelButton" operation="hide" event="onclick"/>
                     </a4j:commandButton>
                 </div>
-            </a4j:form>
+            </h:form>
         </rich:modalPanel>
 
         <rich:modalPanel id="uploadPanel"
@@ -284,7 +284,7 @@
 
         <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <a4j:form>
+            <h:form>
             	
             	
             	<h:outputLink
@@ -334,7 +334,7 @@
                                  action="#{projectIterationZipFileAction.prepareIterationZipFile}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
                                  reRender="downloadProgressBar"/>
-            </a4j:form>
+            </h:form>
         </rich:panel>
 
         <rich:panel rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate()}">

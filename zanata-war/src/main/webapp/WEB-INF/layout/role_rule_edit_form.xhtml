@@ -1,5 +1,5 @@
 
-<a4j:form id="projectForm"
+<h:form id="projectForm"
           xmlns="http://www.w3.org/1999/xhtml"
           xmlns:s="http://jboss.org/schema/seam/taglib"
           xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -19,9 +19,9 @@
             </h:selectOneMenu>
             
             <s:span styleClass="icon-info-circle-2 input_help" id="policyNameHelp">
-            	 <rich:toolTip>
+            	 <rich:tooltip>
                     <em>#{messages['jsf.rolerules.PolicyName.tooltip']}</em>
-                </rich:toolTip>
+                </rich:tooltip>
            	</s:span>
         </s:decorate>
         <s:decorate id="identityPatternField" template="/WEB-INF/layout/edit.xhtml" >
@@ -29,9 +29,9 @@
             <h:inputText id="identityPattern"
                          value="#{roleAssignmentRuleAction.instance.identityRegExp}"/>
             <s:span styleClass="icon-info-circle-2 input_help" id="identityPatternHelp">
-            	 <rich:toolTip>
+            	 <rich:tooltip>
                     <em>#{messages['jsf.rolerules.IdentityPattern.tooltip']}</em>
-                </rich:toolTip>
+                </rich:tooltip>
            	</s:span>           
         </s:decorate>
         <s:decorate id="roleField" template="/WEB-INF/layout/edit.xhtml">
@@ -40,9 +40,9 @@
                 <s:selectItems value="#{identityManager.listGrantableRoles()}" var="role" label="#{role}"/>
             </h:selectOneMenu>
             <s:span styleClass="icon-info-circle-2 input_help" id="roleToAssignHelp">
-            	  <rich:toolTip>
+            	  <rich:tooltip>
                     <em>#{messages['jsf.rolerules.RoleToAssign.tooltip']}</em>
-                </rich:toolTip>
+                </rich:tooltip>
            	</s:span>  
         </s:decorate>
 
@@ -64,4 +64,4 @@
         </div>
 
     </rich:panel>
-</a4j:form>
+</h:form>

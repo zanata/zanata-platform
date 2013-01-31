@@ -28,7 +28,7 @@
 </ui:define>
 
 <ui:define name="center_content">
-    <a4j:form>
+    <h:form>
     	<s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
@@ -51,7 +51,7 @@
                                    action="#{versionGroupAction.leaveVersionGroup(_iteration.id)}" reRender="iterationsDataTable, searchResults" />
             </rich:column>
         </rich:dataTable>
-    </a4j:form>
+    </h:form>
     
 </ui:define>
 
@@ -93,7 +93,7 @@
  
     <rich:modalPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
-            <a4j:form id="searchForm">
+            <h:form id="searchForm">
                 <h1>Find Project Version</h1>
                 <p>
                     <h:inputText id="searchField" value="#{versionGroupAction.searchTerm}"
@@ -107,9 +107,9 @@
                                      onclick="#{rich:component('versionAddPanel')}.hide(); return false;" />
 
                 </p>
-            </a4j:form>
+            </h:form>
             <a4j:region id="region">
-                <a4j:form id="searchResults">
+                <h:form id="searchResults">
                     <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <a4j:outputPanel  layout="block" style="overflow:auto;height:320px" rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable" value="#{versionGroupAction.searchResults}" var="selectableVersion">
@@ -143,7 +143,7 @@
                                        value="#{messages['jsf.AddSelected']}"
                                        action="#{versionGroupAction.addSelected()}"
                                        reRender="searchResults, iterationsDataTable" styleClass="float-right"/>
-                </a4j:form>
+                </h:form>
             </a4j:region>
         </f:subview>
     </rich:modalPanel>

@@ -26,9 +26,9 @@
                 <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
               </h:inputText>
                <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
-            	 <rich:toolTip>
+            	 <rich:tooltip>
                   #{messages['jsf.NameToolTip']}
-                </rich:toolTip>
+                </rich:tooltip>
            	  </s:span>
             </s:decorate>
             <ui:remove>
@@ -41,9 +41,9 @@
               </h:inputText>
               
               <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
-            	 <rich:toolTip>
+            	 <rich:tooltip>
                       #{messages['jsf.UsernameToolTip']}
-                  </rich:toolTip>
+                  </rich:tooltip>
            	  </s:span>
             </s:decorate>
             <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
@@ -53,9 +53,9 @@
               </h:inputText>
               
                <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-            	<rich:toolTip>
+            	<rich:tooltip>
                   #{messages['jsf.EmailToolTip']}
-                </rich:toolTip>
+                </rich:tooltip>
            	  </s:span>
            	  
             </s:decorate>

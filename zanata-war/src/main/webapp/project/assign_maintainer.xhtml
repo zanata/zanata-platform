@@ -67,7 +67,7 @@
 
         <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
             <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
-                <a4j:form>
+                <h:form>
                     <h1>#{messages['jsf.AddProjectMaintainer']}</h1>
                     <ui:include src="../WEB-INF/layout/add_maintainer_form.xhtml" />
 
@@ -80,7 +80,7 @@
                         <h:commandButton value="#{messages['jsf.Close']}"
                                          onclick="#{rich:component('maintainerAddPanel')}.hide(); return false;" />
                     </div>
-                </a4j:form>
+                </h:form>
             </rich:panel>
 
         </rich:modalPanel>
