@@ -503,6 +503,20 @@
                 </dependencies>
             </plugin>
 
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>7.3.Final</version>
+                <configuration>
+                    <force>true</force>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>${project.artifactId}</artifactId>
+                    <version>${project.version}</version>
+                    <filename>${war.name}-${project.version}.war</filename>
+                    <name>zanata.war</name>
+                </configuration>
+            </plugin>
+
 		</plugins>
 
 		<pluginManagement>

@@ -21,7 +21,12 @@
       <script type="text/javascript">
         function confirmDelete()
         {
-          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
+            return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
+        }
+
+        function focusUserFilterInput()
+        {
+            #{rich:element('username_filter_input')}.focus();
         }
       </script>
         <h:form>
@@ -42,8 +47,8 @@
                                  value="#{userAction.usernameFilter}"
                                  styleClass="filter_input">
                         <a4j:ajax event="keyup" render="threads"
-                                  oncomplete="username_filter_input.focus()">
-                            <a4j:attachQueue ignoreDupResponses="true" requestDelay="700"/>
+                                  oncomplete="focusUserFilterInput()">
+                            <a4j:attachQueue ignoreDupResponses="true" requestDelay="700" />
                         </a4j:ajax>
                     </h:inputText>
                   </h:panelGroup>

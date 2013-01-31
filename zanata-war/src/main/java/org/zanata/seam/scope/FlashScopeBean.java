@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("flash")
+@Name("flashScope")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
 public class FlashScopeBean implements Serializable
