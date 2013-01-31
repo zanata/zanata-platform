@@ -419,7 +419,7 @@ public class FileService implements FileResource
    private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload) throws IOException
    {
       Blob partContent;
-      partContent = Hibernate.createBlob(uploadForm.getFileStream());
+      partContent = Hibernate.createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
       HDocumentUploadPart newPart = new HDocumentUploadPart();
       newPart.setContent(partContent);
       upload.getParts().add(newPart);
