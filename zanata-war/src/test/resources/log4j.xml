@@ -21,6 +21,12 @@
         <level value="info" />
     </logger>
 -->
+    <!-- below will log hibernate generated SQL-->
+    <!--
+    <logger name="org.hibernate.SQL">
+        <level value="TRACE" />
+    </logger>
+    -->
     <logger name="gwt-log">
         <level value="OFF" />
     </logger>

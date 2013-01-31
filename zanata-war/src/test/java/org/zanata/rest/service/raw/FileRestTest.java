@@ -62,7 +62,7 @@ public class FileRestTest extends ZanataRawRestTest
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setQueryString(""); // Need to add this when using query params or else the test fails
-            request.addQueryParameter("docId", "/my/path/document.txt");
+            request.addQueryParameter("docId", "my/path/document.txt");
          }
 
          @Override
