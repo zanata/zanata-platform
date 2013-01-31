@@ -78,7 +78,7 @@
 
 	<context-param>
 	    <param-name>liquibase.datasource</param-name>
-	    <param-value>java:/${ds.jndi.name}</param-value>
+	    <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
 	</context-param>
 	<!-- 
 	<context-param>
@@ -101,7 +101,7 @@
 
     <context-param>
         <param-name>javamelody.datasources</param-name>
-        <param-value>java:/${ds.jndi.name}</param-value>
+        <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
     </context-param>
 
 	<listener>
