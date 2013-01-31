@@ -18,11 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.validation;
 
 import java.util.ArrayList;
 
-import org.zanata.util.ZanataMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -35,13 +36,11 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class HtmlXmlTagValidation extends AbstractValidation
 {
-   public HtmlXmlTagValidation(final ZanataMessages messages)
+   public HtmlXmlTagValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
    {
-//      super(messages.xmlHtmlValidatorName(), messages.xmlHtmlValidatorDescription(), true, messages);
-      super(messages.getMessage("jsf.validation.xmlHtmlValidator.name"), messages.getMessage("jsf.validation.xmlHtmlValidator.desc"), true, messages);
+      super(id, desc, enabled, messages);
    }
 
-   // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
    private final static String tagRegex = "<[^>]+>";
 
    private final static RegExp regExp = RegExp.compile(tagRegex, "g");
@@ -55,7 +54,7 @@ public class HtmlXmlTagValidation extends AbstractValidation
       ArrayList<String> error = listMissing(source, target);
       if (!error.isEmpty())
       {
-         addError(getMessages().getMessage("jsf.validation.xmlHtmlValidator.tagMissing", error));
+         addError(getMessages().tagsMissing(error));
       }
 
       boolean noError = error.isEmpty();
@@ -63,7 +62,7 @@ public class HtmlXmlTagValidation extends AbstractValidation
       error = listMissing(target, source);
       if (!error.isEmpty())
       {
-         addError(getMessages().getMessage("jsf.validation.xmlHtmlValidator.tagAdded", error));
+         addError(getMessages().tagsAdded(error));
       }
 
       noError &= error.isEmpty();
@@ -131,7 +130,7 @@ public class HtmlXmlTagValidation extends AbstractValidation
             }
          }
 
-         addError(getMessages().getMessage("jsf.validation.xmlHtmlValidator.tagWrongOrder", outOfOrder));
+         addError(getMessages().tagsWrongOrder(outOfOrder));
       }
    }
 

@@ -23,8 +23,12 @@ import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
-import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationRule;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -35,24 +39,32 @@ import com.google.common.collect.Lists;
 @Test(groups = "unit-tests")
 public class ValidationServiceTest
 {
-   public static final String VAL_KEY = "a";
+   public static final ValidationId VAL_KEY = ValidationId.HTML_XML;
    private ValidationService service;
    @Mock
    private EventBus eventBus;
    @Mock
    private TableEditorMessages messages;
    @Mock
-   private HasUpdateValidationWarning validationMessagePanel;
+   private ValidationMessages validationMessages;
    @Mock
-   private ValidationObject validationObject;
+   private HasUpdateValidationWarning validationMessagePanel;
+
+   private ValidationRule validationRule;
+   @Mock
+   private CachingDispatchAsync dispatcher;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
+      validationRule = new ValidationRule(ValidationId.HTML_XML, "Description", true);
 
-      Map<String, ValidationObject> validationMap = ImmutableMap.<String, ValidationObject>builder().put(VAL_KEY, validationObject).build();
-      service = new ValidationService(eventBus, messages, validationMap);
+      List<ValidationRule> validationRules = Lists.newArrayList();
+      validationRules.add(validationRule);
+
+      service = new ValidationService(eventBus, messages, validationMessages);
+      service.setValidationRules(validationRules);
 
       when(messages.notifyValidationError()).thenReturn("validation error");
 
@@ -66,9 +78,9 @@ public class ValidationServiceTest
    {
       RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
       event.addWidget(validationMessagePanel);
-      when(validationObject.isEnabled()).thenReturn(true);
+      when(validationRules.isEnabled()).thenReturn(true);
       ArrayList<String> errors = Lists.newArrayList("var added %s");
-      when(validationObject.getError()).thenReturn(errors);
+      when(validationRules.getError()).thenReturn(errors);
 
       service.onValidate(event);
 
@@ -120,7 +132,7 @@ public class ValidationServiceTest
    @Test
    public void canGetValidationList()
    {
-      List<ValidationObject> validationList = service.getValidationList();
+      List<ValidationAction> validationList = service.getValidationList();
 
       assertThat(validationList, Matchers.contains(validationObject));
    }

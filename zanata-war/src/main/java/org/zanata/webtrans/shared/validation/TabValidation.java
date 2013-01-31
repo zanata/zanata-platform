@@ -20,32 +20,32 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import java.util.List;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
 
-/**
- *
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
- **/
-public interface ValidationObject
+import com.google.common.base.CharMatcher;
+
+public class TabValidation extends AbstractValidation
 {
-   String getId();
+   public TabValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
+   {
+      super(id, desc, enabled, messages);
+   }
 
-   String getDescription();
+   @Override
+   public void doValidate(String source, String target)
+   {
+      CharMatcher tabs = CharMatcher.is('\t');
+      int sourceTabs = tabs.countIn(source);
+      int targetTabs = tabs.countIn(target);
+      if (sourceTabs > targetTabs)
+      {
+         addError(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
+      }
+      else if (targetTabs > sourceTabs)
+      {
+         addError(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
+      }
+   }
 
-   boolean isEnabled();
-
-   boolean hasError();
-
-   List<String> getError();
-
-   void validate(String source, String target);
-
-   void clearErrorMessage();
-
-   void setEnabled(boolean isEnabled);
-
-   void mutuallyExclusive(ValidationObject... exclusiveValidations);
-
-   List<ValidationObject> getExclusiveValidations();
 }

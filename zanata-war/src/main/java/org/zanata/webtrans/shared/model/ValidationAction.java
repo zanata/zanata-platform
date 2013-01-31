@@ -18,34 +18,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.model;
 
-import org.zanata.util.ZanataMessages;
+import java.util.List;
+
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
-import com.google.common.base.CharMatcher;
-
-public class TabValidation extends AbstractValidation
+/**
+ *
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ *
+ **/
+public interface ValidationAction
 {
-   public TabValidation(final ZanataMessages messages)
-   {
-      super(messages.getMessage("jsf.validation.tabValidator.name"), messages.getMessage("jsf.validation.tabValidator.desc"), true, messages);
-   }
+   ValidationId getId();
 
-   @Override
-   public void doValidate(String source, String target)
-   {
-      CharMatcher tabs = CharMatcher.is('\t');
-      int sourceTabs = tabs.countIn(source);
-      int targetTabs = tabs.countIn(target);
-      if (sourceTabs > targetTabs)
-      {
-         addError(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
-      }
-      else if (targetTabs > sourceTabs)
-      {
-         addError(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
-      }
-   }
+   String getDescription();
 
+   boolean isEnabled();
+
+   boolean hasError();
+
+   List<String> getError();
+
+   void validate(String source, String target);
+
+   void clearErrorMessage();
+
+   void setEnabled(boolean isEnabled);
+
+   List<ValidationAction> getExclusiveValidations();
+
+   void setMessages(ValidationMessages messages);
+
+   void copy(ValidationRule validationRule);
 }

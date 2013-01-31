@@ -3,9 +3,9 @@
  */
 package org.zanata.service;
 
-import java.util.Map;
+import java.util.List;
 
-import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationRule;
 
 /**
  * @author aeng
@@ -14,12 +14,12 @@ import org.zanata.webtrans.shared.validation.ValidationObject;
 public interface ValidationService
 {
    /**
-    * a map contains all validation objects.
-    *
+    * a list contains all validation rules.
+    * 
     * @see org.zanata.webtrans.client.service.ValidationService
     * @param valMessages Validation messages
     * @return a map contains all validation objects.
     */
    
-   Map<String, ValidationObject> getValidationList();
+   List<ValidationRule> getValidationRules();
 }

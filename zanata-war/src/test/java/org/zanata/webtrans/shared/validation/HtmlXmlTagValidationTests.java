@@ -20,6 +20,14 @@
  */
 package org.zanata.webtrans.shared.validation;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import org.mockito.ArgumentCaptor;
@@ -28,17 +36,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.when;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 /**
  *
@@ -52,7 +51,6 @@ public class HtmlXmlTagValidationTests
 
    // mock message strings
    private static final String MOCK_XML_HTML_VALIDATOR_DESCRIPTION = "test xml html validator description";
-   private static final String MOCK_XML_HTML_VALIDATOR_NAME = "test xml html validator name";
    private static final String MOCK_TAGS_OUT_OF_ORDER_MESSAGE = "mock tags out of order message";
    private static final String MOCK_TAGS_MISSING_MESSAGE = "mock tags missing message";
    private static final String MOCK_TAGS_ADDED_MESSAGE = "mock tags added message";
@@ -60,7 +58,7 @@ public class HtmlXmlTagValidationTests
    private HtmlXmlTagValidation htmlXmlTagValidation;
 
    @Mock
-   private ZanataMessages mockMessages;
+   private ValidationMessages mockMessages;
 
    // captured tag lists sent to messages
    @Captor
@@ -74,32 +72,27 @@ public class HtmlXmlTagValidationTests
    public void init()
    {
       MockitoAnnotations.initMocks(this);
-      htmlXmlTagValidation = null;
+      htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, MOCK_XML_HTML_VALIDATOR_DESCRIPTION, true, mockMessages);
       when(mockMessages.tagsAdded(capturedTagsAdded.capture())).thenReturn(MOCK_TAGS_ADDED_MESSAGE);
       when(mockMessages.tagsMissing(capturedTagsMissing.capture())).thenReturn(MOCK_TAGS_MISSING_MESSAGE);
       when(mockMessages.tagsWrongOrder(capturedTagsOutOfOrder.capture())).thenReturn(MOCK_TAGS_OUT_OF_ORDER_MESSAGE);
-      when(mockMessages.xmlHtmlValidatorName()).thenReturn(MOCK_XML_HTML_VALIDATOR_NAME);
-      when(mockMessages.xmlHtmlValidatorDescription()).thenReturn(MOCK_XML_HTML_VALIDATOR_DESCRIPTION);
    }
 
    @Test
    public void idIsSet()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
-      assertThat(htmlXmlTagValidation.getId(), is(MOCK_XML_HTML_VALIDATOR_NAME));
+      assertThat(htmlXmlTagValidation.getId(), is(ValidationId.HTML_XML));
    }
 
    @Test
    public void descriptionIsSet()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       assertThat(htmlXmlTagValidation.getDescription(), is(MOCK_XML_HTML_VALIDATOR_DESCRIPTION));
    }
 
    @Test
    public void matchingHtmlNoError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       htmlXmlTagValidation.validate(source, target);
@@ -111,7 +104,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void matchingXmlNoError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<group><users><user>name</user></users></group>";
       String target = "<group><users><user>nombre</user></users></group>";
       htmlXmlTagValidation.validate(source, target);
@@ -123,7 +115,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void addedTagError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<group><users><user>1</user></users></group>";
       String target = "<group><users><user>1</user></users><foo></group>";
       htmlXmlTagValidation.validate(source, target);
@@ -139,7 +130,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void addedTagsError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<group><users><user>1</user></users></group>";
       String target = "<foo><group><users><bar><user>1</user></users></group><moo>";
       htmlXmlTagValidation.validate(source, target);
@@ -155,7 +145,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void missingTagError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<html><title>HTML TAG Test</title><foo><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       htmlXmlTagValidation.validate(source, target);
@@ -171,7 +160,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void missingTagsError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<html><title>HTML TAG Test</title><p><table><tr><td>column 1 row 1</td></tr></table></html>";
       String target = "<title>HTML TAG Test</title><table><tr><td>column 1 row 1</td></tr></table>";
       htmlXmlTagValidation.validate(source, target);
@@ -187,7 +175,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void orderOnlyValidatedWithSameTags()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></four></five>";
       String target = "<two></five></four><three><six>";
       htmlXmlTagValidation.validate(source, target);
@@ -206,7 +193,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void lastTagMovedToFirstError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></four></five><six>";
       String target = "<six><one><two><three></four></five>";
       htmlXmlTagValidation.validate(source, target);
@@ -222,7 +208,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void firstTagMovedToLastError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></four></five><six>";
       String target = "<two><three></four></five><six><one>";
       htmlXmlTagValidation.validate(source, target);
@@ -238,7 +223,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void tagMovedToMiddleError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></four></five><six>";
       String target = "<two><three><one></four></five><six>";
       htmlXmlTagValidation.validate(source, target);
@@ -254,7 +238,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void reversedTagsError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></four></five><six>";
       String target = "<six></five></four><three><two><one>";
       htmlXmlTagValidation.validate(source, target);
@@ -271,7 +254,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void reportFirstTagsOutOfOrder()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></four></five><six>";
       String target = "</four></five><six><one><two><three>";
       htmlXmlTagValidation.validate(source, target);
@@ -287,7 +269,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void reportLeastTagsOutOfOrder()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></four></five><six>";
       String target = "<six></four></five><one><two><three>";
       htmlXmlTagValidation.validate(source, target);
@@ -306,7 +287,6 @@ public class HtmlXmlTagValidationTests
    @Test
    public void swapSomeTagsError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></three></two><four></four></one>";
       String target = "<one><two></two><four></three><three></four></one>";
       htmlXmlTagValidation.validate(source, target);

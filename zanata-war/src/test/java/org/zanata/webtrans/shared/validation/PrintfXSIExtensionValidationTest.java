@@ -1,4 +1,4 @@
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.validation;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -24,7 +25,6 @@ import static org.mockito.Mockito.when;
 @Test(groups = { "unit-tests" })
 public class PrintfXSIExtensionValidationTest
 {
-   private static final String MOCK_VARIABLES_VALIDATOR_NAME = "test variable validator name";
    private static final String MOCK_VARIABLES_VALIDATOR_DESCRIPTION = "test variable validator description";
    private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
    private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
@@ -55,16 +55,14 @@ public class PrintfXSIExtensionValidationTest
       when(mockMessages.mixVarFormats()).thenReturn(MIX_VAR_FORMAT_MESSAGE);
       when(mockMessages.varPositionOutOfRange(captureOutOfRangeVar.capture())).thenReturn(VAR_IS_OUT_OF_RANGE);
       when(mockMessages.varPositionDuplicated(captureVars.capture())).thenReturn(VARIABLES_HAS_SAME_POSITION);
-      when(mockMessages.positionalPrintfVariablesValidatorName()).thenReturn(MOCK_VARIABLES_VALIDATOR_NAME);
-      when(mockMessages.positionalPrintfVariablesValidatorDescription()).thenReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION);
 
-      printfVariablesValidation = new PrintfXSIExtensionValidation(mockMessages);
+      printfVariablesValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, MOCK_VARIABLES_VALIDATOR_DESCRIPTION, true, mockMessages);
    }
 
    @Test
    public void idAndDescriptionAreSet()
    {
-      assertThat(printfVariablesValidation.getId(), is(MOCK_VARIABLES_VALIDATOR_NAME));
+      assertThat(printfVariablesValidation.getId(), is(ValidationId.PRINTF_XSI_EXTENSION));
       assertThat(printfVariablesValidation.getDescription(), is(MOCK_VARIABLES_VALIDATOR_DESCRIPTION));
    }
 

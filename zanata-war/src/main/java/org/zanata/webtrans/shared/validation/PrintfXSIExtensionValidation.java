@@ -1,10 +1,12 @@
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.validation;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
@@ -17,13 +19,12 @@ import com.google.gwt.regexp.shared.RegExp;
  */
 public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
 {
-
    // regex to find out whether the variable has position
-   static final RegExp POSITIONAL_REG_EXP = RegExp.compile("%(\\d+\\$)\\w+");
+   private static final RegExp POSITIONAL_REG_EXP = RegExp.compile("%(\\d+\\$)\\w+");
 
-   public PrintfXSIExtensionValidation(final ValidationMessages messages)
+   public PrintfXSIExtensionValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
    {
-      super(messages.positionalPrintfVariablesValidatorName(), messages.positionalPrintfVariablesValidatorDescription(), false, messages);
+      super(id, desc, enabled, messages);
    }
 
    @Override

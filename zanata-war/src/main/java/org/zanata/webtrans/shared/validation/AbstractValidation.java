@@ -18,34 +18,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.util.ZanataMessages;
-import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationRule;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public abstract class AbstractValidation implements ValidationObject
+public abstract class AbstractValidation implements ValidationAction
 {
-   private String id;
+   private ValidationId id;
+   private String description;
    private boolean isEnabled;
-   
-   private final String description;
 
-   private ZanataMessages messages;
+   private ArrayList<String> errorList = new ArrayList<String>();
+   private ArrayList<ValidationAction> exclusiveValidations = new ArrayList<ValidationAction>();
 
-   private List<String> errorList = Lists.newArrayList();
-   private List<ValidationObject> exclusiveValidations = Lists.newArrayList();
+   private ValidationMessages messages;
 
-   public AbstractValidation(String id, String description, boolean enabled, final ZanataMessages messages)
+   public AbstractValidation(ValidationId id, String description, boolean enabled, ValidationMessages messages)
    {
       this.id = id;
       this.description = description;
@@ -60,11 +61,6 @@ public abstract class AbstractValidation implements ValidationObject
       {
          doValidate(source, target);
       }
-   }
-
-   protected ZanataMessages getMessages()
-   {
-      return messages;
    }
 
    protected abstract void doValidate(String source, String target);
@@ -82,19 +78,13 @@ public abstract class AbstractValidation implements ValidationObject
    }
 
    @Override
-   public void mutuallyExclusive(ValidationObject... exclusiveValidations)
-   {
-      this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
-   }
-
-   @Override
-   public List<ValidationObject> getExclusiveValidations()
+   public List<ValidationAction> getExclusiveValidations()
    {
       return exclusiveValidations;
    }
 
    @Override
-   public String getId()
+   public ValidationId getId()
    {
       return id;
    }
@@ -126,6 +116,25 @@ public abstract class AbstractValidation implements ValidationObject
    protected void addError(String error)
    {
       errorList.add(error);
+   }
+
+   @Override
+   public void setMessages(ValidationMessages messages)
+   {
+      this.messages = messages;
+   }
+
+   protected ValidationMessages getMessages()
+   {
+      return messages;
+   }
+
+   @Override
+   public void copy(ValidationRule validationRule)
+   {
+      this.id = validationRule.getId();
+      this.description = validationRule.getDescription();
+      this.isEnabled = validationRule.isEnabled();
    }
 }
 

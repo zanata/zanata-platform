@@ -18,13 +18,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 /**
  * Checks for consistent java-style variables between two strings.
@@ -38,9 +39,9 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
  **/
 public class JavaVariablesValidation extends AbstractValidation
 {
-   public JavaVariablesValidation(final ValidationMessages messages)
+   public JavaVariablesValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
    {
-      super(messages.javaVariablesValidatorName(), messages.javaVariablesValidatorDescription(), true, messages);
+      super(id, desc, enabled, messages);
    }
 
    @Override

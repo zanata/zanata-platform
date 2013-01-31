@@ -31,7 +31,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.action.TabValidation;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.TabValidation;
 
 @Test(groups = { "unit-tests" })
 public class TabValidationTest
@@ -40,23 +41,25 @@ public class TabValidationTest
    private TabValidation validation;
    private static final List<String> noErrors = Collections.<String>emptyList();
 
+   private static final String MOCK_TAB_VALIDATOR_DESCRIPTION = "TabValidator description";
+
    @BeforeMethod
    public void init()
    {
       messages = TestMessages.getInstance(ValidationMessages.class);
-      validation = new TabValidation(messages);
+      validation = new TabValidation(ValidationId.TAB, MOCK_TAB_VALIDATOR_DESCRIPTION, true, messages);
    }
 
    @Test
    public void idIsSet()
    {
-      assertThat(validation.getId(), is(messages.tabValidatorName()));
+      assertThat(validation.getId(), is(ValidationId.TAB));
    }
 
    @Test
    public void descriptionIsSet()
    {
-      assertThat(validation.getDescription(), is(messages.tabValidatorDescription()));
+      assertThat(validation.getDescription(), is(MOCK_TAB_VALIDATOR_DESCRIPTION));
    }
 
    @Test

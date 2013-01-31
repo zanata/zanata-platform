@@ -55,6 +55,8 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
+import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
+import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
@@ -85,6 +87,9 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    @In(value = "webtrans.gwt.LoadOptionsHandler", create = true)
    private LoadOptionsHandler loadOptionsHandler;
    
+   @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true)
+   private GetValidationRulesHandler getValidationRulesHandler;
+
    private static long nextEditorClientIdNum = 0;
 
    @Synchronized
@@ -118,9 +123,11 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
       LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(null), context);
 
+      GetValidationRulesResult validationResult = getValidationRulesHandler.execute(new GetValidationRulesAction(workspaceId), context);
+
       Identity identity = new Identity(editorClientId, person);
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);
-      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration());
+      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationResult.getValidationRules());
    }
 
    protected String getHttpSessionId()

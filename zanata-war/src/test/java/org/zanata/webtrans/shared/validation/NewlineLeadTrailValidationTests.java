@@ -25,11 +25,12 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 /**
  *
@@ -41,29 +42,30 @@ public class NewlineLeadTrailValidationTests
 {
    // TODO use TestMessages
 
-
-
    private NewlineLeadTrailValidation newlineLeadTrailValidation;
 
+   @Mock
    private ValidationMessages messages;
+
+   private static final String MOCK_NEWLINE_VALIDATOR_DESCRIPTION = "NewlineLeadTrailValidation description";
 
    @BeforeMethod
    public void init()
    {
       messages = TestMessages.getInstance(ValidationMessages.class);
-      newlineLeadTrailValidation = new NewlineLeadTrailValidation(messages);
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(ValidationId.NEW_LINE, MOCK_NEWLINE_VALIDATOR_DESCRIPTION, true, messages);
    }
 
    @Test
    public void idIsSet()
    {
-      assertThat(newlineLeadTrailValidation.getId(), is(messages.newlineValidatorName()));
+      assertThat(newlineLeadTrailValidation.getId(), is(ValidationId.NEW_LINE));
    }
 
    @Test
    public void descriptionIsSet()
    {
-      assertThat(newlineLeadTrailValidation.getDescription(), is(messages.newlineValidatorDescription()));
+      assertThat(newlineLeadTrailValidation.getDescription(), is(MOCK_NEWLINE_VALIDATOR_DESCRIPTION));
    }
 
    @Test

@@ -18,12 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.validation;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -34,7 +34,6 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class XmlEntityValidation extends AbstractValidation
 {
-
    // &amp;, &quot;
    private final static String charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
    private final static RegExp charRefExp = RegExp.compile(charRefRegex);
@@ -49,13 +48,9 @@ public class XmlEntityValidation extends AbstractValidation
 
    private final static String ENTITY_START_CHAR = "&";
 
-   // XML PREDEFINED ENTITY
-   // private final static String[] PRE_DEFINED_ENTITY = { "&quot;", "&amp;",
-   // "&apos;", "&lt;", "&gt;" };
-
-   public XmlEntityValidation(final ValidationMessages messages)
+   public XmlEntityValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
    {
-      super(messages.xmlEntityValidatorName(), messages.xmlEntityValidatorDescription(), true, messages);
+      super(id, desc, enabled, messages);
    }
 
    @Override

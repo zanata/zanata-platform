@@ -25,9 +25,9 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.service.ValidationService;
-import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -60,10 +60,10 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    protected void onBind()
    {
-      for (final ValidationObject object : validationService.getValidationList())
+      for (final ValidationAction validationAction : validationService.getValidationList())
       {
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(object.getId(), object.getDescription(), object.isEnabled());
-         changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(object));
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId().getName(), validationAction.getDescription(), validationAction.isEnabled());
+         changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }
 
@@ -79,23 +79,23 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
 
    class ValidationOptionValueChangeHandler implements ValueChangeHandler<Boolean>
    {
-      private final ValidationObject object;
+      private final ValidationAction validationAction;
 
-      public ValidationOptionValueChangeHandler(ValidationObject object)
+      public ValidationOptionValueChangeHandler(ValidationAction validationAction)
       {
-         this.object = object;
+         this.validationAction = validationAction;
       }
 
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         validationService.updateStatus(object.getId(), event.getValue());
+         validationService.updateStatus(validationAction.getId(), event.getValue());
          if (event.getValue())
          {
-            for (ValidationObject excluded : object.getExclusiveValidations())
+            for (ValidationAction excluded : validationAction.getExclusiveValidations())
             {
                validationService.updateStatus(excluded.getId(), false);
-               display.changeValidationSelectorValue(excluded.getId(), false);
+               display.changeValidationSelectorValue(excluded.getId().getName(), false);
             }
          }
       }
