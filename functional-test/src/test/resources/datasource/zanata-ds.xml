@@ -10,9 +10,7 @@
         <driver>h2</driver>
         <security>
             <user-name>${ds.username}</user-name>
-<!--
             <password>${ds.password}</password>
--->
         </security>
     </datasource>
 
