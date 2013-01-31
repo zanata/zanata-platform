@@ -71,6 +71,10 @@ public class DocumentFileUploadForm implements Serializable
    @PartType("text/plain")
    private String hash;
 
+   @FormParam("size")
+   @PartType("text/plain")
+   private Long size;
+
    public InputStream getFileStream()
    {
       return fileStream;
@@ -129,5 +133,15 @@ public class DocumentFileUploadForm implements Serializable
    public void setHash(String hash)
    {
       this.hash = hash;
+   }
+
+   public Long getSize()
+   {
+      return size;
+   }
+
+   public void setSize(Long size)
+   {
+      this.size = size;
    }
 }
