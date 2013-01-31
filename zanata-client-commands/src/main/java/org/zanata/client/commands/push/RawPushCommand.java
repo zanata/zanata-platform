@@ -266,7 +266,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
          {
             throw new RuntimeException(e);
          }
-         DocumentFileUploadForm uploadForm = generateUploadForm(true, true, fileType, md5hash, fileStream);
+         DocumentFileUploadForm uploadForm = generateUploadForm(true, true, fileType, md5hash, docFile.length(), fileStream);
          ClientResponse<ChunkUploadResponse> response = uploadDocumentPart(docId, locale, uploadForm);
          checkChunkUploadStatus(response);
       }
@@ -291,7 +291,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
             log.info("        pushing chunk {} of {}", chunker.currentChunkNumber(), chunker.totalChunks());
             boolean isFirst = chunker.currentChunkNumber() == 1;
             boolean isLast = chunker.getRemainingChunks() == 0;
-            uploadForm = generateUploadForm(isFirst, isLast, fileType, md5hash, chunkStream);
+            long chunkSize = chunker.currentChunkSize();
+            uploadForm = generateUploadForm(isFirst, isLast, fileType, md5hash, chunkSize, chunkStream);
             if (!isFirst)
             {
                uploadForm.setUploadId(uploadId);
@@ -318,13 +319,14 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
       }
    }
 
-   private DocumentFileUploadForm generateUploadForm(boolean isFirst, boolean isLast, String fileType, String md5hash, InputStream fileStream)
+   private DocumentFileUploadForm generateUploadForm(boolean isFirst, boolean isLast, String fileType, String md5hash, long streamSize, InputStream fileStream)
    {
       DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
       uploadForm.setFirst(isFirst);
       uploadForm.setLast(isLast);
       uploadForm.setFileType(fileType);
       uploadForm.setHash(md5hash);
+      uploadForm.setSize(streamSize);
       uploadForm.setFileStream(fileStream);
       return uploadForm;
    }
@@ -385,6 +387,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
       private File file;
       private byte[] buffer;
       private InputStream fileStream;
+      private int actualChunkSize;
 
       public StreamChunker(File file, int chunkSize) throws FileNotFoundException
       {
@@ -405,6 +408,16 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
          return chunksRetrieved;
       }
 
+      /**
+       * Value is only valid after calling getNextChunk or Iterator.next().
+       * 
+       * @return the size in bytes of the most recently returned chunk.
+       */
+      public int currentChunkSize()
+      {
+         return actualChunkSize;
+      }
+
       public int getRemainingChunks()
       {
          return totalChunkCount - chunksRetrieved;
@@ -417,7 +430,6 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
             throw new IllegalStateException("getNextChunk() must not be called after all chunks have been retrieved");
          }
 
-         int actualChunkSize;
          try
          {
             actualChunkSize = fileStream.read(buffer);
