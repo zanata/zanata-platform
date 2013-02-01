@@ -42,7 +42,7 @@ public class DummyActivateWorkspaceCommand implements Command
       userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(1, "Dummy path/Dummy doc"), "Dummy doc", "Dummy path", LocaleId.EN_US, null, "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), ValidationFactory.getAllValidationIds()));
+      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), ValidationFactory.getAllValidationIds(true)));
       Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }
 }

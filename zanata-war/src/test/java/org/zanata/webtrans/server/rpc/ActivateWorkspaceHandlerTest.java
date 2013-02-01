@@ -1,24 +1,26 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.HashMap;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import net.customware.gwt.dispatch.server.ExecutionContext;
 
 import org.hamcrest.Matchers;
-import org.jboss.seam.web.ServletContexts;
-import org.jboss.security.AnybodyPrincipal;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HAccountOption;
-import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -27,8 +29,6 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
-import org.zanata.service.SecurityService;
-import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -41,19 +41,11 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
+import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
+import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
-
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -88,6 +80,8 @@ public class ActivateWorkspaceHandlerTest
    private ArgumentCaptor<EditorClientId> editorClientIdCaptor;
    @Mock
    private LoadOptionsHandler loadOptionsHandler;
+   @Mock
+   private GetValidationRulesHandler getValidationRulesHandler;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -102,6 +96,7 @@ public class ActivateWorkspaceHandlerTest
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
             .use("webtrans.gwt.LoadOptionsHandler", loadOptionsHandler)
+            .use("webtrans.gwt.GetValidationRulesHandler", getValidationRulesHandler)
             .ignoreNonResolvable()
             .autowire(ActivateWorkspaceHandler.class);
       // @formatter:on
@@ -128,6 +123,9 @@ public class ActivateWorkspaceHandlerTest
       when(identity.hasPermission("glossary-update", "")).thenReturn(true);
       LoadOptionsResult optionsResult = new LoadOptionsResult(new UserConfigHolder().getState());
       when(loadOptionsHandler.execute(isA(LoadOptionsAction.class), any(ExecutionContext.class))).thenReturn(optionsResult);
+      
+      GetValidationRulesResult validationResult = new GetValidationRulesResult(ValidationFactory.getAllValidationIds(true));
+      when(getValidationRulesHandler.execute(isA(GetValidationRulesAction.class), any(ExecutionContext.class))).thenReturn(validationResult);
 
       ActivateWorkspaceResult result = handler.execute(action, null);
 

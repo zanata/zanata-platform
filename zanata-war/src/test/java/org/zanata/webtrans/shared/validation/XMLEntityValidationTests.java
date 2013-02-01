@@ -42,9 +42,6 @@ public class XMLEntityValidationTests
 {
    // TODO use TestMessages
 
-   // mock message strings
-   private static final String MOCK_ENTITY_VALIDATOR_DESCRIPTION = "test xml entity validator description";
-
    private XmlEntityValidation xmlEntityValidation;
 
    @Mock
@@ -62,12 +59,6 @@ public class XMLEntityValidationTests
    public void idIsSet()
    {
       assertThat(xmlEntityValidation.getId(), Matchers.equalTo(ValidationId.XML_ENTITY));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      assertThat(xmlEntityValidation.getDescription(), Matchers.equalTo(MOCK_ENTITY_VALIDATOR_DESCRIPTION));
    }
 
    @Test

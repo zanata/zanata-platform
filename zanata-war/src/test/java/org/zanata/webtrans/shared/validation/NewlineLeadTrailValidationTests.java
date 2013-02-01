@@ -48,8 +48,6 @@ public class NewlineLeadTrailValidationTests
    @Mock
    private ValidationMessages messages;
 
-   private static final String MOCK_NEWLINE_VALIDATOR_DESCRIPTION = "NewlineLeadTrailValidation description";
-
    @BeforeMethod
    public void init()
    {
@@ -62,12 +60,6 @@ public class NewlineLeadTrailValidationTests
    public void idIsSet()
    {
       assertThat(newlineLeadTrailValidation.getId(), is(ValidationId.NEW_LINE));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      assertThat(newlineLeadTrailValidation.getDescription(), is(MOCK_NEWLINE_VALIDATOR_DESCRIPTION));
    }
 
    @Test

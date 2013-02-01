@@ -34,7 +34,7 @@ public class ValidationServiceImpl implements ValidationService
 
    private List<ValidationActionInfo> execute()
    {
-      List<ValidationActionInfo> validationIds = ValidationFactory.getAllValidationIds();
+      List<ValidationActionInfo> validationIds = ValidationFactory.getAllValidationIds(false);
 //      List<ValidationId> enabledValidations = new ArrayList<ValidationId>();
       
       //user DAO to get list of enabled validations

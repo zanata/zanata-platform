@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.common.collect.Lists;
 
@@ -47,7 +48,6 @@ public class ValidationServiceTest
    @Mock
    private HasUpdateValidationWarning validationMessagePanel;
 
-   private ValidationAction validationAction;
    @Mock
    private CachingDispatchAsync dispatcher;
 
@@ -55,12 +55,9 @@ public class ValidationServiceTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-//      validationAction = new ValidationAction(ValidationId.PRINTF_VARIABLES, "Description", true);
-      List<ValidationAction> validationRules = Lists.newArrayList();
-      validationRules.add(validationAction);
 
       service = new ValidationService(eventBus, messages, validationMessages);
-//      service.setValidationRules(validationRules);
+      service.setValidationRules(ValidationFactory.getAllValidationIds(true));
 
       when(messages.notifyValidationError()).thenReturn("validation error");
       verify(eventBus).addHandler(RunValidationEvent.getType(), service);

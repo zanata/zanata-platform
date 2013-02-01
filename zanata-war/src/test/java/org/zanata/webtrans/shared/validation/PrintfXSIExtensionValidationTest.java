@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 @Test(groups = { "unit-tests" })
 public class PrintfXSIExtensionValidationTest
 {
-   private static final String MOCK_VARIABLES_VALIDATOR_DESCRIPTION = "test variable validator description";
    private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
    private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
    private static final String MIX_VAR_FORMAT_MESSAGE = "mix var format";
@@ -65,7 +64,6 @@ public class PrintfXSIExtensionValidationTest
    public void idAndDescriptionAreSet()
    {
       assertThat(printfVariablesValidation.getId(), is(ValidationId.PRINTF_XSI_EXTENSION));
-      assertThat(printfVariablesValidation.getDescription(), is(MOCK_VARIABLES_VALIDATOR_DESCRIPTION));
    }
 
    @Test

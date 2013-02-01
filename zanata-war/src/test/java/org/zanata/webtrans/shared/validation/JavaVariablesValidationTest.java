@@ -48,7 +48,6 @@ public class JavaVariablesValidationTest
 {
    // TODO use TestMessages
 
-   private static final String MOCK_VARIABLES_VALIDATOR_DESCRIPTION = "test variable validator description";
    private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
    private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
 
@@ -75,12 +74,6 @@ public class JavaVariablesValidationTest
    public void idIsSet()
    {
       assertThat(javaVariablesValidation.getId(), is(ValidationId.JAVA_VARIABLES));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      assertThat(javaVariablesValidation.getDescription(), is(MOCK_VARIABLES_VALIDATOR_DESCRIPTION));
    }
 
    @Test

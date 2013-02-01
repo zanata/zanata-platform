@@ -50,7 +50,6 @@ public class PrintfVariablesValidationTest
 {
    // TODO use TestMessages
 
-   private static final String MOCK_VARIABLES_VALIDATOR_DESCRIPTION = "test variable validator description";
    private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
    private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
 
@@ -79,12 +78,6 @@ public class PrintfVariablesValidationTest
    public void idIsSet()
    {
       assertThat(printfVariablesValidation.getId(), is(ValidationId.PRINTF_VARIABLES));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      assertThat(printfVariablesValidation.getDescription(), is(MOCK_VARIABLES_VALIDATOR_DESCRIPTION));
    }
 
    @Test

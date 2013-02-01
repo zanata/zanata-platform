@@ -26,16 +26,16 @@ import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
  */
 public final class ValidationFactory
 {
-   public static List<ValidationActionInfo> getAllValidationIds()
+   public static List<ValidationActionInfo> getAllValidationIds(boolean enabled)
    {
       List<ValidationActionInfo> validationIds = new ArrayList<ValidationActionInfo>();
 
-      validationIds.add(new ValidationActionInfo(ValidationId.HTML_XML, null, false));
-      validationIds.add(new ValidationActionInfo(ValidationId.NEW_LINE, null, false));
-      validationIds.add(new ValidationActionInfo(ValidationId.TAB, null, false));
-      validationIds.add(new ValidationActionInfo(ValidationId.JAVA_VARIABLES, null, false));
-      validationIds.add(new ValidationActionInfo(ValidationId.XML_ENTITY, null, false));
-      validationIds.add(new ValidationActionInfo(ValidationId.PRINTF_VARIABLES, null, false));
+      validationIds.add(new ValidationActionInfo(ValidationId.HTML_XML, null, enabled));
+      validationIds.add(new ValidationActionInfo(ValidationId.NEW_LINE, null, enabled));
+      validationIds.add(new ValidationActionInfo(ValidationId.TAB, null, enabled));
+      validationIds.add(new ValidationActionInfo(ValidationId.JAVA_VARIABLES, null, enabled));
+      validationIds.add(new ValidationActionInfo(ValidationId.XML_ENTITY, null, enabled));
+      validationIds.add(new ValidationActionInfo(ValidationId.PRINTF_VARIABLES, null, enabled));
       validationIds.add(new ValidationActionInfo(ValidationId.PRINTF_XSI_EXTENSION, null, false));
 
       return validationIds;

@@ -51,7 +51,6 @@ public class HtmlXmlTagValidationTests
    // TODO use TestMessages
 
    // mock message strings
-   private static final String MOCK_XML_HTML_VALIDATOR_DESCRIPTION = "test xml html validator description";
    private static final String MOCK_TAGS_OUT_OF_ORDER_MESSAGE = "mock tags out of order message";
    private static final String MOCK_TAGS_MISSING_MESSAGE = "mock tags missing message";
    private static final String MOCK_TAGS_ADDED_MESSAGE = "mock tags added message";
@@ -84,12 +83,6 @@ public class HtmlXmlTagValidationTests
    public void idIsSet()
    {
       assertThat(htmlXmlTagValidation.getId(), is(ValidationId.HTML_XML));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      assertThat(htmlXmlTagValidation.getDescription(), is(MOCK_XML_HTML_VALIDATOR_DESCRIPTION));
    }
 
    @Test

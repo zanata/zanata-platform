@@ -41,8 +41,6 @@ public class TabValidationTest
    private TabValidation validation;
    private static final List<String> noErrors = Collections.<String>emptyList();
 
-   private static final String MOCK_TAB_VALIDATOR_DESCRIPTION = "TabValidator description";
-
    @BeforeMethod
    public void init()
    {
@@ -55,12 +53,6 @@ public class TabValidationTest
    public void idIsSet()
    {
       assertThat(validation.getId(), is(ValidationId.TAB));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      assertThat(validation.getDescription(), is(MOCK_TAB_VALIDATOR_DESCRIPTION));
    }
 
    @Test
