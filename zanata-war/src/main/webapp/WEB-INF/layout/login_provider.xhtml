@@ -63,7 +63,7 @@
         }
     </script>
 
-    <h:outputText>#{messages['jsf.login.openid.SelectProvider']}</h:outputText>
+    <h:outputText value="#{messages['jsf.login.openid.SelectProvider']}"/>
     <br/>
     <br/>
     <richext:spacer height="10"/>
@@ -101,7 +101,7 @@
 
     <h:inputHidden id="login_provider" value="${providerField}"/>
 
-    <s:decorate id="providerUsernameField" template="edit.xhtml" style="display: none">
+    <s:decorate id="providerUsernameField" template="edit.xhtml" style="display: none" enclose="true">
         <ui:define name="label">
             <span id="identityLabel" class="loginForm_label">#{messages['jsf.FedoraUsername']}</span>
         </ui:define>
@@ -109,7 +109,7 @@
         <br/>
     </s:decorate>
 
-    <s:decorate id="providerPasswordField" template="edit.xhtml" style="display: none">
+    <s:decorate id="providerPasswordField" template="edit.xhtml" style="display: none" enclose="true">
         <ui:define name="label">
             <span id="passwordLabel" class="loginForm_label">#{messages['jsf.Password']}</span>
         </ui:define>

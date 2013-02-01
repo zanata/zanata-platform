@@ -28,11 +28,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
+import javax.validation.Payload;
 
 @Constraint(validatedBy = {DuplicateEmailValidator.class})
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface NotDuplicateEmail
 {
+   Class<?>[] groups() default {};
    String message() default "{validator.duplicateEmail}";
+   Class<? extends Payload>[] payload() default {};
 }

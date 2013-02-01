@@ -16,7 +16,7 @@ in case changes are required for production deployment (eg cfengine).
     </resource-ref>
  -->
 
-    <security-domain>zanata</security-domain>
+    <!--<security-domain>zanata</security-domain>-->
 
 	<!-- This is where the webapp context root (eg /zanata or /) can be overridden: -->
     <!-- _context_root_ -->

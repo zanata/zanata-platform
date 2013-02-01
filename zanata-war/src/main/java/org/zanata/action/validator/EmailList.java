@@ -28,11 +28,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
+import javax.validation.Payload;
 
 @Constraint(validatedBy = {EmailListValidator.class})
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface EmailList
 {
+   Class<?>[] groups() default {};
    String message() default "{validator.emailList}";
+   Class<? extends Payload>[] payload() default {};
 }
