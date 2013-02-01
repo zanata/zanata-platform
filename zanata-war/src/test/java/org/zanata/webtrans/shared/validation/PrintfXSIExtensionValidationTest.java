@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -56,7 +57,8 @@ public class PrintfXSIExtensionValidationTest
       when(mockMessages.varPositionOutOfRange(captureOutOfRangeVar.capture())).thenReturn(VAR_IS_OUT_OF_RANGE);
       when(mockMessages.varPositionDuplicated(captureVars.capture())).thenReturn(VARIABLES_HAS_SAME_POSITION);
 
-      printfVariablesValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, MOCK_VARIABLES_VALIDATOR_DESCRIPTION, true, mockMessages);
+      printfVariablesValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, mockMessages);
+      printfVariablesValidation.setEnabled(true);
    }
 
    @Test

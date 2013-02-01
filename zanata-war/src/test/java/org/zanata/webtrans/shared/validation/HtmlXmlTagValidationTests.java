@@ -38,6 +38,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 
 /**
  *
@@ -72,7 +73,8 @@ public class HtmlXmlTagValidationTests
    public void init()
    {
       MockitoAnnotations.initMocks(this);
-      htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, MOCK_XML_HTML_VALIDATOR_DESCRIPTION, true, mockMessages);
+      htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, mockMessages);
+      htmlXmlTagValidation.setEnabled(true);
       when(mockMessages.tagsAdded(capturedTagsAdded.capture())).thenReturn(MOCK_TAGS_ADDED_MESSAGE);
       when(mockMessages.tagsMissing(capturedTagsMissing.capture())).thenReturn(MOCK_TAGS_MISSING_MESSAGE);
       when(mockMessages.tagsWrongOrder(capturedTagsOutOfOrder.capture())).thenReturn(MOCK_TAGS_OUT_OF_ORDER_MESSAGE);

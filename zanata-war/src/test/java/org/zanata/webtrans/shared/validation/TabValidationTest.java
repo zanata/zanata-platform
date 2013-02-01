@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.validation.TabValidation;
+import org.zanata.webtrans.shared.validation.action.TabValidation;
 
 @Test(groups = { "unit-tests" })
 public class TabValidationTest
@@ -47,7 +47,8 @@ public class TabValidationTest
    public void init()
    {
       messages = TestMessages.getInstance(ValidationMessages.class);
-      validation = new TabValidation(ValidationId.TAB, MOCK_TAB_VALIDATOR_DESCRIPTION, true, messages);
+      validation = new TabValidation(ValidationId.TAB, messages);
+      validation.setEnabled(true);
    }
 
    @Test

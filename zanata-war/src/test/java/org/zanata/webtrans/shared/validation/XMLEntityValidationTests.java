@@ -30,7 +30,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.validation.XmlEntityValidation;
+import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 /**
  * 
@@ -54,7 +54,8 @@ public class XMLEntityValidationTests
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, MOCK_ENTITY_VALIDATOR_DESCRIPTION, true, mockMessages);
+      xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, mockMessages);
+      xmlEntityValidation.setEnabled(true);
    }
 
    @Test

@@ -58,7 +58,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
-import org.zanata.webtrans.shared.model.ValidationRule;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HProject>
@@ -381,10 +380,5 @@ public class ProjectHome extends SlugHome<HProject>
    {
       HProjectIteration version = projectIterationDAO.getBySlug(getSlug(), versionSlug);
       return getInstance().getStatus() == EntityStatus.ACTIVE || version.getStatus() == EntityStatus.ACTIVE;
-   }
-
-   public List<ValidationRule> getValidationList()
-   {
-      return validationServiceImpl.getValidationRules();
    }
 }

@@ -18,10 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation;
+package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationActionInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.Splitter;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -32,7 +34,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class XmlEntityValidation extends AbstractValidation
+public class XmlEntityValidation extends AbstractValidationAction
 {
    // &amp;, &quot;
    private final static String charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
@@ -48,9 +50,9 @@ public class XmlEntityValidation extends AbstractValidation
 
    private final static String ENTITY_START_CHAR = "&";
 
-   public XmlEntityValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
+   public XmlEntityValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, desc, enabled, messages);
+      super(new ValidationActionInfo(id, null, false), messages);
    }
 
    @Override

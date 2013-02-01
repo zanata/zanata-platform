@@ -36,6 +36,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 
 /**
  *
@@ -64,7 +65,8 @@ public class JavaVariablesValidationTest
    public void init()
    {
       MockitoAnnotations.initMocks(this);
-      javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, MOCK_VARIABLES_VALIDATOR_DESCRIPTION, true, mockMessages);
+      javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, mockMessages);
+      javaVariablesValidation.setEnabled(true);
       when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
       when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
    }

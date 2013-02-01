@@ -5,6 +5,7 @@ package org.zanata.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -13,8 +14,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
+import org.zanata.webtrans.shared.model.ValidationActionInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationRule;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 /**
  * @author aeng
@@ -27,37 +29,37 @@ public class ValidationServiceImpl implements ValidationService
 {
    @In
    private ZanataMessages zanataMessages;
-
-   private List<ValidationRule> validationRules;
    
-   public void init()
-   {
-      validationRules = new ArrayList<ValidationRule>();
-      
-      ValidationRule htmlxmlValidation = new ValidationRule(ValidationId.HTML_XML, zanataMessages.getMessage("jsf.validation.htmlXmlValidator.desc"), true);
-      ValidationRule newlineLeadTrailValidation = new ValidationRule(ValidationId.NEW_LINE, zanataMessages.getMessage("jsf.validation.newlineValidator.desc"), true);
-      ValidationRule tabValidation = new ValidationRule(ValidationId.TAB, zanataMessages.getMessage("jsf.validation.tabValidator.desc"), true);
-      ValidationRule javaVariablesValidation = new ValidationRule(ValidationId.JAVA_VARIABLES, zanataMessages.getMessage("jsf.validation.javaVariablesValidator.desc"), true);
-      ValidationRule xmlEntityValidation = new ValidationRule(ValidationId.XML_ENTITY, zanataMessages.getMessage("jsf.validation.xmlEntityValidator.desc"), true);
-      ValidationRule printfVariablesValidation = new ValidationRule(ValidationId.PRINTF_VARIABLES, zanataMessages.getMessage("jsf.validation.printfVariablesValidator.desc"), true);
-      ValidationRule positionalPrintfValidation = new ValidationRule(ValidationId.PRINTF_XSI_EXTENSION, zanataMessages.getMessage("jsf.validation.printfXSIExtensionValidation.desc"), false);
+   private static final String DESC_KEY = ".desc";
 
-      printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
-      positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);
+   private List<ValidationActionInfo> execute()
+   {
+      List<ValidationActionInfo> validationIds = ValidationFactory.getAllValidationIds();
+//      List<ValidationId> enabledValidations = new ArrayList<ValidationId>();
       
-      validationRules.add(htmlxmlValidation);
-      validationRules.add(newlineLeadTrailValidation);
-      validationRules.add(tabValidation);
-      validationRules.add(printfVariablesValidation);
-      validationRules.add(positionalPrintfValidation);
-      validationRules.add(javaVariablesValidation);
-      validationRules.add(xmlEntityValidation);
+      //user DAO to get list of enabled validations
+      //loop through all validationIds list and set enabled
+      for(ValidationActionInfo actionInfo: validationIds)
+      {
+         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
+         actionInfo.setEnabled(true);
+//         if(enabledValidations.contains(entry.getKey()))
+//         {
+//            entry.setValue(true);
+//         }
+      }
+      return validationIds;
    }
    
    @Override
-   public List<ValidationRule> getValidationRules()
+   public List<ValidationActionInfo> getEnabledValidations(String projectSlug, String versionSlug)
    {
-      init();
-      return validationRules; 
+      return execute();
+   }
+
+   @Override
+   public List<ValidationActionInfo> getEnabledValidations(String projectSlug)
+   {
+      return execute();
    }
 }

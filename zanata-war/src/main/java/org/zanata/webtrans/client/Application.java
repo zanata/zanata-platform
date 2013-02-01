@@ -94,7 +94,7 @@ public class Application implements EntryPoint
             injector.getDispatcher().setUserWorkspaceContext(userWorkspaceContext);
             injector.getDispatcher().setEventBus(injector.getEventBus());
             injector.getUserConfig().setState( result.getStoredUserConfiguration() );
-            injector.getValidationService().setValidationRules(result.getValidationRules());
+            injector.getValidationService().setValidationRules(result.getValidations());
 
             startApp();
          }

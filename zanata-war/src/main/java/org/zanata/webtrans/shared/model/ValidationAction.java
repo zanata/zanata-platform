@@ -45,11 +45,11 @@ public interface ValidationAction
 
    void clearErrorMessage();
 
-   void setEnabled(boolean isEnabled);
-
    List<ValidationAction> getExclusiveValidations();
 
-   void setMessages(ValidationMessages messages);
+   void mutuallyExclusive(ValidationAction[] exclusiveValidations);
 
-   void copy(ValidationRule validationRule);
+   void setValidationInfo(ValidationActionInfo actionInfo);
+
+   void setEnabled(boolean isEnabled);
 }

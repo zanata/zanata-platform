@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,16 +38,10 @@ import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
-import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationRule;
-import org.zanata.webtrans.shared.validation.HtmlXmlTagValidation;
-import org.zanata.webtrans.shared.validation.JavaVariablesValidation;
-import org.zanata.webtrans.shared.validation.NewlineLeadTrailValidation;
-import org.zanata.webtrans.shared.validation.PrintfVariablesValidation;
-import org.zanata.webtrans.shared.validation.PrintfXSIExtensionValidation;
-import org.zanata.webtrans.shared.validation.TabValidation;
-import org.zanata.webtrans.shared.validation.XmlEntityValidation;
+import org.zanata.webtrans.shared.model.ValidationActionInfo;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -64,36 +57,19 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
 {
    private final EventBus eventBus;
    private final TableEditorMessages messages;
-   private final Map<ValidationId, ValidationAction> validationList;
+   private final ValidationMessages validationMessages;
+   private Map<ValidationId, ValidationAction> validationList;
 
    @Inject
    public ValidationService(final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages validationMessages)
    {
       this.eventBus = eventBus;
       this.messages = messages;
+      this.validationMessages = validationMessages;
 
       eventBus.addHandler(RunValidationEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
       eventBus.addHandler(DocumentSelectionEvent.getType(), this);
-
-      validationList = new HashMap<ValidationId, ValidationAction>();
-
-      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, null, false, validationMessages);
-      NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation(ValidationId.NEW_LINE, null, false, validationMessages);
-      TabValidation tabValidation = new TabValidation(ValidationId.TAB, null, false, validationMessages);
-      JavaVariablesValidation javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, null, false, validationMessages);
-      XmlEntityValidation xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, null, false, validationMessages);
-      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, null, false, validationMessages);
-      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, null, false, validationMessages);
-
-      validationList.put(htmlxmlValidation.getId(), htmlxmlValidation);
-      validationList.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);
-      validationList.put(tabValidation.getId(), tabValidation);
-      validationList.put(printfVariablesValidation.getId(), printfVariablesValidation);
-      validationList.put(positionalPrintfValidation.getId(), positionalPrintfValidation);
-      validationList.put(javaVariablesValidation.getId(), javaVariablesValidation);
-      validationList.put(xmlEntityValidation.getId(), xmlEntityValidation);
-
    }
 
    @Override
@@ -188,28 +164,15 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       }
    }
 
-   public void setValidationRules(List<ValidationRule> validationRules)
+   public void setValidationRules(List<ValidationActionInfo> validations)
    {
-      for (ValidationRule validationRule : validationRules)
+      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(validationMessages);
+      
+      for(ValidationActionInfo actionInfo : validations)
       {
-         if (validationList.containsKey(validationRule.getId()))
-         {
-            ValidationAction validationAction = validationList.get(validationRule.getId());
-            validationAction.copy(validationRule);
-
-            // copy exclusive validations
-            if (!validationRule.getExclusiveValidations().isEmpty())
-            {
-               for (ValidationRule exclusiveRule : validationRule.getExclusiveValidations())
-               {
-                  validationAction.getExclusiveValidations().clear();
-                  if (validationList.containsKey(exclusiveRule.getId()))
-                  {
-                     validationAction.getExclusiveValidations().add(validationList.get(exclusiveRule.getId()));
-                  }
-               }
-            }
-         }
+         validationMap.get(actionInfo.getId()).setValidationInfo(actionInfo);
       }
+      
+      this.validationList = validationMap;
    }
 }

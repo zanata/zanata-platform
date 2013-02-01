@@ -127,7 +127,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
       Identity identity = new Identity(editorClientId, person);
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);
-      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationResult.getValidationRules());
+      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationResult.getValidations());
    }
 
    protected String getHttpSessionId()

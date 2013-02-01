@@ -62,7 +62,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    {
       for (final ValidationAction validationAction : validationService.getValidationList())
       {
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId().getName(), validationAction.getDescription(), validationAction.isEnabled());
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId().getDisplayName(), validationAction.getDescription(), validationAction.isEnabled());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }
@@ -95,7 +95,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
             for (ValidationAction excluded : validationAction.getExclusiveValidations())
             {
                validationService.updateStatus(excluded.getId(), false);
-               display.changeValidationSelectorValue(excluded.getId().getName(), false);
+               display.changeValidationSelectorValue(excluded.getId().getDisplayName(), false);
             }
          }
       }

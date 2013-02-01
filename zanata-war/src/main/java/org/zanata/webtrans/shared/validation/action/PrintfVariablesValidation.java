@@ -18,13 +18,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation;
+package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationActionInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -35,7 +37,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class PrintfVariablesValidation extends AbstractValidation
+public class PrintfVariablesValidation extends AbstractValidationAction
 {
    private static final String GLOBAL_FLAG = "g";
 
@@ -43,9 +45,9 @@ public class PrintfVariablesValidation extends AbstractValidation
    // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
    private static final String VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
 
-   public PrintfVariablesValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
+   public PrintfVariablesValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, desc, enabled, messages);
+      super(new ValidationActionInfo(id, null, false), messages);
    }
 
    @Override

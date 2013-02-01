@@ -18,10 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation;
+package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationActionInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -32,11 +34,11 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class NewlineLeadTrailValidation extends AbstractValidation
+public class NewlineLeadTrailValidation extends AbstractValidationAction
 {
-   public NewlineLeadTrailValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
+   public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, desc, enabled, messages);
+      super(new ValidationActionInfo(id, null, false), messages);
    }
 
    private final static String leadNewlineRegex = "^\n";

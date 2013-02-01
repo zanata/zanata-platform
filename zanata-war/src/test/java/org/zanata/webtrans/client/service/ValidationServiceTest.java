@@ -1,11 +1,10 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Matchers.any;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationRule;
 
 import com.google.common.collect.Lists;
 
@@ -49,7 +47,7 @@ public class ValidationServiceTest
    @Mock
    private HasUpdateValidationWarning validationMessagePanel;
 
-   private ValidationRule validationRule;
+   private ValidationAction validationAction;
    @Mock
    private CachingDispatchAsync dispatcher;
 
@@ -57,12 +55,12 @@ public class ValidationServiceTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      validationRule = new ValidationRule(ValidationId.PRINTF_VARIABLES, "Description", true);
-      List<ValidationRule> validationRules = Lists.newArrayList();
-      validationRules.add(validationRule);
+//      validationAction = new ValidationAction(ValidationId.PRINTF_VARIABLES, "Description", true);
+      List<ValidationAction> validationRules = Lists.newArrayList();
+      validationRules.add(validationAction);
 
       service = new ValidationService(eventBus, messages, validationMessages);
-      service.setValidationRules(validationRules);
+//      service.setValidationRules(validationRules);
 
       when(messages.notifyValidationError()).thenReturn("validation error");
       verify(eventBus).addHandler(RunValidationEvent.getType(), service);

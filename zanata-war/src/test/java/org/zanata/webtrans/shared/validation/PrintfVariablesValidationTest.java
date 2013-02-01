@@ -30,7 +30,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.validation.PrintfVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -71,7 +71,8 @@ public class PrintfVariablesValidationTest
       when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
       when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
 
-      printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, MOCK_VARIABLES_VALIDATOR_DESCRIPTION, true, mockMessages);
+      printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES,mockMessages);
+      printfVariablesValidation.setEnabled(true);
    }
 
    @Test

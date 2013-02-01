@@ -1,4 +1,4 @@
-package org.zanata.webtrans.shared.validation;
+package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,9 +22,9 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
    // regex to find out whether the variable has position
    private static final RegExp POSITIONAL_REG_EXP = RegExp.compile("%(\\d+\\$)\\w+");
 
-   public PrintfXSIExtensionValidation(ValidationId id, String desc, boolean enabled, ValidationMessages messages)
+   public PrintfXSIExtensionValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, desc, enabled, messages);
+      super(id, messages);
    }
 
    @Override
