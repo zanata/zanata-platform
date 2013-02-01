@@ -6,6 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
 
 <ui:define name="page_title">#{projectIterationHome.instance.project.name} - Add Version</ui:define>
@@ -15,7 +16,7 @@
 	</s:fragment>
 	
 	 <s:fragment rendered="#{!projectIterationHome.isProjectActive()}">
-	 	<rich:spacer height="20px"/>
+	 	<richext:spacer height="20"/>
     	<span class="errors">#{projectIterationHome.instance.project.name} is not active.</span>
 	</s:fragment>
 </ui:define>

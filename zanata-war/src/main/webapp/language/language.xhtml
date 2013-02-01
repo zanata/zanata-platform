@@ -52,9 +52,9 @@
                     <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
                     <h:selectBooleanCheckbox value="#{member.coordinator}"
                         rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-                        <a4j:support event="onclick"
-                            ajaxSingle="true"
-                            reRender="threads"
+                        <a4j:ajax event="click"
+                            render="threads"
+                            execute="@this"
                             action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}">
@@ -95,7 +95,7 @@
         </h:form>
       </rich:panel>
 
-      <rich:modalPanel id="userAddPanel" width="530" height="420">
+      <rich:popupPanel id="userAddPanel" width="530" height="420">
         <f:subview id="personSearch">
           <h:form id="form">
             <h1>Find Users To Add</h1>
@@ -139,7 +139,7 @@
             </a4j:outputPanel>
           </a4j:region>
         </f:subview>
-      </rich:modalPanel>
+      </rich:popupPanel>
 
     </ui:define>
 

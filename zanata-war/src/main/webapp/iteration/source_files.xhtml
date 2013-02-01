@@ -7,6 +7,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:richext="http://java.sun.com/jsf/composite/richext"
                 template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="head">
@@ -31,6 +32,10 @@
                 #{rich:component('uploadDocPanel')}.hide();
                 return false;
             }
+
+            function focusNameFilterInput() {
+                #{rich:element('name_filter_input')}.focus();
+            }
         </script>
     </ui:define>
 
@@ -38,7 +43,7 @@
     <ui:define name="center_content">
         <h:form>
             <s:token allowMultiplePosts="true"/>
-            <rich:datascroller id="data_table_scroller" align="center" for="data_table"
+            <rich:dataScroller id="data_table_scroller" align="center" for="data_table"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
                 <f:facet name="next">
                     <h:outputText value="next" style="font-size: 0.8em"/>
@@ -46,8 +51,8 @@
                 <f:facet name="previous">
                     <h:outputText value="prev" style="font-size: 0.8em"/>
                 </f:facet>
-            </rich:datascroller>
-            <rich:spacer height="20"/>
+            </rich:dataScroller>
+            <richext:spacer height="20"/>
             <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
                           rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
             <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}"
@@ -68,9 +73,10 @@
                             <br/>
                             <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
                                          id="name_filter_input">
-                                <a4j:support event="onkeyup" reRender="data_table,data_table_scroller"
-                                             ignoreDupResponses="true" requestDelay="700"
-                                             focus="name_filter_input"/>
+                                <a4j:ajax event="keyup" render="data_table,data_table_scroller"
+                                             oncomplete="focusNameFilterInput()">
+                                    <a4j:attachQueue ignoreDupResponses="true" requestDelay="700" />
+                                </a4j:ajax>
                             </h:inputText>
                         </h:panelGroup>
                     </f:facet>
@@ -117,7 +123,7 @@
             </rich:dataTable>
         </h:form>
 
-        <rich:modalPanel id="downloadProgressPanel"
+        <rich:popupPanel id="downloadProgressPanel"
                          moveable="#{false}"
                          resizeable="#{false}"
                          autosized="#{true}">
@@ -153,7 +159,7 @@
                     </a4j:commandButton>
                 </div>
             </h:form>
-        </rich:modalPanel>
+        </rich:popupPanel>
 
 
     </ui:define>
@@ -173,7 +179,7 @@
         </rich:panel>
 
         <!-- uploads a new version of an existing source document -->
-        <rich:modalPanel id="uploadPanel"
+        <rich:popupPanel id="uploadPanel"
                          moveable="#{false}"
                          resizeable="#{false}"
                          autosized="#{true}"
@@ -202,10 +208,10 @@
                                      onclick="return hideUploadPanel();"/>
                 </div>
             </h:form>
-        </rich:modalPanel>
+        </rich:popupPanel>
 
         <!-- upload a new or existing source document (overwrites document with same name and path) -->
-        <rich:modalPanel id="uploadDocPanel"
+        <rich:popupPanel id="uploadDocPanel"
                          moveable="#{false}"
                          resizeable="#{false}"
                          autosized="#{true}"
@@ -237,7 +243,7 @@
                                      onclick="return hideDocUploadPanel();"/>
                 </div>
             </h:form>
-        </rich:modalPanel>
+        </rich:popupPanel>
 
     </ui:define>
 

@@ -24,9 +24,9 @@
                 <ui:define name="label">#{messages['jsf.Language']}</ui:define>
                 <h:panelGrid columns="3" border="0" cellpadding="0" cellspacing="0">
                     <h:inputText id="localeName" value="#{languageManagerAction.language}">
-                        <a4j:support event="onkeyup"
-                                     action="#{languageManagerAction.updateLanguage()}"
-                                     reRender="output,localeNameMssgs" />
+                        <a4j:ajax event="keyup"
+                                     listener="#{languageManagerAction.updateLanguage()}"
+                                     render="output,localeNameMssgs" />
                     </h:inputText>
                     <h:graphicImage value="/images/combo_box_arrow.png"
                                     onclick="#{rich:component('localeNameSuggestion')}.callSuggestion(true)"
@@ -45,20 +45,22 @@
                     </h:panelGroup>
 
                 </h:panelGrid>
-                <rich:suggestionbox id="localeNameSuggestion"
-                                    for="localeName" var="result"
-                                    suggestionAction="#{languageManagerAction.suggestLocales}"
-                                    width="300">
-                    <a4j:support event="onselect"
-                                 action="#{languageManagerAction.updateLanguage()}"
-                                 reRender="output,localeNameMssgs" />
+                <rich:autocomplete id="localeNameSuggestion"
+                                   mode="ajax"
+                                   var="result"
+                                   autocompleteMethod="#{languageManagerAction.suggestLocales}"
+                                   fetchValue="#{result.localeId}"
+                                   width="300">
+                    <a4j:ajax event="change"
+                                 listener="#{languageManagerAction.updateLanguage()}"
+                                 render="output,localeNameMssgs" />
                     <h:column>
                         <h:outputText value="#{result.localeId}"/>
                     </h:column>
                     <h:column>
                         <h:outputText value="#{result.retrieveDisplayName()}"/>
                     </h:column>
-                </rich:suggestionbox>
+                </rich:autocomplete>
             </s:decorate>
             <s:decorate id="enabledByDefaultField" template="display.xhtml">
                 <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>

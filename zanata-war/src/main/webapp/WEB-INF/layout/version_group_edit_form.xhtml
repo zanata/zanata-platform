@@ -17,7 +17,7 @@
                          id="slug" required="true"
                          value="#{versionGroupHome.instance.slug}"
                          valueChangeListener="#{versionGroupHome.verifySlugAvailable}">
-                <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
+                <a4j:ajax event="blur" render="slugField" execute="@this"/>
             </h:inputText>
              <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
 		     	<rich:tooltip>

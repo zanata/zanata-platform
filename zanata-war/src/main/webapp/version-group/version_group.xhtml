@@ -7,6 +7,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
     
 <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
@@ -76,9 +77,9 @@
   <rich:panel>
     <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
     <h:outputText rendered="#{empty versionGroupHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
-    <rich:dataList value="#{versionGroupHome.instance.maintainers.toArray()}" var="maintainer">
+    <rich:list value="#{versionGroupHome.instance.maintainers.toArray()}" var="maintainer">
       <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
-    </rich:dataList>
+    </rich:list>
   </rich:panel>
 
   <s:fragment rendered="#{versionGroupAction.isParamExists() and s:hasPermission(versionGroupHome.instance, 'update')}">
@@ -91,7 +92,7 @@
   </s:fragment>
  
  
-    <rich:modalPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
+    <rich:popupPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
             <h:form id="searchForm">
                 <h1>Find Project Version</h1>
@@ -126,7 +127,7 @@
                                 <f:facet name="header">
                                     <h:panelGroup>
                                         <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll}">
-                                            <a4j:support event="onchange" reRender="searchResults" action="#{versionGroupAction.selectAll()}"/>
+                                            <a4j:ajax event="change" render="searchResults" action="#{versionGroupAction.selectAll()}"/>
                                         </h:selectBooleanCheckbox>
                                     </h:panelGroup>
                                 </f:facet>
@@ -138,7 +139,7 @@
                             </rich:column>
                         </rich:dataTable>
                     </a4j:outputPanel>
-                    <rich:spacer height="5px" width="100%" />
+                    <richext:spacer height="5" />
                     <a4j:commandButton id="addSelectedBtn"
                                        value="#{messages['jsf.AddSelected']}"
                                        action="#{versionGroupAction.addSelected()}"
@@ -146,7 +147,7 @@
                 </h:form>
             </a4j:region>
         </f:subview>
-    </rich:modalPanel>
+    </rich:popupPanel>
 
 </ui:define>    
     

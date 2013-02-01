@@ -28,7 +28,7 @@
         function showAddMaintainer()
         {
         	#{rich:component('maintainerAddPanel')}.show();
-        	#{rich:element('input')}.focus();
+        	//#{rich:element('userNameAutoCompleteInput')}.focus();
         }
       </script>
       
@@ -65,7 +65,7 @@
       </s:fragment>
 
 
-        <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
+        <rich:popupPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
             <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
                 <h:form>
                     <h1>#{messages['jsf.AddProjectMaintainer']}</h1>
@@ -83,7 +83,7 @@
                 </h:form>
             </rich:panel>
 
-        </rich:modalPanel>
+        </rich:popupPanel>
     </ui:define>
     
   </ui:composition>
