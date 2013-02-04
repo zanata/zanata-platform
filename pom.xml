@@ -211,7 +211,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.1.1</version>
+				<version>1.2</version>
 				<executions>
 				  <execution>
 				    <id>enforce-banned-dependencies</id>
@@ -245,7 +245,7 @@
 				          </message>
 				          <banRepositories>true</banRepositories>
 				          <banPluginRepositories>true</banPluginRepositories>
-				          <allowedRepositories>
+				          <allowedRepositories combine.children="append">
 				            <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
 				          </allowedRepositories>
 				        </requireNoRepositories>
