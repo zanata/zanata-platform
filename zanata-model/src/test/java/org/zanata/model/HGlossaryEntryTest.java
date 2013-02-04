@@ -20,9 +20,10 @@
  */
 package org.zanata.model;
 
+import static org.testng.AssertJUnit.*;
+
 import java.util.Date;
 
-import org.junit.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
@@ -62,10 +63,10 @@ public class HGlossaryEntryTest
       // Glossary Term 1 - EN_US
       HLocale term1Locale = setupTerm(new Long(1), "TERM 1", LocaleId.EN_US, new Long(1));
 
-      Assert.assertEquals(1, entry.getGlossaryTerms().size());
-      Assert.assertEquals(true, entry.getGlossaryTerms().containsKey(term1Locale));
-      Assert.assertNotNull(entry.getGlossaryTerms().get(term1Locale));
-      Assert.assertEquals("TERM 1", entry.getGlossaryTerms().get(term1Locale).getContent());
+      assertEquals(1, entry.getGlossaryTerms().size());
+      assertEquals(true, entry.getGlossaryTerms().containsKey(term1Locale));
+      assertNotNull(entry.getGlossaryTerms().get(term1Locale));
+      assertEquals("TERM 1", entry.getGlossaryTerms().get(term1Locale).getContent());
    }
 
    @Test
@@ -79,10 +80,10 @@ public class HGlossaryEntryTest
       // Glossary Term 2 - DE
       HLocale term2Locale = setupTerm(new Long(2), "TERM 2", LocaleId.DE, new Long(2));
 
-      Assert.assertEquals(2, entry.getGlossaryTerms().size());
-      Assert.assertEquals(true, entry.getGlossaryTerms().containsKey(term2Locale));
-      Assert.assertNotNull(entry.getGlossaryTerms().get(term2Locale));
-      Assert.assertEquals("TERM 2", entry.getGlossaryTerms().get(term2Locale).getContent());
+      assertEquals(2, entry.getGlossaryTerms().size());
+      assertEquals(true, entry.getGlossaryTerms().containsKey(term2Locale));
+      assertNotNull(entry.getGlossaryTerms().get(term2Locale));
+      assertEquals("TERM 2", entry.getGlossaryTerms().get(term2Locale).getContent());
    }
 
    @Test
@@ -99,10 +100,10 @@ public class HGlossaryEntryTest
       // Glossary Term 3 - ES
       HLocale term3Locale = setupTerm(new Long(3), "TERM 3", LocaleId.ES, new Long(3));
 
-      Assert.assertEquals(3, entry.getGlossaryTerms().size());
-      Assert.assertEquals(true, entry.getGlossaryTerms().containsKey(term3Locale));
-      Assert.assertNotNull(entry.getGlossaryTerms().get(term3Locale));
-      Assert.assertEquals("TERM 3", entry.getGlossaryTerms().get(term3Locale).getContent());
+      assertEquals(3, entry.getGlossaryTerms().size());
+      assertEquals(true, entry.getGlossaryTerms().containsKey(term3Locale));
+      assertNotNull(entry.getGlossaryTerms().get(term3Locale));
+      assertEquals("TERM 3", entry.getGlossaryTerms().get(term3Locale).getContent());
    }
 
    @Test
@@ -121,8 +122,8 @@ public class HGlossaryEntryTest
 
       for (HLocale key : entry.getGlossaryTerms().keySet())
       {
-         Assert.assertTrue(entry.getGlossaryTerms().containsKey(key));
-         Assert.assertNotNull(entry.getGlossaryTerms().get(key));
+         assertTrue(entry.getGlossaryTerms().containsKey(key));
+         assertNotNull(entry.getGlossaryTerms().get(key));
       }
 
    }

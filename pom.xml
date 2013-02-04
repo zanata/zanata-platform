@@ -29,10 +29,12 @@
       <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
       <lucene.version>3.6.2</lucene.version>
       <seam.version>2.3.0.Final</seam.version>
+      <gwteventservice.version>1.2.1</gwteventservice.version>
+      <okapi.version>0.18</okapi.version>
 
       <zanata.api.version>2.1.1-SNAPSHOT</zanata.api.version>
-      <zanata.client.version>1.6.0</zanata.client.version>
-      <zanata.common.version>2.1.1</zanata.common.version>
+      <zanata.client.version>2.0.2-SNAPSHOT</zanata.client.version>
+      <zanata.common.version>2.1.2-SNAPSHOT</zanata.common.version>
 
 	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 	  <!-- see also the jboss7 profile below -->
@@ -147,8 +149,42 @@
 			<dependency>
 				<groupId>de.novanic.gwteventservice</groupId>
 				<artifactId>gwteventservice</artifactId>
-				<version>1.2.1</version>
+				<version>${gwteventservice.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>de.novanic.gwteventservice</groupId>
+				<artifactId>eventservice-rpc</artifactId>
+				<version>${gwteventservice.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.novanic.gwteventservice</groupId>
+				<artifactId>eventservice</artifactId>
+				<version>${gwteventservice.version}</version>
+			</dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-dtd</artifactId>
+            <version>${okapi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-openoffice</artifactId>
+            <version>${okapi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-plaintext</artifactId>
+            <version>${okapi.version}</version>
+        </dependency>
+
+        <dependency>
+          <groupId>net.sf.okapi</groupId>
+          <artifactId>okapi-core</artifactId>
+          <version>${okapi.version}</version>
+        </dependency>
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -198,12 +234,33 @@
 				<version>1.0_02.CR6</version>
 			</dependency>
 
+			<!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-bom</artifactId>
+				<version>${resteasy.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>bom</artifactId>
 				<version>${seam.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.seam</groupId>
+				<artifactId>jboss-seam</artifactId>
+				<version>${seam.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>junit</artifactId>
+						<groupId>junit</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
@@ -218,6 +275,15 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces</groupId>
+				<artifactId>richfaces-bom</artifactId>
+				<version>4.2.3.Final</version>
+				<scope>import</scope>
+				<type>pom</type>
+		</dependency>
+
           <!-- Solr dependencies -->
           <dependency>
               <groupId>org.apache.solr</groupId>
