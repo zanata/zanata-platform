@@ -38,6 +38,8 @@ import org.jboss.seam.web.ServletContexts;
  * parameter by adding child element
  * <code>&lt;param name="continue" value="#{userRedirect.encodedUrl}" /></code>
  * to the login page's {@code <page>} element in pages.xml
+ *
+ * TODO Use {@link org.jboss.seam.faces.Redirect} instead of this class (by extension or otherwise).
  */
 @Name("userRedirect")
 // TODO verify that SESSION scope will not persist this too long

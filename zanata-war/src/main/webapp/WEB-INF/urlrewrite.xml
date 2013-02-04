@@ -240,6 +240,8 @@
   </rule>
 
 
+  <!-- Rest Mappings -->
+
   <rule>
     <from casesensitive="true">^/rest/$</from>
     <to last="true">/rest/index.xrd</to>
