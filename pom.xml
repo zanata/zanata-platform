@@ -209,6 +209,32 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.1.1</version>
+				<executions>
+				  <execution>
+				    <id>enforce-banned-dependencies</id>
+				    <goals>
+				      <goal>enforce</goal>
+				    </goals>
+				    <configuration>
+				      <fail>true</fail>
+				      <rules>
+				        <bannedDependencies>
+				          <excludes>
+				            <!-- should use junit:junit v11+ -->
+				            <exclude>junit:junit-dep</exclude>
+				          </excludes>
+				          <searchTransitive>true</searchTransitive>
+				        </bannedDependencies>
+				      </rules>
+				    </configuration>
+				  </execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<useFile>false</useFile>
@@ -549,8 +575,8 @@
 		<dependencies>
 			<dependency>
 				<groupId>junit</groupId>
-				<artifactId>junit-dep</artifactId>
-				<version>4.8.2</version>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
                 <scope>test</scope>
 			</dependency>
 			<dependency>
