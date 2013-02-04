@@ -208,7 +208,7 @@
 	</context-param>
 
     <context-param>
-        <param-name>facelets.VIEW_MAPPINGS</param-name>
+        <param-name>javax.faces.FACELETS_VIEW_MAPPINGS</param-name>
         <param-value>*.xhtml</param-value>
     </context-param>
 
