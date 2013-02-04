@@ -378,6 +378,37 @@
 
 
    <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <id>enforce-no-repositories</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <fail>true</fail>
+                  <rules>
+                    <requireNoRepositories>
+                      <allowedRepositories>
+                        <allowedRepository>jboss-public-repository-group</allowedRepository>
+                        <allowedRepository>okapi-cloudbees-release</allowedRepository>
+                        <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
+                      </allowedRepositories>
+                      <allowedPluginRepositories>
+                        <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
+                        <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
+                      </allowedPluginRepositories>
+                    </requireNoRepositories>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+         </plugin>
+      </plugins>
       <pluginManagement>
          <plugins>
             <plugin>
