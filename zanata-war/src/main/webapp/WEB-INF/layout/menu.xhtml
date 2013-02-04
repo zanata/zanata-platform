@@ -104,9 +104,9 @@
 				</div>
 			</s:fragment> 
 			<s:fragment rendered="#{not identity.loggedIn}">
-				<s:link id="Sign_in" view="/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
+				<h:outputLink id="Sign_in" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
 					<span class="icon-login"/>#{messages['jsf.SignIn']}
-				</s:link>
+				</h:outputLink>
 			</s:fragment>
 		</li>
 	</ul>
