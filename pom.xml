@@ -435,10 +435,9 @@
                   <fail>true</fail>
                   <rules>
                     <requireNoRepositories>
-                      <allowedRepositories>
+                      <allowedRepositories combine.children="append">
                         <allowedRepository>jboss-public-repository-group</allowedRepository>
                         <allowedRepository>okapi-cloudbees-release</allowedRepository>
-                        <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
                       </allowedRepositories>
                       <allowedPluginRepositories>
                         <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
