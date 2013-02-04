@@ -1,4 +1,4 @@
-<a4j:form id="projectForm"
+<h:form id="projectForm"
           xmlns="http://www.w3.org/1999/xhtml"
           xmlns:s="http://jboss.org/schema/seam/taglib"
           xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -17,12 +17,12 @@
                          id="slug" required="true"
                          value="#{versionGroupHome.instance.slug}"
                          valueChangeListener="#{versionGroupHome.verifySlugAvailable}">
-                <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
+                <a4j:ajax event="blur" render="slugField" execute="@this"/>
             </h:inputText>
              <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
-		     	<rich:toolTip>
+		     	<rich:tooltip>
                     <em><code>#{messages['jsf.GroupIdExample']}</code></em>
-                </rich:toolTip>
+                </rich:tooltip>
 		     </s:span>
         </s:decorate>
 
@@ -64,4 +64,4 @@
                   action="#{versionGroupHome.cancel}"/>
     </div>
 
-</a4j:form>
+</h:form>

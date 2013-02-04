@@ -6,6 +6,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
 	template="../WEB-INF/layout/template.xhtml">
 
 
@@ -26,11 +27,12 @@
 
     <ui:define name="center_content">
         <ui:remove>
-            <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests -->
+            <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests
+                 TODO: Use JSF2 Flash Scope-->
         </ui:remove>
-        <a4j:outputPanel rendered="#{flash.hasAttribute('message')}">
+        <a4j:outputPanel rendered="#{flashScope.hasAttribute('message')}">
             <ul id="messages" class="message">
-                <li class="icon-info-circle-2 infomsg">#{flash.getAndClearAttribute('message')}</li>
+                <li class="icon-info-circle-2 infomsg">#{flashScope.getAndClearAttribute('message')}</li>
             </ul>
         </a4j:outputPanel>
 
@@ -38,7 +40,7 @@
             <ui:param name="regionId" value="langTableRegion"/>
         </ui:include>
 
-			<a4j:form>
+			<h:form>
 				<a4j:region id="langTableRegion">
 					<s:token allowMultiplePosts="true" />
 					
@@ -60,12 +62,12 @@
 								<f:param name="localeId" value="#{stats.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
 								<h:outputText value="#{stats.locale}" />
-								<rich:spacer width="5px"/>
+								<richext:spacer width="5"/>
 								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
 							</h:outputLink>
 							<s:fragment rendered="#{not identity.loggedIn}" >
 								<h:outputText value="#{stats.locale}" />
-								<rich:spacer width="5px"/>
+								<richext:spacer width="5"/>
 								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
 							</s:fragment>	
 						</rich:column>
@@ -96,7 +98,7 @@
 									<h:selectOneMenu id="statsOption" styleClass="headerInput" value="#{viewAllStatusAction.statsOption}">
 		                            	<f:selectItem itemLabel="#{messages['jsf.ByWords']}" itemValue="WORD"/>
 		                            	<f:selectItem itemLabel="#{messages['jsf.Message']}" itemValue="MESSAGE"/>
-										<a4j:support event="onchange" reRender="data_table" ajaxSingle="true" action="#{viewAllStatusAction.refreshStatistic}"/>
+										<a4j:ajax event="change" render="data_table" listener="#{viewAllStatusAction.refreshStatistic}"/>
 				        			</h:selectOneMenu>
 								</h:panelGroup>
 							</f:facet>
@@ -109,7 +111,7 @@
 	
 					</rich:dataTable>
 				</a4j:region>
-			</a4j:form>
+			</h:form>
 	</ui:define>
 
 	<ui:define name="right_content">
@@ -160,7 +162,7 @@
 			</ui:repeat>	
 		</rich:panel>
 		
-        <a4j:form>
+        <h:form>
             <ui:param name="pHandle" value="#{viewAllStatusAction.copyTransProcessHandle}"/>
             <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
             
@@ -198,11 +200,11 @@
                 </a4j:outputPanel>
             </a4j:outputPanel>
 
-        </a4j:form>
+        </h:form>
 
-        <rich:modalPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
+        <rich:popupPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
             <f:subview id="versionSearch">
-                <a4j:form>
+                <h:form>
                     <h1>Find Group</h1>
                     <p>
                         <h:inputText value="#{viewAllStatusAction.searchTerm}"
@@ -216,10 +218,10 @@
                                            onclick="#{rich:component('versionSearchPanel')}.hide(); return false;" />
 
                     </p>
-                </a4j:form>
+                </h:form>
                 <a4j:region>
                     <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-                    <a4j:form id="searchResults">
+                    <h:form id="searchResults">
                         <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
                         <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
                             <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
@@ -246,10 +248,10 @@
                                 </rich:column>
                             </rich:dataTable>
                         </a4j:outputPanel>
-                    </a4j:form>
+                    </h:form>
                 </a4j:region>
             </f:subview>
-        </rich:modalPanel>
+        </rich:popupPanel>
 	</ui:define>
 
 </ui:composition>

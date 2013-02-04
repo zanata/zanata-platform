@@ -40,10 +40,13 @@ import java.util.Map;
  * available until cleared from the conversation, or the conversation itself ends.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ *
+ * @deprecated This should be replaced by JSF2's flash scope implementation.
  */
-@Name("flash")
+@Name("flashScope")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
+@Deprecated
 public class FlashScopeBean implements Serializable
 {
    private Map<String, Object> attributes = new HashMap<String, Object>();

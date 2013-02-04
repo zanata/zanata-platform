@@ -120,7 +120,7 @@
 			</rich:dataTable>
 		</h:form>
 
-		<rich:modalPanel id="uploadPanel" moveable="#{true}"
+		<rich:popupPanel id="uploadPanel" moveable="#{true}"
 			resizeable="#{false}" autosized="#{true}">
 			<f:facet name="header">
 				<h:outputText value="#{messages['jsf.Upload']}" />
@@ -189,9 +189,9 @@
 						onclick="showLoading(false);hideUploadPanel();return false;" />
 				</div>
 			</h:form>
-		</rich:modalPanel>
+		</rich:popupPanel>
 		
-		<rich:modalPanel id="deletePanel" moveable="#{true}"
+		<rich:popupPanel id="deletePanel" moveable="#{true}"
 			resizeable="#{false}" autosized="#{true}">
 			<f:facet name="header">
 				<h:outputText value="#{messages['jsf.Delete']}" />
@@ -224,7 +224,7 @@
 						onclick="showDeleting(false);hideDeletePanel();return false;" />
 				</div>
 			</h:form>
-		</rich:modalPanel>
+		</rich:popupPanel>
 
 	</ui:define>
 

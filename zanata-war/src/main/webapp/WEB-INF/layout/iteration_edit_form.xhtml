@@ -1,4 +1,4 @@
-<a4j:form id="iterationForm"
+<h:form id="iterationForm"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:s="http://jboss.org/schema/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -6,8 +6,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
-    
->
+    xmlns:richext="http://java.sun.com/jsf/composite/richext">
 
     <s:token allowMultiplePosts="true" />
     <rich:panel>
@@ -18,7 +17,7 @@
                          id="slug" required="true"
                          value="#{projectIterationHome.instance.slug}" 
                          valueChangeListener="#{projectIterationHome.verifySlugAvailable}">
-              <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
+              <a4j:ajax event="blur" render="slugField" execute="@this"/>
             </h:inputText>
         </s:decorate>
         
@@ -45,7 +44,7 @@
 		<h:selectBooleanCheckbox
 		 title="overrideLocales"
 		  value="#{projectIterationLocaleAction.setting}" >
-			<a4j:support event="onchange" reRender="languagelist" />
+			<a4j:ajax event="change" render="languagelist" />
 		</h:selectBooleanCheckbox>
 		</a4j:region>
 		<h:outputText
@@ -54,7 +53,7 @@
 
 
 	<s:div id="languagelist">
-	<rich:spacer height="20px" />
+	<richext:spacer height="20" />
 	<a4j:region renderRegionOnly="true">
       	<h:panelGrid columns="3" id ="languagePanel" rendered="#{projectIterationLocaleAction.setting}">
 	    <h:outputText value="#{messages['jsf.AvailableLocales']}"/>
@@ -62,7 +61,7 @@
 	    <h:outputText value="#{messages['jsf.SelectedLocales']}"/>
             <h:selectManyListbox id ="languagelist2" value="#{projectIterationLocaleAction.availableList}" styleClass="language_list">
                 <f:selectItems value="#{iterationAvailableItems}"/>
-		<a4j:support event="ondblclick" reRender="languagePanel" action="#{projectIterationLocaleAction.toCustomizedLocales}"/>
+		<a4j:ajax event="dblclick" render="languagePanel" listener="#{projectIterationLocaleAction.toCustomizedLocales}"/>
             </h:selectManyListbox>
             <h:panelGroup id="buttons" styleClass="language_action_buttons">
                 <a4j:commandButton value="#{messages['jsf.AddLocale']}" action="#{projectIterationLocaleAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
@@ -70,7 +69,7 @@
             </h:panelGroup>
             <h:selectManyListbox id="languagelist1" value="#{projectIterationLocaleAction.customizedLocales}" styleClass="language_list" >
                 <f:selectItems value="#{projectIterationLocaleAction.iterationCustomizedItems}"/>
-		<a4j:support event="ondblclick" reRender="languagePanel" action="#{projectIterationLocaleAction.removeFromCustomizedLocales}"/>
+		<a4j:ajax event="dblclick" render="languagePanel" listener="#{projectIterationLocaleAction.removeFromCustomizedLocales}"/>
             </h:selectManyListbox>
       	</h:panelGrid>
 	</a4j:region>
@@ -91,4 +90,4 @@
                          action="#{projectIterationHome.cancel}"/>
     </div>
 
-</a4j:form>
+</h:form>

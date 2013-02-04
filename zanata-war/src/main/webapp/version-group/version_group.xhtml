@@ -7,6 +7,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
     
 <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
@@ -28,7 +29,7 @@
 </ui:define>
 
 <ui:define name="center_content">
-    <a4j:form>
+    <h:form>
     	<s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
@@ -51,7 +52,7 @@
                                    action="#{versionGroupAction.leaveVersionGroup(_iteration.id)}" reRender="iterationsDataTable, searchResults" />
             </rich:column>
         </rich:dataTable>
-    </a4j:form>
+    </h:form>
     
 </ui:define>
 
@@ -76,9 +77,9 @@
   <rich:panel>
     <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
     <h:outputText rendered="#{empty versionGroupHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
-    <rich:dataList value="#{versionGroupHome.instance.maintainers.toArray()}" var="maintainer">
+    <rich:list value="#{versionGroupHome.instance.maintainers.toArray()}" var="maintainer">
       <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
-    </rich:dataList>
+    </rich:list>
   </rich:panel>
 
   <s:fragment rendered="#{versionGroupAction.isParamExists() and s:hasPermission(versionGroupHome.instance, 'update')}">
@@ -91,9 +92,9 @@
   </s:fragment>
  
  
-    <rich:modalPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
+    <rich:popupPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
-            <a4j:form id="searchForm">
+            <h:form id="searchForm">
                 <h1>Find Project Version</h1>
                 <p>
                     <h:inputText id="searchField" value="#{versionGroupAction.searchTerm}"
@@ -107,9 +108,9 @@
                                      onclick="#{rich:component('versionAddPanel')}.hide(); return false;" />
 
                 </p>
-            </a4j:form>
+            </h:form>
             <a4j:region id="region">
-                <a4j:form id="searchResults">
+                <h:form id="searchResults">
                     <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <a4j:outputPanel  layout="block" style="overflow:auto;height:320px" rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable" value="#{versionGroupAction.searchResults}" var="selectableVersion">
@@ -126,7 +127,7 @@
                                 <f:facet name="header">
                                     <h:panelGroup>
                                         <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll}">
-                                            <a4j:support event="onchange" reRender="searchResults" action="#{versionGroupAction.selectAll()}"/>
+                                            <a4j:ajax event="change" render="searchResults" action="#{versionGroupAction.selectAll()}"/>
                                         </h:selectBooleanCheckbox>
                                     </h:panelGroup>
                                 </f:facet>
@@ -138,15 +139,15 @@
                             </rich:column>
                         </rich:dataTable>
                     </a4j:outputPanel>
-                    <rich:spacer height="5px" width="100%" />
+                    <richext:spacer height="5" />
                     <a4j:commandButton id="addSelectedBtn"
                                        value="#{messages['jsf.AddSelected']}"
                                        action="#{versionGroupAction.addSelected()}"
                                        reRender="searchResults, iterationsDataTable" styleClass="float-right"/>
-                </a4j:form>
+                </h:form>
             </a4j:region>
         </f:subview>
-    </rich:modalPanel>
+    </rich:popupPanel>
 
 </ui:define>    
     

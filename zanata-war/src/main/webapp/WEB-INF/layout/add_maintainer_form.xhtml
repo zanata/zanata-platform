@@ -27,13 +27,17 @@
         <s:decorate id="userField"
                     template="../layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-            <h:inputText id="input" value="#{accountSearch.maintainer}" size="40" onkeydown="return submitSearchOnEnter(event)"/>
-            <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input" nothingLabel="No results">
-            	<a4j:support event="onselect" action="#{accountSearch.update}" reRender="results"/>
+            <rich:autocomplete id="usernameAutocomplete"
+                               fetchValue="#{account.username}"
+                               value="#{accountSearch.maintainer}"
+                               mode="ajax"
+                               autocompleteMethod="#{accountSearch.search}"
+                               var="account">
+            	<a4j:ajax event="change" listener="#{accountSearch.update}" render="results" execute="@this"/>
                 <h:column>
                     <h:outputText value="#{account.username}"/>
                 </h:column>
-            </rich:suggestionbox>
+            </rich:autocomplete>
         </s:decorate>
     </h:panelGrid>
     <a4j:outputPanel id="results">

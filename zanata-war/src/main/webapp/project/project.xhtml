@@ -7,6 +7,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
 
 <ui:define name="page_title">#{projectHome.instance.name}</ui:define>
@@ -27,7 +28,7 @@
     </s:div>
 
    	<div class="iterations">
-   		<a4j:form>
+   		<h:form>
    		<rich:dataTable id="iterations" value="#{projectHome.versions}" var="_version">
             <rich:column sortBy="#{_version.slug}" id="column">
             	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
@@ -35,7 +36,7 @@
                  	<f:param name="projectSlug" value="#{projectHome.slug}"/>
                 	<f:param name="iterationSlug" value="#{_version.slug}"/>
                 	<s:fragment rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'ACTIVE'}">
-                		<rich:spacer width="20px"/>
+                		<richext:spacer width="20"/>
                 	</s:fragment>
                 	<h:outputText styleClass="icon-lock-4 readOnlyIcon" title="#{messages['jsf.ReadOnlyVersions']}" rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'READONLY'}"/>
             		<h:outputText styleClass="icon-block obsoleteIcon" title="#{messages['jsf.ObsoleteVersions']}" rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'OBSOLETE'}"/>
@@ -111,7 +112,7 @@
             </rich:column>
         </rich:dataTable>
         
-        </a4j:form>
+        </h:form>
    	</div>
     </s:decorate>
 </ui:define>
@@ -141,17 +142,17 @@
   <rich:panel>
     <f:facet name="header">#{messages['jsf.ProjectMaintainers']}</f:facet>
     <h:outputText rendered="#{empty projectHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
-    <rich:dataList value="#{projectHome.instance.maintainers.toArray()}" var="maintainer">
+    <rich:list value="#{projectHome.instance.maintainers.toArray()}" var="maintainer">
       <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
-    </rich:dataList>
+    </rich:list>
   </rich:panel>
 
   <rich:panel rendered="#{projectHome.instance.restrictedByRoles}">
     <f:facet name="header">#{messages['jsf.project.RoleRestrictions']}</f:facet>
     <h:outputText>#{messages['jsf.project.ProjectRestrictedToFollowingRoles']}</h:outputText><br/>
-    <rich:dataList value="#{projectHome.instance.allowedRoles.toArray()}" var="role">
+    <rich:list value="#{projectHome.instance.allowedRoles.toArray()}" var="role">
       <h:outputText value="#{role.name}"/>
-    </rich:dataList>
+    </rich:list>
   </rich:panel>
 
 </ui:define>

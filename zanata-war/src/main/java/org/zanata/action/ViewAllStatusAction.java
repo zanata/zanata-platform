@@ -102,7 +102,7 @@ public class ViewAllStatusAction implements Serializable
    CopyTransManager copyTransManager;
 
    @In
-   FlashScopeBean flash;
+   FlashScopeBean flashScope;
 
    private String iterationSlug;
 

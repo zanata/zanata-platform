@@ -23,9 +23,9 @@
         <ui:remove>
             <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests -->
         </ui:remove>
-        <a4j:outputPanel rendered="#{flash.hasAttribute('message')}">
+        <a4j:outputPanel rendered="#{flashScope.hasAttribute('message')}">
             <ul id="messages" class="message">
-                <li class="infomsg">#{flash.getAndClearAttribute('message')}</li>
+                <li class="infomsg">#{flashScope.getAndClearAttribute('message')}</li>
             </ul>
         </a4j:outputPanel>
 

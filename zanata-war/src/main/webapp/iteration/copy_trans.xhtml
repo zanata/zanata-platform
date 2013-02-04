@@ -53,7 +53,7 @@
         <!-- Simply needed to load jQuery -->
         <rich:jQuery query="jquery" />
 
-        <a4j:form>
+        <h:form>
             <a4j:outputPanel rendered="#{not copyTransAction.copyTransRunning}">
 
                 <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
@@ -61,7 +61,7 @@
                 <h:commandButton value="#{messages['jsf.Start']}" action="#{copyTransAction.startCopyTrans}"/>
                 <h:commandButton value="#{messages['jsf.Cancel']}" action="#{copyTransAction.cancel}"/>
             </a4j:outputPanel>
-        </a4j:form>
+        </h:form>
 
         <rich:panel rendered="#{copyTransAction.copyTransRunning}">
             <h:outputText value="#{messages['jsf.iteration.CopyTrans.AlreadyStarted']}" escape="false"/>

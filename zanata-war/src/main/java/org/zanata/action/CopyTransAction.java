@@ -49,7 +49,7 @@ public class CopyTransAction implements Serializable
    private CopyTransManager copyTransManager;
 
    @In
-   private FlashScopeBean flash;
+   private FlashScopeBean flashScope;
 
    @In
    private Map<String, String> messages;
@@ -112,12 +112,12 @@ public class CopyTransAction implements Serializable
    {
       if( isCopyTransRunning() )
       {
-         flash.setAttribute("message", messages.get("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
+         flashScope.setAttribute("message", messages.get("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
          return;
       }
       else if( getProjectIteration().getDocuments().size() <= 0 )
       {
-         flash.setAttribute("message", messages.get("jsf.iteration.CopyTrans.NoDocuments"));
+         flashScope.setAttribute("message", messages.get("jsf.iteration.CopyTrans.NoDocuments"));
          return;
       }
 
@@ -125,7 +125,7 @@ public class CopyTransAction implements Serializable
       HCopyTransOptions options = copyTransOptionsModel.getInstance();
 
       copyTransManager.startCopyTrans( getProjectIteration(), options );
-      flash.setAttribute("message", messages.get("jsf.iteration.CopyTrans.Started"));
+      flashScope.setAttribute("message", messages.get("jsf.iteration.CopyTrans.Started"));
    }
 
    public void cancel()
