@@ -23,6 +23,9 @@ package org.zanata.webtrans.shared.validation.action;
 import java.util.ArrayList;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -33,14 +36,13 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HtmlXmlTagValidation extends AbstractValidation
+public class HtmlXmlTagValidation extends AbstractValidationAction
 {
-   public HtmlXmlTagValidation(final ValidationMessages messages)
+   public HtmlXmlTagValidation(ValidationId id, ValidationMessages messages)
    {
-      super(messages.xmlHtmlValidatorName(), messages.xmlHtmlValidatorDescription(), true, messages);
+      super(new ValidationInfo(id, null, false), messages);
    }
 
-   // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
    private final static String tagRegex = "<[^>]+>";
 
    private final static RegExp regExp = RegExp.compile(tagRegex, "g");

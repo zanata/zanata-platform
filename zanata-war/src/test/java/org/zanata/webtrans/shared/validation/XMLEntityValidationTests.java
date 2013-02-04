@@ -29,6 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 /**
@@ -41,10 +42,6 @@ public class XMLEntityValidationTests
 {
    // TODO use TestMessages
 
-   // mock message strings
-   private static final String MOCK_ENTITY_VALIDATOR_NAME = "test xml entity validator name";
-   private static final String MOCK_ENTITY_VALIDATOR_DESCRIPTION = "test xml entity validator description";
-
    private XmlEntityValidation xmlEntityValidation;
 
    @Mock
@@ -54,22 +51,14 @@ public class XMLEntityValidationTests
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      when(mockMessages.xmlEntityValidatorName()).thenReturn(MOCK_ENTITY_VALIDATOR_NAME);
-      when(mockMessages.xmlEntityValidatorDescription()).thenReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION);
-
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
+      xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, mockMessages);
+      xmlEntityValidation.getValidationInfo().setEnabled(true);
    }
 
    @Test
    public void idIsSet()
    {
-      assertThat(xmlEntityValidation.getId(), Matchers.equalTo(MOCK_ENTITY_VALIDATOR_NAME));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      assertThat(xmlEntityValidation.getDescription(), Matchers.equalTo(MOCK_ENTITY_VALIDATOR_DESCRIPTION));
+      assertThat(xmlEntityValidation.getValidationInfo().getId(), Matchers.equalTo(ValidationId.XML_ENTITY));
    }
 
    @Test
@@ -100,7 +89,6 @@ public class XMLEntityValidationTests
       when(mockMessages.invalidXMLEntity("&mash")).thenReturn("Mock invalid messages");
       when(mockMessages.invalidXMLEntity("&test")).thenReturn("Mock invalid messages");
 
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &mash bla bla &test";
       xmlEntityValidation.validate(source, target);
@@ -115,7 +103,6 @@ public class XMLEntityValidationTests
       when(mockMessages.invalidXMLEntity("&#1234")).thenReturn("Mock invalid messages");
       when(mockMessages.invalidXMLEntity("&#BC;")).thenReturn("Mock invalid messages");
 
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &#1234 bla bla &#BC;";
       xmlEntityValidation.validate(source, target);
@@ -130,7 +117,6 @@ public class XMLEntityValidationTests
       when(mockMessages.invalidXMLEntity("&#x1234")).thenReturn("Mock invalid messages");
       when(mockMessages.invalidXMLEntity("&#x09Z")).thenReturn("Mock invalid messages");
 
-      xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &#x1234 bla bla &#x09Z";
       xmlEntityValidation.validate(source, target);

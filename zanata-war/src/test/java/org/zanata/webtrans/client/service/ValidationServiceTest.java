@@ -1,18 +1,17 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -23,10 +22,13 @@ import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
-import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 /**
@@ -35,27 +37,29 @@ import com.google.common.collect.Lists;
 @Test(groups = "unit-tests")
 public class ValidationServiceTest
 {
-   public static final String VAL_KEY = "a";
+   public static final ValidationId VAL_KEY = ValidationId.HTML_XML;
    private ValidationService service;
    @Mock
    private EventBus eventBus;
    @Mock
    private TableEditorMessages messages;
    @Mock
-   private HasUpdateValidationWarning validationMessagePanel;
+   private ValidationMessages validationMessages;
    @Mock
-   private ValidationObject validationObject;
+   private HasUpdateValidationWarning validationMessagePanel;
+
+   @Mock
+   private CachingDispatchAsync dispatcher;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
 
-      Map<String, ValidationObject> validationMap = ImmutableMap.<String, ValidationObject>builder().put(VAL_KEY, validationObject).build();
-      service = new ValidationService(eventBus, messages, validationMap);
+      service = new ValidationService(eventBus, messages, validationMessages);
+      service.setValidationRules(ValidationFactory.getAllValidationIds(true));
 
       when(messages.notifyValidationError()).thenReturn("validation error");
-
       verify(eventBus).addHandler(RunValidationEvent.getType(), service);
       verify(eventBus).addHandler(TransUnitSelectionEvent.getType(), service);
       verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
@@ -64,17 +68,14 @@ public class ValidationServiceTest
    @Test
    public void onValidate()
    {
+      when(validationMessages.varsAdded(isA(List.class))).thenReturn("Unexpected variable");
+
       RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
       event.addWidget(validationMessagePanel);
-      when(validationObject.isEnabled()).thenReturn(true);
-      ArrayList<String> errors = Lists.newArrayList("var added %s");
-      when(validationObject.getError()).thenReturn(errors);
+      ArrayList<String> errors = Lists.newArrayList("Unexpected variable");
 
       service.onValidate(event);
 
-      InOrder inOrder = Mockito.inOrder(validationObject);
-      inOrder.verify(validationObject).clearErrorMessage();
-      inOrder.verify(validationObject).validate("source", "target %s");
       verify(validationMessagePanel).updateValidationWarning(errors);
    }
 
@@ -105,7 +106,12 @@ public class ValidationServiceTest
    {
       service.clearAllMessage();
 
-      verify(validationObject).clearErrorMessage();
+      List<ValidationAction> validationList = service.getValidationList();
+
+      for (ValidationAction action : validationList)
+      {
+         assertThat(action.getError().size(), Matchers.equalTo(0));
+      }
    }
 
    @Test
@@ -113,16 +119,18 @@ public class ValidationServiceTest
    {
       service.updateStatus(VAL_KEY, false);
 
-      verify(validationObject).setEnabled(false);
+      ValidationAction validationAction = service.getValidationMap().get(VAL_KEY);
+
+      assertThat(validationAction.getValidationInfo().isEnabled(), Matchers.equalTo(false));
       verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
    }
 
    @Test
    public void canGetValidationList()
    {
-      List<ValidationObject> validationList = service.getValidationList();
-
-      assertThat(validationList, Matchers.contains(validationObject));
+      List<ValidationAction> validationList = service.getValidationList();
+      
+      assertThat(validationList.size(), Matchers.equalTo(7));
    }
 
 }

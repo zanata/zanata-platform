@@ -21,9 +21,11 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -32,9 +34,8 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class XmlEntityValidation extends AbstractValidation
+public class XmlEntityValidation extends AbstractValidationAction
 {
-
    // &amp;, &quot;
    private final static String charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
    private final static RegExp charRefExp = RegExp.compile(charRefRegex);
@@ -49,13 +50,9 @@ public class XmlEntityValidation extends AbstractValidation
 
    private final static String ENTITY_START_CHAR = "&";
 
-   // XML PREDEFINED ENTITY
-   // private final static String[] PRE_DEFINED_ENTITY = { "&quot;", "&amp;",
-   // "&apos;", "&lt;", "&gt;" };
-
-   public XmlEntityValidation(final ValidationMessages messages)
+   public XmlEntityValidation(ValidationId id, ValidationMessages messages)
    {
-      super(messages.xmlEntityValidatorName(), messages.xmlEntityValidatorDescription(), true, messages);
+      super(new ValidationInfo(id, null, false), messages);
    }
 
    @Override

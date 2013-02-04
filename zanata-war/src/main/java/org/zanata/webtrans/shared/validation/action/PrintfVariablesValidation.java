@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
+
 import com.google.common.collect.Lists;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -33,24 +37,17 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class PrintfVariablesValidation extends AbstractValidation
+public class PrintfVariablesValidation extends AbstractValidationAction
 {
-
    private static final String GLOBAL_FLAG = "g";
 
    // derived from translate toolkit printf style variable matching regex. See:
    // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
    private static final String VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
 
-
-   public PrintfVariablesValidation(final ValidationMessages messages)
+   public PrintfVariablesValidation(ValidationId id, ValidationMessages messages)
    {
-      super(messages.printfVariablesValidatorName(), messages.printfVariablesValidatorDescription(), true, messages);
-   }
-
-   protected PrintfVariablesValidation(String id, String description, boolean enabled, ValidationMessages messages)
-   {
-      super(id, description, enabled, messages);
+      super(new ValidationInfo(id, null, false), messages);
    }
 
    @Override

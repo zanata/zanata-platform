@@ -69,7 +69,8 @@ final class DummyGetTransUnitCommand implements Command
          ArrayList<String> sources = new ArrayList<String>();
          ArrayList<String> targets = new ArrayList<String>();
 
-         sources.add(i % 2 == 0 ? "\n<hellow \nnum=\"" + (i + 1) + "\" /> %s\n" : "\n<hellow \nnum=\"" + (i + 1) + "\" /> %s &amp; &RHEL; &quot;looooooooooooooooooooooooooooooooooooooonggggggggggggggggggggggggggggggggggggstringgggggggggggggggggggggggggggggggggggggg");
+         sources.add(i % 2 == 0 ? "\n<hellow \nnum=\"" + (i + 1) + "\" /> %s\n" : "\n<hellow \nnum=\"" + (i + 1) +
+          "\" /> %s &amp; &RHEL; &quot;looooooooooooooooooooooooooooooooooooooonggggggggggggggggggggggggggggggggggggstringgggggggggggggggggggggggggggggggggggggg");
          if (plural)
          {
             sources.add(i % 2 == 0 ? "\n<hellow \nnum=\"" + (i + 2) + "\" /> %s\n" : "\n<hellow \nnum=\"" + (i + 2) + "\" /> %s &amp; &RHEL; &quot;looooooooooooooooooooooooooooooooooooooonggggggggggggggggggggggggggggggggggggstringgggggggggggggggggggggggggggggggggggggg");

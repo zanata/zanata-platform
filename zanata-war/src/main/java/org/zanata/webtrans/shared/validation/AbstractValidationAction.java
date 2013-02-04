@@ -18,13 +18,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.shared.validation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationObject;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -34,23 +36,18 @@ import com.google.common.collect.Lists;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public abstract class AbstractValidation implements ValidationObject
+public abstract class AbstractValidationAction implements ValidationAction
 {
-   private String id;
-   private boolean isEnabled;
-   
-   private final String description;
+   private ValidationInfo validationActionInfo;
+
+   private ArrayList<String> errorList = new ArrayList<String>();
+   private ArrayList<ValidationObject> exclusiveValidations = new ArrayList<ValidationObject>();
 
    private ValidationMessages messages;
 
-   private List<String> errorList = Lists.newArrayList();
-   private List<ValidationObject> exclusiveValidations = Lists.newArrayList();
-
-   public AbstractValidation(String id, String description, boolean enabled, final ValidationMessages messages)
+   public AbstractValidationAction(ValidationInfo validationActionInfo, ValidationMessages messages)
    {
-      this.id = id;
-      this.description = description;
-      this.isEnabled = enabled;
+      this.validationActionInfo = validationActionInfo;
       this.messages = messages;
    }
 
@@ -63,47 +60,19 @@ public abstract class AbstractValidation implements ValidationObject
       }
    }
 
-   protected ValidationMessages getMessages()
-   {
-      return messages;
-   }
-
    protected abstract void doValidate(String source, String target);
 
-   @Override
-   public boolean isEnabled()
-   {
-      return isEnabled;
-   }
-
-   @Override
-   public void setEnabled(boolean isEnabled)
-   {
-      this.isEnabled = isEnabled;
-   }
-
-   @Override
-   public void mutuallyExclusive(ValidationObject... exclusiveValidations)
-   {
-      this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
-   }
 
    @Override
    public List<ValidationObject> getExclusiveValidations()
    {
       return exclusiveValidations;
    }
-
+   
    @Override
-   public String getId()
+   public void mutuallyExclusive(ValidationObject... exclusiveValidations)
    {
-      return id;
-   }
-
-   @Override
-   public String getDescription()
-   {
-      return description;
+      this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
    }
 
    @Override
@@ -128,6 +97,24 @@ public abstract class AbstractValidation implements ValidationObject
    {
       errorList.add(error);
    }
+   
+   protected ValidationMessages getMessages()
+   {
+      return messages;
+   }
+   
+   @Override
+   public void setValidationInfo(ValidationInfo actionInfo)
+   {
+      this.validationActionInfo = actionInfo;
+   }
+
+   @Override
+   public ValidationInfo getValidationInfo()
+   {
+      return validationActionInfo;
+   }
+
 }
 
 

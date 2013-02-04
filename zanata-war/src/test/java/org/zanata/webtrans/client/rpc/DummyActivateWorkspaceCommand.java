@@ -15,6 +15,7 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
@@ -41,8 +42,7 @@ public class DummyActivateWorkspaceCommand implements Command
       userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(1, "Dummy path/Dummy doc"), "Dummy doc", "Dummy path", LocaleId.EN_US, null, "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState()));
+      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), ValidationFactory.getAllValidationIds(true)));
       Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }
-
 }

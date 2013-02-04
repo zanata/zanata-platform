@@ -30,7 +30,6 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Throwables;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -95,6 +94,7 @@ public class Application implements EntryPoint
             injector.getDispatcher().setUserWorkspaceContext(userWorkspaceContext);
             injector.getDispatcher().setEventBus(injector.getEventBus());
             injector.getUserConfig().setState( result.getStoredUserConfiguration() );
+            injector.getValidationService().setValidationRules(result.getValidations());
 
             startApp();
          }

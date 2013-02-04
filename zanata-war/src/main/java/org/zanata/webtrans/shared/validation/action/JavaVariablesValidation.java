@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 /**
  * Checks for consistent java-style variables between two strings.
@@ -36,11 +39,11 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
  * @author David Mason, damason@redhat.com
  * @see http://docs.oracle.com/javase/1.4.2/docs/api/java/text/MessageFormat.html
  **/
-public class JavaVariablesValidation extends AbstractValidation
+public class JavaVariablesValidation extends AbstractValidationAction
 {
-   public JavaVariablesValidation(final ValidationMessages messages)
+   public JavaVariablesValidation(ValidationId id, ValidationMessages messages)
    {
-      super(messages.javaVariablesValidatorName(), messages.javaVariablesValidatorDescription(), true, messages);
+      super(new ValidationInfo(id, null, false), messages);
    }
 
    @Override

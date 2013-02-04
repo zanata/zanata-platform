@@ -29,6 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -49,8 +50,6 @@ public class PrintfVariablesValidationTest
 {
    // TODO use TestMessages
 
-   private static final String MOCK_VARIABLES_VALIDATOR_NAME = "test variable validator name";
-   private static final String MOCK_VARIABLES_VALIDATOR_DESCRIPTION = "test variable validator description";
    private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
    private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
 
@@ -67,32 +66,23 @@ public class PrintfVariablesValidationTest
    public void init()
    {
       MockitoAnnotations.initMocks(this);
+      
       when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
       when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
-      when(mockMessages.printfVariablesValidatorName()).thenReturn(MOCK_VARIABLES_VALIDATOR_NAME);
-      when(mockMessages.printfVariablesValidatorDescription()).thenReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION);
 
-      printfVariablesValidation = null;
+      printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES,mockMessages);
+      printfVariablesValidation.getValidationInfo().setEnabled(true);
    }
 
    @Test
    public void idIsSet()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
-      assertThat(printfVariablesValidation.getId(), is(MOCK_VARIABLES_VALIDATOR_NAME));
-   }
-
-   @Test
-   public void descriptionIsSet()
-   {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
-      assertThat(printfVariablesValidation.getDescription(), is(MOCK_VARIABLES_VALIDATOR_DESCRIPTION));
+      assertThat(printfVariablesValidation.getValidationInfo().getId(), is(ValidationId.PRINTF_VARIABLES));
    }
 
    @Test
    public void noErrorForMatchingVars()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with variable %1v and %2v";
       String target = "%2v and %1v included, order not relevant";
       printfVariablesValidation.validate(source, target);
@@ -104,7 +94,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void missingVarInTarget()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with variable %1v";
       String target = "Testing string with no variables";
       printfVariablesValidation.validate(source, target);
@@ -120,7 +109,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void missingVarsThroughoutTarget()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "%a variables in all parts %b of the string %c";
       String target = "Testing string with no variables";
       printfVariablesValidation.validate(source, target);
@@ -136,7 +124,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void addedVarInTarget()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with no variables";
       String target = "Testing string with variable %2$#x";
       printfVariablesValidation.validate(source, target);
@@ -152,7 +139,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void addedVarsThroughoutTarget()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with no variables";
       String target = "%1$-0lls variables in all parts %2$-0hs of the string %3$-0ls";
       printfVariablesValidation.validate(source, target);
@@ -168,7 +154,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void bothAddedAndMissingVars()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "String with %x and %y only, not z";
       String target = "String with %y and %z, not x";
       printfVariablesValidation.validate(source, target);
@@ -187,7 +172,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void substringVariablesDontMatch()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "%ll";
       String target = "%l %ll";
       printfVariablesValidation.validate(source, target);
@@ -204,8 +188,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void superstringVariablesDontMatch()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
-
       String source = "%l %ll";
       String target = "%ll";
       printfVariablesValidation.validate(source, target);
@@ -221,8 +203,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void superstringVariablesDontMatch2()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
-
       String source = "%z";
       String target = "%zz";
       printfVariablesValidation.validate(source, target);
@@ -238,7 +218,6 @@ public class PrintfVariablesValidationTest
    @Test
    public void checkWithRealWorldExamples()
    {
-      printfVariablesValidation = new PrintfVariablesValidation(mockMessages);
       // examples from strings in translate.zanata.org
       String source = "%s %d %-25s %r";
       String target = "no variables";

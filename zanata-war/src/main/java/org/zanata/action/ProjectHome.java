@@ -51,12 +51,14 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
-import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
+import org.zanata.service.ValidationService;
+import org.zanata.webtrans.shared.model.ValidationObject;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HProject>
@@ -78,6 +80,9 @@ public class ProjectHome extends SlugHome<HProject>
    
    @In
    private LocaleDAO localeDAO;
+
+   @In
+   private ValidationService validationServiceImpl;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -376,5 +381,10 @@ public class ProjectHome extends SlugHome<HProject>
    {
       HProjectIteration version = projectIterationDAO.getBySlug(getSlug(), versionSlug);
       return getInstance().getStatus() == EntityStatus.ACTIVE || version.getStatus() == EntityStatus.ACTIVE;
+   }
+
+   public List<ValidationObject> getValidationList(String projectSlug)
+   {
+      return validationServiceImpl.getValidations(projectSlug);
    }
 }

@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation;
+package org.zanata.webtrans.shared.model;
 
 import java.util.List;
 
@@ -27,25 +27,11 @@ import java.util.List;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public interface ValidationObject
+public interface ValidationAction extends ValidationObject
 {
-   String getId();
-
-   String getDescription();
-
-   boolean isEnabled();
-
-   boolean hasError();
-
    List<String> getError();
-
-   void validate(String source, String target);
 
    void clearErrorMessage();
 
-   void setEnabled(boolean isEnabled);
-
-   void mutuallyExclusive(ValidationObject... exclusiveValidations);
-
-   List<ValidationObject> getExclusiveValidations();
+   void setValidationInfo(ValidationInfo actionInfo);
 }

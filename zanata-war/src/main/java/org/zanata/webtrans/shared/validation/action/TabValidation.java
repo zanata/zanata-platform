@@ -21,14 +21,17 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.CharMatcher;
 
-public class TabValidation extends AbstractValidation
+public class TabValidation extends AbstractValidationAction
 {
-   public TabValidation(final ValidationMessages messages)
+   public TabValidation(ValidationId id, ValidationMessages messages)
    {
-      super(messages.tabValidatorName(), messages.tabValidatorDescription(), true, messages);
+      super(new ValidationInfo(id, null, false), messages);
    }
 
    @Override

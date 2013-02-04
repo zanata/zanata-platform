@@ -16,13 +16,6 @@ import com.google.gwt.i18n.client.Messages;
 public interface ValidationMessages extends Messages
 {
    // Newline validator
-
-   @DefaultMessage("Leading/trailing newline (\\n)")
-   String newlineValidatorName();
-
-   @DefaultMessage("Check for consistent leading and trailing newline (\\n)")
-   String newlineValidatorDescription();
-
    @DefaultMessage("Leading newline (\\n) is missing")
    String leadingNewlineMissing();
 
@@ -35,14 +28,11 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Unexpected trailing newline (\\n)")
    String trailingNewlineAdded();
 
-   // Tab validator
-   @DefaultMessage("Tab characters (\\t)")
-   String tabValidatorName();
-   @DefaultMessage("Check whether source and target have the same number of tabs")
-   String tabValidatorDescription();
 
+   // Tab validator
    @DefaultMessage("Target has fewer tabs (\\t) than source (source: {0}, target: {1})")
    String targetHasFewerTabs(int sourceTabs, int targetTabs);
+
    @DefaultMessage("Target has more tabs (\\t) than source (source: {0}, target: {1})")
    String targetHasMoreTabs(int sourceTabs, int targetTabs);
 
@@ -54,17 +44,6 @@ public interface ValidationMessages extends Messages
 
 
    // Printf variables validator
-
-   @DefaultMessage("Printf variables")
-   String printfVariablesValidatorName();
-
-   @DefaultMessage("Check that printf style (%x) variables are consistent")
-   String printfVariablesValidatorDescription();
-
-   // Printf variables validator with XSI extension (positional variables)
-   @DefaultMessage("Positional printf (XSI extension)")
-   String positionalPrintfVariablesValidatorName();
-
    @DefaultMessage("Variable {0} position is out of range")
    String varPositionOutOfRange(String var);
 
@@ -74,17 +53,8 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Variables have same position: {0,collection,string}")
    String varPositionDuplicated(Collection<String> vars);
 
-   @DefaultMessage("Check that positional printf style (%n$x) variables are consistent")
-   String positionalPrintfVariablesValidatorDescription();
 
    // Java variables validator
-
-   @DefaultMessage("Java variables")
-   String javaVariablesValidatorName();
-
-   @DefaultMessage("Check that java style ('{x}') variables are consistent")
-   String javaVariablesValidatorDescription();
-
    @Description("Lists variables that appear a different number of times between source and target strings")
    @DefaultMessage("Inconsistent count for variables: {0,list,string}")
    @AlternateMessage({ "one", "Inconsistent count for variable: {0,list,string}" })
@@ -100,7 +70,6 @@ public interface ValidationMessages extends Messages
 
 
    // Shared variables validator messages
-
    @Description("Lists the variables that are in the original string but have not been included in the target")
    @DefaultMessage("Missing variables: {0,list,string}")
    @AlternateMessage({ "one", "Missing variable: {0,list,string}" })
@@ -122,15 +91,7 @@ public interface ValidationMessages extends Messages
    String varsAddedQuoted(@PluralCount List<String> vars);
 
 
-
    // XHM/HTML tag validator
-
-   @DefaultMessage("XML/HTML tags")
-   String xmlHtmlValidatorName();
-
-   @DefaultMessage("Check that XML/HTML tags are consistent")
-   String xmlHtmlValidatorDescription();
-
    @Description("Lists the xml or html tags that are in the target but are not in the original string")
    @DefaultMessage("Unexpected tags: {0,list,string}")
    @AlternateMessage({ "one", "Unexpected tag: {0,list,string}" })
@@ -147,21 +108,6 @@ public interface ValidationMessages extends Messages
 
 
    //XML Entity validator
-
-   @DefaultMessage("XML entity reference")
-   String xmlEntityValidatorName();
-
-   @DefaultMessage("Check that XML entity are complete")
-   String xmlEntityValidatorDescription();
-
    @DefaultMessage("Invalid XML entity [ {0} ]")
    String invalidXMLEntity(String entity);
-   
-   @Description("List of XML entity in original string have not been included in the target")
-   @DefaultMessage("Missing entity: {0,list,string}")
-   String entityMissing(List<String> entities);
-
-   @DefaultMessage("Possible XML entity [ {0} ] does not match with pre-defined [ {1} ]")
-   String invalidPredefinedEnity(String word, String preDefinedEntity);
-
 }
