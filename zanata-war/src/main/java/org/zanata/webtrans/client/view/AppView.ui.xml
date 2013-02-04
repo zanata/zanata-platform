@@ -29,34 +29,12 @@
 			text-overflow:ellipsis;
 		}
 
-		.topPanel-Workspace a {
-			color: #0085CC;
-			font-weight: bold;
-			text-decoration: none;
-		}
-		
 		.translationStats {
 			width: 140px;
 			height: 1.2em;
 			color: #595959;
 			cursor:pointer;
 		}
-		
-		.divider {
-			color: #000000;
-			font-size:12px;
-		}
-        
-        .breadcrumbs-link {
-            cursor: pointer;
-            font-weight:bold;
-            color:#0085CC;
-        }
-        
-        .breadcrumbs-link:hover 
-        {
-			text-decoration:underline;
-        }
 		
 		.topMenuButton
 		{
@@ -70,7 +48,7 @@
             color:#0085CC;
 		}
 		
-		.breadcrumbs_display
+		.readonly_label
 		{
 			font-size:14px;
 			font-weight:bold;
@@ -104,15 +82,12 @@
 					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE" styleName="{style.fixedLayout}">
 						<g:cell>
 							<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-									<nobr>
-									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.breadcrumbs_display}"/>
-									<g:Anchor ui:field="projectLink" styleName="{style.breadcrumbs-link}"/>
-									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
-									<g:Anchor ui:field="versionLink" styleName="{style.breadcrumbs-link}"/>
-									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
-									<g:Anchor ui:field="versionFilesLink" styleName="{style.breadcrumbs-link}"/>
-									<g:InlineLabel styleName="icon-right-open {style.divider}"/>
-									<g:InlineLabel ui:field="selectedDocumentSpan" styleName="{style.breadcrumbs_display}"/>
+								<nobr>
+									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.readonly_label}"/>
+									<fui:Breadcrumb ui:field="projectLink" />
+									<fui:Breadcrumb ui:field="versionLink" />
+									<fui:Breadcrumb ui:field="filesLink" />
+									<fui:Breadcrumb ui:field="selectedDocumentSpan" />
 								</nobr>
 							</g:HTMLPanel>
 						</g:cell>

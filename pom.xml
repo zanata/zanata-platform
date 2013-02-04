@@ -35,6 +35,7 @@
       <zanata.api.version>2.1.1-SNAPSHOT</zanata.api.version>
       <zanata.client.version>2.0.2-SNAPSHOT</zanata.client.version>
       <zanata.common.version>2.1.2-SNAPSHOT</zanata.common.version>
+      <richfaces.version>3.3.3.Final</richfaces.version>
 
 	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 	  <!-- see also the jboss7 profile below -->

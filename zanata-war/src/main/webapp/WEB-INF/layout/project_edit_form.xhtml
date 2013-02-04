@@ -47,7 +47,7 @@
         </s:decorate>
 
         <s:decorate id="humanViewableSourceUrlField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.SourceUrlHumanReadable']}</ui:define>
+            <ui:define name="label">#{messages['jsf.viewSourceFiles']}</ui:define>
             <h:inputText id="humanViewableSourceUrl" required="false"
                          value="#{projectHome.instance.sourceViewURL}" style="width:400px;"/>
             <s:span styleClass="icon-info-circle-2 input_help" id="humanSourceUrlHelp">
@@ -58,7 +58,7 @@
         </s:decorate>
 
         <s:decorate id="machineReadableSourceUrlField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.SourceUrlMachineReadable']}</ui:define>
+            <ui:define name="label">#{messages['jsf.SourceCheckoutUrl']}</ui:define>
             <h:inputText id="machineReadableSourceUrl" required="false"
                          value="#{projectHome.instance.sourceCheckoutURL}" style="width:400px;"/>
             <s:span styleClass="icon-info-circle-2 input_help" id="machineSourceUrlHelp">

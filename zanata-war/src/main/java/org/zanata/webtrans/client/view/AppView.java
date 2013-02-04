@@ -26,9 +26,11 @@ import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.Breadcrumb;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -68,17 +70,17 @@ public class AppView extends Composite implements AppDisplay
    @UiField
    InlineLabel readOnlyLabel, keyShortcuts;
    
-   @UiField
-   InlineLabel selectedDocumentSpan;
+   @UiField(provided = true)
+   Breadcrumb selectedDocumentSpan;
    
-   @UiField
-   Anchor projectLink;
+   @UiField(provided = true)
+   Breadcrumb projectLink;
    
-   @UiField
-   Anchor versionLink;
+   @UiField(provided = true)
+   Breadcrumb versionLink;
    
-   @UiField
-   Anchor versionFilesLink;
+   @UiField(provided = true)
+   Breadcrumb filesLink;
 
    @UiField
    LayoutPanel sideMenuContainer, rootContainer, contentContainer;
@@ -101,7 +103,13 @@ public class AppView extends Composite implements AppDisplay
       // exception will be thrown at runtime
       translationStatsBar = new TransUnitCountBar(messages);
       translationStatsBar.setVisible(false); // hide until there is a value to
-                                             // display
+      
+      projectLink = new Breadcrumb(true, false, Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      versionLink = new Breadcrumb(false, false, Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      filesLink = new Breadcrumb(false, false, "");
+      // filesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+      selectedDocumentSpan = new Breadcrumb(false, true, "");
+      
       initWidget(uiBinder.createAndBindUi(this));
       
       readOnlyLabel.setText("[" + messages.readOnly() + "]");
@@ -114,9 +122,6 @@ public class AppView extends Composite implements AppDisplay
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
       
-      projectLink.setHref(Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      versionLink.setHref(Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      // versionFilesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
       
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
@@ -144,14 +149,17 @@ public class AppView extends Composite implements AppDisplay
       {
       case Documents:
          content.selectTab(DOCUMENT_VIEW);
+         selectedDocumentSpan.setVisible(false);
          setSelectedTab(documentListTab);
          break;
       case Search:
          content.selectTab(SEARCH_AND_REPLACE_VIEW);
+         selectedDocumentSpan.setVisible(true);
          setSelectedTab(searchAndReplaceTab);
          break;
       case Editor:
          content.selectTab(EDITOR_VIEW);
+         selectedDocumentSpan.setVisible(true);
          setSelectedTab(editorTab);
          break;
       }
@@ -179,9 +187,9 @@ public class AppView extends Composite implements AppDisplay
    }
 
    @Override
-   public void setVersionFilesLabel(String text)
+   public void setFilesLinkLabel(String text)
    {
-      versionFilesLink.setText(text);
+      filesLink.setText(text);
    }
 
    @Override
@@ -255,8 +263,8 @@ public class AppView extends Composite implements AppDisplay
       }
    }
 
-   @UiHandler("versionFilesLink")
-   public void onversionFilesLinkClick(ClickEvent event)
+   @UiHandler("filesLink")
+   public void onFilesLinkClick(ClickEvent event)
    {
       listener.onDocumentListClicked();
    }

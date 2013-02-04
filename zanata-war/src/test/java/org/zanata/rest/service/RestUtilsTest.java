@@ -13,6 +13,7 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 
+import org.jboss.resteasy.core.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
@@ -74,7 +75,7 @@ public class RestUtilsTest
          log.info("expect:" + testStr);
 
          messageBody = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
-         T unmarshall = restUtils.unmarshall(type, messageBody, MediaType.APPLICATION_XML_TYPE, null);
+         T unmarshall = restUtils.unmarshall(type, messageBody, MediaType.APPLICATION_XML_TYPE, new Headers<String>());
          Log.info("got:" + unmarshall.toString());
          assertThat(entity.toString(), is(testStr));
       }

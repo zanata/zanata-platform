@@ -141,7 +141,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
    public void getDocumentStatisticsXml() throws Exception
    {
       new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc//my/path/document.txt")
+            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
@@ -156,7 +156,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertJaxbUnmarshal(response, ContainerTranslationStatistics.class);
 
             ContainerTranslationStatistics stats = jaxbUnmarshal(response, ContainerTranslationStatistics.class);
-            assertThat(stats.getId(), is("/my/path/document.txt"));
+            assertThat(stats.getId(), is("my/path/document.txt"));
             assertThat(stats.getRefs().size(), greaterThan(0));
             assertThat(stats.getDetailedStats(), nullValue()); // No detailed stats
             assertThat(stats.getStats().size(), greaterThan(0));
@@ -178,7 +178,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
    public void getDocumentStatisticsXmlWithDetails() throws Exception
    {
       new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc//my/path/document.txt")
+            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
@@ -194,7 +194,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertJaxbUnmarshal(response, ContainerTranslationStatistics.class);
 
             ContainerTranslationStatistics stats = jaxbUnmarshal(response, ContainerTranslationStatistics.class);
-            assertThat(stats.getId(), is("/my/path/document.txt"));
+            assertThat(stats.getId(), is("my/path/document.txt"));
             assertThat(stats.getRefs().size(), greaterThan(0));
             //assertThat(stats.getDetailedStats().size(), greaterThan(0)); // No detailed stats (maybe later)
             assertThat(stats.getStats().size(), greaterThan(0));
@@ -303,7 +303,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
    public void getDocumentStatisticsJson() throws Exception
    {
       new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc//my/path/document.txt")
+            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
@@ -318,7 +318,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertJsonUnmarshal(response, ContainerTranslationStatistics.class);
 
             ContainerTranslationStatistics stats = jsonUnmarshal(response, ContainerTranslationStatistics.class);
-            assertThat(stats.getId(), is("/my/path/document.txt"));
+            assertThat(stats.getId(), is("my/path/document.txt"));
             assertThat(stats.getRefs().size(), greaterThan(0));
             assertThat(stats.getDetailedStats(), nullValue()); // No detailed stats
             assertThat(stats.getStats().size(), greaterThan(0));
@@ -340,7 +340,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
    public void getDocumentStatisticsJsonWithDetails() throws Exception
    {
       new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc//my/path/document.txt")
+            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
@@ -356,7 +356,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertJsonUnmarshal(response, ContainerTranslationStatistics.class);
 
             ContainerTranslationStatistics stats = jsonUnmarshal(response, ContainerTranslationStatistics.class);
-            assertThat(stats.getId(), is("/my/path/document.txt"));
+            assertThat(stats.getId(), is("my/path/document.txt"));
             assertThat(stats.getRefs().size(), greaterThan(0));
             //assertThat(stats.getDetailedStats().size(), greaterThan(0)); // No detailed stats (maybe later)
             assertThat(stats.getStats().size(), greaterThan(0));

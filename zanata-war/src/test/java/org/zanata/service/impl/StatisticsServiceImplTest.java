@@ -159,10 +159,10 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
    {
       StatisticsServiceImpl statisticsService = seam.autowire(StatisticsServiceImpl.class);
       ContainerTranslationStatistics stats =
-            statisticsService.getStatistics("sample-project", "1.0", "/my/path/document.txt", false, new String[]{});
+            statisticsService.getStatistics("sample-project", "1.0", "my/path/document.txt", false, new String[]{});
 
       // Make sure the id matches
-      assertThat(stats.getId(), is("/my/path/document.txt"));
+      assertThat(stats.getId(), is("my/path/document.txt"));
       // Make sure there are links
       assertThat(stats.getRefs().size(), greaterThan(0));
 
@@ -187,10 +187,10 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
 
       StatisticsServiceImpl statisticsService = seam.autowire(StatisticsServiceImpl.class);
       ContainerTranslationStatistics stats =
-            statisticsService.getStatistics("sample-project", "1.0", "/my/path/document.txt", true, locales);
+            statisticsService.getStatistics("sample-project", "1.0", "my/path/document.txt", true, locales);
 
       // Make sure the id matches
-      assertThat(stats.getId(), is("/my/path/document.txt"));
+      assertThat(stats.getId(), is("my/path/document.txt"));
       // Make sure there are links
       assertThat(stats.getRefs().size(), greaterThan(0));
 

@@ -421,9 +421,7 @@ public class FileService implements FileResource
 
    private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload) throws IOException
    {
-      Blob partContent;
-      byte[] fileData=ByteStreams.toByteArray(uploadForm.getFileStream());
-      partContent = session.getLobHelper().createBlob(fileData);
+      Blob partContent = session.getLobHelper().createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
       HDocumentUploadPart newPart = new HDocumentUploadPart();
       newPart.setContent(partContent);
       upload.getParts().add(newPart);
