@@ -27,11 +27,15 @@ import java.util.List;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public interface ValidationAction extends ValidationObject
+public interface ValidationObject
 {
-   List<String> getError();
+   boolean hasError();
 
-   void clearErrorMessage();
+   void validate(String source, String target);
 
-   void setValidationInfo(ValidationInfo actionInfo);
+   List<ValidationObject> getExclusiveValidations();
+
+   void mutuallyExclusive(ValidationObject[] exclusiveValidations);
+
+   ValidationInfo getValidationInfo();
 }

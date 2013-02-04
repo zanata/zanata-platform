@@ -4,6 +4,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.mockito.ArgumentCaptor;
@@ -15,7 +19,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.service.ValidationService;
+import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
+import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -37,9 +45,7 @@ public class ValidationOptionsPresenterTest
    @Mock
    private ValidationMessages validationMessage;
    @Mock
-   private HasValueChangeHandlers<Boolean> printfChangeHandler;
-   @Mock
-   private HasValueChangeHandlers<Boolean> positionalPrintfChangeHandler;
+   private HasValueChangeHandlers<Boolean> changeHandler;
    @Captor
    private ArgumentCaptor<ValueChangeHandler<Boolean>> valueChangeHandlerCaptor;
    @Mock
@@ -56,22 +62,24 @@ public class ValidationOptionsPresenterTest
    public void onBind()
    {
       // Given:
-      // List<ValidationObject> validationObjects =
-      // Lists.<ValidationObject>newArrayList(new
-      // PrintfVariablesValidation(validationMessage), new
-      // PrintfXSIExtensionValidation(validationMessage));
-      // when(validationService.getValidationList()).thenReturn(validationObjects);
+      List<ValidationAction> validationActions = new ArrayList<ValidationAction>(ValidationFactory.getAllValidationActions(validationMessage).values());
+      when(validationService.getValidationList()).thenReturn(validationActions);
 
-      when(display.addValidationSelector("printf", "printf description", true)).thenReturn(printfChangeHandler);
-      when(display.addValidationSelector("positional printf", "positional printf description", false)).thenReturn(positionalPrintfChangeHandler);
+      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), null, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), null, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), null, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), null, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), null, false)).thenReturn(changeHandler);
+
 
       // When:
       presenter.onBind();
 
       // Then:
-      verify(display, times(2)).addValidationSelector(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
-      verify(printfChangeHandler).addValueChangeHandler(valueChangeHandlerCaptor.capture());
-      verify(positionalPrintfChangeHandler).addValueChangeHandler(valueChangeHandlerCaptor.capture());
+      verify(display, times(7)).addValidationSelector(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
+      verify(changeHandler, times(7)).addValueChangeHandler(valueChangeHandlerCaptor.capture());
       verifyNoMoreInteractions(display);
    }
 
@@ -79,39 +87,32 @@ public class ValidationOptionsPresenterTest
    public void onValidationOptionValueChanged()
    {
       // Given: validation object has mutually exclusive validation object
-      // PrintfVariablesValidation printfVariablesValidation = new
-      // PrintfVariablesValidation(validationMessage);
-      // printfVariablesValidation.mutuallyExclusive(new
-      // PrintfXSIExtensionValidation(validationMessage));
-      // ValidationOptionsPresenter.ValidationOptionValueChangeHandler handler =
-      // presenter.new
-      // ValidationOptionValueChangeHandler(printfVariablesValidation);
+      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, validationMessage);
+      printfVariablesValidation.mutuallyExclusive(new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, validationMessage));
+      ValidationOptionsPresenter.ValidationOptionValueChangeHandler handler = presenter.new ValidationOptionValueChangeHandler(printfVariablesValidation);
 
       when(valueChangeEvent.getValue()).thenReturn(true);
 
       // When:
-      // handler.onValueChange(valueChangeEvent);
+      handler.onValueChange(valueChangeEvent);
 
       // Then:
       verify(validationService).updateStatus(ValidationId.PRINTF_VARIABLES, true);
       verify(validationService).updateStatus(ValidationId.PRINTF_XSI_EXTENSION, false);
-      verify(display).changeValidationSelectorValue("positional printf", false);
+      verify(display).changeValidationSelectorValue(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), false);
    }
 
    @Test
    public void onValidationOptionValueChangedWithoutMutualExclusiveValidator()
    {
       // Given: validation object has NO mutually exclusive validation object
-      // PrintfVariablesValidation printfVariablesValidation = new
-      // PrintfVariablesValidation(validationMessage);
-      // ValidationOptionsPresenter.ValidationOptionValueChangeHandler handler =
-      // presenter.new
-      // ValidationOptionValueChangeHandler(printfVariablesValidation);
+      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, validationMessage);
+      ValidationOptionsPresenter.ValidationOptionValueChangeHandler handler = presenter.new ValidationOptionValueChangeHandler(printfVariablesValidation);
 
       when(valueChangeEvent.getValue()).thenReturn(true);
 
       // When:
-      // handler.onValueChange(valueChangeEvent);
+      handler.onValueChange(valueChangeEvent);
 
       // Then:
       verify(validationService).updateStatus(ValidationId.PRINTF_VARIABLES, true);

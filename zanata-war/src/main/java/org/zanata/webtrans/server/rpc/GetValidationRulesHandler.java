@@ -50,7 +50,7 @@ public class GetValidationRulesHandler extends AbstractActionHandler<GetValidati
    @Override
    public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context) throws ActionException
    {
-      return new GetValidationRulesResult(validationServiceImpl.getEnabledValidations(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug()));
+      return new GetValidationRulesResult(validationServiceImpl.getValidationInfo(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug()));
    }
 
    @Override

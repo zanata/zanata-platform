@@ -7,17 +7,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class ValidationActionInfo implements IsSerializable
+public class ValidationInfo implements IsSerializable
 {
    private ValidationId id;
    private String description;
    private boolean enabled;
    
-   private ValidationActionInfo()
+   private ValidationInfo()
    {
    }
 
-   public ValidationActionInfo(ValidationId id, String description, boolean enabled)
+   public ValidationInfo(ValidationId id, String description, boolean enabled)
    {
       this.id = id;
       this.description = description;

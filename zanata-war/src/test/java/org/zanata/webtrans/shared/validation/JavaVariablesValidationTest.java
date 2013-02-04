@@ -65,7 +65,7 @@ public class JavaVariablesValidationTest
    {
       MockitoAnnotations.initMocks(this);
       javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, mockMessages);
-      javaVariablesValidation.setEnabled(true);
+      javaVariablesValidation.getValidationInfo().setEnabled(true);
       when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
       when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
    }
@@ -73,7 +73,7 @@ public class JavaVariablesValidationTest
    @Test
    public void idIsSet()
    {
-      assertThat(javaVariablesValidation.getId(), is(ValidationId.JAVA_VARIABLES));
+      assertThat(javaVariablesValidation.getValidationInfo().getId(), is(ValidationId.JAVA_VARIABLES));
    }
 
    @Test

@@ -26,8 +26,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationObject;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -62,7 +62,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    {
       for (final ValidationAction validationAction : validationService.getValidationList())
       {
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId().getDisplayName(), validationAction.getDescription(), validationAction.isEnabled());
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getValidationInfo().getId().getDisplayName(), validationAction.getValidationInfo().getDescription(), validationAction.getValidationInfo().isEnabled());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }
@@ -89,13 +89,13 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         validationService.updateStatus(validationAction.getId(), event.getValue());
+         validationService.updateStatus(validationAction.getValidationInfo().getId(), event.getValue());
          if (event.getValue())
          {
-            for (ValidationAction excluded : validationAction.getExclusiveValidations())
+            for (ValidationObject excluded : validationAction.getExclusiveValidations())
             {
-               validationService.updateStatus(excluded.getId(), false);
-               display.changeValidationSelectorValue(excluded.getId().getDisplayName(), false);
+               validationService.updateStatus(excluded.getValidationInfo().getId(), false);
+               display.changeValidationSelectorValue(excluded.getValidationInfo().getId().getDisplayName(), false);
             }
          }
       }

@@ -57,13 +57,13 @@ public class PrintfXSIExtensionValidationTest
       when(mockMessages.varPositionDuplicated(captureVars.capture())).thenReturn(VARIABLES_HAS_SAME_POSITION);
 
       printfVariablesValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, mockMessages);
-      printfVariablesValidation.setEnabled(true);
+      printfVariablesValidation.getValidationInfo().setEnabled(true);
    }
 
    @Test
    public void idAndDescriptionAreSet()
    {
-      assertThat(printfVariablesValidation.getId(), is(ValidationId.PRINTF_XSI_EXTENSION));
+      assertThat(printfVariablesValidation.getValidationInfo().getId(), is(ValidationId.PRINTF_XSI_EXTENSION));
    }
 
    @Test

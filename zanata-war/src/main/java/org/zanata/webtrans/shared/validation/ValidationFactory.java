@@ -10,8 +10,9 @@ import java.util.Map;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationActionInfo;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
@@ -20,23 +21,25 @@ import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation
 import org.zanata.webtrans.shared.validation.action.TabValidation;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
+
 /**
- * @author aeng
+ * 
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
 public final class ValidationFactory
 {
-   public static List<ValidationActionInfo> getAllValidationIds(boolean enabled)
+   public static List<ValidationInfo> getAllValidationIds(boolean enabled)
    {
-      List<ValidationActionInfo> validationIds = new ArrayList<ValidationActionInfo>();
+      List<ValidationInfo> validationIds = new ArrayList<ValidationInfo>();
 
-      validationIds.add(new ValidationActionInfo(ValidationId.HTML_XML, null, enabled));
-      validationIds.add(new ValidationActionInfo(ValidationId.NEW_LINE, null, enabled));
-      validationIds.add(new ValidationActionInfo(ValidationId.TAB, null, enabled));
-      validationIds.add(new ValidationActionInfo(ValidationId.JAVA_VARIABLES, null, enabled));
-      validationIds.add(new ValidationActionInfo(ValidationId.XML_ENTITY, null, enabled));
-      validationIds.add(new ValidationActionInfo(ValidationId.PRINTF_VARIABLES, null, enabled));
-      validationIds.add(new ValidationActionInfo(ValidationId.PRINTF_XSI_EXTENSION, null, false));
+      validationIds.add(new ValidationInfo(ValidationId.HTML_XML, null, enabled));
+      validationIds.add(new ValidationInfo(ValidationId.NEW_LINE, null, enabled));
+      validationIds.add(new ValidationInfo(ValidationId.TAB, null, enabled));
+      validationIds.add(new ValidationInfo(ValidationId.JAVA_VARIABLES, null, enabled));
+      validationIds.add(new ValidationInfo(ValidationId.XML_ENTITY, null, enabled));
+      validationIds.add(new ValidationInfo(ValidationId.PRINTF_VARIABLES, null, enabled));
+      validationIds.add(new ValidationInfo(ValidationId.PRINTF_XSI_EXTENSION, null, false));
 
       return validationIds;
    }
@@ -61,6 +64,15 @@ public final class ValidationFactory
       
       validationList.put(ValidationId.PRINTF_VARIABLES, printfVariablesValidation);
       validationList.put(ValidationId.PRINTF_XSI_EXTENSION, positionalPrintfValidation);
+
+      return validationList;
+   }
+
+   public static Map<ValidationId, ValidationObject> getAllValidationObject()
+   {
+      HashMap<ValidationId, ValidationObject> validationList = new HashMap<ValidationId, ValidationObject>();
+
+      validationList.putAll(getAllValidationActions(null));
 
       return validationList;
    }

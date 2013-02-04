@@ -53,13 +53,13 @@ public class NewlineLeadTrailValidationTests
    {
       messages = TestMessages.getInstance(ValidationMessages.class);
       newlineLeadTrailValidation = new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages);
-      newlineLeadTrailValidation.setEnabled(true);
+      newlineLeadTrailValidation.getValidationInfo().setEnabled(true);
    }
 
    @Test
    public void idIsSet()
    {
-      assertThat(newlineLeadTrailValidation.getId(), is(ValidationId.NEW_LINE));
+      assertThat(newlineLeadTrailValidation.getValidationInfo().getId(), is(ValidationId.NEW_LINE));
    }
 
    @Test

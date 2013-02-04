@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationActionInfo;
-import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationObject;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -38,14 +38,14 @@ import com.google.common.collect.Lists;
  **/
 public abstract class AbstractValidationAction implements ValidationAction
 {
-   private ValidationActionInfo validationActionInfo;
+   private ValidationInfo validationActionInfo;
 
    private ArrayList<String> errorList = new ArrayList<String>();
-   private ArrayList<ValidationAction> exclusiveValidations = new ArrayList<ValidationAction>();
+   private ArrayList<ValidationObject> exclusiveValidations = new ArrayList<ValidationObject>();
 
    private ValidationMessages messages;
 
-   public AbstractValidationAction(ValidationActionInfo validationActionInfo, ValidationMessages messages)
+   public AbstractValidationAction(ValidationInfo validationActionInfo, ValidationMessages messages)
    {
       this.validationActionInfo = validationActionInfo;
       this.messages = messages;
@@ -62,41 +62,17 @@ public abstract class AbstractValidationAction implements ValidationAction
 
    protected abstract void doValidate(String source, String target);
 
-   @Override
-   public boolean isEnabled()
-   {
-      return validationActionInfo.isEnabled();
-   }
-   
-   @Override
-   public void setEnabled(boolean isEnabled)
-   {
-      validationActionInfo.setEnabled(isEnabled);
-   }
-
 
    @Override
-   public List<ValidationAction> getExclusiveValidations()
+   public List<ValidationObject> getExclusiveValidations()
    {
       return exclusiveValidations;
    }
    
    @Override
-   public void mutuallyExclusive(ValidationAction... exclusiveValidations)
+   public void mutuallyExclusive(ValidationObject... exclusiveValidations)
    {
       this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
-   }
-
-   @Override
-   public ValidationId getId()
-   {
-      return validationActionInfo.getId();
-   }
-
-   @Override
-   public String getDescription()
-   {
-      return validationActionInfo.getDescription();
    }
 
    @Override
@@ -128,10 +104,17 @@ public abstract class AbstractValidationAction implements ValidationAction
    }
    
    @Override
-   public void setValidationInfo(ValidationActionInfo actionInfo)
+   public void setValidationInfo(ValidationInfo actionInfo)
    {
       this.validationActionInfo = actionInfo;
    }
+
+   @Override
+   public ValidationInfo getValidationInfo()
+   {
+      return validationActionInfo;
+   }
+
 }
 
 

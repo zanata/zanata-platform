@@ -52,13 +52,13 @@ public class XMLEntityValidationTests
    {
       MockitoAnnotations.initMocks(this);
       xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, mockMessages);
-      xmlEntityValidation.setEnabled(true);
+      xmlEntityValidation.getValidationInfo().setEnabled(true);
    }
 
    @Test
    public void idIsSet()
    {
-      assertThat(xmlEntityValidation.getId(), Matchers.equalTo(ValidationId.XML_ENTITY));
+      assertThat(xmlEntityValidation.getValidationInfo().getId(), Matchers.equalTo(ValidationId.XML_ENTITY));
    }
 
    @Test

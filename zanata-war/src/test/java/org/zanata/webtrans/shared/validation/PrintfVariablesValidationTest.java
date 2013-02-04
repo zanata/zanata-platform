@@ -71,13 +71,13 @@ public class PrintfVariablesValidationTest
       when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
 
       printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES,mockMessages);
-      printfVariablesValidation.setEnabled(true);
+      printfVariablesValidation.getValidationInfo().setEnabled(true);
    }
 
    @Test
    public void idIsSet()
    {
-      assertThat(printfVariablesValidation.getId(), is(ValidationId.PRINTF_VARIABLES));
+      assertThat(printfVariablesValidation.getValidationInfo().getId(), is(ValidationId.PRINTF_VARIABLES));
    }
 
    @Test

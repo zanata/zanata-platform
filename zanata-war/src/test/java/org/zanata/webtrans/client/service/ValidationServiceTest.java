@@ -121,7 +121,7 @@ public class ValidationServiceTest
 
       ValidationAction validationAction = service.getValidationMap().get(VAL_KEY);
 
-      assertThat(validationAction.isEnabled(), Matchers.equalTo(false));
+      assertThat(validationAction.getValidationInfo().isEnabled(), Matchers.equalTo(false));
       verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
    }
 

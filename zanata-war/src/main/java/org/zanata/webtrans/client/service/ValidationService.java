@@ -39,7 +39,7 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationActionInfo;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
@@ -101,7 +101,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
 
       for (ValidationAction validationAction : validationList.values())
       {
-         if (validationAction.isEnabled())
+         if (validationAction.getValidationInfo().isEnabled())
          {
             validationAction.clearErrorMessage();
             validationAction.validate(source, target);
@@ -121,7 +121,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
    public void updateStatus(ValidationId key, boolean isEnabled)
    {
       ValidationAction action = validationList.get(key);
-      action.setEnabled(isEnabled);
+      action.getValidationInfo().setEnabled(isEnabled);
 
       // request re-run validation with new options
       eventBus.fireEvent(RequestValidationEvent.EVENT);
@@ -164,11 +164,11 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       }
    }
 
-   public void setValidationRules(List<ValidationActionInfo> validations)
+   public void setValidationRules(List<ValidationInfo> validations)
    {
       Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(validationMessages);
       
-      for(ValidationActionInfo actionInfo : validations)
+      for (ValidationInfo actionInfo : validations)
       {
          validationMap.get(actionInfo.getId()).setValidationInfo(actionInfo);
       }

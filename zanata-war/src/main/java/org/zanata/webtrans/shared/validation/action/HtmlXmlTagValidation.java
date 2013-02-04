@@ -23,7 +23,7 @@ package org.zanata.webtrans.shared.validation.action;
 import java.util.ArrayList;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationActionInfo;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
@@ -40,7 +40,7 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
 {
    public HtmlXmlTagValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationActionInfo(id, null, false), messages);
+      super(new ValidationInfo(id, null, false), messages);
    }
 
    private final static String tagRegex = "<[^>]+>";

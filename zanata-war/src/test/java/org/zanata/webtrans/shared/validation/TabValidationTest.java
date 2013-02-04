@@ -46,13 +46,13 @@ public class TabValidationTest
    {
       messages = TestMessages.getInstance(ValidationMessages.class);
       validation = new TabValidation(ValidationId.TAB, messages);
-      validation.setEnabled(true);
+      validation.getValidationInfo().setEnabled(true);
    }
 
    @Test
    public void idIsSet()
    {
-      assertThat(validation.getId(), is(ValidationId.TAB));
+      assertThat(validation.getValidationInfo().getId(), is(ValidationId.TAB));
    }
 
    @Test

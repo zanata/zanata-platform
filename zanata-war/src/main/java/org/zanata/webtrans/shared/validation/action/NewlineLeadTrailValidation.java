@@ -21,7 +21,7 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationActionInfo;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
@@ -38,7 +38,7 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 {
    public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationActionInfo(id, null, false), messages);
+      super(new ValidationInfo(id, null, false), messages);
    }
 
    private final static String leadNewlineRegex = "^\n";

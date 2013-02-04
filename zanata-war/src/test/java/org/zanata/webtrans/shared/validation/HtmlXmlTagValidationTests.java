@@ -73,7 +73,7 @@ public class HtmlXmlTagValidationTests
    {
       MockitoAnnotations.initMocks(this);
       htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, mockMessages);
-      htmlXmlTagValidation.setEnabled(true);
+      htmlXmlTagValidation.getValidationInfo().setEnabled(true);
       when(mockMessages.tagsAdded(capturedTagsAdded.capture())).thenReturn(MOCK_TAGS_ADDED_MESSAGE);
       when(mockMessages.tagsMissing(capturedTagsMissing.capture())).thenReturn(MOCK_TAGS_MISSING_MESSAGE);
       when(mockMessages.tagsWrongOrder(capturedTagsOutOfOrder.capture())).thenReturn(MOCK_TAGS_OUT_OF_ORDER_MESSAGE);
@@ -82,7 +82,7 @@ public class HtmlXmlTagValidationTests
    @Test
    public void idIsSet()
    {
-      assertThat(htmlXmlTagValidation.getId(), is(ValidationId.HTML_XML));
+      assertThat(htmlXmlTagValidation.getValidationInfo().getId(), is(ValidationId.HTML_XML));
    }
 
    @Test

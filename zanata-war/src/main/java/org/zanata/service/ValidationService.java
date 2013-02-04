@@ -4,10 +4,9 @@
 package org.zanata.service;
 
 import java.util.List;
-import java.util.Map;
 
-import org.zanata.webtrans.shared.model.ValidationActionInfo;
-import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationObject;
 
 /**
  * @author aeng
@@ -23,7 +22,11 @@ public interface ValidationService
     * @return a map contains all validation objects.
     */
    
-   List<ValidationActionInfo> getEnabledValidations(String projectSlug);
+   List<ValidationInfo> getValidationInfo(String projectSlug);
    
-   List<ValidationActionInfo> getEnabledValidations(String projectSlug, String versionSlug);
+   List<ValidationInfo> getValidationInfo(String projectSlug, String versionSlug);
+
+   List<ValidationObject> getValidations(String projectSlug);
+
+   List<ValidationObject> getValidations(String projectSlug, String versionSlug);
 }
