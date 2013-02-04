@@ -231,6 +231,27 @@
 				      </rules>
 				    </configuration>
 				  </execution>
+				  <execution>
+				    <id>enforce-no-repositories</id>
+				    <goals>
+				      <goal>enforce</goal>
+				    </goals>
+				    <configuration>
+				      <fail>true</fail>
+				      <rules>
+				        <requireNoRepositories>
+				          <message>
+				            repositories in pom.xml are not allowed by Maven Central
+				          </message>
+				          <banRepositories>true</banRepositories>
+				          <banPluginRepositories>true</banPluginRepositories>
+				          <allowedRepositories>
+				            <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
+				          </allowedRepositories>
+				        </requireNoRepositories>
+				      </rules>
+				    </configuration>
+				  </execution>
 				</executions>
 			</plugin>
 
