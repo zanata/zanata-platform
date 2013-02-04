@@ -178,6 +178,15 @@
 				<version>1.0_02.CR6</version>
 			</dependency>
 
+			<!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-bom</artifactId>
+				<version>${resteasy.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>root</artifactId>
