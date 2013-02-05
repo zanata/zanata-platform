@@ -108,7 +108,7 @@ public class ProjectHome extends SlugHome<HProject>
 
    /* Outjected from ValidationOptionsAction */
    @In(required = false)
-   private Map<String, String> customizedValidations;
+   private Set<String> customizedValidations;
 
    @In
    private LocaleService localeServiceImpl;
@@ -362,15 +362,12 @@ public class ProjectHome extends SlugHome<HProject>
       if (overrideValidations != null)
       {
          getInstance().setOverrideValidations(overrideValidations);
-         if (!overrideValidations)
+         getInstance().getCustomizedValidations().clear();
+
+         if (overrideValidations)
          {
             getInstance().getCustomizedValidations().clear();
-         }
-         else if (customizedValidations != null)
-         {
-            Set<String> validations = validationServiceImpl.convertCustomizedValidations(customizedValidations);
-            getInstance().getCustomizedValidations().clear();
-            getInstance().getCustomizedValidations().addAll(validations);
+            getInstance().getCustomizedValidations().addAll(customizedValidations);
          }
       }
    }

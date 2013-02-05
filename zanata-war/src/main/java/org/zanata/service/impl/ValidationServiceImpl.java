@@ -3,7 +3,6 @@
  */
 package org.zanata.service.impl;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,16 +88,5 @@ public class ValidationServiceImpl implements ValidationService
          }
       }
       return validationMap;
-   }
-
-   @Override
-   public Set<String> convertCustomizedValidations(Map<String, String> customizedValidations)
-   {
-      Set<String> result = new HashSet<String>();
-      for (String valName : customizedValidations.values())
-      {
-         result.add(valName);
-      }
-      return result;
    }
 }

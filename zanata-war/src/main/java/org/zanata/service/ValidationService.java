@@ -5,7 +5,6 @@ package org.zanata.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
@@ -30,6 +29,4 @@ public interface ValidationService
    Map<ValidationId, ValidationObject> getValidationObject(String projectSlug);
    
    List<ValidationInfo> getValidationInfo(String projectSlug, String versionSlug);
-
-   Set<String> convertCustomizedValidations(Map<String, String> customizedValidations);
 }

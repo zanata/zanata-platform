@@ -554,8 +554,6 @@
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
     
-    <action execute="#{validationOptionsAction.initForProject()}"/>
-        
     <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">
         <param name="slug" value="#{projectHome.slug}" />

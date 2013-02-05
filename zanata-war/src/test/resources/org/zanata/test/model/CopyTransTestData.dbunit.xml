@@ -11,6 +11,7 @@
               homeContent=""
               name="Original Project"
               overrideLocales="FALSE"
+              overrideValidations="FALSE"
               restrictedByRoles="FALSE"
               status="A"
             />
@@ -102,6 +103,7 @@
               homeContent=""
               name="Different Project"
               overrideLocales="FALSE"
+              overrideValidations="FALSE"
               restrictedByRoles="FALSE"
               status="A"
             />

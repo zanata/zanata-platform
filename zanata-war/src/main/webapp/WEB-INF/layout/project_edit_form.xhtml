@@ -153,7 +153,7 @@
     
     <s:div>
 		<a4j:region>
-			<h:selectBooleanCheckbox id="validationOptions" value="#{validationOptionsAction.setting}" >
+			<h:selectBooleanCheckbox id="validationOptions" value="#{validationOptionsAction.overrideValidations}" >
 				<a4j:support event="onchange" reRender="validationOptionsList" />
 			</h:selectBooleanCheckbox>
 		</a4j:region>
@@ -164,26 +164,13 @@
 	<s:div id="validationOptionsList">
 	<rich:spacer height="20px" />
 	<a4j:region renderRegionOnly="true">
-      	<h:panelGrid columns="3" id ="validationOptionsPanel" rendered="#{validationOptionsAction.setting}">
-		    <h:outputText value="#{messages['jsf.AvailableValidationOptions']}"/>
-		    <h:outputText value=""/>
-		    <h:outputText value="#{messages['jsf.DefinedValidationOptions']}"/>
-        
-	        <h:selectManyListbox id ="validationList" value="#{validationOptionsAction.selectedList}" styleClass="language_list">
-	        	<f:selectItems value="#{validationOptionsAction.availableItems}"/>
-				<a4j:support event="ondblclick" reRender="validationOptionsPanel" action="#{validationOptionsAction.toDefinedList}"/>
-	        </h:selectManyListbox>
-            
-            <h:panelGroup id="validationOptionsButtons" styleClass="language_action_buttons">
-                <a4j:commandButton value="#{messages['jsf.AddLocale']}" action="#{validationOptionsAction.toDefinedList}" styleClass="language_action_button" reRender ="validationOptionsPanel" />
-                <a4j:commandButton value="#{messages['jsf.RemoveLocale']}" action="#{validationOptionsAction.removeFromDefinedList}" styleClass="language_action_button" reRender ="validationOptionsPanel" />
-            </h:panelGroup>
-            
-            <h:selectManyListbox id="validationList2" value="#{validationOptionsAction.definedList}" styleClass="language_list" >
-                <f:selectItems value="#{validationOptionsAction.customizedValidations}"/>
-				<a4j:support event="ondblclick" reRender="validationOptionsPanel" action="#{validationOptionsAction.removeFromDefinedList}"/>
-            </h:selectManyListbox>
-      	</h:panelGrid>
+	
+		 <rich:dataGrid value="#{validationOptionsAction.validationList}" var="validation" columns="3"
+                         rendered="#{validationOptionsAction.overrideValidations}">
+              <h:selectBooleanCheckbox value="#{validationOptionsAction.selectedValidations[validation.validationInfo.id.name()]}" title="#{validation.validationInfo.description}"/>
+              <h:outputLabel value="#{validation.validationInfo.id.displayName}" title="#{validation.validationInfo.description}"/>
+          </rich:dataGrid>
+      	
 	</a4j:region>
 	</s:div>
 

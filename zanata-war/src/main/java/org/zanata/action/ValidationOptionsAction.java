@@ -22,23 +22,23 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HProject;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 
 @Name("validationOptionsAction")
@@ -47,152 +47,71 @@ public class ValidationOptionsAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private List<String> definedList;
-   private List<String> selectedList;
-
-   private Map<String, String> availableItems;
-
-   @Out(required = false)
-   private Map<String, String> customizedValidations;
-
-   private Map<String, ValidationObject> globalList;
-
    @Out(required = false)
    private Boolean overrideValidations;
 
-   private boolean setting;
-
    @Logger
-   Log log;
+   private Log log;
 
    @In
-   ProjectDAO projectDAO;
+   private ValidationService validationServiceImpl;
+
+   @In(required = false)
+   private ProjectHome projectHome;
+
+   private Map<String, Boolean> selectedValidations;
 
    private String versionSlug;
 
    private String projectSlug;
 
-   @In
-   private ValidationService validationServiceImpl;
-
-   @Create
-   public void onCreate()
+   public List<ValidationObject> getValidationList()
    {
-      availableItems = new TreeMap<String, String>();
-      customizedValidations = new TreeMap<String, String>();
-      globalList = new TreeMap<String, ValidationObject>();
-      overrideValidations = null;
+      List<ValidationObject> result = new ArrayList<ValidationObject>();
+      Map<ValidationId, ValidationObject> validationMap = validationServiceImpl.getValidationObject(projectSlug);
+      
+      for (Map.Entry<ValidationId, ValidationObject> entry : validationMap.entrySet())
+      {
+         result.add(entry.getValue());
+      }
+
+      Collections.sort(result, new Comparator<ValidationObject>()
+      {
+         @Override
+         public int compare(ValidationObject o1, ValidationObject o2)
+         {
+            return o1.getValidationInfo().getId().getDisplayName().compareTo(o2.getValidationInfo().getId().getDisplayName());
+         }
+      });
+      return result;
    }
 
-   public void initForProject()
+   @Out(required = false)
+   public Set<String> getCustomizedValidations()
+   {
+      Set<String> customizedValidationSet = new HashSet<String>();
+      for (Map.Entry<String, Boolean> entry : getSelectedValidations().entrySet())
+      {
+         if (entry.getValue() == Boolean.TRUE)
+         {
+            customizedValidationSet.add(entry.getKey());
+         }
+      }
+      return customizedValidationSet;
+   }
+
+   public boolean getOverrideValidations()
    {
       if (overrideValidations == null)
       {
-         definedList = new ArrayList<String>();
-         selectedList = new ArrayList<String>();
-
-         Map<ValidationId, ValidationObject> validationMap = validationServiceImpl.getValidationObject(projectSlug);
-
-         for (Map.Entry<ValidationId, ValidationObject> entry : validationMap.entrySet())
-         {
-            ValidationInfo info = entry.getValue().getValidationInfo();
-            if (info.isEnabled())
-            {
-               customizedValidations.put(info.getId().getDisplayName(), info.getId().name());
-            }
-            else
-            {
-               availableItems.put(info.getId().getDisplayName(), info.getId().name());
-            }
-            globalList.put(info.getId().name(), entry.getValue());
-         }
+         overrideValidations = projectHome.getInstance().getOverrideValidations();
       }
+      return overrideValidations;
    }
 
-   public void toDefinedList()
+   public void setOverrideValidations(boolean overrideValidations)
    {
-      if (!selectedList.isEmpty())
-      {
-         for (String var : selectedList)
-         {
-            ValidationObject valObj = globalList.get(var);
-
-            // check and remove any exclusive validations
-            for (ValidationObject mutualObj : valObj.getExclusiveValidations())
-            {
-               ValidationId validationId = mutualObj.getValidationInfo().getId();
-               if (customizedValidations.containsKey(validationId.getDisplayName()))
-               {
-                  customizedValidations.remove(validationId.getDisplayName());
-                  availableItems.put(validationId.getDisplayName(), validationId.name());
-               }
-            }
-               
-            customizedValidations.put(valObj.getValidationInfo().getId().getDisplayName(), var);
-            availableItems.remove(valObj.getValidationInfo().getId().getDisplayName());
-         }
-      }
-   }
-
-   public void removeFromDefinedList()
-   {
-      if (!definedList.isEmpty())
-      {
-         for (String var : definedList)
-         {
-            ValidationInfo info = globalList.get(var).getValidationInfo();
-            customizedValidations.remove(info.getId().getDisplayName());
-            availableItems.put(info.getId().getDisplayName(), var);
-         }
-      }
-   }
-
-   public List<String> getDefinedList()
-   {
-      return definedList;
-   }
-
-   public void setDefinedList(List<String> definedList)
-   {
-      this.definedList = definedList;
-   }
-
-   public List<String> getSelectedList()
-   {
-      return selectedList;
-   }
-
-   public void setSelectedList(List<String> selectedList)
-   {
-      this.selectedList = selectedList;
-   }
-
-   public Map<String, String> getAvailableItems()
-   {
-      return availableItems;
-   }
-
-   public Map<String, String> getCustomizedValidations()
-   {
-      return customizedValidations;
-   }
-
-   public boolean getSetting()
-   {
-      if (overrideValidations == null)
-      {
-         HProject project = projectDAO.getBySlug(projectSlug);
-         setting = project.getOverrideValidations();
-
-         overrideValidations = new Boolean(setting);
-      }
-      return setting;
-   }
-
-   public void setSetting(boolean setting)
-   {
-      this.setting = setting;
-      overrideValidations = new Boolean(setting);
+      this.overrideValidations = overrideValidations;
    }
 
    public String getVersionSlug()
@@ -213,5 +132,23 @@ public class ValidationOptionsAction implements Serializable
    public void setProjectSlug(String projectSlug)
    {
       this.projectSlug = projectSlug;
+   }
+
+   public Map<String, Boolean> getSelectedValidations()
+   {
+      if(selectedValidations == null)
+      {
+         selectedValidations = new HashMap<String, Boolean>();
+         for (String val : projectHome.getInstance().getCustomizedValidations())
+         {
+            selectedValidations.put(val, true);
+         }
+      }
+      return selectedValidations;
+   }
+
+   public void setSelectedValidations(Map<String, Boolean> selectedValidations)
+   {
+      this.selectedValidations = selectedValidations;
    }
 }

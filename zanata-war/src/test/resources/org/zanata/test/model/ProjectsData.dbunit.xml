@@ -11,6 +11,7 @@
 		  name="Sample Project"
 		  overrideLocales="FALSE"
           restrictedByRoles="FALSE"
+          overrideValidations="FALSE"
 		  status="A"
 	    />
         <HProjectIteration id="1"
@@ -48,6 +49,7 @@
 			  homeContent=""
 			  name="Sample Retired Project"
 			  overrideLocales="FALSE"
+			  overrideValidations="FALSE"
               restrictedByRoles="FALSE"
 			  status="R"
 		    />
@@ -73,6 +75,7 @@
 			  homeContent=""
 			  name="Sample Obsolete Project"
 			  overrideLocales="FALSE"
+			  overrideValidations="FALSE"
               restrictedByRoles="FALSE"
 			  status="O"
 		    />
@@ -98,6 +101,7 @@
 			  homeContent=""
 			  name="Sample Current Project"
 			  overrideLocales="FALSE"
+			  overrideValidations="FALSE"
               restrictedByRoles="FALSE"
 			  status="A"
 		    />
