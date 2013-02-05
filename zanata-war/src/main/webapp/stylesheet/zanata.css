@@ -1008,11 +1008,11 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 	width: 300px;
 }
 
-.language_action_buttons {
+input.language_action_buttons {
 	
 }
 
-.language_action_button {
+input.language_action_button {
 	width: 70px;
 }
 /* -----------------------  End Customised Language list CSS  -------------------------*/

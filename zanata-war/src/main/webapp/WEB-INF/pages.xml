@@ -542,6 +542,7 @@
   <page view-id="/project/edit.xhtml" login-required="true">
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{localeListAction.slug}" />
+    <param name="slug" value="#{validationOptionsAction.projectSlug}" />
 
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
@@ -552,6 +553,8 @@
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
+    
+    <action execute="#{validationOptionsAction.initForProject()}"/>
         
     <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">

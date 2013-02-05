@@ -3,13 +3,19 @@
  */
 package org.zanata.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.HProject;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -30,9 +36,17 @@ public class ValidationServiceImpl implements ValidationService
    @In
    private ZanataMessages zanataMessages;
    
+   @In
+   private ProjectDAO projectDAO;
+
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
    private static final String DESC_KEY = ".desc";
 
-   private List<ValidationInfo> execute()
+
+   @Override
+   public List<ValidationInfo> getValidationInfo(String projectSlug, String versionSlug)
    {
       List<ValidationInfo> validationIds = ValidationFactory.getAllValidationIds(false);
 
@@ -56,30 +70,35 @@ public class ValidationServiceImpl implements ValidationService
       }
       return validationIds;
    }
-   
+
    @Override
-   public List<ValidationInfo> getValidationInfo(String projectSlug, String versionSlug)
+   public Map<ValidationId, ValidationObject> getValidationObject(String projectSlug)
    {
-      return execute();
+      Map<ValidationId, ValidationObject> validationMap = ValidationFactory.getAllValidationObject();
+      HProject project = projectDAO.getBySlug(projectSlug);
+      Set<String> enabledValidations = project.getCustomizedValidations();
+
+      for (Map.Entry<ValidationId, ValidationObject> entry : validationMap.entrySet())
+      {
+         ValidationInfo actionInfo = entry.getValue().getValidationInfo();
+
+         entry.getValue().getValidationInfo().setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
+         if (enabledValidations.contains(actionInfo.getId().name()))
+         {
+            actionInfo.setEnabled(true);
+         }
+      }
+      return validationMap;
    }
 
    @Override
-   public List<ValidationInfo> getValidationInfo(String projectSlug)
+   public Set<String> convertCustomizedValidations(Map<String, String> customizedValidations)
    {
-      return execute();
-   }
-
-   @Override
-   public List<ValidationObject> getValidations(String projectSlug)
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   @Override
-   public List<ValidationObject> getValidations(String projectSlug, String versionSlug)
-   {
-      // TODO Auto-generated method stub
-      return null;
+      Set<String> result = new HashSet<String>();
+      for (String valName : customizedValidations.values())
+      {
+         result.add(valName);
+      }
+      return result;
    }
 }
