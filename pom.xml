@@ -297,8 +297,6 @@
       <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>0.11.0</version>
-            <scope>provided</scope>
       </dependency>
       <dependency>
             <groupId>org.slf4j</groupId>
@@ -382,15 +380,30 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>1.1.1</version>
             <executions>
+              <execution>
+                <id>enforce-ban-duplicate-classes</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <banDuplicateClasses>
+                       <ignoreClasses combine.children="append">
+                          <!-- caused by Lombok (but fortunately lombok is "provided") -->
+                          <ignoreClass>com.sun.jna.*</ignoreClass>
+                       </ignoreClasses>
+                    </banDuplicateClasses>
+                  </rules>
+                </configuration>
+              </execution>
+
               <execution>
                 <id>enforce-no-repositories</id>
                 <goals>
                   <goal>enforce</goal>
                 </goals>
                 <configuration>
-                  <fail>true</fail>
                   <rules>
                     <requireNoRepositories>
                       <allowedRepositories combine.children="append">
