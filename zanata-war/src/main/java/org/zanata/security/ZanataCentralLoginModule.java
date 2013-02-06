@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
 import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -30,8 +29,9 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.jboss.seam.Component;
-import org.zanata.ApplicationConfiguration;
+import org.zanata.util.ZanataBasicConfig;
+
+import static org.zanata.util.ZanataBasicConfig.KEY_AUTH_POLICY;
 
 /**
  * This is a login module that works as a central dispatcher for all other configurable
@@ -65,13 +65,13 @@ public class ZanataCentralLoginModule implements LoginModule
       this.callbackHandler = callbackHandler;
       this.options = options;
 
-      // TODO USe JNDI variables to get this information
-      ApplicationConfiguration appConfig = (ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class);
+      // TODO Use JNDI variables to get this information
+      ZanataBasicConfig basicConfig = ZanataBasicConfig.getInstance();
 
-      internalAuthDomain = appConfig.getLoginModuleName(AuthenticationType.INTERNAL);
-      kerberosDomain = appConfig.getLoginModuleName(AuthenticationType.KERBEROS);
-      openIdDomain = appConfig.getLoginModuleName(AuthenticationType.OPENID);
-      jaasDomain = appConfig.getLoginModuleName(AuthenticationType.JAAS);
+      internalAuthDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.INTERNAL.name().toLowerCase());
+      kerberosDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.KERBEROS.name().toLowerCase());
+      openIdDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.OPENID.name().toLowerCase());
+      jaasDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.JAAS.name().toLowerCase());
    }
 
    @Override
@@ -84,6 +84,12 @@ public class ZanataCentralLoginModule implements LoginModule
       {
          callbackHandler.handle(new Callback[]{authTypeCallback});
       }
+      catch( UnsupportedCallbackException ucex )
+      {
+         // This happens on kerberos authentication
+         // NB: A custom callback handler could be configured on the app server to avoid this.
+         authTypeCallback.setAuthType( AuthenticationType.KERBEROS );
+      }
       catch (Exception e)
       {
          LoginException lex = new LoginException(e.getMessage());
@@ -91,10 +97,6 @@ public class ZanataCentralLoginModule implements LoginModule
          throw lex;
       }
       AuthenticationType authType = authTypeCallback.getAuthType();
-      if( !isAuthTypeValid(authType) )
-      {
-         throw new LoginException("Invalid Authentication type: " + authType + ". Please check your server configuration");
-      }
 
       String delegateName = null;
       switch (authType)
@@ -134,29 +136,5 @@ public class ZanataCentralLoginModule implements LoginModule
    public boolean logout() throws LoginException
    {
       return true;
-   }
-
-   private boolean isAuthTypeValid(AuthenticationType authType)
-   {
-      ApplicationConfiguration appConfig = (ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class);
-
-      if( appConfig.isInternalAuth() && authType == AuthenticationType.INTERNAL )
-      {
-         return true;
-      }
-      else if ( appConfig.isKerberosAuth() && authType == AuthenticationType.KERBEROS )
-      {
-         return true;
-      }
-      else if( appConfig.isOpenIdAuth() && authType == AuthenticationType.OPENID )
-      {
-         return true;
-      }
-      else if( appConfig.isJaasAuth() && authType == AuthenticationType.JAAS )
-      {
-         return true;
-      }
-
-      return false;
    }
 }
