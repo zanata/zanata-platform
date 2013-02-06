@@ -6,7 +6,7 @@
 
 	<!-- sso security -->
 
-	<!-- Kerberos only (also configurable on JBOSS_HOME/server/<config>/deployers/jbossweb.deployer/web.xml)
+	<!-- Kerberos only (also configurable on JBOSS_HOME/server/<config>/deployers/jbossweb.deployer/web.xml)-->
 	
 	<security-constraint>
 	    <web-resource-collection>
@@ -20,8 +20,10 @@
 	<login-config>
 	    <auth-method>SPNEGO</auth-method>
 	</login-config>
+    <security-role>
+        <role-name>*</role-name>
+    </security-role>
 
-	-->
 
 	<!-- RichFaces -->
 	<context-param>

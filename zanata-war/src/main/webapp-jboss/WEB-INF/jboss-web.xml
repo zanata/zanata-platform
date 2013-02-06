@@ -16,7 +16,11 @@ in case changes are required for production deployment (eg cfengine).
     </resource-ref>
  -->
 
-    <!--<security-domain>zanata</security-domain>-->
+    <security-domain>java:/jaas/SPNEGO</security-domain>
+    <valve>
+        <class-name>org.jboss.security.negotiation.NegotiationAuthenticator</class-name>
+    </valve>
+
 
 	<!-- This is where the webapp context root (eg /zanata or /) can be overridden: -->
     <!-- _context_root_ -->
