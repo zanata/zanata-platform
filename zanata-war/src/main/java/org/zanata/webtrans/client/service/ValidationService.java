@@ -39,8 +39,8 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.inject.Inject;
@@ -127,11 +127,6 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       eventBus.fireEvent(RequestValidationEvent.EVENT);
    }
 
-   public List<ValidationAction> getValidationList()
-   {
-      return new ArrayList<ValidationAction>(validationList.values());
-   }
-
    public Map<ValidationId, ValidationAction> getValidationMap()
    {
       return validationList;
@@ -164,6 +159,12 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       }
    }
 
+   /**
+    * Merge ValidationInfo from RPC result ValidationObject to all validation
+    * actions from ValidationFactory
+    * 
+    * @param validations
+    */
    public void setValidationRules(List<ValidationInfo> validations)
    {
       Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(validationMessages);

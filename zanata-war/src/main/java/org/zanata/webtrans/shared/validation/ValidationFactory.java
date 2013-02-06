@@ -3,14 +3,12 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
@@ -29,22 +27,24 @@ import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
  */
 public final class ValidationFactory
 {
-   public static List<ValidationInfo> getAllValidationIds(boolean enabled)
+
+   public static Comparator<ValidationObject> ObjectComparator = new Comparator<ValidationObject>()
    {
-      List<ValidationInfo> validationIds = new ArrayList<ValidationInfo>();
+      @Override
+      public int compare(ValidationObject o1, ValidationObject o2)
+      {
+         return o1.getValidationInfo().getId().getDisplayName().compareTo(o2.getValidationInfo().getId().getDisplayName());
+      }
+   };
 
-      validationIds.add(new ValidationInfo(ValidationId.HTML_XML, null, enabled));
-      validationIds.add(new ValidationInfo(ValidationId.NEW_LINE, null, enabled));
-      validationIds.add(new ValidationInfo(ValidationId.TAB, null, enabled));
-      validationIds.add(new ValidationInfo(ValidationId.JAVA_VARIABLES, null, enabled));
-      validationIds.add(new ValidationInfo(ValidationId.XML_ENTITY, null, enabled));
-      validationIds.add(new ValidationInfo(ValidationId.PRINTF_VARIABLES, null, enabled));
-      validationIds.add(new ValidationInfo(ValidationId.PRINTF_XSI_EXTENSION, null, false));
-
-      return validationIds;
-   }
-   
-   
+   /**
+    * Generate all Validation Actions with enabled = false
+    * 
+    * Used in client side (ValidationAction)
+    * 
+    * @param messages
+    * @return Map<ValidationId, ValidationAction>
+    */
    public static Map<ValidationId, ValidationAction> getAllValidationActions(ValidationMessages messages)
    {
       HashMap<ValidationId, ValidationAction> validationList = new HashMap<ValidationId, ValidationAction>();
@@ -68,6 +68,14 @@ public final class ValidationFactory
       return validationList;
    }
 
+   /**
+    * Generate all Validation Actions with enabled = false and
+    * ValidationMessages = null
+    * 
+    * Used on server side (ValidationObject)
+    * 
+    * @return Map<ValidationId, ValidationObject>
+    */
    public static Map<ValidationId, ValidationObject> getAllValidationObject()
    {
       HashMap<ValidationId, ValidationObject> validationList = new HashMap<ValidationId, ValidationObject>();

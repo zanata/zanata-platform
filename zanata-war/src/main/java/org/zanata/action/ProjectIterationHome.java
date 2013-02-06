@@ -26,6 +26,8 @@ import java.util.Set;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
@@ -39,8 +41,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Name("projectIterationHome")
 @Slf4j
@@ -59,6 +59,14 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
 
    @In(required = false)
    private Boolean iterationOverrideLocales;
+
+   /* Outjected from VersionValidationOptionsAction */
+   @In(required = false)
+   private Boolean versionOverrideValidations;
+
+   /* Outjected from VersionValidationOptionsAction */
+   @In(required = false)
+   private Set<String> versionCustomizedValidations;
 
    @In
    LocaleService localeServiceImpl;
@@ -142,6 +150,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
          return null;
 
       updateOverrideLocales();
+      updateOverrideValidations();
 
       return super.persist();
    }
@@ -172,6 +181,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    public String update()
    {
       updateOverrideLocales();
+      updateOverrideValidations();
       String state = super.update();
       Events.instance().raiseEvent(PROJECT_ITERATION_UPDATE, getInstance());
       return state;
@@ -196,6 +206,26 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
             Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(iterationCustomizedItems);
             getInstance().getCustomizedLocales().clear();
             getInstance().getCustomizedLocales().addAll(locale);
+         }
+      }
+   }
+
+   private void updateOverrideValidations()
+   {
+      if (versionOverrideValidations != null)
+      {
+         getInstance().setOverrideValidations(versionOverrideValidations);
+         getInstance().getCustomizedValidations().clear();
+
+         if (versionOverrideValidations)
+         {
+            getInstance().getCustomizedValidations().clear();
+            getInstance().getCustomizedValidations().addAll(versionCustomizedValidations);
+         }
+
+         if (versionCustomizedValidations.isEmpty())
+         {
+            getInstance().setOverrideValidations(false);
          }
       }
    }

@@ -102,11 +102,11 @@ public class ProjectHome extends SlugHome<HProject>
    @In(required = false)
    private Boolean restrictByRoles;
 
-   /* Outjected from ValidationOptionsAction */
+   /* Outjected from ProjectValidationOptionsAction */
    @In(required = false)
    private Boolean overrideValidations;
 
-   /* Outjected from ValidationOptionsAction */
+   /* Outjected from ProjectValidationOptionsAction */
    @In(required = false)
    private Set<String> customizedValidations;
 
@@ -368,6 +368,11 @@ public class ProjectHome extends SlugHome<HProject>
          {
             getInstance().getCustomizedValidations().clear();
             getInstance().getCustomizedValidations().addAll(customizedValidations);
+         }
+
+         if (customizedValidations.isEmpty())
+         {
+            getInstance().setOverrideValidations(false);
          }
       }
    }

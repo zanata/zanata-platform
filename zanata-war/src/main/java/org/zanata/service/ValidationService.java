@@ -3,11 +3,10 @@
  */
 package org.zanata.service;
 
-import java.util.List;
+import java.util.Comparator;
 import java.util.Map;
 
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 
 
@@ -19,14 +18,29 @@ import org.zanata.webtrans.shared.model.ValidationObject;
 public interface ValidationService
 {
    /**
-    * a list contains all validation rules.
+    * Return all ValidationObjects with enabled=true on those which are
+    * customized to the project
     * 
-    * @see org.zanata.webtrans.client.service.ValidationService
-    * @param valMessages Validation messages
-    * @return a map contains all validation objects.
+    * @param projectSlug
+    * @return
     */
-   
    Map<ValidationId, ValidationObject> getValidationObject(String projectSlug);
    
-   List<ValidationInfo> getValidationInfo(String projectSlug, String versionSlug);
+
+   /**
+    * Return all ValidationObjects with enabled=true on those which are
+    * customized to the version
+    * 
+    * @param projectSlug
+    * @param versionSlug
+    * @return
+    */
+   Map<ValidationId, ValidationObject> getValidationObject(String projectSlug, String versionSlug);
+
+   /**
+    * Return comparator
+    * 
+    * @return
+    */
+   Comparator<ValidationObject> getObjectComparator();
 }

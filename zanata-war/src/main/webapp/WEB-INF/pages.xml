@@ -542,7 +542,7 @@
   <page view-id="/project/edit.xhtml" login-required="true">
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{localeListAction.slug}" />
-    <param name="slug" value="#{validationOptionsAction.projectSlug}" />
+    <param name="slug" value="#{projectValidationOptionsAction.projectSlug}" />
 
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
@@ -711,12 +711,14 @@
   <page view-id="/iteration/edit.xhtml">
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <param name="slug" value="#{versionValidationOptionsAction.versionSlug}" />
+    <param name="projectSlug" value="#{versionValidationOptionsAction.projectSlug}" />
    
     <action execute="#{projectIterationHome.validateSuppliedId}" />
     <!-- can't use <restrict> here either -->
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/lists', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationHome.projectSlug), projectIterationHome.instance.project.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationHome.projectSlug).concat('/').concat(projectIterationHome.slug), projectIterationHome.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditVersion'])}"/>

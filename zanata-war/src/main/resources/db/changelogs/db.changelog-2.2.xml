@@ -67,5 +67,29 @@
         </addColumn>
     </changeSet>
     
+    <changeSet id="6" author="alex.eng@redhat.com">
+        <comment>Add HProjectIteration_Validation table.</comment>
+        <createTable tableName="HProjectIteration_Validation">
+            <column name="projectIterationId" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="validation" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addPrimaryKey tableName = "HProjectIteration_Validation" 
+			columnNames = "projectIterationId, validation"/>
+        <addForeignKeyConstraint constraintName="FK_HProjectIteration_Validation_HProjectIteration" 
+			referencedTableName="HProjectIteration" referencedColumnNames="id"
+			baseTableName="HProjectIteration_Validation" baseColumnNames="projectIterationId"/>
+    </changeSet>
+    
+     <changeSet id="7" author="alex.eng@redhat.com">
+        <comment>Add overrideValidations column to HProjectIteration</comment>
+        <addColumn tableName="HProjectIteration">
+            <column name="overrideValidations" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+    
 
 </databaseChangeLog>

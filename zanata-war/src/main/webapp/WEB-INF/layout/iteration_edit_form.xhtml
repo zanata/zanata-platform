@@ -49,7 +49,7 @@
 		</h:selectBooleanCheckbox>
 		</a4j:region>
 		<h:outputText
-		  value="Would you like to add a customized list of locales?"/>
+		  value="#{messages['jsf.customizedLocaleMessage']}"/>
 	</s:div>
 
 
@@ -75,6 +75,30 @@
       	</h:panelGrid>
 	</a4j:region>
 	</s:div>
+	
+	<s:div>
+		<a4j:region>
+			<h:selectBooleanCheckbox id="validationOptions" value="#{versionValidationOptionsAction.versionOverrideValidations}" >
+				<a4j:support event="onchange" reRender="validationOptionsList" />
+			</h:selectBooleanCheckbox>
+		</a4j:region>
+		<h:outputText value="#{messages['jsf.customizedValidationMessage']}"/>
+	</s:div>
+
+
+	<s:div id="validationOptionsList">
+	<rich:spacer height="20px" />
+	<a4j:region renderRegionOnly="true">
+	
+		 <rich:dataGrid value="#{versionValidationOptionsAction.validationList}" var="validation" columns="3"
+                         rendered="#{versionValidationOptionsAction.versionOverrideValidations}">
+              <h:selectBooleanCheckbox value="#{versionValidationOptionsAction.selectedValidations[validation.validationInfo.id.name()]}" title="#{validation.validationInfo.description}"/>
+              <h:outputLabel value="#{validation.validationInfo.id.displayName}" title="#{validation.validationInfo.description}"/>
+          </rich:dataGrid>
+      	
+	</a4j:region>
+	</s:div>
+	
 
 
     <div class="actionButtons">

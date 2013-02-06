@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,14 +40,14 @@ import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationObject;
 
-@Name("validationOptionsAction")
+@Name("versionValidationOptionsAction")
 @Scope(ScopeType.PAGE)
-public class ValidationOptionsAction implements Serializable
+public class VersionValidationOptionsAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
    @Out(required = false)
-   private Boolean overrideValidations;
+   private Boolean versionOverrideValidations;
 
    @Logger
    private Log log;
@@ -57,7 +56,7 @@ public class ValidationOptionsAction implements Serializable
    private ValidationService validationServiceImpl;
 
    @In(required = false)
-   private ProjectHome projectHome;
+   private ProjectIterationHome projectIterationHome;
 
    private Map<String, Boolean> selectedValidations;
 
@@ -68,26 +67,19 @@ public class ValidationOptionsAction implements Serializable
    public List<ValidationObject> getValidationList()
    {
       List<ValidationObject> result = new ArrayList<ValidationObject>();
-      Map<ValidationId, ValidationObject> validationMap = validationServiceImpl.getValidationObject(projectSlug);
+      Map<ValidationId, ValidationObject> validationMap = validationServiceImpl.getValidationObject(projectSlug, versionSlug);
       
       for (Map.Entry<ValidationId, ValidationObject> entry : validationMap.entrySet())
       {
          result.add(entry.getValue());
       }
 
-      Collections.sort(result, new Comparator<ValidationObject>()
-      {
-         @Override
-         public int compare(ValidationObject o1, ValidationObject o2)
-         {
-            return o1.getValidationInfo().getId().getDisplayName().compareTo(o2.getValidationInfo().getId().getDisplayName());
-         }
-      });
+      Collections.sort(result, validationServiceImpl.getObjectComparator());
       return result;
    }
 
    @Out(required = false)
-   public Set<String> getCustomizedValidations()
+   public Set<String> getVersionCustomizedValidations()
    {
       Set<String> customizedValidationSet = new HashSet<String>();
       for (Map.Entry<String, Boolean> entry : getSelectedValidations().entrySet())
@@ -100,18 +92,18 @@ public class ValidationOptionsAction implements Serializable
       return customizedValidationSet;
    }
 
-   public boolean getOverrideValidations()
+   public boolean getVersionOverrideValidations()
    {
-      if (overrideValidations == null)
+      if (versionOverrideValidations == null)
       {
-         overrideValidations = projectHome.getInstance().getOverrideValidations();
+         versionOverrideValidations = projectIterationHome.getInstance().getOverrideValidations();
       }
-      return overrideValidations;
+      return versionOverrideValidations;
    }
 
-   public void setOverrideValidations(boolean overrideValidations)
+   public void setVersionOverrideValidations(boolean versionOverrideValidations)
    {
-      this.overrideValidations = overrideValidations;
+      this.versionOverrideValidations = versionOverrideValidations;
    }
 
    public String getVersionSlug()
@@ -136,12 +128,22 @@ public class ValidationOptionsAction implements Serializable
 
    public Map<String, Boolean> getSelectedValidations()
    {
-      if(selectedValidations == null)
+      if (selectedValidations == null)
       {
          selectedValidations = new HashMap<String, Boolean>();
-         for (String val : projectHome.getInstance().getCustomizedValidations())
+         if (!projectIterationHome.getInstance().getCustomizedValidations().isEmpty())
          {
-            selectedValidations.put(val, true);
+            for (String val : projectIterationHome.getInstance().getCustomizedValidations())
+            {
+               selectedValidations.put(val, true);
+            }
+         }
+         else
+         {
+            for (String val : projectIterationHome.getInstance().getProject().getCustomizedValidations())
+            {
+               selectedValidations.put(val, true);
+            }
          }
       }
       return selectedValidations;

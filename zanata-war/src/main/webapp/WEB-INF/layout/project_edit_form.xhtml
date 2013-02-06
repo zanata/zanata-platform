@@ -94,14 +94,12 @@
 
 	<s:div>
 		<a4j:region>
-		<h:selectBooleanCheckbox
-		 title="overrideLocales"
-		  value="#{localeListAction.setting}" >
+		<h:selectBooleanCheckbox value="#{localeListAction.setting}" >
 			<a4j:support event="onchange" reRender="languagelist" />
 		</h:selectBooleanCheckbox>
 		</a4j:region>
 		<h:outputText
-		  value="Would you like to add a customized list of locales?"/>
+		  value="#{messages['jsf.customizedLocaleMessage']}"/>
 	</s:div>
 
 
@@ -137,7 +135,7 @@
             </h:selectBooleanCheckbox>
         </a4j:region>
         <h:outputText
-                value="Would you like to restrict access to this project to certain User roles?"/>
+                value="#{messages['jsf.RestrictRoleAccessMessage']}"/>
     </s:div>
 
     <s:div id="roleList">
@@ -153,11 +151,11 @@
     
     <s:div>
 		<a4j:region>
-			<h:selectBooleanCheckbox id="validationOptions" value="#{validationOptionsAction.overrideValidations}" >
+			<h:selectBooleanCheckbox id="validationOptions" value="#{projectValidationOptionsAction.overrideValidations}" >
 				<a4j:support event="onchange" reRender="validationOptionsList" />
 			</h:selectBooleanCheckbox>
 		</a4j:region>
-		<h:outputText value="Would you like to define validation options?"/>
+		<h:outputText value="#{messages['jsf.customizedValidationMessage']}"/>
 	</s:div>
 
 
@@ -165,9 +163,9 @@
 	<rich:spacer height="20px" />
 	<a4j:region renderRegionOnly="true">
 	
-		 <rich:dataGrid value="#{validationOptionsAction.validationList}" var="validation" columns="3"
-                         rendered="#{validationOptionsAction.overrideValidations}">
-              <h:selectBooleanCheckbox value="#{validationOptionsAction.selectedValidations[validation.validationInfo.id.name()]}" title="#{validation.validationInfo.description}"/>
+		 <rich:dataGrid value="#{projectValidationOptionsAction.validationList}" var="validation" columns="3"
+                         rendered="#{projectValidationOptionsAction.overrideValidations}">
+              <h:selectBooleanCheckbox value="#{projectValidationOptionsAction.selectedValidations[validation.validationInfo.id.name()]}" title="#{validation.validationInfo.description}"/>
               <h:outputLabel value="#{validation.validationInfo.id.displayName}" title="#{validation.validationInfo.description}"/>
           </rich:dataGrid>
       	

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -27,6 +28,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.common.collect.Lists;
@@ -57,7 +59,14 @@ public class ValidationServiceTest
       MockitoAnnotations.initMocks(this);
 
       service = new ValidationService(eventBus, messages, validationMessages);
-      service.setValidationRules(ValidationFactory.getAllValidationIds(true));
+
+      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(null);
+      ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
+      for (ValidationAction action : validationMap.values())
+      {
+         validationInfoList.add(action.getValidationInfo());
+      }
+      service.setValidationRules(validationInfoList);
 
       when(messages.notifyValidationError()).thenReturn("validation error");
       verify(eventBus).addHandler(RunValidationEvent.getType(), service);
@@ -106,7 +115,7 @@ public class ValidationServiceTest
    {
       service.clearAllMessage();
 
-      List<ValidationAction> validationList = service.getValidationList();
+      List<ValidationAction> validationList = new ArrayList<ValidationAction>(service.getValidationMap().values());
 
       for (ValidationAction action : validationList)
       {
@@ -128,7 +137,7 @@ public class ValidationServiceTest
    @Test
    public void canGetValidationList()
    {
-      List<ValidationAction> validationList = service.getValidationList();
+      List<ValidationAction> validationList = new ArrayList<ValidationAction>(service.getValidationMap().values());
       
       assertThat(validationList.size(), Matchers.equalTo(7));
    }

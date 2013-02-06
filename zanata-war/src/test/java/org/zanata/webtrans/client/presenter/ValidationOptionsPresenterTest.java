@@ -62,8 +62,7 @@ public class ValidationOptionsPresenterTest
    public void onBind()
    {
       // Given:
-      List<ValidationAction> validationActions = new ArrayList<ValidationAction>(ValidationFactory.getAllValidationActions(validationMessage).values());
-      when(validationService.getValidationList()).thenReturn(validationActions);
+      when(validationService.getValidationMap()).thenReturn(ValidationFactory.getAllValidationActions(validationMessage));
 
       when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, false)).thenReturn(changeHandler);
       when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, false)).thenReturn(changeHandler);
