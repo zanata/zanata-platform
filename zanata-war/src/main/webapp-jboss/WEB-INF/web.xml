@@ -11,7 +11,7 @@
 	<security-constraint>
 	    <web-resource-collection>
 	         <web-resource-name>sign in</web-resource-name>
-	         <url-pattern>/account/*</url-pattern>
+	         <url-pattern>/account/klogin.seam</url-pattern>
 	    </web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>

@@ -59,8 +59,34 @@
   </page>
   
   <!-- Account -->
-    <!-- Kerberos authentication -->
+    <!-- TODO This used to be kerberos auth. Need to see how much is still needed.
+         See below page def for new Kerberos rules -->
    <page view-id="/account/login.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
+    <param name="continue" value="#{userRedirect.encodedUrl}" />
+    <!--<action execute="#{authenticationManager.kerberosLogin}"/>-->
+    <navigation evaluate="#{authenticationManager.authenticationRedirect}">
+      <rule if-outcome="login">
+        <redirect view-id="/account/login_input.xhtml" />
+      </rule>
+      <rule if-outcome="edit">
+        <redirect view-id="/profile/edit.xhtml" />
+      </rule>
+      <rule if-outcome="inactive">
+        <redirect view-id="/account/inactive_account.xhtml"/>
+      </rule>
+      <rule if-outcome="home">
+        <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if-outcome="redirect">
+        <!-- TODO add login success message -->
+        <redirect url="#{userRedirect.url}" />
+      </rule>
+	</navigation>
+  </page>
+
+  <!-- Kerberos Authentication -->
+  <page view-id="/account/klogin.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
     <action execute="#{authenticationManager.kerberosLogin}"/>
@@ -81,7 +107,7 @@
         <!-- TODO add login success message -->
         <redirect url="#{userRedirect.url}" />
       </rule>
-	</navigation>
+    </navigation>
   </page>
 
    <!-- Internal and JAAS authentication -->
