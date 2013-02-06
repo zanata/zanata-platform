@@ -20,6 +20,13 @@
  */
 package org.zanata.security;
 
+import java.io.IOException;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
@@ -29,6 +36,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.security.Credentials;
 import org.zanata.security.openid.OpenIdProviderType;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Overrides the default Seam credentials.
@@ -41,6 +50,7 @@ import org.zanata.security.openid.OpenIdProviderType;
 @Scope(SESSION)
 @Install(precedence = APPLICATION)
 @BypassInterceptors
+@Slf4j
 public class ZanataCredentials extends Credentials
 {
    private AuthenticationType authType;
@@ -80,5 +90,37 @@ public class ZanataCredentials extends Credentials
       super.clear();
       authType = null;
       openIdProviderType = null;
+   }
+
+   @Override
+   public CallbackHandler createCallbackHandler()
+   {
+      return new CallbackHandler()
+      {
+         public void handle(Callback[] callbacks)
+               throws IOException, UnsupportedCallbackException
+         {
+            for (int i=0; i < callbacks.length; i++)
+            {
+               if (callbacks[i] instanceof NameCallback)
+               {
+                  ( (NameCallback) callbacks[i] ).setName(getUsername());
+               }
+               else if (callbacks[i] instanceof PasswordCallback)
+               {
+                  ( (PasswordCallback) callbacks[i] ).setPassword( getPassword() != null ?
+                        getPassword().toCharArray() : null );
+               }
+               else if( callbacks[i] instanceof AuthenticationTypeCallback )
+               {
+                  ( (AuthenticationTypeCallback) callbacks[i] ).setAuthType( getAuthType() );
+               }
+               else
+               {
+                  log.warn("Unsupported callback " + callbacks[i]);
+               }
+            }
+         }
+      };
    }
 }
