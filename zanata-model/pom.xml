@@ -89,6 +89,22 @@
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-common-api</artifactId>
+            <exclusions>
+            				<exclusion>
+            								<artifactId>
+            												javassist
+            								</artifactId>
+            								<groupId>javassist</groupId>
+            				</exclusion>
+            				<exclusion>
+            								<artifactId>
+            												commons-logging
+            								</artifactId>
+            								<groupId>
+            												commons-logging
+            								</groupId>
+            				</exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -127,6 +143,32 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
+            <exclusions>
+            				<exclusion>
+            								<artifactId>
+            												geronimo-stax-api_1.0_spec
+            								</artifactId>
+            								<groupId>
+            												org.apache.geronimo.specs
+            								</groupId>
+            				</exclusion>
+            				<exclusion>
+            								<artifactId>
+            												commons-io
+            								</artifactId>
+            								<groupId>
+            												org.apache.commons
+            								</groupId>
+            				</exclusion>
+            				<exclusion>
+            								<artifactId>
+            												solr-lucene-analyzers
+            								</artifactId>
+            								<groupId>
+            												org.apache.solr
+            								</groupId>
+            				</exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Hibernate / JPA -->

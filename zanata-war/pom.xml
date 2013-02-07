@@ -63,6 +63,95 @@
                     </execution>
                 </executions>
             </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-ban-duplicate-classes</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <!-- TODO enforce this once we've cleaned up
+                  the remaining duplicates which are caused by
+                  multiple jars for openid4java, drools, gwt
+                  and lucene-analyzers -->
+                  <fail>false</fail>
+                  <rules>
+                    <banDuplicateClasses>
+                       <ignoreClasses combine.children="append">
+                          <!-- caused by beanutils and jboss-embedded-thirdparty-all -->
+                          <ignoreClass>org.apache.commons.collections.*</ignoreClass>
+
+                          <!-- caused by jboss-embedded-thirdparty-all -->
+                          <ignoreClass>antlr.*</ignoreClass>
+                          <ignoreClass>com.sun.activation.*</ignoreClass>
+                          <ignoreClass>com.sun.xml.*</ignoreClass>
+                          <ignoreClass>com.sun.istack.*</ignoreClass>
+                          <ignoreClass>hsqlServlet</ignoreClass>
+                          <ignoreClass>javassist.*</ignoreClass>
+                          <ignoreClass>javax.activation.*</ignoreClass>
+                          <ignoreClass>javax.annotation.*</ignoreClass>
+                          <ignoreClass>javax.ejb.*</ignoreClass>
+                          <ignoreClass>javax.interceptor.*</ignoreClass>
+                          <ignoreClass>javax.persistence.*</ignoreClass>
+                          <ignoreClass>javax.transaction.*</ignoreClass>
+                          <ignoreClass>javax.xml.XMLConstants</ignoreClass>
+                          <ignoreClass>javax.xml.bind.*</ignoreClass>
+                          <ignoreClass>javax.xml.namespace.*</ignoreClass>
+                          <ignoreClass>javax.xml.stream.*</ignoreClass>
+                          <ignoreClass>org.apache.commons.logging.*</ignoreClass>
+                          <ignoreClass>org.apache.log4j.*</ignoreClass>
+                          <ignoreClass>org.dom4j.*</ignoreClass>
+                          <ignoreClass>org.hsqldb.*</ignoreClass>
+                          <ignoreClass>org.jboss.crypto.*</ignoreClass>
+                          <ignoreClass>org.jboss.deployment.*</ignoreClass>
+                          <ignoreClass>org.jboss.logging.Logger</ignoreClass>
+                          <ignoreClass>org.jboss.Main*</ignoreClass>
+                          <ignoreClass>org.jboss.mx.*</ignoreClass>
+                          <ignoreClass>org.jboss.security.*</ignoreClass>
+                          <ignoreClass>org.jboss.system.*</ignoreClass>
+                          <ignoreClass>org.jboss.Version</ignoreClass>
+                          <ignoreClass>org.quartz.*</ignoreClass>
+
+                          <!--  caused by gwt jars -->
+                          <ignoreClass>com.google.common.*</ignoreClass>
+                          <ignoreClass>com.google.gwt.*</ignoreClass>
+                          <ignoreClass>com.google.web.bindery.*</ignoreClass>
+                          <ignoreClass>com.ibm.icu.*</ignoreClass>
+                          <ignoreClass>com.steadystate.css.*</ignoreClass>
+                          <ignoreClass>javax.servlet.jsp.*</ignoreClass>
+                          <ignoreClass>javax.validation.ConstraintViolationException_CustomFieldSerializer</ignoreClass>
+                          <ignoreClass>org.apache.commons.beanutils.*</ignoreClass>
+                          <ignoreClass>org.apache.commons.codec.*</ignoreClass>
+                          <ignoreClass>org.apache.commons.io.*</ignoreClass>
+                          <ignoreClass>org.apache.commons.lang.*</ignoreClass>
+                          <ignoreClass>org.apache.http.*</ignoreClass>
+                          <ignoreClass>org.apache.james.mime4j.*</ignoreClass>
+                          <ignoreClass>org.apache.regexp.*</ignoreClass>
+                          <ignoreClass>org.cyberneko.html.*</ignoreClass>
+                          <ignoreClass>org.hibernate.validator.*</ignoreClass>
+                          <ignoreClass>org.w3c.css.sac.*</ignoreClass>
+
+                          <!-- caused by gwt jars and jboss-embedded-thirdparty-all -->
+                          <ignoreClass>javax.servlet.*</ignoreClass>
+                          <ignoreClass>javax.xml.*</ignoreClass>
+                          <ignoreClass>org.apache.html.*</ignoreClass>
+                          <ignoreClass>org.apache.wml.*</ignoreClass>
+                          <ignoreClass>org.apache.xerces.*</ignoreClass>
+                          <ignoreClass>org.apache.xmlcommons.Version</ignoreClass>
+                          <ignoreClass>org.apache.xml.serialize.*</ignoreClass>
+                          <ignoreClass>org.w3c.dom.*</ignoreClass>
+                          <ignoreClass>org.xml.sax.*</ignoreClass>
+                       </ignoreClasses>
+                    </banDuplicateClasses>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+         </plugin>
+
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -998,6 +1087,16 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-api</artifactId>
+			<exclusions>
+							<exclusion>
+											<artifactId>
+															servlet-api
+											</artifactId>
+											<groupId>
+															javax.servlet
+											</groupId>
+							</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -1057,7 +1156,6 @@
             <scope>test</scope>
             <classifier>v1.5.0</classifier>
         </dependency>
-        
 
       <!-- GWT Dependencies -->
       <dependency>
@@ -1076,6 +1174,12 @@
          <groupId>com.google.gwt</groupId>
          <artifactId>gwt-user</artifactId>
          <scope>provided</scope>
+      </dependency>
+
+      <!-- NB: This must be before jboss-seam, because beanutils includes old commons collections classes -->
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
       </dependency>
 
 		<!-- Seam Dependencies -->
@@ -1129,6 +1233,16 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-multipart-provider</artifactId>
+			<exclusions>
+							<exclusion>
+											<artifactId>
+															servlet-api
+											</artifactId>
+											<groupId>
+															javax.servlet
+											</groupId>
+							</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -1209,6 +1323,13 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<scope>${hibernate.scope}</scope>
+			<exclusions>
+            <!-- we use javax.persistence:persistence-api -->
+            <exclusion>
+               <artifactId>ejb3-persistence</artifactId>
+               <groupId>org.hibernate</groupId>
+            </exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -1330,6 +1451,16 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                				<artifactId>servlet-api</artifactId>
+                				<groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 		  <dependency>
 			    <groupId>org.apache.solr</groupId>
@@ -1345,6 +1476,7 @@
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-commons-annotations</artifactId>
 				</exclusion>
+				<!-- we use javax.persistence:persistence-api -->
 				<exclusion>
 					<groupId>org.hibernate</groupId>
 					<artifactId>ejb3-persistence</artifactId>
@@ -1355,18 +1487,6 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search-analyzers</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>ejb3-persistence</artifactId>
-			<version>1.0.2.GA</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
 		</dependency>
 
 		<dependency>
@@ -1387,24 +1507,10 @@
 			<scope>provided</scope>
 		</dependency>
 
-<!--
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			TODO does this need to use ${hibernate.scope} for jboss7 profile?
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.ejb</groupId>
-			<artifactId>ejb-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
--->
-
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
+			<version>2.2</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -1484,52 +1590,12 @@
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
 
-		<!-- <dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.ejb</groupId>
-			<artifactId>ejb-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-		</dependency> -->
-
 		<!-- needed by H2 triggers -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- <dependency>
-			<groupId>javax.faces</groupId>
-			<artifactId>jsf-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>jsr250-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.xml.stream</groupId>
-			<artifactId>stax-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>xpp3</groupId>
-			<artifactId>xpp3_min</artifactId>
-		</dependency> -->
 
 		<!-- Testing dependencies -->
 
@@ -1681,21 +1747,6 @@
 	       </exclusions>
 	    </dependency>
 
-		<dependency>
-			<groupId>org.openid4java</groupId>
-			<artifactId>openid4java</artifactId>
-			<version>0.9.5</version>
-			<exclusions>
-							<exclusion>
-											<artifactId>
-															spring-jdbc
-											</artifactId>
-											<groupId>
-															org.springframework
-											</groupId>
-							</exclusion>
-			</exclusions>
-		</dependency>
 		<dependency>
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java-nodeps</artifactId>
