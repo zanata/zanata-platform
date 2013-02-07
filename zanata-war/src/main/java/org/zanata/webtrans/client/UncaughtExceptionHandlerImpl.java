@@ -45,12 +45,14 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler
       Log.fatal("uncaught exception", e);
 
       String stackTrace = buildStackTraceMessages(e);
+/*    disable server side logging for now to avoid email bombing
 
       RemoteLoggingAction action = new RemoteLoggingAction(stackTrace);
       action.addContextInfo("selected Doc", appPresenter.getSelectedDocumentInfoOrNull());
       action.addContextInfo("selected TransUnitId", targetContentsPresenter.getCurrentTransUnitIdOrNull());
       action.addContextInfo("editor contents", targetContentsPresenter.getNewTargets());
       dispatcher.execute(action, new NoOpAsyncCallback<NoOpResult>());
+*/
 
       if (!configHolder.getState().isShowError())
       {
