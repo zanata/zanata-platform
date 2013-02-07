@@ -520,6 +520,13 @@
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('', projectHome.instance.slug)}"/>
+
+    <navigation from-action="#{versionDetailsAction.sourceDocs(_version.slug)}">
+      <redirect view-id="/iteration/source_files.xhtml">
+        <param name="project" value="#{projectHome.instance.slug}"/>
+        <param name="iteration" value="#{_version.slug}"/>
+      </redirect>
+    </navigation>
   </page>
 
   <page view-id="/project/create_project.xhtml">

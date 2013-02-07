@@ -35,7 +35,7 @@
       <zanata.api.version>2.1.1-SNAPSHOT</zanata.api.version>
       <zanata.client.version>2.0.2-SNAPSHOT</zanata.client.version>
       <zanata.common.version>2.1.2-SNAPSHOT</zanata.common.version>
-      <richfaces.version>3.3.3.Final</richfaces.version>
+      <richfaces.version>4.3.0.Final</richfaces.version>
 
 	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 	  <!-- see also the jboss7 profile below -->
@@ -244,7 +244,17 @@
 				<scope>import</scope>
 			</dependency>
 
-			<dependency>
+            <!-- make sure the richfaces version is not provided by the seam bom -->
+            <dependency>
+                <groupId>org.richfaces</groupId>
+                <artifactId>richfaces-bom</artifactId>
+                <version>${richfaces.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+
+            <dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>bom</artifactId>
 				<version>${seam.version}</version>
@@ -270,14 +280,6 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-
-			<dependency>
-				<groupId>org.richfaces</groupId>
-				<artifactId>richfaces-bom</artifactId>
-				<version>4.2.3.Final</version>
-				<scope>import</scope>
-				<type>pom</type>
-		</dependency>
 
           <!-- Solr dependencies -->
           <dependency>

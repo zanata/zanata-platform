@@ -169,13 +169,11 @@ public class ProjectIterationFilesAction implements Serializable
       return localeDAO.findByLocaleId(new LocaleId(localeId));
    }
 
-   public boolean filterDocumentByName(Object docObject)
+   public boolean filterDocumentByName(String docName)
    {
-      final HDocument document = (HDocument) docObject;
-
       if (this.documentNameFilter != null && this.documentNameFilter.length() > 0)
       {
-         return document.getName().toLowerCase().contains(this.documentNameFilter.toLowerCase());
+         return docName.toLowerCase().contains(this.documentNameFilter.toLowerCase());
       }
       else
       {

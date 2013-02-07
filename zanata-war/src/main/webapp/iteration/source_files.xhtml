@@ -43,16 +43,19 @@
     <ui:define name="center_content">
         <h:form>
             <s:token allowMultiplePosts="true"/>
-            <rich:dataScroller id="data_table_scroller" align="center" for="data_table"
-                               rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
-                <f:facet name="next">
-                    <h:outputText value="next" style="font-size: 0.8em"/>
-                </f:facet>
-                <f:facet name="previous">
-                    <h:outputText value="prev" style="font-size: 0.8em"/>
-                </f:facet>
-            </rich:dataScroller>
-            <richext:spacer height="20"/>
+            <richext:spacer height="10"/>
+            <s:div style="text-align:center">
+                <rich:dataScroller id="data_table_scroller" for="data_table"
+                                   rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
+                    <f:facet name="next">
+                        <h:outputText value="next" style="font-size: 0.8em"/>
+                    </f:facet>
+                    <f:facet name="previous">
+                        <h:outputText value="prev" style="font-size: 0.8em"/>
+                    </f:facet>
+                </rich:dataScroller>
+            </s:div>
+            <richext:spacer height="15"/>
             <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
                           rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
             <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}"
@@ -60,12 +63,12 @@
                             styleClass="iteration_inline_tribes"
                             rows="20"
                             rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
-                <rich:column sortOrder="ASCENDING"
+                <rich:column sortOrder="ascending"
                              styleClass="wrapped">
                     <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
                     #{doc.path}
                 </rich:column>
-                <rich:column filterMethod="#{projectIterationFilesAction.filterDocumentByName}"
+                <rich:column filterExpression="#{projectIterationFilesAction.filterDocumentByName(doc.name)}"
                              styleClass="wrapped">
                     <f:facet name="header">
                         <h:panelGroup>
@@ -74,15 +77,14 @@
                             <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
                                          id="name_filter_input">
                                 <a4j:ajax event="keyup" render="data_table,data_table_scroller"
+                                             execute="@this"
                                              oncomplete="focusNameFilterInput()">
                                     <a4j:attachQueue ignoreDupResponses="true" requestDelay="700" />
                                 </a4j:ajax>
                             </h:inputText>
                         </h:panelGroup>
                     </f:facet>
-                    <h:outputText>
-                        #{doc.name}
-                    </h:outputText>
+                    <h:outputText value="#{doc.name}"/>
                 </rich:column>
 
                 <rich:column>
