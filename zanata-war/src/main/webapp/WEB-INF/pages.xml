@@ -807,7 +807,7 @@
   <page view-id="/language/language.xhtml">
     <param name="id" value="#{languageTeamAction.language}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/language/list', messages['jsf.Languages'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}"/>
     <action execute="#{breadcrumbs.addLocation('', languageTeamAction.language)}"/>
       
   </page>
