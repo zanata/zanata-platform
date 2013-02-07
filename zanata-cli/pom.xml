@@ -34,6 +34,50 @@
                     <mainClass>org.zanata.client.ZanataClient</mainClass>
                 </configuration>
             </plugin>
+
+            <!-- prepare script and jars for zip/tar.gz distribution -->
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>appassembler-maven-plugin</artifactId>
+              <version>1.3</version>
+              <executions>
+                <execution>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>assemble</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <programs>
+                  <program>
+                    <mainClass>org.zanata.client.ZanataClient</mainClass>
+                    <name>zanataj</name>
+                  </program>
+                </programs>
+                <repositoryName>lib</repositoryName>
+                <repositoryLayout>flat</repositoryLayout>
+              </configuration>
+            </plugin>
+
+            <!-- package in zip and tar.gz -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>2.3</version>
+              <executions>
+                <execution>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>single</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <descriptor>src/main/assembly/bin.xml</descriptor>
+              </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
