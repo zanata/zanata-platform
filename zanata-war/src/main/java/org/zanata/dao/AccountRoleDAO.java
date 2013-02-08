@@ -41,7 +41,7 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer>
    public HAccountRole findByName(String roleName)
    {
       Criteria cr = getSession().createCriteria(HAccountRole.class);
-      cr.add(Restrictions.naturalId().set("name", roleName));
+      cr.add(Restrictions.eq("name", roleName));
       cr.setCacheable(true).setComment("AccountRoleDAO.findByName");
       return (HAccountRole) cr.uniqueResult();
    }

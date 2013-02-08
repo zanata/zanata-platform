@@ -66,7 +66,9 @@ public class UserAccountServiceImpl implements UserAccountService
    @Override
    public void clearPasswordResetRequests(HAccount account)
    {
-      HAccountResetPasswordKey key = (HAccountResetPasswordKey) session.createCriteria(HAccountResetPasswordKey.class).add(Restrictions.naturalId().set("account", account)).uniqueResult();
+      // TODO This should be done in a DAO
+      HAccountResetPasswordKey key =
+            (HAccountResetPasswordKey) session.byNaturalId(HAccountResetPasswordKey.class).using("account", account).load();
       if (key != null)
       {
          session.delete(key);

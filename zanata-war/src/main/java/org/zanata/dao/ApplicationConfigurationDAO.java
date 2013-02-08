@@ -28,10 +28,7 @@ public class ApplicationConfigurationDAO extends AbstractDAOImpl<HApplicationCon
 
    public HApplicationConfiguration findByKey(String key)
    {
-      Criteria cr = getSession().createCriteria(HApplicationConfiguration.class);
-      cr.add(Restrictions.naturalId().set("key", key));
-      cr.setCacheable(true).setComment("ApplicationConfigurationDAO.findByKey");
-      return (HApplicationConfiguration) cr.uniqueResult();
+      return (HApplicationConfiguration)getSession().byNaturalId(HApplicationConfiguration.class).using("key", key).load();
    }
 
 }

@@ -43,10 +43,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
 
    public HProject getBySlug(String slug)
    {
-      Criteria crit = getSession().createCriteria(HProject.class);
-      crit.add(Restrictions.naturalId().set("slug", slug));
-      crit.setCacheable(true).setComment("ProjectDAO.getBySlug");
-      return (HProject) crit.uniqueResult();
+      return (HProject) getSession().byNaturalId(HProject.class).using("slug", slug).load();
    }
 
    @SuppressWarnings("unchecked")
