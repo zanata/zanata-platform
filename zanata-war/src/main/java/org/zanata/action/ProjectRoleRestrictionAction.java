@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.PostConstruct;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -36,7 +35,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.AccountRoleDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HProject;
 

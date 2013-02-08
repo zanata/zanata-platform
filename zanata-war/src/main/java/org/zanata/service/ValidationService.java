@@ -5,28 +5,33 @@ package org.zanata.service;
 
 import java.util.List;
 
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 
+
 /**
- * @author aeng
- *
+ * 
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * 
  */
 public interface ValidationService
 {
    /**
-    * a list contains all validation rules.
+    * Return all ValidationObjects in groups (exclusive) with enabled=true on those which are
+    * defined to the project
     * 
-    * @see org.zanata.webtrans.client.service.ValidationService
-    * @param valMessages Validation messages
-    * @return a map contains all validation objects.
+    * @param projectSlug
+    * @return
     */
+   List<ValidationObject> getValidationObject(String projectSlug);
    
-   List<ValidationInfo> getValidationInfo(String projectSlug);
-   
-   List<ValidationInfo> getValidationInfo(String projectSlug, String versionSlug);
 
-   List<ValidationObject> getValidations(String projectSlug);
-
-   List<ValidationObject> getValidations(String projectSlug, String versionSlug);
+   /**
+    * Return all ValidationObjects with enabled=true on those which are
+    * customized to the version
+    * 
+    * @param projectSlug
+    * @param versionSlug
+    * @return
+    */
+   List<ValidationObject> getValidationObject(String projectSlug, String versionSlug);
 }

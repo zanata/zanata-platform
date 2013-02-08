@@ -3,16 +3,22 @@
  */
 package org.zanata.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
-import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -30,56 +36,70 @@ public class ValidationServiceImpl implements ValidationService
    @In
    private ZanataMessages zanataMessages;
    
+   @In
+   private ProjectDAO projectDAO;
+
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
    private static final String DESC_KEY = ".desc";
 
-   private List<ValidationInfo> execute()
+   @Override
+   public List<ValidationObject> getValidationObject(String projectSlug)
    {
-      List<ValidationInfo> validationIds = ValidationFactory.getAllValidationIds(false);
+      List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
+      Set<String> enabledValidations = new HashSet<String>();
 
-      // List<ValidationId> enabledValidations = new ArrayList<ValidationId>();
-      
-      //user DAO to get list of enabled validations
-      //loop through all validationIds list and set enabled
-
-      for (ValidationInfo actionInfo : validationIds)
+      if (!StringUtils.isEmpty(projectSlug))
       {
-         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
-         actionInfo.setEnabled(true);
-         if (actionInfo.getId().equals(ValidationId.PRINTF_XSI_EXTENSION))
-         {
-            actionInfo.setEnabled(false);
-         }
-         // if(enabledValidations.contains(entry.getKey()))
-         // {
-         // entry.setValue(true);
-         // }
+         HProject project = projectDAO.getBySlug(projectSlug);
+         enabledValidations = project.getCustomizedValidations();
       }
-      return validationIds;
+
+      for (ValidationObject  valObj: validationList)
+      {
+         ValidationInfo actionInfo = valObj.getValidationInfo();
+
+         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
+         if (enabledValidations.contains(actionInfo.getId().name()))
+         {
+            actionInfo.setEnabled(true);
+         }
+      }
+     
+      return validationList;
    }
    
    @Override
-   public List<ValidationInfo> getValidationInfo(String projectSlug, String versionSlug)
+   public List<ValidationObject> getValidationObject(String projectSlug, String versionSlug)
    {
-      return execute();
-   }
+      List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
+      Set<String> enabledValidations = new HashSet<String>();
 
-   @Override
-   public List<ValidationInfo> getValidationInfo(String projectSlug)
-   {
-      return execute();
-   }
+      if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
+      {
+         HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, versionSlug);
+         enabledValidations = version.getCustomizedValidations();
 
-   @Override
-   public List<ValidationObject> getValidations(String projectSlug)
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
+         // Inherits validations from project if version has no defined
+         // validations
+         if (enabledValidations.isEmpty())
+         {
+            enabledValidations = version.getProject().getCustomizedValidations();
+         }
+      }
 
-   @Override
-   public List<ValidationObject> getValidations(String projectSlug, String versionSlug)
-   {
-      // TODO Auto-generated method stub
-      return null;
+      for (ValidationObject valObj : validationList)
+      {
+         ValidationInfo actionInfo = valObj.getValidationInfo();
+
+         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
+         if (enabledValidations.contains(actionInfo.getId().name()))
+         {
+            actionInfo.setEnabled(true);
+            actionInfo.setLocked(true);
+         }
+      }
+      return validationList;
    }
 }

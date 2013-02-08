@@ -35,19 +35,26 @@ import com.google.common.collect.Lists;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
+ * @see HtmlXMlTagValidation
+ * @see JavaVariablesValidation
+ * @see NewlineLeadTrailValidation
+ * @see PrintfVariablesValidation
+ * @see PrintfXSIExtensionValidation
+ * @see TabValidation
+ * @see XmlEntityValidation
  **/
 public abstract class AbstractValidationAction implements ValidationAction
 {
-   private ValidationInfo validationActionInfo;
+   private ValidationInfo validationInfo;
 
    private ArrayList<String> errorList = new ArrayList<String>();
    private ArrayList<ValidationObject> exclusiveValidations = new ArrayList<ValidationObject>();
 
    private ValidationMessages messages;
 
-   public AbstractValidationAction(ValidationInfo validationActionInfo, ValidationMessages messages)
+   public AbstractValidationAction(ValidationInfo validationInfo, ValidationMessages messages)
    {
-      this.validationActionInfo = validationActionInfo;
+      this.validationInfo = validationInfo;
       this.messages = messages;
    }
 
@@ -104,15 +111,15 @@ public abstract class AbstractValidationAction implements ValidationAction
    }
    
    @Override
-   public void setValidationInfo(ValidationInfo actionInfo)
+   public void setValidationInfo(ValidationInfo validationInfo)
    {
-      this.validationActionInfo = actionInfo;
+      this.validationInfo = validationInfo;
    }
 
    @Override
    public ValidationInfo getValidationInfo()
    {
-      return validationActionInfo;
+      return validationInfo;
    }
 
 }

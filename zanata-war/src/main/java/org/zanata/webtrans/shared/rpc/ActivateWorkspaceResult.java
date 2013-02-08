@@ -1,13 +1,11 @@
 package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
-import java.util.Map;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationId;
 
 
 public class ActivateWorkspaceResult implements DispatchResult

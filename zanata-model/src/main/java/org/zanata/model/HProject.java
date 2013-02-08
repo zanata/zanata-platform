@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -45,6 +46,7 @@ import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.search.annotations.Field;
@@ -80,13 +82,14 @@ public class HProject extends SlugEntityBase implements Serializable
    private String sourceCheckoutURL;
    private boolean overrideLocales = false;
    private boolean restrictedByRoles = false;
+   private boolean overrideValidations = false;
    private HCopyTransOptions defaultCopyTransOpts;
    private Set<HLocale> customizedLocales;
    private ProjectType defaultProjectType;
 
    private Set<HPerson> maintainers;
-
    private Set<HAccountRole> allowedRoles;
+   private Set<String> customizedValidations;
 
    private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
 
@@ -114,6 +117,11 @@ public class HProject extends SlugEntityBase implements Serializable
    public boolean getOverrideLocales()
    {
       return this.overrideLocales;
+   }
+
+   public boolean getOverrideValidations()
+   {
+      return overrideValidations;
    }
 
    public boolean isRestrictedByRoles()
@@ -198,5 +206,18 @@ public class HProject extends SlugEntityBase implements Serializable
          allowedRoles = new HashSet<HAccountRole>();
       }
       return allowedRoles;
+   }
+
+   @JoinTable(name = "HProject_Validation", joinColumns = @JoinColumn(name = "projectId"))
+   @Type(type = "text")
+   @CollectionOfElements(fetch = FetchType.EAGER)
+   @Column(name = "validation", nullable = false)
+   public Set<String> getCustomizedValidations()
+   {
+      if (customizedValidations == null)
+      {
+         customizedValidations = new HashSet<String>();
+      }
+      return customizedValidations;
    }
 }

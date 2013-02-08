@@ -58,7 +58,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
-import org.zanata.webtrans.shared.model.ValidationObject;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HProject>
@@ -77,7 +76,7 @@ public class ProjectHome extends SlugHome<HProject>
 
    @In
    private PersonDAO personDAO;
-   
+
    @In
    private LocaleDAO localeDAO;
 
@@ -103,6 +102,14 @@ public class ProjectHome extends SlugHome<HProject>
    @In(required = false)
    private Boolean restrictByRoles;
 
+   /* Outjected from ProjectValidationOptionsAction */
+   @In(required = false)
+   private Boolean overrideValidations;
+
+   /* Outjected from ProjectValidationOptionsAction */
+   @In(required = false)
+   private Set<String> customizedValidations;
+
    @In
    private LocaleService localeServiceImpl;
 
@@ -111,7 +118,7 @@ public class ProjectHome extends SlugHome<HProject>
 
    @In(create = true)
    private ProjectDAO projectDAO;
-   
+
    @In
    private ProjectIterationDAO projectIterationDAO;
 
@@ -131,7 +138,7 @@ public class ProjectHome extends SlugHome<HProject>
    public void validateSuppliedId()
    {
       HProject ip = getInstance(); // this will raise an EntityNotFound
-                                            // exception
+                                   // exception
       // when id is invalid and conversation will not
       // start
 
@@ -174,6 +181,7 @@ public class ProjectHome extends SlugHome<HProject>
       {
          updateOverrideLocales();
          updateRoleRestrictions();
+         updateOverrideValidations();
          getInstance().addMaintainer(authenticatedAccount.getPerson());
          retValue = super.persist();
          Events.instance().raiseEvent("projectAdded");
@@ -203,7 +211,7 @@ public class ProjectHome extends SlugHome<HProject>
          {
             EntityStatus fromStatus = o1.getStatus();
             EntityStatus toStatus = o2.getStatus();
-            
+
             if (fromStatus.equals(toStatus))
             {
                return 0;
@@ -299,6 +307,7 @@ public class ProjectHome extends SlugHome<HProject>
    {
       updateOverrideLocales();
       updateRoleRestrictions();
+      updateOverrideValidations();
       String state = super.update();
       Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
 
@@ -348,6 +357,26 @@ public class ProjectHome extends SlugHome<HProject>
       }
    }
 
+   private void updateOverrideValidations()
+   {
+      if (overrideValidations != null)
+      {
+         getInstance().setOverrideValidations(overrideValidations);
+         getInstance().getCustomizedValidations().clear();
+
+         if (overrideValidations)
+         {
+            getInstance().getCustomizedValidations().clear();
+            getInstance().getCustomizedValidations().addAll(customizedValidations);
+         }
+
+         if (customizedValidations.isEmpty())
+         {
+            getInstance().setOverrideValidations(false);
+         }
+      }
+   }
+
    private void updateRoleRestrictions()
    {
       if (restrictByRoles != null)
@@ -376,15 +405,10 @@ public class ProjectHome extends SlugHome<HProject>
    {
       return !StringUtils.isEmpty(versionSlug) && localeId != null && isIterationActive(versionSlug) && identity != null && identity.hasPermission("add-translation", getInstance(), localeId);
    }
-   
+
    private boolean isIterationActive(String versionSlug)
    {
       HProjectIteration version = projectIterationDAO.getBySlug(getSlug(), versionSlug);
       return getInstance().getStatus() == EntityStatus.ACTIVE || version.getStatus() == EntityStatus.ACTIVE;
-   }
-
-   public List<ValidationObject> getValidationList(String projectSlug)
-   {
-      return validationServiceImpl.getValidations(projectSlug);
    }
 }
