@@ -128,9 +128,7 @@
 
     <s:div>
         <a4j:region>
-            <h:selectBooleanCheckbox
-                    title="Restrict Project Access"
-                    value="#{projectRoleRestrictionAction.restrictByRoles}" >
+            <h:selectBooleanCheckbox title="Restrict Project Access" value="#{projectRoleRestrictionAction.restrictByRoles}" >
                 <a4j:support event="onchange" reRender="roleList" />
             </h:selectBooleanCheckbox>
         </a4j:region>
@@ -161,15 +159,14 @@
 
 	<s:div id="validationOptionsList">
 	<rich:spacer height="20px" />
-	<a4j:region renderRegionOnly="true">
-	
-		 <rich:dataGrid value="#{projectValidationOptionsAction.validationList}" var="validation" columns="3"
-                         rendered="#{projectValidationOptionsAction.overrideValidations}">
-              <h:selectBooleanCheckbox value="#{projectValidationOptionsAction.selectedValidations[validation.validationInfo.id.name()]}" title="#{validation.validationInfo.description}"/>
-              <h:outputLabel value="#{validation.validationInfo.id.displayName}" title="#{validation.validationInfo.description}"/>
+		 <rich:dataGrid value="#{projectValidationOptionsAction.validationList}" var="validationObj" columns="1"
+                  rendered="#{projectValidationOptionsAction.overrideValidations}">
+       		<h:selectBooleanCheckbox value="#{projectValidationOptionsAction.selectedValidations[validationObj.validationInfo.id.name()]}">
+       			<a4j:support event="onchange" action="#{projectValidationOptionsAction.checkExclusive(validationObj)}" reRender="validationOptionsList"/>
+       		</h:selectBooleanCheckbox>
+       		<h:outputLabel value="#{validationObj.validationInfo.id.displayName}"/>
+       		<h:outputLabel value="#{validationObj.validationInfo.description}" style="float:right;margin-right:20px;"/>
           </rich:dataGrid>
-      	
-	</a4j:region>
 	</s:div>
 
     <div class="actionButtons">

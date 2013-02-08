@@ -12,7 +12,9 @@ public class ValidationInfo implements IsSerializable
    private ValidationId id;
    private String description;
    private boolean enabled;
+   private boolean locked;
    
+   @SuppressWarnings("unused")
    private ValidationInfo()
    {
    }
@@ -48,4 +50,15 @@ public class ValidationInfo implements IsSerializable
    {
       this.enabled = enabled;
    }
+   
+   public boolean isLocked()
+   {
+      return locked;
+   }
+   
+   public void setLocked(boolean locked)
+   {
+      this.locked = locked;
+   }
+   
 }

@@ -3,9 +3,11 @@
  */
 package org.zanata.webtrans.shared.validation;
 
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -28,17 +30,17 @@ import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 public final class ValidationFactory
 {
 
-   public static Comparator<ValidationObject> ObjectComparator = new Comparator<ValidationObject>()
+   public static Comparator<ValidationId> ValidationIdComparator = new Comparator<ValidationId>()
    {
       @Override
-      public int compare(ValidationObject o1, ValidationObject o2)
+      public int compare(ValidationId o1, ValidationId o2)
       {
-         return o1.getValidationInfo().getId().getDisplayName().compareTo(o2.getValidationInfo().getId().getDisplayName());
+         return o1.getDisplayName().compareTo(o2.getDisplayName());
       }
    };
 
    /**
-    * Generate all Validation Actions with enabled = false
+    * Generate sorted list of all Validation Actions with enabled = false
     * 
     * Used in client side (ValidationAction)
     * 
@@ -47,7 +49,7 @@ public final class ValidationFactory
     */
    public static Map<ValidationId, ValidationAction> getAllValidationActions(ValidationMessages messages)
    {
-      HashMap<ValidationId, ValidationAction> validationList = new HashMap<ValidationId, ValidationAction>();
+      TreeMap<ValidationId, ValidationAction> validationList = new TreeMap<ValidationId, ValidationAction>(ValidationIdComparator);
 
       validationList.put(ValidationId.HTML_XML, new HtmlXmlTagValidation(ValidationId.HTML_XML, messages));
       validationList.put(ValidationId.NEW_LINE, new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages));
@@ -67,20 +69,18 @@ public final class ValidationFactory
 
       return validationList;
    }
-
+   
    /**
-    * Generate all Validation Actions with enabled = false and
+    * Generate sorted list of all Validation Actions with enabled = false and
     * ValidationMessages = null
     * 
     * Used on server side (ValidationObject)
     * 
-    * @return Map<ValidationId, ValidationObject>
+    * @return List<ValidationObject>
     */
-   public static Map<ValidationId, ValidationObject> getAllValidationObject()
+   public static List<ValidationObject> getAllValidationObject()
    {
-      HashMap<ValidationId, ValidationObject> validationList = new HashMap<ValidationId, ValidationObject>();
-
-      validationList.putAll(getAllValidationActions(null));
+      ArrayList<ValidationObject> validationList = new ArrayList<ValidationObject>(getAllValidationActions(null).values());
 
       return validationList;
    }

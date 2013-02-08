@@ -64,6 +64,7 @@ public class ValidationServiceTest
       ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
       for (ValidationAction action : validationMap.values())
       {
+         action.getValidationInfo().setEnabled(true);
          validationInfoList.add(action.getValidationInfo());
       }
       service.setValidationRules(validationInfoList);
@@ -81,7 +82,7 @@ public class ValidationServiceTest
 
       RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
       event.addWidget(validationMessagePanel);
-      ArrayList<String> errors = Lists.newArrayList("Unexpected variable");
+      ArrayList<String> errors = Lists.newArrayList("Unexpected variable", "Unexpected variable");
 
       service.onValidate(event);
 

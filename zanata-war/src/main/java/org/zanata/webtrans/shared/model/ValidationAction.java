@@ -25,13 +25,12 @@ import java.util.List;
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
+ * @see AbstractValidationAction
  **/
 public interface ValidationAction extends ValidationObject
 {
    List<String> getError();
 
    void clearErrorMessage();
-
-   void setValidationInfo(ValidationInfo actionInfo);
 }

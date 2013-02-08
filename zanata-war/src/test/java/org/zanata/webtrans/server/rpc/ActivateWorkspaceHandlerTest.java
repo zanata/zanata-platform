@@ -137,7 +137,7 @@ public class ActivateWorkspaceHandlerTest
       {
          validationInfoList.add(valAction.getValidationInfo());
       }
-
+      
       GetValidationRulesResult validationResult = new GetValidationRulesResult(validationInfoList);
       when(getValidationRulesHandler.execute(isA(GetValidationRulesAction.class), any(ExecutionContext.class))).thenReturn(validationResult);
 

@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -29,8 +28,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
-import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -47,7 +46,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
 {
    public interface Display extends WidgetDisplay
    {
-      HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled);
+      HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked);
 
       void changeValidationSelectorValue(String label, boolean enabled);
    }
@@ -65,10 +64,11 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    protected void onBind()
    {
       ArrayList<ValidationAction> validationActions = new ArrayList<ValidationAction>(validationService.getValidationMap().values());
-      Collections.sort(validationActions, ValidationFactory.ObjectComparator);
       for (final ValidationAction validationAction : validationActions)
       {
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getValidationInfo().getId().getDisplayName(), validationAction.getValidationInfo().getDescription(), validationAction.getValidationInfo().isEnabled());
+         ValidationInfo validationInfo = validationAction.getValidationInfo();
+         
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationInfo.getId().getDisplayName(), validationInfo.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }

@@ -21,6 +21,7 @@
                            slug="1.0"
                            parentId="[NULL]"
                            project_id="1"
+                           overrideValidations="FALSE"
 						  overrideLocales="FALSE"
 						  status="A"
         />
@@ -31,6 +32,7 @@
                            slug="1.1"
                            parentId="[NULL]"
                            project_id="1"
+                           overrideValidations="FALSE"
 						  overrideLocales="FALSE"
 						  status="A"
         />
@@ -60,6 +62,7 @@
 	          slug="retired-current"
 	          parentId="[NULL]"
 	          project_id="2"
+	          overrideValidations="FALSE"
 			  overrideLocales="FALSE"
 			  status="A"
         />
@@ -86,6 +89,7 @@
 	          slug="obsolete-current"
 	          parentId="[NULL]"
 	          project_id="3"
+	          overrideValidations="FALSE"
 			  overrideLocales="FALSE"
 			  status="A"
         />
@@ -112,6 +116,7 @@
 	          slug="current-obsolete"
 	          parentId="[NULL]"
 	          project_id="4"
+	          overrideValidations="FALSE"
 			  overrideLocales="FALSE"
 			  status="O"
         />
@@ -123,6 +128,7 @@
 	          slug="current-active"
 	          parentId="[NULL]"
 	          project_id="4"
+	          overrideValidations="FALSE"
 			  overrideLocales="FALSE"
 			  status="A"
         />
@@ -134,6 +140,7 @@
 	          slug="current-readonly"
 	          parentId="[NULL]"
 	          project_id="4"
+	          overrideValidations="FALSE"
 			  overrideLocales="FALSE"
 			  status="R"
         />

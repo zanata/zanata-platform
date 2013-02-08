@@ -22,7 +22,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -32,7 +31,6 @@ import org.jboss.seam.annotations.Name;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
@@ -57,14 +55,14 @@ public class GetValidationRulesHandler extends AbstractActionHandler<GetValidati
    @Override
    public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context) throws ActionException
    {
-      Map<ValidationId, ValidationObject> result = validationServiceImpl.getValidationObject(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      List<ValidationInfo> validationIds = new ArrayList<ValidationInfo>();
-
-      for (ValidationObject valObj : result.values())
+      List<ValidationObject> result = validationServiceImpl.getValidationObject(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
+      
+      for(ValidationObject valObj: result)
       {
-         validationIds.add(valObj.getValidationInfo());
+         validationInfoList.add(valObj.getValidationInfo());
       }
-      return new GetValidationRulesResult(validationIds);
+      return new GetValidationRulesResult(validationInfoList);
    }
 
    @Override

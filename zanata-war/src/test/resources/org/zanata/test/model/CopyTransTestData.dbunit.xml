@@ -22,6 +22,7 @@
                        slug="same-version"
                        parentId="[NULL]"
                        project_id="100"
+                       overrideValidations="FALSE"
                        overrideLocales="FALSE"
                        status="A"
             />
@@ -84,6 +85,7 @@
                        slug="different-version"
                        parentId="[NULL]"
                        project_id="100"
+                       overrideValidations="FALSE"
                        overrideLocales="TRUE"
                        status="A"
             />
@@ -114,6 +116,7 @@
                        slug="different-version"
                        parentId="[NULL]"
                        project_id="1000"
+                       overrideValidations="FALSE"
                        overrideLocales="TRUE"
                        status="A"
             />

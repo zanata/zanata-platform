@@ -88,15 +88,14 @@
 
 	<s:div id="validationOptionsList">
 	<rich:spacer height="20px" />
-	<a4j:region renderRegionOnly="true">
-	
-		 <rich:dataGrid value="#{versionValidationOptionsAction.validationList}" var="validation" columns="3"
+		 <rich:dataGrid value="#{versionValidationOptionsAction.validationList}" var="validationObj" columns="1"
                          rendered="#{versionValidationOptionsAction.versionOverrideValidations}">
-              <h:selectBooleanCheckbox value="#{versionValidationOptionsAction.selectedValidations[validation.validationInfo.id.name()]}" title="#{validation.validationInfo.description}"/>
-              <h:outputLabel value="#{validation.validationInfo.id.displayName}" title="#{validation.validationInfo.description}"/>
+              <h:selectBooleanCheckbox value="#{versionValidationOptionsAction.selectedValidations[validationObj.validationInfo.id.name()]}">
+              	<a4j:support event="onchange" action="#{versionValidationOptionsAction.checkExclusive(validationObj)}" reRender="validationOptionsList"/>
+              </h:selectBooleanCheckbox>
+              <h:outputLabel value="#{validationObj.validationInfo.id.displayName}"/>
+              <h:outputLabel value="#{validationObj.validationInfo.description}" style="float:right;margin-right:20px;"/>
           </rich:dataGrid>
-      	
-	</a4j:region>
 	</s:div>
 	
 

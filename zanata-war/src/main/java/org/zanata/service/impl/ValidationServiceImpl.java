@@ -3,11 +3,8 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,7 +19,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
-import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -49,9 +45,9 @@ public class ValidationServiceImpl implements ValidationService
    private static final String DESC_KEY = ".desc";
 
    @Override
-   public Map<ValidationId, ValidationObject> getValidationObject(String projectSlug)
+   public List<ValidationObject> getValidationObject(String projectSlug)
    {
-      Map<ValidationId, ValidationObject> validationMap = ValidationFactory.getAllValidationObject();
+      List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
       Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug))
@@ -60,23 +56,24 @@ public class ValidationServiceImpl implements ValidationService
          enabledValidations = project.getCustomizedValidations();
       }
 
-      for (Map.Entry<ValidationId, ValidationObject> entry : validationMap.entrySet())
+      for (ValidationObject  valObj: validationList)
       {
-         ValidationInfo actionInfo = entry.getValue().getValidationInfo();
+         ValidationInfo actionInfo = valObj.getValidationInfo();
 
-         entry.getValue().getValidationInfo().setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
+         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
          if (enabledValidations.contains(actionInfo.getId().name()))
          {
             actionInfo.setEnabled(true);
          }
       }
-      return validationMap;
+     
+      return validationList;
    }
-
+   
    @Override
-   public Map<ValidationId, ValidationObject> getValidationObject(String projectSlug, String versionSlug)
+   public List<ValidationObject> getValidationObject(String projectSlug, String versionSlug)
    {
-      Map<ValidationId, ValidationObject> validationMap = ValidationFactory.getAllValidationObject();
+      List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
       Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
@@ -92,22 +89,17 @@ public class ValidationServiceImpl implements ValidationService
          }
       }
 
-      for (Map.Entry<ValidationId, ValidationObject> entry : validationMap.entrySet())
+      for (ValidationObject valObj : validationList)
       {
-         ValidationInfo actionInfo = entry.getValue().getValidationInfo();
+         ValidationInfo actionInfo = valObj.getValidationInfo();
 
-         entry.getValue().getValidationInfo().setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
+         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
          if (enabledValidations.contains(actionInfo.getId().name()))
          {
             actionInfo.setEnabled(true);
+            actionInfo.setLocked(true);
          }
       }
-      return validationMap;
-   }
-
-   @Override
-   public Comparator<ValidationObject> getObjectComparator()
-   {
-      return ValidationFactory.ObjectComparator;
+      return validationList;
    }
 }
