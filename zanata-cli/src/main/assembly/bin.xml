@@ -14,7 +14,7 @@
       <directory>target/appassembler/bin</directory>
       <outputDirectory>bin</outputDirectory>
       <includes>
-        <include>zanataj</include>
+        <include>zanata-cli</include>
       </includes>
       <fileMode>744</fileMode>
     </fileSet>

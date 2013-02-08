@@ -52,7 +52,7 @@
                 <programs>
                   <program>
                     <mainClass>org.zanata.client.ZanataClient</mainClass>
-                    <name>zanataj</name>
+                    <name>zanata-cli</name>
                   </program>
                 </programs>
                 <repositoryName>lib</repositoryName>
