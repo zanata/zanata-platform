@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -16,8 +17,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
-import org.hibernate.validator.Length;
-import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
@@ -89,7 +89,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    }
 
    @NotEmpty
-   @Length(max = 80)
+   @Size(max = 80)
    @XmlElement(name = "name", required = true, namespace = Namespaces.ZANATA_OLD)
    public String getName()
    {
@@ -101,7 +101,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       this.name = name;
    }
 
-   @Length(max = 80)
+   @Size(max = 80)
    @XmlElement(name = "description", required = false, namespace = Namespaces.ZANATA_OLD)
    public String getDescription()
    {

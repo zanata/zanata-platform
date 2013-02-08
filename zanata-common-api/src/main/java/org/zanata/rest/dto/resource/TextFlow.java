@@ -3,6 +3,8 @@ package org.zanata.rest.dto.resource;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -13,9 +15,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
-import org.hibernate.validator.Length;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.DTOUtil;
@@ -32,7 +32,7 @@ public class TextFlow extends TextContainer implements Extensible<TextFlowExtens
    private static final long serialVersionUID = 1L;
 
    @NotEmpty
-   @Length(max = 255)
+   @Size(max = 255)
    private String id;
 
    @NotNull

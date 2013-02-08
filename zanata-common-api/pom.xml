@@ -73,10 +73,16 @@
                 </exclusion>
             </exclusions>
             <!--this is needed for now. Aftet AS7 upgrade may need to revisit this-->
-            <version>3.1.0.GA</version>
+            <version>4.2.0.Final</version>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+        </dependency>
+
+        <dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 		</dependency>

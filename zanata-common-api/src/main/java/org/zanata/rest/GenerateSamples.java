@@ -3,7 +3,13 @@ package org.zanata.rest;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.validation.metadata.BeanDescriptor;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -13,8 +19,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.zanata.rest.MediaTypes.Format;
 import org.zanata.rest.dto.HasMediaType;
 import org.zanata.rest.dto.HasSample;
@@ -183,22 +187,24 @@ public class GenerateSamples
    @SuppressWarnings("unchecked")
    private static <T extends Serializable> void validateEntity(T entity) throws ValidationException
    {
-      @SuppressWarnings("rawtypes")
-      ClassValidator<T> validator = new ClassValidator(entity.getClass());
-      if (validator.hasValidationRules())
+      ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+      Validator validator = factory.getValidator();
+      BeanDescriptor constraintsForClass = validator.getConstraintsForClass(entity.getClass());
+//      ClassValidator<T> validator = new ClassValidator(entity.getClass());
+      if (constraintsForClass.isBeanConstrained())
       {
-         InvalidValue[] invalidValues = validator.getInvalidValues(entity);
-         if (invalidValues.length != 0)
+         Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+         if (constraintViolations.size() != 0)
          {
             StringBuilder message = new StringBuilder();
             message.append("Request body contains invalid values:\n");
-            for (InvalidValue invalidValue : invalidValues)
+            for (ConstraintViolation violation : constraintViolations)
             {
-               message.append(invalidValue.getPropertyPath());
+               message.append(violation.getPropertyPath());
                message.append(">");
-               message.append(invalidValue.getPropertyName());
+//               message.append(violation.getPropertyName());
                message.append(": ");
-               message.append(invalidValue.getMessage());
+               message.append(violation.getMessage());
                message.append("\n");
             }
             throw new ValidationException(message.toString());
