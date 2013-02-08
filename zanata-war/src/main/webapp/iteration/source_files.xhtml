@@ -46,12 +46,38 @@
             <richext:spacer height="10"/>
             <s:div style="text-align:center">
                 <rich:dataScroller id="data_table_scroller" for="data_table"
+                                   fastControls="hide"
                                    rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
-                    <f:facet name="next">
-                        <h:outputText value="next" style="font-size: 0.8em"/>
+                    <f:facet name="first">
+                        <h:outputText value="" styleClass="icon-to-start"/>
                     </f:facet>
                     <f:facet name="previous">
-                        <h:outputText value="prev" style="font-size: 0.8em"/>
+                        <h:outputText value="" styleClass="icon-left-open"/>
+                    </f:facet>
+                    <f:facet name="next">
+                        <h:outputText value="" styleClass="icon-right-open-1"/>
+                    </f:facet>
+                    <f:facet name="fastforward">
+                        <h:outputText value="" styleClass="icon-fast-fw-1"/>
+                    </f:facet>
+                    <f:facet name="last">
+                        <h:outputText value="" styleClass="icon-to-end"/>
+                    </f:facet>
+
+                    <f:facet name="first_disabled">
+                        <h:outputText value="" styleClass="icon-to-start"/>
+                    </f:facet>
+                    <f:facet name="previous_disabled">
+                        <h:outputText value="" styleClass="icon-left-open"/>
+                    </f:facet>
+                    <f:facet name="next_disabled">
+                        <h:outputText value="" styleClass="icon-right-open-1"/>
+                    </f:facet>
+                    <f:facet name="fastforward_disabled">
+                        <h:outputText value="" styleClass="icon-fast-fw-1"/>
+                    </f:facet>
+                    <f:facet name="last_disabled">
+                        <h:outputText value="" styleClass="icon-to-end"/>
                     </f:facet>
                 </rich:dataScroller>
             </s:div>
@@ -225,9 +251,10 @@
                 <s:fileUpload accept="*"
                               data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
+                <br/>
+                <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
                 <h:inputText id="docPath"
                              value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
-                    <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
                 </h:inputText>
                 <br/>
                 <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">

@@ -131,3 +131,121 @@ div.rf-p {
 }
 
 /* ====================== Rich Data Panel =========================== */
+
+/* ====================== Rich Tab Panel & Tabs =========================== */
+
+/* Header (where the tabs go) */
+div.rf-tab-hdr-tabline-vis.rf-tab-hdr-tabline-top {
+    background: none;
+    border: none;
+}
+
+/* Header seaparator from content */
+div.rf-tab-hdr-brd {
+    border: none;
+    background-color: transparent;
+}
+
+/* Tab (common) */
+td.rf-tab-hdr-act.rf-tab-hdr-top {
+    background-image: none;
+    border: 1px solid #461446;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    padding: 5px 20px 0 20px;
+}
+
+/* Inactive Tab */
+td.rf-tab-hdr-inact.rf-tab-hdr-top {
+    color: #461446;
+    background-color: #eeeeee;
+    background-image: none;
+    border: 1px solid #461446;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    padding: 5px 20px 0 20px;
+}
+
+/* Active Tab */
+td.rf-tab-hdr-act.rf-tab-hdr-top {
+    color: #ffffff;
+    background-color: #461446;
+}
+
+/* Tab contents */
+div.rf-tab-cnt {
+    border: none;
+    border-radius: 5px;
+    background-color: #eeeeee;
+}
+
+div.rf-tab-hdr-brd {
+    height: 0px;
+}
+
+/* ====================== End Rich Tab Panel & Tabs =========================== */
+
+/* ====================== Rich Dialogs =========================== */
+
+/* Dialog content */
+div.rf-pp-cntr {
+    border-radius: 5px;
+    border-color: transparent;
+}
+
+/* Dialog Shadow */
+div.rf-pp-shdw {
+    border-radius: 5px;
+}
+
+/* Header */
+div.rf-pp-hdr {
+    background-image: none;
+    background-color: #461446;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    padding: 7px;
+}
+
+/* Body */
+div.rf-pp-cnt {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+/* ====================== End Rich Dialogs =========================== */
+
+/* TODO Remove these as they no longer have any effect */
+/* Copy of Richfaces Simple toggle styles*/
+.rich-stglpanel-header {
+    background-image: none;
+    padding:10px 8px;
+    font-size:12px;
+    border-radius: 3px;
+    background-color: #461446;
+    color: white;
+    font-weight: bold;
+    font-family: Arial, Verdana, sans-serif;
+}
+
+.rich-stglpanel {
+    background-image: none;
+    padding: 2px 3px;
+    border-radius: 5px;
+    border:none;
+}
+
+.rich-stglpanel-body {
+    overflow: auto;
+    background:#EEE;
+}
+
+.rich-stglpanel-body .noBorderTable {
+    background:#FFFFFF;
+    box-shadow:none;
+}
+
+.rich-stglpanel-body .noBorderTable tr:hover {
+    background-color:inherit;
+}
+/* End of Richfaces Simple toggle styles */
