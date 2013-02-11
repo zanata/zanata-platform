@@ -39,6 +39,7 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.ProjectType;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 
@@ -84,6 +85,8 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
       HProject project = (HProject) projectDAO.getBySlug(projectSlug);
       project.addIteration(iteration);
       iteration.setProjectType(project.getDefaultProjectType());
+      iteration.setOverrideValidations(project.getOverrideValidations());
+      iteration.getCustomizedValidations().addAll(project.getCustomizedValidations());
       return iteration;
    }
 
@@ -113,6 +116,19 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
       // when id is invalid and conversation will not
       // start
    }
+
+   // public ProjectType getProjecType()
+   // {
+   // if (getInstance().getProjectType() == null)
+   // {
+   //
+   // }
+   // }
+   //
+   // public void setProjectType(ProjectType projectType)
+   // {
+   // getInstance().setProjectType(projectType);
+   // }
 
    public void validateProjectSlug()
    {
