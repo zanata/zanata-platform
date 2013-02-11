@@ -59,6 +59,12 @@ public class ColumnSortCompositeComponent extends UINamingContainer
       return parent;
    }
 
+   public String getParentTableClientId()
+   {
+      UIDataTable dataTable = (UIDataTable)getFirstParent(UIDataTable.class);
+      return dataTable.getClientId();
+   }
+
    public Collection<UIColumn> getTableColumns()
    {
       UIDataTable dataTable = (UIDataTable)getFirstParent(UIDataTable.class);

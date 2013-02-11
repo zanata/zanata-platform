@@ -32,7 +32,7 @@
    		<h:form>
    		<rich:dataTable id="iterations" value="#{projectHome.versions}" var="_version">
             <rich:column sortBy="#{_version.slug}" id="column">
-            	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
+            	<f:facet name="header">#{messages['jsf.Version']}<richext:columnSorter/></f:facet>
                  <s:link view="/iteration/view.xhtml" styleClass="version_link">
                  	<f:param name="projectSlug" value="#{projectHome.slug}"/>
                 	<f:param name="iterationSlug" value="#{_version.slug}"/>

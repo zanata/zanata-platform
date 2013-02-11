@@ -90,14 +90,14 @@
                       #{group.description}
                   </rich:column>
                   <rich:column sortBy="#{group.creationDate}">
-                      <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
+                      <f:facet name="header">#{messages['jsf.CreationDate']}<richext:columnSorter/></f:facet>
                       <h:outputText value="#{group.creationDate}">
                           <f:convertDateTime type="date" dateStyle="default"/>
                       </h:outputText>
                   </rich:column>
                   
                    <rich:column styleClass="centered" width="60px" sortBy="#{group.status}" filterMethod="#{versionGroupAction.filterGroupByStatus}">
-                        <f:facet name="header">#{messages['jsf.Status']}</f:facet>
+                        <f:facet name="header">#{messages['jsf.Status']}<richext:columnSorter/></f:facet>
                         <h:outputText value="#{messages[group.status.messageKey]}"/>
                     </rich:column>
                     

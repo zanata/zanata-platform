@@ -53,7 +53,7 @@
 						styleClass="iteration_inline_tribes">
 						<rich:column sortBy="#{stats.locale}"
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">#{messages['jsf.Language']}</f:facet>
+							<f:facet name="header">#{messages['jsf.Language']}<richext:columnSorter/></f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.seam"
 								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
