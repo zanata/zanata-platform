@@ -63,7 +63,8 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    }
 
    @Override
-   @Option(name = "--project-config", metaVar = "FILENAME", usage = "Project configuration file, eg zanata.xml", required = false)
+   @Option(name = "--project-config", metaVar = "FILENAME", usage = "Project configuration file, eg zanata.xml\n" +
+                                                                    "Default is zanata.xml in the current directory.", required = false)
    public void setProjectConfig(File projectConfig)
    {
       this.projectConfig = projectConfig;
@@ -76,7 +77,7 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    }
 
    @Override
-   @Option(name = "--project-version", metaVar = "VER", usage = "Project version ID  This value is required unless specified in zanata.xml.")
+   @Option(name = "--project-version", metaVar = "VER", usage = "Project version ID.  This value is required unless specified in zanata.xml.")
    public void setProjectVersion(String versionSlug)
    {
       this.projectVersion = versionSlug;

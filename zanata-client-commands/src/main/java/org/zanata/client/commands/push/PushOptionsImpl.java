@@ -47,6 +47,7 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    private static final boolean DEF_CASE_SENSITIVE = true;
    private static final boolean DEF_EXCLUDE_LOCALES = true;
    private static final boolean DEF_COPYTRANS = true;
+   private static final int DEF_CHUNK_SIZE = 1024 * 1024;
    /** @see org.zanata.common.MergeType for options */
    private static final String DEF_MERGE_TYPE = "AUTO";
    private static final String DEF_PUSH_TYPE = "trans";
@@ -57,7 +58,7 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    private boolean defaultExcludes = DEF_EXCLUDES;
    private String mergeType = DEF_MERGE_TYPE;
    private boolean caseSensitive = DEF_CASE_SENSITIVE;
-   private int chunkSize = 1024 * 1024;
+   private int chunkSize = DEF_CHUNK_SIZE;
    private boolean excludeLocaleFilenames = DEF_EXCLUDE_LOCALES;
    private boolean copyTrans = DEF_COPYTRANS;
    private String pushType = DEF_PUSH_TYPE;
@@ -186,9 +187,9 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
 
    @Option(name = "--push-type", metaVar = "TYPE", required = false, 
          usage = "Type of push to perform on the server:\n" +
-         		"  \"source\" pushes source documents only.\n" +
-         		"  \"trans\" pushes translation documents only.\n" +
-         		"  \"both\" pushes both source and translation documents.")
+                 "  \"source\" pushes source documents only.\n" +
+                 "  \"trans\" (default) pushes translation documents only.\n" +
+                 "  \"both\" pushes both source and translation documents.")
    public void setPushType(String pushType)
    {
       this.pushType = pushType;
@@ -201,8 +202,8 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    }
 
    @Option(name = "--includes", metaVar = "INCLUDES", usage = "Wildcard pattern to include files and directories. This parameter is only\n" +
-   		"needed for some project types, eg XLIFF, Properties. Usage\n" +
-   		"--includes=\"src/myfile*.xml,**/*.xlf\"")
+           "needed for some project types, eg XLIFF, Properties. Usage\n" +
+           "--includes=\"src/myfile*.xml,**/*.xlf\"")
    public void setIncludes(String includes)
    {
       this.includes = StringUtil.split(includes, ",");
@@ -215,7 +216,7 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    }
 
    @Option(name = "--excludes", metaVar = "EXCLUDES", usage = "Wildcard pattern to exclude files and directories. Usage\n" + 
-   		"--excludes=\"Pattern1,Pattern2,Pattern3\"")
+           "--excludes=\"Pattern1,Pattern2,Pattern3\"")
    public void setExcludes(String excludes)
    {
       this.excludes = StringUtil.split(excludes, ",");
@@ -299,8 +300,8 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    }
 
    @Option(name = "--chunk-size", metaVar = "SIZE", usage = "Maximum size, in bytes, of document chunks to transmit. Documents smaller\n" + 
-   		"than this size will be transmitted in a single request, larger documents\n" + 
-   		"will be sent over multiple requests.")
+           "than this size will be transmitted in a single request, larger documents\n" +
+           "will be sent over multiple requests.")
    public void setChunkSize(int chunkSize)
    {
       this.chunkSize = chunkSize;

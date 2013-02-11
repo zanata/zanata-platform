@@ -39,16 +39,24 @@ import java.util.Set;
  */
 public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements PullOptions
 {
-   private String pullType;
+   private static final String DEFAULT_PULL_TYPE = "trans";
+   private static final boolean DEFAULT_CREATE_SKELETONS = false;
+   private static final boolean DEFAULT_DRY_RUN = false;
+   private static final boolean DEFAULT_ENCODE_TABS = true;
+   private static final boolean DEFAULT_INCLUDE_FUZZY = false;
+   private static final boolean DEFAULT_USE_CACHE = true;
+   private static final boolean DEFAULT_PURGE_CACHE = false;
+
+   private String pullType = DEFAULT_PULL_TYPE;
    private File transDir;
    private File srcDir;
 
-   private boolean createSkeletons;
-   private boolean dryRun;
-   private boolean encodeTabs;
-   private boolean includeFuzzy;
-   private boolean useCache;
-   private boolean purgeCache;
+   private boolean createSkeletons = DEFAULT_CREATE_SKELETONS;
+   private boolean dryRun = DEFAULT_DRY_RUN;
+   private boolean encodeTabs = DEFAULT_ENCODE_TABS;
+   private boolean includeFuzzy = DEFAULT_INCLUDE_FUZZY;
+   private boolean useCache = DEFAULT_USE_CACHE;
+   private boolean purgeCache = DEFAULT_PURGE_CACHE;
    private String[] locales;
    private LocaleList effectiveLocales;
 
@@ -126,7 +134,7 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
 
    @Option(name = "--pull-type", metaVar = "TYPE", required = false,
          usage = "Type of pull to perform from the server: \"source\" pulls source documents only.\n" +
-            "\"trans\" pulls translation documents only.\n" +
+            "\"trans\" (default) pulls translation documents only.\n" +
             "\"both\" pulls both source and translation documents.")
    public void setPullType(String pullType)
    {
@@ -191,7 +199,8 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
       return createSkeletons;
    }
 
-   @Option(name = "--create-skeletons", usage = "Whether to create skeleton entries for strings/files which have not been translated yet")
+   @Option(name = "--create-skeletons", usage = "Create skeleton entries for strings/files which have not been translated yet." +
+                                                " Skeletons are not created by default.")
    public void setCreateSkeletons(boolean createSkeletons)
    {
       this.createSkeletons = createSkeletons;
@@ -216,9 +225,9 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
       return this.includeFuzzy;
    }
 
-   @Option(name = "--include-fuzzy", usage = "Whether to include fuzzy " +
-      "translations in translation files when using project type 'raw'. " +
-      "If this option is false, source text will be used for any string " +
+   @Option(name = "--include-fuzzy", usage = "[project type 'raw' only] Whether to include fuzzy " +
+      "translations in translation files. " +
+      "If this option is false (default), source text will be used for any string " +
       "that does not have an approved translation.")
    public void setIncludeFuzzy(boolean includeFuzzy)
    {
