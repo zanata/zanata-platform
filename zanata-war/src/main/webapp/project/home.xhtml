@@ -93,40 +93,42 @@
 	        </a4j:region>
         </s:div>
         
-        <rich:dataTable id="projectList" 
+        <rich:dataTable id="projectList"
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
                 <rich:column width="270px" sortBy="#{project.name}">
-                     <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                           
-                        <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.status == 'ACTIVE'}"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                        <s:link id="readonlyProject" styleClass="table_link readonly_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.status == 'READONLY'}"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                        <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.status == 'OBSOLETE'}"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                    </rich:column>
+                <f:facet name="header">#{messages['jsf.ProjectName']}
+                    <richext:columnSorter />
+                </f:facet>
+
+                   <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
+                        view="/project/project.xhtml" rendered="#{project.status == 'ACTIVE'}">
+                       <f:param name="slug" value="#{project.slug}"/>
+                   </s:link>
+                   <s:link id="readonlyProject" styleClass="table_link readonly_link" value="#{project.name}"  propagation="none"
+                        view="/project/project.xhtml" rendered="#{project.status == 'READONLY'}">
+                       <f:param name="slug" value="#{project.slug}"/>
+                   </s:link>
+                   <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
+                        view="/project/project.xhtml" rendered="#{project.status == 'OBSOLETE'}">
+                       <f:param name="slug" value="#{project.slug}"/>
+                   </s:link>
+                </rich:column>
                 <rich:column width="270px">
-                        <f:facet name="header">#{messages['jsf.Description']}</f:facet>
-                        <h:outputText value="#{project.description}" />
-                    </rich:column>
+                    <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+                    <h:outputText value="#{project.description}" />
+                </rich:column>
                 <rich:column sortBy="#{project.creationDate}" width="auto">
-                        <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
-                        <h:outputText value="#{project.creationDate}">
-                           <f:convertDateTime type="date" dateStyle="default"/>
-                        </h:outputText>                     
-                    </rich:column>
-                    
-                    <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
-                        <f:facet name="header">#{messages['jsf.Status']}</f:facet>
-                        <h:outputText value="#{messages[project.status.messageKey]}"/>
-                    </rich:column>
+                    <f:facet name="header">#{messages['jsf.CreationDate']}<richext:columnSorter /></f:facet>
+                    <h:outputText value="#{project.creationDate}">
+                       <f:convertDateTime type="date" dateStyle="default"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
+                    <f:facet name="header">#{messages['jsf.Status']}<richext:columnSorter /></f:facet>
+                    <h:outputText value="#{messages[project.status.messageKey]}"/>
+                </rich:column>
         </rich:dataTable>
         
         <richext:spacer height="15" />

@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:composite="http://java.sun.com/jsf/composite">
+
+<composite:interface componentType="columnSortCompositeComponent">
+</composite:interface>
+<composite:implementation>
+    <a4j:commandLink action="#{columnSort.cycleSorting( cc )}" render="projectList">
+        <h:graphicImage library="images"
+                        name="unsorted.gif"
+                        style="vertical-align: middle"
+                        rendered="#{columnSort.isUnsorted( cc.parentColumn.id )}" />
+        <h:graphicImage library="images"
+                        name="desc_sort.gif"
+                        style="vertical-align: middle"
+                        rendered="#{columnSort.isSortedAscending( cc.parentColumn.id )}" />
+        <h:graphicImage library="images"
+                        name="asc_sort.gif"
+                        style="vertical-align: middle"
+                        rendered="#{columnSort.isSortedDescending( cc.parentColumn.id )}" />
+    </a4j:commandLink>
+</composite:implementation>
+</html>
