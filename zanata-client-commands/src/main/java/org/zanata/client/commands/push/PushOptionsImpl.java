@@ -50,7 +50,7 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    private static final int DEF_CHUNK_SIZE = 1024 * 1024;
    /** @see org.zanata.common.MergeType for options */
    private static final String DEF_MERGE_TYPE = "AUTO";
-   private static final String DEF_PUSH_TYPE = "trans";
+   private static final String DEF_PUSH_TYPE = "source";
 
    private List<String> includes = new ArrayList<String>();
    private List<String> excludes = new ArrayList<String>();
@@ -187,8 +187,8 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
 
    @Option(name = "--push-type", metaVar = "TYPE", required = false, 
          usage = "Type of push to perform on the server:\n" +
-                 "  \"source\" pushes source documents only.\n" +
-                 "  \"trans\" (default) pushes translation documents only.\n" +
+                 "  \"source\" (default) pushes source documents only.\n" +
+                 "  \"trans\" pushes translation documents only.\n" +
                  "  \"both\" pushes both source and translation documents.")
    public void setPushType(String pushType)
    {
