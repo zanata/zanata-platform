@@ -23,7 +23,7 @@ public class InvalidStateExceptionMapper implements ExceptionMapper<InvalidState
       {
          log.error("Invalid state for bean {0}: {1}", e, invalidValue.getBean(), invalidValue);
       }
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      return Response.status(Status.BAD_REQUEST).build();
    }
 
 }

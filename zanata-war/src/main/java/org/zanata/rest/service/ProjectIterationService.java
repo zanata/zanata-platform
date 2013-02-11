@@ -282,8 +282,11 @@ public class ProjectIterationService implements ProjectIterationResource
          }
       }
 
-      to.setOverrideValidations(hProject.getOverrideValidations());
-      to.getCustomizedValidations().addAll(hProject.getCustomizedValidations());
+      if (hProject != null)
+      {
+         to.setOverrideValidations(hProject.getOverrideValidations());
+         to.getCustomizedValidations().addAll(hProject.getCustomizedValidations());
+      }
    }
 
    public static void transfer(HProjectIteration from, ProjectIteration to)
