@@ -219,7 +219,6 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
 
          if (versionOverrideValidations)
          {
-            getInstance().getCustomizedValidations().clear();
             getInstance().getCustomizedValidations().addAll(versionCustomizedValidations);
          }
 

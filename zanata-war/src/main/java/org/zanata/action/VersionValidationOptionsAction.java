@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -34,6 +35,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.model.HProject;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationObject;
 
@@ -54,6 +57,9 @@ public class VersionValidationOptionsAction implements Serializable
 
    @In(required = false)
    private ProjectIterationHome projectIterationHome;
+
+   @In
+   private ProjectDAO projectDAO;
 
    private Map<String, Boolean> selectedValidations;
 
@@ -96,7 +102,20 @@ public class VersionValidationOptionsAction implements Serializable
    {
       if (versionOverrideValidations == null)
       {
-         versionOverrideValidations = projectIterationHome.getInstance().getOverrideValidations();
+         // New HProjectIteration inherits override validations rules from
+         // HProject
+         if (isCreateNewVersion())
+         {
+            HProject project = projectDAO.getBySlug(projectSlug);
+            if (project != null)
+            {
+               versionOverrideValidations = project.getOverrideValidations();
+            }
+         }
+         else
+         {
+            versionOverrideValidations = projectIterationHome.getInstance().getOverrideValidations();
+         }
       }
       return versionOverrideValidations;
    }
@@ -138,7 +157,9 @@ public class VersionValidationOptionsAction implements Serializable
                selectedValidations.put(val, true);
             }
          }
-         else
+         // New HProjectIteration inherits override validations rules from
+         // HProject
+         else if (!projectIterationHome.getInstance().getProject().getCustomizedValidations().isEmpty())
          {
             for (String val : projectIterationHome.getInstance().getProject().getCustomizedValidations())
             {
@@ -152,5 +173,10 @@ public class VersionValidationOptionsAction implements Serializable
    public void setSelectedValidations(Map<String, Boolean> selectedValidations)
    {
       this.selectedValidations = selectedValidations;
+   }
+
+   private boolean isCreateNewVersion()
+   {
+      return !StringUtils.isEmpty(getProjectSlug()) && StringUtils.isEmpty(getVersionSlug());
    }
 }
