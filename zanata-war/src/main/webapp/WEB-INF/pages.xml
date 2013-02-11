@@ -134,7 +134,7 @@
   <page view-id="/account/changepassword.xhtml" login-required="true">
     <restrict>#{applicationConfiguration.internalAuth}</restrict>
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ChangePassword'])}"/>
   </page>
   
@@ -184,20 +184,20 @@
   
   <page view-id="/admin/search.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageSearch'])}"/>
   </page>
   
   <page view-id="/admin/stats.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.OverallStatistics'])}"/>
   </page>
   
   <page view-id="/admin/roledetail.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/rolemanager', messages['jsf.ManageRoles'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/admin/rolemanager.xhtml', messages['jsf.ManageRoles'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.RoleDetails'])}"/>
     
     <navigation from-action="#{roleAction.save}">
@@ -209,8 +209,8 @@
 
   <page view-id="/admin/supportedlanguagedetail.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/languagemanager', messages['jsf.ManageLanguage'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/admin/languagemanager.xhtml', messages['jsf.ManageLanguage'])}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateSupportedLanguage'])}"/>
     <navigation from-action="#{languageManagerAction.save}">
       <rule if-outcome="success">
@@ -222,7 +222,7 @@
   <page view-id="/admin/rolemanager.xhtml" action="#{roleSearch.loadRoles}">
     <restrict>#{s:hasPermission('seam.role', 'read')}</restrict>
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageRoles'])}"/>
     <navigation from-action="#{roleAction.createRole}">
       <redirect view-id="/admin/roledetail.xhtml" />
@@ -234,8 +234,8 @@
 
   <page view-id="/admin/userdetail.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
-  	<action execute="#{breadcrumbs.addLocation('/admin/usermanager', messages['jsf.ManageUsers'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/admin/usermanager.xhtml', messages['jsf.ManageUsers'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.AccountDetails'])}"/>
     
     <navigation from-action="#{userAction.save}">
@@ -248,7 +248,7 @@
   <page view-id="/admin/usermanager.xhtml" action="#{userSearch.loadUsers}">
     <restrict>#{s:hasPermission('seam.user', 'read')}</restrict>
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageUsers'])}"/>
     <navigation from-action="#{userAction.createUser}">
       <redirect view-id="/admin/userdetail.xhtml" />
@@ -260,7 +260,7 @@
 
   <page view-id="/admin/server_configuration.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ServerConfiguration'])}"/>
     <navigation from-action="#{serverConfigurationBean.update}">
       <redirect view-id="/admin/home.xhtml" />
@@ -270,13 +270,13 @@
   <page view-id="/admin/languagemanager.xhtml" >
     <action execute="#{languageSearchAction.loadSupportedLanguage}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageLanguage'])}"/>
   </page>
 
   <page view-id="/admin/rolerules.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.RoleAssignmentRules'])}"/>
 
     <navigation from-action="#{roleAssignmentRuleAction.edit(rule)}">
@@ -286,8 +286,8 @@
 
   <page view-id="/admin/roleruledetails.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/rolerules', messages['jsf.RoleAssignmentRules'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/rolerules.xhtml', messages['jsf.RoleAssignmentRules'])}"/>
     <action if="#{!roleAssignmentRuleAction.managed}" execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.CreateRoleAssignmentRule'])}"/>
     <action if="#{roleAssignmentRuleAction.managed}" execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.EditRoleAssignmentRule'])}"/>
 
@@ -305,8 +305,8 @@
 
   <page view-id="/admin/processmanager.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/home', messages['jsf.Administration'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/admin/processmanager', messages['jsf.ProcessManager'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/admin/processmanager.xhtml', messages['jsf.ProcessManager'])}"/>
 
     <navigation from-action="#{processManagerAction.clearAllFinished}">
       <redirect view-id="/admin/processmanager.xhtml"/>
@@ -324,7 +324,7 @@
     <page view-id="/version-group/create_version_group.xhtml">
         <restrict>#{s:hasPermission(versionGroupHome.instance, 'insert')}</restrict>
         <action execute="#{breadcrumbs.clear}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/list', messages['jsf.Groups'])}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}"/>
         <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateNewGroup'])}"/>
         <navigation from-action="#{versionGroupHome.persist}">
             <rule if="#{versionGroupHome.managed}">
@@ -344,7 +344,7 @@
     	<action execute="#{versionGroupAction.executePreSearch()}" on-postback="false" />
     	
     	<action execute="#{breadcrumbs.clear}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/list', messages['jsf.Groups'])}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}"/>
         <action execute="#{breadcrumbs.addLocation('', versionGroupHome.slug)}"/>
         
   	</page>
@@ -354,8 +354,8 @@
 	    <action execute="#{identity.checkPermission(versionGroupHome.instance, 'update')}" />
 	    
 	    <action execute="#{breadcrumbs.clear}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/list', messages['jsf.Groups'])}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/view/'.concat(versionGroupHome.slug), versionGroupHome.slug)}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupHome.slug).param('versionGroupSlug', versionGroupHome.slug)}"/>
         <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditGroup'])}"/>
         
 	    <navigation from-action="#{versionGroupHome.update}">
@@ -375,8 +375,8 @@
         <action execute="#{versionGroupMaintainerManageAction.init()}" />
         
         <action execute="#{breadcrumbs.clear}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/list', messages['jsf.Groups'])}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/view/'.concat(versionGroupMaintainerManageAction.slug), versionGroupMaintainerManageAction.slug)}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupMaintainerManageAction.slug).param('versionGroupSlug', versionGroupMaintainerManageAction.slug)}"/>
         <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageMaintainers'])}"/>
         
     </page>
@@ -387,8 +387,8 @@
         <action execute="#{versionGroupJoinAction.searchMaintainedProjectVersion()}"/>
 
 		<action execute="#{breadcrumbs.clear}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/list', messages['jsf.Groups'])}"/>
-        <action execute="#{breadcrumbs.addLocation('/version-group/view/'.concat(versionGroupJoinAction.slug), versionGroupJoinAction.slug)}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}"/>
+        <action execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.slug).param('versionGroupSlug', versionGroupJoinAction.slug)}"/>
         <action execute="#{breadcrumbs.addLocation('', messages['jsf.RequestToJoinVersionGroup'])}"/>
         
 	    <navigation from-action="#{versionGroupJoinAction.send}">
@@ -415,7 +415,7 @@
   <page view-id="/profile/edit.xhtml">
   	<restrict>#{identity.preAuthenticated}</restrict>
   	<action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+  	<action execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProfile'])}"/>
     <navigation from-action="#{profileAction.edit}">
       <rule if-outcome="home">
@@ -442,15 +442,15 @@
 
   <page view-id="/profile/identities.xhtml" login-required="true">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.Title'])}"/>
     <action execute="#{credentialsAction.loadUserCredentials}"/>
   </page>
 
   <page view-id="/profile/add_identity.xhtml" login-required="true">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/profile/identities', messages['jsf.identities.Title'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/identities.xhtml', messages['jsf.identities.Title'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.identities.AddIdentity'])}"/>
 
     <navigation from-action="#{credentialsAction.cancel}">
@@ -460,7 +460,7 @@
 
   <page view-id="/profile/merge_account.xhtml" login-required="true">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/profile/view', messages['jsf.MyProfile'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.profile.MergeAccount'])}"/>
     <action execute="#{accountMergeAction.validateAccounts}"/>
 
@@ -477,7 +477,7 @@
   
   <page view-id="/help/edit_help_content.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/help/view', messages['jsf.Help'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/help/view.xhtml', messages['jsf.Help'])}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.EditHelpPageContent'])}"/>
   </page>
   
@@ -489,7 +489,7 @@
          upon construction to achieve this. -->
     <param name="emailType" value="#{sendEmail.emailType}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/help/view', messages['jsf.Help'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/help/view.xhtml', messages['jsf.Help'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ContactAdmin'])}"/>
     <navigation from-action="#{sendEmail.cancel}">
       <rule>
@@ -518,7 +518,7 @@
     <param name="slug" value="#{versionDetailsAction.projectSlug}" />
     <action execute="#{projectHome.validateSuppliedId}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('', projectHome.instance.slug)}"/>
 
     <navigation from-action="#{versionDetailsAction.sourceDocs(_version.slug)}">
@@ -532,7 +532,7 @@
   <page view-id="/project/create_project.xhtml">
     <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateANewProject'])}"/>
     <navigation from-action="#{projectHome.persist}">
       <rule if="#{projectHome.managed}">
@@ -556,8 +556,8 @@
       -->
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectHome.instance.slug).param('slug', projectHome.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
         
     <navigation from-action="#{projectHome.update}">
@@ -583,8 +583,8 @@
       -->
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectHome.instance.slug).param('slug', projectHome.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.project.EditHomePage.label'])}"/>
     
     <navigation from-action="#{projectHome.update}">
@@ -604,8 +604,8 @@
     <param name="projectSlug" value="#{projectHome.slug}" />
     <action execute="#{projectMaintainerManageAction.loadAllMaintainers()}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/home.seam', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectHome.slug), projectHome.instance.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectHome.instance.slug).param('slug', projectHome.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageMaintainers'])}"/>
     
     <navigation from-action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}">
@@ -624,8 +624,8 @@
     <!-- can't use <restrict> here either --> 
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationHome.projectSlug), projectIterationHome.instance.project.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml/', projectIterationHome.instance.project.slug).param('slug', projectIterationHome.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateVersion'])}"/>
     
     <navigation from-action="#{projectIterationHome.persist}">
@@ -653,8 +653,8 @@
     <action execute="#{identity.checkPermission(projectCopyTransOptionsAction.project, 'update')}" />
     
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectCopyTransOptionsAction.projectSlug), projectCopyTransOptionsAction.projectSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectCopyTransOptionsAction.projectSlug).param('slug', projectCopyTransOptionsAction.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.project.CopyTransOpts.title'])}"/>
     <action execute="#{projectCopyTransOptionsAction.initialize}"/>
 
@@ -672,8 +672,8 @@
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
     <action execute="#{viewAllStatusAction.validateIteration}"/>
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(viewAllStatusAction.projectSlug), viewAllStatusAction.project.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', viewAllStatusAction.project.slug).param('slug', viewAllStatusAction.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('', viewAllStatusAction.iterationSlug)}"/>
   </page>
 
@@ -683,9 +683,9 @@
 
     <action execute="#{projectIterationFilesAction.initialize()}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
-    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectIterationFilesAction.projectSlug).param('slug', projectIterationFilesAction.projectSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', projectIterationFilesAction.iterationSlug).param('projectSlug', projectIterationFilesAction.projectSlug).param('iterationSlug', projectIterationFilesAction.iterationSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SourceDocuments'])}"/>
 
     <navigation from-action="#{projectIterationFilesAction.deleteDocument(doc)}">
@@ -708,9 +708,9 @@
 
     <action execute="#{projectIterationFilesAction.initialize()}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationFilesAction.projectSlug), projectIterationFilesAction.projectSlug)}"/>
-    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationFilesAction.projectSlug).concat('/').concat(projectIterationFilesAction.iterationSlug), projectIterationFilesAction.iterationSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectIterationFilesAction.projectSlug).param('slug', projectIterationFilesAction.projectSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', projectIterationFilesAction.iterationSlug).param('projectSlug', projectIterationFilesAction.projectSlug).param('iterationSlug', projectIterationFilesAction.iterationSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.Documents'].concat(' (').concat(projectIterationFilesAction.localeId).concat(')'))}"/>
   </page>
 
@@ -723,8 +723,8 @@
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/project/lists', messages['jsf.Projects'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(projectIterationHome.projectSlug), projectIterationHome.instance.project.slug)}"/>
-    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(projectIterationHome.projectSlug).concat('/').concat(projectIterationHome.slug), projectIterationHome.slug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectIterationHome.instance.project.slug).param('slug', projectIterationHome.projectSlug)}"/>
+    <action execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', projectIterationHome.slug).param('projectSlug', projectIterationHome.projectSlug).param('iterationSlug', projectIterationHome.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditVersion'])}"/>
     
     <navigation from-action="#{projectIterationHome.update}">
@@ -750,10 +750,10 @@
 
         <action execute="#{versionGroupJoinAction.searchProjectVersion()}"/>
 		<action execute="#{breadcrumbs.clear}"/>
-		<action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-	    <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(versionGroupJoinAction.projectSlug), versionGroupJoinAction.projectSlug)}"/>
-	    <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(versionGroupJoinAction.projectSlug).concat('/').concat(versionGroupJoinAction.iterationSlug), versionGroupJoinAction.iterationSlug)}"/>
-	    <action execute="#{breadcrumbs.addLocation('/version-group/view/'.concat(versionGroupJoinAction.group.slug), versionGroupJoinAction.group.slug)}"/>
+		<action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+	    <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', versionGroupJoinAction.projectSlug).param('slug', versionGroupJoinAction.projectSlug)}"/>
+	    <action execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', versionGroupJoinAction.iterationSlug).param('projectSlug', versionGroupJoinAction.projectSlug).param('iterationSlug', versionGroupJoinAction.iterationSlug)}"/>
+	    <action execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.group.slug).param('versionGroupSlug', versionGroupJoinAction.group.slug)}"/>
 	    <action execute="#{breadcrumbs.addLocation('', messages['jsf.RequestToJoinVersionGroup'])}"/>
     
     
@@ -785,9 +785,9 @@
       <action execute="#{identity.checkPermission(copyTransAction.projectIteration, 'copy-trans')}" />
       <action execute="#{copyTransAction.initialize}"/>
       <action execute="#{breadcrumbs.clear}"/>
-      <action execute="#{breadcrumbs.addLocation('/project/list', messages['jsf.Projects'])}"/>
-      <action execute="#{breadcrumbs.addLocation('/project/view/'.concat(copyTransAction.projectSlug), copyTransAction.projectSlug)}"/>
-      <action execute="#{breadcrumbs.addLocation('/iteration/view/'.concat(copyTransAction.projectSlug).concat('/').concat(copyTransAction.iterationSlug), copyTransAction.iterationSlug)}"/>
+      <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
+      <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', copyTransAction.projectSlug).param('slug', copyTransAction.projectSlug)}"/>
+      <action execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', copyTransAction.iterationSlug).param('projectSlug', copyTransAction.projectSlug).param('iterationSlug', copyTransAction.iterationSlug)}"/>
       <action execute="#{breadcrumbs.addLocation('', messages['jsf.iteration.CopyTrans'])}"/>
 
       <navigation from-action="#{copyTransAction.startCopyTrans}">
@@ -823,8 +823,8 @@
     <param name="emailType" value="#{sendEmail.emailType}" />
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/language/list', messages['jsf.Languages'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/language/view/'.concat(sendEmail.locale.localeId.id), sendEmail.locale.localeId.id)}"/>
+    <action execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.contactLanguageTeamCoordinatorForLocale'])}"/>
     
     <navigation from-action="#{sendEmail.send}">
@@ -850,8 +850,8 @@
     <param name="emailType" value="#{sendEmail.emailType}" />
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/language/list', messages['jsf.Languages'])}"/>
-    <action execute="#{breadcrumbs.addLocation('/language/view/'.concat(sendEmail.locale.localeId.id), sendEmail.locale.localeId.id)}"/>
+    <action execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.RequestToJoinLanguageTeamTitle'])}"/>
     
     <navigation from-action="#{sendEmail.send}">
