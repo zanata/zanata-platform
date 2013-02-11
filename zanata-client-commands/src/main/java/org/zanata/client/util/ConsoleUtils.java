@@ -99,7 +99,7 @@ public class ConsoleUtils
       }
    }
 
-   private static final Timer timer = new Timer();
+   private static final Timer timer = new Timer(true);
 
    private static final Map<TimerTaskType, TimerTask> activeTasks = new HashMap<TimerTaskType, TimerTask>();
 
