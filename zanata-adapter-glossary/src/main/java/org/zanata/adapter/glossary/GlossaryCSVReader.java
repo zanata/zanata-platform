@@ -61,6 +61,8 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader
    public List<Glossary> extractGlossary(Reader reader) throws IOException
    {
       int entryCount = 0;
+      // TODO replace opencsv with apache-commons-csv (a replacement of opencsv and is in fedora maintained by someone)
+      // apache-commons-csv is not yet released in maven but has been in fedora. see http://commons.apache.org/csv/
       CSVReader csvReader = new CSVReader(reader);
       try
       {
