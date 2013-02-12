@@ -114,9 +114,12 @@ public class StatisticsServiceImpl implements StatisticsResource
          throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
       }
 
-      Map<String, TransUnitWords> wordIterationStats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
       Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
-
+      Map<String, TransUnitWords> wordIterationStats = null;
+      if( includeWordStats )
+      {
+         wordIterationStats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
+      }
       ContainerTranslationStatistics iterationStats = new ContainerTranslationStatistics();
       iterationStats.setId(iterationSlug);
       iterationStats.addRef(new Link(URI.create(zPathService.generatePathForProjectIteration(iteration)), "statSource", "PROJ_ITER"));
@@ -125,37 +128,39 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       for (LocaleId locId : localeIds)
       {
-         // word level stats
-         TransUnitWords wordCount = wordIterationStats.get(locId.getId());
-         TranslationStatistics wordStats;
-
-         if (wordCount == null)
-         {
-            wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
-         }
-         wordStats = getWordsStats(wordCount, locId);
-         wordStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
-         iterationStats.addStats(wordStats);
-
          // trans unit level stats
-         TransUnitCount count = transUnitIterationStats.get(locId.getId());
-         TranslationStatistics transUnitStats;
-
-         if (count == null)
+         TransUnitCount count = transUnitIterationStats.get( locId.getId() );
+         // Stats might not return anything if nothing is translated
+         if( count == null )
          {
             count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
          }
-         transUnitStats = getMessageStats(count, locId);
-         transUnitStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
+         TranslationStatistics transUnitStats = getMessageStats(count, locId);
+         transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
          iterationStats.addStats(transUnitStats);
+
+         // word level stats
+         if( includeWordStats )
+         {
+            TransUnitWords wordCount = wordIterationStats.get(locId.getId());
+            if( wordCount == null )
+            {
+               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
+            }
+            TranslationStatistics wordsStats = getWordsStats(wordCount, locId);
+            wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
+            iterationStats.addStats(wordsStats);
+         }
       }
 
       // TODO Do in a single query
-      if (includeDetails)
+      if( includeDetails )
       {
-         for (String docId : iteration.getDocuments().keySet())
+         for( String docId : iteration.getDocuments().keySet() )
          {
-            iterationStats.addDetailedStats(this.getStatistics(projectSlug, iterationSlug, docId, includeWordStats, locales));
+            iterationStats.addDetailedStats(
+                  this.getStatistics(projectSlug, iterationSlug, docId, includeWordStats, locales)
+            );
          }
       }
 
@@ -201,34 +206,47 @@ public class StatisticsServiceImpl implements StatisticsResource
       docStats.addRef(new Link(URI.create(zPathService.generatePathForDocument(document)), "statSource", "DOC"));
 
       long docTotalMssgs = documentDAO.getTotalCountForDocument(document);
-      long docTotalWords = documentDAO.getTotalWordCountForDocument(document);
+
+      long docTotalWords = 0;
+      if (includeWordStats)
+      {
+         docTotalWords = documentDAO.getTotalWordCountForDocument(document);
+      }
 
       for (LocaleId locale : localeIds)
       {
          TranslationStats stats = statsMap.get(locale);
-         TransUnitCount count;
-         TransUnitWords wordCount;
 
+         // trans unit level stats
+         TransUnitCount count;
          if (stats == null)
          {
             count = new TransUnitCount(0, 0, (int) docTotalMssgs);
-            wordCount = new TransUnitWords(0, 0, (int) docTotalWords);
          }
          else
          {
             count = stats.getUnitCount();
-            wordCount = stats.getWordCount();
          }
+         TranslationStatistics transUnitStats = getMessageStats(count, locale);
+         transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
+         docStats.addStats(transUnitStats);
 
          // word level stats
-         TranslationStatistics wordStats = getWordsStats(wordCount, locale);
-         wordStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
-         docStats.addStats(wordStats);
-
-         // trans unit level stats
-         TranslationStatistics transUnitStats = getMessageStats(count, locale);
-         transUnitStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
-         docStats.addStats(transUnitStats);
+         if( includeWordStats )
+         {
+            TransUnitWords wordCount;
+            if (stats == null)
+            {
+               wordCount = new TransUnitWords(0, 0, (int) docTotalWords);
+            }
+            else
+            {
+               wordCount = stats.getWordCount();
+            }
+            TranslationStatistics wordsStats = getWordsStats(wordCount, locale);
+            wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
+            docStats.addStats(wordsStats);
+         }
       }
 
       return docStats;
