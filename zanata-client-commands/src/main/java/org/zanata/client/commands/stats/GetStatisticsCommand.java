@@ -65,6 +65,30 @@ public class GetStatisticsCommand extends ConfigurableCommand<GetStatisticsOptio
 
       ContainerTranslationStatistics containerStats = null;
 
+      if (getOpts().getProj() == null)
+      {
+         log.error("Project slug is required but was not found. Aborting.");
+         return;
+      }
+
+      if (getOpts().getProj().isEmpty())
+      {
+         log.error("Project slug is empty. Aborting.");
+         return;
+      }
+
+      if (getOpts().getProjectVersion() == null)
+      {
+         log.error("Version slug is required but was not found. Aborting.");
+         return;
+      }
+
+      if (getOpts().getProjectVersion().isEmpty())
+      {
+         log.error("Version slug is empty. Aborting.");
+         return;
+      }
+
       // Document Id not specified
       if( getOpts().getDocumentId() == null )
       {
