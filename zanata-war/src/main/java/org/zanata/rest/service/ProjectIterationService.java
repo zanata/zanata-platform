@@ -213,7 +213,7 @@ public class ProjectIterationService implements ProjectIterationResource
          hProjectIteration = new HProjectIteration();
          hProjectIteration.setSlug(iterationSlug);
 
-         transferProjectType(projectIteration, hProjectIteration, hProject);
+         copyProjectConfiguration(projectIteration, hProjectIteration, hProject);
 
          hProject.addIteration(hProjectIteration);
          // pre-emptive entity permission check
@@ -238,7 +238,7 @@ public class ProjectIterationService implements ProjectIterationResource
          // pre-emptive entity permission check
          identity.checkPermission(hProjectIteration, "update");
 
-         transferProjectType(projectIteration, hProjectIteration, null);
+         copyProjectConfiguration(projectIteration, hProjectIteration, null);
         
          etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
          response = request.evaluatePreconditions(etag);
@@ -260,7 +260,15 @@ public class ProjectIterationService implements ProjectIterationResource
 
    }
 
-   public static void transferProjectType(ProjectIteration from, HProjectIteration to, HProject hProject)
+   /**
+    * Copy project configuration into new version(project type and validation
+    * rules)
+    * 
+    * @param from
+    * @param to
+    * @param hProject
+    */
+   public static void copyProjectConfiguration(ProjectIteration from, HProjectIteration to, HProject hProject)
    {
       if (from.getProjectType() != null)
       {
@@ -272,6 +280,12 @@ public class ProjectIterationService implements ProjectIterationResource
          {
             to.setProjectType(hProject.getDefaultProjectType());
          }
+      }
+
+      if (hProject != null)
+      {
+         to.setOverrideValidations(hProject.getOverrideValidations());
+         to.getCustomizedValidations().addAll(hProject.getCustomizedValidations());
       }
    }
 

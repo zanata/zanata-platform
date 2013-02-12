@@ -8,6 +8,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 import net.customware.gwt.dispatch.server.ExecutionContext;
 
 import org.hamcrest.Matchers;
@@ -37,6 +41,9 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
@@ -124,7 +131,14 @@ public class ActivateWorkspaceHandlerTest
       LoadOptionsResult optionsResult = new LoadOptionsResult(new UserConfigHolder().getState());
       when(loadOptionsHandler.execute(isA(LoadOptionsAction.class), any(ExecutionContext.class))).thenReturn(optionsResult);
       
-      GetValidationRulesResult validationResult = new GetValidationRulesResult(ValidationFactory.getAllValidationIds(true));
+      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(null);
+      ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
+      for (ValidationAction valAction : validationMap.values())
+      {
+         validationInfoList.add(valAction.getValidationInfo());
+      }
+      
+      GetValidationRulesResult validationResult = new GetValidationRulesResult(validationInfoList);
       when(getValidationRulesHandler.execute(isA(GetValidationRulesAction.class), any(ExecutionContext.class))).thenReturn(validationResult);
 
       ActivateWorkspaceResult result = handler.execute(action, null);
