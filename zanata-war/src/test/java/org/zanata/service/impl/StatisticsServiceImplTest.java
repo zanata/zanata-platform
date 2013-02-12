@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Arrays;
@@ -79,12 +80,13 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       // No detailed stats
       assertThat(stats.getDetailedStats(), nullValue());
 
-      assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.WORD));
-      assertThat(stats.getStats().get(1).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
+      assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
 
-      // No word level stats
       for( TranslationStatistics transStat : stats.getStats() )
       {
+         // Check that there are no word level stats
+         assertThat(transStat.getUnit(), not(TranslationStatistics.StatUnit.WORD));
+
          // make sure counts are sane
          assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
@@ -169,12 +171,14 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       // No detailed stats
       assertThat(stats.getDetailedStats(), nullValue());
 
-      assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.WORD));
-      assertThat(stats.getStats().get(1).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
+      assertThat(stats.getStats().get(0).getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
 
-      // No word level stats
+
       for( TranslationStatistics transStat : stats.getStats() )
       {
+         // Check that there are no word level stats
+         assertThat(transStat.getUnit(), not(TranslationStatistics.StatUnit.WORD));
+
          // make sure counts are sane
          assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
