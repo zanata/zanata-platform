@@ -33,7 +33,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
-import org.zanata.rest.dto.ProjectType;
 import org.zanata.service.ConfigurationService;
 
 @Name("configurationAction")
@@ -45,13 +44,15 @@ public class ConfigurationAction implements Serializable
    private String iterationSlug;
    @RequestParameter
    private String projectSlug;
+   @RequestParameter
+   private String projectType;
 
    @Logger
-   Log log;
+   private Log log;
    @In
-   ConfigurationService configurationServiceImpl;
+   private ConfigurationService configurationServiceImpl;
 
-   public void getData(ProjectType projectType)
+   public void getData()
    {
       HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
       response.setContentType("application/xml");
@@ -63,7 +64,7 @@ public class ConfigurationAction implements Serializable
          ServletOutputStream os = response.getOutputStream();
 
          os.write(
-this.configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug, projectType.name().toLowerCase()).getBytes());
+configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug, this.projectType).getBytes());
          os.flush();
          os.close();
          FacesContext.getCurrentInstance().responseComplete();
