@@ -419,7 +419,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("When unexpected error happens, a popup window will display and show it")
    String showErrorsTooltip();
 
-   @DefaultMessage("Switch between CodeMirror Editor (supports syntax highlight) and plain textarea (no syntax highlight but support spell check)")
+   @DefaultMessage("Switch between syntax highlightable Editor and plain textarea (no syntax highlight but support spell check in all browser)")
    String useCodeMirrorEditorTooltip();
 
    @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
