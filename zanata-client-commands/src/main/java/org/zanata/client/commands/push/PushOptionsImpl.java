@@ -74,7 +74,14 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    @Override
    public ZanataCommand initCommand()
    {
-      return new PushCommand(this);
+      if ("raw".equals(getProjectType()))
+      {
+         return new RawPushCommand(this);
+      }
+      else
+      {
+         return new PushCommand(this);
+      }
    }
 
    @Override

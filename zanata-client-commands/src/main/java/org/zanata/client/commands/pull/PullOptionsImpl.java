@@ -63,7 +63,14 @@ public class PullOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    @Override
    public ZanataCommand initCommand()
    {
-      return new PullCommand(this);
+      if ("raw".equals(getProjectType()))
+      {
+         return new RawPullCommand(this);
+      }
+      else
+      {
+         return new PullCommand(this);
+      }
    }
 
    @Override
