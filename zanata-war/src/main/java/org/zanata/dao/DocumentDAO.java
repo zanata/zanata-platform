@@ -52,9 +52,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public HDocument getById(Long id)
    {
-      return (HDocument)getSession().byNaturalId(HDocument.class)
-         .using("docId", id)
-         .load();
+      return (HDocument)getSession().get(HDocument.class, id);
    }
 
    public Set<LocaleId> getTargetLocales(HDocument hDoc)
