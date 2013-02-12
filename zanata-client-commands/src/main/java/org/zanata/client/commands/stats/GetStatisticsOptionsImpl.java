@@ -32,11 +32,15 @@ import org.zanata.client.config.LocaleList;
  */
 public class GetStatisticsOptionsImpl extends ConfigurableProjectOptionsImpl implements GetStatisticsOptions
 {
-   private boolean includeDetails;
+   private static final boolean DEFAULT_INCLUDE_DETAILS = false;
+   private static final boolean DEFAULT_INCLUDE_WORD_LEVEL_STATS = false;
+   private static final String DEFAULT_FORMAT = "console";
 
-   private boolean includeWordLevelStats;
+   private boolean includeDetails = DEFAULT_INCLUDE_DETAILS;
 
-   private String format;
+   private boolean includeWordLevelStats = DEFAULT_INCLUDE_WORD_LEVEL_STATS;
+
+   private String format = DEFAULT_FORMAT;
 
    private String documentId;
 
@@ -50,7 +54,8 @@ public class GetStatisticsOptionsImpl extends ConfigurableProjectOptionsImpl imp
    }
 
    @Override
-   @Option(name = "--details", usage = "Include statistics for lower levels (i.e., for documents in a project version).")
+   @Option(name = "--details", usage = "Include statistics for lower levels (i.e., for documents in a project version)." +
+                                       "\nNot included by default.")
    public void setIncludeDetails(boolean includeDetails)
    {
       this.includeDetails = includeDetails;
@@ -77,7 +82,7 @@ public class GetStatisticsOptionsImpl extends ConfigurableProjectOptionsImpl imp
 
    @Override
    @Option(name = "--format", metaVar = "FORMAT",
-         usage = "Format to display statistics. Valid values are 'screen' and 'csv'. Default is 'screen'.")
+         usage = "Format to display statistics. Valid values are 'console' and 'csv'. Default is 'console'.")
    public void setFormat(String format)
    {
       this.format = format;

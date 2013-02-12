@@ -21,17 +21,13 @@
 package org.zanata.client.commands.stats;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
 
 /**
@@ -96,9 +92,13 @@ public class GetStatisticsCommand extends ConfigurableCommand<GetStatisticsOptio
       {
          statsOutput = new CsvStatisticsOutput();
       }
-      // Default: console
       else
       {
+         if (! "console".equalsIgnoreCase( getOpts().getFormat() ) )
+         {
+            log.warn("Invalid format type '{}', using console format instead.", getOpts().getFormat());
+         }
+         // Default: console
          statsOutput = new ConsoleStatisticsOutput();
       }
 
