@@ -113,15 +113,18 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
 
       ClientResponse<String> response = fileResource.acceptedFileTypes();
       StringSet serverAcceptedTypes = new StringSet(response.getEntity());
-      for (String type : getOpts().getFileTypes())
+      if (getOpts().getFileTypes() != null)
       {
-         if (serverAcceptedTypes.contains(type))
+         for (String type : getOpts().getFileTypes())
          {
-            types.add(type);
-         }
-         else
-         {
-            log.warn("Requested type '{}' is not supported by the target server and will be ignored.", type);
+            if (serverAcceptedTypes.contains(type))
+            {
+               types.add(type);
+            }
+            else
+            {
+               log.warn("Requested type '{}' is not supported by the target server and will be ignored.", type);
+            }
          }
       }
 
