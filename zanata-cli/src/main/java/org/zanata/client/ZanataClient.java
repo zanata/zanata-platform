@@ -26,7 +26,6 @@ import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
 import org.zanata.util.VersionUtility;
 
-@SuppressWarnings("deprecation")
 public class ZanataClient extends BasicOptionsImpl
 {
    private String command;
@@ -82,7 +81,7 @@ public class ZanataClient extends BasicOptionsImpl
 
    public String getCommandName()
    {
-      return "zanataj";
+      return System.getProperty("app.name", "zanata-cli");
    }
 
    public String getCommandDescription()
