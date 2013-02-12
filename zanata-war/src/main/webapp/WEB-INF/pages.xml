@@ -86,6 +86,7 @@
    <!-- Internal and JAAS authentication -->
    <page view-id="/account/login_input.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
+    <param name="continue" value="#{userRedirect.encodedUrl}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.SignIn'])}"/>
     <navigation from-action="#{loginAction.login}">
