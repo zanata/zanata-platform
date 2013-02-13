@@ -20,12 +20,15 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -43,7 +46,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
 {
    public interface Display extends WidgetDisplay
    {
-      HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled);
+      HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked);
 
       void changeValidationSelectorValue(String label, boolean enabled);
    }
@@ -60,9 +63,12 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    protected void onBind()
    {
-      for (final ValidationAction validationAction : validationService.getValidationList())
+      ArrayList<ValidationAction> validationActions = new ArrayList<ValidationAction>(validationService.getValidationMap().values());
+      for (final ValidationAction validationAction : validationActions)
       {
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getValidationInfo().getId().getDisplayName(), validationAction.getValidationInfo().getDescription(), validationAction.getValidationInfo().isEnabled());
+         ValidationInfo validationInfo = validationAction.getValidationInfo();
+         
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationInfo.getId().getDisplayName(), validationInfo.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }

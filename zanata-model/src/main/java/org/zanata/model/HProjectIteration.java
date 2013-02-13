@@ -31,9 +31,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -49,6 +52,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Field;
@@ -89,14 +93,21 @@ public class HProjectIteration extends SlugEntityBase
    private Map<String, HDocument> allDocuments;
 
    private boolean overrideLocales = false;
+   private boolean overrideValidations = false;
    private Set<HLocale> customizedLocales;
    private Set<HIterationGroup> groups;
+   private Set<String> customizedValidations;
 
    private ProjectType projectType;
 
    public boolean getOverrideLocales()
    {
       return this.overrideLocales;
+   }
+
+   public boolean getOverrideValidations()
+   {
+      return overrideValidations;
    }
 
    @ManyToOne
@@ -169,5 +180,18 @@ public class HProjectIteration extends SlugEntityBase
          groups = new HashSet<HIterationGroup>();
       }
       return groups;
+   }
+
+   @JoinTable(name = "HProjectIteration_Validation", joinColumns = @JoinColumn(name = "projectIterationId"))
+   @Type(type = "text")
+   @ElementCollection(fetch = FetchType.EAGER)
+   @Column(name = "validation", nullable = false)
+   public Set<String> getCustomizedValidations()
+   {
+      if (customizedValidations == null)
+      {
+         customizedValidations = new HashSet<String>();
+      }
+      return customizedValidations;
    }
 }

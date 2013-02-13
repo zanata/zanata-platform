@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -55,7 +56,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
       var.append("  <url>").append(applicationConfiguration.getServerPath()).append("/</url>\n");
       var.append("  <project>").append(projectSlug).append("</project>\n");
       var.append("  <project-version>").append(iterationSlug).append("</project-version>\n");
-      if (projectType != null)
+      if (!StringUtils.isEmpty(projectType))
       {
          var.append("  <project-type>").append(projectType).append("</project-type>\n");
       }

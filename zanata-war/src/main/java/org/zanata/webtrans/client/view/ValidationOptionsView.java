@@ -38,11 +38,12 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @Override
-   public HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled)
+   public HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked)
    {
       CheckBox chk = new CheckBox(label);
       chk.setValue(enabled);
       chk.setTitle(tooltip);
+      chk.setEnabled(!locked);
       contentPanel.add(chk);
 
       return chk;

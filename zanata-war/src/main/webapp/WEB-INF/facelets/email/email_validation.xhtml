@@ -13,12 +13,22 @@
 
   <ui:define name="body">
     <p>#{messages['jsf.email.accountchange.DearName']}</p>
-    <p>#{messages['jsf.email.accountchange.ClickLinkToActivateEmailChange']}</p>
+    <p>#{messages['jsf.email.accountchange.Message']} <br/> #{messages['jsf.email.accountchange.Message2']}</p>
     <p>
       <a href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
-      	#{messages['jsf.ClickHereToContinue']} 
+      	#{messages['jsf.email.accountchange.ConfirmationLink']} 
       </a>
     </p>
+    
+    <p> 
+    	#{messages['jsf.email.accountchange.Message3']}
+    </p>
+	<p>
+      <a href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
+      	#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey} 
+      </a>
+    </p>
+    
   </ui:define>
   
 </ui:composition>

@@ -550,6 +550,7 @@
   <page view-id="/project/edit.xhtml" login-required="true">
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{localeListAction.slug}" />
+    <param name="slug" value="#{projectValidationOptionsAction.projectSlug}" />
 
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
@@ -560,7 +561,7 @@
     <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectHome.instance.slug).param('slug', projectHome.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}"/>
-        
+    
     <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">
         <param name="slug" value="#{projectHome.slug}" />
@@ -621,6 +622,8 @@
 
   <page view-id="/project/add_iteration.xhtml">
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <param name="projectSlug" value="#{versionValidationOptionsAction.projectSlug}" />
+    
     <action execute="#{projectIterationHome.validateProjectSlug}" />
     <!-- can't use <restrict> here either --> 
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
@@ -718,12 +721,14 @@
   <page view-id="/iteration/edit.xhtml">
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <param name="slug" value="#{versionValidationOptionsAction.versionSlug}" />
+    <param name="projectSlug" value="#{versionValidationOptionsAction.projectSlug}" />
    
     <action execute="#{projectIterationHome.validateSuppliedId}" />
     <!-- can't use <restrict> here either -->
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('/project/lists', messages['jsf.Projects'])}"/>
+    <action execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}"/>
     <action execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectIterationHome.instance.project.slug).param('slug', projectIterationHome.projectSlug)}"/>
     <action execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', projectIterationHome.slug).param('projectSlug', projectIterationHome.projectSlug).param('iterationSlug', projectIterationHome.slug)}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.EditVersion'])}"/>

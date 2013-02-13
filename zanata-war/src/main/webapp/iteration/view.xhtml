@@ -133,9 +133,10 @@
 			<s:link styleClass="action_link" 
 				value="#{messages['jsf.ConfigFile']}"
 				title="#{messages['jsf.GenerateProjectConfig']}"
-				action="#{configurationAction.getData(viewAllStatusAction.projectIteration.projectType)}">
+				action="#{configurationAction.getData()}">
 				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
 				<f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
+				<f:param name="projectType" value="#{viewAllStatusAction.projectType}" />
 			</s:link>
             <a4j:outputPanel id="copyTransLink">
                 <s:link styleClass="action_link"

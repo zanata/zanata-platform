@@ -25,7 +25,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
       {
          log.error("Invalid state for leaf bean {0}: {1}", e, invalidValue.getLeafBean(), invalidValue);
       }
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      return Response.status(Status.BAD_REQUEST).build();
    }
 
 }

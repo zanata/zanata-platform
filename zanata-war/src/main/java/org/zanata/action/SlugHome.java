@@ -23,6 +23,8 @@ package org.zanata.action;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -98,6 +100,14 @@ public abstract class SlugHome<E> extends EntityHome<E>
             projectTypeList.add(option);
          }
       }
+      Collections.sort(projectTypeList, new Comparator<SelectItem>()
+      {
+         @Override
+         public int compare(SelectItem o1, SelectItem o2)
+         {
+            return o1.getLabel().compareTo(o2.getLabel());
+         }
+      });
       return projectTypeList;
    }
 

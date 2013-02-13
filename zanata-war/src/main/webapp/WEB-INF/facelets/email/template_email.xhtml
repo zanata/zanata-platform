@@ -22,9 +22,11 @@
         <p>
           <s:span rendered="#{not empty emailServiceImpl.receivedReason}">
               #{messages['jsf.email.YouAreReceivingThisMailBecause']} <br/>
-              #{emailServiceImpl.receivedReason}
+              #{emailServiceImpl.receivedReason} <br/>
           </s:span>
-          <br/><br/>
+        </p>
+        <p>
+          <img src="http://zanata.org/images/z-logo-16px.png" style="padding-right:5px"/>
           #{messages['jsf.email.GeneratedFromZanataServerAt']}
           <a href="#{applicationConfiguration.serverPath}">#{applicationConfiguration.serverPath}</a>
         </p>
