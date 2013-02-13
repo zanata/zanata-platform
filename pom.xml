@@ -213,17 +213,33 @@
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<version>1.2</version>
 				<executions>
+              <execution>
+                <id>enforce-ban-duplicate-classes</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <banDuplicateClasses>
+                       <findAllDuplicates>true</findAllDuplicates>
+                       <ignoreClasses combine.children="append">
+                          <!-- We will need this if we use Lombok more -->
+                          <!-- <ignoreClass>com.sun.jna.*</ignoreClass> -->
+                       </ignoreClasses>
+                    </banDuplicateClasses>
+                  </rules>
+                </configuration>
+              </execution>
 				  <execution>
 				    <id>enforce-banned-dependencies</id>
 				    <goals>
 				      <goal>enforce</goal>
 				    </goals>
 				    <configuration>
-				      <fail>true</fail>
 				      <rules>
 				        <bannedDependencies>
 				          <excludes>
-				            <!-- should use junit:junit v11+ -->
+				            <!-- use junit:junit v11+ -->
 				            <exclude>junit:junit-dep</exclude>
 				          </excludes>
 				          <searchTransitive>true</searchTransitive>
@@ -237,7 +253,6 @@
 				      <goal>enforce</goal>
 				    </goals>
 				    <configuration>
-				      <fail>true</fail>
 				      <rules>
 				        <requireNoRepositories>
 				          <message>
@@ -253,6 +268,13 @@
 				    </configuration>
 				  </execution>
 				</executions>
+				<dependencies>
+				  <dependency>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>extra-enforcer-rules</artifactId>
+					<version>1.0-alpha-3</version>
+				  </dependency>
+				</dependencies>
 			</plugin>
 
 			<plugin>
@@ -606,6 +628,12 @@
 				<version>1.2.16</version>
 			</dependency>
 			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>0.11.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.2</version>
@@ -623,12 +651,6 @@
 			<dependency>
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                    </exclusion>
-                </exclusions>
 				<version>6.4</version>
 			</dependency>
 			<dependency>
@@ -703,15 +725,27 @@
 			</dependency>
 
 			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.8.3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils-core</artifactId>
+				<version>1.8.3</version>
+			</dependency>
+
+			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.3</version>
+				<version>1.7</version>
 			</dependency>
 
 			<dependency>
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
-				<version>3.2</version>
+				<version>3.2.1</version>
 			</dependency>
 
 			<dependency>
@@ -781,13 +815,13 @@
 			<dependency>
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
-				<version>1.6</version>
+				<version>1.9</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.fedorahosted.openprops</groupId>
 				<artifactId>openprops</artifactId>
-				<version>0.5</version>
+				<version>0.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.infinitest</groupId>
@@ -811,7 +845,7 @@
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
-				<version>2.5</version>
+				<version>2.6</version>
 			</dependency>
 
             <dependency>
