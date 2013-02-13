@@ -66,10 +66,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    protected HIterationGroup loadInstance()
    {
       Session session = (Session) getEntityManager().getDelegate();
-      Criteria cr = session.createCriteria(getEntityClass());
-      cr.add(Restrictions.naturalId().set("slug", getSlug()));
-      cr.setCacheable(true);
-      return (HIterationGroup) cr.uniqueResult();
+      return (HIterationGroup)session.byNaturalId(HIterationGroup.class).using("slug", getSlug()).load();
    }
 
    public List<HProjectIteration> getInstanceProjectIterations()

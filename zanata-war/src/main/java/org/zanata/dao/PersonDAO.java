@@ -54,11 +54,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
 
    public HPerson findByEmail(String email)
    {
-      Criteria cr = getSession().createCriteria(HPerson.class);
-      cr.add(Restrictions.naturalId().set("email", email));
-      cr.setCacheable(true);
-      cr.setComment("PersonDAO.findByEmail");
-      return (HPerson) cr.uniqueResult();
+      return (HPerson)getSession().byNaturalId(HPerson.class).using("email", email).load();
    }
 
    @SuppressWarnings("unchecked")

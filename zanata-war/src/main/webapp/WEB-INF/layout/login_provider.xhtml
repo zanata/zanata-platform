@@ -42,21 +42,21 @@
             if( showUsername )
             {
                 jQuery('#identityLabel').html( usernameLabel );
-                jQuery('#' + usernamefieldSelector).show();
+                jQuery(usernamefieldSelector).show();
             }
             else
             {
-                jQuery('#' + usernamefieldSelector).hide();
+                jQuery(usernamefieldSelector).hide();
             }
 
             var passwordfieldSelector = "[id='#{rich:clientId('providerPasswordField')}']";
             if( showPassword )
             {
-                jQuery('#' + passwordfieldSelector).show();
+                jQuery(passwordfieldSelector).show();
             }
             else
             {
-                jQuery('#' + passwordfieldSelector).hide();
+                jQuery(passwordfieldSelector).hide();
             }
 
             ${onProviderChange}

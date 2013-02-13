@@ -20,17 +20,13 @@
  */
 package org.zanata;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,6 +48,17 @@ import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.AuthenticationType;
+import org.zanata.util.ZanataBasicConfig;
+
+import static org.zanata.util.ZanataBasicConfig.KEY_ADMIN_USERS;
+import static org.zanata.util.ZanataBasicConfig.KEY_AUTH_POLICY;
+import static org.zanata.util.ZanataBasicConfig.KEY_DEFAULT_FROM_ADDRESS;
+import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_HOST;
+import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_PASSWORD;
+import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_PORT;
+import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_SSL;
+import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_TLS;
+import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_USERNAME;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -66,16 +73,7 @@ public class ApplicationConfiguration implements Serializable
    private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
 
-   // Property file key names
-   private static final String KEY_AUTH_POLICY = "zanata.security.auth.policy";
-   private static final String KEY_ADMIN_USERS = "zanata.security.admin.users";
-   private static final String KEY_DEFAULT_FROM_ADDRESS = "zanata.email.default.from";
-   private static final String KEY_EMAIL_HOST = "zanata.smtp.host";
-   private static final String KEY_EMAIL_PORT = "zanata.smtp.port";
-   private static final String KEY_EMAIL_USERNAME = "zanata.smtp.username";
-   private static final String KEY_EMAIL_PASSWORD = "zanata.smtp.password";
-   private static final String KEY_EMAIL_TLS = "zanata.smtp.tls";
-   private static final String KEY_EMAIL_SSL = "zanata.smtp.ssl";
+
 
    private static final String[] allConfigKeys = new String[]
       {
@@ -91,8 +89,7 @@ public class ApplicationConfiguration implements Serializable
          HApplicationConfiguration.KEY_REGISTER
       };
 
-   // Property files
-   private static Properties externalConfig;
+   private static final ZanataBasicConfig externalConfig = ZanataBasicConfig.getInstance();
 
    private static final ZanataSMTPAppender smtpAppenderInstance = new ZanataSMTPAppender();
 
@@ -130,22 +127,20 @@ public class ApplicationConfiguration implements Serializable
 
    private void loadExternalConfig()
    {
-      Properties config = getExternalConfig();
-
       // Authentication policies
       for( AuthenticationType authType : AuthenticationType.values() )
       {
          String key = KEY_AUTH_POLICY + "." + authType.name().toLowerCase();
-         if( config.containsKey( key ) )
+         if( externalConfig.containsKey( key ) )
          {
-            loginModuleNames.put( authType, config.getProperty(key) );
+            loginModuleNames.put( authType, externalConfig.getProperty(key) );
          }
       }
 
       // Admin users
-      if( config.containsKey( KEY_ADMIN_USERS ) )
+      if( externalConfig.containsKey( KEY_ADMIN_USERS ) )
       {
-         String userList = config.getProperty(KEY_ADMIN_USERS);
+         String userList = externalConfig.getProperty(KEY_ADMIN_USERS);
 
          for( String userName : userList.split(",") )
          {
@@ -177,59 +172,6 @@ public class ApplicationConfiguration implements Serializable
          throw new RuntimeException("At least one authentication type must be configured in zanata.properties");
       }
    }
-
-   private static final Properties getExternalConfig()
-   {
-      if( externalConfig == null )
-      {
-         try
-         {
-            externalConfig = new Properties();
-            externalConfig.load(ApplicationConfiguration.class.getResourceAsStream("/zanata.properties"));
-         }
-         catch (IOException e)
-         {
-            log.error("Error while loading zanata.properties: " + e.getMessage());
-            throw new RuntimeException(e);
-         }
-      }
-      return externalConfig;
-   }
-
-/*   private static final ResourceBundle getDefaultConfig()
-   {
-      if( defaultConfig == null )
-      {
-         try
-         {
-            defaultConfig = ResourceBundle.getBundle("zanata-defaultconfig");
-         }
-         catch (MissingResourceException e)
-         {
-            defaultConfig = new ListResourceBundle()
-            {
-               @Override
-               protected Object[][] getContents()
-               {
-                  return new Object[0][];
-               }
-            };
-            log.info("zanata-defaultconfig.properties not found. Default configuration won't be bootstrapped.");
-         }
-      }
-      return defaultConfig;
-   }
-
-   private void setDefaults(Map<String, String> map)
-   {
-      for( String key : allConfigKeys )
-      {
-         if( getDefaultConfig().containsKey(key) )
-         {
-            map.put(key, getDefaultConfig().getString(key));
-         }
-      }
-   }*/
 
    /**
     * Apply logging configuration.

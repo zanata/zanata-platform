@@ -24,7 +24,7 @@
                   <rich:column width="auto" styleClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.AllActions']}</f:facet>
                     <h:selectBooleanCheckbox value="#{clazz.selectAll}">
-                      <a4j:ajax event="click" render="actions" />
+                      <a4j:ajax event="click" render="actions" execute="@this"/>
                     </h:selectBooleanCheckbox>
                   </rich:column>
                   <rich:column width="270px">
@@ -36,7 +36,7 @@
                     <f:facet name="header">#{messages['jsf.manageSearch.purge']}</f:facet>
                     <f:facet name="footer">
                       <h:selectBooleanCheckbox value="#{reindexAction.purgeAll}">
-                         <a4j:ajax event="click" render="actions" />
+                         <a4j:ajax event="click" render="actions" execute="@this"/>
                       </h:selectBooleanCheckbox>
                     </f:facet>
                     <rich:tooltip showDelay="800" styleClass="leftalign">
@@ -44,15 +44,15 @@
                       <p>#{messages['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
                       <p>#{messages['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
                     </rich:tooltip>
-                    <h:selectBooleanCheckbox value="#{clazz.purge}">
-                      <a4j:ajax event="click" render="actions" />
+                    <h:selectBooleanCheckbox value="#{clazz.purge}" execute="@this">
+                      <a4j:ajax event="click" render="actions" execute="@this"/>
                     </h:selectBooleanCheckbox>
                   </rich:column>
                   <rich:column width="auto" styleClass="centered" footerClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.reindex']}</f:facet>
                     <f:facet name="footer">
                       <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}">
-                         <a4j:ajax event="click" render="actions" />
+                         <a4j:ajax event="click" render="actions" execute="@this"/>
                       </h:selectBooleanCheckbox>
                     </f:facet>
                     <rich:tooltip showDelay="800" styleClass="leftalign">
@@ -64,14 +64,14 @@
                       <p><em>#{messages['jsf.manageSearch.reindex.RunDuringOffPeak']}</em></p>
                     </rich:tooltip>
                     <h:selectBooleanCheckbox value="#{clazz.reindex}">
-                      <a4j:ajax event="click" render="actions" />
+                      <a4j:ajax event="click" render="actions" execute="@this"/>
                     </h:selectBooleanCheckbox>
                   </rich:column>
                   <rich:column width="auto" styleClass="centered" footerClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.optimize']}</f:facet>
                     <f:facet name="footer">
                       <h:selectBooleanCheckbox value="#{reindexAction.optimizeAll}">
-                         <a4j:ajax event="click" render="actions" />
+                         <a4j:ajax event="click" render="actions" execute="@this"/>
                       </h:selectBooleanCheckbox>
                     </f:facet>
                     <rich:tooltip showDelay="800" styleClass="leftalign">
@@ -81,7 +81,7 @@
                       <p><em>#{messages['jsf.manageSearch.optimize.TempFileWarning']}</em></p>
                     </rich:tooltip>
                     <h:selectBooleanCheckbox value="#{clazz.optimize}">
-                      <a4j:ajax event="click" render="actions" />
+                      <a4j:ajax event="click" render="actions" execute="@this"/>
                     </h:selectBooleanCheckbox>
                   </rich:column>
                 </rich:dataTable>
@@ -91,15 +91,15 @@
                 <a4j:commandButton id="selectNone"
                     value="#{messages['jsf.ManageSearch.SelectNone']}"
                     action="#{reindexAction.selectAll(false)}"
-                    reRender="actions"/>
+                    render="actions"/>
                 <a4j:commandButton id="selectAll"
                     value="#{messages['jsf.ManageSearch.SelectAll']}"
                     action="#{reindexAction.selectAll(true)}"
-                    reRender="actions"/>
+                    render="actions"/>
                 <a4j:commandButton id="reindex"
                     value="#{messages['jsf.ManageSearch.PerformSelectedActions']}"
                     action="#{reindexAction.reindexDatabase}"
-                    reRender="actions,progress"/>
+                    render="actions,progress"/>
               </a4j:outputPanel>
             </a4j:outputPanel>
 
@@ -120,16 +120,20 @@
               </h:outputText>
 
               <a4j:outputPanel>
-                <!-- minValue is -1 because of a bug when 0 is used -->
+                <!-- Using a js function to rerender as reRenderAfterComplete is not working properly -->
+                <a4j:jsFunction name="reRenderAfterReindex" render="progress,actions" />
                 <rich:progressBar id="reindexProgressBar"
                       value="#{reindexAction.reindexProgress}"
                       interval="1000"
                       label="#{messages['jsf.manageSearch.ProgressMessage']}"
-                      minValue="-1"
-                      maxValue="#{reindexAction.reindexCount - 1}"
+                      minValue="0"
+                      maxValue="#{reindexAction.reindexCount}"
                       reRender="timeEstimate"
                       reRenderAfterComplete="progress,actions"
-                      style="width: 550px;">
+                      style="width: 550px;"
+                      rendered="#{reindexAction.inProgress}"
+                      enabled="#{reindexAction.inProgress}"
+                      oncomplete="reRenderAfterReindex()">
                 </rich:progressBar>
               </a4j:outputPanel>
 

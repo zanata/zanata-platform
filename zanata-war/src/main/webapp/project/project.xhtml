@@ -1,6 +1,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:s="http://jboss.org/schema/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
@@ -31,7 +32,7 @@
    		<h:form>
    		<rich:dataTable id="iterations" value="#{projectHome.versions}" var="_version">
             <rich:column sortBy="#{_version.slug}" id="column">
-            	<f:facet name="header">#{messages['jsf.Version']}</f:facet>
+            	<f:facet name="header">#{messages['jsf.Version']}<richext:columnSorter/></f:facet>
                  <s:link view="/iteration/view.xhtml" styleClass="version_link">
                  	<f:param name="projectSlug" value="#{projectHome.slug}"/>
                 	<f:param name="iterationSlug" value="#{_version.slug}"/>
@@ -44,58 +45,65 @@
                 </s:link>
                	<span class="version_info">Documents: #{_version.documents.size}</span>
             </rich:column>
-            
+
             <rich:column styleClass="centered" rendered="#{identity.loggedIn}">
             	<f:facet name="header">#{messages['jsf.TranslateLinks']}</f:facet>
-            	<rich:dataGrid value="#{versionDetailsAction.getSupportedLocaleList(_version.slug)}" var="language"  columns="3" styleClass="version_details_panel" >
-		 			<s:div styleClass="version_details_cell">
-						<h:outputLink
-							rendered="#{not applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language) }"
-							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Open']}">
-							<f:param name="project" value="#{projectHome.slug}" />
-							<f:param name="iteration" value="#{_version.slug}" />
-							<f:param name="localeId" value="#{language.localeId}" />
-							<f:param name="locale" value="#{locale.language}" />
-							<span>#{language.localeId.id}</span>
-							<span class="icon-eye icon"/>
-						</h:outputLink>
-		
-						<h:outputLink
-							rendered="#{applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language)}"
-							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.OpenGWTDevMode']}">
-							<f:param name="project" value="#{projectHome.slug}" />
-							<f:param name="iteration" value="#{_version.slug}" />
-							<f:param name="localeId" value="#{language.localeId}" />
-							<f:param name="locale" value="#{locale.language}" />
-							<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-							<span>#{language.localeId.id}</span>
-							<span class="icon-eye icon" />
-		    			</h:outputLink>
-		
-						<h:outputLink
-							rendered="#{not applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
-							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Translate']}">
-							<f:param name="project" value="#{projectHome.slug}" />
-							<f:param name="iteration" value="#{_version.slug}" />
-							<f:param name="localeId" value="#{language.localeId}" />
-							<f:param name="locale" value="#{locale.language}" />
-							<span>#{language.localeId.id}</span>
-							<span class="icon-edit icon"/>
-		    			</h:outputLink>
-		    					
-						<h:outputLink
-							rendered="#{applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
-							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.TranslateGWTDevMode']}">
-							<f:param name="project" value="#{projectHome.slug}" />
-							<f:param name="iteration" value="#{_version.slug}" />
-							<f:param name="localeId" value="#{language.localeId}" />
-							<f:param name="locale" value="#{locale.language}" />
-							<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-							<span>#{language.localeId.id}</span>
-							<span class="icon-edit icon"/>
-		    			</h:outputLink>
-	    			</s:div>
-		 		</rich:dataGrid>
+                <ui:remove>
+                    <!--The c:if tag Below solves a bug where some components (in this case rich:dataGrid are not
+                        respecting their parent component's rendered attribute and invoke their value EL expressions)
+                    -->
+                </ui:remove>
+                <c:if test="#{identity.loggedIn}">
+                    <rich:dataGrid value="#{versionDetailsAction.getSupportedLocaleList(_version.slug)}" var="language"  columns="3" styleClass="version_details_panel" >
+                        <s:div styleClass="version_details_cell">
+                            <h:outputLink
+                                rendered="#{not applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language) }"
+                                value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Open']}">
+                                <f:param name="project" value="#{projectHome.slug}" />
+                                <f:param name="iteration" value="#{_version.slug}" />
+                                <f:param name="localeId" value="#{language.localeId}" />
+                                <f:param name="locale" value="#{locale.language}" />
+                                <span>#{language.localeId.id}</span>
+                                <span class="icon-eye icon"/>
+                            </h:outputLink>
+
+                            <h:outputLink
+                                rendered="#{applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language)}"
+                                value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.OpenGWTDevMode']}">
+                                <f:param name="project" value="#{projectHome.slug}" />
+                                <f:param name="iteration" value="#{_version.slug}" />
+                                <f:param name="localeId" value="#{language.localeId}" />
+                                <f:param name="locale" value="#{locale.language}" />
+                                <f:param name="gwt.codesvr" value="127.0.0.1:9997" />
+                                <span>#{language.localeId.id}</span>
+                                <span class="icon-eye icon" />
+                            </h:outputLink>
+
+                            <h:outputLink
+                                rendered="#{not applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
+                                value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Translate']}">
+                                <f:param name="project" value="#{projectHome.slug}" />
+                                <f:param name="iteration" value="#{_version.slug}" />
+                                <f:param name="localeId" value="#{language.localeId}" />
+                                <f:param name="locale" value="#{locale.language}" />
+                                <span>#{language.localeId.id}</span>
+                                <span class="icon-edit icon"/>
+                            </h:outputLink>
+
+                            <h:outputLink
+                                rendered="#{applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
+                                value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.TranslateGWTDevMode']}">
+                                <f:param name="project" value="#{projectHome.slug}" />
+                                <f:param name="iteration" value="#{_version.slug}" />
+                                <f:param name="localeId" value="#{language.localeId}" />
+                                <f:param name="locale" value="#{locale.language}" />
+                                <f:param name="gwt.codesvr" value="127.0.0.1:9997" />
+                                <span>#{language.localeId.id}</span>
+                                <span class="icon-edit icon"/>
+                            </h:outputLink>
+                        </s:div>
+                    </rich:dataGrid>
+                </c:if>
             </rich:column>
             
             <rich:column styleClass="centered"> 

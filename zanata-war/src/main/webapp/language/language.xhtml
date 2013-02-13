@@ -34,7 +34,7 @@
                     var="member" 
                     rendered="#{not empty languageTeamAction.locale.members}"
                     sortMode="single">
-                  <rich:column id="usernameCol" width="auto" sortBy="#{member.person.account.username}" sortOrder="ASCENDING">
+                  <rich:column id="usernameCol" width="auto" sortBy="#{member.person.account.username}" sortOrder="ascending">
                     <f:facet name="header">#{messages['jsf.Username']}</f:facet>
                     #{member.person.account.username}
                   </rich:column>

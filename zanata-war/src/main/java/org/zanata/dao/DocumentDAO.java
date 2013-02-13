@@ -44,18 +44,15 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public HDocument getByDocIdAndIteration(HProjectIteration iteration, String id)
    {
-      Criteria cr = getSession().createCriteria(HDocument.class);
-      cr.add(Restrictions.naturalId().set("docId", id).set("projectIteration", iteration));
-      cr.setCacheable(true).setComment("DocumentDAO.getByDocIdAndIteration");
-      return (HDocument) cr.uniqueResult();
+      return (HDocument)getSession().byNaturalId(HDocument.class)
+            .using("docId", id)
+            .using("projectIteration", iteration)
+            .load();
    }
 
    public HDocument getById(Long id)
    {
-      Criteria cr = getSession().createCriteria(HDocument.class);
-      cr.add(Restrictions.naturalId().set("id", id));
-      cr.setCacheable(true).setComment("DocumentDAO.getById");
-      return (HDocument) cr.uniqueResult();
+      return (HDocument)getSession().get(HDocument.class, id);
    }
 
    public Set<LocaleId> getTargetLocales(HDocument hDoc)

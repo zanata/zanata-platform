@@ -114,10 +114,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public HTextFlow getById(HDocument document, String id)
    {
-      Criteria cr = getSession().createCriteria(HTextFlow.class);
-      cr.add(Restrictions.naturalId().set("resId", id).set("document", document));
-      cr.setCacheable(true).setComment("TextFlowDAO.getById");
-      return (HTextFlow) cr.uniqueResult();
+      return (HTextFlow)getSession().byNaturalId(HTextFlow.class).using("resId", id).load();
    }
 
    @SuppressWarnings("unchecked")

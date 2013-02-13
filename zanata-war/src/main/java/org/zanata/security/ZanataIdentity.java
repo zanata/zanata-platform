@@ -20,12 +20,8 @@
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -47,9 +43,10 @@ import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.ApplicationConfiguration;
-
 import com.google.common.collect.Lists;
+
+import static org.jboss.seam.ScopeType.SESSION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
 
 @Name("org.jboss.seam.security.identity")
 @Scope(SESSION)
@@ -224,8 +221,7 @@ public class ZanataIdentity extends Identity
       }
       if (getJaasConfigName() != null && !getJaasConfigName().equals(JAAS_DEFAULT))
       {
-         ApplicationConfiguration appConfig = (ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class);
-         return new LoginContext(appConfig.getLoginModuleName(getCredentials().getAuthType()), getSubject(), getCredentials().createCallbackHandler());
+         return new LoginContext(getJaasConfigName(), getSubject(), getCredentials().createCallbackHandler());
       }
 
       return new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance());

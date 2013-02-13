@@ -53,7 +53,7 @@
 						styleClass="iteration_inline_tribes">
 						<rich:column sortBy="#{stats.locale}"
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">#{messages['jsf.Language']}</f:facet>
+							<f:facet name="header">#{messages['jsf.Language']}<richext:columnSorter/></f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.seam"
 								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
@@ -171,16 +171,20 @@
                 <a4j:outputPanel rendered="#{copyTransRunning}">
                     #{messages['jsf.iteration.CopyTrans.inProgress']}
                 </a4j:outputPanel>
-                <!-- minValue is -1 because of a bug when 0 is used -->
-                
+
+                <!-- Using js function due to reRenderAfterComplete not working properly. -->
+                <a4j:jsFunction name="reRenderAfterCopyTrans" render="copyTransIndicator,copyTransLink,blah" limitRender="true"/>
                 <rich:progressBar id="copyTransProgressBar"
+                                  mode="ajax"
                                   value="#{viewAllStatusAction.copyTransProgress}"
-                                  minValue="-1"
-                                  maxValue="#{viewAllStatusAction.copyTransMaxProgress - 1}"
+                                  minValue="0"
+                                  maxValue="#{viewAllStatusAction.copyTransMaxProgress}"
                                   interval="2000"
-                                  ignoreDupResponses="true"
-                                  reRender="progressMssgs"
-                                  reRenderAfterComplete="copyTransIndicator,copyTransLink">
+                                  render="progressMssgs"
+                                  reRenderAfterComplete="copyTransIndicator,copyTransLink"
+                                  rendered="#{copyTransRunning}"
+                                  enabled="#{copyTransRunning}"
+                                  oncomplete="reRenderAfterCopyTrans()">
                 </rich:progressBar>
                 <a4j:outputPanel>
                     #{viewAllStatusAction.copyTransStatusMessage}

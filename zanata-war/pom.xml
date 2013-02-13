@@ -1285,7 +1285,6 @@
         <dependency>
             <groupId>org.richfaces.ui</groupId>
             <artifactId>richfaces-components-ui</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>

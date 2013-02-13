@@ -122,10 +122,7 @@ public class ProjectHome extends SlugHome<HProject>
    protected HProject loadInstance()
    {
       Session session = (Session) getEntityManager().getDelegate();
-      Criteria cr = session.createCriteria(getEntityClass());
-      cr.add(Restrictions.naturalId().set("slug", getSlug()));
-      cr.setCacheable(true);
-      return (HProject) cr.uniqueResult();
+      return (HProject)session.byNaturalId(HProject.class).using("slug", getSlug()).load();
    }
 
    public void validateSuppliedId()

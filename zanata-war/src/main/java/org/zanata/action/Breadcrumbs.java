@@ -2,7 +2,9 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -38,14 +40,18 @@ public class Breadcrumbs implements Serializable
       getLocations().clear();
    }
 
-   public void addLocation(String location, String display)
+   public Breadcrumb addLocation(String location, String display)
    {
-      getLocations().add(new Breadcrumb(location, display));
+      Breadcrumb bc = new Breadcrumb(location, display);
+      getLocations().add(bc);
+      return bc;
    }
 
-   public void addLocation(String location, String display, int index)
+   public Breadcrumb addLocation(String location, String display, int index)
    {
-      getLocations().add(index, new Breadcrumb(location, display));
+      Breadcrumb bc = new Breadcrumb(location, display);
+      getLocations().add(index, bc);
+      return bc;
    }
    
    public static class Breadcrumb implements Serializable
@@ -53,8 +59,9 @@ public class Breadcrumbs implements Serializable
       private static final long serialVersionUID = 1L;
       private String location;
       private String display;
+      private Map<String, String> params = new LinkedHashMap<String, String>();
       
-      public Breadcrumb(String location, String display)
+      private Breadcrumb(String location, String display)
       {
          this.location = location;
          this.display = display;
@@ -69,5 +76,17 @@ public class Breadcrumbs implements Serializable
       {
          return display;
       }
+
+      public Breadcrumb param(String name, String value)
+      {
+         params.put(name, value);
+         return this;
+      }
+
+      public Map<String, String> getParams()
+      {
+         return params;
+      }
    }
+
 }

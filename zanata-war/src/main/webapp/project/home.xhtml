@@ -30,42 +30,44 @@
     </s:fragment>
     <s:fragment rendered="#{!projectAction.getEmpty()}" id="projectList">
       <h:form id="form">
-      
-	<rich:dataScroller align="center" for="projectList" maxPages="10"
-		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2"
-            fastControls="hide">
-        <f:facet name="first">
-            <h:outputText value="" styleClass="icon-to-start"/>
-        </f:facet>
-        <f:facet name="previous">
-            <h:outputText value="" styleClass="icon-left-open"/>
-        </f:facet>
-        <f:facet name="next">
-            <h:outputText value="" styleClass="icon-right-open-1"/>
-        </f:facet>
-        <f:facet name="fastforward">
-            <h:outputText value="" styleClass="icon-fast-fw-1"/>
-        </f:facet>
-        <f:facet name="last">
-            <h:outputText value="" styleClass="icon-to-end"/>
-        </f:facet>
 
-        <f:facet name="first_disabled">
-            <h:outputText value="" styleClass="icon-to-start"/>
-        </f:facet>
-        <f:facet name="previous_disabled">
-            <h:outputText value="" styleClass="icon-left-open"/>
-        </f:facet>
-        <f:facet name="next_disabled">
-            <h:outputText value="" styleClass="icon-right-open-1"/>
-        </f:facet>
-        <f:facet name="fastforward_disabled">
-            <h:outputText value="" styleClass="icon-fast-fw-1"/>
-        </f:facet>
-        <f:facet name="last_disabled">
-            <h:outputText value="" styleClass="icon-to-end"/>
-        </f:facet>
-    </rich:dataScroller>
+    <div style="text-align: center">
+        <rich:dataScroller renderIfSinglePage="false" for="projectList" maxPages="10"
+                page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2"
+                fastControls="hide">
+            <f:facet name="first">
+                <h:outputText value="" styleClass="icon-to-start"/>
+            </f:facet>
+            <f:facet name="previous">
+                <h:outputText value="" styleClass="icon-left-open"/>
+            </f:facet>
+            <f:facet name="next">
+                <h:outputText value="" styleClass="icon-right-open-1"/>
+            </f:facet>
+            <f:facet name="fastforward">
+                <h:outputText value="" styleClass="icon-fast-fw-1"/>
+            </f:facet>
+            <f:facet name="last">
+                <h:outputText value="" styleClass="icon-to-end"/>
+            </f:facet>
+
+            <f:facet name="first_disabled">
+                <h:outputText value="" styleClass="icon-to-start"/>
+            </f:facet>
+            <f:facet name="previous_disabled">
+                <h:outputText value="" styleClass="icon-left-open"/>
+            </f:facet>
+            <f:facet name="next_disabled">
+                <h:outputText value="" styleClass="icon-right-open-1"/>
+            </f:facet>
+            <f:facet name="fastforward_disabled">
+                <h:outputText value="" styleClass="icon-fast-fw-1"/>
+            </f:facet>
+            <f:facet name="last_disabled">
+                <h:outputText value="" styleClass="icon-to-end"/>
+            </f:facet>
+        </rich:dataScroller>
+    </div>
 	<richext:spacer height="15" />
         
         <s:div styleClass="float-right">
@@ -91,72 +93,77 @@
 	        </a4j:region>
         </s:div>
         
-        <rich:dataTable id="projectList" 
+        <rich:dataTable id="projectList"
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
                 <rich:column width="270px" sortBy="#{project.name}">
-                     <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                           
-                        <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.status == 'ACTIVE'}"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                        <s:link id="readonlyProject" styleClass="table_link readonly_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.status == 'READONLY'}"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                        <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.status == 'OBSOLETE'}"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                    </rich:column>
+                <f:facet name="header">#{messages['jsf.ProjectName']}
+                    <richext:columnSorter />
+                </f:facet>
+
+                   <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
+                        view="/project/project.xhtml" rendered="#{project.status == 'ACTIVE'}">
+                       <f:param name="slug" value="#{project.slug}"/>
+                   </s:link>
+                   <s:link id="readonlyProject" styleClass="table_link readonly_link" value="#{project.name}"  propagation="none"
+                        view="/project/project.xhtml" rendered="#{project.status == 'READONLY'}">
+                       <f:param name="slug" value="#{project.slug}"/>
+                   </s:link>
+                   <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
+                        view="/project/project.xhtml" rendered="#{project.status == 'OBSOLETE'}">
+                       <f:param name="slug" value="#{project.slug}"/>
+                   </s:link>
+                </rich:column>
                 <rich:column width="270px">
-                        <f:facet name="header">#{messages['jsf.Description']}</f:facet>
-                        <h:outputText value="#{project.description}" />
-                    </rich:column>
+                    <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+                    <h:outputText value="#{project.description}" />
+                </rich:column>
                 <rich:column sortBy="#{project.creationDate}" width="auto">
-                        <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
-                        <h:outputText value="#{project.creationDate}">
-                           <f:convertDateTime type="date" dateStyle="default"/>
-                        </h:outputText>                     
-                    </rich:column>
-                    
-                    <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
-                        <f:facet name="header">#{messages['jsf.Status']}</f:facet>
-                        <h:outputText value="#{messages[project.status.messageKey]}"/>
-                    </rich:column>
+                    <f:facet name="header">#{messages['jsf.CreationDate']}<richext:columnSorter /></f:facet>
+                    <h:outputText value="#{project.creationDate}">
+                       <f:convertDateTime type="date" dateStyle="default"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
+                    <f:facet name="header">#{messages['jsf.Status']}<richext:columnSorter /></f:facet>
+                    <h:outputText value="#{messages[project.status.messageKey]}"/>
+                </rich:column>
         </rich:dataTable>
         
         <richext:spacer height="15" />
-	    <rich:dataScroller align="center" for="projectList" maxPages="10"
-		    page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller"
-            fastControls="hide">
-            <f:facet name="first">
-                <h:outputText value="" styleClass="icon-to-start"/>
-            </f:facet>
-            <f:facet name="previous">
-                <h:outputText value="" styleClass="icon-left-open"/>
-            </f:facet>
-            <f:facet name="next">
-                <h:outputText value="" styleClass="icon-right-open-1"/>
-            </f:facet>
-            <f:facet name="last">
-                <h:outputText value="" styleClass="icon-to-end"/>
-            </f:facet>
+        <div style="text-align: center">
+            <rich:dataScroller align="center" for="projectList" maxPages="10"
+                page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller"
+                fastControls="hide"
+                renderIfSinglePage="false">
+                <f:facet name="first">
+                    <h:outputText value="" styleClass="icon-to-start"/>
+                </f:facet>
+                <f:facet name="previous">
+                    <h:outputText value="" styleClass="icon-left-open"/>
+                </f:facet>
+                <f:facet name="next">
+                    <h:outputText value="" styleClass="icon-right-open-1"/>
+                </f:facet>
+                <f:facet name="last">
+                    <h:outputText value="" styleClass="icon-to-end"/>
+                </f:facet>
 
-            <f:facet name="first_disabled">
-                <h:outputText value="" styleClass="icon-to-start"/>
-            </f:facet>
-            <f:facet name="previous_disabled">
-                <h:outputText value="" styleClass="icon-left-open"/>
-            </f:facet>
-            <f:facet name="next_disabled">
-                <h:outputText value="" styleClass="icon-right-open-1"/>
-            </f:facet>
-            <f:facet name="last_disabled">
-                <h:outputText value="" styleClass="icon-to-end"/>
-            </f:facet>
-        </rich:dataScroller>
+                <f:facet name="first_disabled">
+                    <h:outputText value="" styleClass="icon-to-start"/>
+                </f:facet>
+                <f:facet name="previous_disabled">
+                    <h:outputText value="" styleClass="icon-left-open"/>
+                </f:facet>
+                <f:facet name="next_disabled">
+                    <h:outputText value="" styleClass="icon-right-open-1"/>
+                </f:facet>
+                <f:facet name="last_disabled">
+                    <h:outputText value="" styleClass="icon-to-end"/>
+                </f:facet>
+            </rich:dataScroller>
+        </div>
 	</h:form>
 </s:fragment>
     </s:decorate>

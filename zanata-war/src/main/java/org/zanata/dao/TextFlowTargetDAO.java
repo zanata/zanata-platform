@@ -47,10 +47,10 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
     */
    public HTextFlowTarget getByNaturalId(HTextFlow textFlow, HLocale locale)
    {
-      Criteria cr = getSession().createCriteria(HTextFlowTarget.class);
-      cr.add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", locale));
-      cr.setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId");
-      return (HTextFlowTarget) cr.uniqueResult();
+      return (HTextFlowTarget)getSession().byNaturalId(HTextFlowTarget.class)
+            .using("textFlow", textFlow)
+            .using("locale", locale)
+            .load();
    }
 
    public int getTotalTextFlowTargets()

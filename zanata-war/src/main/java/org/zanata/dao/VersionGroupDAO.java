@@ -72,10 +72,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
 
    public HIterationGroup getBySlug(String slug)
    {
-      Criteria criteria = getSession().createCriteria(HIterationGroup.class);
-      criteria.add(Restrictions.naturalId().set("slug", slug));
-      criteria.setCacheable(true).setComment("VersionGroupDAO.getBySlug");
-      return (HIterationGroup) criteria.uniqueResult();
+      return (HIterationGroup) getSession().byNaturalId(HIterationGroup.class).using("slug", slug).load();
    }
 
    public List<HPerson> getMaintainerBySlug(String slug)

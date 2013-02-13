@@ -71,10 +71,9 @@
 
         <rich:tabPanel switchType="client"
                        inactiveTabClass="inactive_tab">
-            <rich:tab label="#{messages['jsf.MaintainedProjects']}"
-                    styleClass="tab_header">
+            <rich:tab header="#{messages['jsf.MaintainedProjects']} (#{personHome.instance.maintainerProjects.size})">
                 <h:form>
-                    <rich:dataGrid value="#{personHome.instance.maintainerProjects.toArray()}" var="project" columns="2" styleClass="noBorderTable" style="border:0px">
+                    <rich:dataGrid value="#{personHome.instance.maintainerProjects.toArray()}" var="project" columns="2" styleClass="noBorderDataGrid" style="border:0px">
                         <s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
                                 view="/project/project.xhtml">
                             <f:param name="slug" value="#{project.slug}"/>
@@ -82,22 +81,20 @@
                     </rich:dataGrid>
                 </h:form>
             </rich:tab>
-            <rich:tab label="#{messages['jsf.LanguageTeams']}"
-                    styleClass="tab_header">
+            <rich:tab header="#{messages['jsf.LanguageTeams']} (#{personHome.instance.languageMemberships.size})">
                 <h:outputText value="None Available" rendered="#{empty personHome.instance.languageMemberships}"/>
                 <h:form>
-                    <rich:dataGrid value="#{personHome.instance.languageMemberships.toArray()}" var="language" columns="6" styleClass="noBorderTable" style="border:0px">
+                    <rich:dataGrid value="#{personHome.instance.languageMemberships.toArray()}" var="language" columns="6" styleClass="noBorderDataGrid" style="border:0px">
                         <s:link view="/language/language.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
                             <f:param name="id" value="#{language.localeId.id}" />
                         </s:link>
                     </rich:dataGrid>
                 </h:form>
             </rich:tab>
-            <rich:tab label="#{messages['jsf.MaintainedGroups']}"
-                      styleClass="tab_header">
+            <rich:tab header="#{messages['jsf.MaintainedGroups']} (#{personHome.instance.maintainerVersionGroups.size})">
                 <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerVersionGroups}"/>
                 <h:form>
-                    <rich:dataGrid value="#{personHome.instance.maintainerVersionGroups.toArray()}" var="group" columns="3" styleClass="noBorderTable" style="border:0px">
+                    <rich:dataGrid value="#{personHome.instance.maintainerVersionGroups.toArray()}" var="group" columns="3" styleClass="noBorderDataGrid" style="border:0px">
                         <s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="table_link">
                             <f:param name="versionGroupSlug" value="#{group.slug}" />
                         </s:link>

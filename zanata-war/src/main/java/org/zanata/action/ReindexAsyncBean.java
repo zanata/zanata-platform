@@ -169,7 +169,7 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
 
          if (opts.isReindex())
          {
-            totalOperations += (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+            totalOperations += (Long) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
          }
 
          if (opts.isOptimize())

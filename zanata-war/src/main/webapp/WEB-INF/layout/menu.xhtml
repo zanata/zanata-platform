@@ -104,9 +104,14 @@
 				</div>
 			</s:fragment> 
 			<s:fragment rendered="#{not identity.loggedIn}">
-				<h:outputLink id="Sign_in" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none">
+				<h:outputLink id="Sign_in" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
+                        rendered="#{not applicationConfiguration.kerberosAuth}">
 					<span class="icon-login"/>#{messages['jsf.SignIn']}
 				</h:outputLink>
+                <h:outputLink id="kSign_in" value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
+                              rendered="#{applicationConfiguration.kerberosAuth}">
+                    <span class="icon-login"/>#{messages['jsf.SignIn']}
+                </h:outputLink>
 			</s:fragment>
 		</li>
 	</ul>

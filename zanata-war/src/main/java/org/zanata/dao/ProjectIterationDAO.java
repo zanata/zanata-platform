@@ -66,20 +66,13 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public HProjectIteration getBySlug(String projectSlug, String iterationSlug)
    {
-      Criteria crit = getSession().createCriteria(HProject.class);
-      crit.add(Restrictions.naturalId().set("slug", projectSlug));
-      crit.setCacheable(true).setComment("ProjectIterationDAO.getBySlugs");
-      HProject project = (HProject) crit.uniqueResult();
-
+      HProject project = (HProject)getSession().byNaturalId(HProject.class).using("slug", projectSlug).load();
       return getBySlug(project, iterationSlug);
    }
 
    public HProjectIteration getBySlug(HProject project, String iterationSlug)
    {
-      Criteria crit = getSession().createCriteria(HProjectIteration.class);
-      crit.add(Restrictions.naturalId().set("project", project).set("slug", iterationSlug));
-      crit.setCacheable(true).setComment("ProjectIterationDAO.getBySlug");
-      return (HProjectIteration) crit.uniqueResult();
+      return (HProjectIteration)getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug).using("project",project).load();
    }
 
    /**

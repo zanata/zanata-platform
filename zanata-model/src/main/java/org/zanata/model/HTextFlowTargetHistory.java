@@ -48,23 +48,23 @@ import com.google.common.base.Objects;
 @org.hibernate.annotations.Entity(mutable = false)
 @NamedQueries({
    @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[1]",
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
-               		  "and contents[0] = ?"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
+               		  "and contents[0] = ?3"),
    @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[2]",
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
-                       "and contents[0] = ? and contents[1] = ?"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
+                       "and contents[0] = ?3 and contents[1] = ?4"),
    @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[3]",
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
-                       "and contents[0] = ? and contents[1] = ? and contents[2] = ?"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
+                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5"),
    @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[4]",
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
-                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ?"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
+                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5 and contents[3] = ?6"),
    @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[5]",
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
-                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ?"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
+                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5 and contents[3] = ?6 and contents[4] = ?7"),
    @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[6]",
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
-                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ? and contents[5] = ?")
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
+                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5 and contents[3] = ?6 and contents[4] = ?7 and contents[5] = ?8")
 })
 public class HTextFlowTargetHistory extends HTextContainer implements Serializable, ITextFlowTargetHistory
 {

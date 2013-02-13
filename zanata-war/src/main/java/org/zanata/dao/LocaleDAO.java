@@ -50,11 +50,7 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
 
    public HLocale findByLocaleId(LocaleId locale)
    {
-      Criteria cr = getSession().createCriteria(HLocale.class);
-      cr.add(Restrictions.naturalId().set("localeId", locale));
-      cr.setCacheable(true);
-      cr.setComment("LocaleDAO.findByLocaleId");
-      return (HLocale) cr.uniqueResult();
+      return (HLocale) getSession().byNaturalId(HLocale.class).using("localeId", locale).load();
    }
 
    @SuppressWarnings("unchecked")

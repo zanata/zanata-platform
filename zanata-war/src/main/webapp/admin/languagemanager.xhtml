@@ -7,6 +7,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:richext="http://java.sun.com/jsf/composite/richext"
 	template="../WEB-INF/layout/template.xhtml">
 
    <ui:define name="page_title">Manage Languages</ui:define>
@@ -54,12 +55,12 @@
 
 					<rich:column sortBy="#{language.localeId.id}"
                                  styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
+						<f:facet name="header">#{messages['jsf.Language']}<richext:columnSorter/></f:facet>
 	            		#{language.localeId.id}
 	        		</rich:column>
 					<rich:column sortBy="#{language.retrieveDisplayName()}"
                                  styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
+						<f:facet name="header">#{messages['jsf.Name']}<richext:columnSorter/></f:facet>
 	            		#{language.retrieveDisplayName()}
 	        		</rich:column>
 					<rich:column styleClass="#{!language.active ? 'disabled_lang_row' : ''}">

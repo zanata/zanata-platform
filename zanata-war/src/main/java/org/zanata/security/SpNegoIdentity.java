@@ -63,7 +63,14 @@ public class SpNegoIdentity implements Serializable
          return;
       }
 
-      String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+      // String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+      // Workaround for SECURITY-719, remove once it's fixed
+      String username = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+      // Remove the domain name, if there is one
+      if( username.indexOf('@') > 0 )
+      {
+         username = username.substring(0, username.indexOf('@'));
+      }
       LOGGER.debug("remote username: {}", username);
 
       identity.getCredentials().setUsername(username);
