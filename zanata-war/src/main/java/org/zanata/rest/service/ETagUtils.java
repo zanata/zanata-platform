@@ -129,24 +129,10 @@ public class ETagUtils
 
    public EntityTag generateETagForTranslatedDocument(HProjectIteration iteration, String docId, HLocale locale)
    {
-      List<String> hashableState =
+      StringBuffer hashableState =
          documentDAO.getHashableStateForTranslatedDocument(
                iteration.getProject().getSlug(), iteration.getSlug(), docId, locale.getLocaleId());
 
-      ByteArrayOutputStream hashBuffer = new ByteArrayOutputStream();
-
-      try
-      {
-         for( String hashElement : hashableState )
-         {
-            hashBuffer.write( hashElement.getBytes() );
-         }
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException("Problem writing to ETag buffer.", e);
-      }
-
-      return EntityTag.valueOf(HashUtil.md5Hex(hashBuffer.toString()));
+      return EntityTag.valueOf(HashUtil.md5Hex(hashableState.toString()));
    }
 }
