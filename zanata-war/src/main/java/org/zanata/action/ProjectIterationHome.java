@@ -25,6 +25,8 @@ import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -117,18 +119,19 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
       // start
    }
 
-   // public ProjectType getProjecType()
-   // {
-   // if (getInstance().getProjectType() == null)
-   // {
-   //
-   // }
-   // }
-   //
-   // public void setProjectType(ProjectType projectType)
-   // {
-   // getInstance().setProjectType(projectType);
-   // }
+   public ProjectType getProjectType()
+   {
+      if (getInstance().getProjectType() == null)
+      {
+         getInstance().setProjectType(getInstance().getProject().getDefaultProjectType());
+      }
+      return getInstance().getProjectType();
+   }
+
+   public void setProjectType(ProjectType projectType)
+   {
+      getInstance().setProjectType(projectType);
+   }
 
    public void validateProjectSlug()
    {

@@ -52,6 +52,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.process.CopyTransProcessHandle;
+import org.zanata.rest.dto.ProjectType;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -305,6 +306,16 @@ public class ViewAllStatusAction implements Serializable
          this.projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       }
       return this.projectIteration;
+   }
+
+   public String getProjectType()
+   {
+      ProjectType result = getProjectIteration().getProjectType();
+      if (result != null)
+      {
+         return result.name();
+      }
+      return null;
    }
 
    public HProject getProject()
