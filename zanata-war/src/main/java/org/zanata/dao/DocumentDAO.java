@@ -1,5 +1,6 @@
 package org.zanata.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -160,6 +161,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       q.setParameter("docId", docId);
       q.setParameter("localeId", localeId);
       q.setCacheable(true);
+      q.setMaxResults(1);
       q.setComment("DocumentDAO.getLastTranslated");
       
       return  (HTextFlowTarget) q.uniqueResult();
@@ -380,6 +382,58 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       @SuppressWarnings("unchecked")
       final List<HDocument> documents = q.list();
       return documents;
+   }
+
+   /**
+    * Retrieves the list of values that make up the hashable state of a translated document.
+    * The order of the values must be consistent.
+    *
+    * @param projectSlug
+    * @param iterationSlug
+    * @param docId
+    * @param localeId
+    * @return A list of elements that make up the hashable state of a translated document.
+    */
+   public List<String> getHashableStateForTranslatedDocument( final String projectSlug, final String iterationSlug,
+                                                              final String docId, final LocaleId localeId)
+   {
+      List<String> hashableState = new ArrayList<String>();
+
+      // NB: Arguably it's more efficient to do this potentially cached query once than to join multiple
+      // tables in the different subsections of the query below
+      HDocument doc = getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
+
+      // Document and POHeader version numbers
+      Session session = getSession();
+      Query q = session.createQuery(
+            "select d.versionNum, d.poHeader.versionNum from HDocument d where d.id = :id")
+            .setParameter("id", doc.getId());
+      List<Object[]> results = q.list();
+
+      for( Object[] row : results ) // (There should only be one result)
+      {
+         hashableState.add(row[0].toString());
+         hashableState.add(row[1].toString());
+      }
+
+      // Text Flow Target's id and version, Text Flow's id and revision, and Text Flow Target's comment
+      q = session.createQuery(
+            "select tft.id, tft.versionNum, tft.textFlow.id, tft.textFlow.revision, tft.comment.comment " +
+            "from HTextFlowTarget tft where tft.textFlow.document = :doc " +
+            "order by tft.id")
+            .setParameter("doc", doc);
+      results = q.list();
+
+      for( Object[] row : results )
+      {
+         hashableState.add((String)row[0].toString());
+         hashableState.add((String)row[1].toString());
+         hashableState.add((String)row[2].toString());
+         hashableState.add((String)row[3].toString());
+         hashableState.add((String)row[4]);
+      }
+
+      return hashableState;
    }
 
    /**
