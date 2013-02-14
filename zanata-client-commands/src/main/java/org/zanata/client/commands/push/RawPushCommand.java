@@ -31,8 +31,11 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.codec.binary.Hex;
 import org.jboss.resteasy.client.ClientResponse;
@@ -102,7 +105,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
          }
          else
          {
-            throw new RuntimeException("directory '" + sourceDir + "' does not exist - check srcDir option");
+            throw new RuntimeException("directory '" + sourceDir + "' does not exist - check " + getOpts().getSrcDirParameterName() + " option");
          }
       }
 
@@ -136,13 +139,45 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
 
       String[] srcFiles = strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), types, true, getOpts().getCaseSensitive());
 
+      SortedSet<String> localDocNames = new TreeSet<String>(Arrays.asList(srcFiles));
+
       // TODO handle obsolete document deletion
       log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.");
 
-      if (srcFiles.length == 0)
+      SortedSet<String> docsToPush = localDocNames;
+      if (getOpts().getFromDoc() != null)
+      {
+         if (!localDocNames.contains(getOpts().getFromDoc()))
+         {
+            log.error("Document with id {} not found, unable to start push from unknown document. Aborting.", getOpts().getFromDoc());
+            // FIXME should this be throwing an exception to properly abort?
+            // need to see behaviour with modules
+            return;
+         }
+         docsToPush = localDocNames.tailSet(getOpts().getFromDoc());
+         int numSkippedDocs = localDocNames.size() - docsToPush.size();
+         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
+      }
+
+      if (docsToPush.isEmpty())
       {
          log.info("no documents in module: {}; nothing to do", getOpts().getCurrentModule());
          return;
+      }
+      else
+      {
+         log.info("Found source documents:");
+         for (String docName : localDocNames)
+         {
+            if (docsToPush.contains(docName))
+            {
+               log.info("           {}", docName);
+            }
+            else
+            {
+               log.info("(to skip)  {}", docName);
+            }
+         }
       }
 
       if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
@@ -168,40 +203,48 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
 
       boolean hasErrors = false;
 
-      for (final String localDocName : srcFiles)
+      for (final String localDocName : docsToPush)
       {
-         final String fileType = getExtensionFor(localDocName);
-         final String qualifiedDocName = qualifiedDocName(localDocName);
-         boolean sourcePushed = false;
-         if (getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both)
+         try
          {
-            if (!getOpts().isDryRun())
+            final String fileType = getExtensionFor(localDocName);
+            final String qualifiedDocName = qualifiedDocName(localDocName);
+            boolean sourcePushed = false;
+            if (getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both)
             {
-               sourcePushed = pushSourceDocumentToServer(sourceDir, localDocName, qualifiedDocName, fileType);
-//               ClientUtility.checkResult(putResponse, uri);
-               if (!sourcePushed)
+               if (!getOpts().isDryRun())
                {
-                  hasErrors = true;
+                  sourcePushed = pushSourceDocumentToServer(sourceDir, localDocName, qualifiedDocName, fileType);
+//               ClientUtility.checkResult(putResponse, uri);
+                  if (!sourcePushed)
+                  {
+                     hasErrors = true;
+                  }
+               }
+               else
+               {
+                  log.info("pushing source doc [qualifiedname={}] to server (skipped due to dry run)", qualifiedDocName);
                }
             }
-            else
+
+            if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
             {
-               log.info("pushing source doc [qualifiedname={}] to server (skipped due to dry run)", qualifiedDocName);
+               strat.visitTranslationFiles(localDocName, new TranslationFilesVisitor()
+               {
+
+                  @Override
+                  public void visit(LocaleMapping locale, File translatedDoc)
+                  {
+                     log.info("pushing {} translation of {}", locale.getLocale(), qualifiedDocName);
+                     pushDocumentToServer(qualifiedDocName, fileType, locale.getLocale(), translatedDoc);
+                  }
+               });
             }
          }
-
-         if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
+         catch (RuntimeException e)
          {
-            strat.visitTranslationFiles(localDocName, new TranslationFilesVisitor()
-            {
-
-               @Override
-               public void visit(LocaleMapping locale, File translatedDoc)
-               {
-                  log.info("pushing {} translation of {}", locale.getLocale(), qualifiedDocName);
-                  pushDocumentToServer(qualifiedDocName, fileType, locale.getLocale(), translatedDoc);
-               }
-            });
+            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(localDocName));
+            throw e;
          }
       }
 

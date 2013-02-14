@@ -22,6 +22,8 @@ package org.zanata.client.commands.pull;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -74,15 +76,47 @@ public class RawPullCommand extends PushPullCommand<PullOptions>
       strat.setPullOptions(getOpts());
 
       List<String> docNamesForModule = getQualifiedDocNamesForCurrentModuleFromServer();
+      SortedSet<String> localDocNames = new TreeSet<String>(docNamesForModule);
+
+      SortedSet<String> docsToPull = localDocNames;
+      if (getOpts().getFromDoc() != null)
+      {
+         if (!localDocNames.contains(getOpts().getFromDoc()))
+         {
+            log.error("Document with id {} not found, unable to start pull from unknown document. Aborting.", getOpts().getFromDoc());
+            // FIXME should this be throwing an exception to properly abort?
+            // need to see behaviour with modules
+            return;
+         }
+         docsToPull = localDocNames.tailSet(getOpts().getFromDoc());
+         int numSkippedDocs = localDocNames.size() - docsToPull.size();
+         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
+      }
 
       // TODO compare docNamesForModule with localDocNames, offer to delete obsolete translations from filesystem
-      if (docNamesForModule.isEmpty())
+      if (docsToPull.isEmpty())
       {
          log.info("No documents in remote module: {}; nothing to do", getOpts().getCurrentModule());
          return;
       }
-      log.info("Pulling {} docs for this module from the server", docNamesForModule.size());
-      log.debug("Doc names: {}", docNamesForModule);
+      else
+      {
+         log.info("Source documents on server:");
+         for (String docName : localDocNames)
+         {
+            if (docsToPull.contains(docName))
+            {
+               log.info("           {}", docName);
+            }
+            else
+            {
+               log.info("(to skip)  {}", docName);
+            }
+         }
+      }
+
+      log.info("Pulling {} of {} docs for this module from the server", docsToPull.size(), localDocNames.size());
+      log.debug("Doc names: {}", localDocNames);
 
       PushPullType pullType = getOpts().getPullType();
       boolean pullSrc = pullType == PushPullType.Both || pullType == PushPullType.Source;
@@ -98,63 +132,71 @@ public class RawPullCommand extends PushPullCommand<PullOptions>
          confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
       }
 
-      for (String qualifiedDocName : docNamesForModule)
+      for (String qualifiedDocName : docsToPull)
       {
          // TODO add filtering by file type? e.g. pull all dtd documents only.
 
-         String localDocName = unqualifiedDocName(qualifiedDocName);
-
-         if (pullSrc)
+         try
          {
-            ClientResponse response = fileResource.downloadSourceFile(getOpts().getProj(),
-                  getOpts().getProjectVersion(), FileResource.FILETYPE_RAW_SOURCE_DOCUMENT, qualifiedDocName);
-            if (response.getResponseStatus() == Status.NOT_FOUND)
-            {
-               log.warn("No raw source document is available for [{}]. Skipping.", qualifiedDocName);
-            }
-            else
-            {
-               ClientUtility.checkResult(response, uri);
-               InputStream srcDoc = (InputStream) response.getEntity(InputStream.class);
-               if (srcDoc != null)
-               {
-                  strat.writeSrcFile(localDocName, srcDoc);
-               }
-            }
-         }
+            String localDocName = unqualifiedDocName(qualifiedDocName);
 
-         if(pullTarget)
-         {
-            String fileExtension;
-            if (getOpts().getIncludeFuzzy())
+            if (pullSrc)
             {
-               fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED_AND_FUZZY;
-            }
-            else
-            {
-               fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED;
-            }
-
-            for (LocaleMapping locMapping : locales)
-            {
-               LocaleId locale = new LocaleId(locMapping.getLocale());
-               ClientResponse response = fileResource.downloadTranslationFile(getOpts().getProj(),
-                     getOpts().getProjectVersion(), locale.getId(),
-                     fileExtension, qualifiedDocName);
-               if (response.getResponseStatus() == Response.Status.NOT_FOUND)
+               ClientResponse response = fileResource.downloadSourceFile(getOpts().getProj(),
+                     getOpts().getProjectVersion(), FileResource.FILETYPE_RAW_SOURCE_DOCUMENT, qualifiedDocName);
+               if (response.getResponseStatus() == Status.NOT_FOUND)
                {
-                     log.info("No raw translation document found in locale {} for document [{}]", locale, qualifiedDocName);
+                  log.warn("No raw source document is available for [{}]. Skipping.", qualifiedDocName);
                }
                else
                {
                   ClientUtility.checkResult(response, uri);
-                  InputStream transDoc = (InputStream) response.getEntity(InputStream.class);
-                  if (transDoc != null)
+                  InputStream srcDoc = (InputStream) response.getEntity(InputStream.class);
+                  if (srcDoc != null)
                   {
-                     strat.writeTransFile(localDocName, locMapping, transDoc);
+                     strat.writeSrcFile(localDocName, srcDoc);
                   }
                }
             }
+
+            if(pullTarget)
+            {
+               String fileExtension;
+               if (getOpts().getIncludeFuzzy())
+               {
+                  fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED_AND_FUZZY;
+               }
+               else
+               {
+                  fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED;
+               }
+
+               for (LocaleMapping locMapping : locales)
+               {
+                  LocaleId locale = new LocaleId(locMapping.getLocale());
+                  ClientResponse response = fileResource.downloadTranslationFile(getOpts().getProj(),
+                        getOpts().getProjectVersion(), locale.getId(),
+                        fileExtension, qualifiedDocName);
+                  if (response.getResponseStatus() == Response.Status.NOT_FOUND)
+                  {
+                     log.info("No raw translation document found in locale {} for document [{}]", locale, qualifiedDocName);
+                  }
+                  else
+                  {
+                     ClientUtility.checkResult(response, uri);
+                     InputStream transDoc = (InputStream) response.getEntity(InputStream.class);
+                     if (transDoc != null)
+                     {
+                        strat.writeTransFile(localDocName, locMapping, transDoc);
+                     }
+                  }
+               }
+            }
+         }
+         catch (RuntimeException e)
+         {
+            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(qualifiedDocName));
+            throw e;
          }
       }
    }

@@ -8,6 +8,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -80,7 +82,10 @@ public class PullCommand extends PushPullCommand<PullOptions>
    {
       logOptions(log, getOpts());
       log.info("Create skeletons for untranslated messages/files: {}", getOpts().getCreateSkeletons());
-
+      if (getOpts().getFromDoc() != null)
+      {
+         log.info("From document: {}", getOpts().getFromDoc());
+      }
       if (getOpts().isDryRun())
       {
          log.info("DRY RUN: no permanent changes will be made");
@@ -143,7 +148,23 @@ public class PullCommand extends PushPullCommand<PullOptions>
       if (locales == null)
          throw new ConfigException("no locales specified");
       PullStrategy strat = createStrategy(getOpts().getProjectType());
-      List<String> docNamesForModule = getQualifiedDocNamesForCurrentModuleFromServer();
+      List<String> unsortedDocNamesForModule = getQualifiedDocNamesForCurrentModuleFromServer();
+      SortedSet<String> docNamesForModule = new TreeSet<String>(unsortedDocNamesForModule);
+
+      SortedSet<String> docsToPull = docNamesForModule;
+      if (getOpts().getFromDoc() != null)
+      {
+         if (!docNamesForModule.contains(getOpts().getFromDoc()))
+         {
+            log.error("Document with id {} not found, unable to start pull from unknown document. Aborting.", getOpts().getFromDoc());
+            // FIXME should this be throwing an exception to properly abort?
+            // need to see behaviour with modules
+            return;
+         }
+         docsToPull = docNamesForModule.tailSet(getOpts().getFromDoc());
+         int numSkippedDocs = docNamesForModule.size() - docsToPull.size();
+         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
+      }
 
       // TODO compare docNamesForModule with localDocNames, offer to delete obsolete translations from filesystem
       if (docNamesForModule.isEmpty())
@@ -151,8 +172,8 @@ public class PullCommand extends PushPullCommand<PullOptions>
          log.info("No documents in remote module: {}; nothing to do", getOpts().getCurrentModule());
          return;
       }
-      log.info("Pulling {} docs for this module from the server", docNamesForModule.size());
-      log.debug("Doc names: {}", docNamesForModule);
+      log.info("Pulling {} of {} docs for this module from the server", docsToPull.size(), docNamesForModule.size());
+      log.debug("Doc names: {}", docsToPull);
 
       PushPullType pullType = getOpts().getPullType();
       boolean pullSrc = pullType == PushPullType.Both || pullType == PushPullType.Source;
@@ -173,90 +194,99 @@ public class PullCommand extends PushPullCommand<PullOptions>
          eTagCache.clear();
       }
 
-      for (String qualifiedDocName : docNamesForModule)
+      for (String qualifiedDocName : docsToPull)
       {
-         Resource doc = null;
-         String localDocName = unqualifiedDocName(qualifiedDocName);
-         // TODO follow a Link instead of generating the URI
-         String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-         boolean createSkeletons = getOpts().getCreateSkeletons();
-         if (strat.needsDocToWriteTrans() || pullSrc || createSkeletons)
+         try
          {
-            ClientResponse<Resource> resourceResponse = sourceDocResource.getResource(docUri, strat.getExtensions());
-            ClientUtility.checkResult(resourceResponse, uri);
-            doc = resourceResponse.getEntity();
-            doc.setName(localDocName);
-         }
-         if (pullSrc)
-         {
-            writeSrcDoc(strat, doc);
-         }
-
-         if( pullTarget )
-         {
-            for (LocaleMapping locMapping : locales)
+            Resource doc = null;
+            String localDocName = unqualifiedDocName(qualifiedDocName);
+            // TODO follow a Link instead of generating the URI
+            String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
+            boolean createSkeletons = getOpts().getCreateSkeletons();
+            if (strat.needsDocToWriteTrans() || pullSrc || createSkeletons)
             {
-               LocaleId locale = new LocaleId(locMapping.getLocale());
-               String eTag = null;
-               File transFile = strat.getTransFileToWrite(localDocName, locMapping);
-               ETagCacheEntry eTagCacheEntry = eTagCache.findEntry(localDocName, locale.getId());
+               ClientResponse<Resource> resourceResponse = sourceDocResource.getResource(docUri, strat.getExtensions());
+               ClientUtility.checkResult(resourceResponse, uri);
+               doc = resourceResponse.getEntity();
+               doc.setName(localDocName);
+            }
+            if (pullSrc)
+            {
+               writeSrcDoc(strat, doc);
+            }
 
-               if( getOpts().getUseCache() && eTagCacheEntry != null )
+            if( pullTarget )
+            {
+               for (LocaleMapping locMapping : locales)
                {
-                  // Check the last updated date on the file matches what's in the cache
-                  // only then use the cached ETag
-                  if( transFile.exists() && Long.toString(transFile.lastModified()).equals( eTagCacheEntry.getLocalFileTime() ) )
+                  LocaleId locale = new LocaleId(locMapping.getLocale());
+                  String eTag = null;
+                  File transFile = strat.getTransFileToWrite(localDocName, locMapping);
+                  ETagCacheEntry eTagCacheEntry = eTagCache.findEntry(localDocName, locale.getId());
+
+                  if( getOpts().getUseCache() && eTagCacheEntry != null )
                   {
-                     eTag = eTagCacheEntry.getServerETag();
+                     // Check the last updated date on the file matches what's in the cache
+                     // only then use the cached ETag
+                     if( transFile.exists() && Long.toString(transFile.lastModified()).equals( eTagCacheEntry.getLocalFileTime() ) )
+                     {
+                        eTag = eTagCacheEntry.getServerETag();
+                     }
                   }
-               }
 
-               ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(
-                     docUri, locale, strat.getExtensions(), createSkeletons, eTag);
-               TranslationsResource targetDoc;
+                  ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(
+                        docUri, locale, strat.getExtensions(), createSkeletons, eTag);
+                  TranslationsResource targetDoc;
 
-               // ignore 404 (no translation yet for specified document)
-               if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
-               {
-                  targetDoc = null;
-                  if (!createSkeletons)
+                  // ignore 404 (no translation yet for specified document)
+                  if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
                   {
-                     log.info("No translations found in locale {} for document {}", locale, localDocName);
-                     // We need to release connection.
-                     // see http://stackoverflow.com/questions/4612573/exception-using-httprequest-execute-invalid-use-of-singleclientconnmanager-c
-                     transResponse.releaseConnection();
-                     continue;
+                     targetDoc = null;
+                     if (!createSkeletons)
+                     {
+                        log.info("No translations found in locale {} for document {}", locale, localDocName);
+                        // We need to release connection.
+                        // see http://stackoverflow.com/questions/4612573/exception-using-httprequest-execute-invalid-use-of-singleclientconnmanager-c
+                        transResponse.releaseConnection();
+                        continue;
+                     }
                   }
-               }
-               // 304 NOT MODIFIED (the document can stay the same)
-               else if(transResponse.getResponseStatus() == Response.Status.NOT_MODIFIED)
-               {
-                  targetDoc = null;
-                  log.info("No changes in translations for locale {} and document {}", locale, localDocName);
-
-                  // Check the file's MD5 matches what's stored in the cache. If not, it needs to be fetched again (with no etag)
-                  String fileChecksum = HashUtil.getMD5Checksum( transFile );
-                  if( !fileChecksum.equals( eTagCacheEntry.getLocalFileMD5() ) )
+                  // 304 NOT MODIFIED (the document can stay the same)
+                  else if(transResponse.getResponseStatus() == Response.Status.NOT_MODIFIED)
                   {
-                     transResponse = translationResources.getTranslations(
-                           docUri, locale, strat.getExtensions(), createSkeletons, null);
+                     targetDoc = null;
+                     log.info("No changes in translations for locale {} and document {}", locale, localDocName);
+
+                     // Check the file's MD5 matches what's stored in the cache. If not, it needs to be fetched again (with no etag)
+                     String fileChecksum = HashUtil.getMD5Checksum( transFile );
+                     if( !fileChecksum.equals( eTagCacheEntry.getLocalFileMD5() ) )
+                     {
+                        transResponse = translationResources.getTranslations(
+                              docUri, locale, strat.getExtensions(), createSkeletons, null);
+                        ClientUtility.checkResult(transResponse, uri);
+                        targetDoc = transResponse.getEntity();
+                     }
+                  }
+                  else
+                  {
                      ClientUtility.checkResult(transResponse, uri);
                      targetDoc = transResponse.getEntity();
                   }
+                  if (targetDoc != null || createSkeletons)
+                  {
+                     writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc, transResponse.getHeaders().getFirst(HttpHeaders.ETAG));
+                  }
                }
-               else
-               {
-                  ClientUtility.checkResult(transResponse, uri);
-                  targetDoc = transResponse.getEntity();
-               }
-               if (targetDoc != null || createSkeletons)
-               {
-                  writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc, transResponse.getHeaders().getFirst(HttpHeaders.ETAG));
-               }
+
+               // write the cache
+               super.storeETagCache();
             }
 
-            // write the cache
-            super.storeETagCache();
+         }
+         catch (RuntimeException e)
+         {
+            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(qualifiedDocName));
+            throw e;
          }
       }
 

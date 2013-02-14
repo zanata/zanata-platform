@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -158,6 +160,10 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          logger.info("Target base directory (translations): {}", opts.getTransDir());
       }
+      if (opts.getFromDoc() != null)
+      {
+         logger.info("From document: {}", opts.getFromDoc());
+      }
       if (opts.isDryRun())
       {
          logger.info("DRY RUN: no permanent changes will be made");
@@ -270,7 +276,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          }
          else
          {
-            throw new RuntimeException("directory '" + sourceDir + "' does not exist - check srcDir option");
+            throw new RuntimeException("directory '" + sourceDir + "' does not exist - check " + getOpts().getSrcDirParameterName() + " option");
          }
       }
 
@@ -278,11 +284,44 @@ public class PushCommand extends PushPullCommand<PushOptions>
       final StringSet extensions = strat.getExtensions();
 
       // to save memory, we don't load all the docs into a HashMap
-      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes(), getOpts().getCaseSensitive(), getOpts().getExcludeLocaleFilenames());
-      for (String docName : localDocNames)
+      Set<String> unsortedDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes(), getOpts().getCaseSensitive(), getOpts().getExcludeLocaleFilenames());
+      SortedSet<String> localDocNames = new TreeSet<String>(unsortedDocNames);
+
+      SortedSet<String> docsToPush = localDocNames;
+      if (getOpts().getFromDoc() != null)
       {
-         log.info("Found source document: {}", docName);
+         if (!localDocNames.contains(getOpts().getFromDoc()))
+         {
+            log.error("Document with id {} not found, unable to start push from unknown document. Aborting.", getOpts().getFromDoc());
+            // FIXME should this be throwing an exception to properly abort?
+            // need to see behaviour with modules
+            return;
+         }
+         docsToPush = localDocNames.tailSet(getOpts().getFromDoc());
+         int numSkippedDocs = localDocNames.size() - docsToPush.size();
+         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
       }
+
+      if (localDocNames.isEmpty())
+      {
+         log.info("No source documents found.");
+      }
+      else
+      {
+         log.info("Found source documents:");
+         for (String docName : localDocNames)
+         {
+            if (docsToPush.contains(docName))
+            {
+               log.info("           {}", docName);
+            }
+            else
+            {
+               log.info("(to skip)  {}", docName);
+            }
+         }
+      }
+
       List<String> obsoleteDocs = Collections.emptyList();
       if (pushSource())
       {
@@ -326,37 +365,46 @@ public class PushCommand extends PushPullCommand<PushOptions>
          confirmWithUser("This will overwrite existing source documents on the server, and delete obsolete documents.\n");
       }
 
-      for (String localDocName : localDocNames)
+
+      for (String localDocName : docsToPush)
       {
-         final Resource srcDoc = strat.loadSrcDoc(sourceDir, localDocName);
-         String qualifiedDocName = qualifiedDocName(localDocName);
-         final String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-         srcDoc.setName(qualifiedDocName);
-         debug(srcDoc);
+         try
+         {
+            final Resource srcDoc = strat.loadSrcDoc(sourceDir, localDocName);
+            String qualifiedDocName = qualifiedDocName(localDocName);
+            final String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
+            srcDoc.setName(qualifiedDocName);
+            debug(srcDoc);
 
-         if (pushSource())
-         {
-            pushSrcDocToServer(docUri, srcDoc, extensions);
-         }
-         if (pushTrans())
-         {
-            strat.visitTranslationResources(localDocName, srcDoc, new TranslationResourcesVisitor()
+            if (pushSource())
             {
-               @Override
-               public void visit(LocaleMapping locale, TranslationsResource targetDoc)
+               pushSrcDocToServer(docUri, srcDoc, extensions);
+            }
+            if (pushTrans())
+            {
+               strat.visitTranslationResources(localDocName, srcDoc, new TranslationResourcesVisitor()
                {
-                  debug(targetDoc);
-                  
-                  pushTargetDocToServer(docUri, locale, srcDoc, targetDoc, extensions);
-               }
-            });
-         }
+                  @Override
+                  public void visit(LocaleMapping locale, TranslationsResource targetDoc)
+                  {
+                     debug(targetDoc);
 
-         // Copy Trans after pushing (only when pushing source)
-         if( getOpts().getCopyTrans() &&
-           (getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Source) )
+                     pushTargetDocToServer(docUri, locale, srcDoc, targetDoc, extensions);
+                  }
+               });
+            }
+
+            // Copy Trans after pushing (only when pushing source)
+            if( getOpts().getCopyTrans() &&
+                  (getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Source) )
+            {
+               this.copyTransForDocument(qualifiedDocName);
+            }
+         }
+         catch (RuntimeException e)
          {
-            this.copyTransForDocument(qualifiedDocName);
+            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(localDocName));
+            throw e;
          }
       }
       deleteSourceDocsFromServer(obsoleteDocs);

@@ -123,6 +123,15 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    private File transDir;
 
    /**
+    * Specifies a document from which to begin the push operation.
+    * Documents before this document (sorted alphabetically) will not be pushed.
+    * Use this option to resume a failed push operation.
+
+    * @parameter expression="${zanata.fromDoc}"
+    */
+   private String fromDoc;
+
+   /**
     * Locales to push to/pull from the server.
     * By default all locales in zanata.xml will be pushed/pulled.
     * Usage: -Dzanata.locales=locale1,locale2,locale3
@@ -154,9 +163,27 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    }
 
    @Override
+   public String getSrcDirParameterName()
+   {
+      return "srcDir";
+   }
+
+   @Override
    public File getTransDir()
    {
       return transDir;
+   }
+
+   @Override
+   public String getFromDoc()
+   {
+      return fromDoc;
+   }
+
+   @Override
+   public String buildFromDocArgument(String argValue)
+   {
+      return "-Dzanata.fromDoc=\"" + argValue + "\"";
    }
 
    /**

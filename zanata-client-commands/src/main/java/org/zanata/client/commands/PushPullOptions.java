@@ -44,7 +44,18 @@ public interface PushPullOptions extends ConfigurableProjectOptions
    String getDocNameRegex();
    boolean isDryRun();
    File getSrcDir();
+   String getSrcDirParameterName();
    File getTransDir();
+
+   public String getFromDoc();
+
+   /**
+    * This name should represent the exact parameter as it would be entered on the command line, and include
+    * any space or operators that would link the parameter to the argument. This is so that the argument can be
+    * appended directly to the parameter name.
+    */
+   public String buildFromDocArgument(String argValue);
+
    boolean getEnableModules();
    boolean isRootModule();
    String getCurrentModule();

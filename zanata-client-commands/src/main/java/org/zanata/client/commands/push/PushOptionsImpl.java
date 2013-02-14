@@ -21,26 +21,21 @@
 
 package org.zanata.client.commands.push;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.kohsuke.args4j.Option;
+import org.zanata.client.commands.AbstractPushPullOptionsImpl;
 import org.zanata.client.commands.BooleanValueHandler;
-import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
-import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.ZanataCommand;
-import org.zanata.client.config.LocaleList;
 import org.zanata.util.StringUtil;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOptions
+public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions> implements PushOptions
 {
 
    private static final boolean DEF_EXCLUDES = true;
@@ -62,14 +57,9 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    private boolean excludeLocaleFilenames = DEF_EXCLUDE_LOCALES;
    private boolean copyTrans = DEF_COPYTRANS;
    private String pushType = DEF_PUSH_TYPE;
-   private File transDir;
-   private File srcDir;
    private String sourceLang = "en-US";
 
    private String validate;
-   private boolean dryRun;
-   private String[] locales;
-   private LocaleList effectiveLocales;
 
    @Override
    public ZanataCommand initCommand()
@@ -113,47 +103,6 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    public void setLocales(String locales)
    {
       this.locales = locales.split(",");
-   }
-
-   /**
-    * Override the parent method as the push
-    * command can have locales specified via command line.
-    *
-    * @return The locale map list taking into account the global locales in zanata.xml as well as the command line
-    * argument ones.
-    */
-   @Override
-   public LocaleList getLocaleMapList()
-   {
-      if(effectiveLocales == null)
-      {
-         effectiveLocales = PushPullCommand.getLocaleMapList(super.getLocaleMapList(), locales);
-      }
-      return effectiveLocales;
-   }
-
-   @Override
-   public File getSrcDir()
-   {
-      return srcDir;
-   }
-
-   @Option(aliases = { "-s" }, name = "--src-dir", metaVar = "DIR", required = true, usage = "Base directory for source files (eg \".\", \"pot\", \"src/main/resources\")")
-   public void setSrcDir(File file)
-   {
-      this.srcDir = file;
-   }
-
-   @Override
-   public File getTransDir()
-   {
-      return transDir;
-   }
-
-   @Option(aliases = { "-t" }, name = "--trans-dir", metaVar = "DIR", required = true, usage = "Base directory for translated files (eg \".\", \"po\", \"src/main/resources\")")
-   public void setTransDir(File transDir)
-   {
-      this.transDir = transDir;
    }
 
    @Override
@@ -243,61 +192,10 @@ public class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements P
    }
 
    @Override
-   public boolean getEnableModules()
-   {
-      // modules are currently only supported by Maven Mojos:
-      return false;
-   }
-
-   @Override
-   public boolean isDryRun()
-   {
-      return this.dryRun;
-   }
-
-   @Option(aliases = {"-n" }, name = "--dry-run", usage = "Dry run: don't change any data, on the server or on the filesystem.")
-   public void setDryRun(boolean dryRun)
-   {
-      this.dryRun = dryRun;
-   }
-
-   @Override
-   public boolean isRootModule()
-   {
-      return false;
-   }
-
-   @Override
-   public String getCurrentModule()
-   {
-      return "";
-   }
-
-   @Override
-   public Set<String> getAllModules()
-   {
-      return Collections.emptySet();
-   }
-
-   @Override
    public boolean getDeleteObsoleteModules()
    {
       // modules are currently only supported by Maven Mojos:
       return false;
-   }
-
-   @Override
-   public String getDocNameRegex()
-   {
-      // modules are currently only supported by Maven Mojos:
-      return null;
-   }
-
-   @Override
-   public String getModuleSuffix()
-   {
-      // modules are currently only supported by Maven Mojos:
-      return null;
    }
 
    @Override
