@@ -39,11 +39,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Slf4j
-public class TranslatedTextFlowFilter extends Filter
+public class IdBitSetFilter extends Filter
 {
    private OpenBitSet translatedTextFlowBitSet;
 
-   public TranslatedTextFlowFilter(OpenBitSet translatedTextFlowBitSet)
+   public IdBitSetFilter(OpenBitSet translatedTextFlowBitSet)
    {
       this.translatedTextFlowBitSet = translatedTextFlowBitSet;
    }

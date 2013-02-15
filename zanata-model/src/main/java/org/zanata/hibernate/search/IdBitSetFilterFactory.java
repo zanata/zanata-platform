@@ -20,41 +20,41 @@
  */
 package org.zanata.hibernate.search;
 
-import java.util.List;
-
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.util.OpenBitSet;
 import org.hibernate.search.annotations.Factory;
 import org.hibernate.search.annotations.Key;
 import org.hibernate.search.filter.FilterKey;
 import org.hibernate.search.filter.StandardFilterKey;
 
-public class IdFilterFactory
+/**
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ */
+public class IdBitSetFilterFactory
 {
+   private OpenBitSet translatedTextFlowBitSet;
+
+   public OpenBitSet getTranslatedTextFlowBitSet()
+   {
+      return translatedTextFlowBitSet;
+   }
+
+   public void setTranslatedTextFlowBitSet(OpenBitSet translatedTextFlowBitSet)
+   {
+      this.translatedTextFlowBitSet = translatedTextFlowBitSet;
+   }
 
    @Factory
    public Filter getFilter()
    {
-      return new IdFilter(this.ids);
-   }
-
-   private List<Long> ids;
-
-   public List<Long> getIds()
-   {
-      return ids;
-   }
-
-   public void setIds(List<Long> ids)
-   {
-      this.ids = ids;
+      return new IdBitSetFilter( translatedTextFlowBitSet );
    }
 
    @Key
    public FilterKey getKey()
    {
       StandardFilterKey key = new StandardFilterKey();
-      key.addParameter(ids);
+      key.addParameter( translatedTextFlowBitSet );
       return key;
    }
-
 }

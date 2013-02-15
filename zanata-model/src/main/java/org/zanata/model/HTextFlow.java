@@ -62,7 +62,7 @@ import org.hibernate.validator.NotNull;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
-import org.zanata.hibernate.search.TranslatedTextFlowFilterFactory;
+import org.zanata.hibernate.search.IdBitSetFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
@@ -88,7 +88,7 @@ import lombok.extern.slf4j.Slf4j;
 @Indexed
 @FullTextFilterDef(
       name = "textFlowFilter",
-      impl = TranslatedTextFlowFilterFactory.class,
+      impl = IdBitSetFilterFactory.class,
       cache = FilterCacheModeType.INSTANCE_ONLY)
 @NamedQueries(@NamedQuery(
       name = "HTextFlow.findIdsWithTranslations",
