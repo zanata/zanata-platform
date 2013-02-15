@@ -62,7 +62,7 @@ public class AsynchronousExecutor
       }
       catch( Throwable t )
       {
-         log.error("Exception with long running process: " + t.getMessage());
+         log.error("Exception with long running process: " + t.getMessage(), t);
          process.handleThrowable(handle, t);
       }
       finally

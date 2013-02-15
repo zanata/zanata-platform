@@ -20,8 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
@@ -56,7 +54,6 @@ public class SearchServiceImpl implements SearchService
       if( !reindexAsync.getProcessHandle().isInProgress() )
       {
          startedReindex = true;
-         reindexAsync.prepareReindex();
          reindexAsync.startProcess();
       }
 
@@ -68,7 +65,7 @@ public class SearchServiceImpl implements SearchService
    @Override
    public ReindexStatus getReindexStatus()
    {
-      if( !reindexAsync.getProcessHandle().isPrepared() && !reindexAsync.getProcessHandle().isInProgress() )
+      if( !reindexAsync.getProcessHandle().isInProgress() )
       {
          throw new ZanataServiceException("Reindexing not in currently in progress", 404);
       }

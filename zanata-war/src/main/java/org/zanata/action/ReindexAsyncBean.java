@@ -2,21 +2,14 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -32,19 +25,18 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.process.ProcessHandle;
 import org.zanata.process.RunnableProcess;
+import org.zanata.search.ClassIndexer;
+import org.zanata.search.GenericClassIndexer;
+import org.zanata.search.IndexerProcessHandle;
 import org.zanata.service.ProcessManagerService;
 
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
 @Startup
-public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexProcessHandle> implements Serializable
+public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> implements Serializable
 {
    private static final long serialVersionUID = 1L;
-
-   //TODO make this configurable
-   private static final int BATCH_SIZE = 5000;
 
    @Logger
    private Log log;
@@ -62,14 +54,12 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
    private LinkedHashMap<Class<?>, ReindexClassOptions> indexingOptions = new LinkedHashMap<Class<?>, ReindexClassOptions>();
    private Class<?> currentClass;
 
-   private ReindexProcessHandle handle;
+   private IndexerProcessHandle handle;
 
    @Create
    public void create()
    {
-      handle = new ReindexProcessHandle();
-      handle.setMaxProgress(0); //prevent progress indicator showing before first reindex
-      handle.setHasError(false);
+      handle = new IndexerProcessHandle(0);
 
       indexables.add(HAccount.class);
       indexables.add(HGlossaryEntry.class);
@@ -126,7 +116,7 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
       return result;
    }
 
-   public ReindexProcessHandle getProcessHandle()
+   public IndexerProcessHandle getProcessHandle()
    {
       return handle;
    }
@@ -142,16 +132,14 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
 
    /**
     * Prepare to reindex lucene search index. This ensures that progress counts
-    * are properly initialised before the asynchronous startReindex() method is
+    * are properly initialised before the asynchronous run() method is
     * called.
     */
-   public void prepareReindex()
+   private void prepareReindex()
    {
       // TODO print message? throw exception?
       if (handle.isInProgress())
          return;
-
-      handle = new ReindexProcessHandle();
 
       log.info("Re-indexing started");
 
@@ -169,7 +157,7 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
 
          if (opts.isReindex())
          {
-            totalOperations += (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+            totalOperations += getIndexer(clazz).getEntityCount(session, clazz);
          }
 
          if (opts.isOptimize())
@@ -177,8 +165,7 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
             totalOperations++;
          }
       }
-      handle.setMaxProgress(totalOperations);
-      handle.setPrepared(true);
+      handle = new IndexerProcessHandle(totalOperations);
    }
 
    /**
@@ -186,29 +173,33 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
     */
    public void startProcess()
    {
+      prepareReindex();
       // Invoke a self proxy
       processManagerServiceImpl.startProcess(this, this.handle);
    }
 
+   @SuppressWarnings("rawtypes")
+   ClassIndexer getIndexer(Class clazz)
+   {
+//    TODO clazz.getAnnotation(IndexerType.class).getIndexerClass().newInstance();
+    ClassIndexer indexer = new GenericClassIndexer();
+    return indexer;
+   }
 
    /**
     * Begin reindexing lucene search index. This method should only be called
     * after a single call to prepareReindex()
     */
    @Override
-   protected void run(ReindexProcessHandle handle) throws Exception
+   protected void run(IndexerProcessHandle handle) throws Exception
    {
       // TODO this is necessary because isInProgress checks number of operations, which may be 0
       // look at updating isInProgress not to care about count
-      if (handle.getMaxProgress() == 0) {
+      if (handle.getMaxProgress() == 0)
+      {
          log.info("Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
          return;
       }
-      if (!handle.isInProgress())
-      {
-         throw new RuntimeException("startReindex() must not be called before prepareReindex()");
-      }
-
       for (Class<?> clazz : indexables)
       {
          if (!handle.shouldStop() && indexingOptions.get(clazz).isPurge())
@@ -222,7 +213,7 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
          {
             log.info("reindexing {0}", clazz);
             currentClass = clazz;
-            reindex(clazz);
+            getIndexer(clazz).index(session, handle, clazz);
          }
          if (!handle.shouldStop() && indexingOptions.get(clazz).isOptimize())
          {
@@ -248,77 +239,6 @@ public class ReindexAsyncBean extends RunnableProcess<ReindexAsyncBean.ReindexPr
          }
 
          log.info("Re-indexing finished" + (handle.hasError() ? " with errors" : ""));
-      }
-
-      handle.setPrepared(false); // back to not being prepared
-   }
-
-   private void reindex(Class<?> clazz)
-   {
-      ScrollableResults results = null;
-      try
-      {
-
-         log.info("Setting manual-flush and ignore-cache for {0}", clazz);
-         session.setFlushMode(FlushMode.MANUAL);
-         session.setCacheMode(CacheMode.IGNORE);
-
-         int index = 0;
-         results = session.createCriteria(clazz).setFirstResult(index).setMaxResults(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
-         while (results.next() && !handle.shouldStop())
-         {
-            index++;
-            session.index(results.get(0)); // index each element
-            handle.incrementProgress(1);
-            if (index % BATCH_SIZE == 0)
-            {
-               log.info("periodic flush and clear for {0} (index {1})", clazz, index);
-               session.flushToIndexes(); // apply changes to indexes
-               session.clear(); // clear since the queue is processed
-               results.close();
-               results = session.createCriteria(clazz).setFirstResult(index).setMaxResults(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
-            }
-         }
-         session.flushToIndexes(); // apply changes to indexes
-         session.clear(); // clear since the queue is processed
-      }
-      catch (Exception e)
-      {
-         log.warn("Unable to index objects of type {0}", e, clazz.getName());
-         handle.setHasError(true);
-      }
-      finally
-      {
-         if (results != null)
-            results.close();
-      }
-   }
-
-
-   public static class ReindexProcessHandle extends ProcessHandle implements Serializable
-   {
-      private static final long serialVersionUID = 1L;
-      public boolean isPrepared;
-      public boolean hasError;
-
-      public boolean isPrepared()
-      {
-         return isPrepared;
-      }
-
-      public void setPrepared(boolean prepared)
-      {
-         isPrepared = prepared;
-      }
-
-      public boolean hasError()
-      {
-         return hasError;
-      }
-
-      void setHasError(boolean hasError)
-      {
-         this.hasError = hasError;
       }
    }
 }
