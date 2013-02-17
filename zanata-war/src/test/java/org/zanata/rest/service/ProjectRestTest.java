@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -216,7 +217,7 @@ public class ProjectRestTest extends ZanataRestTest
 
       assertThat(projectRes.getName(), is("My Project Update"));
       assertThat(projectRes.getDescription(), is("Update project"));
-      verify(mockIdentity).checkPermission(any(HProject.class), eq("update"));
+      verify(mockIdentity, atLeastOnce()).checkPermission(any(HProject.class), eq("update"));
    }
 
 }
