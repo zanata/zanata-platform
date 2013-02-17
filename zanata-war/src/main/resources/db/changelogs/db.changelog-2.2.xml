@@ -84,12 +84,20 @@
 			baseTableName="HProjectIteration_Validation" baseColumnNames="projectIterationId"/>
     </changeSet>
     
-     <changeSet id="7" author="alex.eng@redhat.com">
+    <changeSet id="7" author="alex.eng@redhat.com">
         <comment>Add overrideValidations column to HProjectIteration</comment>
         <addColumn tableName="HProjectIteration">
             <column name="overrideValidations" type="boolean" defaultValueBoolean="false"/>
         </addColumn>
     </changeSet>
     
+    <changeSet id="8" author="alex.eng@redhat.com">
+        <comment>Add creationDate column to HAccountActivationKey</comment>
+        <addColumn tableName="HAccountActivationKey">
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

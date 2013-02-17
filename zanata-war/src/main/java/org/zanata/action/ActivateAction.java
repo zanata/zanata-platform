@@ -20,8 +20,12 @@
  */
 package org.zanata.action;
 
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Date;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -36,6 +40,7 @@ import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.exception.KeyNotFoundException;
+import org.zanata.exception.LinkExpiredException;
 
 @Name("activate")
 @Scope(ScopeType.CONVERSATION)
@@ -62,17 +67,34 @@ public class ActivateAction implements Serializable
 
    private HAccountActivationKey key;
 
+   private static int LINK_ACTIVE_DAYS = 1;
+
    @Begin(join = true)
    public void validateActivationKey()
    {
 
       if (getActivationKey() == null)
+      {
          throw new KeyNotFoundException("null activation key");
+      }
 
       key = accountActivationKeyDAO.findById(getActivationKey(), false);
 
       if (key == null)
+      {
          throw new KeyNotFoundException("activation key: " + getActivationKey());
+      }
+
+      if (isExpired(key.getCreationDate(), LINK_ACTIVE_DAYS))
+      {
+         throw new LinkExpiredException("Link expired. Please contact server admin:" + getActivationKey());
+      }
+   }
+
+   private boolean isExpired(Date creationDate, int activeDays)
+   {
+      Date expiryDate = DateUtils.addDays(creationDate, activeDays);
+      return expiryDate.before(new Date());
    }
 
    public void setActivationKey(String activationKey)

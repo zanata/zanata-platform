@@ -16,7 +16,16 @@
     <p>#{messages['jsf.email.activation.ClickLinkToActivateAccount']}</p>
     <p>
       <a href="#{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}">
-      #{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}
+      	#{messages['jsf.email.activation.Link']} 
+      </a>
+    </p>
+    
+    <p> 
+    	#{messages['jsf.email.alternate.copyPasteMessage']}
+    </p>
+	<p>
+      <a href="#{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}">
+      	#{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}
       </a>
     </p>
   </ui:define>

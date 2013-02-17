@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -79,7 +78,7 @@ public class EmailChangeService
       HPersonEmailValidationKey entry = personEmailValidationKeyDAO.findByPersonId(person.getId());
       if (entry == null)
       {
-         entry = new HPersonEmailValidationKey(person, email, hash, new Date());
+         entry = new HPersonEmailValidationKey(person, email, hash);
       }
       else
       {
@@ -99,7 +98,7 @@ public class EmailChangeService
       return personEmailValidationKeyDAO.findByKeyHash(keyHash);
    }
 
-   public boolean isExpired(Date creationDate, int activeDays) throws ParseException
+   public boolean isExpired(Date creationDate, int activeDays)
    {
       Date expiryDate = DateUtils.addDays(creationDate, activeDays);
       return expiryDate.before(new Date());

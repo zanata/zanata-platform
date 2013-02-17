@@ -29,6 +29,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -57,11 +58,10 @@ public class HPersonEmailValidationKey implements Serializable
 
    private String email;
 
-   public HPersonEmailValidationKey(HPerson person, String email, String keyHash, Date creationDate)
+   public HPersonEmailValidationKey(HPerson person, String email, String keyHash)
    {
       this.person = person;
       this.keyHash = keyHash;
-      this.creationDate = creationDate;
       this.email = email;
    }
 
@@ -98,6 +98,13 @@ public class HPersonEmailValidationKey implements Serializable
    public String getEmail()
    {
       return email;
+   }
+
+   @SuppressWarnings("unused")
+   @PrePersist
+   private void onPersist()
+   {
+      creationDate = new Date();
    }
 
 }
