@@ -21,6 +21,7 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlowTarget;
@@ -385,57 +386,54 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    }
 
    /**
-    * Retrieves the list of values that make up the hashable state of a translated document.
-    * The order of the values must be consistent.
+    * Calculates a translated document's hash.
     *
-    * @param projectSlug
-    * @param iterationSlug
-    * @param docId
-    * @param localeId
-    * @return A list of elements that make up the hashable state of a translated document.
+    * @param projectSlug Project identifier
+    * @param iterationSlug Iteration identifier
+    * @param docId Document identifier
+    * @param locale Translated document's locale.
+    * @return A Hash string (checksum) for a translated document.
     */
-   public StringBuffer getHashableStateForTranslatedDocument( final String projectSlug, final String iterationSlug,
-                                                              final String docId, final LocaleId localeId)
+   public String getTranslatedDocumentStateHash(final String projectSlug, final String iterationSlug,
+                                                 final String docId, final HLocale locale)
    {
-      StringBuffer hashableState = new StringBuffer();
-      final String separator = "|";
-
-      // Document and POHeader version numbers
+      // NB: This method uses a native SQL query tested on mysql and h2 databases.
       Session session = getSession();
-      Query q = session.createQuery(
-            "select d.id, d.versionNum, d.poHeader.versionNum from HDocument d where d.docId = :docId " +
-            "and d.projectIteration.slug = :iterationSlug and d.projectIteration.project.slug = :projectSlug")
-            .setParameter("docId", docId)
-            .setParameter("projectSlug", projectSlug)
-            .setParameter("iterationSlug", iterationSlug);
-      List<Object[]> results = q.list();
+      StringBuilder nativeSql = new StringBuilder();
+      nativeSql.append("select MD5(group_concat(hashState)) from ");
+      nativeSql.append("( ");
+      nativeSql.append("   select ");
+      nativeSql.append("   concat( ");
+      nativeSql.append("   d.id, '|',  ");
+      nativeSql.append("   d.versionNum, '|',  ");
+      nativeSql.append("   ifnull(group_concat(poth.versionNum separator '|'), ''), '|',  ");
+      nativeSql.append("   ifnull(group_concat(tft.id separator '|'), ''), '|',  ");
+      nativeSql.append("   ifnull(group_concat(tft.versionNum separator '|'), ''),  '|',  ");
+      nativeSql.append("   ifnull(group_concat(tf.id separator '|'), ''),  '|',  ");
+      nativeSql.append("   ifnull(group_concat(tf.revision separator '|'), ''),  '|',  ");
+      nativeSql.append("   ifnull(group_concat(c.comment separator '|'), '')) as hashState  ");
+      nativeSql.append("   from  ");
+      nativeSql.append("   HDocument d ");
+      nativeSql.append("   inner join HTextFlow tf on tf.document_id = d.id ");
+      nativeSql.append("   inner join HProjectIteration i on d.project_iteration_id = i.id ");
+      nativeSql.append("   inner join HProject p on i.project_id = p.id ");
+      nativeSql.append("   left outer join HTextFlowTarget tft on tft.tf_id = tf.id and tft.locale = :localeId ");
+      nativeSql.append("   left outer join HSimpleComment c on c.id = tft.comment_id  ");
+      nativeSql.append("   left outer join HPoTargetHeader poth on poth.document_id = d.id and poth.targetLanguage = :localeId ");
+      nativeSql.append("   where  ");
+      nativeSql.append("   d.docId = :docId ");
+      nativeSql.append("   and p.slug = :projectSlug ");
+      nativeSql.append("   and i.slug = :iterationSlug ");
+      nativeSql.append("   group by d.id, d.versionNum ");
+      nativeSql.append(")  as T");
 
-      Long documentId = null;
-      for( Object[] row : results ) // (There should only be one result)
-      {
-         documentId = (Long)row[0];
-         hashableState.append(row[1].toString()).append(separator);
-         hashableState.append(row[2].toString()).append(separator);
-      }
-
-      // Text Flow Target's id and version, Text Flow's id and revision, and Text Flow Target's comment
-      q = session.createQuery(
-            "select tft.id, tft.versionNum, tft.textFlow.id, tft.textFlow.revision, tft.comment.comment " +
-            "from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
-            "order by tft.id")
-            .setParameter("id", documentId);
-      results = q.list();
-
-      for( Object[] row : results )
-      {
-         hashableState.append((String)row[0].toString()).append(separator);
-         hashableState.append((String)row[1].toString()).append(separator);
-         hashableState.append((String)row[2].toString()).append(separator);
-         hashableState.append((String)row[3].toString()).append(separator);
-         hashableState.append((String)row[4]).append(separator);
-      }
-
-      return hashableState;
+      Query query = session.createSQLQuery(nativeSql.toString())
+                           .setParameter("localeId", locale.getId())
+                           .setParameter("docId", docId)
+                           .setParameter("projectSlug", projectSlug)
+                           .setParameter("iterationSlug", iterationSlug);
+      String stateHash = (String)query.uniqueResult();
+      return stateHash;
    }
 
    /**

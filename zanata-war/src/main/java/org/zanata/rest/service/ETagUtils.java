@@ -129,10 +129,10 @@ public class ETagUtils
 
    public EntityTag generateETagForTranslatedDocument(HProjectIteration iteration, String docId, HLocale locale)
    {
-      StringBuffer hashableState =
-         documentDAO.getHashableStateForTranslatedDocument(
-               iteration.getProject().getSlug(), iteration.getSlug(), docId, locale.getLocaleId());
+      String stateHash =
+         documentDAO.getTranslatedDocumentStateHash(
+               iteration.getProject().getSlug(), iteration.getSlug(), docId, locale);
 
-      return EntityTag.valueOf(HashUtil.md5Hex(hashableState.toString()));
+      return EntityTag.valueOf(stateHash);
    }
 }
