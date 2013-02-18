@@ -376,8 +376,7 @@ td.ApprovedStateDecoration div div div
 }
 
 .DocumentListTable td.pathCol {
-	width: 25%;
-	max-width:100px;
+	max-width:150px;
 }
 
 .DocumentListTable td.pathCol div{
@@ -399,6 +398,20 @@ td.ApprovedStateDecoration div div div
 
 .DocumentListTable td.statisticCol {
 	font-size:14px;
+	text-align:center;
+}
+
+.DocumentListTable td.translatedCol {
+	font-weight:bold;
+	font-size:14px;
+	color:#006200;
+	text-align:center;
+}
+
+.DocumentListTable td.untranslatedCol {
+	font-weight:bold;
+	font-size:14px;
+	color:#818181;
 	text-align:center;
 }
 

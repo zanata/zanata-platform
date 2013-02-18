@@ -40,7 +40,7 @@
 	    		<g:Label ui:field="advancedUserConfig" styleName="gwt-sideMenu-header"/>
 	    		<g:cell>
 	    			<g:HTMLPanel>
-	    				<g:InlineLabel><ui:msg>Theme</ui:msg></g:InlineLabel>
+	    				<g:InlineLabel><ui:msg>Layout</ui:msg></g:InlineLabel>
 	    				<g:ListBox ui:field="themesList" styleName="{style.listBox}"/>
 	    			</g:HTMLPanel>
     			</g:cell>

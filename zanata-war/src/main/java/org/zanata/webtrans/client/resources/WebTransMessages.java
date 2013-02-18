@@ -77,14 +77,14 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Document")
    String columnHeaderDocument();
 
-   @DefaultMessage("Statistic ({0})")
-   String columnHeaderStatistic(String option);
+   @DefaultMessage("Statistic")
+   String columnHeaderStatistic();
 
-   @DefaultMessage("Translated ({0})")
-   String columnHeaderTranslated(String option);
+   @DefaultMessage("Translated")
+   String columnHeaderTranslated();
 
-   @DefaultMessage("Untranslated ({0})")
-   String columnHeaderUntranslated(String option);
+   @DefaultMessage("Untranslated")
+   String columnHeaderUntranslated();
 
    @DefaultMessage("Remaining hours")
    String columnHeaderRemaining();
