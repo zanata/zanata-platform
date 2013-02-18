@@ -20,9 +20,7 @@
  */
 package org.zanata.action;
 
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -38,9 +36,9 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountActivationKeyDAO;
-import org.zanata.model.HAccountActivationKey;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.LinkExpiredException;
+import org.zanata.model.HAccountActivationKey;
 
 @Name("activate")
 @Scope(ScopeType.CONVERSATION)

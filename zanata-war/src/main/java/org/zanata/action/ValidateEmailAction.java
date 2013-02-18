@@ -23,7 +23,6 @@ package org.zanata.action;
 import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 
 import javax.security.auth.login.LoginException;

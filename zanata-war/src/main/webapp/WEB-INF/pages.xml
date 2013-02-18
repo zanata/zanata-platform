@@ -885,6 +885,13 @@
       <message severity="error">#{messages['jsf.InvalidActivationKey']}</message>
     </redirect>
   </exception>
+  
+  <exception class="org.zanata.exception.LinkExpiredException"
+    log-level="warn">
+    <redirect view-id="/error.xhtml">
+      <message severity="error">#{messages['jsf.LinkExpired']}</message>
+    </redirect>
+  </exception>
 
   <exception class="org.jboss.seam.framework.EntityNotFoundException"
     log-level="warn">

@@ -94,10 +94,9 @@
     <changeSet id="8" author="alex.eng@redhat.com">
         <comment>Add creationDate column to HAccountActivationKey</comment>
         <addColumn tableName="HAccountActivationKey">
-            <column name="creationDate" type="datetime">
+            <column name="creationDate" type="datetime" defaultValueDate="0000-00-00 00:00:01">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
     </changeSet>
-
 </databaseChangeLog>
