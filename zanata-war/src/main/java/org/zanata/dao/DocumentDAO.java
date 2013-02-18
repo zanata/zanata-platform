@@ -11,6 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -432,6 +433,25 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
                            .setParameter("docId", docId)
                            .setParameter("projectSlug", projectSlug)
                            .setParameter("iterationSlug", iterationSlug);
+      // Transform the results from byte[] into Strings when necessary
+      query.setResultTransformer(new ResultTransformer()
+      {
+         @Override
+         public Object transformTuple(Object[] tuple, String[] aliases)
+         {
+            if( tuple[0] instanceof byte[] )
+            {
+               return new String((byte[])tuple[0]);
+            }
+            return tuple[0];
+         }
+
+         @Override
+         public List transformList(List collection)
+         {
+            return collection; // no transformation needed
+         }
+      });
       String stateHash = (String)query.uniqueResult();
       return stateHash;
    }
