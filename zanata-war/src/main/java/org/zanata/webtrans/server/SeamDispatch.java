@@ -70,7 +70,7 @@ public class SeamDispatch implements Dispatch
    @SuppressWarnings("unchecked")
    private void register(Class<?> clazz)
    {
-      log.info("Registering WebTrans Action Handler {0}", clazz.getName());
+      log.debug("Registering ActionHandler {0}", clazz.getName());
       ActionHandlerFor ahf = clazz.getAnnotation(ActionHandlerFor.class);
       handlers.put(ahf.value(), (Class<? extends ActionHandler<?, ?>>) clazz);
    }

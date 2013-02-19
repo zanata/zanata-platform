@@ -58,12 +58,13 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       Preconditions.checkNotNull(workspaceContext, "workspaceContext is null");
 
       this.workspaceContext = workspaceContext;
-      String workspaceId = workspaceContext.getWorkspaceId().toString();
+      final String workspaceId = workspaceContext.getWorkspaceId().toString();
       this.domain = DomainFactory.getDomain(workspaceId);
       EventExecutorServiceFactory factory = EventExecutorServiceFactory.getInstance();
       this.eventExecutorService = factory.getEventExecutorService(workspaceId);
 
       UserManager userManager = UserManagerFactory.getInstance().getUserManager();
+      // this will notify us of all user timeouts (whether part of this workspace or not)
       userManager.getUserActivityScheduler().addTimeoutListener(new UserTimeoutListener()
       {
          @Override
@@ -73,13 +74,10 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
             EditorClientId editorClientId = connectionIdToEditorClientId.remove(connectionId);
             if (editorClientId != null)
             {
-               log.info("Timeout for GWTEventService connectionId {0}; removing EditorClientId {1}", connectionId, editorClientId);
+               log.info("Timeout for GWTEventService connectionId {0}; removing EditorClientId {1} from workspace {2}", connectionId, editorClientId, workspaceId);
                removeEditorClient(editorClientId);
             }
-            else
-            {
-               log.info("Timeout for GWTEventService connectionId {0}; nothing to do", connectionId);
-            }
+            // else EditorClientId belonged to a different workspace
          }
       });
    }
@@ -172,29 +170,31 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    @Override
    public boolean removeEditorClient(EditorClientId editorClientId)
    {
-      if (sessions.containsKey(editorClientId))
+      PersonSessionDetails details = sessions.remove(editorClientId);
+      if (details != null)
       {
-         PersonSessionDetails details = sessions.remove(editorClientId);
-         if (details != null)
+         String httpSessionId = editorClientId.getHttpSessionId();
+         Collection<EditorClientId> clientIds = httpSessionToEditorClientId.get(httpSessionId);
+         if (clientIds != null)
          {
-            String httpSessionId = editorClientId.getHttpSessionId();
-            Collection<EditorClientId> clientIds = httpSessionToEditorClientId.get(httpSessionId);
-            if (clientIds != null)
-            {
-               clientIds.remove(editorClientId);
+            clientIds.remove(editorClientId);
 
-               // Send GWT Event to clients to update the user list
-               ExitWorkspace event = new ExitWorkspace(editorClientId, details.getPerson());
-               publish(event);
+            // Send GWT Event to clients to update the user list
+            ExitWorkspace event = new ExitWorkspace(editorClientId, details.getPerson());
+            publish(event);
 
-               log.info("Removed user {0} with editorClientId {1} from workspace {2}", details.getPerson().getId(), editorClientId, workspaceContext);
-               return true;
-            }
-            else
-            {
-               log.warn("Unable to remove user {0} with editorClientId {1} from workspace {2}", details.getPerson().getId(), editorClientId, workspaceContext);
-            }
+            log.info("Removed user {0} with editorClientId {1} from workspace {2}", details.getPerson().getId(), editorClientId, workspaceContext);
+            return true;
          }
+         else
+         {
+            log.warn("Unable to remove user {0} with editorClientId {1} from workspace {2}", details.getPerson().getId(), editorClientId, workspaceContext);
+         }
+      }
+      else
+      {
+         log.debug("EditorClientId {0} not found in workspace {1}", editorClientId, workspaceContext);
+         return false;
       }
       return false;
    }
