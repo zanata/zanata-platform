@@ -1,8 +1,1 @@
-Zanata Common modules.
-
-Common modules between client and server. It consists of following modules:
-- zanata-common-util - a utility module
-- zanata-adapter-glossary - reader for glossary files
-- zanata-adapter-po - PO file reader and writer
-- zanata-adapter-properties - properties file reader and writer
-- zanata-adapter-xliff - xliff reader and writer
+Contains adapters for some of the file types consumed and produced by Zanata, as well as a few utility classes that are required by both client and server components.
