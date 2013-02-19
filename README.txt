@@ -1,3 +1,3 @@
-Zanata API module. 
+This repository describes the REST API presented by a Zanata server. 
 
-It contains RESTful Web Service interfaces and Data Transfer Object (DTO) shared between client and server module.
+It also provides Data Transfer Objects(DTO) that can be used by client applications to interact with a Zanata server.
