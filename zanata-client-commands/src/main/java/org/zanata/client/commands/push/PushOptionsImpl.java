@@ -37,7 +37,6 @@ import org.zanata.util.StringUtil;
  */
 public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions> implements PushOptions
 {
-
    private static final boolean DEF_EXCLUDES = true;
    private static final boolean DEF_CASE_SENSITIVE = true;
    private static final boolean DEF_EXCLUDE_LOCALES = true;
@@ -64,7 +63,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions> im
    @Override
    public ZanataCommand initCommand()
    {
-      if ("raw".equals(getProjectType()))
+      if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType()))
       {
          return new RawPushCommand(this);
       }

@@ -83,7 +83,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions>
    public void run() throws Exception
    {
       PushCommand.logOptions(log, getOpts());
-      log.warn("Using EXPERIMENTAL project type 'raw'.");
+      log.warn("Using EXPERIMENTAL project type 'file'.");
 
       // only supporting single module for now
 

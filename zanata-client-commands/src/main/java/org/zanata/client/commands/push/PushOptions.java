@@ -47,7 +47,7 @@ public interface PushOptions extends PushPullOptions
 
    public boolean getCopyTrans();
 
-   // raw push
+   // raw file push
    public int getChunkSize();
    public List<String> getFileTypes();
 

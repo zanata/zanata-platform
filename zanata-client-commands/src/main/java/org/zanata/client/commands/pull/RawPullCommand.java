@@ -67,7 +67,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions>
          log.info("DRY RUN: no permanent changes will be made");
       }
 
-      log.warn("Using EXPERIMENTAL project type 'raw'.");
+      log.warn("Using EXPERIMENTAL project type 'file'.");
 
       LocaleList locales = getOpts().getLocaleMapList();
       if (locales == null)
@@ -146,7 +146,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions>
                      getOpts().getProjectVersion(), FileResource.FILETYPE_RAW_SOURCE_DOCUMENT, qualifiedDocName);
                if (response.getResponseStatus() == Status.NOT_FOUND)
                {
-                  log.warn("No raw source document is available for [{}]. Skipping.", qualifiedDocName);
+                  log.warn("No source document file is available for [{}]. Skipping.", qualifiedDocName);
                }
                else
                {
@@ -179,7 +179,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions>
                         fileExtension, qualifiedDocName);
                   if (response.getResponseStatus() == Response.Status.NOT_FOUND)
                   {
-                     log.info("No raw translation document found in locale {} for document [{}]", locale, qualifiedDocName);
+                     log.info("No translation document file found in locale {} for document [{}]", locale, qualifiedDocName);
                   }
                   else
                   {

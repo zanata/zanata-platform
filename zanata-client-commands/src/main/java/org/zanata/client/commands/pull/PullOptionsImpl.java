@@ -51,7 +51,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions> im
    @Override
    public ZanataCommand initCommand()
    {
-      if ("raw".equals(getProjectType()))
+      if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType()))
       {
          return new RawPullCommand(this);
       }
@@ -127,7 +127,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions> im
       return this.includeFuzzy;
    }
 
-   @Option(name = "--include-fuzzy", usage = "[project type 'raw' only] Whether to include fuzzy " +
+   @Option(name = "--include-fuzzy", usage = "[project type 'file' only] Whether to include fuzzy " +
       "translations in translation files. " +
       "If this option is false (default), source text will be used for any string " +
       "that does not have an approved translation.")

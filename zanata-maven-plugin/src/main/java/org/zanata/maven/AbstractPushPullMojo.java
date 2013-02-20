@@ -16,6 +16,7 @@ import org.zanata.client.config.LocaleList;
  */
 public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
 {
+   protected static final String PROJECT_TYPE_FILE = "file";
 
    /**
     * Separator used between components of the module ID

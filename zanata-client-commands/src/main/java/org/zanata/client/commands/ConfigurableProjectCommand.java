@@ -40,7 +40,7 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
    protected static final String PROJECT_TYPE_PUBLICAN = "podir";
    protected static final String PROJECT_TYPE_XLIFF = "xliff";
    protected static final String PROJECT_TYPE_XML = "xml";
-   protected static final String PROJECT_TYPE_RAW = "raw";
+   protected static final String PROJECT_TYPE_FILE = "file";
 
    public ConfigurableProjectCommand(O opts, ZanataProxyFactory factory)
    {

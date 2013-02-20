@@ -36,6 +36,8 @@ import org.zanata.client.config.LocaleList;
  */
 public abstract class AbstractPushPullOptionsImpl<O extends PushPullOptions> extends ConfigurableProjectOptionsImpl implements PushPullOptions
 {
+   // FIXME duplicated in ConfigurableProjectCommand
+   protected static final String PROJECT_TYPE_FILE = "file";
 
    private static final String DEF_FROM_DOC = null;
    private static final boolean DEFAULT_DRY_RUN = false;

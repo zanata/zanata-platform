@@ -96,8 +96,8 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
        "    \"podir\" = publican-style gettext directories,\n" +
        "    \"utf8properties\" = UTF-8 .properties files,\n" +
        "    \"gettext\" = gettext PO files,\n" +
-       "    \"raw\" = EXPERIMENTAL raw documents of various types).\n" +
-       "If 'raw' is used, transDir must not be the same as or nested within srcDir,\n" +
+       "    \"file\" = EXPERIMENTAL document files of various types).\n" +
+       "If 'file' is used, transDir must not be the same as or nested within srcDir,\n" +
        "and vice versa.")
    public void setProjectType(String projectType)
    {

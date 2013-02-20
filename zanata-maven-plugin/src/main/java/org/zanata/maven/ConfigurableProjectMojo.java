@@ -52,9 +52,9 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> ext
     * "podir" = publican-style gettext directories,
     * "utf8properties" = UTF-8 .properties files,
     * "gettext" = gettext PO files,
-    * "raw" = EXPERIMENTAL raw documents of various types).
+    * "file" = EXPERIMENTAL document files of various types).
     * 
-    * If 'raw' is used, transDir must not be the same as or nested within srcDir,
+    * If 'file' is used, transDir must not be the same as or nested within srcDir,
     * and vice versa.
     * 
     * @parameter expression="${zanata.projectType}"

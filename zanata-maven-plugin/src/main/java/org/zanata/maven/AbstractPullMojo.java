@@ -33,7 +33,6 @@ import org.zanata.client.commands.pull.RawPullCommand;
  */
 public abstract class AbstractPullMojo extends AbstractPushPullMojo<PullOptions> implements PullOptions
 {
-
    /**
     * Export source-language text from Zanata to local files, overwriting or
     * erasing existing files (DANGER!). This option is deprecated, replaced by pullType.
@@ -50,7 +49,7 @@ public abstract class AbstractPullMojo extends AbstractPushPullMojo<PullOptions>
    private boolean createSkeletons;
 
    /**
-    * Whether to include fuzzy translations in translation files when using project type 'raw'.
+    * Whether to include fuzzy translations in translation files when using project type 'file'.
     * If this option is false, source text will be used for any string that does not have an
     * approved translation.
     * 
@@ -100,7 +99,7 @@ public abstract class AbstractPullMojo extends AbstractPushPullMojo<PullOptions>
 
    public PushPullCommand<PullOptions> initCommand()
    {
-      if ("raw".equals(getProjectType()))
+      if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType()))
       {
          return new RawPullCommand(this);
       }

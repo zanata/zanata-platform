@@ -50,7 +50,7 @@ public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions>
    @Override
    public PushPullCommand<PushOptions> initCommand()
    {
-      if ("raw".equals(getProjectType()))
+      if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType()))
       {
          return new RawPushCommand(this);
       }
@@ -118,7 +118,7 @@ public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions>
    private boolean defaultExcludes = true;
 
    /**
-    * Maximum size, in bytes, of document chunks to transmit when using project type 'raw'. Documents smaller
+    * Maximum size, in bytes, of document chunks to transmit when using project type 'file'. Documents smaller
     * than this size will be transmitted in a single request, larger documents
     * will be sent over multiple requests.
     * 
@@ -129,7 +129,7 @@ public abstract class AbstractPushMojo extends AbstractPushPullMojo<PushOptions>
    private int maxChunkSize = 1024 * 1024;
 
    /**
-    * File types to locate and transmit to the server when using project type "raw".
+    * File types to locate and transmit to the server when using project type "file".
     * 
     * @parameter expression="${zanata.fileTypes}" default-value="txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb"
     */

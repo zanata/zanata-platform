@@ -30,8 +30,8 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions> implemen
    private String versionSlug;
 
    /**
-    * Project type {utf8properties, properties, gettext, podir, xliff, xml, raw}
-    * Leave blank to inherits from Default project type
+    * Project type {utf8properties, properties, gettext, podir, xliff, xml, file}
+    * Leave blank to inherit default project type from parent project
     * 
     * @parameter expression="${zanata.projectType}"
     * 

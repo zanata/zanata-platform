@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.config.LocaleMapping;
 
 /**
- * Strategy for uploading documents using the raw document upload API methods.
+ * Strategy for uploading documents using the document file upload API methods.
  * 
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *

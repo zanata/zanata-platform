@@ -70,7 +70,7 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    }
 
    @Override
-   @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type. Versions under this project that do not specify a project type will use this default. Valid values are : Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, Raw. See https://github.com/zanata/zanata/wiki/Project-Types")
+   @Option(name = "--default-project-type", metaVar = "TYPE", required = true, usage = "Default project type. Versions under this project that do not specify a project type will use this default. Valid values are : Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, File. See https://github.com/zanata/zanata/wiki/Project-Types")
    public void setDefaultProjectType(String defaultProjectType)
    {
       this.defaultProjectType = defaultProjectType;
