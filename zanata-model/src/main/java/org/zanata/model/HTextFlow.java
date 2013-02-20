@@ -52,8 +52,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.FilterCacheModeType;
-import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
@@ -62,7 +60,6 @@ import org.hibernate.validator.NotNull;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
-import org.zanata.hibernate.search.IdBitSetFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
@@ -86,10 +83,7 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
-@FullTextFilterDef(
-      name = "textFlowFilter",
-      impl = IdBitSetFilterFactory.class,
-      cache = FilterCacheModeType.INSTANCE_ONLY)
+// See org.zanata.search.TranslatedTextFlowFilter
 @NamedQueries(@NamedQuery(
       name = "HTextFlow.findIdsWithTranslations",
       query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +

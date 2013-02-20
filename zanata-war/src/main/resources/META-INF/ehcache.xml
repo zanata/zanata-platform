@@ -37,11 +37,11 @@
 	/>
 
 	<cache
-		name="org.zanata.service.impl.TranslatedTextFlowCache"
+		name="org.zanata.service.impl.TranslatedFilterCache"
 		maxElementsInMemory="200"
 		eternal="false"
-		timeToIdleSeconds="0"
-		timeToLiveSeconds="1200"
+		timeToIdleSeconds="1800"
+		timeToLiveSeconds="0"
 		overflowToDisk="false"
 		memoryStoreEvictionPolicy="LRU"
 		statistics="true"

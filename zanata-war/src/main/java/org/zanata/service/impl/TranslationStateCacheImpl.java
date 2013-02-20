@@ -20,9 +20,7 @@
  */
 package org.zanata.service.impl;
 
-import java.util.List;
-
-import org.apache.lucene.util.OpenBitSet;
+import org.apache.lucene.search.Filter;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
@@ -33,6 +31,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.search.TranslatedTextFlowFilter;
 import org.zanata.service.TranslationStateCache;
 
 import net.sf.ehcache.Cache;
@@ -49,22 +48,20 @@ import net.sf.ehcache.Element;
 @AutoCreate
 public class TranslationStateCacheImpl implements TranslationStateCache
 {
-
-   private final String TRANSLATED_TEXT_FLOW_CACHE_NAME = "org.zanata.service.impl.TranslatedTextFlowCache";
+   private static final String CACHE_NAME = TranslationStateCache.class.getName();
 
    @In
    private TextFlowDAO textFlowDAO;
 
    private CacheManager cacheManager;
-
-   private Cache translatedTextFlowCache;
+   private Cache filterCache;
 
    @Create
    public void initialize()
    {
       cacheManager = CacheManager.create();
-      cacheManager.addCacheIfAbsent(TRANSLATED_TEXT_FLOW_CACHE_NAME);
-      translatedTextFlowCache = cacheManager.getCache(TRANSLATED_TEXT_FLOW_CACHE_NAME);
+      cacheManager.addCacheIfAbsent(CACHE_NAME);
+      filterCache = cacheManager.getCache(CACHE_NAME);
    }
 
    @Destroy
@@ -74,34 +71,29 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    }
 
    @Override
-   public OpenBitSet getTranslatedTextFlowIds(LocaleId localeId)
+   public synchronized Filter getFilter(LocaleId locale)
    {
-      if( translatedTextFlowCache.get(localeId) == null )
+      Element element = filterCache.get(locale);
+      if (element == null)
       {
-         OpenBitSet bitSet = textFlowDAO.findIdsWithTranslations(localeId);
-         translatedTextFlowCache.put( new Element(localeId, bitSet) );
+         TranslatedTextFlowFilter filter = new TranslatedTextFlowFilter(locale);
+         filterCache.put(new Element(locale, filter));
+         return filter;
       }
-
-      return (OpenBitSet)translatedTextFlowCache.get( localeId ).getValue();
+      else
+      {
+         return (TranslatedTextFlowFilter) element.getValue();
+      }
    }
 
    @Override
    public void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState)
    {
-      final Element element = translatedTextFlowCache.get(localeId);
+      final Element element = filterCache.get(localeId);
       if( element != null )
       {
-         OpenBitSet bitSet = (OpenBitSet)element.getValue();
-
-         boolean translated = newState == ContentState.Approved;
-         if( translated )
-         {
-            bitSet.set( textFlowId );
-         }
-         else
-         {
-            bitSet.clear( textFlowId );
-         }
+         TranslatedTextFlowFilter filter = (TranslatedTextFlowFilter) element.getValue();
+         filter.onTranslationStateChange(textFlowId, newState);
       }
    }
 

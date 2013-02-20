@@ -33,6 +33,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.Version;
@@ -61,6 +62,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
@@ -84,6 +86,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    @In
    LocaleDAO localeDAO;
 
+   @In
+   private TranslationStateCache translationStateCacheImpl;
+
    public TextFlowDAO()
    {
       super(HTextFlow.class);
@@ -98,11 +103,14 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    public OpenBitSet findIdsWithTranslations(LocaleId locale)
    {
       Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
+      q.setReadOnly(true);
+      // MIN_VALUE gives hint to JDBC driver to stream results
+      q.setFetchSize(Integer.MIN_VALUE);
       q.setParameter("locale", locale);
-      // TextFlowFilter does its own caching, no need for double caching
-      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
+      // TranslatedFilter may need this caching when populating multiple bitsets (one per IndexReader)
+      q.setCacheable(true).setComment("TextFlowDAO.findIdsWithTranslations");
 
-      ScrollableResults results = q.scroll();
+      ScrollableResults results = q.scroll(ScrollMode.FORWARD_ONLY);
       OpenBitSet resultBitSet = new OpenBitSet();
       while( results.next() )
       {
@@ -245,32 +253,16 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    /**
-    * Using id list and source index
-    */
-   public List<Object[]> getSearchResult(TransMemoryQuery query, OpenBitSet translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult) throws ParseException
-   {
-      return getSearchResult(query, translatedIds, sourceLocale, targetLocale, maxResult, false);
-   }
-
-   /**
-    * Using target index (to be phased out)
-    */
-   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult) throws ParseException
-   {
-      return getSearchResult(query, null, sourceLocale, targetLocale, maxResult, true);
-   }
-
-   /**
     * 
     * @param query
-    * @param translatedIds ignored if useTargetIndex is true
     * @param sourceLocale
     * @param maxResult
     * @param useTargetIndex
     * @return
     * @throws ParseException
     */
-   private List<Object[]> getSearchResult(TransMemoryQuery query, OpenBitSet translatedIds, LocaleId sourceLocale, LocaleId targetLocale, final int maxResult, boolean useTargetIndex) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale,
+         LocaleId targetLocale, final int maxResult, boolean useTargetIndex) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -330,9 +322,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       {
          org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.CONTENT_FIELDS, useTargetIndex);
          ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-         ftQuery.enableFullTextFilter("textFlowFilter").setParameter("translatedTextFlowBitSet", translatedIds);
+         Filter filter = translationStateCacheImpl.getFilter(targetLocale);
+         ftQuery.setFilter(filter);
       }
-
 
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")

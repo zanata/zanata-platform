@@ -32,7 +32,6 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -104,18 +103,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       try
       {
          List<Object[]> matches;
-         if (useTargetIndex)
-         {
-            matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
-         }
-         else
-         {
-            // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
-            OpenBitSet idsWithTranslations = translationStateCacheImpl.getTranslatedTextFlowIds(targetLocale.getLocaleId());
-            //List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(targetLocale.getLocaleId());
-            matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
-         }
-
+         matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS, useTargetIndex);
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
