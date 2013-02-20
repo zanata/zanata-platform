@@ -81,6 +81,37 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>bash</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!-- See the script etc/zanataj -->
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <mainClass>org.zanata.client.BashCompletionGenerator</mainClass>
+                            <arguments>
+                                <argument>${project.build.directory}/zanata-cli-completion</argument>
+                            </arguments>
+                            <classpathScope>test</classpathScope>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 
     <dependencies>
         <dependency>
