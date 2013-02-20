@@ -22,8 +22,6 @@ package org.zanata;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
@@ -306,16 +305,13 @@ public class ApplicationConfiguration implements Serializable
    {
       String emailAddr = null;
 
-      // Look in the properties file first
-      if( externalConfig.containsKey(KEY_DEFAULT_FROM_ADDRESS) )
+      // Look in the database first
+      emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+
+      // Look in the properties file next
+      if (emailAddr == null && externalConfig.containsKey(KEY_DEFAULT_FROM_ADDRESS))
       {
          emailAddr = externalConfig.getProperty(KEY_DEFAULT_FROM_ADDRESS);
-      }
-
-      // Look in the database next
-      if( emailAddr == null )
-      {
-         emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
       }
 
       // Finally, just throw an Exception
