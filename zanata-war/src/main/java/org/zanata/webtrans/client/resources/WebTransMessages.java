@@ -473,10 +473,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Editor")
    String editor();
 
-   @DefaultMessage("By words")
+   @DefaultMessage("Words")
    String byWords();
 
-   @DefaultMessage("By message")
+   @DefaultMessage("Message")
    String byMessage();
 
    @DefaultMessage("Refresh current page")
