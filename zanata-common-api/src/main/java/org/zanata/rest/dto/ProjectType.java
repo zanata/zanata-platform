@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum(String.class)
 public enum ProjectType
 {
-	Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, Raw;
+   Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, File;
+
+   private static final String OBSOLETE_PROJECT_TYPE_RAW = "raw";
 
    /**
     * @param projectType
@@ -26,6 +28,10 @@ public enum ProjectType
             }
          }
       }
-      throw new Exception("Projec type '" + projectType + "' not supported");
+      if (OBSOLETE_PROJECT_TYPE_RAW.equalsIgnoreCase(projectType))
+      {
+         throw new Exception("Project type '" + projectType + "' no longer supported, use 'File' instead");
+      }
+      throw new Exception("Project type '" + projectType + "' not supported");
    }
 }

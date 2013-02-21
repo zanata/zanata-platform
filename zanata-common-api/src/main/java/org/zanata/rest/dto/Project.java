@@ -77,7 +77,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       this.id = id;
    }
 
-   @XmlElement(name = "defaultType", required = true, namespace = Namespaces.ZANATA_OLD)
+   @XmlElement(name = "defaultType", required = true, nillable = false, namespace = Namespaces.ZANATA_OLD)
    public ProjectType getDefaultType()
    {
       return defaultType;
