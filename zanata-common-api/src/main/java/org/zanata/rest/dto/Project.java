@@ -16,7 +16,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.Namespaces;
@@ -33,7 +34,7 @@ import org.zanata.rest.MediaTypes.Format;
 @XmlRootElement(name = "project")
 @JsonPropertyOrder({ "id", "defaultType", "name", "description", "sourceViewURL", "sourceCheckoutURL", "links", "iterations", "status" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonWriteNullProperties(false)
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class Project implements Serializable, HasCollectionSample<Project>, HasMediaType
 {
 
