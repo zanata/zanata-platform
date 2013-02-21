@@ -2,7 +2,6 @@ package org.zanata.webtrans.server;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
@@ -19,7 +18,7 @@ import org.zanata.webtrans.shared.rpc.SessionEventData;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -42,8 +41,6 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    private final ConcurrentMap<EditorClientId, PersonSessionDetails> sessions = new MapMaker().makeMap();
    private final Multimap<String, EditorClientId> httpSessionToEditorClientId;
    private final Map<String, EditorClientId> connectionIdToEditorClientId;
-   private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
-
    private final EventExecutorService eventExecutorService;
 
    {
@@ -65,6 +62,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
 
       UserManager userManager = UserManagerFactory.getInstance().getUserManager();
       // this will notify us of all user timeouts (whether part of this workspace or not)
+      // TODO deregister listener to avoid memory leak
       userManager.getUserActivityScheduler().addTimeoutListener(new UserTimeoutListener()
       {
          @Override
@@ -88,65 +86,21 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       return workspaceContext;
    }
 
-   public String getTransUnitStatus(TransUnitId unitId)
-   {
-      return editstatus.get(unitId);
-   }
-
-   public void addTransUnit(TransUnitId unitId, String sessionId)
-   {
-      // Make sure this session only link to one TransUnit
-      if (editstatus.containsValue(sessionId))
-      {
-         ImmutableSet<TransUnitId> transIdSet = ImmutableSet.copyOf(editstatus.keySet());
-         for (TransUnitId transId : transIdSet)
-         {
-            if (editstatus.get(transId).equals(sessionId))
-            {
-               editstatus.remove(transId, sessionId);
-            }
-         }
-      }
-
-      if (!editstatus.containsKey(unitId))
-      {
-         editstatus.put(unitId, sessionId);
-      }
-
-   }
-
-   public boolean containTransUnit(TransUnitId unitId)
-   {
-      return editstatus.containsKey(unitId);
-   }
-
-   public ImmutableSet<String> getEditSessions()
-   {
-      return ImmutableSet.copyOf(editstatus.values());
-   }
-
    @Override
    public Map<EditorClientId, PersonSessionDetails> getUsers()
    {
-      Map<EditorClientId, PersonSessionDetails> list = new HashMap<EditorClientId, PersonSessionDetails>();
-      for (EditorClientId editorClientId : sessions.keySet())
-      {
-         list.put(editorClientId, sessions.get(editorClientId));
-      }
-      return list;
-   }
-
-   public void removeTransUnit(TransUnitId transUnitId, String sessionId)
-   {
-      editstatus.remove(transUnitId, sessionId);
+      return ImmutableMap.copyOf(sessions);
    }
 
    @Override
    public void addEditorClient(String httpSessionId, EditorClientId editorClientId, PersonId personId)
    {
-      log.info("Added user {0} with editorClientId {1} to workspace {2}", personId.getId(), editorClientId, workspaceContext);
-      sessions.putIfAbsent(editorClientId, new PersonSessionDetails(new Person(personId, "", ""), null));
-      httpSessionToEditorClientId.put(httpSessionId, editorClientId);
+      PersonSessionDetails prev = sessions.putIfAbsent(editorClientId, new PersonSessionDetails(new Person(personId, "", ""), null));
+      if (prev != null)
+      {
+         log.info("Added user {0} with editorClientId {1} to workspace {2}", personId.getId(), editorClientId, workspaceContext);
+         httpSessionToEditorClientId.put(httpSessionId, editorClientId);
+      }
    }
 
    @Override
@@ -231,18 +185,20 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    @Override
    public void updateUserSelection(EditorClientId editorClientId, TransUnitId selectedTransUnitId)
    {
-      if (sessions.containsKey(editorClientId))
+      PersonSessionDetails personSessionDetails = sessions.get(editorClientId);
+      if (personSessionDetails != null)
       {
-         sessions.get(editorClientId).setSelectedTransUnitId(selectedTransUnitId);
+         personSessionDetails.setSelectedTransUnitId(selectedTransUnitId);
       }
    }
 
    @Override
    public TransUnitId getUserSelection(EditorClientId editorClientId)
    {
-      if (sessions.containsKey(editorClientId))
+      PersonSessionDetails personSessionDetails = sessions.get(editorClientId);
+      if (personSessionDetails != null)
       {
-         return sessions.get(editorClientId).getSelectedTransUnitId();
+         return personSessionDetails.getSelectedTransUnitId();
       }
 
       return null;

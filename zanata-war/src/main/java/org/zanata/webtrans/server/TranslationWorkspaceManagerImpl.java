@@ -20,14 +20,12 @@ import org.zanata.ZanataInit;
 import org.zanata.action.ProjectHome;
 import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
@@ -201,11 +199,6 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       log.info("Removed {} client(s).  Waiting for outstanding polls to time out...", clientCount);
    }
 
-//   public int getWorkspaceCount()
-//   {
-//      return workspaceMap.size();
-//   }
-
    @Override
    public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException
    {
@@ -269,16 +262,4 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       WorkspaceContext workspaceContext = validateAndGetWorkspaceContext(workspaceId);
       return new TranslationWorkspaceImpl(workspaceContext);
    }
-
-//   public TranslationWorkspace getWorkspace(ProjectIterationId projectIterationId, LocaleId localeId)
-//   {
-//      WorkspaceId workspaceId = new WorkspaceId(projectIterationId, localeId);
-//      return getWorkspace(workspaceId);
-//   }
-//
-//   private TranslationWorkspace getWorkspace(WorkspaceId workspaceId)
-//   {
-//      return workspaceMap.get(workspaceId);
-//   }
-
 }
