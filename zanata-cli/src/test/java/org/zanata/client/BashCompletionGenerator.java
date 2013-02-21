@@ -143,7 +143,7 @@ public class BashCompletionGenerator
       for (Option option : findByMetaVar(generator, "dir"))
       {
          lines.add(String.format("        %s)", option.name()));
-         lines.add("            COMPREPLY=( $(compgen -f ${cur}) )");
+         lines.add("            COMPREPLY=( $(compgen -d ${cur}) )");
          lines.add("            return 0");
          lines.add("            ;;");
       }
