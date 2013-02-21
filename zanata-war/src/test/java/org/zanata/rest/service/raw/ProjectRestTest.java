@@ -148,7 +148,7 @@ public class ProjectRestTest extends ZanataRawRestTest
    @Test
    public void putXml() throws Exception
    {
-      final Project project = new Project("test-project", "Test Project", ProjectType.Gettext, "This is a Test project");
+      final Project project = new Project("test-project", "Test Project", ProjectType.Gettext.toString(), "This is a Test project");
       project.setStatus(EntityStatus.ACTIVE);
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
@@ -173,7 +173,7 @@ public class ProjectRestTest extends ZanataRawRestTest
    @Test
    public void putJson() throws Exception
    {
-      final Project project = new Project("test-project", "Test Project", ProjectType.Gettext, "This is a Test project");
+      final Project project = new Project("test-project", "Test Project", ProjectType.Gettext.toString(), "This is a Test project");
       project.setStatus(EntityStatus.ACTIVE);
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
