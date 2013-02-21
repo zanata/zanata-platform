@@ -39,7 +39,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
 
    private String id;
    private String name;
-   private ProjectType defaultType;
+   private String defaultType;
    private String description;
    private String sourceViewURL;
    private String sourceCheckoutURL;
@@ -53,14 +53,14 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    {
    }
 
-   public Project(String id, String name, ProjectType defaultType)
+   public Project(String id, String name, String defaultType)
    {
       this.id = id;
       this.name = name;
       this.defaultType = defaultType;
    }
 
-   public Project(String id, String name, ProjectType type, String description)
+   public Project(String id, String name, String type, String description)
    {
       this(id, name, type);
       this.description = description;
@@ -78,12 +78,12 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    }
 
    @XmlElement(name = "defaultType", required = true, nillable = false, namespace = Namespaces.ZANATA_OLD)
-   public ProjectType getDefaultType()
+   public String getDefaultType()
    {
       return defaultType;
    }
 
-   public void setDefaultType(ProjectType defaultType)
+   public void setDefaultType(String defaultType)
    {
       this.defaultType = defaultType;
    }
@@ -191,7 +191,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       entity.setId("sample-project");
       entity.setName("Sample Project");
       entity.setDescription("Sample Project Description");
-      entity.setDefaultType(ProjectType.Gettext);
+      entity.setDefaultType(ProjectType.Gettext.toString());
       entity.getIterations(true).addAll(new ProjectIteration().createSamples());
       return entity;
    }
@@ -205,7 +205,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       p2.setId("another-project");
       p2.setName("Another Sample Project");
       p2.setDescription("Another Sample Project Description");
-      p2.setDefaultType(ProjectType.Gettext);
+      p2.setDefaultType(ProjectType.Gettext.toString());
       entities.add(p2);
       return entities;
    }
