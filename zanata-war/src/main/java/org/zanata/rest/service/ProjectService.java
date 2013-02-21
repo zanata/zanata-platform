@@ -221,23 +221,28 @@ public class ProjectService implements ProjectResource
          response = Response.ok();
       }
 
-      if (project.getDefaultType() == null || project.getDefaultType().isEmpty())
+      // null project type accepted for compatibility with old clients
+      if (project.getDefaultType() != null)
       {
-         return Response.status(Status.BAD_REQUEST)
-               .entity("No valid default project type was specified.")
-               .build();
-      }
-      try
-      {
-         ProjectType.getValueOf(project.getDefaultType());
-      }
-      catch (Exception e)
-      {
-         String validTypes = StringUtils.join(ProjectType.values(), ", ");
-         return Response.status(Status.BAD_REQUEST)
-               .entity("Project type \"" + project.getDefaultType() + "\" not valid for this server." +
-                       " Valid types: [" + validTypes + "]")
-               .build();
+         if (project.getDefaultType().isEmpty())
+         {
+            return Response.status(Status.BAD_REQUEST)
+                  .entity("No valid default project type was specified.")
+                  .build();
+         }
+
+         try
+         {
+            ProjectType.getValueOf(project.getDefaultType());
+         }
+         catch (Exception e)
+         {
+            String validTypes = StringUtils.join(ProjectType.values(), ", ");
+            return Response.status(Status.BAD_REQUEST)
+                  .entity("Project type \"" + project.getDefaultType() + "\" not valid for this server." +
+                        " Valid types: [" + validTypes + "]")
+                        .build();
+         }
       }
 
       transfer(project, hProject);
@@ -264,7 +269,10 @@ public class ProjectService implements ProjectResource
    {
       to.setName(from.getName());
       to.setDescription(from.getDescription());
-      to.setDefaultProjectType(ProjectType.valueOf(from.getDefaultType()));
+      if (from.getDefaultType() != null)
+      {
+         to.setDefaultProjectType(ProjectType.valueOf(from.getDefaultType()));
+      }
       // TODO Currently all Projects are created as Current
       // to.setStatus(from.getStatus());
 
