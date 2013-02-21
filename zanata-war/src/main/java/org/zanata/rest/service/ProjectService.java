@@ -271,7 +271,20 @@ public class ProjectService implements ProjectResource
       to.setDescription(from.getDescription());
       if (from.getDefaultType() != null)
       {
-         to.setDefaultProjectType(ProjectType.valueOf(from.getDefaultType()));
+         ProjectType projectType;
+         try
+         {
+            projectType = ProjectType.getValueOf(from.getDefaultType());
+         }
+         catch (Exception e)
+         {
+            projectType = null;
+         }
+
+         if (projectType != null)
+         {
+            to.setDefaultProjectType(projectType);
+         }
       }
       // TODO Currently all Projects are created as Current
       // to.setStatus(from.getStatus());
@@ -293,7 +306,10 @@ public class ProjectService implements ProjectResource
       to.setName(from.getName());
       to.setDescription(from.getDescription());
       to.setStatus(from.getStatus());
-      to.setDefaultType(from.getDefaultProjectType().toString());
+      if (from.getDefaultProjectType() != null)
+      {
+         to.setDefaultType(from.getDefaultProjectType().toString());
+      }
       to.setSourceViewURL(from.getSourceViewURL());
       to.setSourceCheckoutURL(from.getSourceCheckoutURL());
    }
