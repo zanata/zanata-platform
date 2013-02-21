@@ -25,12 +25,10 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.search.TranslatedTextFlowFilter;
 import org.zanata.service.TranslationStateCache;
 
@@ -49,10 +47,6 @@ import net.sf.ehcache.Element;
 public class TranslationStateCacheImpl implements TranslationStateCache
 {
    private static final String CACHE_NAME = TranslationStateCache.class.getName();
-
-   @In
-   private TextFlowDAO textFlowDAO;
-
    private CacheManager cacheManager;
    private Cache filterCache;
 

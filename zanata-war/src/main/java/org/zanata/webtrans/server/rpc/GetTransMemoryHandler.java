@@ -38,7 +38,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
@@ -47,6 +46,7 @@ import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TranslationMemoryQueryService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
@@ -76,7 +76,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    private TranslationStateCache translationStateCacheImpl;
 
    @In
-   private TextFlowDAO textFlowDAO;
+   private TranslationMemoryQueryService translationMemoryQueryService;
 
    @In
    private ZanataIdentity identity;
@@ -103,7 +103,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       try
       {
          List<Object[]> matches;
-         matches = textFlowDAO.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS, useTargetIndex);
+         matches = translationMemoryQueryService.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS, useTargetIndex);
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {

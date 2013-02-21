@@ -63,6 +63,7 @@ public class TranslatedTextFlowFilter extends Filter
    @Override
    public DocIdSet getDocIdSet(IndexReader reader) throws IOException
    {
+      TextFlowDAO textFlowDAO = (TextFlowDAO) Component.getInstance("textFlowDAO");
       OpenBitSet docIdSet;
       synchronized (map)
       {
@@ -73,7 +74,6 @@ public class TranslatedTextFlowFilter extends Filter
             Stopwatch stopwatch = new Stopwatch().start();
             docIdSet = new OpenBitSet(reader.maxDoc());
             map.put(reader, docIdSet);
-            TextFlowDAO textFlowDAO = (TextFlowDAO) Component.getInstance("textFlowDAO");
             log.debug("Loading translatedTextFlowBitSet for locale {}", locale);
             OpenBitSet translatedTextFlowBitSet = textFlowDAO.findIdsWithTranslations(locale);
             log.debug("Loaded translatedTextFlowBitSet; populating docIdSet for locale {}", locale);
