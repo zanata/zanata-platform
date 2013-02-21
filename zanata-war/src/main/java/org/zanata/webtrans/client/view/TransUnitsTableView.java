@@ -9,10 +9,13 @@ import org.zanata.webtrans.client.ui.LoadingPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLTable;
@@ -84,6 +87,14 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
       transUnitTable.resize(0, 2);
       transUnitTable.getColumnFormatter().setWidth(0, "50%");
       transUnitTable.getColumnFormatter().setWidth(1, "50%");
+      Window.addResizeHandler(new ResizeHandler()
+      {
+         @Override
+         public void onResize(ResizeEvent event)
+         {
+            listener.refreshView();
+         }
+      });
    }
 
    @Override

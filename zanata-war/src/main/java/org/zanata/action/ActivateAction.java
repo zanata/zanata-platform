@@ -37,7 +37,7 @@ import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
-import org.zanata.exception.LinkExpiredException;
+import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
 
 @Name("activate")
@@ -85,7 +85,7 @@ public class ActivateAction implements Serializable
 
       if (isExpired(key.getCreationDate(), LINK_ACTIVE_DAYS))
       {
-         throw new LinkExpiredException("Link expired. Please contact server admin:" + getActivationKey());
+         throw new ActivationLinkExpiredException("Activation link expired:" + getActivationKey());
       }
    }
 

@@ -42,7 +42,7 @@
             </column>
         </addColumn>
     </changeSet>
-    
+
     <changeSet id="4" author="alex.eng@redhat.com">
         <comment>Add HProject_Validation table.</comment>
         <createTable tableName="HProject_Validation">
@@ -59,7 +59,7 @@
 			referencedTableName="HProject" referencedColumnNames="id"
 			baseTableName="HProject_Validation" baseColumnNames="projectId"/>
     </changeSet>
-    
+
     <changeSet id="5" author="alex.eng@redhat.com">
         <comment>Add overrideValidations column to HProject</comment>
         <addColumn tableName="HProject">
@@ -99,4 +99,17 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="3" author="damason@redhat.com">
+        <comment>Change project type from Raw to File in HProject and HProjectIteration.</comment>
+        <update tableName="HProject" >
+            <column name="defaultProjectType" value="File"/>
+            <where>defaultProjectType = 'Raw'</where>
+        </update>
+        <update tableName="HProjectIteration" >
+            <column name="projectType" value="File"/>
+            <where>projectType = 'Raw'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

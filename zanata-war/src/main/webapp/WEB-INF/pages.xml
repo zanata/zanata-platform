@@ -818,6 +818,7 @@
   </page>
   
   <page view-id="/language/contact_coordinator.xhtml">
+  	<restrict>#{identity.loggedIn}</restrict>
     <param name="emailType" value="#{sendEmail.emailType}" />
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}"/>
@@ -886,10 +887,10 @@
     </redirect>
   </exception>
   
-  <exception class="org.zanata.exception.LinkExpiredException"
+  <exception class="org.zanata.exception.ActivationLinkExpiredException"
     log-level="warn">
     <redirect view-id="/error.xhtml">
-      <message severity="error">#{messages['jsf.LinkExpired']}</message>
+      <message severity="error">#{messages['jsf.ActivationLinkExpired']}</message>
     </redirect>
   </exception>
 
