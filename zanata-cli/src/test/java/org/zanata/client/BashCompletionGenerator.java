@@ -98,7 +98,7 @@ public class BashCompletionGenerator
    {
       // if we can use groovy here then here doc will be really handy...
       String commands = joiner.join(generator.baseCommands);
-      String genericOptions = optionsToString(generator.genericOptions);
+//      String genericOptions = optionsToString(generator.genericOptions);
 
       List<String> lines = Lists.newArrayList();
       lines.add("# ");
@@ -172,7 +172,6 @@ public class BashCompletionGenerator
       }
       lines.add("    esac");
 
-      findByMetaVar(generator, "file");
       lines.add("}");
       lines.add("complete -F _zanata " + client.getCommandName());
 
