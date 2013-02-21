@@ -219,6 +219,11 @@ public class ProjectService implements ProjectResource
          response = Response.ok();
       }
 
+      if (project.getDefaultType() == null)
+      {
+         return Response.status(Status.BAD_REQUEST).entity("No valid default project type was specified.").build();
+      }
+
       transfer(project, hProject);
 
       hProject = projectDAO.makePersistent(hProject);
