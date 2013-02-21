@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.IProjectResource;
 import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.ProjectType;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -36,7 +35,12 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions>
       project.setDescription(getOpts().getProjectDesc());
       project.setSourceViewURL(getOpts().getSourceViewUrl());
       project.setSourceCheckoutURL(getOpts().getSourceCheckoutUrl());
-      project.setDefaultType(ProjectType.getValueOf(getOpts().getDefaultProjectType()));
+
+      if (getOpts().getDefaultProjectType() == null || getOpts().getDefaultProjectType().isEmpty())
+      {
+         throw new Exception("Default project type must not be null or empty.");
+      }
+      project.setDefaultType(getOpts().getDefaultProjectType());
 
       log.debug("{}", project);
 
