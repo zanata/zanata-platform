@@ -85,13 +85,12 @@ import lombok.extern.slf4j.Slf4j;
 @Indexed
 // See org.zanata.search.TranslatedTextFlowFilter
 @NamedQueries(@NamedQuery(
-      name = "HTextFlow.findIdsWithTranslations",
+      name = HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS,
       query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +
             "WHERE tft.locale.localeId=:locale " +
             "AND tft.state=org.zanata.common.ContentState.Approved " +
             "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
-            "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE " +
-            "ORDER BY tft.textFlow.id DESC"
+            "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
 ))
 @Setter
 @NoArgsConstructor
@@ -99,6 +98,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents
 {
+   public static final String QUERY_TRANSLATED_TEXTFLOWIDS = "HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS";
    private static final long serialVersionUID = 3023080107971905435L;
 
    private Long id;

@@ -47,27 +47,33 @@ import com.google.common.base.Objects;
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
 @NamedQueries({
-   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[1]",
+   @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+1,
                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
                		  "and contents[0] = ?"),
-   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[2]",
+   @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+2,
                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
                        "and contents[0] = ? and contents[1] = ?"),
-   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[3]",
+   @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+3,
                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
                        "and contents[0] = ? and contents[1] = ? and contents[2] = ?"),
-   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[4]",
+   @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+4,
                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
                        "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ?"),
-   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[5]",
+   @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+5,
                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
                        "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ?"),
-   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[6]",
+   @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+6,
                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
                        "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ? and contents[5] = ?")
 })
 public class HTextFlowTargetHistory extends HTextContainer implements Serializable, ITextFlowTargetHistory
 {
+   static final String QUERY_MATCHING_HISTORY = "HTextFlowTargetHistory.QUERY_MATCHING_HISTORY.";
+
+   public static String getQueryNameMatchingHistory(int size)
+   {
+      return QUERY_MATCHING_HISTORY+size;
+   }
 
    private static final long serialVersionUID = 1L;
 

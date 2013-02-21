@@ -75,7 +75,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    @SuppressWarnings("unchecked")
    public OpenBitSet findIdsWithTranslations(LocaleId locale)
    {
-      Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
+      Query q = getSession().getNamedQuery(HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS);
       q.setReadOnly(true);
       // MIN_VALUE gives hint to JDBC driver to stream results
       q.setFetchSize(Integer.MIN_VALUE);

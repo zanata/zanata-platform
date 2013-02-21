@@ -55,7 +55,7 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       // use named queries for the smaller more common cases
       if( contents.size() <= 6 )
       {
-         query = getSession().getNamedQuery("HTextFlowTargetHistory.findContentInHistory[" + contents.size() + "]");
+         query = getSession().getNamedQuery(HTextFlowTargetHistory.getQueryNameMatchingHistory(contents.size()));
       }
       else
       {
