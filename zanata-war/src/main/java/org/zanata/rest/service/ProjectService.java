@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
@@ -43,6 +44,7 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.rest.dto.ProjectType;
 
 import com.google.common.base.Objects;
 
@@ -219,6 +221,25 @@ public class ProjectService implements ProjectResource
          response = Response.ok();
       }
 
+      if (project.getDefaultType() == null || project.getDefaultType().isEmpty())
+      {
+         return Response.status(Status.BAD_REQUEST)
+               .entity("No valid default project type was specified.")
+               .build();
+      }
+      try
+      {
+         ProjectType.getValueOf(project.getDefaultType());
+      }
+      catch (Exception e)
+      {
+         String validTypes = StringUtils.join(ProjectType.values(), ", ");
+         return Response.status(Status.BAD_REQUEST)
+               .entity("Project type \"" + project.getDefaultType() + "\" not valid for this server." +
+                       " Valid types: [" + validTypes + "]")
+               .build();
+      }
+
       transfer(project, hProject);
 
       hProject = projectDAO.makePersistent(hProject);
@@ -243,7 +264,7 @@ public class ProjectService implements ProjectResource
    {
       to.setName(from.getName());
       to.setDescription(from.getDescription());
-      to.setDefaultProjectType(from.getDefaultType());
+      to.setDefaultProjectType(ProjectType.valueOf(from.getDefaultType()));
       // TODO Currently all Projects are created as Current
       // to.setStatus(from.getStatus());
 
@@ -264,7 +285,7 @@ public class ProjectService implements ProjectResource
       to.setName(from.getName());
       to.setDescription(from.getDescription());
       to.setStatus(from.getStatus());
-      to.setDefaultType(from.getDefaultProjectType());
+      to.setDefaultType(from.getDefaultProjectType().toString());
       to.setSourceViewURL(from.getSourceViewURL());
       to.setSourceCheckoutURL(from.getSourceCheckoutURL());
    }

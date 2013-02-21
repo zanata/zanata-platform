@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.Namespaces;
 import org.zanata.model.HLocale;
+import org.zanata.rest.dto.ProjectType;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 
@@ -62,7 +63,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
       }
       else
       {
-         var.append("  <!--<project-type>podir|properties|gettext|xliff|utf8properties</project-type>-->\n");
+         var.append("  <!--<project-type>");
+         var.append(StringUtils.join(ProjectType.values(), "|"));
+         var.append("</project-type>-->\n");
       }
       var.append("\n");
 
