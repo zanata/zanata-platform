@@ -818,6 +818,7 @@
   </page>
   
   <page view-id="/language/contact_coordinator.xhtml">
+  	<restrict>#{identity.loggedIn}</restrict>
     <param name="emailType" value="#{sendEmail.emailType}" />
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}"/>
