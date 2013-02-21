@@ -60,6 +60,8 @@ public class SeamAutowire
 {
    private static final org.slf4j.Logger log = LoggerFactory.getLogger(SeamAutowire.class);
 
+   private static final Object PLACEHOLDER = new Object();
+
    private static SeamAutowire instance;
 
    private Map<String, Object> namedComponents = new HashMap<String, Object>();
@@ -68,9 +70,22 @@ public class SeamAutowire
 
    private boolean ignoreNonResolvable;
 
+   private boolean allowCycles;
+
+   static
+   {
+      rewireSeamComponentClass();
+      rewireSeamTransactionClass();
+   }
 
    protected SeamAutowire()
    {
+   }
+
+   public SeamAutowire allowCycles()
+   {
+      allowCycles = true;
+      return this;
    }
 
    /**
@@ -83,8 +98,6 @@ public class SeamAutowire
       if(instance == null)
       {
          instance = new SeamAutowire();
-         instance.rewireSeamComponentClass();
-         instance.rewireSeamTransactionClass();
       }
       return instance;
    }
@@ -94,8 +107,11 @@ public class SeamAutowire
     */
    public SeamAutowire reset()
    {
-      this.ignoreNonResolvable = false;
-      this.namedComponents.clear();
+      // TODO create a new instance instead, to be sure of clearing all state
+      ignoreNonResolvable = false;
+      namedComponents.clear();
+      componentImpls.clear();
+      allowCycles = false;
       return this;
    }
 
@@ -108,13 +124,13 @@ public class SeamAutowire
     */
    public SeamAutowire use(String name, Object component)
    {
-      this.addComponentInstance(name, component);
+      namedComponents.put(name, component);
       return this;
    }
 
    /**
-    * Registers an implementation to use for components. This method is provided just in case some components are
-    * inject via interfaces.
+    * Registers an implementation to use for components. This method is provided for components which are
+    * injected by interface rather than name.
     *
     * @param cls The class to register.
     */
@@ -148,24 +164,18 @@ public class SeamAutowire
     */
    public Object getComponent(String name)
    {
-      if( this.namedComponents.containsKey(name) )
-      {
-         return this.namedComponents.get(name);
-      }
-      return null;
+      return namedComponents.get(name);
    }
 
    /**
-    * Autowires and returns the component instance for the provided class.
+    * Creates (but does not autowire) the component instance for the provided class.
     *
-    * @param componentClass The component class to autowire.
-    * @return The autowired component.
+    * @param componentClass The component class to create - may be an interface if
+    * useImpl was called, otherwise must have a no-arg constructor per Seam spec.
+    * @return The component.
     */
-   public <T> T autowire(Class<T> componentClass)
+   private <T> T create(Class<T> componentClass)
    {
-      // Create a new component instance (must have a no-arg constructor per Seam spec)
-      T component;
-
       // If the component type is an interface, try to find a declared implementation
       if( componentClass.isInterface() && this.componentImpls.containsKey(componentClass) )
       {
@@ -176,30 +186,35 @@ public class SeamAutowire
       {
          Constructor<T> constructor = componentClass.getDeclaredConstructor(); // No-arg constructor
          constructor.setAccessible(true);
-         component = constructor.newInstance();
-      }
-      catch (InstantiationException e)
-      {
-         throw new RuntimeException(
-               "Could not auto-wire component of type " + componentClass.getName(), e);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new RuntimeException("" +
-               "Could not auto-wire component of type " + componentClass.getName(), e);
+         return constructor.newInstance();
       }
       catch (NoSuchMethodException e)
       {
          throw new RuntimeException("" +
-               "Could not auto-wire component of type " + componentClass.getName() + ". No empty constructor.", e);
+               "Could not auto-wire component of type " + componentClass.getName() + ". No no-args constructor.", e);
       }
       catch (InvocationTargetException e)
       {
          throw new RuntimeException("" +
                "Could not auto-wire component of type " + componentClass.getName() + ". Exception thrown from constructor.", e);
       }
+      catch (Exception e)
+      {
+         throw new RuntimeException(
+               "Could not auto-wire component of type " + componentClass.getName(), e);
+      }
+   }
 
-      return this.autowire(component);
+   /**
+    * Autowires and returns the component instance for the provided class.
+    *
+    * @param componentClass The component class to create - may be an interface if
+    * useImpl was called, otherwise must have a no-arg constructor per Seam spec.
+    * @return The autowired component.
+    */
+   public <T> T autowire(Class<T> componentClass)
+   {
+      return autowire(create(componentClass));
    }
 
    /**
@@ -232,8 +247,22 @@ public class SeamAutowire
             {
                try
                {
-                  Object newComponent = autowire(compType);
-                  this.addComponentInstance(compName, newComponent);
+                  Object newComponent = create(compType);
+                  if (allowCycles)
+                  {
+                     namedComponents.put(compName, newComponent);
+                  }
+                  else
+                  {
+                     // to detect mutual injection
+                     namedComponents.put(compName, PLACEHOLDER);
+                  }
+                  autowire(newComponent);
+                  if (!allowCycles)
+                  {
+                     // replace placeholder with the injected object
+                     namedComponents.put(compName, newComponent);
+                  }
                }
                catch (RuntimeException e)
                {
@@ -249,6 +278,10 @@ public class SeamAutowire
             }
 
             fieldVal = namedComponents.get( compName );
+            if (fieldVal == PLACEHOLDER)
+            {
+               throw new RuntimeException("Recursive dependency: unable to inject "+compName+" into component of type "+component.getClass().getName());
+            }
             try
             {
                accessor.setValue(component, fieldVal);
@@ -280,12 +313,7 @@ public class SeamAutowire
       return component;
    }
 
-   private void addComponentInstance(String name, Object compInst)
-   {
-      this.namedComponents.put(name, compInst);
-   }
-
-   private void rewireSeamComponentClass()
+   private static void rewireSeamComponentClass()
    {
       try
       {
@@ -337,7 +365,7 @@ public class SeamAutowire
     * @throws NotFoundException
     * @throws CannotCompileException
     */
-   private void replaceGetInstance(ClassPool pool, CtClass componentCls, CtClass... params) throws NotFoundException, CannotCompileException
+   private static void replaceGetInstance(ClassPool pool, CtClass componentCls, CtClass... params) throws NotFoundException, CannotCompileException
    {
       CtMethod methodToReplace = componentCls.getDeclaredMethod("getInstance", params);
       methodToReplace.setBody(
@@ -345,7 +373,7 @@ public class SeamAutowire
             null);
    }
 
-   private void rewireSeamTransactionClass()
+   private static void rewireSeamTransactionClass()
    {
       try
       {
