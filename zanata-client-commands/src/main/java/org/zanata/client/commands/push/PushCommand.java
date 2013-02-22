@@ -614,7 +614,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
       else
       {
-         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}] (skipped due to dry run)", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
+         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}] (skipped due to dry run)", srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale());
       }
    }
 
@@ -626,6 +626,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
          ClientResponse<String> deleteResponse = sourceDocResource.deleteResource(docUri);
          ClientUtility.checkResult(deleteResponse, uri);
+         deleteResponse.releaseConnection();
       }
       else
       {
