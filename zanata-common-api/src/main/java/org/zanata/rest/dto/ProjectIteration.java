@@ -52,7 +52,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
    private String id;
    private Links links;
    private EntityStatus status;
-   private ProjectType projectType;
+   private String projectType;
 
    public ProjectIteration()
    {
@@ -112,12 +112,12 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
    }
 
    @XmlElement(name = "projectType", required = false, namespace = Namespaces.ZANATA_OLD)
-   public ProjectType getProjectType()
+   public String getProjectType()
    {
       return projectType;
    }
 
-   public void setProjectType(ProjectType projectType)
+   public void setProjectType(String projectType)
    {
       this.projectType = projectType;
    }
