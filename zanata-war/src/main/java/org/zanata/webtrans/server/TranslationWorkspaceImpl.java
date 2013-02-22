@@ -96,7 +96,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    public void addEditorClient(String httpSessionId, EditorClientId editorClientId, PersonId personId)
    {
       PersonSessionDetails prev = sessions.putIfAbsent(editorClientId, new PersonSessionDetails(new Person(personId, "", ""), null));
-      if (prev != null)
+      if (prev == null)
       {
          log.info("Added user {0} with editorClientId {1} to workspace {2}", personId.getId(), editorClientId, workspaceContext);
          httpSessionToEditorClientId.put(httpSessionId, editorClientId);
