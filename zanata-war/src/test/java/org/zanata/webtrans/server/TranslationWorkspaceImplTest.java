@@ -112,7 +112,7 @@ public class TranslationWorkspaceImplTest
       translationWorkspace.removeEditorClients(httpSessionId);
 
       // Then:
-      assertThat(translationWorkspace.getUsers().entrySet(), is(empty()));
+      assertThat(translationWorkspace.getUsers().entrySet(), is(Matchers.<Map.Entry<EditorClientId, PersonSessionDetails>>empty()));
       // requires hamcrest 1.3.1:
 //      assertThat(translationWorkspace.getUsers(), is(anEmptyMap()));
    }
