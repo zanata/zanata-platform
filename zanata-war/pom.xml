@@ -487,7 +487,7 @@
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.144</version>
+            <version>1.3.169</version>
           </dependency>
         </dependencies>
       </plugin>
