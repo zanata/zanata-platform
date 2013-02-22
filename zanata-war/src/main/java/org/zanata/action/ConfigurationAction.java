@@ -44,8 +44,6 @@ public class ConfigurationAction implements Serializable
    private String iterationSlug;
    @RequestParameter
    private String projectSlug;
-   @RequestParameter
-   private String projectType;
 
    @Logger
    private Log log;
@@ -64,7 +62,7 @@ public class ConfigurationAction implements Serializable
          ServletOutputStream os = response.getOutputStream();
 
          os.write(
-configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug, this.projectType).getBytes());
+            configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug).getBytes());
          os.flush();
          os.close();
          FacesContext.getCurrentInstance().responseComplete();

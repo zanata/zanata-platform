@@ -23,7 +23,7 @@ package org.zanata.process;
 import java.util.concurrent.Semaphore;
 
 /**
- * Extension of the basci RunnableProcess Handle class to include data pertinent to the
+ * Extension of the basic RunnableProcess Handle class to include data pertinent to the
  * building of an iteration zip file.
  * 
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -33,12 +33,12 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
 
    private String projectSlug;
    private String iterationSlug;
-   private String projectType;
-   private String localeId; 
+   private String localeId;
    private String initiatingUserName;
    private String downloadId;
    private Semaphore readySemaphore;
-   
+   private String serverPath;
+
    public IterationZipFileBuildProcessHandle()
    {
       this.readySemaphore = new Semaphore(1);
@@ -51,47 +51,37 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
          // Ignore
       }
    }
-   
+
    public String getProjectSlug()
    {
       return projectSlug;
    }
-   
+
    public void setProjectSlug(String projectSlug)
    {
       this.projectSlug = projectSlug;
    }
-   
+
    public String getIterationSlug()
    {
       return iterationSlug;
    }
-   
+
    public void setIterationSlug(String iterationSlug)
    {
       this.iterationSlug = iterationSlug;
-   }
-   
-   public String getProjectType()
-   {
-      return projectType;
-   }
-
-   public void setProjectType(String projectType)
-   {
-      this.projectType = projectType;
    }
 
    public String getLocaleId()
    {
       return localeId;
    }
-   
+
    public void setLocaleId(String localeId)
    {
       this.localeId = localeId;
    }
-   
+
    public String getDownloadId()
    {
       return downloadId;
@@ -111,7 +101,17 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
    {
       this.initiatingUserName = initiatingUserName;
    }
-   
+
+   public String getServerPath()
+   {
+      return serverPath;
+   }
+
+   public void setServerPath(String serverPath)
+   {
+      this.serverPath = serverPath;
+   }
+
    /**
     * Waits until the process represented by this handle is ready to proceed.
     * 

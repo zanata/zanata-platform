@@ -75,6 +75,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.StringSet;
+import org.zanata.rest.dto.ProjectType;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -531,6 +532,34 @@ public class ProjectIterationFilesAction implements Serializable
    public boolean isIterationActive()
    {
       return getProjectIteration().getProject().getStatus() == EntityStatus.ACTIVE || getProjectIteration().getStatus() == EntityStatus.ACTIVE;
+   }
+
+   public boolean isZipFileDownloadAllowed()
+   {
+      return getProjectIteration().getProjectType() == ProjectType.Gettext ||
+             getProjectIteration().getProjectType() == ProjectType.Podir;
+   }
+
+   public String getZipFileDownloadTitle()
+   {
+      String message = null;
+      if( !isZipFileDownloadAllowed() )
+      {
+         if( getProjectIteration().getProjectType() == null )
+         {
+            message = zanataMessages.getMessage("jsf.iteration.files.DownloadAllFiles.ProjectTypeNotSet");
+         }
+         else if( getProjectIteration().getProjectType() != ProjectType.Gettext &&
+                  getProjectIteration().getProjectType() != ProjectType.Podir )
+         {
+            message = zanataMessages.getMessage("jsf.iteration.files.DownloadAllFiles.ProjectTypeNotAllowed");
+         }
+      }
+      else
+      {
+         message = zanataMessages.getMessage("jsf.iteration.files.DownloadAllFiles.title");
+      }
+      return message;
    }
 
    /**

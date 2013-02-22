@@ -27,11 +27,22 @@ public interface ConfigurationService
     * 
     * @param projectSlug
     * @param iterationSlug
-    * @param projectType
     * @return The configuration file contents for the given project and
     *         iteration.
     */
-   String getConfigurationFileContents(String projectSlug, String iterationSlug, String projectType);
+   String getConfigurationFileContents(String projectSlug, String iterationSlug);
+
+   /**
+    * Returns the contents of the configuration for a given project. Use this method
+    * when the server path of the zanata server needs to be customized
+    *
+    * @param projectSlug
+    * @param iterationSlug
+    * @param serverPath
+    * @return The configuration file contents for the given project and
+    *         iteration.
+    */
+   String getConfigurationFileContents(String projectSlug, String iterationSlug, String serverPath);
    
    /**
     * Returns the default configuration file Name.
