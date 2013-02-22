@@ -270,4 +270,18 @@ public class FilterConstraintToQueryTest
       verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM, "%FiLe%");
       verifyNoMoreInteractions(query);
    }
+
+   @Test
+   public void testSetParametersForQueryWithSearchTermAsPercent()
+   {
+      FilterConstraints constraints = FilterConstraints.filterBy("% blah blah %").caseSensitive(true);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
+
+      constraintToQuery.setQueryParameters(query, hLocale);
+
+      verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM, documentId.getId());
+      verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM, hLocale.getId());
+      verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM, "%\\% blah blah \\%%");
+      verifyNoMoreInteractions(query);
+   }
 }
