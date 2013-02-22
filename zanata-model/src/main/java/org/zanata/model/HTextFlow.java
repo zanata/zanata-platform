@@ -94,7 +94,7 @@ import lombok.extern.slf4j.Slf4j;
 ))
 @Setter
 @NoArgsConstructor
-@ToString(of = {"resId", "revision", "contents", "comment", "obsolete"})
+@ToString(of = {"resId", "revision", "comment", "obsolete"})
 @Slf4j
 public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents
 {

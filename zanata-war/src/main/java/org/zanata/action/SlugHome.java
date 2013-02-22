@@ -94,6 +94,7 @@ public abstract class SlugHome<E> extends EntityHome<E>
    {
       if (projectTypeList.isEmpty())
       {
+         projectTypeList.add(new SelectItem(null, getMessages().get("jsf.projectType.NoSelection")));
          for (ProjectType projectType : ProjectType.values())
          {
             SelectItem option = new SelectItem(projectType, projectType.name());
@@ -105,6 +106,14 @@ public abstract class SlugHome<E> extends EntityHome<E>
          @Override
          public int compare(SelectItem o1, SelectItem o2)
          {
+            if (o1.getValue() == null)
+            {
+               return -1;
+            }
+            if (o2.getValue() == null)
+            {
+               return 1;
+            }
             return o1.getLabel().compareTo(o2.getLabel());
          }
       });
