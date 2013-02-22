@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.IProjectIterationResource;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.rest.dto.ProjectType;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -28,10 +27,14 @@ public class PutVersionCommand extends ConfigurableCommand<PutVersionOptions>
    {
       ProjectIteration version = new ProjectIteration();
       version.setId(getOpts().getVersionSlug());
-	  
+
       if (getOpts().getProjectType() != null)
       {
-         version.setProjectType(ProjectType.getValueOf(getOpts().getProjectType()));
+         if (getOpts().getProjectType().isEmpty())
+         {
+            throw new Exception("If a project type is specified, it must not be empty.");
+         }
+         version.setProjectType(getOpts().getProjectType());
       }
       log.debug("{}", version);
 
