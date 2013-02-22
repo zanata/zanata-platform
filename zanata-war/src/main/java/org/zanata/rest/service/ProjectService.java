@@ -318,18 +318,13 @@ public class ProjectService implements ProjectResource
    {
       Project project = new Project();
       transfer(hProject, project);
-      if (hProject instanceof HProject)
+      for (HProjectIteration pIt : hProject.getProjectIterations())
       {
-         HProject itProject = (HProject) hProject;
-         for (HProjectIteration pIt : itProject.getProjectIterations())
-         {
-            ProjectIteration iteration = new ProjectIteration();
-            ProjectIterationService.transfer(pIt, iteration);
-            iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
-            project.getIterations(true).add(iteration);
-         }
+         ProjectIteration iteration = new ProjectIteration();
+         ProjectIterationService.transfer(pIt, iteration);
+         iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
+         project.getIterations(true).add(iteration);
       }
-
       return project;
    }
 
