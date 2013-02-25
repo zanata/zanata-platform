@@ -83,7 +83,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void updateDownloadFileProgress();
    }
 
-   void setThemes(String style);
+   void setLayout(String layout);
 
    void hideConfirmation();
 
@@ -106,4 +106,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void startGetDownloadStatus(int periodMillis);
 
    void stopGetDownloadStatus();
+
+   void setDownloadZipButtonTitle(String title);
+
+   void setEnableDownloadZip(boolean enabled);
 }

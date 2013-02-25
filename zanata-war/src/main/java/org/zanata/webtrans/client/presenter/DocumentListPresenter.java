@@ -26,6 +26,7 @@ import java.util.HashMap;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
@@ -122,9 +123,40 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
-      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
+      display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
+
+      ProjectType projectType = userworkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
+
+      display.setEnableDownloadZip(isZipFileDownloadAllowed(projectType));
+      display.setDownloadZipButtonTitle(getZipFileDownloadTitle(projectType));
    }
    
+   public String getZipFileDownloadTitle(ProjectType projectType)
+   {
+      String title = null;
+      if (!isZipFileDownloadAllowed(projectType))
+      {
+         if (projectType == null)
+         {
+            title = messages.projectTypeNotSet();
+         }
+         else
+         {
+            title = messages.projectTypeNotAllowed();
+         }
+      }
+      else
+      {
+         title = messages.downloadAllTranslatedFiles();
+      }
+      return title;
+   }
+
+   private boolean isZipFileDownloadAllowed(ProjectType projectType)
+   {
+      return projectType == ProjectType.Gettext || projectType == ProjectType.Podir;
+   }
+
    @Override
    public void fireDocumentSelection(DocumentInfo doc)
    {
@@ -352,7 +384,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
-      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
+      display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
       if (event.getView() == MainView.Documents)
       {
          display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());

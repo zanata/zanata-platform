@@ -29,6 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
@@ -182,7 +183,7 @@ public class TransMemoryPresenterTest
    @Test
    public void createTMRequestForTransUnit()
    {
-      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug"), LocaleId.EN_US);
+      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
       DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
 
       when(display.getTmTextBox()).thenReturn(tMTextBox);
@@ -206,7 +207,7 @@ public class TransMemoryPresenterTest
       GetTranslationMemory submittedRequest = mock(GetTranslationMemory.class);
       presenter.setStatesForTesting(null, submittedRequest);
       LocaleId localeId = new LocaleId("zh");
-      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
 
@@ -250,7 +251,7 @@ public class TransMemoryPresenterTest
    {
       // Given:
       LocaleId targetLocale = new LocaleId("zh");
-      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, targetLocale), "workspaceName", targetLocale.getId()));
       LocaleId sourceLocale = new LocaleId("en-US");
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", sourceLocale, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
@@ -279,7 +280,7 @@ public class TransMemoryPresenterTest
    {
       // Given:
       LocaleId localeId = new LocaleId("zh");
-      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
@@ -304,7 +305,7 @@ public class TransMemoryPresenterTest
    {
       // Given:
       LocaleId localeId = new LocaleId("zh");
-      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
@@ -333,7 +334,7 @@ public class TransMemoryPresenterTest
    {
       // Given:
       LocaleId localeId = new LocaleId("zh");
-      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master");
+      ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
       when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(1, ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
       when(display.getTmTextBox()).thenReturn(tMTextBox);

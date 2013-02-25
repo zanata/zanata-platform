@@ -33,6 +33,7 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
@@ -44,7 +45,6 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.rest.dto.ProjectType;
 
 import com.google.common.base.Objects;
 

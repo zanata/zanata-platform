@@ -208,7 +208,7 @@ public class Application implements EntryPoint
       {
          return null;
       }
-      return new ProjectIterationId(projectSlug, iterationSlug);
+      return new ProjectIterationId(projectSlug, iterationSlug, null);
    }
 
    public static LocaleId getLocaleId()

@@ -162,7 +162,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       Boolean isProjectActive = projectIterationIsActive(project.getStatus(), projectIteration.getStatus());
       log.info("Project {} iteration {} updated, status={}, isProjectActive={}", new Object[]{projectSlug, iterSlug, projectIteration.getStatus(), isProjectActive});
 
-      ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);
+      ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug, projectIteration.getProjectType());
       for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId))
       {
          WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive);

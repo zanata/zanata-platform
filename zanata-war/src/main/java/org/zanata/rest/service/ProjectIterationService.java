@@ -49,6 +49,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProject;
@@ -56,7 +57,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.rest.dto.ProjectType;
 
 import com.google.common.base.Objects;
 

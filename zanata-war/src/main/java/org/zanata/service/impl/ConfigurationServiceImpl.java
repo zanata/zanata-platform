@@ -30,10 +30,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.Namespaces;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.rest.dto.ProjectType;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 

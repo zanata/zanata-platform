@@ -27,6 +27,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.common.ProjectType;
 import org.zanata.common.ResourceType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -963,7 +964,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // Mock certain objects
       TranslationWorkspace transWorkspace = mock(TranslationWorkspace.class);
 
-      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
+      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug, ProjectType.Podir), localeId);
       
       // Set mock expectations
       when(transWorspaceManager.getOrRegisterWorkspace(any(WorkspaceId.class))).thenReturn(transWorkspace);

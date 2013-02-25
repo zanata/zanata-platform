@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -76,7 +77,7 @@ public class GetTranslationHistoryHandlerTest
       // Given:
       String projectSlug = "rhel";
       String iterationSlug = "7.0";
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId));
+      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug, ProjectType.Podir), localeId));
       when(localeService.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug)).thenThrow(new ZanataServiceException("BANG!"));
 
       // When:
@@ -90,7 +91,7 @@ public class GetTranslationHistoryHandlerTest
    public void canGetEmptyHistoryForTextFlowWithNoTranslation() throws ActionException
    {
       // Given: text flow has empty targets
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0"), localeId));
+      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
       when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
       HTextFlow hTextFlow = createHTextFlow();
       when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
@@ -108,7 +109,7 @@ public class GetTranslationHistoryHandlerTest
    public void canGetHistoryAndCurrentTranslation() throws ActionException
    {
       // Given: text flow has 2 history translation
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0"), localeId));
+      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
       when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
       when(hLocale.getId()).thenReturn(2L);
       HTextFlow hTextFlow = createHTextFlow();
@@ -135,7 +136,7 @@ public class GetTranslationHistoryHandlerTest
    public void canGetCurrentTranslationWithoutLastModifiedBy() throws ActionException
    {
       // Given: text flow has no history translation and only current translation which has no last modified by person
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0"), localeId));
+      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
       when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
       when(hLocale.getId()).thenReturn(2L);
       HTextFlow hTextFlow = createHTextFlow();

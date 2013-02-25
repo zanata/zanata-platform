@@ -27,6 +27,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -50,7 +51,7 @@ public class TranslationWorkspaceImplTest
    @BeforeMethod
    public void setUp()
    {
-      workspaceId = new WorkspaceId(ProjectIterationId.of("project", "master"), new LocaleId("en-US"));
+      workspaceId = new WorkspaceId(ProjectIterationId.of("project", "master", ProjectType.Podir), new LocaleId("en-US"));
       WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "workspaceName", "en-US");
       translationWorkspace = new TranslationWorkspaceImpl(workspaceContext);
    }

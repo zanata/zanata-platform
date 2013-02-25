@@ -34,7 +34,7 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.EntityStatus;
-import org.zanata.rest.dto.ProjectType;
+import org.zanata.common.ProjectType;
 
 /**
  * This implementation uses a field 'slug' to refer to the id of the object.

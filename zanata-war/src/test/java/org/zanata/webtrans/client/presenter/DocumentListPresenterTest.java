@@ -476,7 +476,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
-      verify(mockDisplay).setThemes(ThemesOption.THEMES_DEFAULT.name());
+      verify(mockDisplay).setLayout(ThemesOption.THEMES_DEFAULT.name());
 
       verifyZeroInteractions(mockDisplay);
    }
