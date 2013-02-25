@@ -1,6 +1,8 @@
 package org.zanata.rest.service;
 
 import org.jboss.resteasy.client.ClientResponse;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
@@ -9,6 +11,7 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
@@ -23,14 +26,19 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest
    private final Logger log = LoggerFactory.getLogger(ResourceServiceRestTest.class);
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
    private SeamAutowire seam = SeamAutowire.instance();
+   @Mock
+   private ZanataIdentity mockIdentity;
 
    @Override
    protected void prepareResources()
    {
+      MockitoAnnotations.initMocks(this);
+
       seam.reset();
       seam.ignoreNonResolvable()
           .use("session", getSession())
           .use("entityManager", getEm())
+          .use("identity", mockIdentity)
           .useImpl(LocaleServiceImpl.class)
           .useImpl(CopyTransServiceImpl.class)
           .useImpl(DocumentServiceImpl.class);
