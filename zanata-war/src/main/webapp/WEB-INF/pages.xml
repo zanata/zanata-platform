@@ -149,13 +149,13 @@
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.InactiveAccount'])}"/>
     <action execute="#{inactiveAccountAction.init}"/>
   	<navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
-  		<end-conversation/>
-  		<redirect view-id="/home.xhtml" />
+	 	<end-conversation/>
+	  	<redirect view-id="/home.xhtml" />
   	</navigation>
   	<navigation from-action="#{inactiveAccountAction.changeEmail}">
   		<rule if-outcome="home">
-  		  <end-conversation/>
-	      <redirect view-id="/home.xhtml" />
+  		  	<end-conversation/>
+	      	<redirect view-id="/home.xhtml" />
       	</rule>
   	</navigation>
   </page>
