@@ -1,4 +1,4 @@
-package org.zanata.rest.dto;
+package org.zanata.common;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;

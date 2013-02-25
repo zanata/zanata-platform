@@ -10,6 +10,7 @@ import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.Account;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Links;
@@ -17,7 +18,6 @@ import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.ProjectList;
-import org.zanata.rest.dto.ProjectType;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;

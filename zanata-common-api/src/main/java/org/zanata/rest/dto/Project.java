@@ -21,6 +21,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.Namespaces;
+import org.zanata.common.ProjectType;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
