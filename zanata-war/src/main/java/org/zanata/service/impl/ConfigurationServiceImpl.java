@@ -86,7 +86,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
       else
       {
          var.append("  <!--<project-type>");
-         var.append(StringUtils.join(ProjectType.values(), "|"));
+         var.append(StringUtils.join(ProjectType.values(), "|").toLowerCase());
          var.append("</project-type>-->\n");
       }
       var.append("\n");

@@ -36,7 +36,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesManager;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Redirect;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.openid.OpenIdPrincipal;
@@ -187,6 +189,14 @@ public class ZanataOpenId implements OpenIdAuthCallback
          // verify the response; ConsumerManager needs to be the same
          // (static) instance used to place the authentication request
          VerificationResult verification = manager.verify(receivingURL.toString(), response, discovered);
+
+         // The OpenId provider cancelled the authentication
+         if( "cancel".equals( response.getParameterValue("openid.mode") ) )
+         {
+            // TODO This should be done at a higher level. i.e. instead of returning a string, return an
+            // object that holds more information for the UI to render
+            FacesMessages.instance().add(StatusMessage.Severity.INFO, "Authentication Request Cancelled");
+         }
 
          // examine the verification result and extract the verified identifier
          Identifier verified = verification.getVerifiedId();
