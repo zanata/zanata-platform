@@ -26,19 +26,16 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Events;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.lock.Lock;
-import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.ProcessHandle;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.rest.service.TranslatedDocResourceService;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
@@ -55,6 +52,9 @@ import java.util.Set;
 @Scope(ScopeType.STATELESS)
 public class DocumentServiceImpl implements DocumentService
 {
+   @In
+   private ZanataIdentity identity;
+
    @In
    private ProjectIterationDAO projectIterationDAO;
 
@@ -103,7 +103,6 @@ public class DocumentServiceImpl implements DocumentService
       }
    }
 
-   // TODO check permissions
    @Override
    @Transactional
    public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
@@ -111,6 +110,9 @@ public class DocumentServiceImpl implements DocumentService
    {
       // Only active iterations allow the addition of a document
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+
+      // Check permission
+      identity.checkPermission(hProjectIteration, "import-template");
 
       String docId = sourceDoc.getName();
 
