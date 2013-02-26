@@ -27,6 +27,7 @@ import java.util.List;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -94,9 +95,9 @@ public class TestFixture
       return userWorkspaceContext(true, true);
    }
 
-   public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug)
+   public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug, ProjectType projectType)
    {
-      ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug);
+      ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug, projectType);
       return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true);
    }
 
@@ -112,12 +113,12 @@ public class TestFixture
 
    public static WorkspaceId workspaceId(LocaleId localeId)
    {
-      return workspaceId(localeId, "project", "master");
+      return workspaceId(localeId, "project", "master", ProjectType.Podir);
    }
 
-   public static WorkspaceId workspaceId(LocaleId localeId, String projectSlug, String iterationSlug)
+   public static WorkspaceId workspaceId(LocaleId localeId, String projectSlug, String iterationSlug, ProjectType projectType)
    {
-      return new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
+      return new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug, projectType), localeId);
    }
 
    public static Person person()

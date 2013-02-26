@@ -30,8 +30,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.Namespaces;
+import org.zanata.common.ProjectType;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
-import org.zanata.rest.dto.ProjectType;
+import org.zanata.model.HProjectIteration;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 
@@ -44,27 +46,47 @@ public class ConfigurationServiceImpl implements ConfigurationService
    
    @In
    private LocaleService localeServiceImpl;
+
+   @In
+   private ProjectIterationDAO projectIterationDAO;
    
    @In
    private ApplicationConfiguration applicationConfiguration;
 
    @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug, String projectType)
+   public String getConfigurationFileContents(String projectSlug, String iterationSlug)
    {
+      return getConfigurationFileContents(projectSlug, iterationSlug, applicationConfiguration.getServerPath());
+   }
+
+   @Override
+   public String getConfigurationFileContents(String projectSlug, String iterationSlug, String serverPath)
+   {
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      ProjectType projectType = projectIteration.getProjectType();
+
       StringBuilder var = new StringBuilder(
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<config xmlns=\"" + Namespaces.ZANATA_CONFIG + "\">\n");
-      var.append("  <url>").append(applicationConfiguration.getServerPath()).append("/</url>\n");
+      var.append("  <url>").append(serverPath).append("/</url>\n");
       var.append("  <project>").append(projectSlug).append("</project>\n");
       var.append("  <project-version>").append(iterationSlug).append("</project-version>\n");
-      if (!StringUtils.isEmpty(projectType))
+      if ( projectType != null )
       {
-         var.append("  <project-type>").append(projectType).append("</project-type>\n");
+         if( projectType == ProjectType.Gettext )
+         {
+            var.append("  <!-- NB project-type set to 'podir' to allow uploads, but original was 'gettext' -->\n");
+            var.append("  <project-type>").append(ProjectType.Podir.toString()).append("</project-type>\n");
+         }
+         else
+         {
+            var.append("  <project-type>").append(projectType).append("</project-type>\n");
+         }
       }
       else
       {
          var.append("  <!--<project-type>");
-         var.append(StringUtils.join(ProjectType.values(), "|"));
+         var.append(StringUtils.join(ProjectType.values(), "|").toLowerCase());
          var.append("</project-type>-->\n");
       }
       var.append("\n");

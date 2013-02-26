@@ -35,10 +35,10 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRawRestTest;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.ProjectType;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.rest.dto.ProjectType;
 
 @Test(groups = {"seam-tests"})
 public class ProjectRestTest extends ZanataRawRestTest

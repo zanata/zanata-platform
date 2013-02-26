@@ -499,4 +499,13 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
    String showTransUnitDetailsTooltip();
+   
+   @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
+   String projectTypeNotSet();
+   
+   @DefaultMessage("The project type must be set to 'Gettext' or 'Podir'. Contact the project maintainer.")
+   String projectTypeNotAllowed();
+   
+   @DefaultMessage("Download all translated files.")
+   String downloadAllTranslatedFiles();
 }

@@ -10,6 +10,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.process.IterationZipFileBuildProcess;
 import org.zanata.process.IterationZipFileBuildProcessHandle;
@@ -28,6 +29,9 @@ public class ProjectIterationZipFileAction implements Serializable
 
    @In
    ProcessManagerService processManagerServiceImpl;
+
+   @In
+   private ApplicationConfiguration applicationConfiguration;
    
    private String projectSlug;
    
@@ -55,6 +59,9 @@ public class ProjectIterationZipFileAction implements Serializable
       processHandle.setIterationSlug( this.iterationSlug );
       processHandle.setLocaleId( this.localeId );
       processHandle.setInitiatingUserName( Identity.instance().getCredentials().getUsername() );
+      processHandle.setServerPath(applicationConfiguration.getServerPath()); // This needs to be done here as the server
+                                                                             // path may not be available when running
+                                                                             // asynchronously
       
       // Fire the zip file building process and wait until it is ready to return
       this.processManagerServiceImpl.startProcess( new IterationZipFileBuildProcess(), processHandle );

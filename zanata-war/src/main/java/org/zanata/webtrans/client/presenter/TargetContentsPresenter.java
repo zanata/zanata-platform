@@ -590,6 +590,8 @@ public class TargetContentsPresenter implements
    {
       // FIXME once setting codemirror editor to readonly it won't be editable again
       userWorkspaceContext.setProjectActive(event.isProjectActive());
+      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
+
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.info("from editable to readonly");

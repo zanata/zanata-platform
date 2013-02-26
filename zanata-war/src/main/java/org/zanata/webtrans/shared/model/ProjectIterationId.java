@@ -1,11 +1,14 @@
 package org.zanata.webtrans.shared.model;
 
+import org.zanata.common.ProjectType;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ProjectIterationId implements IsSerializable
 {
    private String projectSlug;
    private String iterationSlug;
+   private ProjectType projectType;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -13,10 +16,11 @@ public class ProjectIterationId implements IsSerializable
    {
    }
 
-   public ProjectIterationId(String projectSlug, String iterationSlug)
+   public ProjectIterationId(String projectSlug, String iterationSlug, ProjectType projectType)
    {
       this.projectSlug = projectSlug;
       this.iterationSlug = iterationSlug;
+      this.projectType = projectType;
    }
 
    public String getProjectSlug()
@@ -27,6 +31,11 @@ public class ProjectIterationId implements IsSerializable
    public String getIterationSlug()
    {
       return iterationSlug;
+   }
+
+   public ProjectType getProjectType()
+   {
+      return projectType;
    }
 
    @Override
@@ -56,8 +65,14 @@ public class ProjectIterationId implements IsSerializable
       return false;
    }
 
-   public static ProjectIterationId of(String projectSlug, String iterationSlug)
+   public static ProjectIterationId of(String projectSlug, String iterationSlug, ProjectType projectType)
    {
-      return new ProjectIterationId(projectSlug, iterationSlug);
+      return new ProjectIterationId(projectSlug, iterationSlug, projectType);
+   }
+
+   public void setProjectType(ProjectType projectType)
+   {
+      this.projectType = projectType;
+
    }
 }

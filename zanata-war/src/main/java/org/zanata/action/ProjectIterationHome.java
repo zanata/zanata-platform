@@ -37,11 +37,11 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.rest.dto.ProjectType;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 

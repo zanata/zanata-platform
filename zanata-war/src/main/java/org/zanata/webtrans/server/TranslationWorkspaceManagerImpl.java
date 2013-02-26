@@ -20,6 +20,7 @@ import org.zanata.ZanataInit;
 import org.zanata.action.ProjectHome;
 import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
@@ -160,12 +161,13 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
       Boolean isProjectActive = projectIterationIsActive(project.getStatus(), projectIteration.getStatus());
-      log.info("Project {} iteration {} updated, status={}, isProjectActive={}", new Object[]{projectSlug, iterSlug, projectIteration.getStatus(), isProjectActive});
+      ProjectType projectType = projectIteration.getProjectType();
+      log.info("Project {} iteration {} updated, status={}, isProjectActive={}, projectType={}", new Object[] { projectSlug, iterSlug, projectIteration.getStatus(), isProjectActive, projectType });
 
-      ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);
+      ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug, projectIteration.getProjectType());
       for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId))
       {
-         WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive);
+         WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive, projectType);
          workspace.publish(event);
       }
    }

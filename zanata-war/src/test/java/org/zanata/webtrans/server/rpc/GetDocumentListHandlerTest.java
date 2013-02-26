@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
@@ -69,7 +70,7 @@ public class GetDocumentListHandlerTest
    public void testExecute() throws Exception
    {
       WorkspaceId workspaceId = TestFixture.workspaceId();
-      GetDocumentList action = new GetDocumentList(new ProjectIterationId("project", "master"));
+      GetDocumentList action = new GetDocumentList(new ProjectIterationId("project", "master", ProjectType.Podir));
       action.setWorkspaceId(workspaceId);
       when(projectIterationDAO.getBySlug("project", "master")).thenReturn(hProjectIteration);
       HashMap<String, HDocument> documentMap = Maps.newHashMap();
@@ -91,7 +92,7 @@ public class GetDocumentListHandlerTest
    public void testExecuteWithFilter() throws Exception
    {
       WorkspaceId workspaceId = TestFixture.workspaceId();
-      GetDocumentList action = new GetDocumentList(new ProjectIterationId("project", "master"), Lists.newArrayList("/dot/a.po"));
+      GetDocumentList action = new GetDocumentList(new ProjectIterationId("project", "master", ProjectType.Podir), Lists.newArrayList("/dot/a.po"));
       action.setWorkspaceId(workspaceId);
       when(projectIterationDAO.getBySlug("project", "master")).thenReturn(hProjectIteration);
       HashMap<String, HDocument> documentMap = Maps.newHashMap();

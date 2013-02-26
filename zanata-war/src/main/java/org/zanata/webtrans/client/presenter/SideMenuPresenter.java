@@ -97,6 +97,8 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
             userWorkspaceContext.setProjectActive(event.isProjectActive());
+            userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
+
             setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
          }
       }));

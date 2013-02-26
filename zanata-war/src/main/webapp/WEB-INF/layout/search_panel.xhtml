@@ -7,7 +7,7 @@
     xmlns:rich="http://richfaces.org/rich">
   
   <h:form>
-  	 <h:outputText rendered="#{s:hasRole('admin')}" value="#{messages['jsf.Obsolete']}"/>
+  	 <h:outputText rendered="#{identity.loggedIn and s:hasRole('admin')}" value="#{messages['jsf.Obsolete']}"/>
      <h:selectBooleanCheckbox id="inc_obs" value="#{projectSearch.includeObsolete}" rendered="#{s:hasPermission('HProject', 'view-obsolete')}"
      	title="#{messages['jsf.project.search.IncludeObsoleteTooltip']}"/>
      

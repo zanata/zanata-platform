@@ -12,6 +12,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
@@ -39,7 +40,7 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest
    @Mock
    private LocaleService localeService;
    private final LocaleId localeId = new LocaleId("ja");
-   private final WorkspaceId workspaceId = TestFixture.workspaceId(localeId, "plurals", "master");
+   private final WorkspaceId workspaceId = TestFixture.workspaceId(localeId, "plurals", "master", ProjectType.Podir);
    private HLocale jaHLocale;
 
    @Override

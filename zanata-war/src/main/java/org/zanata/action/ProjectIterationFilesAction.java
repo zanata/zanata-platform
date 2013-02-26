@@ -62,6 +62,7 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -531,6 +532,34 @@ public class ProjectIterationFilesAction implements Serializable
    public boolean isIterationActive()
    {
       return getProjectIteration().getProject().getStatus() == EntityStatus.ACTIVE || getProjectIteration().getStatus() == EntityStatus.ACTIVE;
+   }
+
+   public boolean isZipFileDownloadAllowed()
+   {
+      return getProjectIteration().getProjectType() == ProjectType.Gettext ||
+             getProjectIteration().getProjectType() == ProjectType.Podir;
+   }
+
+   public String getZipFileDownloadTitle()
+   {
+      String message = null;
+      if( !isZipFileDownloadAllowed() )
+      {
+         if( getProjectIteration().getProjectType() == null )
+         {
+            message = zanataMessages.getMessage("jsf.iteration.files.DownloadAllFiles.ProjectTypeNotSet");
+         }
+         else if( getProjectIteration().getProjectType() != ProjectType.Gettext &&
+                  getProjectIteration().getProjectType() != ProjectType.Podir )
+         {
+            message = zanataMessages.getMessage("jsf.iteration.files.DownloadAllFiles.ProjectTypeNotAllowed");
+         }
+      }
+      else
+      {
+         message = zanataMessages.getMessage("jsf.iteration.files.DownloadAllFiles.title");
+      }
+      return message;
    }
 
    /**

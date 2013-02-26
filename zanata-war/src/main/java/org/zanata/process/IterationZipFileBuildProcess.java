@@ -37,7 +37,6 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -90,9 +89,6 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
       final String localeId = zipHandle.getLocaleId();
       final String userName = zipHandle.getInitiatingUserName();
 
-      HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      final String projectType = version.getProjectType().name().toLowerCase();
-
       final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
       zipHandle.setMaxProgress(allIterationDocs.size() + 1);
       
@@ -123,7 +119,7 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
       String configFilename = projectDirectory + this.configurationServiceImpl.getConfigurationFileName();
       zipOutput.putNextEntry(new ZipEntry(configFilename));
       zipOutput.write( 
-            this.configurationServiceImpl.getConfigurationFileContents(projectSlug, iterationSlug, projectType).getBytes());
+            this.configurationServiceImpl.getConfigurationFileContents(projectSlug, iterationSlug, zipHandle.getServerPath()).getBytes());
       zipOutput.closeEntry();
       zipHandle.incrementProgress(1);
 

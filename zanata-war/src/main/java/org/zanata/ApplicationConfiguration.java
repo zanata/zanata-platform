@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
@@ -274,8 +273,11 @@ public class ApplicationConfiguration implements Serializable
       if( configuredValue == null )
       {
          HttpServletRequest request = ServletContexts.instance().getRequest();
-         // TODO what if request is null?
-         configuredValue = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+         if( request != null )
+         {
+            configuredValue =
+                  request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+         }
       }
       return configuredValue;
    }

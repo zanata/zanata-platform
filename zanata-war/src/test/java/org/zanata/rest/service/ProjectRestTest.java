@@ -24,10 +24,10 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
+import org.zanata.common.ProjectType;
 import org.zanata.model.HProject;
 import org.zanata.rest.client.IProjectResource;
 import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.ProjectType;
 import org.zanata.seam.SeamAutowire;
 
 public class ProjectRestTest extends ZanataRestTest
