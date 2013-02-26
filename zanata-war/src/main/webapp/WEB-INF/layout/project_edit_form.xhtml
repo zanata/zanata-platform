@@ -38,12 +38,20 @@
             <h:inputText id="description" required="false"
                          value="#{projectHome.instance.description}" style="width:400px;"/>
         </s:decorate>
-        
+
          <s:decorate id="projectTypeField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
             <h:selectOneMenu id="selectField" value="#{projectHome.instance.defaultProjectType}">
-	            <f:selectItems value="#{projectHome.projectTypeList}"/>
-	        </h:selectOneMenu>
+                <f:selectItems value="#{projectHome.projectTypeList}"/>
+            </h:selectOneMenu>
+            <s:span styleClass="icon-info-circle-2 input_help" id="defaultProjectTypeHelp">
+                <rich:toolTip>
+                   #{messages['jsf.projectType.Description']}<br/>
+                   #{messages['jsf.projectType.DefaultBehaviour']}<br/>
+                   <br/>
+                   <em>#{messages['jsf.projectType.MoreInfo']}</em><br/>
+                </rich:toolTip>
+            </s:span>
         </s:decorate>
 
         <s:decorate id="humanViewableSourceUrlField" template="edit.xhtml">

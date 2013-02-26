@@ -67,7 +67,7 @@
 							</s:link>
 						</li>
 					</s:fragment>
-					<s:fragment rendered="#{s:hasRole('admin')}">
+					<s:fragment rendered="#{identity.loggedIn and s:hasRole('admin')}">
 						<li>
 							<s:link id="Administration" view="/admin/home.xhtml" propagation="none">
 								<img src="#{request.contextPath}/images/crystal_project/_16x16/actions/admin_icon.png" />#{messages['jsf.Administration']}

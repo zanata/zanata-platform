@@ -55,9 +55,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.search.annotations.Indexed;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
+import org.zanata.common.ProjectType;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.ProjectType;
 
 /**
  * @see Project

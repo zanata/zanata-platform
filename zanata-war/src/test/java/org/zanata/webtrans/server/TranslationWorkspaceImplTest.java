@@ -27,6 +27,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -39,6 +40,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import com.google.common.collect.MapMaker;
 
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 @Test(groups = { "unit-tests" })
 public class TranslationWorkspaceImplTest
@@ -49,7 +51,7 @@ public class TranslationWorkspaceImplTest
    @BeforeMethod
    public void setUp()
    {
-      workspaceId = new WorkspaceId(ProjectIterationId.of("project", "master"), new LocaleId("en-US"));
+      workspaceId = new WorkspaceId(ProjectIterationId.of("project", "master", ProjectType.Podir), new LocaleId("en-US"));
       WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "workspaceName", "en-US");
       translationWorkspace = new TranslationWorkspaceImpl(workspaceContext);
    }
@@ -111,7 +113,9 @@ public class TranslationWorkspaceImplTest
       translationWorkspace.removeEditorClients(httpSessionId);
 
       // Then:
-      assertThat(translationWorkspace.getUsers().size(), Matchers.is(0));
+      assertThat(translationWorkspace.getUsers().entrySet(), is(Matchers.<Map.Entry<EditorClientId, PersonSessionDetails>>empty()));
+      // requires hamcrest 1.3.1:
+//      assertThat(translationWorkspace.getUsers(), is(anEmptyMap()));
    }
 
    @Test

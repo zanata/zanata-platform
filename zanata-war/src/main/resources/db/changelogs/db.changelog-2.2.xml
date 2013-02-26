@@ -42,7 +42,7 @@
             </column>
         </addColumn>
     </changeSet>
-    
+
     <changeSet id="4" author="alex.eng@redhat.com">
         <comment>Add HProject_Validation table.</comment>
         <createTable tableName="HProject_Validation">
@@ -59,7 +59,7 @@
 			referencedTableName="HProject" referencedColumnNames="id"
 			baseTableName="HProject_Validation" baseColumnNames="projectId"/>
     </changeSet>
-    
+
     <changeSet id="5" author="alex.eng@redhat.com">
         <comment>Add overrideValidations column to HProject</comment>
         <addColumn tableName="HProject">
@@ -84,12 +84,32 @@
 			baseTableName="HProjectIteration_Validation" baseColumnNames="projectIterationId"/>
     </changeSet>
     
-     <changeSet id="7" author="alex.eng@redhat.com">
+    <changeSet id="7" author="alex.eng@redhat.com">
         <comment>Add overrideValidations column to HProjectIteration</comment>
         <addColumn tableName="HProjectIteration">
             <column name="overrideValidations" type="boolean" defaultValueBoolean="false"/>
         </addColumn>
     </changeSet>
     
+    <changeSet id="8" author="alex.eng@redhat.com">
+        <comment>Add creationDate column to HAccountActivationKey</comment>
+        <addColumn tableName="HAccountActivationKey">
+            <column name="creationDate" type="datetime" defaultValueDate="0000-00-00 00:00:01">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="damason@redhat.com">
+        <comment>Change project type from Raw to File in HProject and HProjectIteration.</comment>
+        <update tableName="HProject" >
+            <column name="defaultProjectType" value="File"/>
+            <where>defaultProjectType = 'Raw'</where>
+        </update>
+        <update tableName="HProjectIteration" >
+            <column name="projectType" value="File"/>
+            <where>projectType = 'Raw'</where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>

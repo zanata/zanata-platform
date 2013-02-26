@@ -197,7 +197,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                      {
                         AsynchronousProcessResourceService.log.error("Error pushing source document", t);
                      }
-                     super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
+                     super.handleThrowable(handle, t);
                   }
                }.withIdentity(identity);
 
@@ -276,7 +276,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                      {
                         AsynchronousProcessResourceService.log.error("Error pushing translations", t);
                      }
-                     super.handleThrowable(handle, t);    //To change body of overridden methods use File | Settings | File Templates.
+                     super.handleThrowable(handle, t);
                   }
                }.withIdentity(identity);
 
@@ -330,7 +330,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       if( handle instanceof MessagesProcessHandle )
       {
          MessagesProcessHandle messagesProcessHandle = (MessagesProcessHandle)handle;
-         status.setMessages( messagesProcessHandle.getMessages() );
+         status.getMessages().addAll( messagesProcessHandle.getMessages() );
       }
 
       return status;

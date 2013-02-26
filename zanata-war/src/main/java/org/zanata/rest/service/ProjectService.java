@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
@@ -32,6 +33,7 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
@@ -219,6 +221,30 @@ public class ProjectService implements ProjectResource
          response = Response.ok();
       }
 
+      // null project type accepted for compatibility with old clients
+      if (project.getDefaultType() != null)
+      {
+         if (project.getDefaultType().isEmpty())
+         {
+            return Response.status(Status.BAD_REQUEST)
+                  .entity("No valid default project type was specified.")
+                  .build();
+         }
+
+         try
+         {
+            ProjectType.getValueOf(project.getDefaultType());
+         }
+         catch (Exception e)
+         {
+            String validTypes = StringUtils.join(ProjectType.values(), ", ");
+            return Response.status(Status.BAD_REQUEST)
+                  .entity("Project type \"" + project.getDefaultType() + "\" not valid for this server." +
+                        " Valid types: [" + validTypes + "]")
+                        .build();
+         }
+      }
+
       transfer(project, hProject);
 
       hProject = projectDAO.makePersistent(hProject);
@@ -243,7 +269,23 @@ public class ProjectService implements ProjectResource
    {
       to.setName(from.getName());
       to.setDescription(from.getDescription());
-      to.setDefaultProjectType(from.getDefaultType());
+      if (from.getDefaultType() != null)
+      {
+         ProjectType projectType;
+         try
+         {
+            projectType = ProjectType.getValueOf(from.getDefaultType());
+         }
+         catch (Exception e)
+         {
+            projectType = null;
+         }
+
+         if (projectType != null)
+         {
+            to.setDefaultProjectType(projectType);
+         }
+      }
       // TODO Currently all Projects are created as Current
       // to.setStatus(from.getStatus());
 
@@ -264,7 +306,10 @@ public class ProjectService implements ProjectResource
       to.setName(from.getName());
       to.setDescription(from.getDescription());
       to.setStatus(from.getStatus());
-      to.setDefaultType(from.getDefaultProjectType());
+      if (from.getDefaultProjectType() != null)
+      {
+         to.setDefaultType(from.getDefaultProjectType().toString());
+      }
       to.setSourceViewURL(from.getSourceViewURL());
       to.setSourceCheckoutURL(from.getSourceCheckoutURL());
    }
@@ -273,18 +318,13 @@ public class ProjectService implements ProjectResource
    {
       Project project = new Project();
       transfer(hProject, project);
-      if (hProject instanceof HProject)
+      for (HProjectIteration pIt : hProject.getProjectIterations())
       {
-         HProject itProject = (HProject) hProject;
-         for (HProjectIteration pIt : itProject.getProjectIterations())
-         {
-            ProjectIteration iteration = new ProjectIteration();
-            ProjectIterationService.transfer(pIt, iteration);
-            iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
-            project.getIterations(true).add(iteration);
-         }
+         ProjectIteration iteration = new ProjectIteration();
+         ProjectIterationService.transfer(pIt, iteration);
+         iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
+         project.getIterations(true).add(iteration);
       }
-
       return project;
    }
 

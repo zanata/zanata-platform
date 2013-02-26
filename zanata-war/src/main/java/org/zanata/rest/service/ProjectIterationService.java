@@ -42,12 +42,14 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProject;
@@ -184,6 +186,12 @@ public class ProjectIterationService implements ProjectIterationResource
       EntityTag etag = null;
       boolean changed = false;
 
+      Response projTypeError = getProjectTypeError(projectIteration.getProjectType());
+      if (projTypeError != null)
+      {
+         return projTypeError;
+      }
+
       HProject hProject = projectDAO.getBySlug(projectSlug);
 
       if (hProject == null)
@@ -210,6 +218,7 @@ public class ProjectIterationService implements ProjectIterationResource
          {
             return response.build();
          }
+
          hProjectIteration = new HProjectIteration();
          hProjectIteration.setSlug(iterationSlug);
 
@@ -239,7 +248,7 @@ public class ProjectIterationService implements ProjectIterationResource
          identity.checkPermission(hProjectIteration, "update");
 
          copyProjectConfiguration(projectIteration, hProjectIteration, null);
-        
+
          etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
          response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -261,25 +270,69 @@ public class ProjectIterationService implements ProjectIterationResource
    }
 
    /**
+    * Generate an error response object for invalid projectType.
+    * Valid types are null or a type that is valid for this server.
+    * 
+    * @param projectType to check
+    * @return null if projectType is valid, otherwise a Response object with appropriate error string
+    */
+   private Response getProjectTypeError(String projectType)
+   {
+      if (projectType != null)
+      {
+         if (projectType.isEmpty())
+         {
+            return Response.status(Status.BAD_REQUEST)
+                  .entity("If a project type is specified, it must not be empty.")
+                  .build();
+         }
+
+         try
+         {
+            ProjectType.getValueOf(projectType);
+         }
+         catch (Exception e)
+         {
+            String validTypes = StringUtils.join(ProjectType.values(), ", ");
+            return Response.status(Status.BAD_REQUEST)
+                  .entity("Project type \"" + projectType + "\" not valid for this server." +
+                        " Valid types: [" + validTypes + "]")
+                        .build();
+         }
+      }
+      return null;
+   }
+
+   /**
     * Copy project configuration into new version(project type and validation
     * rules)
     * 
-    * @param from
+    * @param from must have pre-validated project type
     * @param to
     * @param hProject
     */
    public static void copyProjectConfiguration(ProjectIteration from, HProjectIteration to, HProject hProject)
    {
-      if (from.getProjectType() != null)
+      ProjectType projectType;
+      try
       {
-         to.setProjectType(from.getProjectType());
+         projectType = ProjectType.getValueOf(from.getProjectType());
       }
-      else
+      catch (Exception e)
+      {
+         projectType = null;
+      }
+
+      if (projectType == null)
       {
          if(hProject != null)
          {
             to.setProjectType(hProject.getDefaultProjectType());
          }
+      }
+      else
+      {
+         to.setProjectType(projectType);
       }
 
       if (hProject != null)
@@ -293,6 +346,9 @@ public class ProjectIterationService implements ProjectIterationResource
    {
       to.setId(from.getSlug());
       to.setStatus(from.getStatus());
-      to.setProjectType(from.getProjectType());
+      if (from.getProjectType() != null)
+      {
+         to.setProjectType(from.getProjectType().toString());
+      }
    }
 }

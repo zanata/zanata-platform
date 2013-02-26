@@ -209,9 +209,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void setThemes(String theme)
+   public void setLayout(String layout)
    {
-      documentListContainer.setStyleName(theme);
+      documentListContainer.setStyleName(layout);
    }
 
    @Override
@@ -369,5 +369,18 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    public void stopGetDownloadStatus()
    {
       timer.cancel();
+   }
+
+   @Override
+   public void setEnableDownloadZip(boolean enabled)
+   {
+      downloadAllFiles.setEnabled(enabled);
+
+   }
+
+   @Override
+   public void setDownloadZipButtonTitle(String title)
+   {
+      downloadAllFiles.setTitle(title);
    }
 }

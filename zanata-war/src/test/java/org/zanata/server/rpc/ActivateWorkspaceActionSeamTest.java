@@ -7,6 +7,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.webtrans.server.SeamDispatch;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -32,7 +33,7 @@ public class ActivateWorkspaceActionSeamTest extends ZanataDBUnitSeamTest
          {
             SeamDispatch seamDispatch = (SeamDispatch) getInstance(SeamDispatch.class);
 
-            ActivateWorkspaceAction action = new ActivateWorkspaceAction(new WorkspaceId(new ProjectIterationId("sample-project", "1.0"), new LocaleId("en-US")));
+            ActivateWorkspaceAction action = new ActivateWorkspaceAction(new WorkspaceId(new ProjectIterationId("sample-project", "1.0", ProjectType.Podir), new LocaleId("en-US")));
             ActivateWorkspaceResult result = seamDispatch.execute(action);
 
             assertThat(result, notNullValue());

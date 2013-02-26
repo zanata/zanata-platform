@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -40,6 +41,14 @@ public interface TranslationStateCache
     * @return An OpenBitSet
     */
    OpenBitSet getTranslatedTextFlowIds(LocaleId localeId);
+
+   /**
+    * Returns a Lucene Filter which only returns {@link org.zanata.model.HTextFlow}s which have been translated
+    * for the given Locale Id
+    * @param targetLocale
+    * @return
+    */
+   Filter getFilter(LocaleId localeId);
 
    /**
     * Informs the cache that a text flow has changed its state in a given locale.

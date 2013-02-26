@@ -534,6 +534,20 @@ a.action_link:hover, a.button:hover {
     box-shadow: 0 0 2px #5274A5 inset;
 }
 
+a.disabled {
+    background-color: #d3d3d3;
+    color: #808080;
+    border: 1px solid #808080;
+}
+
+a.disabled:hover {
+    background-color: #d3d3d3;
+    color: #808080;
+    border: 1px solid #808080;
+    box-shadow: none;
+    cursor:default;
+}
+
 .hightlight_button:hover {
 	border:1px solid #990000;
 	color:#990000;

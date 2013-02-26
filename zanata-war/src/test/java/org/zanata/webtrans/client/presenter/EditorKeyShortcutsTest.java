@@ -242,7 +242,7 @@ public class EditorKeyShortcutsTest
 
       keys.getHandler().onKeyShortcut(null);
 
-      verify(targetContentsPresenter).saveAsApprovedAndMoveNext(targetContentsPresenter.getCurrentTransUnitIdOrNull());
+      verify(targetContentsPresenter).checkConfirmationBeforeSave();
    }
 
    @Test
@@ -267,7 +267,7 @@ public class EditorKeyShortcutsTest
 
       keys.getHandler().onKeyShortcut(null);
 
-      verify(targetContentsPresenter).saveAsApprovedAndMoveNext(targetContentsPresenter.getCurrentTransUnitIdOrNull());
+      verify(targetContentsPresenter).checkConfirmationBeforeSave();
    }
 
    @Test

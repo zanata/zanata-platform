@@ -21,15 +21,17 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Setter
@@ -37,7 +39,22 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @NoArgsConstructor
 public class HAccountActivationKey extends AccountKeyBase implements Serializable
 {
-
    private static final long serialVersionUID = 1L;
+
+   private Date creationDate;
+
+   @Temporal(TemporalType.TIMESTAMP)
+   @Column(nullable = false)
+   public Date getCreationDate()
+   {
+      return creationDate;
+   }
+
+   @SuppressWarnings("unused")
+   @PrePersist
+   private void onPersist()
+   {
+      creationDate = new Date();
+   }
 
 }

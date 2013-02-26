@@ -217,8 +217,11 @@ public class ApplicationConfiguration implements Serializable
       if( configuredValue == null )
       {
          HttpServletRequest request = ServletContexts.instance().getRequest();
-         // TODO what if request is null?
-         configuredValue = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+         if( request != null )
+         {
+            configuredValue =
+                  request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+         }
       }
       return configuredValue;
    }
@@ -248,16 +251,13 @@ public class ApplicationConfiguration implements Serializable
    {
       String emailAddr = null;
 
-      // Look in the properties file first
-      if( externalConfig.containsKey(KEY_DEFAULT_FROM_ADDRESS) )
+      // Look in the database first
+      emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+
+      // Look in the properties file next
+      if (emailAddr == null && externalConfig.containsKey(KEY_DEFAULT_FROM_ADDRESS))
       {
          emailAddr = externalConfig.getProperty(KEY_DEFAULT_FROM_ADDRESS);
-      }
-
-      // Look in the database next
-      if( emailAddr == null )
-      {
-         emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
       }
 
       // Finally, just throw an Exception

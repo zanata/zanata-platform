@@ -127,40 +127,16 @@ public class ETagUtils
       return EntityTag.valueOf(String.valueOf(hashcode));
    }
 
-   public EntityTag generateETagForTranslatedDocument(HProjectIteration iteration, String id, HLocale locale, Set<String> extensions)
+   public EntityTag generateETagForTranslatedDocument(HProjectIteration iteration, String docId, HLocale locale)
    {
-      HDocument doc = documentDAO.getByDocIdAndIteration(iteration, id);
-      if (doc == null)
-         throw new NoSuchEntityException("Document '" + id + "' not found.");
+      String stateHash =
+         documentDAO.getTranslatedDocumentStateHash(
+               iteration.getProject().getSlug(), iteration.getSlug(), docId, locale);
 
-      ByteArrayOutputStream hashBuffer = new ByteArrayOutputStream();
-
-      try
+      if( stateHash == null )
       {
-         doc.writeHashState(hashBuffer);
-         if( doc.getPoHeader() != null )
-         {
-            doc.getPoHeader().writeHashState(hashBuffer);
-         }
-         // TODO This might need to be a query to avoid N+1 problems
-         for( HTextFlow tf : doc.getTextFlows() )
-         {
-            if( tf.getTargets().containsKey( locale.getId() ) )
-            {
-               HTextFlowTarget textFlowTarget = tf.getTargets().get(locale.getId());
-               textFlowTarget.writeHashState(hashBuffer);
-               if( textFlowTarget.getComment() != null )
-               {
-                  textFlowTarget.getComment().writeHashState(hashBuffer);
-               }
-            }
-         }
+         stateHash = "";
       }
-      catch (IOException e)
-      {
-         throw new RuntimeException("Problem writing to ETag buffer.", e);
-      }
-
-      return EntityTag.valueOf(HashUtil.md5Hex(hashBuffer.toString()));
+      return EntityTag.valueOf(stateHash);
    }
 }

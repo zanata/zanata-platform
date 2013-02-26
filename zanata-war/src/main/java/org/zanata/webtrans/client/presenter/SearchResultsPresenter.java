@@ -358,6 +358,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
             userWorkspaceContext.setProjectActive(event.isProjectActive());
+            userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
             
             display.setReplaceAllButtonVisible(!userWorkspaceContext.hasReadOnlyAccess());
 

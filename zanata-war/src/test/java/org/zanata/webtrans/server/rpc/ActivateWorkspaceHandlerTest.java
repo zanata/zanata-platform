@@ -44,6 +44,7 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
@@ -66,6 +67,8 @@ public class ActivateWorkspaceHandlerTest
    private ZanataIdentity identity;
    @Mock
    private TranslationWorkspaceManager translationWorkspaceManager;
+   @Mock
+   private WorkspaceContext workspaceContext;
    @Mock
    private TranslationWorkspace translationWorkspace;
    @Mock
@@ -131,6 +134,9 @@ public class ActivateWorkspaceHandlerTest
       LoadOptionsResult optionsResult = new LoadOptionsResult(new UserConfigHolder().getState());
       when(loadOptionsHandler.execute(isA(LoadOptionsAction.class), any(ExecutionContext.class))).thenReturn(optionsResult);
       
+      when(translationWorkspace.getWorkspaceContext()).thenReturn(workspaceContext);
+      when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
+
       Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(null);
       ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
       for (ValidationAction valAction : validationMap.values())

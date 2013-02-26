@@ -25,6 +25,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
@@ -218,7 +219,7 @@ public class AppPresenterTest
       when(messages.notifyReadOnlyWorkspace()).thenReturn("readonly workspace");
       ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
 
-      presenter.onWorkspaceContextUpdated(new WorkspaceContextUpdateEvent(contextUpdateData(false)));
+      presenter.onWorkspaceContextUpdated(new WorkspaceContextUpdateEvent(contextUpdateData(false, ProjectType.Podir)));
 
       verify(eventBus).fireEvent(eventCaptor.capture());
       NotificationEvent event = eventCaptor.getValue();
@@ -232,7 +233,7 @@ public class AppPresenterTest
       when(messages.notifyEditableWorkspace()).thenReturn("editable workspace");
       ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
 
-      presenter.onWorkspaceContextUpdated(new WorkspaceContextUpdateEvent(contextUpdateData(true)));
+      presenter.onWorkspaceContextUpdated(new WorkspaceContextUpdateEvent(contextUpdateData(true, ProjectType.Podir)));
 
       verify(eventBus).fireEvent(eventCaptor.capture());
       NotificationEvent event = eventCaptor.getValue();
@@ -490,7 +491,7 @@ public class AppPresenterTest
       verify(keyShortcutPresenter).showShortcuts();
    }
 
-   private static HasWorkspaceContextUpdateData contextUpdateData(final boolean projectActive)
+   private static HasWorkspaceContextUpdateData contextUpdateData(final boolean projectActive, final ProjectType projectType)
    {
       return new HasWorkspaceContextUpdateData()
       {
@@ -498,6 +499,12 @@ public class AppPresenterTest
          public boolean isProjectActive()
          {
             return projectActive;
+         }
+
+         @Override
+         public ProjectType getProjectType()
+         {
+            return projectType;
          }
       };
    }

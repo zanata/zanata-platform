@@ -310,6 +310,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
+      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyReadOnlyWorkspace()));

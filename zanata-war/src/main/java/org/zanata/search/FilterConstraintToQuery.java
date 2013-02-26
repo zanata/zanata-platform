@@ -57,6 +57,7 @@ public class FilterConstraintToQuery
       if (hasSearch)
       {
          String term = constraints.isCaseSensitive() ? constraints.getSearchString() : constraints.getSearchString().toLowerCase();
+         term = term.replaceAll("%", "\\\\%"); // we need to escape % in database query
          searchString = "%" + term + "%";
       }
    }

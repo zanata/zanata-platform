@@ -311,6 +311,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
+      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
+
       setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
    }
 

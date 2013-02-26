@@ -282,19 +282,10 @@ public class TargetContentsPresenter implements
       saveAsApprovedConfirmation.center(transUnitId);
    }
 
-   /*
-    * Show of confirmation dialog save as approved.
-    * 
-    * @see org.zanata.webtrans.client.view.TargetContentsDisplay.Listener#
-    * saveAsApprovedAndMoveNext(org.zanata.webtrans.shared.model.TransUnitId,
-    * boolean)
-    */
-   @Override
-   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId, boolean checkForConfirmation)
+   public void checkConfirmationBeforeSave()
    {
-      ensureRowSelection(transUnitId);
-
-      if (checkForConfirmation && userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning())
+      TransUnitId transUnitId = getCurrentTransUnitIdOrNull();
+      if (userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning())
       {
          eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId, getNewTargets(), ContentState.Approved));
       }
@@ -342,7 +333,6 @@ public class TargetContentsPresenter implements
          currentEditorIndex = 0;
          savePendingChangesIfApplicable();
          eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
-         Log.info("fired nav to next event");
       }
    }
 
@@ -600,6 +590,8 @@ public class TargetContentsPresenter implements
    {
       // FIXME once setting codemirror editor to readonly it won't be editable again
       userWorkspaceContext.setProjectActive(event.isProjectActive());
+      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
+
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.info("from editable to readonly");

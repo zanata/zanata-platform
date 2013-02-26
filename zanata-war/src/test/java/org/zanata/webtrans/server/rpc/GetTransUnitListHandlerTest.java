@@ -14,6 +14,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -85,7 +86,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    private void prepareActionAndMockLocaleService(GetTransUnitList action)
    {
       action.setEditorClientId(new EditorClientId("sessionId", 1));
-      action.setWorkspaceId(TestFixture.workspaceId(localeId, "plurals", "master"));
+      action.setWorkspaceId(TestFixture.workspaceId(localeId, "plurals", "master", ProjectType.Podir));
       ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
       when(localeService.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(jaHLocale);
       when(localeService.getByLocaleId(localeId)).thenReturn(jaHLocale);

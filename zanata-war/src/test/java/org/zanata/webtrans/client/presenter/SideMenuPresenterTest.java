@@ -18,6 +18,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
@@ -27,7 +29,10 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.view.SideMenuDisplay;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
@@ -57,18 +62,28 @@ public class SideMenuPresenterTest
    @Mock
    private UserWorkspaceContext userWorkspaceContext;
    @Mock
+   private WorkspaceContext workspaceContext;
+   @Mock
    private WebTransMessages messages;
    @Captor
    private ArgumentCaptor<ShowSideMenuEvent> eventCaptor;
    @Mock
    private UserSessionService sessionService;
+   private WorkspaceId workspaceId;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
       presenter = new SideMenuPresenter(display, eventBus, dispatcher, optionsPresenter, validationOptionsPresenter, workspaceUsersPresenter, notificationPresenter, sessionService, userWorkspaceContext);
+
+      workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
+
+      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(workspaceContext);
+      when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
+
       verify(display).setListener(presenter);
+
    }
 
    @Test

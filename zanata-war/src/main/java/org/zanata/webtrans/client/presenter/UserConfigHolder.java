@@ -66,7 +66,7 @@ public class UserConfigHolder
    public static final boolean DEFAULT_FILTER = false;
    public static final boolean DEFAULT_DISPLAY_BUTTONS = true;
    public static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
-   public static final boolean DEFAULT_USE_CODE_MIRROR = false;
+   public static final boolean DEFAULT_USE_CODE_MIRROR = true;
    public static final boolean DEFAULT_SPELL_CHECK = true;
    public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
    public static final boolean DEFAULT_SHOW_PANEL = true;

@@ -57,6 +57,9 @@ public class ServerConfigurationBean implements Serializable
    @In
    ApplicationConfigurationDAO applicationConfigurationDAO;
 
+   @In
+   private ApplicationConfiguration applicationConfiguration;
+
    private String registerUrl;
    private String serverUrl;
    private String emailDomain;
@@ -274,11 +277,9 @@ public class ServerConfigurationBean implements Serializable
       {
          this.adminEmail = adminEmailValue.getValue();
       }
-      HApplicationConfiguration fromAddressValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
-      if (fromAddressValue != null)
-      {
-         this.fromEmailAddr = fromAddressValue.getValue();
-      }
+
+      this.fromEmailAddr = applicationConfiguration.getFromEmailAddr();
+
       HApplicationConfiguration emailLogEventsValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
       if (emailLogEventsValue != null)
       {

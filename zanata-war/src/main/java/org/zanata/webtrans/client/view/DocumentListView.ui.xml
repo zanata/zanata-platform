@@ -42,6 +42,12 @@
 			padding:10px;
 		}
 		
+		.downloadAllFilesButton
+		{
+			width:130px;
+			display:inline-block;
+			margin-left:6px;
+		}
 		
     </ui:style>
     <g:LayoutPanel>
@@ -60,17 +66,15 @@
                 		</g:cell>
                 		<g:cell horizontalAlignment="ALIGN_RIGHT">
                 			<g:HTMLPanel>
-                        		<g:InlineLabel styleName="{style.optionStyle}"><ui:msg>Statistic: </ui:msg></g:InlineLabel>
+                        		<g:InlineLabel styleName="{style.optionStyle}"><ui:msg>Stats by:</ui:msg></g:InlineLabel>
                         		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/>
                         		<g:RadioButton ui:field="statsByMsg" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/>
+                        		<g:PushButton ui:field="downloadAllFiles" addStyleNames="{style.downloadAllFilesButton}"/>
                         	</g:HTMLPanel>
                 		</g:cell>
                 	</g:HorizontalPanel>
                 </g:layer>
-                <g:layer top="35px" height="22px" right="23px" width="142px">
-                	<g:PushButton ui:field="downloadAllFiles"/>
-                </g:layer>
-                <g:layer top='52px' bottom="0px">
+                <g:layer top='28px' bottom="0px">
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:HTMLPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>

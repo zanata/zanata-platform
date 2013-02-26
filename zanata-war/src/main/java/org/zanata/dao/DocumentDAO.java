@@ -1,5 +1,6 @@
 package org.zanata.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -21,6 +23,7 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlowTarget;
@@ -147,17 +150,18 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       
    }
 
-   public HTextFlowTarget getLastTranslated(long docId, LocaleId localeId)
+   public HTextFlowTarget getLastTranslated(Long docId, LocaleId localeId)
    {
       String query = "from HTextFlowTarget tft " +
             "where tft.textFlow.document.id = :docId and tft.locale.localeId = :localeId and " +
             "tft.lastChanged = (select max(t.lastChanged) from HTextFlowTarget t " +
-            "where t.id = :docId and t.locale.localeId = :localeId )";
+ "where t.textFlow.document.id = :docId and t.locale.localeId = :localeId )";
       
       Query q = getSession().createQuery( query );
       q.setParameter("docId", docId);
       q.setParameter("localeId", localeId);
       q.setCacheable(true);
+      q.setMaxResults(1);
       q.setComment("DocumentDAO.getLastTranslated");
       
       return  (HTextFlowTarget) q.uniqueResult();
@@ -378,6 +382,76 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       @SuppressWarnings("unchecked")
       final List<HDocument> documents = q.list();
       return documents;
+   }
+
+   /**
+    * Calculates a translated document's hash.
+    *
+    * @param projectSlug Project identifier
+    * @param iterationSlug Iteration identifier
+    * @param docId Document identifier
+    * @param locale Translated document's locale.
+    * @return A Hash string (checksum) for a translated document.
+    */
+   public String getTranslatedDocumentStateHash(final String projectSlug, final String iterationSlug,
+                                                 final String docId, final HLocale locale)
+   {
+      // NB: This method uses a native SQL query tested on mysql and h2 databases.
+      Session session = getSession();
+      StringBuilder nativeSql = new StringBuilder();
+      nativeSql.append("select MD5(group_concat(hashState)) from ");
+      nativeSql.append("( ");
+      nativeSql.append("   select ");
+      nativeSql.append("   concat( ");
+      nativeSql.append("   d.id, '|',  ");
+      nativeSql.append("   d.versionNum, '|',  ");
+      nativeSql.append("   ifnull(group_concat(poth.versionNum separator '|'), ''), '|',  ");
+      nativeSql.append("   ifnull(group_concat(tft.id separator '|'), ''), '|',  ");
+      nativeSql.append("   ifnull(group_concat(tft.versionNum separator '|'), ''),  '|',  ");
+      nativeSql.append("   ifnull(group_concat(tf.id separator '|'), ''),  '|',  ");
+      nativeSql.append("   ifnull(group_concat(tf.revision separator '|'), ''),  '|',  ");
+      nativeSql.append("   ifnull(group_concat(c.comment separator '|'), '')) as hashState  ");
+      nativeSql.append("   from  ");
+      nativeSql.append("   HDocument d ");
+      nativeSql.append("   inner join HTextFlow tf on tf.document_id = d.id ");
+      nativeSql.append("   inner join HProjectIteration i on d.project_iteration_id = i.id ");
+      nativeSql.append("   inner join HProject p on i.project_id = p.id ");
+      nativeSql.append("   left outer join HTextFlowTarget tft on tft.tf_id = tf.id and tft.locale = :localeId ");
+      nativeSql.append("   left outer join HSimpleComment c on c.id = tft.comment_id  ");
+      nativeSql.append("   left outer join HPoTargetHeader poth on poth.document_id = d.id and poth.targetLanguage = :localeId ");
+      nativeSql.append("   where  ");
+      nativeSql.append("   d.docId = :docId ");
+      nativeSql.append("   and p.slug = :projectSlug ");
+      nativeSql.append("   and i.slug = :iterationSlug ");
+      nativeSql.append("   group by d.id, d.versionNum ");
+      nativeSql.append(")  as T");
+
+      Query query = session.createSQLQuery(nativeSql.toString())
+                           .setParameter("localeId", locale.getId())
+                           .setParameter("docId", docId)
+                           .setParameter("projectSlug", projectSlug)
+                           .setParameter("iterationSlug", iterationSlug);
+      // Transform the results from byte[] into Strings when necessary
+      query.setResultTransformer(new ResultTransformer()
+      {
+         @Override
+         public Object transformTuple(Object[] tuple, String[] aliases)
+         {
+            if( tuple[0] instanceof byte[] )
+            {
+               return new String((byte[])tuple[0]);
+            }
+            return tuple[0];
+         }
+
+         @Override
+         public List transformList(List collection)
+         {
+            return collection; // no transformation needed
+         }
+      });
+      String stateHash = (String)query.uniqueResult();
+      return stateHash;
    }
 
    /**

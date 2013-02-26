@@ -28,6 +28,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
@@ -36,6 +37,7 @@ import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -45,9 +47,13 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -74,6 +80,8 @@ public class DocumentListPresenterTest
    @Mock
    private UserWorkspaceContext mockUserWorkspaceContext;
    @Mock
+   private WorkspaceContext mockWorkspaceContext;
+   @Mock
    private UserOptionsService mockUserOptionsService;
    @Mock
    private CachingDispatchAsync mockDispatcher;
@@ -96,6 +104,8 @@ public class DocumentListPresenterTest
    private static final String TEST_BY_WORDS_MESSAGE = "By Words";
    private static final String TEST_BY_MESSAGE_MESSAGE = "By Message";
 
+   private WorkspaceId workspaceId;
+
    @BeforeMethod
    public void beforeMethod()
    {
@@ -104,6 +114,15 @@ public class DocumentListPresenterTest
       when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
       dataProviderList = new ArrayList<DocumentNode>();
       documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
+   
+      workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
+
+      when(mockUserWorkspaceContext.getWorkspaceContext()).thenReturn(mockWorkspaceContext);
+      when(mockWorkspaceContext.getWorkspaceId()).thenReturn(workspaceId);
+
+      when(mockMessages.projectTypeNotSet()).thenReturn("Project not set");
+      when(mockMessages.projectTypeNotAllowed()).thenReturn("Project type not allow");
+      when(mockMessages.downloadAllTranslatedFiles()).thenReturn("Download all translation file");
    }
 
    @Test
@@ -122,6 +141,10 @@ public class DocumentListPresenterTest
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(TransUnitUpdatedEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(UserConfigChangeEvent.TYPE, documentListPresenter);
+      verify(mockEventBus).addHandler(WorkspaceContextUpdateEvent.getType(), documentListPresenter);
+
+      verify(mockDisplay).setEnableDownloadZip(documentListPresenter.isZipFileDownloadAllowed(workspaceId.getProjectIterationId().getProjectType()));
+      verify(mockDisplay).setDownloadZipButtonTitle(isA(String.class));
    }
 
    @Test
@@ -476,9 +499,37 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
-      verify(mockDisplay).setThemes(ThemesOption.THEMES_DEFAULT.name());
+      verify(mockDisplay).setLayout(ThemesOption.THEMES_DEFAULT.name());
 
       verifyZeroInteractions(mockDisplay);
+   }
+
+   @Test
+   public void onWorkspaceContextUpdated()
+   {
+      WorkspaceContextUpdateEvent event = new WorkspaceContextUpdateEvent(workplaceContextData(true, ProjectType.Gettext));
+      documentListPresenter.onWorkspaceContextUpdated(event);
+      
+      verify(mockDisplay).setEnableDownloadZip(documentListPresenter.isZipFileDownloadAllowed(event.getProjectType()));
+      verify(mockDisplay).setDownloadZipButtonTitle(isA(String.class));
+   }
+
+   private static HasWorkspaceContextUpdateData workplaceContextData(final boolean projectActive, final ProjectType projectType)
+   {
+      return new HasWorkspaceContextUpdateData()
+      {
+         @Override
+         public boolean isProjectActive()
+         {
+            return projectActive;
+         }
+
+         @Override
+         public ProjectType getProjectType()
+         {
+            return projectType;
+         }
+      };
    }
 
    private ArrayList<DocumentInfo> buildSampleDocumentArray()

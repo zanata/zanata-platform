@@ -21,11 +21,10 @@
 
 package org.zanata.webtrans.client.service;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.CheckStateHasChangedHandler;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
@@ -41,13 +40,14 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -123,13 +123,25 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
    public void onCheckStateHasChanged(CheckStateHasChangedEvent event)
    {
       TransUnit transUnit = navigationService.getByIdOrNull(event.getTransUnitId());
-      if (transUnit != null && !Objects.equal(transUnit.getTargets(), event.getTargets()))
+      if (transUnit == null)
+      {
+         return;
+      }
+
+      boolean targetChanged = !Objects.equal(transUnit.getTargets(), event.getTargets());
+      boolean targetUnchangedButCanSaveAsApproved = (event.getAdjustedState() == ContentState.Approved) && !Objects.equal(transUnit.getStatus(), event.getAdjustedState());
+
+      if (targetChanged)
       {
          targetContentsPresenter.saveAsApprovedAndMoveNext(event.getTransUnitId());
       }
-      else if ((event.getAdjustedState() == ContentState.Approved) && !Objects.equal(transUnit.getStatus(), event.getAdjustedState()))
+      else if (targetUnchangedButCanSaveAsApproved)
       {
          targetContentsPresenter.showSaveAsApprovedConfirmation(event.getTransUnitId());
+      }
+      else
+      {
+         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
    

@@ -334,12 +334,15 @@
 					<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
 					<span class="icon-edit"/>#{messages['jsf.TranslateGWTDevMode']}
     			</h:outputLink>
-            	
-                <a4j:commandLink styleClass="action_link"
+
+                <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />
+                <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
                                  action="#{projectIterationZipFileAction.prepareIterationZipFile}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
-                                 reRender="downloadProgressBar"/>
+                                 render="downloadProgressBar"
+                                 disabled="#{not downloadAllAllowed}"
+                                 title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
             </h:form>
         </rich:panel>
 

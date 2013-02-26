@@ -77,14 +77,14 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Document")
    String columnHeaderDocument();
 
-   @DefaultMessage("Statistic ({0})")
-   String columnHeaderStatistic(String option);
+   @DefaultMessage("Statistic")
+   String columnHeaderStatistic();
 
-   @DefaultMessage("Translated ({0})")
-   String columnHeaderTranslated(String option);
+   @DefaultMessage("Translated")
+   String columnHeaderTranslated();
 
-   @DefaultMessage("Untranslated ({0})")
-   String columnHeaderUntranslated(String option);
+   @DefaultMessage("Untranslated")
+   String columnHeaderUntranslated();
 
    @DefaultMessage("Remaining hours")
    String columnHeaderRemaining();
@@ -419,7 +419,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("When unexpected error happens, a popup window will display and show it")
    String showErrorsTooltip();
 
-   @DefaultMessage("Switch between CodeMirror Editor (supports syntax highlight) and plain textarea (no syntax highlight but support spell check)")
+   @DefaultMessage("Switch between syntax highlightable Editor and plain textarea (no syntax highlight but support spell check in all browser)")
    String useCodeMirrorEditorTooltip();
 
    @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
@@ -473,10 +473,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Editor")
    String editor();
 
-   @DefaultMessage("By words")
+   @DefaultMessage("Words")
    String byWords();
 
-   @DefaultMessage("By message")
+   @DefaultMessage("Message")
    String byMessage();
 
    @DefaultMessage("Refresh current page")
@@ -499,4 +499,13 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
    String showTransUnitDetailsTooltip();
+   
+   @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
+   String projectTypeNotSet();
+   
+   @DefaultMessage("The project type must be set to 'Gettext' or 'Podir'. Contact the project maintainer.")
+   String projectTypeNotAllowed();
+   
+   @DefaultMessage("Download all translated files.")
+   String downloadAllTranslatedFiles();
 }

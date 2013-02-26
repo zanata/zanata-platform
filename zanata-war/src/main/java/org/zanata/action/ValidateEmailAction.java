@@ -23,7 +23,6 @@ package org.zanata.action;
 import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 
 import javax.security.auth.login.LoginException;
@@ -105,20 +104,10 @@ public class ValidateEmailAction implements Serializable
 
    private String checkExpiryDate(Date createdDate)
    {
-      try
+      if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS))
       {
-         if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS))
-         {
-            log.info("Creation date expired:" + createdDate);
-            FacesMessages.instance().add(ERROR, "Link expired. Please update your email again.");
-            return "/profile/edit.xhtml";
-         }
-         
-      }
-      catch (ParseException e)
-      {
-         log.error(e.fillInStackTrace());
-         FacesMessages.instance().add(ERROR, "Invalid link. Please update your email again.");
+         log.info("Creation date expired:" + createdDate);
+         FacesMessages.instance().add(ERROR, "Link expired. Please update your email again.");
          return "/profile/edit.xhtml";
       }
       return "";

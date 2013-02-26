@@ -20,14 +20,22 @@
               <a4j:ajax event="blur" render="slugField" execute="@this"/>
             </h:inputText>
         </s:decorate>
-        
+
         <s:decorate id="projectTypeField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
             <h:selectOneMenu id="projectType" value="#{projectIterationHome.projectType}">
                 <f:selectItems value="#{projectIterationHome.projectTypeList}"/>
             </h:selectOneMenu>
+            <s:span styleClass="icon-info-circle-2 input_help" id="projectTypeHelp">
+                <rich:toolTip>
+                   #{messages['jsf.projectType.Description']}<br/>
+                   #{messages['jsf.projectType.NotSpecifiedBehaviour']}<br/>
+                   <br/>
+                   <em>#{messages['jsf.projectType.MoreInfo']}</em><br/>
+                </rich:toolTip>
+            </s:span>
         </s:decorate>
-        
+
         <s:decorate id="statusField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.Status']}</ui:define>
             <h:selectOneMenu id="status" value="#{projectIterationHome.instance.status}">
