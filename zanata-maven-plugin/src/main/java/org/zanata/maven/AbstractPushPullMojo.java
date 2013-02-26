@@ -143,6 +143,9 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    /**
     * Specifies a document from which to begin the push operation.
     * Documents before this document (sorted alphabetically) will not be pushed.
+    * 
+    * For multi-module projects, the full document path including module id is required.
+    * 
     * Use this option to resume a failed push operation.
 
     * @parameter expression="${zanata.fromDoc}"
