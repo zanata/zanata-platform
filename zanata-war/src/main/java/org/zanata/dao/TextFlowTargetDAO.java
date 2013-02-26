@@ -280,4 +280,27 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                   .uniqueResult();
       return hTextFlowTarget;
    }
+
+   public HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug, LocaleId localeId)
+   {
+      String query = "from HTextFlowTarget tft " 
+ + "where tft.textFlow.document.projectIteration.slug = :iterationSlug " 
+ + "and tft.textFlow.document.projectIteration.project.slug = :projectSlug "
+ + "and tft.locale.localeId = :localeId "
+ + "and tft.lastChanged = " 
+ + "(select max(t.lastChanged) from HTextFlowTarget t " 
+ + "where t.textFlow.document.projectIteration.slug = :iterationSlug " 
+ + "and t.textFlow.document.projectIteration.project.slug = :projectSlug "
+ + "and t.locale.localeId = :localeId )";
+
+      Query q = getSession().createQuery(query);
+      q.setParameter("iterationSlug", iterationSlug);
+      q.setParameter("projectSlug", projectSlug);
+      q.setParameter("localeId", localeId);
+      q.setCacheable(true);
+      q.setMaxResults(1);
+      q.setComment("TextFlowTargetDAO.getLastTranslated");
+
+      return (HTextFlowTarget) q.uniqueResult();
+   }
 }

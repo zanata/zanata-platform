@@ -27,6 +27,7 @@ import java.util.Set;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlowTarget;
 
 
 public interface LocaleService
@@ -73,5 +74,7 @@ public interface LocaleService
    Map<String, String> getIterationGlobalLocaleItems(String projectSlug);
 
    HLocale getSourceLocale(String projectSlug, String iterationSlug);
+
+   HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug, LocaleId localeId);
 
 }

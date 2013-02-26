@@ -39,10 +39,12 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.LocaleService;
 
 import com.ibm.icu.util.ULocale;
@@ -63,6 +65,9 @@ public class LocaleServiceImpl implements LocaleService
    private ProjectIterationDAO projectIterationDAO;
 
    private PersonDAO personDAO;
+
+   private TextFlowTargetDAO textFlowTargetDAO;
+
    @Logger
    Log log;
 
@@ -75,16 +80,24 @@ public class LocaleServiceImpl implements LocaleService
          LocaleDAO localeDAO,
          ProjectDAO projectDAO,
          ProjectIterationDAO projectIterationDAO,
-         PersonDAO personDAO
+         PersonDAO personDAO,
+         TextFlowTargetDAO textFlowTargetDAO
          )
    {
       setLocaleDAO(localeDAO);
       setProjectDAO(projectDAO);
       setProjectIterationDAO(projectIterationDAO);
       setPersonDAO(personDAO);
+      setTextFlowTargetDAO(textFlowTargetDAO);
    }
    // @formatter:on
 
+
+   @In
+   private void setTextFlowTargetDAO(TextFlowTargetDAO textFlowTargetDAO)
+   {
+      this.textFlowTargetDAO = textFlowTargetDAO;
+   }
 
    @In
    public void setLocaleDAO(LocaleDAO localeDAO)
@@ -341,5 +354,11 @@ public class LocaleServiceImpl implements LocaleService
    public HLocale getSourceLocale(String projectSlug, String iterationSlug)
    {
       return localeDAO.findByLocaleId(new LocaleId("en-US"));
+   }
+
+   @Override
+   public HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug, LocaleId localeId)
+   {
+      return textFlowTargetDAO.getLastTranslated(projectSlug, iterationSlug, localeId);
    }
 }

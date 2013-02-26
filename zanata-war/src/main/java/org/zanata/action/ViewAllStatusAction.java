@@ -25,6 +25,7 @@ import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -62,6 +64,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
+import org.zanata.util.DateUtil;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
@@ -125,13 +128,17 @@ public class ViewAllStatusAction implements Serializable
       private String nativeName;
       private TranslationStatistics stats;
       private boolean userInLanguageTeam;
+      private String lastTranslatedBy;
+      private Date lastTranslatedDate;
 
-      public Status(String locale, String nativeName, TranslationStatistics stats, boolean userInLanguageTeam)
+      public Status(String locale, String nativeName, TranslationStatistics stats, boolean userInLanguageTeam, String lastTranslatedBy, Date lastTranslatedDate)
       {
          this.locale = locale;
          this.nativeName = nativeName;
          this.stats = stats;
          this.userInLanguageTeam = userInLanguageTeam;
+         this.lastTranslatedBy = lastTranslatedBy;
+         this.lastTranslatedDate = lastTranslatedDate;
       }
 
       public String getLocale()
@@ -142,6 +149,31 @@ public class ViewAllStatusAction implements Serializable
       public String getNativeName()
       {
          return nativeName;
+      }
+
+      public String getLastTranslatedBy()
+      {
+         return lastTranslatedBy;
+      }
+
+      public void setLastTranslatedBy(String lastTranslatedBy)
+      {
+         this.lastTranslatedBy = lastTranslatedBy;
+      }
+
+      public Date getLastTranslatedDate()
+      {
+         return lastTranslatedDate;
+      }
+
+      public String getFormattedLastTranslatedDate()
+      {
+         return DateUtil.formatShortDate(lastTranslatedDate);
+      }
+
+      public void setLastTranslatedDate(Date lastTranslatedDate)
+      {
+         this.lastTranslatedDate = lastTranslatedDate;
       }
 
       public TranslationStatistics getStats()
@@ -281,16 +313,29 @@ public class ViewAllStatusAction implements Serializable
             stats.setTotal(total);
          }
          
+         HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
+
+         String lastModifiedBy = null;
+         Date lastTranslatedDate = null;
+
+         if (lastTranslatedTarget != null)
+         {
+            lastModifiedBy = lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername();
+            lastTranslatedDate = lastTranslatedTarget.getLastChanged();
+         }
+
          if (!statsMap.containsKey(var.getLocaleId()))
          {
             boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;
 
-            Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), stats, isMember);
+            Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), stats, isMember, lastModifiedBy, lastTranslatedDate);
             statsMap.put(var.getLocaleId(), op);
          }
          else
          {
             statsMap.get(var.getLocaleId()).setStats(stats);
+            statsMap.get(var.getLocaleId()).setLastTranslatedBy(lastModifiedBy);
+            statsMap.get(var.getLocaleId()).setLastTranslatedDate(lastTranslatedDate);
          }
       }
 
