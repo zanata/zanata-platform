@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.zanata</groupId>
         <artifactId>server</artifactId>
-        <version>2.2-SNAPSHOT</version>
+        <version>2.2.0</version>
     </parent>
     <artifactId>functional-test</artifactId>
     <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
