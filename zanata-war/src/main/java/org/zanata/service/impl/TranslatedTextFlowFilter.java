@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.search;
+package org.zanata.service.impl;
 
 import java.io.IOException;
 import java.util.Map;
@@ -34,7 +34,7 @@ import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.Component;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowDAO;
+import org.zanata.service.TranslationStateCache;
 
 import com.google.common.base.Stopwatch;
 
@@ -52,7 +52,7 @@ public class TranslatedTextFlowFilter extends Filter
    private static final long serialVersionUID = 1L;
    private final Map<IndexReader, OpenBitSet> map = new WeakHashMap<IndexReader, OpenBitSet>();
 //   Map<IndexReader, OpenBitSet> map = new MapMaker().weakKeys().makeMap();
-   private LocaleId locale;
+   private final LocaleId locale;
 
    public TranslatedTextFlowFilter(LocaleId locale)
    {
@@ -63,7 +63,8 @@ public class TranslatedTextFlowFilter extends Filter
    @Override
    public DocIdSet getDocIdSet(IndexReader reader) throws IOException
    {
-      TextFlowDAO textFlowDAO = (TextFlowDAO) Component.getInstance("textFlowDAO");
+//      TextFlowDAO textFlowDAO = (TextFlowDAO) Component.getInstance("textFlowDAO");
+      TranslationStateCache translationStateCache = getTranslationStateCache();
       OpenBitSet docIdSet;
       synchronized (map)
       {
@@ -75,7 +76,8 @@ public class TranslatedTextFlowFilter extends Filter
             docIdSet = new OpenBitSet(reader.maxDoc());
             map.put(reader, docIdSet);
             log.debug("Loading translatedTextFlowBitSet for locale {}", locale);
-            OpenBitSet translatedTextFlowBitSet = textFlowDAO.findIdsWithTranslations(locale);
+//            OpenBitSet translatedTextFlowBitSet = textFlowDAO.findIdsWithTranslations(locale);
+            OpenBitSet translatedTextFlowBitSet = translationStateCache.getTranslatedTextFlowIds(locale);
             log.debug("Loaded translatedTextFlowBitSet; populating docIdSet for locale {}", locale);
             setTranslatedBits(docIdSet, reader, translatedTextFlowBitSet);
             log.info("Finished loading docIdSet for locale {} in {}", locale, stopwatch);
@@ -89,6 +91,11 @@ public class TranslatedTextFlowFilter extends Filter
       }
 
       return docIdSet;
+   }
+
+   protected TranslationStateCache getTranslationStateCache()
+   {
+      return (TranslationStateCache) Component.getInstance("translationStateCacheImpl");
    }
 
    private void setTranslatedBits(OpenBitSet docIdSet, IndexReader reader, OpenBitSet translatedTextFlowBitSet) throws IOException

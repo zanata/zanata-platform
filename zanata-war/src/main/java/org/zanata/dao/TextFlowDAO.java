@@ -80,8 +80,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       // MIN_VALUE gives hint to JDBC driver to stream results
       q.setFetchSize(Integer.MIN_VALUE);
       q.setParameter("locale", locale);
-      // TranslatedFilter may need this caching when populating multiple bitsets (one per IndexReader)
-      q.setCacheable(true).setComment("TextFlowDAO.findIdsWithTranslations");
+      // TranslationStateCache does its own caching
+      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
 
       ScrollableResults results = q.scroll(ScrollMode.FORWARD_ONLY);
       OpenBitSet resultBitSet = new OpenBitSet();
