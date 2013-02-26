@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.events;
 
+import org.zanata.common.ProjectType;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -7,10 +8,12 @@ import com.google.gwt.event.shared.GwtEvent;
 public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdateEventHandler>
 {
    private final boolean isProjectActive;
+   private final ProjectType projectType;
 
    public WorkspaceContextUpdateEvent(HasWorkspaceContextUpdateData data)
    {
       this.isProjectActive = data.isProjectActive();
+      this.projectType = data.getProjectType();
    }
 
    /**
@@ -49,4 +52,8 @@ public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdate
       return isProjectActive;
    }
 
+   public ProjectType getProjectType()
+   {
+      return projectType;
+   }
 }

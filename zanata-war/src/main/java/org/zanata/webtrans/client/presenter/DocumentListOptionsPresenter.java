@@ -78,6 +78,7 @@ public class DocumentListOptionsPresenter extends WidgetPresenter<DocumentListOp
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
       userWorkspaceContext.setProjectActive(event.isProjectActive());
+      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
       setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
    }
 

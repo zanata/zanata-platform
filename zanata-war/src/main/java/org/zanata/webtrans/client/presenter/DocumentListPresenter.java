@@ -41,6 +41,8 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -68,9 +70,9 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler
 {
-   private final UserWorkspaceContext userworkspaceContext;
+   private final UserWorkspaceContext userWorkspaceContext;
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
@@ -99,7 +101,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
-      this.userworkspaceContext = userworkspaceContext;
+      this.userWorkspaceContext = userworkspaceContext;
       this.messages = messages;
       this.history = history;
       this.userOptionsService = userOptionsService;
@@ -121,38 +123,37 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
 
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
 
-      ProjectType projectType = userworkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
-
-      display.setEnableDownloadZip(isZipFileDownloadAllowed(projectType));
-      display.setDownloadZipButtonTitle(getZipFileDownloadTitle(projectType));
+      ProjectType projectType = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
+      setupDownloadZipButton(projectType);
    }
    
-   public String getZipFileDownloadTitle(ProjectType projectType)
+   public void setupDownloadZipButton(ProjectType projectType)
    {
-      String title = null;
       if (!isZipFileDownloadAllowed(projectType))
       {
+         display.setEnableDownloadZip(false);
          if (projectType == null)
          {
-            title = messages.projectTypeNotSet();
+            display.setDownloadZipButtonTitle(messages.projectTypeNotSet());
          }
          else
          {
-            title = messages.projectTypeNotAllowed();
+            display.setDownloadZipButtonTitle(messages.projectTypeNotAllowed());
          }
       }
       else
       {
-         title = messages.downloadAllTranslatedFiles();
+         display.setEnableDownloadZip(true);
+         display.setDownloadZipButtonTitle(messages.downloadAllTranslatedFiles());
       }
-      return title;
    }
 
-   private boolean isZipFileDownloadAllowed(ProjectType projectType)
+   public boolean isZipFileDownloadAllowed(ProjectType projectType)
    {
       return projectType == ProjectType.Gettext || projectType == ProjectType.Podir;
    }
@@ -170,7 +171,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       token.setSearchText("");
       history.newItem(token);
 
-      userworkspaceContext.setSelectedDoc(doc);
+      userWorkspaceContext.setSelectedDoc(doc);
    }
 
    @Override
@@ -319,7 +320,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       if (node != null)
       {
          currentSelection = node;
-         userworkspaceContext.setSelectedDoc(node.getDocInfo());
+         userWorkspaceContext.setSelectedDoc(node.getDocInfo());
          // required in order to show the document selected in doclist when
          // loading from bookmarked history token
          fireDocumentSelection(node.getDocInfo());
@@ -394,7 +395,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void downloadAllFiles()
    {
-      WorkspaceId workspaceId = userworkspaceContext.getWorkspaceContext().getWorkspaceId();
+      WorkspaceId workspaceId = userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
       dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId()), new AsyncCallback<DownloadAllFilesResult>()
       {
          @Override
@@ -462,7 +463,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void showUploadDialog(DocumentInfo docInfo)
    {
-      display.showUploadDialog(docInfo, userworkspaceContext.getWorkspaceContext().getWorkspaceId());
+      display.showUploadDialog(docInfo, userWorkspaceContext.getWorkspaceContext().getWorkspaceId());
    }
 
    @Override
@@ -499,6 +500,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       {
          display.submitUploadForm();
       }
+   }
+
+   @Override
+   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+   {
+      userWorkspaceContext.setProjectActive(event.isProjectActive());
+      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
+      setupDownloadZipButton(event.getProjectType());
    }
 
 }

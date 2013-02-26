@@ -69,4 +69,10 @@ public class ProjectIterationId implements IsSerializable
    {
       return new ProjectIterationId(projectSlug, iterationSlug, projectType);
    }
+
+   public void setProjectType(ProjectType projectType)
+   {
+      this.projectType = projectType;
+
+   }
 }

@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -95,7 +96,7 @@ public class EventProcessorTest
    @Test
    public void callApplyWithSessionEvent()
    {
-      WorkspaceContextUpdate sessionEventData = new WorkspaceContextUpdate(true);
+      WorkspaceContextUpdate sessionEventData = new WorkspaceContextUpdate(true, ProjectType.Gettext);
       ArgumentCaptor<WorkspaceContextUpdateEvent> eventCaptor = ArgumentCaptor.forClass(WorkspaceContextUpdateEvent.class);
 
       eventProcessor.apply(sessionEventData);

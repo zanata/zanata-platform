@@ -126,6 +126,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       GetValidationRulesResult validationResult = getValidationRulesHandler.execute(new GetValidationRulesAction(workspaceId), context);
 
       Identity identity = new Identity(editorClientId, person);
+      workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(projectIteration.getProjectType());
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);
       return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationResult.getValidations());
    }
