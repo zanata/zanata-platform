@@ -152,12 +152,12 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       
    }
 
-   public HTextFlowTarget getLastTranslated(long docId, LocaleId localeId)
+   public HTextFlowTarget getLastTranslated(Long docId, LocaleId localeId)
    {
       String query = "from HTextFlowTarget tft " +
             "where tft.textFlow.document.id = :docId and tft.locale.localeId = :localeId and " +
             "tft.lastChanged = (select max(t.lastChanged) from HTextFlowTarget t " +
-            "where t.id = :docId and t.locale.localeId = :localeId )";
+ "where t.textFlow.document.id = :docId and t.locale.localeId = :localeId )";
       
       Query q = getSession().createQuery( query );
       q.setParameter("docId", docId);
