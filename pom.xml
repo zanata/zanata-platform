@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>10-SNAPSHOT</version>
+    <version>10</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -30,9 +30,9 @@
       <lucene.version>2.9.2</lucene.version>
       <seam.version>2.2.2.Final</seam.version>
 
-      <zanata.api.version>2.1.1-SNAPSHOT</zanata.api.version>
-      <zanata.client.version>2.0.2-SNAPSHOT</zanata.client.version>
-      <zanata.common.version>2.1.1</zanata.common.version>
+      <zanata.api.version>2.2.0</zanata.api.version>
+      <zanata.client.version>2.2.0</zanata.client.version>
+      <zanata.common.version>2.2.0</zanata.common.version>
 
 	  <richfaces.version>3.3.3.Final</richfaces.version>
 
