@@ -49,7 +49,7 @@
         	<g:FlowPanel styleName="{style.editorGridWrapper}">
                 <g:Label ui:field="savingIndicator" text="{messages.saving}" styleName="icon-progress {style.saving}" visible="false"/>
                 <g:Grid ui:field="editorGrid" />
-                <fui:ValidationMessagePanelView ui:field="validationPanel" addStyleNames="fadeElement"/>
+                <fui:ValidationMessagePanelView ui:field="validationPanel"/>
             </g:FlowPanel>
         </g:cell>
         <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="22px">
