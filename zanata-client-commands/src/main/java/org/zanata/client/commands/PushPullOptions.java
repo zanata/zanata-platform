@@ -59,5 +59,11 @@ public interface PushPullOptions extends ConfigurableProjectOptions
    boolean getEnableModules();
    boolean isRootModule();
    String getCurrentModule();
+
+   /**
+    * @param canonicalName true if the module name should be in the canonical format used by maven
+    * @return
+    */
+   String getCurrentModule(boolean canonicalName);
    Set<String> getAllModules();
 }

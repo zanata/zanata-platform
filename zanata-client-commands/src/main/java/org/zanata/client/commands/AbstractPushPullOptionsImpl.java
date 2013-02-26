@@ -163,6 +163,12 @@ public abstract class AbstractPushPullOptionsImpl<O extends PushPullOptions> ext
    }
 
    @Override
+   public String getCurrentModule(boolean canonicalName)
+   {
+      return "";
+   }
+
+   @Override
    public Set<String> getAllModules()
    {
       return Collections.emptySet();

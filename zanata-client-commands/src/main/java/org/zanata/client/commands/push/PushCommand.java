@@ -290,16 +290,18 @@ public class PushCommand extends PushPullCommand<PushOptions>
       SortedSet<String> docsToPush = localDocNames;
       if (getOpts().getFromDoc() != null)
       {
-         if (!localDocNames.contains(getOpts().getFromDoc()))
+         if (getOpts().getEnableModules())
          {
-            log.error("Document with id {} not found, unable to start push from unknown document. Aborting.", getOpts().getFromDoc());
-            // FIXME should this be throwing an exception to properly abort?
-            // need to see behaviour with modules
-            return;
+            if (belongsToCurrentModule(getOpts().getFromDoc()))
+            {
+               docsToPush = getDocsAfterFromDoc(unqualifiedDocName(getOpts().getFromDoc()), localDocNames);
+            }
+            // else fromDoc does not apply to this module
          }
-         docsToPush = localDocNames.tailSet(getOpts().getFromDoc());
-         int numSkippedDocs = localDocNames.size() - docsToPush.size();
-         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
+         else
+         {
+            docsToPush = getDocsAfterFromDoc(getOpts().getFromDoc(), localDocNames);
+         }
       }
 
       if (localDocNames.isEmpty())
@@ -403,11 +405,41 @@ public class PushCommand extends PushPullCommand<PushOptions>
          }
          catch (RuntimeException e)
          {
-            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(localDocName));
-            throw e;
+            String message = "Operation failed.\n\n" +
+                             "    To retry from the last document, please set the following option(s):\n\n" +
+                             "        ";
+            if (getOpts().getEnableModules())
+            {
+               message += "--resume-from " + getOpts().getCurrentModule(true) + " ";
+            }
+            // Note: '.' is included after trailing newlines to prevent them being stripped,
+            //       since stripping newlines can cause extra text to be appended to the options.
+            message += getOpts().buildFromDocArgument(qualifiedDocName(localDocName)) + "\n\n.";
+            throw new RuntimeException(message, e);
          }
       }
       deleteSourceDocsFromServer(obsoleteDocs);
+   }
+
+   /**
+    * Returns a list with all documents before fromDoc removed.
+    * 
+    * @param fromDoc
+    * @param docNames
+    * @return a set with only the documents after fromDoc, inclusive
+    * @throws RuntimeException if no document with the specified name exists
+    */
+   private SortedSet<String> getDocsAfterFromDoc(String fromDoc, SortedSet<String> docNames)
+   {
+      SortedSet<String> docsToPush;
+      if (!docNames.contains(fromDoc))
+      {
+         throw new RuntimeException("Document with id " + fromDoc + " not found, unable to start push from unknown document. Aborting.");
+      }
+      docsToPush = docNames.tailSet(fromDoc);
+      int numSkippedDocs = docNames.size() - docsToPush.size();
+      log.info("Skipping {} document(s) before {}.", numSkippedDocs, fromDoc);
+      return docsToPush;
    }
 
    /**

@@ -154,16 +154,18 @@ public class PullCommand extends PushPullCommand<PullOptions>
       SortedSet<String> docsToPull = docNamesForModule;
       if (getOpts().getFromDoc() != null)
       {
-         if (!docNamesForModule.contains(getOpts().getFromDoc()))
+         if (getOpts().getEnableModules())
          {
-            log.error("Document with id {} not found, unable to start pull from unknown document. Aborting.", getOpts().getFromDoc());
-            // FIXME should this be throwing an exception to properly abort?
-            // need to see behaviour with modules
-            return;
+            if (belongsToCurrentModule(getOpts().getFromDoc()))
+            {
+               docsToPull = getDocsAfterFromDoc(getOpts().getFromDoc(), docsToPull);
+            }
+           // else fromDoc does not apply to this module
          }
-         docsToPull = docNamesForModule.tailSet(getOpts().getFromDoc());
-         int numSkippedDocs = docNamesForModule.size() - docsToPull.size();
-         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
+         else
+         {
+            docsToPull = getDocsAfterFromDoc(getOpts().getFromDoc(), docsToPull);
+         }
       }
 
       // TODO compare docNamesForModule with localDocNames, offer to delete obsolete translations from filesystem
@@ -285,11 +287,41 @@ public class PullCommand extends PushPullCommand<PullOptions>
          }
          catch (RuntimeException e)
          {
-            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(qualifiedDocName));
-            throw e;
+            String message = "Operation failed.\n\n" +
+                             "    To retry from the last document, please set the following option(s):\n\n" +
+                             "        ";
+            if (getOpts().getEnableModules())
+            {
+               message += "--resume-from " + getOpts().getCurrentModule(true) + " ";
+            }
+            // Note: '.' is included after trailing newlines to prevent them being stripped,
+            //       since stripping newlines can cause extra text to be appended to the options.
+            message += getOpts().buildFromDocArgument(qualifiedDocName) + "\n\n.";
+            throw new RuntimeException(message, e);
          }
       }
 
+   }
+
+   /**
+    * Returns a list with all documents before fromDoc removed.
+    * 
+    * @param fromDoc
+    * @param docNames
+    * @return a set with only the documents after fromDoc, inclusive
+    * @throws RuntimeException if no document with the specified name exists
+    */
+   private SortedSet<String> getDocsAfterFromDoc(String fromDoc, SortedSet<String> docNames)
+   {
+      SortedSet<String> docsToPull;
+      if (!docNames.contains(fromDoc))
+      {
+         throw new RuntimeException("Document with id " + fromDoc + " not found, unable to start pull from unknown document. Aborting.");
+      }
+      docsToPull = docNames.tailSet(fromDoc);
+      int numSkippedDocs = docNames.size() - docsToPull.size();
+      log.info("Skipping {} document(s) before {}.", numSkippedDocs, fromDoc);
+      return docsToPull;
    }
 
    private void writeSrcDoc(PullStrategy strat, Resource doc) throws IOException

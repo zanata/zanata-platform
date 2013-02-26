@@ -23,6 +23,11 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
     */
    private static final char MODULE_SEPARATOR = '/';
 
+   /**
+    * Separator used between components of the module ID for use by maven
+    */
+   private static final char MVN_MODULE_SEPARATOR = ':';
+
    private static final char MODULE_SUFFIX = '/';
 
    @Override
@@ -45,14 +50,21 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    @Override
    public String getCurrentModule()
    {
+      return getCurrentModule(false);
+   }
+
+   @Override
+   public String getCurrentModule(boolean canonicalName)
+   {
       if (project == null || !getEnableModules())
       {
          return "";
       }
-      else
+      if (canonicalName)
       {
-         return toModuleID(project);
+         return toMavenModuleID(project);
       }
+      return toModuleID(project);
    }
 
    @Override
@@ -82,6 +94,11 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends Co
    private String toModuleID(MavenProject module)
    {
       return module.getGroupId() + MODULE_SEPARATOR + module.getArtifactId();
+   }
+
+   private String toMavenModuleID(MavenProject module)
+   {
+      return module.getGroupId() + MVN_MODULE_SEPARATOR + module.getArtifactId();
    }
 
    /**
