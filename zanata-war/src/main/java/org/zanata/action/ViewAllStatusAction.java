@@ -25,7 +25,6 @@ import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,9 +128,9 @@ public class ViewAllStatusAction implements Serializable
       private TranslationStatistics stats;
       private boolean userInLanguageTeam;
       private String lastTranslatedBy;
-      private Date lastTranslatedDate;
+      private String lastTranslatedDate;
 
-      public Status(String locale, String nativeName, TranslationStatistics stats, boolean userInLanguageTeam, String lastTranslatedBy, Date lastTranslatedDate)
+      public Status(String locale, String nativeName, TranslationStatistics stats, boolean userInLanguageTeam, String lastTranslatedBy, String lastTranslatedDate)
       {
          this.locale = locale;
          this.nativeName = nativeName;
@@ -161,17 +160,12 @@ public class ViewAllStatusAction implements Serializable
          this.lastTranslatedBy = lastTranslatedBy;
       }
 
-      public Date getLastTranslatedDate()
+      public String getLastTranslatedDate()
       {
          return lastTranslatedDate;
       }
 
-      public String getFormattedLastTranslatedDate()
-      {
-         return DateUtil.formatShortDate(lastTranslatedDate);
-      }
-
-      public void setLastTranslatedDate(Date lastTranslatedDate)
+      public void setLastTranslatedDate(String lastTranslatedDate)
       {
          this.lastTranslatedDate = lastTranslatedDate;
       }
@@ -316,12 +310,12 @@ public class ViewAllStatusAction implements Serializable
          HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
 
          String lastModifiedBy = null;
-         Date lastTranslatedDate = null;
+         String lastTranslatedDate = null;
 
          if (lastTranslatedTarget != null)
          {
             lastModifiedBy = lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername();
-            lastTranslatedDate = lastTranslatedTarget.getLastChanged();
+            lastTranslatedDate = DateUtil.formatShortDate(lastTranslatedTarget.getLastChanged());
          }
 
          if (!statsMap.containsKey(var.getLocaleId()))

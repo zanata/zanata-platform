@@ -108,7 +108,7 @@
 						</rich:column>
 						<rich:column sortBy="#{stats.lastTranslatedDate}" styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
-							<h:outputText value="#{stats.formattedLastTranslatedDate} "/>
+							<h:outputText value="#{stats.lastTranslatedDate} "/>
 							<s:fragment rendered="#{!empty stats.lastTranslatedBy}">
 								 by<h:outputText value=" #{stats.lastTranslatedBy}"/>
 							</s:fragment>
