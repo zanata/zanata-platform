@@ -26,7 +26,7 @@
         <!--data source-->
         <jdbc.groupId>com.h2database</jdbc.groupId>
         <jdbc.artifactId>h2</jdbc.artifactId>
-        <jdbc.version>1.2.144</jdbc.version>
+        <jdbc.version>1.3.170</jdbc.version>
 
         <ds.jndi.name>zanataDatasource</ds.jndi.name>
         <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->

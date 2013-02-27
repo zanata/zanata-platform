@@ -28,19 +28,6 @@
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>false</addClasspath>
-                            <classpathMavenRepositoryLayout>true</classpathMavenRepositoryLayout>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
             <!-- basically we only want to test validators-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
