@@ -314,7 +314,10 @@ public class ViewAllStatusAction implements Serializable
 
          if (lastTranslatedTarget != null)
          {
-            lastModifiedBy = lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername();
+            if (lastTranslatedTarget.getLastModifiedBy() != null)
+            {
+               lastModifiedBy = lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername();
+            }
             lastTranslatedDate = DateUtil.formatShortDate(lastTranslatedTarget.getLastChanged());
          }
 
