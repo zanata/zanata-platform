@@ -94,7 +94,7 @@ public class LocaleServiceImpl implements LocaleService
 
 
    @In
-   private void setTextFlowTargetDAO(TextFlowTargetDAO textFlowTargetDAO)
+   public void setTextFlowTargetDAO(TextFlowTargetDAO textFlowTargetDAO)
    {
       this.textFlowTargetDAO = textFlowTargetDAO;
    }
