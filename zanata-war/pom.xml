@@ -336,6 +336,10 @@
 					<suiteXmlFiles>
 						<suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
 					</suiteXmlFiles>
+                    <forkMode>once</forkMode>
+                    <argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
+						-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
+						-XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 <!-- TODO try parallel execution
                <parallel>methods</parallel>
                <threadCount>4</threadCount>
@@ -1307,10 +1311,10 @@
 			<scope>${hibernate.scope}</scope>
 		</dependency>
 
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -1370,6 +1374,8 @@
 		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
+            <version>2.4.9</version>
+            <scope>test</scope>
 		</dependency>
 
 		<dependency>

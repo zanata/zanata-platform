@@ -107,29 +107,16 @@ public abstract class ZanataJpaTest
     */
    protected void clearHibernateSecondLevelCache()
    {
-      SessionFactory sessionFactory = ((Session)em.getDelegate()).getSessionFactory();
-
-      // Clear the Entity cache
-      Map classMetadata = sessionFactory.getAllClassMetadata();
-      for( Object obj : classMetadata.values() )
+      /*SessionFactory sessionFactory = ((Session)em.getDelegate()).getSessionFactory();
+      try
       {
-         EntityPersister p = (EntityPersister)obj;
-         if( p.hasCache() )
-         {
-            sessionFactory.evictEntity( p.getEntityName() );
-         }
+         sessionFactory.getCache().evictEntityRegions();
+         sessionFactory.getCache().evictCollectionRegions();
       }
-
-      // Clear the Collection cache
-      Map collMetadata = sessionFactory.getAllCollectionMetadata();
-      for( Object obj : collMetadata.values() )
+      catch (Exception e)
       {
-         AbstractCollectionPersister p = (AbstractCollectionPersister)obj;
-         if( p.hasCache() )
-         {
-            sessionFactory.evictCollection( p.getRole() );
-         }
-      }
+         System.out.println(" *** Cache Exception "+ e.getMessage());
+      }*/
    }
 
 }

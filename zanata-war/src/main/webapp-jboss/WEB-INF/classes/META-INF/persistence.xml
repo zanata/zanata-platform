@@ -93,8 +93,9 @@
       -->
       <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
       <property name="hibernate.cache.region_prefix" value="" />
-      
-      <property name="net.sf.ehcache.configurationResourceName" value="/META-INF/ehcache.xml"/>
+
+      <!-- Default EHcache config location -->
+      <!--<property name="net.sf.ehcache.configurationResourceName" value="/ehcache.xml"/>-->
       
       <property name="hibernate.cache.use_second_level_cache" value="true"/>
 	  <!--       http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue -->

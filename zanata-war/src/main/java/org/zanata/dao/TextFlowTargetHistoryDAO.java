@@ -50,6 +50,8 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
 
    public boolean findContentInHistory(HTextFlowTarget target, List<String> contents)
    {
+      // Ordinal parameters can't be used in NamedQueries due to the following bug:
+      // https://hibernate.onjira.com/browse/HHH-5653
       Query query;
       
       // use named queries for the smaller more common cases
@@ -59,19 +61,19 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       }
       else
       {
-         StringBuilder queryStr = new StringBuilder("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ?");
+         StringBuilder queryStr = new StringBuilder("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount");
          for( int i=0; i<contents.size(); i++ )
          {
-            queryStr.append(" and contents[" + i + "] = ?");
+            queryStr.append(" and contents[" + i + "] = :content" + i);
          }
          query = getSession().createQuery(queryStr.toString());
       }
-      query.setParameter(0, target);
-      query.setParameter(1, contents.size());
-      int paramPos = 2;
+      query.setParameter("tft", target);
+      query.setParameter("contentCount", contents.size());
+      int paramPos = 0;
       for( String c : contents )
       {
-         query.setParameter(paramPos++, c);
+         query.setParameter("content" + paramPos++, c);
       }
       query.setComment("TextFlowTargetHistoryDAO.findContentInHistory-"+contents.size());
       return (Long)query.uniqueResult() != 0;

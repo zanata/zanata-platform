@@ -38,6 +38,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -45,26 +46,26 @@ import org.zanata.common.ContentState;
 import com.google.common.base.Objects;
 
 @Entity
-@org.hibernate.annotations.Entity(mutable = false)
+@Immutable
 @NamedQueries({
    @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+1,
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
-               		  "and contents[0] = ?3"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount " +
+               		  "and contents[0] = :content0"),
    @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+2,
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
-                       "and contents[0] = ?3 and contents[1] = ?4"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount " +
+                       "and contents[0] = :content0 and contents[1] = :content1"),
    @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+3,
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
-                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount " +
+                       "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2"),
    @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+4,
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
-                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5 and contents[3] = ?6"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount " +
+                       "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3"),
    @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+5,
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
-                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5 and contents[3] = ?6 and contents[4] = ?7"),
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount " +
+                       "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4"),
    @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY+6,
-               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ?1 and size(t.contents) = ?2 " +
-                       "and contents[0] = ?3 and contents[1] = ?4 and contents[2] = ?5 and contents[3] = ?6 and contents[4] = ?7 and contents[5] = ?8")
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount " +
+                       "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4 and contents[5] = :content5")
 })
 public class HTextFlowTargetHistory extends HTextContainer implements Serializable, ITextFlowTargetHistory
 {

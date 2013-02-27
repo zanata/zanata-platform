@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.xml.rpc.holders.ObjectHolder;
 
+import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -26,6 +27,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.internal.SessionImpl;
 import org.hibernate.jdbc.Work;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.collection.AbstractCollectionPersister;
@@ -111,29 +113,8 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
    private void clearCache()
    {
       Session session = getSession();
-      SessionFactory sessionFactory = session.getSessionFactory();
-      
-      // Clear the Entity cache
-      Map<String, ClassMetadata> classMetadata = sessionFactory.getAllClassMetadata();
-      for( Object obj : classMetadata.values() )
-      {
-         EntityPersister p = (EntityPersister)obj;
-         if( p.hasCache() )
-         {
-            sessionFactory.evictEntity( p.getEntityName() );
-         }
-      }
-      
-      // Clear the Collection cache
-      Map<?, ?> collMetadata = sessionFactory.getAllCollectionMetadata();
-      for( Object obj : collMetadata.values() )
-      {
-         AbstractCollectionPersister p = (AbstractCollectionPersister)obj;
-         if( p.hasCache() )
-         {
-            sessionFactory.evictCollection( p.getRole() );
-         }
-      }
+      session.getSessionFactory().getCache().evictEntityRegions();
+      session.getSessionFactory().getCache().evictCollectionRegions();
    }
    
    private void executeOperations(List<DataSetOperation> list)
@@ -299,23 +280,12 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
     * 
     * @return a DBUnit database connection (wrapped)
     */
-   // FIXME very nasty, almost certainly broken
+   // TODO This is hibernate specific
    protected IDatabaseConnection getConnection()
    {
-      final IDatabaseConnection[] holder = new IDatabaseConnection[1];
       try
       {
-         getSession().doWork(new Work()
-         {
-            @Override
-            public void execute(Connection connection) throws SQLException
-            {
-               IDatabaseConnection dbUnitCon = new DatabaseConnection(connection);
-               editConfig(dbUnitCon.getConfig());
-               holder[0] = dbUnitCon;
-            }
-         });
-         return holder[0];
+         return new DatabaseConnection(((SessionImpl)getSession()).connection());
       }
       catch (Exception ex)
       {
