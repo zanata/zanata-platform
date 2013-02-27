@@ -38,10 +38,10 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @XmlType(name = "translationStatistics",
-         propOrder = {"total", "untranslated", "needReview", "translated", "unit", "locale"})
+ propOrder = { "total", "untranslated", "needReview", "translated", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
 @JsonIgnoreProperties(value = {"percentTranslated", "percentNeedReview", "percentUntranslated"}, ignoreUnknown = true)
-@JsonPropertyOrder( { "total", "untranslated", "needReview", "translated", "unit", "locale" })
+@JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "unit", "locale", "lastTranslated" })
 @JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
 {
@@ -61,6 +61,7 @@ public class TranslationStatistics implements Serializable
    private StatUnit unit;
    private String locale;
    private double remainingHours;
+   private String lastTranslated;
 
    /**
     * Number of translated elements.
@@ -146,6 +147,17 @@ public class TranslationStatistics implements Serializable
       this.locale = locale;
    }
 
+   @XmlAttribute
+   public String getLastTranslated()
+   {
+      return lastTranslated;
+   }
+
+   public void setLastTranslated(String lastTranslated)
+   {
+      this.lastTranslated = lastTranslated;
+   }
+
    @XmlTransient
    public int getPercentTranslated()
    {
@@ -201,5 +213,4 @@ public class TranslationStatistics implements Serializable
    {
       return remainingHours;
    }
-
 }
