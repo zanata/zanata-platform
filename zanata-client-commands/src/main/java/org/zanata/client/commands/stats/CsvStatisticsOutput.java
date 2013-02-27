@@ -68,7 +68,7 @@ public class CsvStatisticsOutput implements ContainerStatisticsCommandOutput
       }
 
       // Write headers
-      writer.writeNext( new String[]{"Locale", "Unit", "Total", "Translated", "Need Review", "Untranslated"} );
+      writer.writeNext(new String[] { "Locale", "Unit", "Total", "Translated", "Need Review", "Untranslated", "Last Translated" });
 
       // Write stats
       if( statistics.getStats() != null )
@@ -78,7 +78,7 @@ public class CsvStatisticsOutput implements ContainerStatisticsCommandOutput
             writer.writeNext( new String[]{ transStats.getLocale(), transStats.getUnit().toString(),
                   Long.toString(transStats.getTotal()),
                   Long.toString(transStats.getTranslated()), Long.toString(transStats.getNeedReview()),
-                  Long.toString(transStats.getUntranslated())} );
+                  Long.toString(transStats.getUntranslated()), transStats.getLastTranslated()} );
          }
       }
 

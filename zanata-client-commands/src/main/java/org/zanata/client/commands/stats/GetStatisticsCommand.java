@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.util.ConsoleUtils;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
 
@@ -89,6 +90,7 @@ public class GetStatisticsCommand extends ConfigurableCommand<GetStatisticsOptio
          return;
       }
 
+      ConsoleUtils.startProgressFeedback();
       // Document Id not specified
       if( getOpts().getDocumentId() == null )
       {
@@ -103,6 +105,7 @@ public class GetStatisticsCommand extends ConfigurableCommand<GetStatisticsOptio
                statsResource.getStatistics(getOpts().getProj(), getOpts().getProjectVersion(), getOpts().getDocumentId(),
                      getOpts().getIncludeWordLevelStats(), localeListArg);
       }
+      ConsoleUtils.endProgressFeedback();
 
       if( getOpts().getFormat() == null )
       {

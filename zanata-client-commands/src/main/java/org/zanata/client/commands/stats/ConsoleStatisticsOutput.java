@@ -74,14 +74,14 @@ public class ConsoleStatisticsOutput implements ContainerStatisticsCommandOutput
          }
       });
 
-      String[] headers = new String[]{"Locale", "Unit", "Total", "Translated", "Need Review", "Untranslated"};
+      String[] headers = new String[] { "Locale", "Unit", "Total", "Translated", "Need Review", "Untranslated", "Last Translated" };
       Object[][] data = new Object[stats.size()][headers.length];
 
       for (int i = 0, statsSize = stats.size(); i < statsSize; i++)
       {
          TranslationStatistics s = stats.get(i);
          data[i] = new Object[]{s.getLocale(), s.getUnit(), s.getTotal(), s.getTranslated(),
-               s.getNeedReview(), s.getUntranslated()};
+               s.getNeedReview(), s.getUntranslated(), s.getLastTranslated()};
       }
 
       printTable(headers, data);
