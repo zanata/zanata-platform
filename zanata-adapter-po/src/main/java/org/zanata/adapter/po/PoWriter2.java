@@ -40,6 +40,7 @@ public class PoWriter2
 {
    private static final Logger log = LoggerFactory.getLogger(PoWriter2.class);
    private final PoWriter poWriter;
+   private boolean mapIdToMsgctxt;
    private static final int DEFAULT_NPLURALS = 1;
 
    // TODO Expose and use the one in org.fedorahosted.tennera.jgettext.HeaderFields
@@ -48,10 +49,23 @@ public class PoWriter2
          "nplurals(\\s*?)=(\\s*?)(\\d*?)(\\s*?);(\\s*?)(.*)",
          Pattern.CASE_INSENSITIVE);
 
+   /**
+    * @param encodeTabs
+    * @param mapIdToMsgctxt true to output zanata id as msgctxt, which can
+    *           be used by {@link PoReader2} to correctly match the ID for
+    *           text flows that are not originally from po documents. This
+    *           should be false if the documents to be written were originally
+    *           in po files.
+    */
+   public PoWriter2(boolean encodeTabs, boolean mapIdToMsgctxt)
+   {
+      this.poWriter = new PoWriter(encodeTabs);
+      this.mapIdToMsgctxt = mapIdToMsgctxt;
+   }
 
    public PoWriter2(boolean encodeTabs)
    {
-      this.poWriter = new PoWriter(encodeTabs);
+      this(encodeTabs, false);
    }
 
    public PoWriter2()
@@ -175,7 +189,7 @@ public class PoWriter2
       details.setMd5(new String(Hex.encodeHex(md5Digest.digest())));
       return details;
    }
-   
+
    /**
     * Generates a po file from a Resource and a TranslationsResource, writing it
     * directly to an output stream.
@@ -206,7 +220,8 @@ public class PoWriter2
    {
       PoHeader poHeader = document.getExtensions(true).findByType(PoHeader.class);
       HeaderFields hf = new HeaderFields();
-      if (poHeader == null)
+      // we don't expect a pot header for mapped non-pot documents
+      if (poHeader == null && !mapIdToMsgctxt)
       {
          log.warn("No PO header in document named " + document.getName());
       }
@@ -273,12 +288,37 @@ public class PoWriter2
          }
          else
          {
-            log.warn("Missing POT entry for text-flow ID " + textFlow.getId());
+            // we don't expect a pot header for mapped non-pot documents
+            if (!mapIdToMsgctxt)
+            {
+               log.warn("Missing POT entry for text-flow ID " + textFlow.getId());
+            }
+         }
+
+         if (mapIdToMsgctxt)
+         {
+            mapIdToMsgctxt(message, textFlow.getId());
          }
 
          poWriter.write(message, writer);
          writer.write("\n");
       }
+   }
+
+   /**
+    * Populate msgctxt with text flow id.
+    * 
+    * @throws RuntimeException if there is already a value in msgctxt
+    */
+   private void mapIdToMsgctxt(Message message, String textFlowId)
+   {
+      // safety check to avoid clobbering existing msgctxt
+      // (this mapping should not be used for resources from po files)
+      if (message.getMsgctxt() != null)
+      {
+         throw new RuntimeException("Mapping id to msgctxt, but there is already a msgctxt for text flow id: " + textFlowId);
+      }
+      message.setMsgctxt(textFlowId);
    }
 
    private static void copyCommentsToHeader(PoTargetHeader poTargetHeader, Message headerMessage)
