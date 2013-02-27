@@ -156,12 +156,12 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       StringBuilder query = new StringBuilder();
       query.append("from HTextFlowTarget tft ");
       query.append("where tft.textFlow.document.id = :docId ");
-      // query.append("and tft.locale.localeId = :localeId ");
+      query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
       
       Query q = getSession().createQuery(query.toString());
       q.setParameter("docId", docId);
-      // q.setParameter("localeId", localeId);
+      q.setParameter("localeId", localeId);
       q.setCacheable(true);
       q.setMaxResults(1);
       q.setComment("DocumentDAO.getLastTranslated");

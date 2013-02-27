@@ -106,12 +106,9 @@
 								<ui:param name="status" value="#{tstatus}" />
 							</ui:include>
 						</rich:column>
-						<rich:column sortBy="#{stats.lastTranslatedDate}" styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+						<rich:column sortBy="#{stats.stats.lastTranslated}" styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
-							<h:outputText value="#{stats.lastTranslatedDate} "/>
-							<s:fragment rendered="#{!empty stats.lastTranslatedBy}">
-								 by<h:outputText value=" #{stats.lastTranslatedBy}"/>
-							</s:fragment>
+							<h:outputText value=" #{stats.stats.lastTranslated}"/>
 						</rich:column>
 	
 					</rich:dataTable>

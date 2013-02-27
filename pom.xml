@@ -30,7 +30,7 @@
       <lucene.version>2.9.2</lucene.version>
       <seam.version>2.2.2.Final</seam.version>
 
-      <zanata.api.version>2.1.1-SNAPSHOT</zanata.api.version>
+      <zanata.api.version>2.2.1-SNAPSHOT</zanata.api.version>
       <zanata.client.version>2.0.2-SNAPSHOT</zanata.client.version>
       <zanata.common.version>2.1.1</zanata.common.version>
 

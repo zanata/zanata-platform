@@ -290,7 +290,6 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
 
-
       Query q = getSession().createQuery(query.toString());
       q.setParameter("iterationSlug", iterationSlug);
       q.setParameter("projectSlug", projectSlug);
