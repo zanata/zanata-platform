@@ -22,6 +22,8 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -48,6 +50,7 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
@@ -56,11 +59,15 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
+import org.zanata.webtrans.shared.rpc.RunValidationAction;
+import org.zanata.webtrans.shared.rpc.RunValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
@@ -78,6 +85,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final WebTransMessages messages;
    private final History history;
    private final UserOptionsService userOptionsService;
+   private final ValidationService validationService;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
@@ -97,7 +105,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final NoSelectionModel<DocumentNode> selectionModel = new NoSelectionModel<DocumentNode>();
 
    @Inject
-   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
+   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService, ValidationService validationService)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -105,6 +113,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.messages = messages;
       this.history = history;
       this.userOptionsService = userOptionsService;
+      this.validationService = validationService;
 
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
@@ -422,6 +431,42 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             }
          }
       });
+   }
+   
+   public void runValidation()
+   {
+      ArrayList<ValidationId> idList = new ArrayList<ValidationId>();
+
+      for (ValidationAction valAction : validationService.getValidationMap().values())
+      {
+         if (valAction.getValidationInfo().isEnabled())
+         {
+            idList.add(valAction.getValidationInfo().getId());
+         }
+      }
+
+      if (!idList.isEmpty())
+      {
+         dispatcher.execute(new RunValidationAction(idList), new AsyncCallback<RunValidationResult>()
+         {
+
+            @Override
+            public void onFailure(Throwable caught)
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+            }
+
+            @Override
+            public void onSuccess(RunValidationResult result)
+            {
+               Map<DocumentId, Set<TransUnit>> resultMap = result.getResult();
+               for(DocumentId documentId: resultMap.keySet())
+               {
+                  Log.info(documentId.toString());
+               }
+            }
+         });
+      }
    }
 
    @Override

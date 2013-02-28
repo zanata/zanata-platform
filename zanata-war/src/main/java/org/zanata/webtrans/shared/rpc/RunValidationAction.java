@@ -16,6 +16,7 @@ public class RunValidationAction extends AbstractWorkspaceAction<RunValidationRe
 
    private List<ValidationId> validationIds;
 
+   @SuppressWarnings("unused")
    private RunValidationAction()
    {
    }
