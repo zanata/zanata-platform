@@ -53,6 +53,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
       strategies.put(PROJECT_TYPE_PUBLICAN, GettextDirStrategy.class);
       strategies.put(PROJECT_TYPE_XLIFF, XliffStrategy.class);
       strategies.put(PROJECT_TYPE_XML, XmlStrategy.class);
+      strategies.put(PROJECT_TYPE_OFFLINE_PO, OfflinePoStrategy.class);
    }
 
    public PullCommand(PullOptions opts)

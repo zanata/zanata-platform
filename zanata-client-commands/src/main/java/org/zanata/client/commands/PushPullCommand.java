@@ -60,6 +60,8 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
 {
    private static final Logger log = LoggerFactory.getLogger(PushPullCommand.class);
 
+   protected static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
+
    protected final ISourceDocResource sourceDocResource;
    protected final ITranslatedDocResource translationResources;
    protected URI uri;

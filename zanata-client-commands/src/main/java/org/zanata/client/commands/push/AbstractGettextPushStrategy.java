@@ -43,7 +43,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy
 {
-   PoReader2 poReader = new PoReader2();
+   private PoReader2 poReader;
 
    public AbstractGettextPushStrategy()
    {
@@ -79,7 +79,7 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy
          InputSource potInputSource = new InputSource(bis);
          potInputSource.setEncoding("utf8");
          // load 'srcDoc' from pot/${docID}.pot
-         return poReader.extractTemplate(potInputSource, new LocaleId(getOpts().getSourceLang()), docName);
+         return getPoReader().extractTemplate(potInputSource, new LocaleId(getOpts().getSourceLang()), docName);
       }
       finally
       {
@@ -100,7 +100,7 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy
             {
                InputSource inputSource = new InputSource(bis);
                inputSource.setEncoding("utf8");
-               TranslationsResource targetDoc = poReader.extractTarget(inputSource);
+               TranslationsResource targetDoc = getPoReader().extractTarget(inputSource);
                callback.visit(locale, targetDoc);
             }
             finally
@@ -109,6 +109,15 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy
             }
          }
       }
+   }
+
+   protected PoReader2 getPoReader()
+   {
+      if (poReader == null)
+      {
+         poReader = new PoReader2();
+      }
+      return poReader;
    }
 
 }
