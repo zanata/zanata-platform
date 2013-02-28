@@ -1,13 +1,13 @@
 package org.zanata.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-import com.google.common.io.Files;
 
 public class HashUtil
 {
@@ -38,22 +38,18 @@ public class HashUtil
     * @param f The file to calculate the checksum for.
     * @return The MD5 checksum for f.
     * @throws java.io.FileNotFoundException If the given file does not exist.
+    * @throws java.io.IOException On error reading from the file.
     */
-   public static final String getMD5Checksum(File f)
+   public static final String getMD5Checksum(File f) throws FileNotFoundException, IOException
    {
+      FileInputStream fis = new FileInputStream(f);
       try
       {
-         MessageDigest md5 = MessageDigest.getInstance("MD5");
-         byte[] digest = Files.getDigest(f, md5);
-         return new String(Hex.encodeHex(digest));
+         return DigestUtils.md5Hex(fis);
       }
-      catch (NoSuchAlgorithmException e)
+      finally
       {
-         throw new RuntimeException(e);
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException(e);
+         fis.close();
       }
    }
 }
