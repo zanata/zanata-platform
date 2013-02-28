@@ -404,7 +404,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                this.copyTransForDocument(qualifiedDocName);
             }
          }
-         catch (RuntimeException e)
+         catch (Exception e)
          {
             String message = "Operation failed.\n\n" +
                              "    To retry from the last document, please set the following option(s):\n\n" +
