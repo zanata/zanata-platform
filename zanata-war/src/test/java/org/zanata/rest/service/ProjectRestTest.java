@@ -36,7 +36,6 @@ public class ProjectRestTest extends ZanataRestTest
    private static final String RESOURCE_PATH = "/projects/p/";
    @Mock
    private Identity mockIdentity;
-   SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
@@ -55,12 +54,12 @@ public class ProjectRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
-      seam.reset();
-      seam.ignoreNonResolvable()
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire
           .use("session", getSession())
           .use("identity", mockIdentity);
 
-      ProjectService projectService = seam.autowire(ProjectService.class);
+      ProjectService projectService = seamAutowire.autowire(ProjectService.class);
 
       resources.add(projectService);
    }

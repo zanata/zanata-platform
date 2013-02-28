@@ -25,7 +25,6 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest
 {
    private final Logger log = LoggerFactory.getLogger(ResourceServiceRestTest.class);
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
-   private SeamAutowire seam = SeamAutowire.instance();
    @Mock
    private ZanataIdentity mockIdentity;
 
@@ -34,8 +33,8 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest
    {
       MockitoAnnotations.initMocks(this);
 
-      seam.reset();
-      seam.ignoreNonResolvable()
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire
           .use("session", getSession())
           .use("entityManager", getEm())
           .use("identity", mockIdentity)
@@ -43,8 +42,8 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest
           .useImpl(CopyTransServiceImpl.class)
           .useImpl(DocumentServiceImpl.class);
 
-      SourceDocResourceService sourceDocResourceService = seam.autowire(SourceDocResourceService.class);
-      TranslatedDocResourceService translatedDocResourceService = seam.autowire(TranslatedDocResourceService.class);
+      SourceDocResourceService sourceDocResourceService = seamAutowire.autowire(SourceDocResourceService.class);
+      TranslatedDocResourceService translatedDocResourceService = seamAutowire.autowire(TranslatedDocResourceService.class);
 
       resources.add(sourceDocResourceService);
       resources.add(translatedDocResourceService);

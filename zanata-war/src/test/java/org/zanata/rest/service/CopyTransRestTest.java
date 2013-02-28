@@ -55,7 +55,6 @@ public class CopyTransRestTest extends ZanataRestTest
 {
    @Mock
    ZanataIdentity mockIdentity;
-   SeamAutowire seam = SeamAutowire.instance();
 
    @Override
    protected void prepareResources()
@@ -67,15 +66,15 @@ public class CopyTransRestTest extends ZanataRestTest
       credentials.setUsername("testuser");
       when(mockIdentity.getCredentials()).thenReturn(credentials);
 
-      seam.reset();
-      seam.ignoreNonResolvable()
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire
             .use("session", getSession())
             .use("identity", mockIdentity)
             .useImpl(CopyTransServiceImpl.class)
             .useImpl(ProcessManagerServiceImpl.class)
             .useImpl(LocaleServiceImpl.class);
 
-      CopyTransResource copyTransResource = seam.autowire(CopyTransResourceService.class);
+      CopyTransResource copyTransResource = seamAutowire.autowire(CopyTransResourceService.class);
 
       resources.add(copyTransResource);
    }

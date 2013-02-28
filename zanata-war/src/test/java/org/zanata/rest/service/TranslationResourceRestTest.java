@@ -106,8 +106,6 @@ public class TranslationResourceRestTest extends ZanataRestTest
    private static final String DOC2_NAME = "test.properties";
    private static final String DOC1_NAME = "foo.properties";
 
-   private final SeamAutowire seam = SeamAutowire.instance();
-
    StringSet extGettextComment = new StringSet("gettext;comment");
    StringSet extComment = new StringSet("comment");
 
@@ -141,8 +139,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
-      seam.reset();
-      seam.ignoreNonResolvable()
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire
           .use("session", getSession())
           .use("identity", mockIdentity)
           .use("translationWorkspaceManager", transWorspaceManager)
@@ -154,8 +152,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
           .useImpl(ResourceUtils.class)
           .useImpl(SecurityServiceImpl.class);
 
-      TranslatedDocResourceService translatedDocResourceService = seam.autowire(TranslatedDocResourceService.class);
-      SourceDocResourceService sourceDocResourceService = seam.autowire(SourceDocResourceService.class);
+      TranslatedDocResourceService translatedDocResourceService = seamAutowire.autowire(TranslatedDocResourceService.class);
+      SourceDocResourceService sourceDocResourceService = seamAutowire.autowire(SourceDocResourceService.class);
 
       resources.add(sourceDocResourceService);
       resources.add(translatedDocResourceService);
@@ -899,7 +897,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       super.newSession();
       this.prepareResources(); // Reset Seam as part of new transaction simulation
       
-      AccountDAO accountDAO = seam.autowire(AccountDAO.class);
+      AccountDAO accountDAO = getSeamAutowire().autowire(AccountDAO.class);
 
       // Translator
       HAccount translator = accountDAO.getByUsername("demo");
@@ -961,18 +959,20 @@ public class TranslationResourceRestTest extends ZanataRestTest
          HAccount translator, LocaleId localeId, String translation, ContentState translationState )
    throws Exception
    {
+      SeamAutowire seamAutowire = getSeamAutowire();
+
       // Mock certain objects
       TranslationWorkspace transWorkspace = mock(TranslationWorkspace.class);
 
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug, ProjectType.Podir), localeId);
-      
+
       // Set mock expectations
       when(transWorspaceManager.getOrRegisterWorkspace(any(WorkspaceId.class))).thenReturn(transWorkspace);
 
-      seam.use(JpaIdentityStore.AUTHENTICATED_USER, translator); // use a given authenticated account
-      seam.use("translationServiceImpl", seam.autowire(TranslationServiceImpl.class));// TODO because translationService component has already been created in prepareResource and have a wrong HAccount injected
+      seamAutowire.use(JpaIdentityStore.AUTHENTICATED_USER, translator); // use a given authenticated account
+      seamAutowire.use("translationServiceImpl", seamAutowire.autowire(TranslationServiceImpl.class));// TODO because translationService component has already been created in prepareResource and have a wrong HAccount injected
 
-      UpdateTransUnitHandler transUnitHandler = seam.autowire(UpdateTransUnitHandler.class);
+      UpdateTransUnitHandler transUnitHandler = seamAutowire.autowire(UpdateTransUnitHandler.class);
 
       // Translation unit id to update
       HTextFlow hTextFlow = (HTextFlow) getSession().createQuery("select tf from HTextFlow tf where tf.contentHash = ? and " +
@@ -1351,7 +1351,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void verifyObsoleteDocument(final String docID) throws Exception
    {
-      ProjectIterationDAO projectIterationDAO = seam.autowire(ProjectIterationDAO.class);
+      ProjectIterationDAO projectIterationDAO = getSeamAutowire().autowire(ProjectIterationDAO.class);
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
       Map<String, HDocument> allDocuments = iteration.getAllDocuments();
       HDocument hDocument = allDocuments.get(docID);
@@ -1362,7 +1362,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void verifyObsoleteResource(final String docID, final String resourceID) throws Exception
    {
-      ProjectIterationDAO projectIterationDAO = seam.autowire(ProjectIterationDAO.class);
+      ProjectIterationDAO projectIterationDAO = getSeamAutowire().autowire(ProjectIterationDAO.class);
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
       Map<String, HDocument> allDocuments = iteration.getAllDocuments();
       HDocument hDocument = allDocuments.get(docID);

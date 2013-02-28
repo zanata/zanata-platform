@@ -36,7 +36,6 @@ public class GlossaryRestTest extends ZanataRestTest
    @Mock
    private ZanataIdentity mockIdentity;
    private IGlossaryResource glossaryService;
-   private SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
@@ -62,16 +61,16 @@ public class GlossaryRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
-      seam.reset();
+      SeamAutowire seamAutowire = getSeamAutowire();
       // @formatter:off
-      seam.ignoreNonResolvable()
+      seamAutowire.ignoreNonResolvable()
             .use("session", getSession())
             .use("identity", mockIdentity)
             .useImpl(LocaleServiceImpl.class)
             .useImpl(GlossaryFileServiceImpl.class);
       // @formatter:on
 
-      GlossaryService glossaryService = seam.autowire(GlossaryService.class);
+      GlossaryService glossaryService = seamAutowire.autowire(GlossaryService.class);
 
       resources.add(glossaryService);
    }

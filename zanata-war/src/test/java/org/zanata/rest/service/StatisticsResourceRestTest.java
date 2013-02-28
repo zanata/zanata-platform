@@ -31,19 +31,17 @@ import org.zanata.service.impl.StatisticsServiceImpl;
  */
 public class StatisticsResourceRestTest extends ZanataRestTest
 {
-   private final SeamAutowire seam = SeamAutowire.instance();
-
 
    @Override
    protected void prepareResources()
    {
-      seam.reset()
-          .ignoreNonResolvable()
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire
           .use("session", getSession())
           .use("entityManager", super.getEm())
           .useImpl(StatisticsServiceImpl.class);
 
-      StatisticsResource statisticsResource = seam.autowire(StatisticsResource.class);
+      StatisticsResource statisticsResource = seamAutowire.autowire(StatisticsResource.class);
 
       resources.add(statisticsResource);
    }

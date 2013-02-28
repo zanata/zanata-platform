@@ -64,7 +64,7 @@ import lombok.ToString;
 @FullTextFilterDef(name = "glossaryLocaleFilter", impl = LocaleFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = true, doNotUseGetters = true, exclude = "glossaryEntry")
 @ToString(doNotUseGetters = true)
 public class HGlossaryTerm extends ModelEntityBase
 {

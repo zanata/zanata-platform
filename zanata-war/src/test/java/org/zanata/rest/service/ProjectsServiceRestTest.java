@@ -28,16 +28,14 @@ public class ProjectsServiceRestTest extends ZanataRestTest
 
    ClientRequestFactory clientRequestFactory;
    IProjectsResource projectService;
-   SeamAutowire seam = SeamAutowire.instance();
 
    @Override
    protected void prepareResources()
    {
-      seam.reset()
-          .ignoreNonResolvable()
-          .use("session", getSession());
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire.use("session", getSession());
 
-      ProjectsService projectsService = seam.autowire(ProjectsService.class);
+      ProjectsService projectsService = seamAutowire.autowire(ProjectsService.class);
 
       resources.add(projectsService);
    }

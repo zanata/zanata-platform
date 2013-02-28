@@ -30,7 +30,6 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    private final Logger log = LoggerFactory.getLogger(TranslationServiceRestTest.class);
    private TranslationsResourceTestObjectFactory transTestFactory = new TranslationsResourceTestObjectFactory();
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
-   private SeamAutowire seam = SeamAutowire.instance();
 
    @DataProvider(name = "TranslationTestData")
    public Object[][] getTestData()
@@ -50,8 +49,8 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    protected void prepareResources()
    {
       MockitoAnnotations.initMocks(this);
-      seam.reset();
-      seam.ignoreNonResolvable()
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire
             .use("entityManager", getEm())
             .use("session", getSession())
             .use("identity", Mockito.mock(ZanataIdentity.class))
@@ -60,8 +59,8 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
             .useImpl(DocumentServiceImpl.class)
             .useImpl(TranslationServiceImpl.class);
 
-      SourceDocResourceService sourceDocResourceService = seam.autowire(SourceDocResourceService.class);
-      TranslatedDocResourceService translatedDocResourceService = seam.autowire(TranslatedDocResourceService.class);
+      SourceDocResourceService sourceDocResourceService = seamAutowire.autowire(SourceDocResourceService.class);
+      TranslatedDocResourceService translatedDocResourceService = seamAutowire.autowire(TranslatedDocResourceService.class);
 
       resources.add(sourceDocResourceService);
       resources.add(translatedDocResourceService);

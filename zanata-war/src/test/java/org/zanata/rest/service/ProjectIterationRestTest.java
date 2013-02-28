@@ -23,7 +23,6 @@ public class ProjectIterationRestTest extends ZanataRestTest
 {
 
    private static final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
-   private SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
@@ -40,11 +39,10 @@ public class ProjectIterationRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
-      seam.reset();
-      seam.ignoreNonResolvable()
-            .use("session", getSession());
+      SeamAutowire seamAutowire = getSeamAutowire();
+      seamAutowire.use("session", getSession());
 
-      ProjectIterationService projectIterationService = seam.autowire(ProjectIterationService.class);
+      ProjectIterationService projectIterationService = seamAutowire.autowire(ProjectIterationService.class);
 
       resources.add(projectIterationService);
    }

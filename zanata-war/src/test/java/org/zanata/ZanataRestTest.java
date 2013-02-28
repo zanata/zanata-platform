@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.Validation;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
@@ -12,6 +13,7 @@ import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
+import org.jboss.seam.annotations.In;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.zanata.rest.AuthorizationExceptionMapper;
@@ -22,6 +24,7 @@ import org.zanata.rest.NoSuchEntityExceptionMapper;
 import org.zanata.rest.NotLoggedInExceptionMapper;
 import org.zanata.rest.ZanataServiceExceptionMapper;
 import org.zanata.rest.client.TraceDebugInterceptor;
+import org.zanata.seam.SeamAutowire;
 
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest
 {
@@ -29,15 +32,18 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
    protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
 
    private ClientRequestFactory clientRequestFactory;
+   private final SeamAutowire seamAutowire = SeamAutowire.instance();
    protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers = new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
    protected final Set<Object> resources = new HashSet<Object>();
    protected final Set<Class<?>> providers = new HashSet<Class<?>>();
+   protected final Set<Object> providerInstances = new HashSet<Object>();
 
    @BeforeMethod
    public final void prepareRestEasyFramework()
    {
 
       Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
+      prepareSeamAutowire();
       prepareResources();
       prepareExceptionMappers();
       prepareProviders();
@@ -60,6 +66,12 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
       {
          dispatcher.getProviderFactory().registerProvider(provider);
       }
+
+      // register Provider instances
+      for(Object providerInstance : providerInstances)
+      {
+         dispatcher.getProviderFactory().registerProviderInstance(providerInstance);
+      }
       
       InMemoryClientExecutor executor = new InMemoryClientExecutor(dispatcher);
       executor.setBaseUri(MOCK_BASE_URI);
@@ -73,6 +85,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
       exceptionMappers.clear();
       resources.clear();
       providers.clear();
+      providerInstances.clear();
    }
 
    /**
@@ -102,8 +115,17 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
     */
    protected void prepareProviders()
    {
-      providers.add(HibernateValidationInterceptor.class);
+      seamAutowire.use("validatorFactory", Validation.buildDefaultValidatorFactory());
+      providerInstances.add(seamAutowire.autowire(HibernateValidationInterceptor.class));
       providers.add(TraceDebugInterceptor.class);
+   }
+
+   /**
+    * Override this method to add custom Seam autowire preparations.
+    */
+   protected void prepareSeamAutowire()
+   {
+      seamAutowire.reset().ignoreNonResolvable();
    }
 
    /**
@@ -128,5 +150,15 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
    protected final URI createBaseURI(String resourcePath)
    {
       return MOCK_BASE_URI.resolve(resourcePath);
+   }
+
+   /**
+    * Returns this tests SeamAutowire instance.
+    *
+    * @return This test's SeamAutowire instance to be used in tests.
+    */
+   protected SeamAutowire getSeamAutowire()
+   {
+      return seamAutowire;
    }
 }
