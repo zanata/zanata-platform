@@ -70,7 +70,7 @@ public class GetDocumentListHandlerTest
    public void testExecute() throws Exception
    {
       WorkspaceId workspaceId = TestFixture.workspaceId();
-      GetDocumentList action = new GetDocumentList(new ProjectIterationId("project", "master", ProjectType.Podir));
+      GetDocumentList action = new GetDocumentList();
       action.setWorkspaceId(workspaceId);
       when(projectIterationDAO.getBySlug("project", "master")).thenReturn(hProjectIteration);
       HashMap<String, HDocument> documentMap = Maps.newHashMap();
@@ -92,7 +92,7 @@ public class GetDocumentListHandlerTest
    public void testExecuteWithFilter() throws Exception
    {
       WorkspaceId workspaceId = TestFixture.workspaceId();
-      GetDocumentList action = new GetDocumentList(new ProjectIterationId("project", "master", ProjectType.Podir), Lists.newArrayList("/dot/a.po"));
+      GetDocumentList action = new GetDocumentList();
       action.setWorkspaceId(workspaceId);
       when(projectIterationDAO.getBySlug("project", "master")).thenReturn(hProjectIteration);
       HashMap<String, HDocument> documentMap = Maps.newHashMap();

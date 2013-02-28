@@ -5,6 +5,7 @@ package org.zanata.webtrans.shared.validation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,6 +31,8 @@ import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 public final class ValidationFactory
 {
 
+   private static Map<ValidationId, ValidationAction> validationMap = new TreeMap<ValidationId, ValidationAction>();
+
    public static Comparator<ValidationId> ValidationIdComparator = new Comparator<ValidationId>()
    {
       @Override
@@ -49,25 +52,12 @@ public final class ValidationFactory
     */
    public static Map<ValidationId, ValidationAction> getAllValidationActions(ValidationMessages messages)
    {
-      TreeMap<ValidationId, ValidationAction> validationList = new TreeMap<ValidationId, ValidationAction>(ValidationIdComparator);
+      if (validationMap.isEmpty())
+      {
+         initValidationMap(messages);
+      }
 
-      validationList.put(ValidationId.HTML_XML, new HtmlXmlTagValidation(ValidationId.HTML_XML, messages));
-      validationList.put(ValidationId.NEW_LINE, new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages));
-      validationList.put(ValidationId.TAB, new TabValidation(ValidationId.TAB, messages));
-      
-      validationList.put(ValidationId.JAVA_VARIABLES, new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, messages));
-      validationList.put(ValidationId.XML_ENTITY, new XmlEntityValidation(ValidationId.XML_ENTITY, messages));
-      
-      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, messages);
-      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, messages);
-      
-      printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
-      positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);
-      
-      validationList.put(ValidationId.PRINTF_VARIABLES, printfVariablesValidation);
-      validationList.put(ValidationId.PRINTF_XSI_EXTENSION, positionalPrintfValidation);
-
-      return validationList;
+      return validationMap;
    }
    
    /**
@@ -83,5 +73,29 @@ public final class ValidationFactory
       ArrayList<ValidationObject> validationList = new ArrayList<ValidationObject>(getAllValidationActions(null).values());
 
       return validationList;
+   }
+
+   private static void initValidationMap(ValidationMessages messages)
+   {
+      validationMap.put(ValidationId.HTML_XML, new HtmlXmlTagValidation(ValidationId.HTML_XML, messages));
+      validationMap.put(ValidationId.NEW_LINE, new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages));
+      validationMap.put(ValidationId.TAB, new TabValidation(ValidationId.TAB, messages));
+
+      validationMap.put(ValidationId.JAVA_VARIABLES, new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, messages));
+      validationMap.put(ValidationId.XML_ENTITY, new XmlEntityValidation(ValidationId.XML_ENTITY, messages));
+
+      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, messages);
+      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, messages);
+
+      printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
+      positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);
+
+      validationMap.put(ValidationId.PRINTF_VARIABLES, printfVariablesValidation);
+      validationMap.put(ValidationId.PRINTF_XSI_EXTENSION, positionalPrintfValidation);
+   }
+
+   public static ValidationAction getValidationAction(ValidationId id)
+   {
+      return validationMap.get(id);
    }
 }

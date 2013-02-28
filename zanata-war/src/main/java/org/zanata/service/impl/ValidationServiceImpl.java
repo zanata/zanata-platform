@@ -25,6 +25,10 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
+import org.zanata.webtrans.server.rpc.TransUnitTransformer;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -44,6 +48,9 @@ public class ValidationServiceImpl implements ValidationService
    
    @In
    private ProjectDAO projectDAO;
+
+   @In
+   private TransUnitTransformer transUnitTransformer;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -117,27 +124,36 @@ public class ValidationServiceImpl implements ValidationService
     * @param validations
     * @param localeId
     */
-   public void runValidations(Collection<HDocument> hDocs, List<ValidationObject> validations, Long localeId)
+   public Map<DocumentId, Set<TransUnit>> runValidations(Collection<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      Map<String, Boolean> docValidationResult = new HashMap<String, Boolean>();
+      Map<DocumentId, Set<TransUnit>> docValidationResult = new HashMap<DocumentId, Set<TransUnit>>();
 
       for (HDocument hDoc : hDocs)
       {
+         Set<TransUnit> errorList = new HashSet<TransUnit>();
+
          for(HTextFlow textFlow: hDoc.getTextFlows())
          {
             HTextFlowTarget target = textFlow.getTargets().get(localeId);
             if (target != null)
             {
-               for (ValidationObject validation : validations)
+               for (ValidationId validationId : validationIds)
                {
+                  ValidationObject validation = ValidationFactory.getValidationAction(validationId);
+
                   validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
                   if (validation.hasError())
                   {
-
+                     errorList.add(transUnitTransformer.transform(textFlow, target));
                   }
                }
             }
          }
+         if (!errorList.isEmpty())
+         {
+            docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), errorList);
+         }
       }
+      return docValidationResult;
    }
 }

@@ -37,7 +37,7 @@ final class DummyGetDocsListCommand implements Command
    public void execute()
    {
       Log.info("ENTER DummyGetDocsListCommand.execute()");
-      ProjectIterationId projectIterationId = action.getProjectIterationId();
+      ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
       GetDocumentListResult result = new GetDocumentListResult(projectIterationId, generateTransUnitSampleData());
       callback.onSuccess(result);
       Log.info("EXIT DummyGetDocsListCommand.execute()");

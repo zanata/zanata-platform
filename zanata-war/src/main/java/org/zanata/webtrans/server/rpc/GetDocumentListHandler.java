@@ -16,10 +16,8 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
@@ -39,9 +37,6 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    private ZanataIdentity identity;
 
    @In
-   private ProjectIterationDAO projectIterationDAO;
-
-   @In
    private DocumentDAO documentDAO;
    
    @In
@@ -53,10 +48,10 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       identity.checkLoggedIn();
 
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      ProjectIterationId iterationId = action.getProjectIterationId();
+      ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
       ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>();
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
-      Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
+      
+      Collection<HDocument> hDocs = documentDAO.getAllByProjectIteration(iterationId.getProjectSlug(), iterationId.getIterationSlug());
       for (HDocument hDoc : hDocs)
       {
          if (action.getFilters() == null || action.getFilters().isEmpty() || action.getFilters().contains(hDoc.getPath() + hDoc.getName()))
@@ -91,7 +86,6 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
                String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
                downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
             }
-
 
             DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
             docs.add(doc);
