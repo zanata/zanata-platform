@@ -96,7 +96,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public HTextFlow getById(HDocument document, String id)
    {
-      return (HTextFlow)getSession().byNaturalId(HTextFlow.class).using("resId", id).load();
+      return (HTextFlow)getSession().byNaturalId(HTextFlow.class).using("resId", id).using("document", document).load();
    }
 
    @SuppressWarnings("unchecked")

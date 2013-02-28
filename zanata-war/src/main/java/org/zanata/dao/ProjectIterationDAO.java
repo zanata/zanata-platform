@@ -72,6 +72,10 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public HProjectIteration getBySlug(HProject project, String iterationSlug)
    {
+      if( project == null )
+      {
+         return null;
+      }
       return (HProjectIteration)getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug).using("project",project).load();
    }
 
