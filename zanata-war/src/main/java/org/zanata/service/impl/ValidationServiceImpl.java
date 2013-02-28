@@ -3,8 +3,11 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,8 +18,11 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationInfo;
@@ -101,5 +107,37 @@ public class ValidationServiceImpl implements ValidationService
          }
       }
       return validationList;
+   }
+
+   /**
+    * Run validation check on HTextFlow and HTextFlowTarget with specific locale
+    * from list of HDocuments against validations rules
+    * 
+    * @param hDocs
+    * @param validations
+    * @param localeId
+    */
+   public void runValidations(Collection<HDocument> hDocs, List<ValidationObject> validations, Long localeId)
+   {
+      Map<String, Boolean> docValidationResult = new HashMap<String, Boolean>();
+
+      for (HDocument hDoc : hDocs)
+      {
+         for(HTextFlow textFlow: hDoc.getTextFlows())
+         {
+            HTextFlowTarget target = textFlow.getTargets().get(localeId);
+            if (target != null)
+            {
+               for (ValidationObject validation : validations)
+               {
+                  validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
+                  if (validation.hasError())
+                  {
+
+                  }
+               }
+            }
+         }
+      }
    }
 }
