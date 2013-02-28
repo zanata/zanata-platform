@@ -56,7 +56,8 @@
 
 		<properties>
 			<property name="hibernate.show_sql" value="false" />
-			<property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
+            <!-- Use test version of hibernate cache -->
+			<property name="hibernate.cache.region.factory_class" value="org.hibernate.testing.cache.CachingRegionFactory" />
 			<property name="hibernate.hbm2ddl.auto" value="create"/>
 
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
