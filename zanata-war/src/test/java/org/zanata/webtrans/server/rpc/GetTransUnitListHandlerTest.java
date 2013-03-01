@@ -46,7 +46,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    private ZanataIdentity identity;
    @Mock
    private LocaleService localeService;
-   private final DocumentId documentId = new DocumentId(1, "");
+   private final DocumentId documentId = new DocumentId(new Long(1), "");
    private final LocaleId localeId = new LocaleId("ja");
    private HLocale jaHLocale;
 

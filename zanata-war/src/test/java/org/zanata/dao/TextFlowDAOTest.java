@@ -156,7 +156,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    {
       HLocale deLocale = getEm().find(HLocale.class, 3L);
 
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(4, ""), deLocale, FilterConstraints.filterBy("mssg").excludeApproved().excludeFuzzy(), 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(new Long(4), ""), deLocale, FilterConstraints.filterBy("mssg").excludeApproved().excludeFuzzy(), 0, 10);
 
       assertThat(result, Matchers.hasSize(1));
    }

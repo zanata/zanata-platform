@@ -83,7 +83,7 @@ public class GetDocumentListHandlerTest
       verify(identity).checkLoggedIn();
       assertThat(result.getDocuments(), Matchers.hasSize(1));
       DocumentInfo documentInfo = result.getDocuments().get(0);
-      assertThat(documentInfo.getId(), Matchers.equalTo(new DocumentId(1, "")));
+      assertThat(documentInfo.getId(), Matchers.equalTo(new DocumentId(new Long(1), "")));
       assertThat(documentInfo.getPath(), Matchers.equalTo("/dot/"));
       assertThat(documentInfo.getName(), Matchers.equalTo("a.po"));
    }

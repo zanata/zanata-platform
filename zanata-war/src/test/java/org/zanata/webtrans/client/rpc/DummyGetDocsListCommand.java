@@ -49,19 +49,19 @@ final class DummyGetDocsListCommand implements Command
       extensions.put(".po", "");
 
       ArrayList<DocumentInfo> names = new ArrayList<DocumentInfo>();
-      names.add(new DocumentInfo(new DocumentId(0, ""), "name0", "", LocaleId.EN_US, newStats(0), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(1, ""), "path1name1", "path/1", LocaleId.EN_US, newStats(1), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(2, ""), "path1name2", "path/1", LocaleId.EN_US, newStats(2), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(3, ""), "path2name1", "path/2", LocaleId.EN_US, newStats(3), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(4, ""), "path2name2", "path/2", LocaleId.EN_US, newStats(4), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(5, ""), "name2", "", LocaleId.EN_US, newStats(5), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(6, ""), "name1", "", LocaleId.EN_US, newStats(6), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(7, ""), "long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "", LocaleId.EN_US, newStats(7), "Translator", new Date(), extensions, "last translator", new Date()));
-      names.add(new DocumentInfo(new DocumentId(8, ""), "another long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "long path, a path which is, again, really quite long, and also too wide to be displayed without scrolling (in most cases)", LocaleId.EN_US, newStats(8), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(0), ""), "name0", "", LocaleId.EN_US, newStats(0), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(1), ""), "path1name1", "path/1", LocaleId.EN_US, newStats(1), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(2), ""), "path1name2", "path/1", LocaleId.EN_US, newStats(2), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(3), ""), "path2name1", "path/2", LocaleId.EN_US, newStats(3), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(4), ""), "path2name2", "path/2", LocaleId.EN_US, newStats(4), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(5), ""), "name2", "", LocaleId.EN_US, newStats(5), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(6), ""), "name1", "", LocaleId.EN_US, newStats(6), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(7), ""), "long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "", LocaleId.EN_US, newStats(7), "Translator", new Date(), extensions, "last translator", new Date()));
+      names.add(new DocumentInfo(new DocumentId(new Long(8), ""), "another long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "long path, a path which is, again, really quite long, and also too wide to be displayed without scrolling (in most cases)", LocaleId.EN_US, newStats(8), "Translator", new Date(), extensions, "last translator", new Date()));
       for (int n = 0; n < 100; n++)
       {
          // two digit numbers, to make sorting happier
-         names.add(new DocumentInfo(new DocumentId(n, ""), "multi" + n, "",
+         names.add(new DocumentInfo(new DocumentId(new Long(n), ""), "multi" + n, "",
  LocaleId.EN_US, newStats(n), "Translator", new Date(), extensions, "last translator", new Date()));
       }
       return names;

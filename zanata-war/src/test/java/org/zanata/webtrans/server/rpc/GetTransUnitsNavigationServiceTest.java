@@ -29,7 +29,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
 {
    private GetTransUnitsNavigationService service;
-   private final DocumentId documentId = new DocumentId(1, "");
+   private final DocumentId documentId = new DocumentId(new Long(1), "");
    private HLocale jaLocale;
 
    @Override

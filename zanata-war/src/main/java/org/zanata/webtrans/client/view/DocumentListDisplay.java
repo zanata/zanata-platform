@@ -81,6 +81,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void onUploadFile();
 
       void updateDownloadFileProgress();
+
+      void runValidation();
    }
 
    void setLayout(String layout);

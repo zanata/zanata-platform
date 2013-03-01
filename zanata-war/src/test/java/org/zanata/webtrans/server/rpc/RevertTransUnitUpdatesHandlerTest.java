@@ -71,7 +71,7 @@ public class RevertTransUnitUpdatesHandlerTest
    @Test
    public void testExecute() throws Exception
    {
-      List<TransUnitUpdateInfo> updatesToRevert = Lists.newArrayList(new TransUnitUpdateInfo(true, true, new DocumentId(1, ""), TestFixture.makeTransUnit(1), 0, 0, ContentState.Approved));
+      List<TransUnitUpdateInfo> updatesToRevert = Lists.newArrayList(new TransUnitUpdateInfo(true, true, new DocumentId(new Long(1), ""), TestFixture.makeTransUnit(1), 0, 0, ContentState.Approved));
       RevertTransUnitUpdates action = new RevertTransUnitUpdates(updatesToRevert);
       when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY)).thenReturn(checkResult);
       when(checkResult.getLocale()).thenReturn(new HLocale(LocaleId.EN_US));

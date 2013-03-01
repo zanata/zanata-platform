@@ -76,6 +76,10 @@ public class DocumentListView extends Composite implements DocumentListDisplay
 
    @UiField
    PushButton downloadAllFiles;
+   
+   @UiField
+   PushButton runValidation;
+
 
    @UiField(provided = true)
    DocumentListPager pager;
@@ -188,6 +192,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    public void onDownloadAllFilesClick(ClickEvent event)
    {
       confirmationBox.center();
+   }
+   
+   @UiHandler("runValidation")
+   public void onRunValidationClicked(ClickEvent event)
+   {
+      listener.runValidation();
    }
 
    @Override

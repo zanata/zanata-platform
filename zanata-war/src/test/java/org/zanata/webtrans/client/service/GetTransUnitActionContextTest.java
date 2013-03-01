@@ -21,17 +21,17 @@ public class GetTransUnitActionContextTest
    @BeforeMethod
    public void setUp() throws Exception
    {
-      context = new GetTransUnitActionContext(new DocumentId(1, ""));
+      context = new GetTransUnitActionContext(new DocumentId(new Long(1), ""));
    }
 
    @Test
    public void testChangeDocument() throws Exception
    {
       DocumentId documentId = context.getDocumentId();
-      GetTransUnitActionContext newContext = context.changeDocument(new DocumentId(99, ""));
+      GetTransUnitActionContext newContext = context.changeDocument(new DocumentId(new Long(99), ""));
 
       assertThat(context.getDocumentId(), Matchers.sameInstance(documentId));
-      assertThat(newContext.getDocumentId(), Matchers.equalTo(new DocumentId(99, "")));
+      assertThat(newContext.getDocumentId(), Matchers.equalTo(new DocumentId(new Long(99), "")));
    }
 
    @Test
@@ -77,7 +77,7 @@ public class GetTransUnitActionContextTest
       verifyNeedReloadTransUnits(context, context.changeFilterNeedReview(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterTranslated(true), NEEDED);
-      verifyNeedReloadTransUnits(context, context.changeDocument(new DocumentId(99, "")), NEEDED);
+      verifyNeedReloadTransUnits(context, context.changeDocument(new DocumentId(new Long(99), "")), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFindMessage("find message"), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeCount(2), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeOffset(2), NEEDED);
@@ -96,7 +96,7 @@ public class GetTransUnitActionContextTest
       verifyNeedReloadNavigationIndex(context, context.changeFilterNeedReview(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterTranslated(true), NEEDED);
-      verifyNeedReloadNavigationIndex(context, context.changeDocument(new DocumentId(99, "")), NEEDED);
+      verifyNeedReloadNavigationIndex(context, context.changeDocument(new DocumentId(new Long(99), "")), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFindMessage("find message"), NEEDED);
 
       verifyNeedReloadNavigationIndex(context, context.changeCount(2), NO_NEED);

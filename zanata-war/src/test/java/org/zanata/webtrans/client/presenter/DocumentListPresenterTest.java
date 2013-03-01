@@ -43,6 +43,7 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -84,6 +85,8 @@ public class DocumentListPresenterTest
    @Mock
    private UserOptionsService mockUserOptionsService;
    @Mock
+   private ValidationService mockValidationService;
+   @Mock
    private CachingDispatchAsync mockDispatcher;
 
    private UserConfigHolder configHolder;
@@ -113,7 +116,7 @@ public class DocumentListPresenterTest
       configHolder = new UserConfigHolder();
       when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
       dataProviderList = new ArrayList<DocumentNode>();
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService, mockValidationService);
    
       workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
 

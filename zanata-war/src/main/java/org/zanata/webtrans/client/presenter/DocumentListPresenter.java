@@ -433,23 +433,32 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       });
    }
    
+   @Override
    public void runValidation()
    {
-      ArrayList<ValidationId> idList = new ArrayList<ValidationId>();
+      ArrayList<ValidationId> valIds = new ArrayList<ValidationId>();
+      ArrayList<Long> docIds = new ArrayList<Long>();
+      for(DocumentNode node: display.getDocumentListTable().getVisibleItems())
+      {
+         docIds.add(node.getDocInfo().getId().getId());
+      }
+      
 
       for (ValidationAction valAction : validationService.getValidationMap().values())
       {
          if (valAction.getValidationInfo().isEnabled())
          {
-            idList.add(valAction.getValidationInfo().getId());
+            valIds.add(valAction.getValidationInfo().getId());
          }
       }
+      
+      Log.info("doc==========================" + docIds.size());
+      Log.info("val=========================" + valIds.size());
 
-      if (!idList.isEmpty())
+      if (!valIds.isEmpty() && !docIds.isEmpty())
       {
-         dispatcher.execute(new RunValidationAction(idList), new AsyncCallback<RunValidationResult>()
+         dispatcher.execute(new RunValidationAction(valIds, docIds), new AsyncCallback<RunValidationResult>()
          {
-
             @Override
             public void onFailure(Throwable caught)
             {

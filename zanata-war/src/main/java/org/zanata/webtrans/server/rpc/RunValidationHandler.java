@@ -20,13 +20,12 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.RunValidationAction;
 import org.zanata.webtrans.shared.rpc.RunValidationResult;
 
 @Name("webtrans.gwt.RunValidationHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(GetDocumentList.class)
+@ActionHandlerFor(RunValidationAction.class)
 public class RunValidationHandler extends AbstractActionHandler<RunValidationAction, RunValidationResult>
 {
    @In
