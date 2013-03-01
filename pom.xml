@@ -288,6 +288,17 @@
 			    </configuration>
 			</plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
 
          <plugin>
@@ -396,6 +407,22 @@
                 <plugin>
                     <artifactId>maven-eclipse-plugin</artifactId>
                     <version>2.9</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>2.5.2</version>
+                    <configuration>
+                        <plugins>
+                            <plugin>
+                                <groupId>com.overstock.findbugs</groupId>
+                                <artifactId>library-detectors</artifactId>
+                                <version>1.1</version>
+                            </plugin>
+                        </plugins>
+                        <!--FindDeadLocalStores,UnreadFields-->
+                        <visitors>GuavaBetaDetector</visitors>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
@@ -881,6 +908,16 @@
 					<dependencyLocationsEnabled>${reports-plugin.dependencyLocationsEnabled}</dependencyLocationsEnabled>
 				</configuration>
 			</plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <!-- Optional directory to put findbugs xdoc xml report -->
+                    <xmlOutputDirectory>target/site</xmlOutputDirectory>
+                </configuration>
+            </plugin>
 		</plugins>
 	</reporting>
 
