@@ -1,6 +1,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.Email;
@@ -12,10 +13,12 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
 import org.zanata.action.validator.NotDuplicateEmail;
+import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataCredentials;
@@ -43,6 +46,9 @@ public class InactiveAccountAction implements Serializable
 
    @In
    private CredentialsDAO credentialsDAO;
+   
+   @In
+   private AccountActivationKeyDAO accountActivationKeyDAO;
 
    private String email;
 
@@ -65,6 +71,12 @@ public class InactiveAccountAction implements Serializable
 
    public void sendActivationEmail()
    {
+      HAccountActivationKey key = account.getAccountActivationKey();
+      key.setCreationDate(new Date());
+      
+      accountActivationKeyDAO.makePersistent(key);
+      accountActivationKeyDAO.flush();
+      
       String message = emailServiceImpl.sendActivationEmail(EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, account.getPerson().getName(), account.getPerson().getEmail(), account.getAccountActivationKey().getKeyHash());
       FacesMessages.instance().add(message);
    }
