@@ -52,7 +52,7 @@ public class XmlEntityValidation extends AbstractValidationAction
 
    public XmlEntityValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(new ValidationInfo(id, null, true), messages);
    }
 
    @Override

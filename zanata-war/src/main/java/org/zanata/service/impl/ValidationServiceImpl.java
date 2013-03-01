@@ -96,7 +96,6 @@ public class ValidationServiceImpl implements ValidationService
          actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
          if (enabledValidations.contains(actionInfo.getId().name()))
          {
-            actionInfo.setEnabled(true);
             actionInfo.setLocked(true);
          }
       }
