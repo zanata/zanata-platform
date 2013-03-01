@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>2.2-SNAPSHOT</version>
+  <version>2.2.2-SNAPSHOT</version>
   <name>Zanata server modules</name>
   <packaging>pom</packaging>
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>10-SNAPSHOT</version>
+    <version>10</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -32,9 +32,10 @@
       <gwteventservice.version>1.2.1</gwteventservice.version>
       <okapi.version>0.18</okapi.version>
 
-      <zanata.api.version>2.1.1-SNAPSHOT</zanata.api.version>
-      <zanata.client.version>2.0.2-SNAPSHOT</zanata.client.version>
-      <zanata.common.version>2.1.2-SNAPSHOT</zanata.common.version>
+      <zanata.api.version>2.2.0</zanata.api.version>
+      <zanata.client.version>2.2.0</zanata.client.version>
+      <zanata.common.version>2.2.0</zanata.common.version>
+
       <richfaces.version>4.3.0.Final</richfaces.version>
 
 	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
