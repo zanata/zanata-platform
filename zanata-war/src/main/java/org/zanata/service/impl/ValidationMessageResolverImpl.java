@@ -18,13 +18,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.service.impl;
 
 import java.util.Collection;
 import java.util.List;
 
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.zanata.util.ZanataMessages;
-import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 /**
@@ -32,145 +36,161 @@ import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
+@Name("validationMessageResolverImpl")
+@AutoCreate
+@Scope(ScopeType.STATELESS)
 public class ValidationMessageResolverImpl implements ValidationMessageResolver
 {
-   private final ZanataMessages messages;
-
-   public ValidationMessageResolverImpl(ZanataMessages messages)
-   {
-      this.messages = messages;
-   }
+   @In
+   private ZanataMessages messages;
 
    @Override
    public String leadingNewlineMissing()
    {
-      return messages.leadingNewlineMissing();
+      return messages.getMessage("jsf.validation.htmlXmlValidator.leadingNewlineMissing");
    }
 
    @Override
    public String leadingNewlineAdded()
    {
-      return messages.leadingNewlineAdded();
+      return messages.getMessage("jsf.validation.htmlXmlValidator.leadingNewlineAdded");
    }
 
    @Override
    public String trailingNewlineMissing()
    {
-      return messages.trailingNewlineMissing();
+      return messages.getMessage("jsf.validation.htmlXmlValidator.trailingNewlineMissing");
    }
 
    @Override
    public String trailingNewlineAdded()
    {
-      return messages.trailingNewlineAdded();
+      return messages.getMessage("jsf.validation.htmlXmlValidator.trailingNewlineAdded");
    }
 
    @Override
    public String targetHasFewerTabs(int sourceTabs, int targetTabs)
    {
-      return messages.targetHasFewerTabs(sourceTabs, targetTabs);
+      return messages.getMessage("jsf.validation.tabValidator.targetHasFewerTabs", sourceTabs, targetTabs);
    }
 
    @Override
    public String targetHasMoreTabs(int sourceTabs, int targetTabs)
    {
-      return messages.targetHasMoreTabs(sourceTabs, targetTabs);
+      return null;
+      // return messages.targetHasMoreTabs(sourceTabs, targetTabs);
    }
 
    @Override
    public String linesAdded(int expected, int actual)
    {
-      return messages.linesAdded(expected, actual);
+      return null;
+      // return messages.linesAdded(expected, actual);
    }
 
    @Override
    public String linesRemoved(int expected, int actual)
    {
-      return messages.linesRemoved(expected, actual);
+      return null;
+      // return messages.linesRemoved(expected, actual);
    }
 
    @Override
    public String varPositionOutOfRange(String var)
    {
-      return messages.varPositionOutOfRange(var);
+      return null;
+      // return messages.varPositionOutOfRange(var);
    }
 
    @Override
    public String mixVarFormats()
    {
-      return messages.mixVarFormats();
+      return null;
+      // return messages.mixVarFormats();
    }
 
    @Override
    public String varPositionDuplicated(Collection<String> vars)
    {
-      return messages.varPositionDuplicated(vars);
+      return null;
+      // return messages.varPositionDuplicated(vars);
    }
 
    @Override
    public String differentVarCount(List<String> vars)
    {
-      return messages.differentVarCount(vars);
+      return null;
+      // return messages.differentVarCount(vars);
    }
 
    @Override
    public String differentApostropheCount()
    {
-      return messages.differentApostropheCount();
+      return null;
+      // return messages.differentApostropheCount();
    }
 
    @Override
    public String quotedCharsAdded()
    {
-      return messages.quotedCharsAdded();
+      return null;
+      // return messages.quotedCharsAdded();
    }
 
    @Override
    public String varsMissing(List<String> vars)
    {
-      return messages.varsMissing(vars);
+      return null;
+      // return messages.varsMissing(vars);
    }
 
    @Override
    public String varsMissingQuoted(List<String> vars)
    {
-      return messages.varsMissingQuoted(vars);
+      return null;
+      // return messages.varsMissingQuoted(vars);
    }
 
    @Override
    public String varsAdded(List<String> vars)
    {
-      return messages.varsAdded(vars);
+      return null;
+      // return messages.varsAdded(vars);
    }
 
    @Override
    public String varsAddedQuoted(List<String> vars)
    {
-      return messages.varsAddedQuoted(vars);
+      return null;
+      // return messages.varsAddedQuoted(vars);
    }
 
    @Override
    public String tagsAdded(List<String> tags)
    {
-      return messages.tagsAdded(tags);
+      return null;
+      // return messages.tagsAdded(tags);
    }
 
    @Override
    public String tagsMissing(List<String> tags)
    {
-      return messages.tagsMissing(tags);
+      return null;
+      // return messages.tagsMissing(tags);
    }
 
    @Override
    public String tagsWrongOrder(List<String> tags)
    {
-      return messages.tagsWrongOrder(tags);
+      return null;
+      // return messages.tagsWrongOrder(tags);
    }
 
    @Override
    public String invalidXMLEntity(String entity)
    {
-      return messages.invalidXMLEntity(entity);
+      return null;
+      // return messages.invalidXMLEntity(entity);
    }
 
 }

@@ -28,7 +28,7 @@ import java.util.List;
  * 
  * Implementation:
  * client side : org.zanata.webtrans.client.service.ValidationMessageResolverImpl
- * server side : org.zanata.service.ValidationMessageResolverImpl
+ * server side : org.zanata.service.impl.ValidationMessageResolverImpl
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 

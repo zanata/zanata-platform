@@ -32,6 +32,7 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 /**
  * 
@@ -55,12 +56,15 @@ public class ValidationServiceImpl implements ValidationService
    @In
    private ProjectIterationDAO projectIterationDAO;
 
+   @In
+   private ValidationMessageResolver validationMessageResolverImpl;
+
    private static final String DESC_KEY = ".desc";
 
    @Override
    public Collection<ValidationAction> getValidationAction(String projectSlug)
    {
-      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(null).values();
+      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(validationMessageResolverImpl).values();
       Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug))
@@ -86,7 +90,7 @@ public class ValidationServiceImpl implements ValidationService
    @Override
    public Collection<ValidationAction> getValidationAction(String projectSlug, String versionSlug)
    {
-      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(null).values();
+      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(validationMessageResolverImpl).values();
       Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
@@ -144,6 +148,7 @@ public class ValidationServiceImpl implements ValidationService
                   validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
                   if (validation.hasError())
                   {
+                     System.out.println("==================" + validation.getError());
                      errorList.add(transUnitTransformer.transform(textFlow, target));
                   }
                }
