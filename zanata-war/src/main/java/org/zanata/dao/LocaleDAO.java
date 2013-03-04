@@ -75,5 +75,4 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
    {
       return findByCriteria(Restrictions.eq("active", true), Restrictions.eq("enabledByDefault", true));
    }
-
 }

@@ -35,7 +35,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
@@ -46,12 +45,14 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.ZPathService;
+import org.zanata.util.DateUtil;
 
 /**
  * Default implementation for the
@@ -66,7 +67,6 @@ import org.zanata.rest.service.ZPathService;
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-@Transactional
 @Slf4j
 public class StatisticsServiceImpl implements StatisticsResource
 {
@@ -135,7 +135,10 @@ public class StatisticsServiceImpl implements StatisticsResource
          {
             count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
          }
-         TranslationStatistics transUnitStats = getMessageStats(count, locId);
+
+         HTextFlowTarget target = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locId);
+
+         TranslationStatistics transUnitStats = getMessageStats(count, locId, target);
          transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
          iterationStats.addStats(transUnitStats);
 
@@ -147,7 +150,8 @@ public class StatisticsServiceImpl implements StatisticsResource
             {
                wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
             }
-            TranslationStatistics wordsStats = getWordsStats(wordCount, locId);
+            
+            TranslationStatistics wordsStats = getWordsStats(wordCount, locId, target);
             wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
             iterationStats.addStats(wordsStats);
          }
@@ -227,7 +231,8 @@ public class StatisticsServiceImpl implements StatisticsResource
          {
             count = stats.getUnitCount();
          }
-         TranslationStatistics transUnitStats = getMessageStats(count, locale);
+         HTextFlowTarget target = documentDAO.getLastTranslated(document.getId(), locale);
+         TranslationStatistics transUnitStats = getMessageStats(count, locale, target);
          transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
          docStats.addStats(transUnitStats);
 
@@ -243,7 +248,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             {
                wordCount = stats.getWordCount();
             }
-            TranslationStatistics wordsStats = getWordsStats(wordCount, locale);
+            TranslationStatistics wordsStats = getWordsStats(wordCount, locale, target);
             wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
             docStats.addStats(wordsStats);
          }
@@ -252,7 +257,7 @@ public class StatisticsServiceImpl implements StatisticsResource
       return docStats;
    }
 
-   private TranslationStatistics getWordsStats(TransUnitWords wordCount, LocaleId locale)
+   private TranslationStatistics getWordsStats(TransUnitWords wordCount, LocaleId locale, HTextFlowTarget lastTranslatedTarget)
    {
       TranslationStatistics stats = new TranslationStatistics();
       stats.setLocale(locale.getId());
@@ -261,10 +266,11 @@ public class StatisticsServiceImpl implements StatisticsResource
       stats.setUntranslated(wordCount.get(ContentState.New));
       stats.setNeedReview(wordCount.get(ContentState.NeedReview));
       stats.setTotal(wordCount.getTotal());
+      stats.setLastTranslated(getLastTranslated(lastTranslatedTarget));
       return stats;
    }
 
-   private TranslationStatistics getMessageStats(TransUnitCount unitCount, LocaleId locale)
+   private TranslationStatistics getMessageStats(TransUnitCount unitCount, LocaleId locale, HTextFlowTarget lastTranslatedTarget)
    {
       TranslationStatistics stats = new TranslationStatistics();
       stats.setLocale(locale.getId());
@@ -273,7 +279,27 @@ public class StatisticsServiceImpl implements StatisticsResource
       stats.setUntranslated(unitCount.get(ContentState.New));
       stats.setNeedReview(unitCount.get(ContentState.NeedReview));
       stats.setTotal(unitCount.getTotal());
+
+      stats.setLastTranslated(getLastTranslated(lastTranslatedTarget));
       return stats;
+   }
+
+   private String getLastTranslated(HTextFlowTarget lastTranslatedTarget)
+   {
+      StringBuilder result = new StringBuilder();
+
+      if (lastTranslatedTarget != null)
+      {
+         result.append(DateUtil.formatShortDate(lastTranslatedTarget.getLastChanged()));
+
+         if (lastTranslatedTarget.getLastModifiedBy() != null)
+         {
+            result.append(" by ");
+            result.append(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
+         }
+      }
+
+      return result.toString();
    }
 
    private double getRemainingHours(double fuzzy, double untrans)

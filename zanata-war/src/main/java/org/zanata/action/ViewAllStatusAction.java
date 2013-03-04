@@ -52,6 +52,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -62,6 +63,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
+import org.zanata.util.DateUtil;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
@@ -279,8 +281,24 @@ public class ViewAllStatusAction implements Serializable
             stats = new TranslationStatistics();
             stats.setUntranslated(total);
             stats.setTotal(total);
+
+            HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
+
+            StringBuilder lastTranslated = new StringBuilder();
+            if (lastTranslatedTarget != null)
+            {
+               lastTranslated.append(DateUtil.formatShortDate(lastTranslatedTarget.getLastChanged()));
+               if (lastTranslatedTarget.getLastModifiedBy() != null)
+               {
+                  lastTranslated.append(" by ");
+                  lastTranslated.append(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
+                  
+               }
+            }
+            stats.setLastTranslated(lastTranslated.toString());
          }
-         
+
+
          if (!statsMap.containsKey(var.getLocaleId()))
          {
             boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;

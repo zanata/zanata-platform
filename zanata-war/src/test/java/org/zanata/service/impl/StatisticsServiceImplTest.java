@@ -45,7 +45,7 @@ import org.zanata.seam.SeamAutowire;
 public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
-
+   
    @Override
    protected void prepareDBUnitOperations()
    {
