@@ -29,7 +29,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -98,7 +97,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
          validationService.updateStatus(validationAction.getValidationInfo().getId(), event.getValue());
          if (event.getValue())
          {
-            for (ValidationObject excluded : validationAction.getExclusiveValidations())
+            for (ValidationAction excluded : validationAction.getExclusiveValidations())
             {
                validationService.updateStatus(excluded.getValidationInfo().getId(), false);
                display.changeValidationSelectorValue(excluded.getValidationInfo().getId().getDisplayName(), false);

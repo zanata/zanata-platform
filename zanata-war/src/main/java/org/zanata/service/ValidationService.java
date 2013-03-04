@@ -3,9 +3,9 @@
  */
 package org.zanata.service;
 
-import java.util.List;
+import java.util.Collection;
 
-import org.zanata.webtrans.shared.model.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
 
 /**
@@ -16,22 +16,21 @@ import org.zanata.webtrans.shared.model.ValidationObject;
 public interface ValidationService
 {
    /**
-    * Return all ValidationObjects in groups (exclusive) with enabled=true on those which are
-    * defined to the project
+    * Return all ValidationActions with enabled=true on those which are defined
+    * to the project
     * 
     * @param projectSlug
     * @return
     */
-   List<ValidationObject> getValidationObject(String projectSlug);
+   Collection<ValidationAction> getValidationAction(String projectSlug);
    
 
    /**
-    * Return all ValidationObjects with enabled=true on those which are
-    * customized to the version
+    * Return all ValidationActions on those which are customized to the version
     * 
     * @param projectSlug
     * @param versionSlug
     * @return
     */
-   List<ValidationObject> getValidationObject(String projectSlug, String versionSlug);
+   Collection<ValidationAction> getValidationAction(String projectSlug, String versionSlug);
 }

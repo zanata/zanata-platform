@@ -28,9 +28,9 @@ import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 /**
@@ -58,9 +58,9 @@ public class ValidationServiceImpl implements ValidationService
    private static final String DESC_KEY = ".desc";
 
    @Override
-   public List<ValidationObject> getValidationObject(String projectSlug)
+   public Collection<ValidationAction> getValidationAction(String projectSlug)
    {
-      List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
+      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(null).values();
       Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug))
@@ -69,9 +69,9 @@ public class ValidationServiceImpl implements ValidationService
          enabledValidations = project.getCustomizedValidations();
       }
 
-      for (ValidationObject  valObj: validationList)
+      for (ValidationAction valAction : validationList)
       {
-         ValidationInfo actionInfo = valObj.getValidationInfo();
+         ValidationInfo actionInfo = valAction.getValidationInfo();
 
          actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
          if (enabledValidations.contains(actionInfo.getId().name()))
@@ -84,9 +84,9 @@ public class ValidationServiceImpl implements ValidationService
    }
    
    @Override
-   public List<ValidationObject> getValidationObject(String projectSlug, String versionSlug)
+   public Collection<ValidationAction> getValidationAction(String projectSlug, String versionSlug)
    {
-      List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
+      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(null).values();
       Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
@@ -102,9 +102,9 @@ public class ValidationServiceImpl implements ValidationService
          }
       }
 
-      for (ValidationObject valObj : validationList)
+      for (ValidationAction valAction : validationList)
       {
-         ValidationInfo actionInfo = valObj.getValidationInfo();
+         ValidationInfo actionInfo = valAction.getValidationInfo();
 
          actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
          if (enabledValidations.contains(actionInfo.getId().name()))
@@ -139,7 +139,7 @@ public class ValidationServiceImpl implements ValidationService
             {
                for (ValidationId validationId : validationIds)
                {
-                  ValidationObject validation = ValidationFactory.getValidationAction(validationId);
+                  ValidationAction validation = ValidationFactory.getValidationAction(validationId);
 
                   validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
                   if (validation.hasError())

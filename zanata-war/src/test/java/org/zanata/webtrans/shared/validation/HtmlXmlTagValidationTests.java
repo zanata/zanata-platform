@@ -26,17 +26,17 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 
@@ -57,8 +57,7 @@ public class HtmlXmlTagValidationTests
 
    private HtmlXmlTagValidation htmlXmlTagValidation;
 
-   @Mock
-   private ValidationMessages mockMessages;
+   private ValidationMessageResolver messages;
 
    // captured tag lists sent to messages
    @Captor
@@ -72,11 +71,11 @@ public class HtmlXmlTagValidationTests
    public void init()
    {
       MockitoAnnotations.initMocks(this);
-      htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, mockMessages);
+
+      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+
+      htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, messages);
       htmlXmlTagValidation.getValidationInfo().setEnabled(true);
-      when(mockMessages.tagsAdded(capturedTagsAdded.capture())).thenReturn(MOCK_TAGS_ADDED_MESSAGE);
-      when(mockMessages.tagsMissing(capturedTagsMissing.capture())).thenReturn(MOCK_TAGS_MISSING_MESSAGE);
-      when(mockMessages.tagsWrongOrder(capturedTagsOutOfOrder.capture())).thenReturn(MOCK_TAGS_OUT_OF_ORDER_MESSAGE);
    }
 
    @Test

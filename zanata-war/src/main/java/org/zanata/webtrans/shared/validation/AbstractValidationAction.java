@@ -26,7 +26,12 @@ import java.util.List;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
+import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
+import org.zanata.webtrans.shared.validation.action.TabValidation;
+import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -48,14 +53,14 @@ public abstract class AbstractValidationAction implements ValidationAction
    private ValidationInfo validationInfo;
 
    private ArrayList<String> errorList = new ArrayList<String>();
-   private ArrayList<ValidationObject> exclusiveValidations = new ArrayList<ValidationObject>();
+   private ArrayList<ValidationAction> exclusiveValidations = new ArrayList<ValidationAction>();
 
-   private ValidationMessages messages;
+   private ValidationMessageResolver messageResolver;
 
-   public AbstractValidationAction(ValidationInfo validationInfo, ValidationMessages messages)
+   public AbstractValidationAction(ValidationInfo validationInfo, ValidationMessageResolver messageResolver)
    {
       this.validationInfo = validationInfo;
-      this.messages = messages;
+      this.messageResolver = messageResolver;
    }
 
    @Override
@@ -71,13 +76,13 @@ public abstract class AbstractValidationAction implements ValidationAction
 
 
    @Override
-   public List<ValidationObject> getExclusiveValidations()
+   public List<ValidationAction> getExclusiveValidations()
    {
       return exclusiveValidations;
    }
    
    @Override
-   public void mutuallyExclusive(ValidationObject... exclusiveValidations)
+   public void mutuallyExclusive(ValidationAction... exclusiveValidations)
    {
       this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
    }
@@ -105,9 +110,9 @@ public abstract class AbstractValidationAction implements ValidationAction
       errorList.add(error);
    }
    
-   protected ValidationMessages getMessages()
+   protected ValidationMessageResolver getMessages()
    {
-      return messages;
+      return messageResolver;
    }
    
    @Override

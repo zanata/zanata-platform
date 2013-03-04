@@ -20,10 +20,10 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
-import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
+import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 import com.google.common.base.Splitter;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -50,7 +50,7 @@ public class XmlEntityValidation extends AbstractValidationAction
 
    private final static String ENTITY_START_CHAR = "&";
 
-   public XmlEntityValidation(ValidationId id, ValidationMessages messages)
+   public XmlEntityValidation(ValidationId id, ValidationMessageResolver messages)
    {
       super(new ValidationInfo(id, null, false), messages);
    }

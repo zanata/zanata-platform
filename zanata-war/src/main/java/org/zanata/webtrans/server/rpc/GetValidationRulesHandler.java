@@ -21,6 +21,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -31,8 +32,8 @@ import org.jboss.seam.annotations.Name;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 
@@ -55,12 +56,12 @@ public class GetValidationRulesHandler extends AbstractActionHandler<GetValidati
    @Override
    public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context) throws ActionException
    {
-      List<ValidationObject> result = validationServiceImpl.getValidationObject(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      Collection<ValidationAction> result = validationServiceImpl.getValidationAction(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
       List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
       
-      for(ValidationObject valObj: result)
+      for (ValidationAction valAction : result)
       {
-         validationInfoList.add(valObj.getValidationInfo());
+         validationInfoList.add(valAction.getValidationInfo());
       }
       return new GetValidationRulesResult(validationInfoList);
    }

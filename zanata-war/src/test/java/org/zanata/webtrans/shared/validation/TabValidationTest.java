@@ -31,20 +31,22 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.TabValidation;
 
 @Test(groups = { "unit-tests" })
 public class TabValidationTest
 {
-   private ValidationMessages messages;
+   private ValidationMessageResolver messages;
    private TabValidation validation;
    private static final List<String> noErrors = Collections.<String>emptyList();
 
    @BeforeMethod
    public void init()
    {
-      messages = TestMessages.getInstance(ValidationMessages.class);
+      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+
       validation = new TabValidation(ValidationId.TAB, messages);
       validation.getValidationInfo().setEnabled(true);
    }

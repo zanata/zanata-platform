@@ -42,6 +42,7 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -57,15 +58,15 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
 {
    private final EventBus eventBus;
    private final TableEditorMessages messages;
-   private final ValidationMessages validationMessages;
    private Map<ValidationId, ValidationAction> validationMap;
+   private final ValidationMessageResolver validationMessageResolver;
 
    @Inject
    public ValidationService(final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages validationMessages)
    {
       this.eventBus = eventBus;
       this.messages = messages;
-      this.validationMessages = validationMessages;
+      validationMessageResolver = new ValidationMessageResolverImpl(validationMessages);
 
       eventBus.addHandler(RunValidationEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
@@ -160,14 +161,14 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
    }
 
    /**
-    * Merge ValidationInfo from RPC result ValidationObject to all validation
+    * Merge ValidationInfo from RPC result ValidationAction to all validation
     * actions from ValidationFactory
     * 
     * @param validations
     */
    public void setValidationRules(List<ValidationInfo> validationInfoList)
    {
-      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(validationMessages);
+      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(validationMessageResolver);
       
       for (ValidationInfo valInfo : validationInfoList)
       {

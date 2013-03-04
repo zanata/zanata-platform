@@ -34,7 +34,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 
@@ -53,8 +55,7 @@ public class JavaVariablesValidationTest
 
    private JavaVariablesValidation javaVariablesValidation;
 
-   @Mock 
-   private ValidationMessages mockMessages;
+   private ValidationMessageResolver messages;
    @Captor
    private ArgumentCaptor<List<String>> capturedVarsAdded;
    @Captor
@@ -64,10 +65,10 @@ public class JavaVariablesValidationTest
    public void init()
    {
       MockitoAnnotations.initMocks(this);
-      javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, mockMessages);
+      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+
+      javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, messages);
       javaVariablesValidation.getValidationInfo().setEnabled(true);
-      when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
-      when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
    }
 
    @Test

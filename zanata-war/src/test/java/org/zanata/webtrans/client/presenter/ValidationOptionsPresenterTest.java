@@ -17,11 +17,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
 
@@ -42,8 +45,8 @@ public class ValidationOptionsPresenterTest
    private EventBus eventBus;
    @Mock
    private ValidationService validationService;
-   @Mock
-   private ValidationMessages validationMessage;
+
+   private ValidationMessageResolver validationMessage;
    @Mock
    private HasValueChangeHandlers<Boolean> changeHandler;
    @Captor
@@ -55,6 +58,9 @@ public class ValidationOptionsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
+
+      validationMessage = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+
       presenter = new ValidationOptionsPresenter(display, eventBus, validationService);
    }
 

@@ -452,9 +452,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          }
       }
       
-      Log.info("doc==========================" + docIds.size());
-      Log.info("val=========================" + valIds.size());
-
       if (!valIds.isEmpty() && !docIds.isEmpty())
       {
          dispatcher.execute(new RunValidationAction(valIds, docIds), new AsyncCallback<RunValidationResult>()

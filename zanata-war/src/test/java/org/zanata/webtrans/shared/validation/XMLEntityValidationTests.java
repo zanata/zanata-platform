@@ -21,14 +21,14 @@
 package org.zanata.webtrans.shared.validation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 
 import org.hamcrest.Matchers;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
@@ -44,14 +44,16 @@ public class XMLEntityValidationTests
 
    private XmlEntityValidation xmlEntityValidation;
 
-   @Mock
-   private ValidationMessages mockMessages;
+   private ValidationMessageResolver messages;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, mockMessages);
+
+      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+
+      xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, messages);
       xmlEntityValidation.getValidationInfo().setEnabled(true);
    }
 
@@ -86,9 +88,6 @@ public class XMLEntityValidationTests
    @Test
    public void testWithIncompleteEntityCharRef()
    {
-      when(mockMessages.invalidXMLEntity("&mash")).thenReturn("Mock invalid messages");
-      when(mockMessages.invalidXMLEntity("&test")).thenReturn("Mock invalid messages");
-
       String source = "Source string";
       String target = "Target string: &mash bla bla &test";
       xmlEntityValidation.validate(source, target);
@@ -100,9 +99,6 @@ public class XMLEntityValidationTests
    @Test
    public void testWithIncompleteEntityDecimalRef()
    {
-      when(mockMessages.invalidXMLEntity("&#1234")).thenReturn("Mock invalid messages");
-      when(mockMessages.invalidXMLEntity("&#BC;")).thenReturn("Mock invalid messages");
-
       String source = "Source string";
       String target = "Target string: &#1234 bla bla &#BC;";
       xmlEntityValidation.validate(source, target);
@@ -114,9 +110,6 @@ public class XMLEntityValidationTests
    @Test
    public void testWithIncompleteEntityHexadecimalRef()
    {
-      when(mockMessages.invalidXMLEntity("&#x1234")).thenReturn("Mock invalid messages");
-      when(mockMessages.invalidXMLEntity("&#x09Z")).thenReturn("Mock invalid messages");
-
       String source = "Source string";
       String target = "Target string: &#x1234 bla bla &#x09Z";
       xmlEntityValidation.validate(source, target);

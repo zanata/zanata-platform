@@ -20,25 +20,25 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import java.util.List;
-
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.when;
+
+import java.util.List;
+
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.TestMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 
 /**
  *
@@ -55,8 +55,8 @@ public class PrintfVariablesValidationTest
 
    private PrintfVariablesValidation printfVariablesValidation;
 
-   @Mock
-   private ValidationMessages mockMessages;
+   private ValidationMessageResolver messages;
+
    @Captor
    private ArgumentCaptor<List<String>> capturedVarsAdded;
    @Captor
@@ -67,10 +67,10 @@ public class PrintfVariablesValidationTest
    {
       MockitoAnnotations.initMocks(this);
       
-      when(mockMessages.varsAdded(capturedVarsAdded.capture())).thenReturn(MOCK_VARIABLES_ADDED_MESSAGE);
-      when(mockMessages.varsMissing(capturedVarsMissing.capture())).thenReturn(MOCK_VARIABLES_MISSING_MESSAGE);
+      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
 
-      printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES,mockMessages);
+
+      printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, messages);
       printfVariablesValidation.getValidationInfo().setEnabled(true);
    }
 
