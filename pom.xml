@@ -32,7 +32,7 @@
         <dependency>
           <groupId>org.fedorahosted.tennera</groupId>
           <artifactId>jgettext</artifactId>
-          <version>0.13-SNAPSHOT</version>
+          <version>0.13</version>
         </dependency>
         <dependency>
           <groupId>org.zanata</groupId>
