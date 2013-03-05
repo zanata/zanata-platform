@@ -20,7 +20,9 @@ public enum DocumentType
    OPEN_DOCUMENT_GRAPHICS("odg"),
    OPEN_DOCUMENT_GRAPHICS_FLAT("fodg"),
    OPEN_DOCUMENT_DATABASE("odb"),
-   OPEN_DOCUMENT_FORMULA("odf");
+   OPEN_DOCUMENT_FORMULA("odf"),
+
+   IDML("idml");
 
    private static List<String> allExtensions = buildExtensionsList();
 
