@@ -66,4 +66,10 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       return this;
    }
+
+   @Override
+   public void clearValidationSelector()
+   {
+      contentPanel.clear();
+   }
 }

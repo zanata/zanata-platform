@@ -5,6 +5,7 @@ package org.zanata.service;
 
 import java.util.List;
 
+import org.zanata.model.HProjectIteration;
 import org.zanata.webtrans.shared.model.ValidationObject;
 
 
@@ -34,4 +35,13 @@ public interface ValidationService
     * @return
     */
    List<ValidationObject> getValidationObject(String projectSlug, String versionSlug);
+
+   /**
+    * Return all ValidationObjects with enabled=true on those which are
+    * customized to the version
+    * 
+    * @param HProjectIteration
+    * @return
+    */
+   List<ValidationObject> getValidationObject(HProjectIteration version);
 }
