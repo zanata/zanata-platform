@@ -1,6 +1,5 @@
 package org.zanata.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -154,12 +153,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public HTextFlowTarget getLastTranslated(Long docId, LocaleId localeId)
    {
-      String query = "from HTextFlowTarget tft " +
-            "where tft.textFlow.document.id = :docId and tft.locale.localeId = :localeId and " +
-            "tft.lastChanged = (select max(t.lastChanged) from HTextFlowTarget t " +
- "where t.textFlow.document.id = :docId and t.locale.localeId = :localeId )";
+      StringBuilder query = new StringBuilder();
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.id = :docId ");
+      query.append("and tft.locale.localeId = :localeId ");
+      query.append("order by tft.lastChanged DESC");
       
-      Query q = getSession().createQuery( query );
+      Query q = getSession().createQuery(query.toString());
       q.setParameter("docId", docId);
       q.setParameter("localeId", localeId);
       q.setCacheable(true);

@@ -23,13 +23,13 @@
     <p> 
     	#{messages['jsf.email.alternate.copyPasteMessage']}
     </p>
-    <p>
-    	#{messages['jsf.UrlExpireMessage']}
-    </p>
 	<p>
       <a href="#{applicationConfiguration.serverPath}/account/activate/#{emailServiceImpl.activationKey}">
       		#{applicationConfiguration.serverPath}/account/activate/#{emailServiceImpl.activationKey}
       	</a>
+    </p>
+     <p>
+    	#{messages['jsf.UrlExpireMessage']}
     </p>
   </ui:define>
   
