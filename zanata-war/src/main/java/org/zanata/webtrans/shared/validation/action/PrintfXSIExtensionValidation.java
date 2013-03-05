@@ -24,7 +24,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
 
    public PrintfXSIExtensionValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages);
+      super(id, messages, false);
    }
 
    @Override

@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -64,14 +65,13 @@ public class ValidationOptionsPresenterTest
       // Given:
       when(validationService.getValidationMap()).thenReturn(ValidationFactory.getAllValidationActions(validationMessage));
 
-      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), null, false, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
       when(display.addValidationSelector(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-
 
       // When:
       presenter.onBind();
