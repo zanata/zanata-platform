@@ -1717,6 +1717,12 @@
          <version>1.0.0</version>
       </dependency>
 
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-exec</artifactId>
+		    <version>1.1</version>
+		</dependency>
+
 		<!-- openid4java -->
 	    <dependency>
 	       <groupId>org.htmlparser</groupId>
