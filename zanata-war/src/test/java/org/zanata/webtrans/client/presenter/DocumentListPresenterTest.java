@@ -51,6 +51,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
@@ -528,6 +529,13 @@ public class DocumentListPresenterTest
          public ProjectType getProjectType()
          {
             return projectType;
+         }
+
+         @Override
+         public List<ValidationInfo> getValidationInfoList()
+         {
+            // TODO Auto-generated method stub
+            return null;
          }
       };
    }

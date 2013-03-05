@@ -96,7 +96,7 @@ public class EventProcessorTest
    @Test
    public void callApplyWithSessionEvent()
    {
-      WorkspaceContextUpdate sessionEventData = new WorkspaceContextUpdate(true, ProjectType.Gettext);
+      WorkspaceContextUpdate sessionEventData = new WorkspaceContextUpdate(true, ProjectType.Gettext, null);
       ArgumentCaptor<WorkspaceContextUpdateEvent> eventCaptor = ArgumentCaptor.forClass(WorkspaceContextUpdateEvent.class);
 
       eventProcessor.apply(sessionEventData);

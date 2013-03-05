@@ -40,7 +40,7 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
 {
    public HtmlXmlTagValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(new ValidationInfo(id, null, true), messages);
    }
 
    private final static String tagRegex = "<[^>]+>";
