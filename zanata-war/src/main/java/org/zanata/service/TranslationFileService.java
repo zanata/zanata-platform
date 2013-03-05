@@ -94,15 +94,28 @@ public interface TranslationFileService
    Resource parseUpdatedDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
 
    /**
-    * Check whether a handler for the given file type is available.
+    * Check whether a handler for the given document type is available.
     * 
     * @param fileNameOrExtension full filename with extension, or just extension
     * @return
     */
+   boolean hasAdapterFor(DocumentType type);
+
+   /**
+    * Check whether a handler for the given file type is available.
+    *
+    * @param fileNameOrExtension full filename with extension, or just extension
+    * @return
+    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
+    */
+   @Deprecated
    boolean hasAdapterFor(String fileNameOrExtension);
 
    Set<String> getSupportedExtensions();
 
+   /**
+    * @deprecated use {@link #getAdapterFor(DocumentType)}
+    */
    @Deprecated
    FileFormatAdapter getAdapterFor(String fileNameOrExtension);
 

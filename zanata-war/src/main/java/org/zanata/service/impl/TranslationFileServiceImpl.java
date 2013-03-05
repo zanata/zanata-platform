@@ -29,6 +29,7 @@ import org.jboss.seam.log.Log;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.IDMLAdapter;
 import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
@@ -42,16 +43,19 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
 
+import com.google.common.collect.MapMaker;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.jboss.seam.ScopeType.STATELESS;
+import static org.zanata.common.DocumentType.*;
 
 /**
  * Default implementation of the TranslationFileService interface.
@@ -63,15 +67,41 @@ import static org.jboss.seam.ScopeType.STATELESS;
 @AutoCreate
 public class TranslationFileServiceImpl implements TranslationFileService
 {
-   private static String[] ODF_EXTENSIONS = {"odt", "fodt", "odp", "fodp", "ods", "fods", "odg", "fodg", "odb", "odf"};
+   private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP = new MapMaker().makeMap();
+   private static DocumentType[] ODF_TYPES =
+      {
+      OPEN_DOCUMENT_TEXT,
+      OPEN_DOCUMENT_TEXT_FLAT,
+      OPEN_DOCUMENT_PRESENTATION,
+      OPEN_DOCUMENT_PRESENTATION_FLAT,
+      OPEN_DOCUMENT_SPREADSHEET,
+      OPEN_DOCUMENT_SPREADSHEET_FLAT,
+      OPEN_DOCUMENT_GRAPHICS,
+      OPEN_DOCUMENT_GRAPHICS_FLAT,
+      OPEN_DOCUMENT_DATABASE,
+      OPEN_DOCUMENT_FORMULA
+      };
+
+   static
+   {
+      for (DocumentType type : ODF_TYPES)
+      {
+         DOCTYPEMAP.put(type, OpenOfficeAdapter.class);
+      }
+      DOCTYPEMAP.put(PLAIN_TEXT, PlainTextAdapter.class);
+      DOCTYPEMAP.put(XML_DOCUMENT_TYPE_DEFINITION, DTDAdapter.class);
+      DOCTYPEMAP.put(IDML, IDMLAdapter.class);
+   }
 
    private static Set<String> SUPPORTED_EXTENSIONS = buildSupportedExtensionSet();
 
    private static Set<String> buildSupportedExtensionSet()
    {
-      Set<String> supported = new HashSet<String>(Arrays.asList(ODF_EXTENSIONS));
-      supported.add("txt");
-      supported.add("dtd");
+      Set<String> supported = new HashSet<String>();
+      for (DocumentType type : DOCTYPEMAP.keySet())
+      {
+         supported.add(type.getExtension());
+      }
       return supported;
    }
 
@@ -220,11 +250,35 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public boolean hasAdapterFor(String fileNameOrExtension)
+   public boolean hasAdapterFor(DocumentType type)
    {
-      return SUPPORTED_EXTENSIONS.contains(extractExtension(fileNameOrExtension));
+      return DOCTYPEMAP.containsKey(type);
    }
 
+   /**
+    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
+    */
+   @Deprecated
+   @Override
+   public boolean hasAdapterFor(String fileNameOrExtension)
+   {
+      String extension = extractExtension(fileNameOrExtension);
+      if (extension == null)
+      {
+         return false;
+      }
+      DocumentType documentType = DocumentType.typeFor(extension);
+      if (documentType == null)
+      {
+         return false;
+      }
+      return hasAdapterFor(documentType);
+   }
+
+   /**
+    * @deprecated use {@link #getAdapterFor(DocumentType)}
+    */
+   @Deprecated
    @Override
    public FileFormatAdapter getAdapterFor(String fileNameOrExtension)
    {
@@ -235,57 +289,29 @@ public class TranslationFileServiceImpl implements TranslationFileService
       {
          return null;
       }
-      else
+      DocumentType documentType = DocumentType.typeFor(extension);
+      if (documentType == null)
       {
-         if (extension.equals("txt"))
-         {
-            return new PlainTextAdapter();
-         }
-         else if (extension.equals("dtd"))
-         {
-            return new DTDAdapter();
-         }
-         else if (Arrays.asList(ODF_EXTENSIONS).contains(extension))
-         {
-            return new OpenOfficeAdapter();
-         }
-         else
-         {
-            return null;
-         }
+         return null;
       }
+      return getAdapterFor(documentType);
    }
 
    @Override
    public FileFormatAdapter getAdapterFor(DocumentType type)
    {
-      switch (type)
+      Class<? extends FileFormatAdapter> clazz = DOCTYPEMAP.get(type);
+      if (clazz == null)
       {
-      case PLAIN_TEXT:
-      {
-         return new PlainTextAdapter();
+         throw new RuntimeException("No adapter for document type: " + type);
       }
-      case XML_DOCUMENT_TYPE_DEFINITION:
+      try
       {
-         return new DTDAdapter();
+         return clazz.newInstance();
       }
-      case OPEN_DOCUMENT_DATABASE:
-      case OPEN_DOCUMENT_FORMULA:
-      case OPEN_DOCUMENT_GRAPHICS:
-      case OPEN_DOCUMENT_GRAPHICS_FLAT:
-      case OPEN_DOCUMENT_PRESENTATION:
-      case OPEN_DOCUMENT_PRESENTATION_FLAT:
-      case OPEN_DOCUMENT_SPREADSHEET:
-      case OPEN_DOCUMENT_SPREADSHEET_FLAT:
-      case OPEN_DOCUMENT_TEXT:
-      case OPEN_DOCUMENT_TEXT_FLAT:
+      catch (Exception e)
       {
-         return new OpenOfficeAdapter();
-      }
-      default:
-      {
-         throw new RuntimeException("no adapter for document type " + type);
-      }
+         throw new RuntimeException("Unable to construct adapter for document type: "+type, e);
       }
    }
 

@@ -1278,19 +1278,22 @@
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-dtd</artifactId>
-            <version>0.18</version>
+            <version>${okapi.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-idml</artifactId>
+            <version>${okapi.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-openoffice</artifactId>
-            <version>0.18</version>
+            <version>${okapi.version}</version>
         </dependency>
-
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-plaintext</artifactId>
-            <version>0.18</version>
+            <version>${okapi.version}</version>
         </dependency>
 
 		<!-- Other -->

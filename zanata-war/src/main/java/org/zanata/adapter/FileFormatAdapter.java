@@ -32,7 +32,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * Common interface for classes wrapping Okapi filters.
- * 
+ * Each implementation must have a public no-arg constructor.
+ *
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
