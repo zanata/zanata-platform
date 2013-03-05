@@ -190,7 +190,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
       SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(event.getUpdateInfo().getTransUnit().getId()));
-      sourceContentsView.setValue(event.getUpdateInfo().getTransUnit());
+      sourceContentsView.updateTransUnitDetails(event.getUpdateInfo().getTransUnit());
       sourceContentsView.refresh();
    }
 }

@@ -148,6 +148,12 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    }
 
    @Override
+   public void updateTransUnitDetails(TransUnit transUnit)
+   {
+      transUnitDetailsPanel.setDetails(transUnit);
+   }
+
+   @Override
    public TransUnitId getId()
    {
       return transUnitId;
