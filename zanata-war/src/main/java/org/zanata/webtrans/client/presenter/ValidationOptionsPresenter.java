@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
@@ -42,13 +44,15 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsPresenter.Display>
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsPresenter.Display> implements WorkspaceContextUpdateEventHandler
 {
    public interface Display extends WidgetDisplay
    {
       HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked);
 
       void changeValidationSelectorValue(String label, boolean enabled);
+
+      void clearValidationSelector();
    }
 
    private final ValidationService validationService;
@@ -63,11 +67,19 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    protected void onBind()
    {
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+
+      initDisplay();
+   }
+
+   public void initDisplay()
+   {
+      display.clearValidationSelector();
       ArrayList<ValidationAction> validationActions = new ArrayList<ValidationAction>(validationService.getValidationMap().values());
       for (final ValidationAction validationAction : validationActions)
       {
          ValidationInfo validationInfo = validationAction.getValidationInfo();
-         
+
          HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationInfo.getId().getDisplayName(), validationInfo.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
@@ -105,6 +117,14 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
             }
          }
       }
+   }
+
+   @Override
+   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+   {
+      validationService.setValidationRules(event.getValidationInfoList());
+
+      initDisplay();
    }
 }
 

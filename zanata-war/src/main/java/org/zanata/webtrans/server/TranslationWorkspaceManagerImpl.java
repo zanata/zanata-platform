@@ -1,6 +1,8 @@
 package org.zanata.webtrans.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,11 +33,14 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
@@ -66,6 +71,9 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
 
    @In
    private LocaleService localeServiceImpl;
+
+   @In
+   private ValidationService validationServiceImpl;
 
    private static final String EVENT_WORKSPACE_CREATED = "webtrans.WorkspaceCreated";
 
@@ -157,6 +165,13 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
    public void projectIterationUpdate(HProjectIteration projectIteration)
    {
+      List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
+
+      for (ValidationObject valObj : validationServiceImpl.getValidationObject(projectIteration))
+      {
+         validationInfoList.add(valObj.getValidationInfo());
+      }
+
       String projectSlug = projectIteration.getProject().getSlug();
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
@@ -167,7 +182,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug, projectIteration.getProjectType());
       for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId))
       {
-         WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive, projectType);
+         WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive, projectType, validationInfoList);
          workspace.publish(event);
       }
    }

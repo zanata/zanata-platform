@@ -46,6 +46,7 @@ import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 
@@ -505,6 +506,13 @@ public class AppPresenterTest
          public ProjectType getProjectType()
          {
             return projectType;
+         }
+
+         @Override
+         public List<ValidationInfo> getValidationInfoList()
+         {
+            // TODO Auto-generated method stub
+            return null;
          }
       };
    }

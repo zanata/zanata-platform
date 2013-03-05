@@ -74,11 +74,25 @@ public class ValidationServiceImpl implements ValidationService
    public List<ValidationObject> getValidationObject(String projectSlug, String versionSlug)
    {
       List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
-      Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
       {
          HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, versionSlug);
+
+         validationList = getValidationObject(version);
+      }
+
+      return validationList;
+   }
+
+   @Override
+   public List<ValidationObject> getValidationObject(HProjectIteration version)
+   {
+      List<ValidationObject> validationList = ValidationFactory.getAllValidationObject();
+      Set<String> enabledValidations = new HashSet<String>();
+
+      if (version != null)
+      {
          enabledValidations = version.getCustomizedValidations();
 
          // Inherits validations from project if version has no defined

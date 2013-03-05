@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,7 +23,6 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
@@ -98,22 +96,24 @@ public class SideMenuPresenterTest
       verify(notificationPresenter).setNotificationListener(presenter);
 
       verify(eventBus).addHandler(PublishWorkspaceChatEvent.getType(), presenter);
+      verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
+   }
 
-      // Given: on workspace context update event: project active is true but userWorkspaceContext has read only access
-      ArgumentCaptor<WorkspaceContextUpdateEventHandler> workspaceContextUpdateEventHandlerCaptor = ArgumentCaptor.forClass(WorkspaceContextUpdateEventHandler.class);
+   @Test
+   public void onWorkspaceContextUpdated()
+   {
+      // Given: on workspace context update event: project active is true but
+      // userWorkspaceContext has read only access
       WorkspaceContextUpdateEvent workspaceContextEvent = mock(WorkspaceContextUpdateEvent.class);
       when(workspaceContextEvent.isProjectActive()).thenReturn(true);
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(true);
 
-      // When:
-      verify(eventBus).addHandler(eq(WorkspaceContextUpdateEvent.getType()), workspaceContextUpdateEventHandlerCaptor.capture());
-      WorkspaceContextUpdateEventHandler contextUpdateEventHandler = workspaceContextUpdateEventHandlerCaptor.getValue();
-      contextUpdateEventHandler.onWorkspaceContextUpdated(workspaceContextEvent);
+      presenter.onWorkspaceContextUpdated(workspaceContextEvent);
 
       // Then:
       verify(userWorkspaceContext).setProjectActive(workspaceContextEvent.isProjectActive());
       verify(display).setChatTabVisible(false);
-      verify(display, times(2)).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+      verify(display, times(1)).setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
       verify(display).setValidationOptionsTabVisible(false);
    }
 

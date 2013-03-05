@@ -79,7 +79,6 @@ public class ValidationOptionsPresenterTest
       // Then:
       verify(display, times(7)).addValidationSelector(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean());
       verify(changeHandler, times(7)).addValueChangeHandler(valueChangeHandlerCaptor.capture());
-      verifyNoMoreInteractions(display);
    }
 
    @Test
