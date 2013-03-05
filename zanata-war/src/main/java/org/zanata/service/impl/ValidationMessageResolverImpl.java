@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +30,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.util.ZanataMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.GWTI18N;
 import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 /**
@@ -44,48 +47,76 @@ public class ValidationMessageResolverImpl implements ValidationMessageResolver
    @In
    private ZanataMessages messages;
 
+   private ValidationMessages valMessages;
+
+   public ValidationMessageResolverImpl()
+   {
+      try
+      {
+         valMessages = GWTI18N.create(ValidationMessages.class);
+      }
+      catch (IOException e)
+      {
+         e.printStackTrace();
+      }
+   }
+
    @Override
    public String leadingNewlineMissing()
    {
-      return messages.getMessage("jsf.validation.htmlXmlValidator.leadingNewlineMissing");
+      return valMessages.leadingNewlineMissing();
+      // return
+      // messages.getMessage("jsf.validation.htmlXmlValidator.leadingNewlineMissing");
    }
 
    @Override
    public String leadingNewlineAdded()
    {
-      return messages.getMessage("jsf.validation.htmlXmlValidator.leadingNewlineAdded");
+      return valMessages.leadingNewlineAdded();
+      // return
+      // messages.getMessage("jsf.validation.htmlXmlValidator.leadingNewlineAdded");
    }
 
    @Override
    public String trailingNewlineMissing()
    {
-      return messages.getMessage("jsf.validation.htmlXmlValidator.trailingNewlineMissing");
+      return valMessages.trailingNewlineMissing();
+      // return
+      // messages.getMessage("jsf.validation.htmlXmlValidator.trailingNewlineMissing");
    }
 
    @Override
    public String trailingNewlineAdded()
    {
-      return messages.getMessage("jsf.validation.htmlXmlValidator.trailingNewlineAdded");
+      return valMessages.trailingNewlineAdded();
+      // return
+      // messages.getMessage("jsf.validation.htmlXmlValidator.trailingNewlineAdded");
    }
 
    @Override
    public String targetHasFewerTabs(int sourceTabs, int targetTabs)
    {
-      return messages.getMessage("jsf.validation.tabValidator.targetHasFewerTabs", sourceTabs, targetTabs);
+      return valMessages.targetHasFewerTabs(sourceTabs, targetTabs);
+      // return
+      // messages.getMessage("jsf.validation.tabValidator.targetHasFewerTabs",
+      // sourceTabs, targetTabs);
    }
 
    @Override
    public String targetHasMoreTabs(int sourceTabs, int targetTabs)
    {
-      return null;
-      // return messages.targetHasMoreTabs(sourceTabs, targetTabs);
+      return valMessages.targetHasMoreTabs(sourceTabs, targetTabs);
+      // return
+      // messages.getMessage("jsf.validation.tabValidator.targetHasMoreTabs",
+      // sourceTabs, targetTabs);
    }
 
    @Override
    public String linesAdded(int expected, int actual)
    {
-      return null;
-      // return messages.linesAdded(expected, actual);
+      return valMessages.linesAdded(expected, actual);
+      // return messages.getMessage("jsf.validation.tabValidator.linesAdded",
+      // expected, actual);
    }
 
    @Override
