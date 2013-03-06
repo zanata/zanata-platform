@@ -21,6 +21,8 @@
 package org.zanata.service.impl;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -51,7 +53,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TranslatedTextFlowFilter extends Filter
 {
    private static final long serialVersionUID = 1L;
-   private final Map<IndexReader, OpenBitSet> map = new WeakHashMap<IndexReader, OpenBitSet>();
+   private final Map<IndexReader, OpenBitSet> map = Collections.synchronizedMap(new WeakHashMap<IndexReader, OpenBitSet>());
 //   Map<IndexReader, OpenBitSet> map = new MapMaker().weakKeys().makeMap();
    private final LocaleId locale;
 
@@ -119,7 +121,12 @@ public class TranslatedTextFlowFilter extends Filter
       {
          try
          {
-            Set<IndexReader> readerSet = map.keySet();
+            /*
+             * Make a copy of the keyset to avoid java.util.ConcurrentModificationException
+             * 
+             */
+            Set<IndexReader> readerSet = new HashSet<IndexReader>(map.keySet());
+
             for (IndexReader reader :  readerSet)
             {
                boolean indexReaderClosed = reader.getRefCount() <= 0;
@@ -152,7 +159,7 @@ public class TranslatedTextFlowFilter extends Filter
                      }
                   }
                }
-            }
+         }
          }
          catch (AlreadyClosedException e)
          {
