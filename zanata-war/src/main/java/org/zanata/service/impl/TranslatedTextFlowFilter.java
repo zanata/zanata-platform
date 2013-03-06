@@ -30,6 +30,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.Component;
 import org.zanata.common.ContentState;
@@ -121,7 +122,12 @@ public class TranslatedTextFlowFilter extends Filter
             Set<IndexReader> readerSet = map.keySet();
             for (IndexReader reader :  readerSet)
             {
-               // TODO detect closed IndexReader
+               boolean indexReaderClosed = reader.getRefCount() <= 0;
+               if (indexReaderClosed)
+               {
+                  log.warn("IndexReader for locale {} is closed; removing cached DocIdSet", locale);
+                  map.remove(reader);
+               }
                OpenBitSet docIdSet = map.get(reader);
                if (docIdSet != null)
                {
@@ -148,9 +154,14 @@ public class TranslatedTextFlowFilter extends Filter
                }
             }
          }
+         catch (AlreadyClosedException e)
+         {
+            log.warn("Unable to use IndexReader for locale {}; discarding all DocIdSets", locale, e);
+            map.clear();
+         }
          catch (IOException e)
          {
-            log.warn("Unable to use IndexReader for locale {}; discarding DocIdSets", locale, e);
+            log.warn("Unable to use IndexReader for locale {}; discarding all DocIdSets", locale, e);
             map.clear();
          }
       }

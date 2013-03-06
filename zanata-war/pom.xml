@@ -1278,19 +1278,22 @@
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-dtd</artifactId>
-            <version>0.18</version>
+            <version>${okapi.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-idml</artifactId>
+            <version>${okapi.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-openoffice</artifactId>
-            <version>0.18</version>
+            <version>${okapi.version}</version>
         </dependency>
-
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-plaintext</artifactId>
-            <version>0.18</version>
+            <version>${okapi.version}</version>
         </dependency>
 
 		<!-- Other -->
@@ -1716,6 +1719,12 @@
          <artifactId>liquibase-slf4j</artifactId>
          <version>1.0.0</version>
       </dependency>
+
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-exec</artifactId>
+		    <version>1.1</version>
+		</dependency>
 
 		<!-- openid4java -->
 	    <dependency>

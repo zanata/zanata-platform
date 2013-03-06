@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
+ * Copyright 2013, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,24 +18,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.adapter;
 
-import net.sf.okapi.filters.openoffice.OpenOfficeFilter;
+package org.zanata.exception;
 
 /**
- * Adapter to handle any Open Document Format documents (used by LibreOffice and OpenOffice).
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
  */
-public class OpenOfficeAdapter extends GenericOkapiFilterAdapter
+public class VirusDetectedException extends ZanataException
 {
-   public OpenOfficeAdapter()
+   private static final long serialVersionUID = 1L;
+
+   public VirusDetectedException(String message, Throwable e)
    {
-      super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
+      super(message, e);
    }
 
-   private static OpenOfficeFilter prepareFilter()
+   public VirusDetectedException(String message)
    {
-      return new OpenOfficeFilter();
+      super(message);
    }
+
 }
