@@ -81,7 +81,7 @@ public class MessagesProxy extends GenericX
             {
                select = String.valueOf(value);
             }
-            // forms = expand(forms, select, "other");
+            forms = expand(forms, select, "other");
          }
       }
 
