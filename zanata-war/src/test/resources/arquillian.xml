@@ -1,0 +1,30 @@
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <engine>
+        <!-- Generate a copy of the deployment archive -->
+        <!--<property name="deploymentExportPath">target/</property>-->
+    </engine>
+
+    <container qualifier="jbossas-managed" default="true">
+        <protocol type="Servlet 3.0"/>
+        <configuration>
+            <!-- We can use the JBOSS_HOME env variable instead of this -->
+            <property name="jbossHome">/opt/jboss-eap-6.0-standalone</property>
+            <!-- We can use the JAVA_HOME env variable instead of this -->
+            <property name="javaHome">/usr/lib/jvm/jre-1.6.0-sun.x86_64</property>
+            <property name="javaVmArguments">-Xms1303m -Xmx1303m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false <!---Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787--></property>
+            <!-- From JBOSS_HOME/standalone/configuration -->
+            <property name="serverConfig">../../../../../../../../../../../home/camunoz/projects/zanata-root/server/zanata-war/src/test/resources/arquillian/standalone.xml</property>
+            <!--<property name="allowConnectingToRunningServer">true</property>-->
+        </configuration>
+    </container>
+    <extension qualifier="seam2">
+        <property name="seamVersion">2.3.0.Final</property>
+        <property name="autoPackage">false</property>
+    </extension>
+    <!--<extension qualifier="suite">
+        <property name="deploymentClass">org.drools.guvnor.server.test.Deployments</property>
+    </extension>-->
+</arquillian>
