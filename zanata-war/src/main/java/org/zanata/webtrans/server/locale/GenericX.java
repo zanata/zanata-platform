@@ -7,16 +7,25 @@ import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.Properties;
 
+import com.google.gwt.i18n.client.LocalizableResource;
+import com.google.gwt.i18n.server.GwtLocaleFactoryImpl;
+import com.google.gwt.i18n.server.impl.ReflectionMessage;
+import com.google.gwt.i18n.server.impl.ReflectionMessageInterface;
+import com.google.gwt.i18n.shared.GwtLocaleFactory;
+
 public abstract class GenericX implements InvocationHandler
 {
    protected final Properties properties = new Properties();
    protected final Class<?> itf;
+   private static final GwtLocaleFactory gwtLocaleFactory = new GwtLocaleFactoryImpl();
+   private final ReflectionMessageInterface messageInterface;
 
    public abstract Object invoke(Object proxy, Method method, Object[] args) throws Throwable;
 
-   public GenericX(Class<?> _itf, String lang) throws IOException, InvalidParameterException
+   public GenericX(Class<? extends LocalizableResource> _itf, String lang) throws IOException, InvalidParameterException
    {
       this.itf = _itf;
+      messageInterface = new ReflectionMessageInterface(gwtLocaleFactory, _itf);
       fillProperties(itf, lang);
    }
 
@@ -65,6 +74,11 @@ public abstract class GenericX implements InvocationHandler
          }
       }
       return in;
+   }
+
+   protected String getKey(Method method)
+   {
+      return new ReflectionMessage(gwtLocaleFactory, messageInterface, method).getKey();
    }
 
    @Override

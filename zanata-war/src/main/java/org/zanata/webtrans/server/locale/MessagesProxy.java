@@ -5,20 +5,22 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.i18n.client.LocalizableResource;
 import com.google.gwt.i18n.client.LocalizableResource.Key;
+import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.i18n.client.Messages.AlternateMessage;
 import com.google.gwt.i18n.client.Messages.DefaultMessage;
 import com.google.gwt.i18n.client.Messages.PluralCount;
-import com.google.gwt.i18n.client.Messages.AlternateMessage;
 import com.google.gwt.i18n.client.PluralRule;
 
-public class GenericMessages extends GenericX
+public class MessagesProxy extends GenericX
 {
-
-   public GenericMessages(Class<?> _itf, String lang) throws IOException, InvalidParameterException
+   public MessagesProxy(Class<? extends LocalizableResource> _itf, String lang) throws IOException, InvalidParameterException
    {
       super(_itf, lang);
    }
@@ -45,6 +47,44 @@ public class GenericMessages extends GenericX
 
    private String buildMessage(String propertyName, Method method, Object[] args) throws Throwable
    {
+      MessageDescriptor desc = getDescriptor(method);
+      List<String> forms = new ArrayList<String>();
+
+      for (int i = 0; i < desc.args.length; i++)
+      {
+         MessageArgument arg = desc.args[i];
+         if (arg.pluralCount)
+         {
+            PluralRule rule = arg.pluralRule.newInstance();
+
+            int n = 0;
+            if (isA(args[i].getClass(), Number.class))
+            {
+               n = ((Number) args[i]).intValue();
+            }
+            else if (isA(args[i].getClass(), List.class))
+            {
+               n = ((List) args[i]).size();
+            }
+            forms = expand(forms, "=" + n, rule.pluralForms()[rule.select(n - arg.pluralOffset)].getName());
+            args[i] = n - arg.pluralOffset;
+         }
+         if (arg.select)
+         {
+            Object value = args[i];
+            String select;
+            if (value instanceof Enum)
+            {
+               select = ((Enum) value).name();
+            }
+            else
+            {
+               select = String.valueOf(value);
+            }
+            // forms = expand(forms, select, "other");
+         }
+      }
+
       AlternateMessage pluralTextAnnotation = method.getAnnotation(AlternateMessage.class);
       Map<Integer, String> pluralParamIndex2pattern = new HashMap<Integer, String>();
       String pluralKey = "";
@@ -67,33 +107,30 @@ public class GenericMessages extends GenericX
          {
             continue;
          }
-         else if (pc.value() != PluralRule.class)
-         {
-            // user plural rule is not supported
-         }
-         else
+         else if (pc.value() == PluralRule.class)
          {
             // manage plural text
-            // TODO manage primitive types
             int n = -1;
             if (isA(paramType, Number.class) || isA(paramType, byte.class) || isA(paramType, short.class) || isA(paramType, int.class) || isA(paramType, long.class))
             {
                n = ((Number) args[i]).intValue();
             }
+            else if (isA(paramType, List.class))
+            {
+               n = ((List) args[i]).size();
+            }
+
             if (n == 0)
             {
                pluralKey += "[none]";
-               pluralParamIndex2pattern.put(i, null);
             }
             else if (n == 1)
             {
                pluralKey += "[one]";
-               pluralParamIndex2pattern.put(i, null);
             }
             else if (n == 2)
             {
                pluralKey += "[two]";
-               pluralParamIndex2pattern.put(i, null);
             }
             else if (3 <= n && n <= 10)
             {
@@ -110,13 +147,11 @@ public class GenericMessages extends GenericX
       if (template == null)
       {
          DefaultMessage dm = method.getAnnotation(DefaultMessage.class);
-         if (dm == null)
-         {
-         }
-         else
+         if (dm != null)
          {
             template = dm.value();
          }
+
          if (template == null)
          {
             return null;
@@ -148,7 +183,7 @@ public class GenericMessages extends GenericX
    }
 
    @SuppressWarnings("unchecked")
-   <T extends Annotation> T getAnnotation(Annotation[] as, Class<T> annotation)
+   private <T extends Annotation> T getAnnotation(Annotation[] as, Class<T> annotation)
    {
       for (Annotation a : as)
       {
@@ -161,7 +196,7 @@ public class GenericMessages extends GenericX
    }
 
    @SuppressWarnings("unchecked")
-   <T extends Annotation> List<T> getAnnotations(Annotation[] as, Class<T> a)
+   private <T extends Annotation> List<T> getAnnotations(Annotation[] as, Class<T> a)
    {
       List<T> foundAnnotations = new ArrayList<T>();
       for (Annotation _a : as)
@@ -172,5 +207,86 @@ public class GenericMessages extends GenericX
          }
       }
       return foundAnnotations;
+   }
+
+   private static List<String> expand(List<String> list, String... variants)
+   {
+      if (list.isEmpty())
+      {
+         return new ArrayList<String>(Arrays.asList(variants));
+      }
+      List<String> result = new ArrayList<String>(list.size() * variants.length);
+      for (String str : list)
+      {
+         for (String variant : variants)
+         {
+            result.add(str + '|' + variant);
+         }
+      }
+      return result;
+   }
+
+   protected MessageDescriptor getDescriptor(Method method)
+   {
+      MessageDescriptor desc = new MessageDescriptor();
+      Messages.DefaultMessage defaultMessageAnnotation = method.getAnnotation(Messages.DefaultMessage.class);
+      if (defaultMessageAnnotation != null)
+      {
+         desc.defaults.put("", defaultMessageAnnotation.value());
+      }
+
+      desc.key = getKey(method);
+      String[] defaults = null;
+      Messages.AlternateMessage alternateMessageAnnotation = method.getAnnotation(Messages.AlternateMessage.class);
+      if (alternateMessageAnnotation != null)
+      {
+         defaults = alternateMessageAnnotation.value();
+      }
+
+      if (defaults != null)
+      {
+         for (int i = 0; (i + 1) < defaults.length; i += 2)
+         {
+            desc.defaults.put(defaults[i], defaults[i + 1]);
+         }
+      }
+      Annotation[][] args = method.getParameterAnnotations();
+      desc.args = new MessageArgument[args.length];
+      for (int i = 0; i < args.length; i++)
+      {
+         desc.args[i] = new MessageArgument();
+         for (Annotation annotation : args[i])
+         {
+            if (annotation instanceof Messages.PluralCount)
+            {
+               desc.args[i].pluralCount = true;
+               desc.args[i].pluralRule = ((Messages.PluralCount) annotation).value();
+            }
+            if (annotation instanceof Messages.Offset)
+            {
+               desc.args[i].pluralOffset = ((Messages.Offset) annotation).value();
+            }
+            if (annotation instanceof Messages.Select)
+            {
+               desc.args[i].select = true;
+            }
+         }
+      }
+      return desc;
+   }
+
+   class MessageDescriptor
+   {
+      String key;
+      Map<String, String> defaults = new HashMap<String, String>();
+      MessageArgument[] args;
+   }
+
+   class MessageArgument
+   {
+      boolean pluralCount;
+      int pluralOffset;
+      Class<? extends PluralRule> pluralRule;
+      boolean select;
    }
 }

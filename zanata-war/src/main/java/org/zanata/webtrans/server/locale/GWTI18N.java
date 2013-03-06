@@ -7,6 +7,8 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.i18n.client.LocalizableResource;
 import com.google.gwt.i18n.client.Messages;
 
 public class GWTI18N
@@ -14,13 +16,13 @@ public class GWTI18N
    public final static Map<String, Object> cache = new HashMap<String, Object>();
    public static boolean useCache = true;
 
-   public static <T> T create(Class<T> itf) throws IOException
+   public static <T> T create(Class<? extends LocalizableResource> itf) throws IOException
    {
       return create(itf, null);
    }
 
    @SuppressWarnings("unchecked")
-   public static <T> T create(Class<T> itf, String lang) throws IOException
+   public static <T> T create(Class<? extends LocalizableResource> itf, String lang) throws IOException
    {
       final String key = itf.getName() + (lang == null ? "" : ("_" + lang));
       if (useCache)
@@ -40,12 +42,16 @@ public class GWTI18N
    }
 
    @SuppressWarnings("unchecked")
-   private static <T> T createProxy(Class<T> itf, String lang) throws IOException
+   private static <T> T createProxy(Class<? extends LocalizableResource> itf, String lang) throws IOException
    {
       InvocationHandler ih;
+      if (GenericX.isA(itf, Constants.class))
+      {
+         ih = new ConstantsProxy(itf, lang);
+      }
       if (GenericX.isA(itf, Messages.class))
       {
-         ih = new GenericMessages(itf, lang);
+         ih = new MessagesProxy(itf, lang);
       }
       else
       {

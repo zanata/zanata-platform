@@ -8,6 +8,7 @@ import com.google.gwt.i18n.client.Constants.DefaultIntValue;
 import com.google.gwt.i18n.client.Constants.DefaultStringArrayValue;
 import com.google.gwt.i18n.client.Constants.DefaultStringMapValue;
 import com.google.gwt.i18n.client.Constants.DefaultStringValue;
+import com.google.gwt.i18n.client.LocalizableResource;
 import com.google.gwt.i18n.client.LocalizableResource.Key;
 
 import java.io.IOException;
@@ -17,9 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class GenericConstants extends GenericX {
+public class ConstantsProxy extends GenericX {
 
-    public GenericConstants(Class<?> _itf, String lang) throws IOException, InvalidParameterException {
+   public ConstantsProxy(Class<? extends LocalizableResource> _itf, String lang) throws IOException, InvalidParameterException
+   {
         super(_itf, lang);
     }
     @Override

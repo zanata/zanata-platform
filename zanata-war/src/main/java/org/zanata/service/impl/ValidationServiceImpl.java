@@ -79,7 +79,8 @@ public class ValidationServiceImpl implements ValidationService
    {
       try
       {
-         validationMessageResolverImpl = new ValidationMessageResolverImpl(GWTI18N.create(ValidationMessages.class));
+         ValidationMessages valMessages = GWTI18N.create(ValidationMessages.class);
+         validationMessageResolverImpl = new ValidationMessageResolverImpl(valMessages);
       }
       catch (IOException e)
       {
