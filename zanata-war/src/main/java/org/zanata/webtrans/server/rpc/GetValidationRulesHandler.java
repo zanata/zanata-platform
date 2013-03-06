@@ -27,8 +27,10 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -44,6 +46,7 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
  */
 @Name("webtrans.gwt.GetValidationRulesHandler")
 @ActionHandlerFor(GetValidationRulesAction.class)
+@Scope(ScopeType.STATELESS)
 public class GetValidationRulesHandler extends AbstractActionHandler<GetValidationRulesAction, GetValidationRulesResult>
 {
    @In

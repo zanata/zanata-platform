@@ -7,7 +7,6 @@ import java.util.Map;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
@@ -24,7 +23,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
 
    public PrintfXSIExtensionValidation(ValidationId id, ValidationMessageResolver messages)
    {
-      super(id, messages);
+      super(id, messages, false);
    }
 
    @Override
@@ -33,14 +32,11 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
 
-      Log.debug("source vars: " + sourceVars);
-      Log.debug("target vars: " + targetVars);
 
       if (PrintfXSIExtensionValidation.hasPosition(targetVars))
       {
          sourceVars = PrintfXSIExtensionValidation.appendPosition(sourceVars);
          checkPosition(targetVars, sourceVars.size());
-         Log.debug("source vars after treatment: " + sourceVars);
       }
 
 
@@ -119,7 +115,6 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       }
       catch (Exception e)
       {
-         Log.info("cannot extract position index from " + positionAndDollar);
          return -1;
       }
    }

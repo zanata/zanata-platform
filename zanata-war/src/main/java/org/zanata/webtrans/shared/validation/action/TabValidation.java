@@ -31,7 +31,7 @@ public class TabValidation extends AbstractValidationAction
 {
    public TabValidation(ValidationId id, ValidationMessageResolver messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(new ValidationInfo(id, null, true), messages);
    }
 
    @Override

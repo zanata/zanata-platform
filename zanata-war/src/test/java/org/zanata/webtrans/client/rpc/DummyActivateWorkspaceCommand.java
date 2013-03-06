@@ -48,7 +48,8 @@ public class DummyActivateWorkspaceCommand implements Command
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
 
-      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(null);
+      ValidationFactory validationFactory = new ValidationFactory(null);
+      Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
       ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
       for (ValidationAction action : validationMap.values())
       {

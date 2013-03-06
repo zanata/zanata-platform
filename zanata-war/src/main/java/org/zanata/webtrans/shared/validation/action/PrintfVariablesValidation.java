@@ -47,7 +47,12 @@ public class PrintfVariablesValidation extends AbstractValidationAction
 
    public PrintfVariablesValidation(ValidationId id, ValidationMessageResolver messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(new ValidationInfo(id, null, true), messages);
+   }
+   
+   public PrintfVariablesValidation(ValidationId id, ValidationMessageResolver messages, boolean enabled)
+   {
+      super(new ValidationInfo(id, null, enabled), messages);
    }
 
    @Override

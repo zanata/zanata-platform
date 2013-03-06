@@ -121,6 +121,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay
 
       downloadAllFiles.setText("Download all files (zip)");
 
+      runValidation.setText("Run validation");
+
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
       statsByMsg.setText(messages.byMessage());

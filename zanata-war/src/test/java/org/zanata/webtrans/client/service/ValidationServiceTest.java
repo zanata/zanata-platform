@@ -23,6 +23,7 @@ import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
@@ -45,7 +46,6 @@ public class ValidationServiceTest
    private EventBus eventBus;
    @Mock
    private TableEditorMessages messages;
-   @Mock
    private ValidationMessages validationMessages;
    @Mock
    private HasUpdateValidationWarning validationMessagePanel;
@@ -58,9 +58,12 @@ public class ValidationServiceTest
    {
       MockitoAnnotations.initMocks(this);
 
-      service = new ValidationService(eventBus, messages, validationMessages);
+      validationMessages = TestMessages.getInstance(ValidationMessages.class);
 
-      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(null);
+      service = new ValidationService(eventBus, messages, validationMessages);
+      ValidationFactory validationFactory = new ValidationFactory(new ValidationMessageResolverImpl(validationMessages));
+
+      Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
       ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
       for (ValidationAction action : validationMap.values())
       {

@@ -3,6 +3,7 @@
  */
 package org.zanata.service.impl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +26,8 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.GWTI18N;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -56,15 +59,39 @@ public class ValidationServiceImpl implements ValidationService
    @In
    private ProjectIterationDAO projectIterationDAO;
 
-   @In
    private ValidationMessageResolver validationMessageResolverImpl;
 
+   private ValidationFactory validationFactory;
+
    private static final String DESC_KEY = ".desc";
+
+
+   private ValidationFactory getValidationFactory()
+   {
+      if (validationFactory == null)
+      {
+         validationFactory = new ValidationFactory(getMessageResolver());
+      }
+      return validationFactory;
+   }
+
+   public ValidationMessageResolver getMessageResolver()
+   {
+      try
+      {
+         validationMessageResolverImpl = new ValidationMessageResolverImpl(GWTI18N.create(ValidationMessages.class));
+      }
+      catch (IOException e)
+      {
+         e.printStackTrace();
+      }
+      return validationMessageResolverImpl;
+   }
 
    @Override
    public Collection<ValidationAction> getValidationAction(String projectSlug)
    {
-      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(validationMessageResolverImpl).values();
+      Collection<ValidationAction> validationList = getValidationFactory().getAllValidationActions().values();
       Set<String> enabledValidations = new HashSet<String>();
 
       if (!StringUtils.isEmpty(projectSlug))
@@ -90,12 +117,27 @@ public class ValidationServiceImpl implements ValidationService
    @Override
    public Collection<ValidationAction> getValidationAction(String projectSlug, String versionSlug)
    {
-      Collection<ValidationAction> validationList = ValidationFactory.getAllValidationActions(validationMessageResolverImpl).values();
-      Set<String> enabledValidations = new HashSet<String>();
+      Collection<ValidationAction> validationList = null;
 
       if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
       {
          HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, versionSlug);
+
+         validationList = getValidationObject(version);
+      }
+
+      return validationList;
+   }
+
+   @Override
+   public Collection<ValidationAction> getValidationObject(HProjectIteration version)
+   {
+      Collection<ValidationAction> validationList = getValidationFactory().getAllValidationActions().values();
+
+      Set<String> enabledValidations = new HashSet<String>();
+
+      if (version != null)
+      {
          enabledValidations = version.getCustomizedValidations();
 
          // Inherits validations from project if version has no defined
@@ -143,7 +185,7 @@ public class ValidationServiceImpl implements ValidationService
             {
                for (ValidationId validationId : validationIds)
                {
-                  ValidationAction validation = ValidationFactory.getValidationAction(validationId);
+                  ValidationAction validation = getValidationFactory().getValidationAction(validationId);
 
                   validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
                   if (validation.hasError())

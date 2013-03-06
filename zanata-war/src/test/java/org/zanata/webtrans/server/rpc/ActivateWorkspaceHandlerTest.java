@@ -93,6 +93,8 @@ public class ActivateWorkspaceHandlerTest
    @Mock
    private GetValidationRulesHandler getValidationRulesHandler;
 
+   private ValidationFactory validationFactory;
+
    @BeforeMethod
    public void setUp() throws Exception
    {
@@ -114,6 +116,8 @@ public class ActivateWorkspaceHandlerTest
       person = TestFixture.person();
       doReturn(person).when(handler).retrievePerson();
       doReturn(HTTP_SESSION_ID).when(handler).getHttpSessionId();
+       
+      validationFactory = new ValidationFactory(null);
    }
 
    @Test
@@ -137,7 +141,7 @@ public class ActivateWorkspaceHandlerTest
       when(translationWorkspace.getWorkspaceContext()).thenReturn(workspaceContext);
       when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
-      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(null);
+      Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
       ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
       for (ValidationAction valAction : validationMap.values())
       {

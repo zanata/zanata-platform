@@ -6,6 +6,7 @@ package org.zanata.service;
 import java.util.Collection;
 
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.model.HProjectIteration;
 
 
 /**
@@ -33,4 +34,13 @@ public interface ValidationService
     * @return
     */
    Collection<ValidationAction> getValidationAction(String projectSlug, String versionSlug);
+
+   /**
+    * Return all ValidationActions with enabled=true on those which are
+    * customized to the version
+    * 
+    * @param HProjectIteration
+    * @return
+    */
+   Collection<ValidationAction> getValidationObject(HProjectIteration version);
 }

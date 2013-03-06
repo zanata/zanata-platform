@@ -43,7 +43,7 @@ public class JavaVariablesValidation extends AbstractValidationAction
 {
    public JavaVariablesValidation(ValidationId id, ValidationMessageResolver messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(new ValidationInfo(id, null, true), messages);
    }
 
    @Override

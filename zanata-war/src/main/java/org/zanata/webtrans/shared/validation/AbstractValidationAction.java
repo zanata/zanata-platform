@@ -23,7 +23,6 @@ package org.zanata.webtrans.shared.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;

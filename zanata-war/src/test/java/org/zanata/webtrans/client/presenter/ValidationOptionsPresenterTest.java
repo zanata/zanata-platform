@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -54,12 +55,16 @@ public class ValidationOptionsPresenterTest
    @Mock
    private ValueChangeEvent<Boolean> valueChangeEvent;
 
+   private ValidationFactory validationFactory;
+
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
 
       validationMessage = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+      
+      validationFactory = new ValidationFactory(validationMessage);
 
       presenter = new ValidationOptionsPresenter(display, eventBus, validationService);
    }
@@ -68,16 +73,15 @@ public class ValidationOptionsPresenterTest
    public void onBind()
    {
       // Given:
-      when(validationService.getValidationMap()).thenReturn(ValidationFactory.getAllValidationActions(validationMessage));
+      when(validationService.getValidationMap()).thenReturn(validationFactory.getAllValidationActions());
 
-      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), null, false, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), null, true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
       when(display.addValidationSelector(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), null, false, false)).thenReturn(changeHandler);
-
 
       // When:
       presenter.onBind();
@@ -85,7 +89,6 @@ public class ValidationOptionsPresenterTest
       // Then:
       verify(display, times(7)).addValidationSelector(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean());
       verify(changeHandler, times(7)).addValueChangeHandler(valueChangeHandlerCaptor.capture());
-      verifyNoMoreInteractions(display);
    }
 
    @Test
