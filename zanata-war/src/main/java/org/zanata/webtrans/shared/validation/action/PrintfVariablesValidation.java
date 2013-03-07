@@ -23,10 +23,10 @@ package org.zanata.webtrans.shared.validation.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
-import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -45,12 +45,12 @@ public class PrintfVariablesValidation extends AbstractValidationAction
    // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
    private static final String VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
 
-   public PrintfVariablesValidation(ValidationId id, ValidationMessageResolver messages)
+   public PrintfVariablesValidation(ValidationId id, ValidationMessages messages)
    {
       super(new ValidationInfo(id, null, true), messages);
    }
    
-   public PrintfVariablesValidation(ValidationId id, ValidationMessageResolver messages, boolean enabled)
+   public PrintfVariablesValidation(ValidationId id, ValidationMessages messages, boolean enabled)
    {
       super(new ValidationInfo(id, null, enabled), messages);
    }

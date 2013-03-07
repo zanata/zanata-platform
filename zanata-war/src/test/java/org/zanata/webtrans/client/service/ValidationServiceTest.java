@@ -61,7 +61,7 @@ public class ValidationServiceTest
       validationMessages = TestMessages.getInstance(ValidationMessages.class);
 
       service = new ValidationService(eventBus, messages, validationMessages);
-      ValidationFactory validationFactory = new ValidationFactory(new ValidationMessageResolverImpl(validationMessages));
+      ValidationFactory validationFactory = new ValidationFactory(validationMessages);
 
       Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
       ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();

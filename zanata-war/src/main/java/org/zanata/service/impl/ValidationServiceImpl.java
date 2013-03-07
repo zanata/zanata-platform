@@ -4,6 +4,7 @@
 package org.zanata.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,15 +28,15 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.server.locale.GWTI18N;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationResultInfo;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
-import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 /**
  * 
@@ -59,7 +60,7 @@ public class ValidationServiceImpl implements ValidationService
    @In
    private ProjectIterationDAO projectIterationDAO;
 
-   private ValidationMessageResolver validationMessageResolverImpl;
+   // private ValidationMessageResolver validationMessageResolverImpl;
 
    private ValidationFactory validationFactory;
 
@@ -70,23 +71,18 @@ public class ValidationServiceImpl implements ValidationService
    {
       if (validationFactory == null)
       {
-         validationFactory = new ValidationFactory(getMessageResolver());
+         ValidationMessages valMessages;
+         try
+         {
+            valMessages = Gwti18nReader.create(ValidationMessages.class);
+            validationFactory = new ValidationFactory(valMessages);
+         }
+         catch (IOException e)
+         {
+            e.printStackTrace();
+         }
       }
       return validationFactory;
-   }
-
-   public ValidationMessageResolver getMessageResolver()
-   {
-      try
-      {
-         ValidationMessages valMessages = GWTI18N.create(ValidationMessages.class);
-         validationMessageResolverImpl = new ValidationMessageResolverImpl(valMessages);
-      }
-      catch (IOException e)
-      {
-         e.printStackTrace();
-      }
-      return validationMessageResolverImpl;
    }
 
    @Override
@@ -171,13 +167,13 @@ public class ValidationServiceImpl implements ValidationService
     * @param validations
     * @param localeId
     */
-   public Map<DocumentId, Set<TransUnit>> runValidations(Collection<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
+   public Map<DocumentId, List<ValidationResultInfo>> runValidations(Collection<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      Map<DocumentId, Set<TransUnit>> docValidationResult = new HashMap<DocumentId, Set<TransUnit>>();
+      Map<DocumentId, List<ValidationResultInfo>> docValidationResult = new HashMap<DocumentId, List<ValidationResultInfo>>();
 
       for (HDocument hDoc : hDocs)
       {
-         Set<TransUnit> errorList = new HashSet<TransUnit>();
+         Map<Long, ValidationResultInfo> targetErrorList = new HashMap<Long, ValidationResultInfo>();
 
          for(HTextFlow textFlow: hDoc.getTextFlows())
          {
@@ -191,15 +187,22 @@ public class ValidationServiceImpl implements ValidationService
                   validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
                   if (validation.hasError())
                   {
-                     System.out.println("==================" + validation.getError());
-                     errorList.add(transUnitTransformer.transform(textFlow, target));
+                     if(targetErrorList.containsKey(target.getId()))
+                     {
+                        targetErrorList.get(target.getId()).getErrorMessages().addAll(validation.getError());
+                     }
+                     else
+                     {
+                        ValidationResultInfo result = new ValidationResultInfo(transUnitTransformer.transform(textFlow, target), validation.getError());
+                        targetErrorList.put(target.getId(), result);
+                     }
                   }
                }
             }
          }
-         if (!errorList.isEmpty())
+         if (!targetErrorList.isEmpty())
          {
-            docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), errorList);
+            docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), new ArrayList<ValidationResultInfo>(targetErrorList.values()));
          }
       }
       return docValidationResult;

@@ -36,7 +36,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 
@@ -57,7 +56,7 @@ public class HtmlXmlTagValidationTests
 
    private HtmlXmlTagValidation htmlXmlTagValidation;
 
-   private ValidationMessageResolver messages;
+   private ValidationMessages messages;
 
    // captured tag lists sent to messages
    @Captor
@@ -72,7 +71,7 @@ public class HtmlXmlTagValidationTests
    {
       MockitoAnnotations.initMocks(this);
 
-      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+      messages = TestMessages.getInstance(ValidationMessages.class);
 
       htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, messages);
       htmlXmlTagValidation.getValidationInfo().setEnabled(true);

@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
@@ -38,9 +39,9 @@ public class ValidationFactory
       }
    };
 
-   public ValidationFactory(ValidationMessageResolver messageResolver)
+   public ValidationFactory(ValidationMessages validationMessages)
    {
-      init(messageResolver);
+      init(validationMessages);
    }
 
    /**
@@ -61,24 +62,24 @@ public class ValidationFactory
       return VALIDATION_MAP.get(id);
    }
 
-   private void init(ValidationMessageResolver messageResolver)
+   private void init(ValidationMessages validationMessages)
    {
-      initValidationMap(messageResolver);
+      initValidationMap(validationMessages);
    }
 
-   private void initValidationMap(ValidationMessageResolver messageResolver)
+   private void initValidationMap(ValidationMessages validationMessages)
    {
       VALIDATION_MAP.clear();
 
-      VALIDATION_MAP.put(ValidationId.HTML_XML, new HtmlXmlTagValidation(ValidationId.HTML_XML, messageResolver));
-      VALIDATION_MAP.put(ValidationId.NEW_LINE, new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messageResolver));
-      VALIDATION_MAP.put(ValidationId.TAB, new TabValidation(ValidationId.TAB, messageResolver));
+      VALIDATION_MAP.put(ValidationId.HTML_XML, new HtmlXmlTagValidation(ValidationId.HTML_XML, validationMessages));
+      VALIDATION_MAP.put(ValidationId.NEW_LINE, new NewlineLeadTrailValidation(ValidationId.NEW_LINE, validationMessages));
+      VALIDATION_MAP.put(ValidationId.TAB, new TabValidation(ValidationId.TAB, validationMessages));
 
-      VALIDATION_MAP.put(ValidationId.JAVA_VARIABLES, new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, messageResolver));
-      VALIDATION_MAP.put(ValidationId.XML_ENTITY, new XmlEntityValidation(ValidationId.XML_ENTITY, messageResolver));
+      VALIDATION_MAP.put(ValidationId.JAVA_VARIABLES, new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, validationMessages));
+      VALIDATION_MAP.put(ValidationId.XML_ENTITY, new XmlEntityValidation(ValidationId.XML_ENTITY, validationMessages));
 
-      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, messageResolver);
-      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, messageResolver);
+      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, validationMessages);
+      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, validationMessages);
 
       printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
       positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);

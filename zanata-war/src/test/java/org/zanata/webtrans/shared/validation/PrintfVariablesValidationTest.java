@@ -36,7 +36,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 
@@ -55,7 +54,7 @@ public class PrintfVariablesValidationTest
 
    private PrintfVariablesValidation printfVariablesValidation;
 
-   private ValidationMessageResolver messages;
+   private ValidationMessages messages;
 
    @Captor
    private ArgumentCaptor<List<String>> capturedVarsAdded;
@@ -67,7 +66,7 @@ public class PrintfVariablesValidationTest
    {
       MockitoAnnotations.initMocks(this);
       
-      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+      messages = TestMessages.getInstance(ValidationMessages.class);
 
 
       printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, messages);

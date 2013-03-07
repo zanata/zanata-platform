@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class ConstantsProxy extends GenericX {
+public class ConstantsProxy extends GenericProxy {
 
    public ConstantsProxy(Class<? extends LocalizableResource> _itf, String lang) throws IOException, InvalidParameterException
    {

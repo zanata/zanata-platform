@@ -65,7 +65,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
    {
       this.eventBus = eventBus;
       this.messages = messages;
-      validationFactory = new ValidationFactory(new ValidationMessageResolverImpl(validationMessages));
+      validationFactory = new ValidationFactory(validationMessages);
 
       eventBus.addHandler(RunValidationEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);

@@ -11,9 +11,10 @@ import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.i18n.client.LocalizableResource;
 import com.google.gwt.i18n.client.Messages;
 
-public class GWTI18N
+public class Gwti18nReader
 {
    public final static Map<String, Object> cache = new HashMap<String, Object>();
+
    public static boolean useCache = true;
 
    public static <T> T create(Class<? extends LocalizableResource> itf) throws IOException
@@ -45,11 +46,11 @@ public class GWTI18N
    private static <T> T createProxy(Class<? extends LocalizableResource> itf, String lang) throws IOException
    {
       InvocationHandler ih;
-      if (GenericX.isA(itf, Constants.class))
+      if (GenericProxy.isA(itf, Constants.class))
       {
          ih = new ConstantsProxy(itf, lang);
       }
-      if (GenericX.isA(itf, Messages.class))
+      if (GenericProxy.isA(itf, Messages.class))
       {
          ih = new MessagesProxy(itf, lang);
       }

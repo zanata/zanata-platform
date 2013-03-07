@@ -13,7 +13,7 @@ import com.google.gwt.i18n.server.impl.ReflectionMessage;
 import com.google.gwt.i18n.server.impl.ReflectionMessageInterface;
 import com.google.gwt.i18n.shared.GwtLocaleFactory;
 
-public abstract class GenericX implements InvocationHandler
+public abstract class GenericProxy implements InvocationHandler
 {
    protected final Properties properties = new Properties();
    protected final Class<?> itf;
@@ -22,7 +22,7 @@ public abstract class GenericX implements InvocationHandler
 
    public abstract Object invoke(Object proxy, Method method, Object[] args) throws Throwable;
 
-   public GenericX(Class<? extends LocalizableResource> _itf, String lang) throws IOException, InvalidParameterException
+   public GenericProxy(Class<? extends LocalizableResource> _itf, String lang) throws IOException, InvalidParameterException
    {
       this.itf = _itf;
       messageInterface = new ReflectionMessageInterface(gwtLocaleFactory, _itf);

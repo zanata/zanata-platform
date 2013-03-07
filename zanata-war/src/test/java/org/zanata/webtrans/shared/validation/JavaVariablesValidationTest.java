@@ -24,19 +24,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 
@@ -55,7 +52,7 @@ public class JavaVariablesValidationTest
 
    private JavaVariablesValidation javaVariablesValidation;
 
-   private ValidationMessageResolver messages;
+   private ValidationMessages messages;
    @Captor
    private ArgumentCaptor<List<String>> capturedVarsAdded;
    @Captor
@@ -65,7 +62,7 @@ public class JavaVariablesValidationTest
    public void init()
    {
       MockitoAnnotations.initMocks(this);
-      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+      messages = TestMessages.getInstance(ValidationMessages.class);
 
       javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, messages);
       javaVariablesValidation.getValidationInfo().setEnabled(true);

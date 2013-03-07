@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,6 +62,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationResultInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
@@ -465,7 +467,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             @Override
             public void onSuccess(RunValidationResult result)
             {
-               Map<DocumentId, Set<TransUnit>> resultMap = result.getResult();
+               Map<DocumentId, List<ValidationResultInfo>> resultMap = result.getResult();
                for(DocumentId documentId: resultMap.keySet())
                {
                   Log.info(documentId.toString());

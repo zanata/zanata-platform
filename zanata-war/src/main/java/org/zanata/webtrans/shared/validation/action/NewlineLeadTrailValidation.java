@@ -20,10 +20,10 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
-import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -35,7 +35,7 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class NewlineLeadTrailValidation extends AbstractValidationAction
 {
-   public NewlineLeadTrailValidation(ValidationId id, ValidationMessageResolver messages)
+   public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
    {
       super(new ValidationInfo(id, null, true), messages);
    }

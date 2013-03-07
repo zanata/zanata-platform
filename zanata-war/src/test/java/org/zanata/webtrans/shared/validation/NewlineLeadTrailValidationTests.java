@@ -29,7 +29,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 
@@ -45,12 +44,12 @@ public class NewlineLeadTrailValidationTests
 
    private NewlineLeadTrailValidation newlineLeadTrailValidation;
 
-   private ValidationMessageResolver messages;
+   private ValidationMessages messages;
 
    @BeforeMethod
    public void init()
    {
-      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+      messages = TestMessages.getInstance(ValidationMessages.class);
       newlineLeadTrailValidation = new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages);
       newlineLeadTrailValidation.getValidationInfo().setEnabled(true);
    }

@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
-import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
 
 /**
  * Checks for consistent java-style variables between two strings.
@@ -41,7 +41,7 @@ import org.zanata.webtrans.shared.validation.ValidationMessageResolver;
  **/
 public class JavaVariablesValidation extends AbstractValidationAction
 {
-   public JavaVariablesValidation(ValidationId id, ValidationMessageResolver messages)
+   public JavaVariablesValidation(ValidationId id, ValidationMessages messages)
    {
       super(new ValidationInfo(id, null, true), messages);
    }

@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
@@ -54,12 +55,12 @@ public abstract class AbstractValidationAction implements ValidationAction
    private ArrayList<String> errorList = new ArrayList<String>();
    private ArrayList<ValidationAction> exclusiveValidations = new ArrayList<ValidationAction>();
 
-   private ValidationMessageResolver messageResolver;
+   private ValidationMessages validationMessages;
 
-   public AbstractValidationAction(ValidationInfo validationInfo, ValidationMessageResolver messageResolver)
+   public AbstractValidationAction(ValidationInfo validationInfo, ValidationMessages validationMessages)
    {
       this.validationInfo = validationInfo;
-      this.messageResolver = messageResolver;
+      this.validationMessages = validationMessages;
    }
 
    @Override
@@ -109,9 +110,9 @@ public abstract class AbstractValidationAction implements ValidationAction
       errorList.add(error);
    }
    
-   protected ValidationMessageResolver getMessages()
+   protected ValidationMessages getMessages()
    {
-      return messageResolver;
+      return validationMessages;
    }
    
    @Override

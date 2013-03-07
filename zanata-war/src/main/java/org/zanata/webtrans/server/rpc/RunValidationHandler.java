@@ -2,7 +2,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -18,7 +17,7 @@ import org.zanata.model.HLocale;
 import org.zanata.service.impl.ValidationServiceImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.ValidationResultInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.RunValidationAction;
 import org.zanata.webtrans.shared.rpc.RunValidationResult;
@@ -45,7 +44,7 @@ public class RunValidationHandler extends AbstractActionHandler<RunValidationAct
       
       List<HDocument> hDocs = documentDAO.getAllByProjectIteration(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
 
-      Map<DocumentId, Set<TransUnit>> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
+      Map<DocumentId, List<ValidationResultInfo>> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
       return new RunValidationResult(result);
    }
 

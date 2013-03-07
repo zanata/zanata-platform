@@ -1,26 +1,23 @@
 package org.zanata.webtrans.shared.validation;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
-import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.service.ValidationMessageResolverImpl;
-import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.TestMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -36,7 +33,7 @@ public class PrintfXSIExtensionValidationTest
 
    private PrintfXSIExtensionValidation printfVariablesValidation;
 
-   private ValidationMessageResolver messages;
+   private ValidationMessages messages;
    @Captor
    private ArgumentCaptor<List<String>> capturedVarsAdded;
    @Captor
@@ -51,7 +48,7 @@ public class PrintfXSIExtensionValidationTest
    {
       MockitoAnnotations.initMocks(this);
 
-      messages = new ValidationMessageResolverImpl(TestMessages.getInstance(ValidationMessages.class));
+      messages = TestMessages.getInstance(ValidationMessages.class);
 
       printfVariablesValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, messages);
       printfVariablesValidation.getValidationInfo().setEnabled(true);

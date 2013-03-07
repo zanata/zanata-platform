@@ -20,11 +20,11 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.ValidationResultInfo;
 
 /**
  * 
@@ -35,14 +35,19 @@ public class RunValidationResult implements DispatchResult
 {
    private static final long serialVersionUID = 1L;
 
-   private Map<DocumentId, Set<TransUnit>> result;
+   private Map<DocumentId, List<ValidationResultInfo>> result;
 
-   public RunValidationResult(Map<DocumentId, Set<TransUnit>> result)
+   @SuppressWarnings("unused")
+   private RunValidationResult()
+   {
+   }
+
+   public RunValidationResult(Map<DocumentId, List<ValidationResultInfo>> result)
    {
       this.result = result;
    }
 
-   public Map<DocumentId, Set<TransUnit>> getResult()
+   public Map<DocumentId, List<ValidationResultInfo>> getResult()
    {
       return result;
    }
