@@ -77,10 +77,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    @UiField
    PushButton downloadAllFiles;
    
-   @UiField
-   PushButton runValidation;
-
-
    @UiField(provided = true)
    DocumentListPager pager;
 
@@ -120,8 +116,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       initWidget(uiBinder.createAndBindUi(this));
 
       downloadAllFiles.setText("Download all files (zip)");
-
-      runValidation.setText("Run validation");
 
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
@@ -196,12 +190,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       confirmationBox.center();
    }
    
-   @UiHandler("runValidation")
-   public void onRunValidationClicked(ClickEvent event)
-   {
-      listener.runValidation();
-   }
-
    @Override
    public void setStatsFilter(String option)
    {

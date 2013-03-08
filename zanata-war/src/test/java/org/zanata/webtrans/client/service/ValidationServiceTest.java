@@ -49,7 +49,7 @@ public class ValidationServiceTest
    private ValidationMessages validationMessages;
    @Mock
    private HasUpdateValidationWarning validationMessagePanel;
-
+   
    @Mock
    private CachingDispatchAsync dispatcher;
 
@@ -60,7 +60,7 @@ public class ValidationServiceTest
 
       validationMessages = TestMessages.getInstance(ValidationMessages.class);
 
-      service = new ValidationService(eventBus, messages, validationMessages);
+      service = new ValidationService(eventBus, dispatcher, messages, validationMessages);
       ValidationFactory validationFactory = new ValidationFactory(validationMessages);
 
       Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();

@@ -22,9 +22,6 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -40,6 +37,8 @@ import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.RunDocValidationEvent;
+import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -60,16 +59,11 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationResultInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
-import org.zanata.webtrans.shared.rpc.RunValidationAction;
-import org.zanata.webtrans.shared.rpc.RunValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
@@ -79,7 +73,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private DocumentInfo currentDocument;
@@ -91,7 +85,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
-   
+
    private final CachingDispatchAsync dispatcher;
 
    /**
@@ -120,7 +114,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
 
-
    @Override
    protected void onBind()
    {
@@ -135,14 +128,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-
+      registerHandler(eventBus.addHandler(RunDocValidationEvent.getType(), this));
+      
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
 
       ProjectType projectType = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
       setupDownloadZipButton(projectType);
    }
-   
+
    public void setupDownloadZipButton(ProjectType projectType)
    {
       if (!isZipFileDownloadAllowed(projectType))
@@ -434,48 +428,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          }
       });
    }
-   
-   @Override
-   public void runValidation()
-   {
-      ArrayList<ValidationId> valIds = new ArrayList<ValidationId>();
-      ArrayList<Long> docIds = new ArrayList<Long>();
-      for(DocumentNode node: display.getDocumentListTable().getVisibleItems())
-      {
-         docIds.add(node.getDocInfo().getId().getId());
-      }
-      
-
-      for (ValidationAction valAction : validationService.getValidationMap().values())
-      {
-         if (valAction.getValidationInfo().isEnabled())
-         {
-            valIds.add(valAction.getValidationInfo().getId());
-         }
-      }
-      
-      if (!valIds.isEmpty() && !docIds.isEmpty())
-      {
-         dispatcher.execute(new RunValidationAction(valIds, docIds), new AsyncCallback<RunValidationResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-            }
-
-            @Override
-            public void onSuccess(RunValidationResult result)
-            {
-               Map<DocumentId, List<ValidationResultInfo>> resultMap = result.getResult();
-               for(DocumentId documentId: resultMap.keySet())
-               {
-                  Log.info(documentId.toString());
-               }
-            }
-         });
-      }
-   }
 
    @Override
    public void cancelDownloadAllFiles()
@@ -507,7 +459,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                display.stopGetDownloadStatus();
                final String url = Application.getAllFilesDownloadURL(result.getDownloadId());
                display.setAndShowFilesDownloadLink(url);
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download",  display.getDownloadAllFilesInlineLink(url)));
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download", display.getDownloadAllFilesInlineLink(url)));
             }
          }
       });
@@ -529,9 +481,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void onFileUploadComplete(SubmitCompleteEvent event)
    {
       display.closeFileUpload();
-      if(event.getResults().contains("200"))
+      if (event.getResults().contains("200"))
       {
-         if(event.getResults().contains("Warning"))
+         if (event.getResults().contains("Warning"))
          {
             eventBus.fireEvent(new NotificationEvent(Severity.Warning, "File uploaded.", event.getResults(), true, null));
          }
@@ -563,4 +515,17 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       setupDownloadZipButton(event.getProjectType());
    }
 
+   @Override
+   public void onRunDocValidation(RunDocValidationEvent event)
+   {
+      if (event.getView() == MainView.Documents)
+      {
+         ArrayList<Long> docIds = new ArrayList<Long>();
+         for (DocumentNode node : display.getDocumentListTable().getVisibleItems())
+         {
+            docIds.add(node.getDocInfo().getId().getId());
+         }
+         validationService.runValidation(docIds);
+      }
+   }
 }

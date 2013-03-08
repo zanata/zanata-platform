@@ -165,6 +165,7 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
       {
          optionsPresenter.setOptionsView(view);
       }
+      validationOptionsPresenter.setCurrentView(view);
    }
 
    public void showValidationOptions(boolean showValidationMenu)

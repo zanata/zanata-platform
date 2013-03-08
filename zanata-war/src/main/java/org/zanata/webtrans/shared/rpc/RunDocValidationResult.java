@@ -24,30 +24,30 @@ import java.util.List;
 import java.util.Map;
 
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ValidationResultInfo;
+import org.zanata.webtrans.shared.model.DocValidationResultInfo;
 
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class RunValidationResult implements DispatchResult
+public class RunDocValidationResult implements DispatchResult
 {
    private static final long serialVersionUID = 1L;
 
-   private Map<DocumentId, List<ValidationResultInfo>> result;
+   private Map<DocumentId, List<DocValidationResultInfo>> result;
 
    @SuppressWarnings("unused")
-   private RunValidationResult()
+   private RunDocValidationResult()
    {
    }
 
-   public RunValidationResult(Map<DocumentId, List<ValidationResultInfo>> result)
+   public RunDocValidationResult(Map<DocumentId, List<DocValidationResultInfo>> result)
    {
       this.result = result;
    }
 
-   public Map<DocumentId, List<ValidationResultInfo>> getResult()
+   public Map<DocumentId, List<DocValidationResultInfo>> getResult()
    {
       return result;
    }

@@ -17,15 +17,15 @@ import org.zanata.model.HLocale;
 import org.zanata.service.impl.ValidationServiceImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ValidationResultInfo;
+import org.zanata.webtrans.shared.model.DocValidationResultInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.RunValidationAction;
-import org.zanata.webtrans.shared.rpc.RunValidationResult;
+import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
+import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
-@Name("webtrans.gwt.RunValidationHandler")
+@Name("webtrans.gwt.RunDocValidationHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(RunValidationAction.class)
-public class RunValidationHandler extends AbstractActionHandler<RunValidationAction, RunValidationResult>
+@ActionHandlerFor(RunDocValidationAction.class)
+public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidationAction, RunDocValidationResult>
 {
    @In
    private ValidationServiceImpl validationServiceImpl;
@@ -37,19 +37,19 @@ public class RunValidationHandler extends AbstractActionHandler<RunValidationAct
    private DocumentDAO documentDAO;
 
    @Override
-   public RunValidationResult execute(RunValidationAction action, ExecutionContext context) throws ActionException
+   public RunDocValidationResult execute(RunDocValidationAction action, ExecutionContext context) throws ActionException
    {
       WorkspaceId workspaceId = action.getWorkspaceId();
       HLocale locale = localeDAO.findByLocaleId(workspaceId.getLocaleId());
       
       List<HDocument> hDocs = documentDAO.getAllByProjectIteration(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
 
-      Map<DocumentId, List<ValidationResultInfo>> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
-      return new RunValidationResult(result);
+      Map<DocumentId, List<DocValidationResultInfo>> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
+      return new RunDocValidationResult(result);
    }
 
    @Override
-   public void rollback(RunValidationAction action, RunValidationResult result, ExecutionContext context) throws ActionException
+   public void rollback(RunDocValidationAction action, RunDocValidationResult result, ExecutionContext context) throws ActionException
    {
    }
 

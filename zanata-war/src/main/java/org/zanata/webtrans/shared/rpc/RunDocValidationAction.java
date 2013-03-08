@@ -9,7 +9,7 @@ import org.zanata.webtrans.shared.model.ValidationId;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class RunValidationAction extends AbstractWorkspaceAction<RunValidationResult>
+public class RunDocValidationAction extends AbstractWorkspaceAction<RunDocValidationResult>
 {
 
    private static final long serialVersionUID = 1L;
@@ -18,11 +18,11 @@ public class RunValidationAction extends AbstractWorkspaceAction<RunValidationRe
    private List<Long> docIds; 
 
    @SuppressWarnings("unused")
-   private RunValidationAction()
+   private RunDocValidationAction()
    {
    }
 
-   public RunValidationAction(List<ValidationId> validationIds, List<Long> docIds)
+   public RunDocValidationAction(List<ValidationId> validationIds, List<Long> docIds)
    {
       this.validationIds = validationIds;
       this.docIds = docIds;

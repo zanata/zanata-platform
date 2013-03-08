@@ -3,7 +3,9 @@
  */
 package org.zanata.webtrans.shared.validation;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -60,6 +62,16 @@ public class ValidationFactory
    public ValidationAction getValidationAction(ValidationId id)
    {
       return VALIDATION_MAP.get(id);
+   }
+   
+   public List<ValidationAction> getValidationActions(List<ValidationId> validationIds)
+   {
+      List<ValidationAction> actions = new ArrayList<ValidationAction>();
+      for(ValidationId valId: validationIds)
+      {
+         actions.add(getValidationAction(valId));
+      }
+      return actions;
    }
 
    private void init(ValidationMessages validationMessages)

@@ -48,11 +48,6 @@
 			display:inline-block;
 			margin-left:3px;
 		}
-		.runValidationButton
-		{
-			display:inline-block;
-			margin-left:6px;
-		}
 		
     </ui:style>
     <g:LayoutPanel>
@@ -75,7 +70,6 @@
                         		<g:RadioButton ui:field="statsByWord" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/>
                         		<g:RadioButton ui:field="statsByMsg" styleName="{style.optionStyle} {style.statsOption}" name="statsOption"/>
                         		<g:PushButton ui:field="downloadAllFiles" addStyleNames="{style.downloadAllFilesButton}"/>
-                        		<g:PushButton ui:field="runValidation" addStyleNames="{style.runValidationButton}"/>
                         	</g:HTMLPanel>
                 		</g:cell>
                 	</g:HorizontalPanel>

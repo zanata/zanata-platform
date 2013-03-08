@@ -16,8 +16,10 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
@@ -31,12 +33,14 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationResultInfo;
+import org.zanata.webtrans.shared.model.DocValidationResultInfo;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+
+import com.google.common.base.Stopwatch;
 
 /**
  * 
@@ -48,6 +52,9 @@ import org.zanata.webtrans.shared.validation.ValidationFactory;
 @Scope(ScopeType.STATELESS)
 public class ValidationServiceImpl implements ValidationService
 {
+   @Logger
+   private Log log;
+   
    @In
    private ZanataMessages zanataMessages;
    
@@ -59,8 +66,6 @@ public class ValidationServiceImpl implements ValidationService
 
    @In
    private ProjectIterationDAO projectIterationDAO;
-
-   // private ValidationMessageResolver validationMessageResolverImpl;
 
    private ValidationFactory validationFactory;
 
@@ -167,23 +172,23 @@ public class ValidationServiceImpl implements ValidationService
     * @param validations
     * @param localeId
     */
-   public Map<DocumentId, List<ValidationResultInfo>> runValidations(Collection<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
+   public Map<DocumentId, List<DocValidationResultInfo>> runValidations(Collection<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      Map<DocumentId, List<ValidationResultInfo>> docValidationResult = new HashMap<DocumentId, List<ValidationResultInfo>>();
+      log.info("Start docs validation");
+      Stopwatch stopwatch = new Stopwatch().start();
+      Map<DocumentId, List<DocValidationResultInfo>> docValidationResult = new HashMap<DocumentId, List<DocValidationResultInfo>>();
+      List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
+      Map<Long, DocValidationResultInfo> targetErrorList = new HashMap<Long, DocValidationResultInfo>();
       for (HDocument hDoc : hDocs)
       {
-         Map<Long, ValidationResultInfo> targetErrorList = new HashMap<Long, ValidationResultInfo>();
-
          for(HTextFlow textFlow: hDoc.getTextFlows())
          {
             HTextFlowTarget target = textFlow.getTargets().get(localeId);
             if (target != null)
             {
-               for (ValidationId validationId : validationIds)
+               for (ValidationAction validation : validationActions)
                {
-                  ValidationAction validation = getValidationFactory().getValidationAction(validationId);
-
                   validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
                   if (validation.hasError())
                   {
@@ -193,7 +198,7 @@ public class ValidationServiceImpl implements ValidationService
                      }
                      else
                      {
-                        ValidationResultInfo result = new ValidationResultInfo(transUnitTransformer.transform(textFlow, target), validation.getError());
+                        DocValidationResultInfo result = new DocValidationResultInfo(new TransUnitId(textFlow.getId()), validation.getError());
                         targetErrorList.put(target.getId(), result);
                      }
                   }
@@ -202,9 +207,11 @@ public class ValidationServiceImpl implements ValidationService
          }
          if (!targetErrorList.isEmpty())
          {
-            docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), new ArrayList<ValidationResultInfo>(targetErrorList.values()));
+            docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), new ArrayList<DocValidationResultInfo>(targetErrorList.values()));
          }
+         targetErrorList.clear();
       }
+      log.info("Finished docs validation in " + stopwatch);
       return docValidationResult;
    }
 }
