@@ -3,6 +3,7 @@ package org.zanata.webtrans.server;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -50,20 +51,27 @@ public class SeamDispatch implements Dispatch
    public void create()
    {
       // register all handlers with the @ActionHandlerFor annotation
-      for (Class clazz : StandardDeploymentStrategy.instance().getAnnotatedClasses().get(ActionHandlerFor.class.getName()))
+      Set<Class<?>> annotatedClasses = StandardDeploymentStrategy.instance().getAnnotatedClasses().get(ActionHandlerFor.class.getName());
+      if( annotatedClasses != null )
       {
-         register(clazz);
+         for (Class clazz : annotatedClasses)
+         {
+            register(clazz);
+         }
       }
 
       // also register hot deployed handlers
       HotDeploymentStrategy hotDeploymentStrategy = HotDeploymentStrategy.instance();
       if (hotDeploymentStrategy != null && hotDeploymentStrategy.available())
       {
-         for (Class clazz : hotDeploymentStrategy.getAnnotatedClasses().get(ActionHandlerFor.class.getName()))
+         Set<Class<?>> hotAnnotatedClasses = hotDeploymentStrategy.getAnnotatedClasses().get(ActionHandlerFor.class.getName());
+         if( hotAnnotatedClasses != null )
          {
-            register(clazz);
+            for (Class clazz : hotAnnotatedClasses)
+            {
+               register(clazz);
+            }
          }
-
       }
    }
 

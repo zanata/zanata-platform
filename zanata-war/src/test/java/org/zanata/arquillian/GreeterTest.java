@@ -62,43 +62,51 @@ public class GreeterTest
    @ArquillianResource
    URL deploymentUrl;
 
-   @Deployment(order = 2, name = "zanata.war", testable = false)
-   public static Archive<?> createMassiveDeployment()
+   @Deployment(name = "zanata.war", testable = false)
+   public static Archive<?> createDeployment()
    {
-      MavenResolverSystem mavenResolver = Maven.resolver();
 
-      // Assume there is already a target directory called zanata-seamtests
-      WebArchive archive =
-            ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
+      WebArchive archive =  ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
+      archive.addAsLibraries(Maven.resolver()
+            .loadPomFromFile("pom.xml")
+            .importRuntimeDependencies()
+            .asFile());
+      // Test dependencies
+      archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.hibernate:hibernate-testing:4.1.6.Final").withoutTransitivity().asFile());
+      // Missing dependencies
+      // This one resolves to the gwteventservice file inside the maven resolver. Could be a bug with the alpha version
+      archive.addAsLibraries(new File("/home/camunoz/.m2/repository/de/novanic/gwteventservice/eventservice/1.2.1/eventservice-1.2.1.jar"));
+      // This doesn't work either...
+      //archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("de.novanic.gwteventservice:eventservice").withoutTransitivity().asFile());
 
-      archive.as(ExplodedImporter.class).importDirectory("target/zanata-seamtests");
+      // Local packages
+      archive.addPackages(true, new Filter<ArchivePath>()
+      {
+         @Override
+         public boolean include(ArchivePath object)
+         {
+            // Avoid the model package (for some reason it's being included as a class file)
+            return !object.get().startsWith("/org/zanata/model/") &&
+                  // and the ui package (not needed)
+                  !object.get().startsWith("/org/zanata/ui");
+         }
+      }, "org.zanata");
 
-      // Add the zanata.properties file directly to the archive
+      // Resources (descriptors, etc)
+      archive.addAsResource(EmptyAsset.INSTANCE, "seam.properties");
+      archive.addAsWebInfResource(new File("src/test/resources/arquillian/jboss-deployment-structure.xml"));
+      archive.addAsResource(new FileAsset(new File("src/main/resources/META-INF/orm.xml")), "META-INF/orm.xml");
+      archive.addAsResource(new FileAsset(new File("src/test/jboss-embedded-bootstrap/META-INF/persistence.xml")), "META-INF/persistence.xml");
+      archive.addAsResource(new FileAsset(new File("src/main/webapp-jboss/WEB-INF/classes/META-INF/components.xml")), "META-INF/components.xml");
+      archive.addAsResource(new FileAsset(new File("target/zanata-seamtests/WEB-INF/classes/components.properties")), "components.properties");
+      archive.addAsResource("security.drl");
       archive.addAsWebInfResource(new File("src/test/resources/arquillian/zanata.properties"),
             "classes/zanata.properties");
-      // Replace the jboss-deployment-structure with the testverison
-      archive.delete("WEB-INF/jboss-deployment-structure.xml");
-      archive.addAsWebInfResource(new File("src/test/resources/arquillian/jboss-deployment-structure.xml"));
-      //Replace web.xml
-      archive.delete("WEB-INF/web.xml");
       archive.addAsWebInfResource("arquillian/test-web.xml", "web.xml");
-      //Replace persistence.xml
-      archive.delete("WEB-INF/classes/META-INF/persistence.xml");
-      archive.addAsResource(new FileAsset(new File("src/test/jboss-embedded-bootstrap/META-INF/persistence.xml")), "META-INF/persistence.xml");
-      // Add any test scoped dependencies that might not be in the original archive
-      archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.hibernate:hibernate-testing:4.1.6.Final").withoutTransitivity().asFile());
-      //archive.addPackages(true, "org.hamcrest");
-
-      // Remove xhtml files
-      //archive.delete("account");
-
-      // Remove libraries
-      archive.delete("WEB-INF/lib/javamelody-core-1.41.0.jar");
 
       // Export (to actually see what is being deployed)
-      //archive.as(ZipExporter.class).exportTo( new File("/opt/jboss-eap-6.0-standalone/standalone/deployments/archive.war"), true );
-      archive.as(ZipExporter.class).exportTo(new File("/home/camunoz/temp/archive-massive.war"), true);
-
+      archive.as(ZipExporter.class).exportTo(new File("/home/camunoz/temp/archive.war"), true);
+      //archive.as(ZipExporter.class).exportTo(new File("/opt/jboss-eap-6.0-standalone/standalone/deployments/archive.war"), true);
       return archive;
    }
 
