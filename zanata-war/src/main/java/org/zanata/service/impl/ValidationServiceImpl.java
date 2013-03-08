@@ -174,7 +174,7 @@ public class ValidationServiceImpl implements ValidationService
     */
    public Map<DocumentId, List<DocValidationResultInfo>> runValidations(Collection<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      log.info("Start docs validation");
+      log.info("Start docs {0} validation", hDocs.size());
       Stopwatch stopwatch = new Stopwatch().start();
       Map<DocumentId, List<DocValidationResultInfo>> docValidationResult = new HashMap<DocumentId, List<DocValidationResultInfo>>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);

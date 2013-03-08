@@ -498,4 +498,19 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       makePersistent(doc);
       return rawDoc;
    }
+
+   public List<HDocument> getDocumentsByIds(List<Long> docIds)
+   {
+      StringBuilder query = new StringBuilder();
+      query.append("from HDocument doc where doc.id in (:docIds)");
+      
+      Query q = getSession().createQuery(query.toString());
+      q.setParameterList("docIds", docIds);
+      q.setCacheable(true);
+      q.setComment("DocumentDAO.getDocumentsByIds");
+      
+      List<HDocument> docs = q.list();
+      
+      return docs;
+   }
 }

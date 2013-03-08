@@ -42,10 +42,10 @@ public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidat
       WorkspaceId workspaceId = action.getWorkspaceId();
       HLocale locale = localeDAO.findByLocaleId(workspaceId.getLocaleId());
       
-      List<HDocument> hDocs = documentDAO.getAllByProjectIteration(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
-
+      List<HDocument> hDocs = documentDAO.getDocumentsByIds(action.getDocIds());
+      
       Map<DocumentId, List<DocValidationResultInfo>> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
-      return new RunDocValidationResult(result);
+      return new RunDocValidationResult(result, workspaceId.getLocaleId());
    }
 
    @Override
