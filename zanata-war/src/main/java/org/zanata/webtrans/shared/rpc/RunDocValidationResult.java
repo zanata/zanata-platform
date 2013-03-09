@@ -49,7 +49,7 @@ public class RunDocValidationResult implements DispatchResult
       this.result = result;
       this.localeId = localeId;
    }
-
+   
    public Map<DocumentId, List<DocValidationResultInfo>> getResult()
    {
       return result;

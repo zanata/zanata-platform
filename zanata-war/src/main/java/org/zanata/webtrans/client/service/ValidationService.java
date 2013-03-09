@@ -216,7 +216,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
             @Override
             public void onSuccess(RunDocValidationResult result)
             {
-               Log.debug("Success docs validation" + result.getResult().size());
+               Log.debug("Success docs validation - " + result.getResult().size());
                Map<DocumentId, List<DocValidationResultInfo>> resultMap = result.getResult();
                for(DocumentId documentId: resultMap.keySet())
                {

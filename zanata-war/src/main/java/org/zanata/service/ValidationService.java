@@ -4,8 +4,14 @@
 package org.zanata.service;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
+import org.zanata.webtrans.shared.model.DocValidationResultInfo;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 
 
@@ -43,4 +49,7 @@ public interface ValidationService
     * @return
     */
    Collection<ValidationAction> getValidationObject(HProjectIteration version);
+
+
+   Map<DocumentId, List<DocValidationResultInfo>> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
 }

@@ -14,10 +14,10 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.service.impl.ValidationServiceImpl;
+import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocValidationResultInfo;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
 import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
@@ -28,7 +28,7 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidationAction, RunDocValidationResult>
 {
    @In
-   private ValidationServiceImpl validationServiceImpl;
+   private ValidationService validationServiceImpl;
 
    @In
    private LocaleDAO localeDAO;

@@ -172,9 +172,10 @@ public class ValidationServiceImpl implements ValidationService
     * @param validations
     * @param localeId
     */
-   public Map<DocumentId, List<DocValidationResultInfo>> runValidations(Collection<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
+   @Override
+   public Map<DocumentId, List<DocValidationResultInfo>> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      log.info("Start docs {0} validation", hDocs.size());
+      log.info("Start docs validation - {0}", hDocs.size());
       Stopwatch stopwatch = new Stopwatch().start();
       Map<DocumentId, List<DocValidationResultInfo>> docValidationResult = new HashMap<DocumentId, List<DocValidationResultInfo>>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -207,7 +208,8 @@ public class ValidationServiceImpl implements ValidationService
          }
          if (!targetErrorList.isEmpty())
          {
-            docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), new ArrayList<DocValidationResultInfo>(targetErrorList.values()));
+            List<DocValidationResultInfo> resultInfo = new ArrayList<DocValidationResultInfo>(targetErrorList.values());
+            docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), resultInfo);
          }
          targetErrorList.clear();
       }
