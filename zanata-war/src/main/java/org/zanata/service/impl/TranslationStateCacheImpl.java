@@ -139,6 +139,10 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    public HTextFlowTarget getLastModifiedTextFlowTarget(Long documentId, LocaleId localeId)
    {
       Long targetId = lastModifiedCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
+      if (targetId == null)
+      {
+         return null;
+      }
       return textFlowTargetDAO.findById(targetId, false);
    }
 

@@ -22,7 +22,6 @@ package org.zanata.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

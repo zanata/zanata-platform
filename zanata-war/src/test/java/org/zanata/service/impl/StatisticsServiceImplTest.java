@@ -31,7 +31,6 @@ import static org.hamcrest.Matchers.nullValue;
 import java.util.Arrays;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,7 +38,6 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.service.TranslationStateCache;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -49,9 +47,6 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
    
-   @Mock
-   private TranslationStateCache translationStateCacheImpl;
-
    @Override
    protected void prepareDBUnitOperations()
    {
@@ -62,17 +57,17 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   @BeforeMethod
-   public void initializeSeam()
-   {
-      MockitoAnnotations.initMocks(this);
-
-      seam.reset()
-          .use("entityManager", getEm())
-          .use("session", getSession())
-          .use("translationStateCacheImpl", translationStateCacheImpl)
-          .ignoreNonResolvable();
-   }
+    @BeforeMethod
+    public void initializeSeam()
+    {
+    MockitoAnnotations.initMocks(this);
+   
+    seam.reset()
+             .use("entityManager", getEm())
+            .use("session", getSession())
+            .useImpl(TranslationStateCacheImpl.class)
+            .ignoreNonResolvable();
+    }
 
    @Test
    public void getSimpleIterationStatisticsForAllLocales()
