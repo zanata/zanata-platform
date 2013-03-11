@@ -391,6 +391,10 @@ td.ApprovedStateDecoration div div div
 	cursor:pointer;
 }
 
+.DocumentListTable td.hasError {
+	color:red;
+}
+
 .DocumentListTable td.documentCol div{
 	text-overflow:ellipsis;
 	overflow:hidden;

@@ -36,7 +36,6 @@ import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.ClickableTextCell;
@@ -112,13 +111,27 @@ public class DocumentListTable extends CellTable<DocumentNode>
          @Override
          public String getValue(DocumentNode object)
          {
-            return object.getDocInfo().getName();
+            if (object.getDocInfo().hasValidationError())
+            {
+               return "[x] " + object.getDocInfo().getName();
+            }
+            else
+            {
+               return object.getDocInfo().getName();
+            }
          }
 
          @Override
          public String getTitle(DocumentNode object)
          {
-            return object.getDocInfo().getName();
+            if (object.getDocInfo().hasValidationError())
+            {
+               return object.getDocInfo().getName() + " - has validation error";
+            }
+            else
+            {
+               return object.getDocInfo().getName();
+            }
          }
       };
 

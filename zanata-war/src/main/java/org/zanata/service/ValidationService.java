@@ -51,5 +51,7 @@ public interface ValidationService
    Collection<ValidationAction> getValidationObject(HProjectIteration version);
 
 
-   Map<DocumentId, List<DocValidationResultInfo>> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
+   Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
+
+   Map<DocumentId, List<DocValidationResultInfo>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
 }

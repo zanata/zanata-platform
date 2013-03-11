@@ -39,17 +39,11 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
-import org.zanata.webtrans.shared.model.DocValidationResultInfo;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
-import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -185,45 +179,5 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       }
       
       this.validationMap = validationMap;
-   }
-   
-   /*
-    * Run Doc validation 
-    */
-   public void runValidation(ArrayList<Long> docIds)
-   {
-      ArrayList<ValidationId> valIds = new ArrayList<ValidationId>();
-
-      for (ValidationAction valAction : getValidationMap().values())
-      {
-         if (valAction.getValidationInfo().isEnabled())
-         {
-            valIds.add(valAction.getValidationInfo().getId());
-         }
-      }
-      
-      if (!valIds.isEmpty() && !docIds.isEmpty())
-      {
-         Log.debug("Run validation");
-         dispatcher.execute(new RunDocValidationAction(valIds, docIds), new AsyncCallback<RunDocValidationResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-            }
-
-            @Override
-            public void onSuccess(RunDocValidationResult result)
-            {
-               Log.debug("Success docs validation - " + result.getResult().size());
-               Map<DocumentId, List<DocValidationResultInfo>> resultMap = result.getResult();
-               for(DocumentId documentId: resultMap.keySet())
-               {
-                  Log.info(documentId.toString());
-               }
-            }
-         });
-      }
    }
 }

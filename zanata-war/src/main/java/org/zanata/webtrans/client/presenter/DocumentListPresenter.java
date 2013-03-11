@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -59,11 +60,15 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
+import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
+import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
@@ -525,7 +530,48 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          {
             docIds.add(node.getDocInfo().getId().getId());
          }
-         validationService.runValidation(docIds);
+
+         ArrayList<ValidationId> valIds = new ArrayList<ValidationId>();
+
+         for (ValidationAction valAction : validationService.getValidationMap().values())
+         {
+            if (valAction.getValidationInfo().isEnabled())
+            {
+               valIds.add(valAction.getValidationInfo().getId());
+            }
+         }
+
+         if (!valIds.isEmpty() && !docIds.isEmpty())
+         {
+            Log.debug("Run validation");
+            dispatcher.execute(new RunDocValidationAction(valIds, docIds), new AsyncCallback<RunDocValidationResult>()
+            {
+               @Override
+               public void onFailure(Throwable caught)
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+               }
+
+               @Override
+               public void onSuccess(RunDocValidationResult result)
+               {
+                  Log.debug("Success docs validation - " + result.getResult().size());
+                  Map<DocumentId, Boolean> resultMap = result.getResult();
+
+                  for(Map.Entry<DocumentId, Boolean> entry: resultMap.entrySet())
+                  {
+                     Boolean hasError = entry.getValue();
+                     DocumentInfo hasErrorDoc = getDocumentInfo(entry.getKey());
+                     
+                     if (hasError != null && hasErrorDoc != null)
+                     {
+                        hasErrorDoc.setHasValidationError(hasError.booleanValue());
+                     }
+                  }
+                  dataProvider.refresh();
+               }
+            });
+         }
       }
    }
 }

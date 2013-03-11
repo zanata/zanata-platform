@@ -59,6 +59,6 @@ public class DocumentId implements Identifier<Long>, IsSerializable
       {
          return false;
       }
-      return obj instanceof DocumentId && ((DocumentId) obj).id == id;
+      return obj instanceof DocumentId && ((DocumentId) obj).id.equals(id);
    }
 }

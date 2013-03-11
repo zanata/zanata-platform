@@ -173,9 +173,9 @@ public class ValidationServiceImpl implements ValidationService
     * @param localeId
     */
    @Override
-   public Map<DocumentId, List<DocValidationResultInfo>> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
+   public Map<DocumentId, List<DocValidationResultInfo>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      log.info("Start docs validation - {0}", hDocs.size());
+      log.info("Start full docs validation - {0}", hDocs.size());
       Stopwatch stopwatch = new Stopwatch().start();
       Map<DocumentId, List<DocValidationResultInfo>> docValidationResult = new HashMap<DocumentId, List<DocValidationResultInfo>>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -213,7 +213,55 @@ public class ValidationServiceImpl implements ValidationService
          }
          targetErrorList.clear();
       }
-      log.info("Finished docs validation in " + stopwatch);
+      log.info("Finished full docs validation in " + stopwatch);
       return docValidationResult;
+   }
+
+   /**
+    * Run validation check on HTextFlow and HTextFlowTarget with specific locale
+    * from list of HDocuments against validations rules
+    * 
+    * Returns if documents has validation errors
+    * 
+    * @param hDocs
+    * @param validations
+    * @param localeId
+    */
+   @Override
+   public Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
+   {
+      log.info("Start docs validation - {0}", hDocs.size());
+      Stopwatch stopwatch = new Stopwatch().start();
+      Map<DocumentId, Boolean> validationResult = new HashMap<DocumentId, Boolean>();
+      List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
+
+      for (HDocument hDoc : hDocs)
+      {
+         boolean hasValidationError = validationDocuments(hDoc, validationActions, localeId);
+         validationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), hasValidationError);
+      }
+
+      log.info("Finished docs validation in " + stopwatch);
+      return validationResult;
+   }
+
+   private boolean validationDocuments(HDocument hDoc, List<ValidationAction> validationActions, Long localeId)
+   {
+      for (HTextFlow textFlow : hDoc.getTextFlows())
+      {
+         HTextFlowTarget target = textFlow.getTargets().get(localeId);
+         if (target != null)
+         {
+            for (ValidationAction validation : validationActions)
+            {
+               validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
+               if (validation.hasError())
+               {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
    }
 }

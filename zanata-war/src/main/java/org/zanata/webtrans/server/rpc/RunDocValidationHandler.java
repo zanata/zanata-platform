@@ -16,7 +16,6 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.DocValidationResultInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
@@ -44,7 +43,7 @@ public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidat
       
       List<HDocument> hDocs = documentDAO.getDocumentsByIds(action.getDocIds());
       
-      Map<DocumentId, List<DocValidationResultInfo>> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
+      Map<DocumentId, Boolean> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
       return new RunDocValidationResult(result, workspaceId.getLocaleId());
    }
 
