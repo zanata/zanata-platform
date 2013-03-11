@@ -36,8 +36,10 @@ import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.IconCellDecorator;
@@ -109,16 +111,22 @@ public class DocumentListTable extends CellTable<DocumentNode>
       documentColumn = new TooltipColumn<DocumentNode, String>(new ClickableTextCell())
       {
          @Override
-         public String getValue(DocumentNode object)
+         public String getCellStyleNames(Context context, DocumentNode object)
          {
             if (object.getDocInfo().hasValidationError())
             {
-               return "[x] " + object.getDocInfo().getName();
+               return super.getCellStyleNames(context, object) + " hasError";
             }
             else
             {
-               return object.getDocInfo().getName();
+               return super.getCellStyleNames(context, object);
             }
+         }
+
+         @Override
+         public String getValue(DocumentNode object)
+         {
+            return object.getDocInfo().getName();
          }
 
          @Override
@@ -126,7 +134,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
          {
             if (object.getDocInfo().hasValidationError())
             {
-               return object.getDocInfo().getName() + " - has validation error";
+               return "Contain validation error: " + object.getDocInfo().getName();
             }
             else
             {
