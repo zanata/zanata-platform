@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
@@ -190,5 +191,26 @@ public class SourceContentsPresenterTest
    {
       TransUnitId transUnitId = presenter.getCurrentTransUnitIdOrNull();
       assertThat(transUnitId, Matchers.nullValue());
+   }
+
+   @Test
+   public void onTransUnitUpdated()
+   {
+      // Given: two display
+      List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1), TestFixture.makeTransUnit(2));
+      when(displayProvider.get()).thenReturn(display1, display2);
+      when(display1.getId()).thenReturn(transUnits.get(0).getId());
+      when(display2.getId()).thenReturn(transUnits.get(1).getId());
+      presenter.showData(transUnits);
+
+      // When:
+      TransUnitUpdatedEvent event = mock(TransUnitUpdatedEvent.class, Mockito.RETURNS_DEEP_STUBS);
+      TransUnit updated = TestFixture.makeTransUnit(1);
+      when(event.getUpdateInfo().getTransUnit()).thenReturn(updated);
+
+      presenter.onTransUnitUpdated(event);
+
+      verify(display1).updateTransUnitDetails(updated);
+      verify(display1).refresh();
    }
 }

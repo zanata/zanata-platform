@@ -20,9 +20,11 @@
  */
 package org.zanata.service.impl;
 
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
@@ -32,7 +34,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.service.TranslationStateCache;
+import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.service.impl.TranslationStateCacheImpl.TranslatedDocumentKey;
 
 import com.google.common.cache.CacheLoader;
 
@@ -45,12 +49,16 @@ public class TranslationStateCacheImplTest
    private CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader;
    @Mock
    private CacheLoader<LocaleId, OpenBitSet> bitsetLoader;
+   @Mock
+   private CacheLoader<TranslatedDocumentKey, Long> lastModifiedLoader;
+   @Mock
+   private TextFlowTargetDAO textFlowTargetDAO;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader);
+      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, lastModifiedLoader, textFlowTargetDAO);
       tsCache.create();
    }
 
@@ -92,5 +100,27 @@ public class TranslationStateCacheImplTest
       verify(bitsetLoader).load(locale); // only load the value once
       assertThat(result1, is(sameInstance(bitset)));
       assertThat(result2, is(sameInstance(bitset)));
+   }
+
+   public void testGetLastModifiedTextFlowTarget() throws Exception
+   {
+      // Given:
+      Long documentId = new Long("100");
+      LocaleId testLocaleId = LocaleId.DE;
+      TranslatedDocumentKey key = new TranslatedDocumentKey(documentId, testLocaleId);
+      Long targetId = new Long(0);
+      HTextFlowTarget target = new HTextFlowTarget();
+
+      // When:
+      when(lastModifiedLoader.load(key)).thenReturn(targetId);
+      when(textFlowTargetDAO.findById(targetId, false)).thenReturn(target);
+      
+      HTextFlowTarget result1 = tsCache.getLastModifiedTextFlowTarget(documentId, testLocaleId);
+      HTextFlowTarget result2 = tsCache.getLastModifiedTextFlowTarget(documentId, testLocaleId);
+
+      // Then:
+      verify(lastModifiedLoader).load(key); // only load the value once
+      assertThat(result1, is(sameInstance(target)));
+      assertThat(result2, is(sameInstance(target)));
    }
 }

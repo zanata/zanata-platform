@@ -52,6 +52,7 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.ZPathService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.util.DateUtil;
 
 /**
@@ -81,6 +82,9 @@ public class StatisticsServiceImpl implements StatisticsResource
 
    @In
    private ZPathService zPathService;
+
+   @In
+   private TranslationStateCache translationStateCacheImpl;
 
    @Override
    public ContainerTranslationStatistics getStatistics(String projectSlug, String iterationSlug, boolean includeDetails, boolean includeWordStats, String[] locales)
@@ -231,7 +235,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          {
             count = stats.getUnitCount();
          }
-         HTextFlowTarget target = documentDAO.getLastTranslated(document.getId(), locale);
+         HTextFlowTarget target = translationStateCacheImpl.getLastModifiedTextFlowTarget(document.getId(), locale);
          TranslationStatistics transUnitStats = getMessageStats(count, locale, target);
          transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
          docStats.addStats(transUnitStats);

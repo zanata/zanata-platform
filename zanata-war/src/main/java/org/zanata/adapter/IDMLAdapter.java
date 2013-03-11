@@ -20,22 +20,23 @@
  */
 package org.zanata.adapter;
 
-import net.sf.okapi.filters.openoffice.OpenOfficeFilter;
+import net.sf.okapi.filters.idml.IDMLFilter;
 
 /**
- * Adapter to handle any Open Document Format documents (used by LibreOffice and OpenOffice).
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * Adapter to handle Adobe InDesign IDML.
+ *
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class OpenOfficeAdapter extends GenericOkapiFilterAdapter
+public class IDMLAdapter extends GenericOkapiFilterAdapter
 {
-   public OpenOfficeAdapter()
+   public IDMLAdapter()
    {
+      // FIXME use contentHash, but find a way to avoid duplicate TF IDs
       super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
    }
 
-   private static OpenOfficeFilter prepareFilter()
+   private static IDMLFilter prepareFilter()
    {
-      return new OpenOfficeFilter();
+      return new IDMLFilter();
    }
 }

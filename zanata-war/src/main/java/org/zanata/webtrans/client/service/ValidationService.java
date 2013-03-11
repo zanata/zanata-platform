@@ -173,7 +173,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
     * Merge ValidationInfo from RPC result ValidationAction to all validation
     * actions from ValidationFactory
     * 
-    * @param validations
+    * @param validationInfoList
     */
    public void setValidationRules(List<ValidationInfo> validationInfoList)
    {

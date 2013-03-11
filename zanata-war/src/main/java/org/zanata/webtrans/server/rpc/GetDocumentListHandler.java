@@ -21,6 +21,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -40,6 +41,9 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    private DocumentDAO documentDAO;
    
    @In
+   private TranslationStateCache translationStateCacheImpl;
+
+   @In
    private TranslationFileService translationFileServiceImpl;
 
    @Override
@@ -58,7 +62,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          {
             DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
-            HTextFlowTarget result = documentDAO.getLastTranslated(hDoc.getId(), localeId);
+            HTextFlowTarget result = translationStateCacheImpl.getLastModifiedTextFlowTarget(hDoc.getId(), localeId);
             
             Date lastTranslatedDate = null;
             String lastTranslatedBy = "";

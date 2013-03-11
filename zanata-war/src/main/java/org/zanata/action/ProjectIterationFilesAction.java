@@ -67,6 +67,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -82,6 +83,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.rest.service.FileService;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
@@ -387,10 +389,20 @@ public class ProjectIterationFilesAction implements Serializable
          try
          {
             tempFileStream = new FileInputStream(tempFile);
-            Blob fileContents = Hibernate.createBlob(tempFileStream, (int) tempFile.length());
-            rawDocument.setContent(fileContents);
-            documentDAO.addRawDocument(document, rawDocument);
-            documentDAO.flush();
+            try
+            {
+               FileService.virusScan(tempFile);
+               Blob fileContents = Hibernate.createBlob(tempFileStream, (int) tempFile.length());
+               rawDocument.setContent(fileContents);
+               documentDAO.addRawDocument(document, rawDocument);
+               documentDAO.flush();
+            }
+            catch (VirusDetectedException e)
+            {
+               log.warn("File failed virus scan: {}", e.getMessage());
+               FacesMessages.instance().add(Severity.ERROR, "uploaded file did not pass virus scan");
+            }
+
          }
          catch (FileNotFoundException e)
          {
