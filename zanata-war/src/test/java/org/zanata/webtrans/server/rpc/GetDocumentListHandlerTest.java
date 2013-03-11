@@ -23,6 +23,7 @@ import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -50,6 +51,8 @@ public class GetDocumentListHandlerTest
    private HProjectIteration hProjectIteration;
    @Mock
    private TranslationFileService translationFileServiceImpl;
+   @Mock
+   private TranslationStateCache translationStateCacheImpl;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -61,6 +64,7 @@ public class GetDocumentListHandlerTest
             .use("projectIterationDAO", projectIterationDAO)
             .use("documentDAO", documentDAO)
             .use("translationFileServiceImpl", translationFileServiceImpl)
+            .use("translationStateCacheImpl", translationStateCacheImpl)
             .ignoreNonResolvable()
             .autowire(GetDocumentListHandler.class);
       // @formatter:on

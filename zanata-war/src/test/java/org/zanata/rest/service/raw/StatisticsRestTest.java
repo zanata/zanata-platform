@@ -36,10 +36,15 @@ import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRawRestTest;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.seam.SeamAutowire;
+import org.zanata.service.TranslationStateCache;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -47,6 +52,11 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 @Test(groups = {"seam-tests"})
 public class StatisticsRestTest extends ZanataRawRestTest
 {
+   @Mock
+   private TranslationStateCache translationStateCacheImpl;
+
+   private SeamAutowire seam = SeamAutowire.instance();
+
    @Override
    protected void prepareDBUnitOperations()
    {
@@ -55,6 +65,17 @@ public class StatisticsRestTest extends ZanataRawRestTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
+
+   @BeforeMethod
+   public void initializeSeam()
+   {
+      MockitoAnnotations.initMocks(this);
+
+      seam.reset()
+          .use("session", getSession())
+          .use("translationStateCacheImpl", translationStateCacheImpl)
+          .ignoreNonResolvable();
    }
 
    @Test

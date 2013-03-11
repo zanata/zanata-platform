@@ -280,6 +280,18 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                   .uniqueResult();
       return hTextFlowTarget;
    }
+   
+   public HTextFlowTarget getTextFlowTarget(HTextFlow hTextFlow, LocaleId localeId)
+   {
+      HTextFlowTarget hTextFlowTarget =
+            (HTextFlowTarget)getSession().createQuery(
+                     "select tft from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId")
+                  .setParameter("textFlow", hTextFlow)
+                  .setParameter("localeId", localeId)
+                  .setComment("TextFlowTargetDAO.getTextFlowTarget")
+                  .uniqueResult();
+      return hTextFlowTarget;
+   }
 
    public HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug, LocaleId localeId)
    {

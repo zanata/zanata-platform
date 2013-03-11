@@ -24,39 +24,51 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HTextFlowTarget;
 
 /**
  * Defines a Cache Service for translation states.
- *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * 
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public interface TranslationStateCache
 {
    /**
-    * Returns a {@link OpenBitSet} of translated text flows, where the bits represent
-    * the Ids of {@link org.zanata.model.HTextFlow} entries that have been translated
-    * for the given Locale Id
-    *
+    * Returns a {@link OpenBitSet} of translated text flows, where the bits
+    * represent the Ids of {@link org.zanata.model.HTextFlow} entries that have
+    * been translated for the given Locale Id
+    * 
     * @param localeId
     * @return An OpenBitSet
     */
    OpenBitSet getTranslatedTextFlowIds(LocaleId localeId);
 
    /**
-    * Returns a Lucene Filter which only returns {@link org.zanata.model.HTextFlow}s which have been translated
-    * for the given Locale Id
+    * Returns a Lucene Filter which only returns
+    * {@link org.zanata.model.HTextFlow}s which have been translated for the
+    * given Locale Id
+    * 
     * @param targetLocale
     * @return
     */
    Filter getFilter(LocaleId localeId);
 
    /**
-    * Informs the cache that a text flow has changed its state in a given locale.
-    * (It's really a Text Flow Target state)
-    *
+    * Informs the cache that a text flow has changed its state in a given
+    * locale. (It's really a Text Flow Target state)
+    * 
     * @param textFlowId The id of the text flow that has changed state.
     * @param localeId The locale for which state has changed.
     * @param newState The new state after the change.
     */
    void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState);
+
+   /**
+    * Returns last modified HTextFlowTarget for the given locale id of the documentId 
+    * @param documentId
+    * @param localeId
+    * @return
+    */
+   HTextFlowTarget getLastModifiedTextFlowTarget(Long documentId, LocaleId localeId);
 }
