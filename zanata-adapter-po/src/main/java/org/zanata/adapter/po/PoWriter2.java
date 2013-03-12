@@ -241,9 +241,12 @@ public class PoWriter2
       PoHeader poHeader = document.getExtensions(true).findByType(PoHeader.class);
       HeaderFields hf = new HeaderFields();
       // we don't expect a pot header for mapped non-pot documents
-      if (poHeader == null && !mapIdToMsgctxt)
+      if (poHeader == null)
       {
-         log.warn("No PO header in document named " + document.getName());
+         if (!mapIdToMsgctxt)
+         {
+            log.warn("No PO header in document named " + document.getName());
+         }
       }
       else
       {
