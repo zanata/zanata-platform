@@ -25,8 +25,8 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.events.BookmarkableTextFlowEvent;
-import org.zanata.webtrans.client.events.BookmarkableTextFlowEventHandler;
+import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
+import org.zanata.webtrans.client.events.BookmarkedTextFlowEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
@@ -67,10 +67,10 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkableTextFlowEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler
 {
    public static final int FIRST_PAGE = 0;
-   public static final int UNSELECTED = -1;
+   public static final int UNDEFINED = -1;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final ModalNavigationStateHolder navigationStateHolder;
@@ -101,7 +101,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
-      eventBus.addHandler(BookmarkableTextFlowEvent.TYPE, this);
+      eventBus.addHandler(BookmarkedTextFlowEvent.TYPE, this);
    }
 
    protected void requestTransUnitsAndUpdatePageIndex(GetTransUnitActionContext actionContext, final boolean needReloadIndex)
@@ -352,10 +352,20 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    }
 
    @Override
-   public void onBookmarkableTextFlow(BookmarkableTextFlowEvent event)
+   public void onBookmarkableTextFlow(BookmarkedTextFlowEvent event)
    {
-      this.context  = context.changeTargetTransUnitId(event.getTextFlowId());
-      requestTransUnitsAndUpdatePageIndex(context, true);
+      // FIXME this won't work. navigationStateHolder is not loaded on first load.
+//      int targetPage = navigationStateHolder.getTargetPage(event.getTextFlowId());
+//      if (targetPage == UNDEFINED)
+//      {
+         // TODO send a notification to user saying this bookmarked text flow id is invalid?
+         // TODO do we remove invalid bookmarked text flow from history token and url?
+//         return;
+//      }
+      this.context  = context
+//            .changeOffset(targetPage)
+            .changeTargetTransUnitId(event.getTextFlowId());
+      requestTransUnitsAndUpdatePageIndex(context, false);
    }
 
    public static interface UpdateContextCommand

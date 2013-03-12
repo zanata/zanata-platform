@@ -192,7 +192,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
             // we do not include goToLink here is because we haven't had message bookmark working
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString())));
             int rowIndexOnPage = navigationService.findRowIndexById(updatedTU.getId());
-            if (rowIndexOnPage != NavigationService.UNSELECTED)
+            if (rowIndexOnPage != NavigationService.UNDEFINED)
             {
                UndoLink undoLink = undoLinkProvider.get();
                undoLink.prepareUndoFor(result);

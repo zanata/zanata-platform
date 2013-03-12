@@ -3,11 +3,9 @@ package org.zanata.webtrans.client.service;
 import static com.google.common.base.Objects.equal;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.events.BookmarkableTextFlowEvent;
+import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
-import org.zanata.webtrans.client.events.TableRowSelectedEvent;
-import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
@@ -51,12 +49,13 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       Log.info("[gwt-history] Responding to history token: " + event.getValue());
 
       processForDocumentListPresenter(newHistoryToken);
-      //AppPresenter process need to happen before transFilter. We want DocumentSelectionEvent to happen before FindMessageEvent.
-      processForAppPresenter(newHistoryToken);
-      processForTransFilter(newHistoryToken);
       processForProjectWideSearch(newHistoryToken);
 
-      processForTransUnitSelection(newHistoryToken);
+      // AppPresenter process need to happen before transFilter. We want certain events happen in order:
+      // DocumentSelectionEvent -> FindMessageEvent -> BookmarkedTextFlowEvent
+      processForAppPresenter(newHistoryToken);
+      processForTransFilter(newHistoryToken);
+      processForBookmarkedTextFlow(newHistoryToken);
 
       currentHistoryState = newHistoryToken;
       appPresenter.showView(newHistoryToken.getView());
@@ -122,12 +121,12 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
-   protected void processForTransUnitSelection(HistoryToken token)
+   protected void processForBookmarkedTextFlow(HistoryToken token)
    {
       if (!equal(token.getTextFlowId(), currentHistoryState.getTextFlowId()) && token.getTextFlowId() != null)
       {
-         Log.info("[gwt-history] bookmarkable text flow has changed");
-         eventBus.fireEvent(new BookmarkableTextFlowEvent(new TransUnitId(token.getTextFlowId())));
+         Log.info("[gwt-history] bookmarkable text flow has changed: " + token.getTextFlowId());
+         eventBus.fireEvent(new BookmarkedTextFlowEvent(new TransUnitId(token.getTextFlowId())));
       }
    }
 }

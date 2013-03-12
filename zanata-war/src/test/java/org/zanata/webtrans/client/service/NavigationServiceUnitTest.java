@@ -316,7 +316,7 @@ public class NavigationServiceUnitTest
       assertThat(service.findRowIndexById(new TransUnitId(2)), Matchers.equalTo(1));
 
       // not in current page
-      assertThat(service.findRowIndexById(new TransUnitId(99)), Matchers.equalTo(NavigationService.UNSELECTED));
+      assertThat(service.findRowIndexById(new TransUnitId(99)), Matchers.equalTo(NavigationService.UNDEFINED));
    }
 
    @Test

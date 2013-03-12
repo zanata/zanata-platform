@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import static org.hamcrest.MatcherAssert.*;
-import static org.zanata.webtrans.client.service.NavigationService.UNSELECTED;
+import static org.zanata.webtrans.client.service.NavigationService.UNDEFINED;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -45,13 +45,13 @@ public class SinglePageDataModelImplTest
 
       model.setData(data);
 
-      assertThat(model.getCurrentRow(), Matchers.equalTo(UNSELECTED));
+      assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
       assertThat(model.getData(), Matchers.is(data));
 
       model.setSelected(1);
       assertThat(model.getCurrentRow(), Matchers.equalTo(1));
       model.setData(data);
-      assertThat(model.getCurrentRow(), Matchers.equalTo(UNSELECTED));
+      assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
    }
 
    @Test
@@ -75,7 +75,7 @@ public class SinglePageDataModelImplTest
       assertThat(index, Matchers.is(2));
 
       int notFoundIndex = model.findIndexById(new TransUnitId(99));
-      assertThat(notFoundIndex, Matchers.is(UNSELECTED));
+      assertThat(notFoundIndex, Matchers.is(UNDEFINED));
    }
 
    @Test
