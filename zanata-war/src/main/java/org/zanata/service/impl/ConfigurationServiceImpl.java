@@ -43,6 +43,8 @@ import org.zanata.service.LocaleService;
 public class ConfigurationServiceImpl implements ConfigurationService
 {
    private static final String FILE_NAME = "zanata.xml";
+
+   private static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
    
    @In
    private LocaleService localeServiceImpl;
@@ -54,13 +56,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
    private ApplicationConfiguration applicationConfiguration;
 
    @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug)
+   public String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo)
    {
-      return getConfigurationFileContents(projectSlug, iterationSlug, applicationConfiguration.getServerPath());
+      return getConfigurationFileContents(projectSlug, iterationSlug, useOfflinePo, applicationConfiguration.getServerPath());
    }
 
    @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug, String serverPath)
+   public String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo, String serverPath)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       ProjectType projectType = projectIteration.getProjectType();
@@ -71,16 +73,23 @@ public class ConfigurationServiceImpl implements ConfigurationService
       var.append("  <url>").append(serverPath).append("/</url>\n");
       var.append("  <project>").append(projectSlug).append("</project>\n");
       var.append("  <project-version>").append(iterationSlug).append("</project-version>\n");
-      if ( projectType != null )
+      if (useOfflinePo)
+      {
+         var.append("  <!-- NB project-type set to 'offlinepo' to allow offline po translation\n")
+            .append("       from non-po documents, project-type on server is '")
+            .append(String.valueOf(projectType).toLowerCase()).append("' -->\n")
+            .append("  <project-type>").append(PROJECT_TYPE_OFFLINE_PO).append("</project-type>\n");
+      }
+      else if ( projectType != null )
       {
          if( projectType == ProjectType.Gettext )
          {
             var.append("  <!-- NB project-type set to 'podir' to allow uploads, but original was 'gettext' -->\n");
-            var.append("  <project-type>").append(ProjectType.Podir.toString()).append("</project-type>\n");
+            var.append("  <project-type>").append(ProjectType.Podir.toString().toLowerCase()).append("</project-type>\n");
          }
          else
          {
-            var.append("  <project-type>").append(projectType).append("</project-type>\n");
+            var.append("  <project-type>").append(projectType.toString().toLowerCase()).append("</project-type>\n");
          }
       }
       else

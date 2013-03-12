@@ -341,13 +341,24 @@
     			</h:outputLink>
 
                 <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />
+                <!-- show this when downloads are prohibited, or it is gettext -->
                 <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
+                                 rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
-                                 action="#{projectIterationZipFileAction.prepareIterationZipFile}"
+                                 action="#{projectIterationZipFileAction.prepareIterationZipFile(false)}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
                                  reRender="downloadProgressBar"
                                  disabled="#{not downloadAllAllowed}"
                                  title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
+                <!-- separate download link for 'offline po' bundled package -->
+                <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
+                                 rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
+                                 value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
+                                 action="#{projectIterationZipFileAction.prepareIterationZipFile(true)}"
+                                 onclick="if(!downloadAllFilesClick()){ return false; }"
+                                 reRender="downloadProgressBar"
+                                 disabled="#{not downloadAllAllowed}"
+                                 title="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo.title']}"/>
             </a4j:form>
         </rich:panel>
 

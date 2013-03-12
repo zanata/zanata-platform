@@ -494,6 +494,12 @@ public class ProjectIterationFilesAction implements Serializable
       this.localeId = localeId;
    }
 
+   public boolean isPoProject()
+   {
+      ProjectType type = projectIterationDAO.getBySlug(projectSlug, iterationSlug).getProjectType();
+      return type == ProjectType.Gettext || type == ProjectType.Podir;
+   }
+
    public boolean isPoDocument(String docId)
    {
       return translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
@@ -571,8 +577,7 @@ public class ProjectIterationFilesAction implements Serializable
 
    public boolean isZipFileDownloadAllowed()
    {
-      return getProjectIteration().getProjectType() == ProjectType.Gettext ||
-             getProjectIteration().getProjectType() == ProjectType.Podir;
+      return getProjectIteration().getProjectType() != null;
    }
 
    public String getZipFileDownloadTitle()
