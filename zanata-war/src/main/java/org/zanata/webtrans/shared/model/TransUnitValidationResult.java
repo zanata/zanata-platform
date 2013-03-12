@@ -4,18 +4,18 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocValidationResultInfo implements IsSerializable
+public class TransUnitValidationResult implements IsSerializable
 {
    private TransUnitId transUnitId;
    private List<String> errorMessages;
 
    // for GWT
    @SuppressWarnings("unused")
-   private DocValidationResultInfo()
+   private TransUnitValidationResult()
    {
    }
    
-   public DocValidationResultInfo(TransUnitId transUnitId, List<String> errorMessages)
+   public TransUnitValidationResult(TransUnitId transUnitId, List<String> errorMessages)
    {
       this.transUnitId = transUnitId;
       this.errorMessages = errorMessages;

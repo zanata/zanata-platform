@@ -40,6 +40,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -99,8 +100,16 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
 
       List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
+      
+      List<TransUnitValidationResult> validationResult = null;
+      if (action.isFilterHasError())
+      {
+         validationResult = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getId());
+      }
+      
       GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage);
       result.setNavigationIndex(navigationResult);
+      result.setValidationResults(validationResult);
       return result;
    }
 
@@ -121,11 +130,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
          textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
-
-         if (action.isFilterHasError())
-         {
-            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getId());
-         }
       }
       return textFlows;
    }

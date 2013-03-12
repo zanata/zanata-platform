@@ -1,11 +1,11 @@
 package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
-import java.util.Map;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitValidationResult;
+
 import com.google.common.base.Objects;
 
 
@@ -19,6 +19,8 @@ public class GetTransUnitListResult implements DispatchResult
    private int targetOffset;
    private int targetPage;
    private GetTransUnitsNavigationResult navigationIndex;
+   
+   private List<TransUnitValidationResult> validationResult;
 
    @SuppressWarnings("unused")
    private GetTransUnitListResult()
@@ -68,6 +70,16 @@ public class GetTransUnitListResult implements DispatchResult
    {
       this.navigationIndex = navigationIndex;
    }
+   
+   public void setValidationResults(List<TransUnitValidationResult> validationResult)
+   {
+      this.validationResult =validationResult;
+   }
+
+   public List<TransUnitValidationResult> getValidationResult()
+   {
+      return validationResult;
+   }
 
    @Override
    public String toString()
@@ -81,4 +93,6 @@ public class GetTransUnitListResult implements DispatchResult
             add("navigationIndex", navigationIndex).
             toString();
    }
+
+  
 }

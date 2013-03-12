@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.zanata.webtrans.shared.model.DocValidationResultInfo;
+import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -71,7 +71,7 @@ public interface ValidationService
     * @param validations
     * @param localeId
     */
-   Map<DocumentId, List<DocValidationResultInfo>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
+   Map<DocumentId, List<TransUnitValidationResult>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
 
    /**
     * Filter list of text flow with those only contains validation error
@@ -79,5 +79,5 @@ public interface ValidationService
     * @param textFlows
     * @param id
     */
-   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId);
+   List<TransUnitValidationResult> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId);
 }

@@ -37,7 +37,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.DocValidationResultInfo;
+import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.common.base.Stopwatch;
@@ -164,14 +164,14 @@ public class ValidationServiceImpl implements ValidationService
    }
 
    @Override
-   public Map<DocumentId, List<DocValidationResultInfo>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
+   public Map<DocumentId, List<TransUnitValidationResult>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      log.info("Start full docs validation - {0}", hDocs.size());
+      log.debug("Start full docs validation - {0}", hDocs.size());
       Stopwatch stopwatch = new Stopwatch().start();
-      Map<DocumentId, List<DocValidationResultInfo>> docValidationResult = new HashMap<DocumentId, List<DocValidationResultInfo>>();
+      Map<DocumentId, List<TransUnitValidationResult>> docValidationResult = new HashMap<DocumentId, List<TransUnitValidationResult>>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
-      Map<Long, DocValidationResultInfo> targetErrorList = new HashMap<Long, DocValidationResultInfo>();
+      Map<Long, TransUnitValidationResult> targetErrorList = new HashMap<Long, TransUnitValidationResult>();
       for (HDocument hDoc : hDocs)
       {
          for (HTextFlow textFlow : hDoc.getTextFlows())
@@ -179,18 +179,19 @@ public class ValidationServiceImpl implements ValidationService
             HTextFlowTarget target = textFlow.getTargets().get(localeId);
             if (target != null)
             {
-               for (ValidationAction validation : validationActions)
+               for (ValidationAction validationAction : validationActions)
                {
-                  validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
-                  if (validation.hasError())
+                  validationAction.clearErrorMessage();
+                  validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+                  if (validationAction.hasError())
                   {
                      if (targetErrorList.containsKey(target.getId()))
                      {
-                        targetErrorList.get(target.getId()).getErrorMessages().addAll(validation.getError());
+                        targetErrorList.get(target.getId()).getErrorMessages().addAll(validationAction.getError());
                      }
                      else
                      {
-                        DocValidationResultInfo result = new DocValidationResultInfo(new TransUnitId(textFlow.getId()), validation.getError());
+                        TransUnitValidationResult result = new TransUnitValidationResult(new TransUnitId(textFlow.getId()), validationAction.getError());
                         targetErrorList.put(target.getId(), result);
                      }
                   }
@@ -199,19 +200,19 @@ public class ValidationServiceImpl implements ValidationService
          }
          if (!targetErrorList.isEmpty())
          {
-            List<DocValidationResultInfo> resultInfo = new ArrayList<DocValidationResultInfo>(targetErrorList.values());
+            List<TransUnitValidationResult> resultInfo = new ArrayList<TransUnitValidationResult>(targetErrorList.values());
             docValidationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), resultInfo);
          }
          targetErrorList.clear();
       }
-      log.info("Finished full docs validation in " + stopwatch);
+      log.debug("Finished full docs validation in " + stopwatch);
       return docValidationResult;
    }
 
    @Override
    public Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      log.info("Start {0} docs validation", hDocs.size());
+      log.debug("Start {0} docs validation", hDocs.size());
       Stopwatch stopwatch = new Stopwatch().start();
       Map<DocumentId, Boolean> validationResult = new HashMap<DocumentId, Boolean>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -222,55 +223,78 @@ public class ValidationServiceImpl implements ValidationService
          validationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), hasValidationError);
       }
 
-      log.info("Finished docs validation in " + stopwatch);
+      log.debug("Finished docs validation in " + stopwatch);
       return validationResult;
-   }
-
-   @Override
-   public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId)
-   {
-      log.info("Start filter {0} textFlows", textFlows.size());
-      Stopwatch stopwatch = new Stopwatch().start();
-
-      List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
-      List<HTextFlow> result = new ArrayList<HTextFlow>();
-
-      for (HTextFlow textFlow : textFlows)
-      {
-         if (validationTextFlow(textFlow, validationActions, localeId))
-         {
-            result.add(textFlow);
-         }
-      }
-      log.info("Finished filter textFlows in " + stopwatch);
-      return result;
    }
 
    private boolean validationDocuments(HDocument hDoc, List<ValidationAction> validationActions, Long localeId)
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         return validationTextFlow(textFlow, validationActions, localeId);
-      }
-      return false;
-   }
-
-   private boolean validationTextFlow(HTextFlow textFlow, List<ValidationAction> validationActions, Long localeId)
-   {
-      HTextFlowTarget target = textFlow.getTargets().get(localeId);
-      if (target != null)
-      {
-         for (ValidationAction validation : validationActions)
+         HTextFlowTarget target = textFlow.getTargets().get(localeId);
+         if (target != null)
          {
-            validation.validate(textFlow.getContents().get(0), target.getContents().get(0));
-            if (validation.hasError())
+            for (ValidationAction validationAction : validationActions)
             {
-               System.out.println("======== has error: " + textFlow.getContents().get(0) + ":" + target.getContents().get(0));
-               System.out.println(validation.getError());
-               return true;
+               validationAction.clearErrorMessage();
+               validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+               if (validationAction.hasError())
+               {
+                  return true;
+               }
             }
          }
       }
       return false;
+   }
+
+   @Override
+   public List<TransUnitValidationResult> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId)
+   {
+      log.debug("Start filter {0} textFlows", textFlows.size());
+      Stopwatch stopwatch = new Stopwatch().start();
+
+      List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
+      List<TransUnitValidationResult> result = new ArrayList<TransUnitValidationResult>();
+      
+      List<HTextFlow> filteredTextFlows = new ArrayList<HTextFlow>();
+
+      for (HTextFlow textFlow : textFlows)
+      {
+         TransUnitValidationResult validationResult = validationTextFlow(textFlow, validationActions, localeId);
+         
+         if (validationResult != null)
+         {
+            result.add(validationResult);
+            filteredTextFlows.add(textFlow);
+         }
+      }
+      textFlows = filteredTextFlows;
+      log.debug("Finished filter textFlows in " + stopwatch);
+      return result;
+   }
+
+   private TransUnitValidationResult validationTextFlow(HTextFlow textFlow, List<ValidationAction> validationActions, Long localeId)
+   {
+      HTextFlowTarget target = textFlow.getTargets().get(localeId);
+      if (target != null)
+      {
+         List<String> errors = new ArrayList<String>();
+         for (ValidationAction validationAction : validationActions)
+         {
+            validationAction.clearErrorMessage();
+            validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+            if (validationAction.hasError())
+            {
+               errors.addAll(validationAction.getError());
+            }
+         }
+
+         if (!errors.isEmpty())
+         {
+            return new TransUnitValidationResult(new TransUnitId(textFlow.getId()), errors);
+         }
+      }
+      return null;
    }
 }
