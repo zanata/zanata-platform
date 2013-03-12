@@ -52,25 +52,16 @@ public interface TranslationFileService
    TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException;
 
    /**
-    * Extract the translatable strings from a document file to a usable form.
-    * May be used for new or existing documents.
-    * 
-    * @param fileContents
-    * @param path to use within the Zanata project-iteration
-    * @param fileName to use within the Zanata project-iteration
-    * @return a usable representation of the document
-    */
-   Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
-
-   /**
-    * Extract the translatable strings from a new version of an existing document file to a usable form.
+    * Extract the translatable strings from a new document file or from a new version of an existing
+    * document file to a usable form.
     * 
     * @param fileContents
     * @param docId the id of an existing document
     * @param uploadFileName name of the new file being parsed, used only to identify format
+    * @param offlinePo true to use msgctxt as the id for each text flow
     * @return a usable representation of the document
     */
-   Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String uploadFileName);
+   Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String uploadFileName, boolean offlinePo);
 
    /**
     * Extracts the translatable strings from a document file to a usable form.
@@ -157,5 +148,7 @@ public interface TranslationFileService
     * @return true if the specified document is of type po
     */
    boolean isPoDocument(String projectSlug, String iterationSlug, String docId);
+
+   String generateDocId(String path, String fileName);
 
 }

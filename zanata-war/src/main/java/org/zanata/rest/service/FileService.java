@@ -196,6 +196,7 @@ public class FileService implements FileResource
       }
 
       boolean isNewDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
+      boolean useOfflinePo = !isNewDocument && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
 
       boolean isSinglePart = uploadForm.getFirst() && uploadForm.getLast();
 
@@ -203,7 +204,7 @@ public class FileService implements FileResource
 
       if (isSinglePart && isPotFile)
       {
-         parsePotFile(uploadForm.getFileStream(), docId, fileType, projectSlug, iterationSlug);
+         parsePotFile(uploadForm.getFileStream(), docId, fileType, projectSlug, iterationSlug, useOfflinePo);
          return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
       }
 
@@ -309,7 +310,7 @@ public class FileService implements FileResource
       {
          try
          {
-            parsePotFile(new FileInputStream(tempFile), docId, fileType, projectSlug, iterationSlug);
+            parsePotFile(new FileInputStream(tempFile), docId, fileType, projectSlug, iterationSlug, useOfflinePo);
          }
          catch (FileNotFoundException e)
          {
@@ -604,10 +605,10 @@ public class FileService implements FileResource
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
-   private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug)
+   private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug, boolean asOfflinePo)
    {
       Resource doc;
-      doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentStream, docId, fileType);
+      doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentStream, docId, fileType, asOfflinePo);
       doc.setLang( new LocaleId("en-US") );
       // TODO Copy Trans values
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);

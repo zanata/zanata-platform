@@ -153,25 +153,24 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseDocumentFile(InputStream fileContents, String path, String fileName)
+   public String generateDocId(String path, String fileName)
    {
       String docName = fileName;
       if (docName.endsWith(".pot"))
       {
          docName = docName.substring(0, docName.lastIndexOf('.'));
       }
-
-      return parseUpdatedDocumentFile(fileContents, convertToValidPath(path) + docName, fileName);
+      return convertToValidPath(path) + docName;
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName)
+   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
    {
       if (fileName.endsWith(".pot"))
       {
          try
          {
-            return parsePotFile(fileContents, docId);
+            return parsePotFile(fileContents, docId, offlinePo);
          }
          catch (Exception e)
          {
@@ -240,9 +239,9 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return poReader.extractTarget(new InputSource(fileContents) );
    }
 
-   private Resource parsePotFile(InputStream fileContents, String docId)
+   private Resource parsePotFile(InputStream fileContents, String docId, boolean offlinePo)
    {
-      PoReader2 poReader = new PoReader2();
+      PoReader2 poReader = new PoReader2(offlinePo);
       // assume english as source locale
       Resource res = poReader.extractTemplate(new InputSource(fileContents), new LocaleId("en"), docId);
       return res;
