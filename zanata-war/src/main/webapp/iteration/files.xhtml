@@ -184,9 +184,18 @@
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
                     </f:facet>
-                    <s:link styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
+                    <s:link styleClass="table_link"
+                            rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
+                    </s:link>
+                    <s:link styleClass="table_link"
+                            rendered="#{!projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/offlinepo">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{messages['jsf.iteration.files.dotofflinepo']}"
+                                      title="#{messages['jsf.iteration.files.dotofflinepo.description']} #{messages['jsf.iteration.files.dotofflinepo.purpose']}"/>
                     </s:link>
                     <h:outputText value="&#160;&#160;&#160;" />
                     <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/baked">
@@ -261,6 +270,8 @@
                 <h:outputText id="uploadPanelHeader"/>
             </f:facet>
             <h:form id="uploadForm" enctype="multipart/form-data">
+                <!-- Could add warning for non-po documents,
+                     to note that po files must be offline-po format -->
                 <s:fileUpload accept="*"
                               data="#{projectIterationFilesAction.translationFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.translationFileUpload.fileName}"/>

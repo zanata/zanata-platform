@@ -39,15 +39,17 @@ import java.util.Set;
 public interface TranslationFileService
 {
    /**
-    * Extract the translated strings from a document file to a usable form.
+    * Extract the translated strings from a document file to a usable form, using appropriate
+    * id mapping.
     * 
     * @param fileContents the document to parse
     * @param fileName the name including extension for the file (used to determine how to parse file)
+    * @param originalIsPo true if the document was originally uploaded in po format
     * @return a representation of the translations
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
     */
-   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException;
+   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a document file to a usable form.
@@ -151,5 +153,9 @@ public interface TranslationFileService
     */
    String extractExtension(String fileNameOrExtension);
 
+   /**
+    * @return true if the specified document is of type po
+    */
+   boolean isPoDocument(String projectSlug, String iterationSlug, String docId);
 
 }

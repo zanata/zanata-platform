@@ -83,9 +83,18 @@
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
                     </f:facet>
-                    <s:link styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
+                    <s:link styleClass="table_link"
+                            rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotpot']}"/>
+                    </s:link>
+                    <s:link styleClass="table_link"
+                            rendered="#{!projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/offlinepot">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{messages['jsf.iteration.files.dotofflinepot']}"
+                                      title="#{messages['jsf.iteration.files.dotofflinepot.description']} #{messages['jsf.iteration.files.dotofflinepot.purpose']}"/>
                     </s:link>
                     <h:outputText value="&#160;&#160;&#160;" />
                     <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/raw">

@@ -214,7 +214,11 @@ public class ProjectIterationFilesAction implements Serializable
       try
       {
          // process the file
-         TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(), translationFileUpload.getFileName(), localeId);
+         TranslationsResource transRes =
+               translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(),
+                                                               translationFileUpload.getFileName(),
+                                                               localeId,
+                                                               isPoDocument(translationFileUpload.docId));
 
          // translate it
          Set<String> extensions;
@@ -474,6 +478,11 @@ public class ProjectIterationFilesAction implements Serializable
    public void setLocaleId(String localeId)
    {
       this.localeId = localeId;
+   }
+
+   public boolean isPoDocument(String docId)
+   {
+      return translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
    }
 
    // line not found

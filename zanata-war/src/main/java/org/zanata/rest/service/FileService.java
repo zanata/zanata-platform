@@ -113,6 +113,9 @@ import com.google.common.base.Stopwatch;
 @Slf4j
 public class FileService implements FileResource
 {
+   private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
+   private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
+
    @In
    private ZanataIdentity identity;
 
@@ -380,6 +383,7 @@ public class FileService implements FileResource
     * @param file
     * @throws VirusDetectedException if a virus is detected
     */
+   // FIXME put this in its own class
    public static void virusScan(File file) throws VirusDetectedException
    {
       // TODO make command name and path configurable
@@ -762,8 +766,11 @@ public class FileService implements FileResource
       }
 
       // TODO useful error messages for failed parsing
-      TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(fileContents,
-            uploadForm.getFileType(), localeId);
+      TranslationsResource transRes =
+            translationFileServiceImpl.parseTranslationFile(fileContents,
+                                                            uploadForm.getFileType(),
+                                                            localeId,
+                                                            translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId));
 
       MergeType mergeType;
       if ("import".equals(merge))
@@ -871,10 +878,12 @@ public class FileService implements FileResource
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
       }
-      else if ("pot".equals(fileType))
+      else if ("pot".equals(fileType) || FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType))
       {
+         // Note: could give 404 or unsupported media type for "pot" in non-po projects,
+         //       and suggest using offlinepo
          Resource res = resourceUtils.buildResource(document);
-         StreamingOutput output = new POTStreamingOutput(res);
+         StreamingOutput output = new POTStreamingOutput(res, FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType));
          return Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".pot\"")
                .type(MediaType.TEXT_PLAIN)
@@ -927,8 +936,10 @@ public class FileService implements FileResource
       {
          response = Response.status(Status.NOT_FOUND).build();
       }
-      else if ("po".equals(fileType))
+      else if ("po".equals(fileType) || FILE_TYPE_OFFLINE_PO.equals(fileType))
       {
+         // Note: could return 404 or Unsupported media type for "po" in non-po projects,
+         //       and suggest to use offlinepo
          final Set<String> extensions = new HashSet<String>();
          extensions.add("gettext");
          extensions.add("comment");
@@ -938,7 +949,7 @@ public class FileService implements FileResource
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true, null).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
 
-         StreamingOutput output = new POStreamingOutput(res, transRes);
+         StreamingOutput output = new POStreamingOutput(res, transRes, FILE_TYPE_OFFLINE_PO.equals(fileType));
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
                .type(MediaType.TEXT_PLAIN)
@@ -1053,17 +1064,23 @@ public class FileService implements FileResource
    {
       private Resource resource;
       private TranslationsResource transRes;
+      private boolean offlinePo;
 
-      public POStreamingOutput( Resource resource, TranslationsResource transRes )
+      /**
+       * @param offlinePo true if text flow id should be inserted into msgctxt
+       *                  to allow reverse mapping.
+       */
+      public POStreamingOutput( Resource resource, TranslationsResource transRes, boolean offlinePo)
       {
          this.resource = resource;
          this.transRes = transRes;
+         this.offlinePo = offlinePo;
       }
 
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
-      {         
-         PoWriter2 writer = new PoWriter2();
+      {
+         PoWriter2 writer = new PoWriter2(false, offlinePo);
          writer.writePo(output, "UTF-8", this.resource, this.transRes);
       }
    }
@@ -1071,16 +1088,22 @@ public class FileService implements FileResource
    private class POTStreamingOutput implements StreamingOutput
    {
       private Resource resource;
+      private boolean offlinePot;
 
-      public POTStreamingOutput(Resource resource)
+      /**
+       * @param offlinePot true if text flow id should be inserted into msgctxt
+       *                   to allow reverse mapping
+       */
+      public POTStreamingOutput(Resource resource, boolean offlinePot)
       {
          this.resource = resource;
+         this.offlinePot = offlinePot;
       }
 
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
-         PoWriter2 writer = new PoWriter2();
+         PoWriter2 writer = new PoWriter2(false, offlinePot);
          writer.writePot(output, "UTF-8", resource);
       }
    }
