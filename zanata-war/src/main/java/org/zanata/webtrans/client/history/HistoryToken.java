@@ -41,6 +41,8 @@ public class HistoryToken
    public static final String KEY_DOC_FILTER_CASE = "filtercase";
    public static final String VALUE_DOC_FILTER_CASE_SENSITIVE = "sensitive";
 
+   public static final String KEY_TEXT_FLOW_ID = "textflow";
+
    private MainView view;
    private String fullDocPath;
    private boolean docFilterExact;
@@ -52,6 +54,7 @@ public class HistoryToken
    private boolean projectSearchCaseSensitive;
    private boolean projectSearchInSource;
    private boolean projectSearchInTarget;
+   private Long textFlowId;
 
    // defaults
    private static final MainView DEFAULT_VIEW = MainView.Documents;
@@ -65,6 +68,7 @@ public class HistoryToken
    private static final boolean DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE = false;
    private static final boolean DEFAULT_PROJECT_SEARCH_IN_SOURCE = false;
    private static final boolean DEFAULT_PROJECT_SEARCH_IN_TARGET = true;
+   private static final Long DEFAULT_TEXT_FLOW_ID = null;
 
    public HistoryToken()
    {
@@ -79,11 +83,12 @@ public class HistoryToken
       projectSearchCaseSensitive = DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE;
       projectSearchInSource = DEFAULT_PROJECT_SEARCH_IN_SOURCE;
       projectSearchInTarget = DEFAULT_PROJECT_SEARCH_IN_TARGET;
+      textFlowId = DEFAULT_TEXT_FLOW_ID;
    }
 
    /**
     * Generate a history token from the given token string
-    * 
+    *
     * @param token A GWT history token in the form key1:value1;key2:value2;...
     * @see #toTokenString()
     */
@@ -189,6 +194,10 @@ public class HistoryToken
                historyToken.setProjectSearchInTarget(true);
             }
             //else default used
+         }
+         else if (key.equals(KEY_TEXT_FLOW_ID))
+         {
+            historyToken.setTextFlowId(value);
          }
          else
          {
@@ -404,6 +413,11 @@ public class HistoryToken
          // ignore if neither
       }
 
+      if (textFlowId != null)
+      {
+         token = addTokenToTokenString(token, KEY_TEXT_FLOW_ID, textFlowId.toString());
+      }
+
       return token;
    }
 
@@ -477,7 +491,6 @@ public class HistoryToken
          else if (nextChar == '!')
          {
             escaped = true;
-            continue;
          }
          else
          {
@@ -498,4 +511,22 @@ public class HistoryToken
       return projectSearchInTarget;
    }
 
+   public void setTextFlowId(String textFlowId)
+   {
+      Long id;
+      try
+      {
+         id = Long.valueOf(textFlowId);
+      }
+      catch (Exception e)
+      {
+         id = null;
+      }
+      this.textFlowId = id;
+   }
+
+   public Long getTextFlowId()
+   {
+      return textFlowId;
+   }
 }

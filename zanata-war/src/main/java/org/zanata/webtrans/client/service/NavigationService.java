@@ -25,6 +25,8 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.BookmarkableTextFlowEvent;
+import org.zanata.webtrans.client.events.BookmarkableTextFlowEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
@@ -65,7 +67,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkableTextFlowEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNSELECTED = -1;
@@ -99,6 +101,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
+      eventBus.addHandler(BookmarkableTextFlowEvent.TYPE, this);
    }
 
    protected void requestTransUnitsAndUpdatePageIndex(GetTransUnitActionContext actionContext, final boolean needReloadIndex)
@@ -345,6 +348,13 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    {
       this.context = context;
       configHolder.setEditorPageSize(context.getCount());
+      requestTransUnitsAndUpdatePageIndex(context, true);
+   }
+
+   @Override
+   public void onBookmarkableTextFlow(BookmarkableTextFlowEvent event)
+   {
+      this.context  = context.changeTargetTransUnitId(event.getTextFlowId());
       requestTransUnitsAndUpdatePageIndex(context, true);
    }
 

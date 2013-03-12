@@ -3,13 +3,17 @@ package org.zanata.webtrans.client.service;
 import static com.google.common.base.Objects.equal;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.BookmarkableTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -51,6 +55,8 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       processForAppPresenter(newHistoryToken);
       processForTransFilter(newHistoryToken);
       processForProjectWideSearch(newHistoryToken);
+
+      processForTransUnitSelection(newHistoryToken);
 
       currentHistoryState = newHistoryToken;
       appPresenter.showView(newHistoryToken.getView());
@@ -116,5 +122,12 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
-
+   protected void processForTransUnitSelection(HistoryToken token)
+   {
+      if (!equal(token.getTextFlowId(), currentHistoryState.getTextFlowId()) && token.getTextFlowId() != null)
+      {
+         Log.info("[gwt-history] bookmarkable text flow has changed");
+         eventBus.fireEvent(new BookmarkableTextFlowEvent(new TransUnitId(token.getTextFlowId())));
+      }
+   }
 }

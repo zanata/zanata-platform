@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.history;
 
 import static org.junit.Assert.*;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.presenter.MainView;
@@ -36,6 +37,7 @@ public class HistoryTokenTests
       assertEquals("default project-wide search text should be an empty string", "", token.getProjectSearchText());
       assertEquals("default project-wide search replacement text should be an empty string", "", token.getProjectSearchReplacement());
       assertFalse("default project-wide search case sensitive flag should be false", token.getProjectSearchCaseSensitive());
+      assertThat(token.getTextFlowId(), Matchers.nullValue());
    }
 
    @Test
@@ -51,6 +53,7 @@ public class HistoryTokenTests
       assertEquals("default project-wide search text should be an empty string", "", token.getProjectSearchText());
       assertEquals("default project-wide search replacement text should be an empty string", "", token.getProjectSearchReplacement());
       assertFalse("default project-wide search case sensitive flag should be false", token.getProjectSearchCaseSensitive());
+      assertThat(token.getTextFlowId(), Matchers.nullValue());
    }
 
    @Test
@@ -66,6 +69,7 @@ public class HistoryTokenTests
       assertEquals("default project-wide search text should be an empty string", "", token.getProjectSearchText());
       assertEquals("default project-wide search replacement text should be an empty string", "", token.getProjectSearchReplacement());
       assertFalse("default project-wide search case sensitive flag should be false", token.getProjectSearchCaseSensitive());
+      assertThat(token.getTextFlowId(), Matchers.nullValue());
    }
 
    @Test
@@ -116,6 +120,26 @@ public class HistoryTokenTests
       assertEquals("project-wide search text should be set from any position in token string", "projectsearchtext", token.getProjectSearchText());
       assertEquals("project-wide search replacement text should be set from any position in token string", "replacementtext", token.getProjectSearchReplacement());
       assertTrue("project-wide search case sensitivity should be set from any position in token string", token.getProjectSearchCaseSensitive());
+   }
+
+   @Test
+   public void fromTokenStringHasTextFlowId()
+   {
+      String tokenString = "textflow:1";
+
+      token = HistoryToken.fromTokenString(tokenString);
+
+      assertThat(token.getTextFlowId(), Matchers.equalTo(1L));
+   }
+
+   @Test
+   public void badTextFlowId()
+   {
+      String tokenString = "textflow:abc";
+
+      token = HistoryToken.fromTokenString(tokenString);
+
+      assertThat(token.getTextFlowId(), Matchers.nullValue());
    }
 
    @Test
