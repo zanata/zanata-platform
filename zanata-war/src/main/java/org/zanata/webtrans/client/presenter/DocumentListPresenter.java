@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -51,7 +52,6 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
-import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
@@ -60,7 +60,6 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
@@ -86,7 +85,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final WebTransMessages messages;
    private final History history;
    private final UserOptionsService userOptionsService;
-   private final ValidationService validationService;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
@@ -106,7 +104,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final NoSelectionModel<DocumentNode> selectionModel = new NoSelectionModel<DocumentNode>();
 
    @Inject
-   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService, ValidationService validationService)
+   public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -114,7 +112,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.messages = messages;
       this.history = history;
       this.userOptionsService = userOptionsService;
-      this.validationService = validationService;
 
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
@@ -531,15 +528,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             docIds.add(node.getDocInfo().getId().getId());
          }
 
-         ArrayList<ValidationId> valIds = new ArrayList<ValidationId>();
-
-         for (ValidationAction valAction : validationService.getValidationMap().values())
-         {
-            if (valAction.getValidationInfo().isEnabled())
-            {
-               valIds.add(valAction.getValidationInfo().getId());
-            }
-         }
+         List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
 
          if (!valIds.isEmpty() && !docIds.isEmpty())
          {

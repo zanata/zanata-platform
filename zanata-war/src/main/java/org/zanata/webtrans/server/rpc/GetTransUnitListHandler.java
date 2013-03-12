@@ -37,6 +37,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -67,6 +68,9 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
    @In
    private ZanataIdentity identity;
+
+   @In
+   private ValidationService validationServiceImpl;
 
    @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true)
    private GetTransUnitsNavigationService getTransUnitsNavigationService;
@@ -103,7 +107,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    private List<HTextFlow> getTextFlows(GetTransUnitList action, HLocale hLocale, int offset)
    {
       List<HTextFlow> textFlows;
-      if (action.isAcceptAllStatus() && !hasSearchPhrase(action.getPhrase()))
+      if (action.isAcceptAllStatus() && !hasSearchPhrase(action.getPhrase()) && !action.isFilterHasError())
       {
          log.debug("Fetch TransUnits:*");
          textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), offset, action.getCount());
@@ -117,6 +121,11 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
          textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
+
+         if (action.isFilterHasError())
+         {
+            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getId());
+         }
       }
       return textFlows;
    }

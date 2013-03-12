@@ -86,8 +86,6 @@ public class DocumentListPresenterTest
    @Mock
    private UserOptionsService mockUserOptionsService;
    @Mock
-   private ValidationService mockValidationService;
-   @Mock
    private CachingDispatchAsync mockDispatcher;
 
    private UserConfigHolder configHolder;
@@ -117,7 +115,7 @@ public class DocumentListPresenterTest
       configHolder = new UserConfigHolder();
       when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
       dataProviderList = new ArrayList<DocumentNode>();
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService, mockValidationService);
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
    
       workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
 

@@ -84,4 +84,10 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       return runValidation;
    }
+
+   @Override
+   public void setRunValidationVisible(boolean visible)
+   {
+      runValidation.setVisible(visible);
+   }
 }

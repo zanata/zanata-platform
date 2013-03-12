@@ -231,7 +231,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void cancelFilter()
    {
-      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), true));
+      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
       display.hideFilterConfirmation();
    }
 

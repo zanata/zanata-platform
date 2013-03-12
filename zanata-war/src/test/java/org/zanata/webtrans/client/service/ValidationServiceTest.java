@@ -22,6 +22,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
@@ -52,6 +53,8 @@ public class ValidationServiceTest
    
    @Mock
    private CachingDispatchAsync dispatcher;
+   
+   private UserConfigHolder configHolder;
 
    @BeforeMethod
    public void beforeMethod()
@@ -60,7 +63,7 @@ public class ValidationServiceTest
 
       validationMessages = TestMessages.getInstance(ValidationMessages.class);
 
-      service = new ValidationService(eventBus, dispatcher, messages, validationMessages);
+      service = new ValidationService(eventBus, messages, validationMessages, configHolder);
       ValidationFactory validationFactory = new ValidationFactory(validationMessages);
 
       Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();

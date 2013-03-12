@@ -13,6 +13,7 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
 
 
 /**
@@ -50,8 +51,33 @@ public interface ValidationService
     */
    Collection<ValidationAction> getValidationObject(HProjectIteration version);
 
-
+   /**
+    * Run validation check on HTextFlow and HTextFlowTarget with specific locale
+    * from list of HDocuments against validations rules
+    * 
+    * Returns if documents has validation errors
+    * 
+    * @param hDocs
+    * @param validations
+    * @param localeId
+    */
    Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
 
+   /**
+    * Run validation check on HTextFlow and HTextFlowTarget with specific locale
+    * from list of HDocuments against validations rules and return full report
+    * 
+    * @param hDocs
+    * @param validations
+    * @param localeId
+    */
    Map<DocumentId, List<DocValidationResultInfo>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
+
+   /**
+    * Filter list of text flow with those only contains validation error
+    * 
+    * @param textFlows
+    * @param id
+    */
+   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId);
 }

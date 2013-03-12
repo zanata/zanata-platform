@@ -123,7 +123,7 @@ public class TransFilterPresenterTest
    @Test
    public void willSetOptionsBackOnFilterViewCancelEvent()
    {
-      FilterViewEvent event = new FilterViewEvent(true, true, true, true);
+      FilterViewEvent event = new FilterViewEvent(true, true, true, false, true, null);
 
       presenter.onFilterView(event);
 
@@ -135,7 +135,7 @@ public class TransFilterPresenterTest
    @Test
    public void willDoNothingIfItsNotCancelEvent()
    {
-      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, false);
+      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, false, false, null);
 
       presenter.onFilterView(cancelEvent);
 

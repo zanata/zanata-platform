@@ -280,7 +280,9 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
                .changeFindMessage(documentSelectionEvent.getFindMessage())
                .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
                .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
-               .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated());
+               .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated())
+               .changeFilterHasError(configHolder.getState().isFilterByHasError())
+               .changeValidationIds(configHolder.getState().getEnabledValidationIds());
          requestTransUnitsAndUpdatePageIndex(context, true);
          // @formatter:on
       }

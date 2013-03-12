@@ -58,6 +58,8 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       void clearValidationSelector();
       
       HasClickHandlers getRunValidationButton();
+
+      void setRunValidationVisible(boolean visible);
    }
 
    private final ValidationService validationService;
@@ -145,6 +147,14 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public void setCurrentView(MainView view)
    {
       currentView = view;
+      if (view == MainView.Documents)
+      {
+         display.setRunValidationVisible(true);
+      }
+      else
+      {
+         display.setRunValidationVisible(false);
+      }
    }
 }
 
