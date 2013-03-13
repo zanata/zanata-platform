@@ -1084,6 +1084,19 @@
 
 	</profiles>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Arquillian Bom -->
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.0.3.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 	<dependencies>
 
         <!-- Zanata-specific dependencies -->
@@ -1708,11 +1721,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-managed</artifactId>
             <version>7.1.3.Final</version>
@@ -1723,6 +1731,12 @@
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-seam2</artifactId>
             <version>1.0.0.Alpha2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
             <scope>test</scope>
         </dependency>
 

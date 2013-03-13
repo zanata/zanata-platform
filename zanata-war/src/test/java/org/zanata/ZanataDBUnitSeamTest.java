@@ -28,7 +28,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
    // begin config methods from DBUnitSeamTest
    @BeforeClass
    @Parameters("datasourceJndiName")
-   public void setDatasourceJndiName(@Optional("java:/zanataTestDatasource") String datasourceJndiName)
+   public void setDatasourceJndiName(@Optional("java:jboss/datasources/zanataTestDatasource") String datasourceJndiName)
    {
       super.setDatasourceJndiName(datasourceJndiName);
    }

@@ -24,30 +24,54 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
 /**
- * This class performs an HTTP resource request.
+ * This class performs an HTTP resource request and offers callback methods for the request's
+ * lifecycle.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public abstract class ResourceRequest
 {
+   private static final ResourceRequestEnvironment DEFAULT_ENV = new ResourceRequestEnvironment();
+
    private String resourceUrl;
    private String method;
+   private ResourceRequestEnvironment environment;
 
    public ResourceRequest(String resourceUrl, String method)
    {
+      this(resourceUrl, method, DEFAULT_ENV);
+   }
+
+   protected ResourceRequest(String resourceUrl, String method, ResourceRequestEnvironment environment)
+   {
       this.resourceUrl = resourceUrl;
       this.method = method;
+      this.environment = environment;
    }
 
    protected abstract void prepareRequest(ClientRequest request);
 
    protected abstract void onResponse(ClientResponse response);
 
-   public void run() throws Exception {
+   public void run() throws Exception
+   {
       ClientRequest request = new ClientRequest(resourceUrl);
       request.setHttpMethod(method);
+      prepareEnvironment(request);
       prepareRequest(request);
       ClientResponse response = request.execute();
       onResponse(response);
+   }
+
+   private void prepareEnvironment( ClientRequest request )
+   {
+      // Insert the default headers
+      if( this.environment.getDefaultHeaders() != null )
+      {
+         for( String headerName : this.environment.getDefaultHeaders().keySet() )
+         {
+            request.header(headerName, this.environment.getDefaultHeaders().get(headerName));
+         }
+      }
    }
 }

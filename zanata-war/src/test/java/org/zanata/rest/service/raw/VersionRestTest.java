@@ -22,40 +22,42 @@ package org.zanata.rest.service.raw;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
 import javax.ws.rs.core.HttpHeaders;
 
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRawRestTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RawRestTest;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.VersionInfo;
 
-@Test(groups = {"seam-tests"})
-public class VersionRestTest extends ZanataRawRestTest
+public class VersionRestTest extends RawRestTest
 {
 
    @Override
    protected void prepareDBUnitOperations()
    {
    }
-   
+
    @Test
+   @RunAsClient
    public void getJson() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/version")
+      new ResourceRequest(getDeployedUrl("/version"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_VERSION_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_VERSION_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, VersionInfo.class);
@@ -64,18 +66,19 @@ public class VersionRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void getXml() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/version")
+      new ResourceRequest(getDeployedUrl("/version"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_VERSION_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_VERSION_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, VersionInfo.class);

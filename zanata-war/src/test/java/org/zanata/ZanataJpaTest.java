@@ -14,6 +14,8 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.mock.MockHttpSession;
 import org.jboss.seam.servlet.ServletSessionMap;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;

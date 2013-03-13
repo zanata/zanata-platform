@@ -28,8 +28,7 @@ public class RestUtils
    @In
    ValidatorFactory validatorFactory;
 
-   @SuppressWarnings("unused")
-   private RestUtils()
+   public RestUtils()
    {
    }
 

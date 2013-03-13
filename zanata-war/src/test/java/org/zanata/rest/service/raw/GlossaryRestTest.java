@@ -20,29 +20,32 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.ws.rs.core.HttpHeaders;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRawRestTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RawRestTest;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 
-@Test(groups = {"seam-tests"})
-public class GlossaryRestTest extends ZanataRawRestTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
+import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+
+public class GlossaryRestTest extends RawRestTest
 {
 
    @Override
@@ -52,20 +55,21 @@ public class GlossaryRestTest extends ZanataRawRestTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/GlossaryData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
-   
+
    @Test
+   @RunAsClient
    public void xmlGet() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/glossary")
+      new ResourceRequest(getDeployedUrl("/glossary"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200));
             assertJaxbUnmarshal(response, Glossary.class);
@@ -107,18 +111,19 @@ public class GlossaryRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void jsonGet() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/glossary")
+      new ResourceRequest(getDeployedUrl("/glossary"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200));
             assertJsonUnmarshal(response, Glossary.class);
@@ -160,17 +165,18 @@ public class GlossaryRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void unauthorizedDelete() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.DELETE, "/restv1/glossary")
+      new ResourceRequest(getDeployedUrl("/glossary"), "DELETE")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(401)); // Unauthorized
          }
@@ -178,21 +184,21 @@ public class GlossaryRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void putXml() throws Exception
    {
       final Glossary glossary = this.getSampleGlossary();
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/glossary")
+      new ResourceRequest(getDeployedUrl("/glossary"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
-            request.setContent( jaxbMarhsal(glossary).getBytes() );
+            request.body(MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, jaxbMarhsal(glossary).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(201)); // Created
          }
@@ -207,14 +213,14 @@ public class GlossaryRestTest extends ZanataRawRestTest
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/glossary")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
             request.setContent( jsonMarshal(glossary).getBytes() );
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(201)); // Created
          }
@@ -222,17 +228,18 @@ public class GlossaryRestTest extends ZanataRawRestTest
    }*/
    
    @Test
+   @RunAsClient
    public void delete() throws Exception
    {
-      new ResourceRequest(sharedEnvironment, Method.DELETE, "/restv1/glossary")
+      new ResourceRequest(getDeployedUrl("/glossary"), "DELETE", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
          }

@@ -106,7 +106,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       session.getSessionFactory().getCache().evictCollectionRegions();
    }
    
-   private void executeOperations(List<DataSetOperation> list)
+   protected void executeOperations(List<DataSetOperation> list)
    {
       IDatabaseConnection con = null;
       try

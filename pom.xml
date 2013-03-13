@@ -164,15 +164,6 @@
 				<version>${gwteventservice.version}</version>
 			</dependency>
 
-            <!-- Arquillian Bom -->
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.0.3.Final</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-dtd</artifactId>
