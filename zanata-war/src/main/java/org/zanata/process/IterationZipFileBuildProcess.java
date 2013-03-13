@@ -53,19 +53,19 @@ import org.zanata.service.impl.FileSystemServiceImpl;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFileBuildProcessHandle>
-{   
+{
    private DocumentDAO documentDAO;
-   
+
    private LocaleDAO localeDAO;
-   
+
    private ResourceUtils resourceUtils;
-   
+
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    private ProjectIterationDAO projectIterationDAO;
 
    private FileSystemService fileSystemServiceImpl;
-   
+
    private ConfigurationService configurationServiceImpl;
 
    @Override
@@ -91,9 +91,9 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
 
       final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
       zipHandle.setMaxProgress(allIterationDocs.size() + 1);
-      
+
       zipHandle.ready();
-      
+
       final String projectDirectory = projectSlug + "-" + iterationSlug + "/";
       final HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(localeId));
       final String mappedLocale = hLocale.getLocaleId().getId();
@@ -103,23 +103,23 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
       final FileOutputStream output = new FileOutputStream( downloadFile );
       final ZipOutputStream zipOutput = new ZipOutputStream(output);
       zipOutput.setMethod(ZipOutputStream.DEFLATED);
-      final PoWriter2 poWriter = new PoWriter2();
+      final PoWriter2 poWriter = new PoWriter2(false, zipHandle.isOfflinePo());
       final Set<String> extensions = new HashSet<String>();
-      
+
       extensions.add("gettext");
       extensions.add("comment");
-      
+
       // Generate the download descriptor file
       String downloadId = this.fileSystemServiceImpl.createDownloadDescriptorFile(downloadFile, 
             projectSlug + "_" + iterationSlug + "_" + localeId + ".zip",
             userName);
       zipHandle.setDownloadId(downloadId);
-      
+
       // Add the config file at the root of the project directory
       String configFilename = projectDirectory + this.configurationServiceImpl.getConfigurationFileName();
       zipOutput.putNextEntry(new ZipEntry(configFilename));
       zipOutput.write( 
-            this.configurationServiceImpl.getConfigurationFileContents(projectSlug, iterationSlug, zipHandle.getServerPath()).getBytes());
+            this.configurationServiceImpl.getConfigurationFileContents(projectSlug, iterationSlug, zipHandle.isOfflinePo(), zipHandle.getServerPath()).getBytes());
       zipOutput.closeEntry();
       zipHandle.incrementProgress(1);
 
@@ -134,21 +134,21 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
             this.fileSystemServiceImpl.deleteDownloadDescriptorFile(downloadId);
             return;
          }
-            
+
          TranslationsResource translationResource = new TranslationsResource();
          List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
          resourceUtils.transferToTranslationsResource(
                translationResource, document, hLocale, extensions, hTargets);
 
          Resource res = this.resourceUtils.buildResource( document );
-         
+
          String filename = localeDirectory + document.getDocId() + ".po";
          zipOutput.putNextEntry(new ZipEntry(filename));
          poWriter.writePo(zipOutput, "UTF-8", res, translationResource);
          zipOutput.closeEntry();
          zipHandle.incrementProgress(1);
       }
-      
+
       zipOutput.flush();
       zipOutput.close();
    }

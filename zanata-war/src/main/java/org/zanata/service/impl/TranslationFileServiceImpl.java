@@ -35,10 +35,13 @@ import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
@@ -111,14 +114,17 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @In
    private DocumentDAO documentDAO;
 
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
    @Override
-   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException
+   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException
    {
       if( fileName.endsWith(".po") )
       {
          try
          {
-            return parsePoFile(fileContents);
+            return parsePoFile(fileContents, !originalIsPo);
          }
          catch (Exception e)
          {
@@ -147,25 +153,24 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseDocumentFile(InputStream fileContents, String path, String fileName)
+   public String generateDocId(String path, String fileName)
    {
       String docName = fileName;
       if (docName.endsWith(".pot"))
       {
          docName = docName.substring(0, docName.lastIndexOf('.'));
       }
-
-      return parseUpdatedDocumentFile(fileContents, convertToValidPath(path) + docName, fileName);
+      return convertToValidPath(path) + docName;
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName)
+   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
    {
       if (fileName.endsWith(".pot"))
       {
          try
          {
-            return parsePotFile(fileContents, docId);
+            return parsePotFile(fileContents, docId, offlinePo);
          }
          catch (Exception e)
          {
@@ -228,15 +233,15 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return path;
    }
 
-   private TranslationsResource parsePoFile( InputStream fileContents )
+   private TranslationsResource parsePoFile( InputStream fileContents, boolean offlinePo )
    {
-      PoReader2 poReader = new PoReader2();
+      PoReader2 poReader = new PoReader2(offlinePo);
       return poReader.extractTarget(new InputSource(fileContents) );
    }
 
-   private Resource parsePotFile(InputStream fileContents, String docId)
+   private Resource parsePotFile(InputStream fileContents, String docId, boolean offlinePo)
    {
-      PoReader2 poReader = new PoReader2();
+      PoReader2 poReader = new PoReader2(offlinePo);
       // assume english as source locale
       Resource res = poReader.extractTemplate(new InputSource(fileContents), new LocaleId("en"), docId);
       return res;
@@ -384,6 +389,32 @@ public class TranslationFileServiceImpl implements TranslationFileService
    {
       HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docPath+docName);
       return doc.getRawDocument().getType().getExtension();
+   }
+
+   @Override
+   public boolean isPoDocument(String projectSlug, String iterationSlug, String docId)
+   {
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      ProjectType projectType = projectIteration.getProjectType();
+      if (projectType == ProjectType.Gettext || projectType == ProjectType.Podir)
+      {
+         return true;
+      }
+
+      if (projectType == ProjectType.File)
+      {
+         HDocument doc = documentDAO.getByDocIdAndIteration(projectIteration, docId);
+         if (doc.getRawDocument() == null)
+         {
+            // po is the only format in File projects for which no raw document is stored
+            return true;
+         }
+
+         // additional check in case we do start storing raw documents for po
+         DocumentType docType = doc.getRawDocument().getType();
+         return docType == GETTEXT_PORTABLE_OBJECT || docType == GETTEXT_PORTABLE_OBJECT_TEMPLATE;
+      }
+      return false;
    }
 
 }

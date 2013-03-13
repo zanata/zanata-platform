@@ -106,7 +106,7 @@ public class FileUploadServlet extends HttpServlet
 
          // Create a new file upload handler
          ServletFileUpload upload = new ServletFileUpload(factory);
-         
+
          // Parse the request
          try
          {
@@ -120,8 +120,15 @@ public class FileUploadServlet extends HttpServlet
 
             validateParams(params);
 
+            String projectSlug = params.get("projectSlug").getString();
+            String versionSlug = params.get("versionSlug").getString();
+            String docId = params.get("docId").getString();
             // process the file
-            TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(params.get("uploadFileElement").getInputStream(), params.get("fileName").getString(), params.get("targetLocale").getString());
+            TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(
+                        params.get("uploadFileElement").getInputStream(),
+                        params.get("fileName").getString(),
+                        params.get("targetLocale").getString(),
+                        translationFileServiceImpl.isPoDocument(projectSlug, versionSlug, docId));
 
             // translate it
             Set<String> extensions;
@@ -133,9 +140,11 @@ public class FileUploadServlet extends HttpServlet
             {
                extensions = Collections.<String> emptySet();
             }
-            List<String> warnings = translationServiceImpl.translateAllInDoc(params.get("projectSlug").getString(), params.get("versionSlug").getString(), params.get("docId").getString(), new LocaleId(params.get("targetLocale").getString()), transRes, extensions, Boolean.parseBoolean(params.get("merge").getString()) ? MergeType.AUTO : MergeType.IMPORT);
-            
-            
+            MergeType mergeType = Boolean.parseBoolean(params.get("merge").getString()) ? MergeType.AUTO : MergeType.IMPORT;
+            List<String> warnings = translationServiceImpl.translateAllInDoc(
+                  projectSlug, versionSlug, docId, new LocaleId(params.get("targetLocale").getString()),
+                  transRes, extensions, mergeType);
+
             StringBuilder response = new StringBuilder();
             response.append("Status code: ");
             response.append(HttpServletResponse.SC_OK);
@@ -152,10 +161,10 @@ public class FileUploadServlet extends HttpServlet
             resp.setContentType("text/plain");
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setCharacterEncoding("utf8");
-            
+
             resp.getWriter().print(response.toString());
             resp.getWriter().flush();
-            
+
          }
          catch (Exception e)
          {

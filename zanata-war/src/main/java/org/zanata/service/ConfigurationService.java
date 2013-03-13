@@ -27,10 +27,11 @@ public interface ConfigurationService
     * 
     * @param projectSlug
     * @param iterationSlug
+    * @param useOfflinePo true to use 'offlinepo' instead of the configured project type
     * @return The configuration file contents for the given project and
     *         iteration.
     */
-   String getConfigurationFileContents(String projectSlug, String iterationSlug);
+   String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo);
 
    /**
     * Returns the contents of the configuration for a given project. Use this method
@@ -38,11 +39,12 @@ public interface ConfigurationService
     *
     * @param projectSlug
     * @param iterationSlug
+    * @param useOfflinePo true to use 'offlinepo' instead of the configured project type
     * @param serverPath
     * @return The configuration file contents for the given project and
     *         iteration.
     */
-   String getConfigurationFileContents(String projectSlug, String iterationSlug, String serverPath);
+   String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo, String serverPath);
    
    /**
     * Returns the default configuration file Name.

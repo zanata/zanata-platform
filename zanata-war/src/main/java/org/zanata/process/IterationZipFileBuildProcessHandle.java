@@ -34,6 +34,7 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
    private String projectSlug;
    private String iterationSlug;
    private String localeId;
+   private boolean offlinePo;
    private String initiatingUserName;
    private String downloadId;
    private Semaphore readySemaphore;
@@ -82,11 +83,21 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
       this.localeId = localeId;
    }
 
+   public boolean isOfflinePo()
+   {
+      return offlinePo;
+   }
+
+   public void setOfflinePo(boolean offlinePo)
+   {
+      this.offlinePo = offlinePo;
+   }
+
    public String getDownloadId()
    {
       return downloadId;
    }
-   
+
    public void setDownloadId(String downloadId)
    {
       this.downloadId = downloadId;
@@ -129,7 +140,7 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
          // If interrupted, just ignore
       }
    }
-   
+
    /**
     * Signals that the process is ready.
     */
@@ -137,5 +148,5 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
    {
       this.readySemaphore.release();
    }
-   
+
 }

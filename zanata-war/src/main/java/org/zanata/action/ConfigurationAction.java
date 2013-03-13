@@ -52,6 +52,14 @@ public class ConfigurationAction implements Serializable
 
    public void getData()
    {
+      boolean useOfflinePo = false;
+      getData(useOfflinePo);
+   }
+
+   // FIXME need another public method to get offlinepo config file
+
+   private void getData(boolean useOfflinePo)
+   {
       HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
       response.setContentType("application/xml");
       response.addHeader("Content-disposition", "attachment; filename=\"" 
@@ -62,7 +70,7 @@ public class ConfigurationAction implements Serializable
          ServletOutputStream os = response.getOutputStream();
 
          os.write(
-            configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug).getBytes());
+            configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug, useOfflinePo).getBytes());
          os.flush();
          os.close();
          FacesContext.getCurrentInstance().responseComplete();
