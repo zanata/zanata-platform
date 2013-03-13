@@ -34,10 +34,10 @@ import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.common.base.Stopwatch;
@@ -231,70 +231,46 @@ public class ValidationServiceImpl implements ValidationService
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         HTextFlowTarget target = textFlow.getTargets().get(localeId);
-         if (target != null)
-         {
-            for (ValidationAction validationAction : validationActions)
-            {
-               validationAction.clearErrorMessage();
-               validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
-               if (validationAction.hasError())
-               {
-                  return true;
-               }
-            }
-         }
+         return validationTextFlow(textFlow, validationActions, localeId);
       }
       return false;
    }
 
    @Override
-   public List<TransUnitValidationResult> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId)
+   public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId)
    {
       log.debug("Start filter {0} textFlows", textFlows.size());
       Stopwatch stopwatch = new Stopwatch().start();
 
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
-      List<TransUnitValidationResult> result = new ArrayList<TransUnitValidationResult>();
+      List<HTextFlow> result = new ArrayList<HTextFlow>();
       
-      List<HTextFlow> filteredTextFlows = new ArrayList<HTextFlow>();
-
       for (HTextFlow textFlow : textFlows)
       {
-         TransUnitValidationResult validationResult = validationTextFlow(textFlow, validationActions, localeId);
-         
-         if (validationResult != null)
+         if(validationTextFlow(textFlow, validationActions, localeId))
          {
-            result.add(validationResult);
-            filteredTextFlows.add(textFlow);
+            result.add(textFlow);
          }
       }
-      textFlows = filteredTextFlows;
       log.debug("Finished filter textFlows in " + stopwatch);
       return result;
    }
 
-   private TransUnitValidationResult validationTextFlow(HTextFlow textFlow, List<ValidationAction> validationActions, Long localeId)
+   private boolean validationTextFlow(HTextFlow textFlow, List<ValidationAction> validationActions, Long localeId)
    {
       HTextFlowTarget target = textFlow.getTargets().get(localeId);
       if (target != null)
       {
-         List<String> errors = new ArrayList<String>();
          for (ValidationAction validationAction : validationActions)
          {
             validationAction.clearErrorMessage();
             validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
             if (validationAction.hasError())
             {
-               errors.addAll(validationAction.getError());
+               return true;
             }
          }
-
-         if (!errors.isEmpty())
-         {
-            return new TransUnitValidationResult(new TransUnitId(textFlow.getId()), errors);
-         }
       }
-      return null;
+      return false;
    }
 }

@@ -79,5 +79,5 @@ public interface ValidationService
     * @param textFlows
     * @param id
     */
-   List<TransUnitValidationResult> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId);
+   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId);
 }

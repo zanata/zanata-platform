@@ -40,7 +40,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -101,15 +100,13 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
       
-      List<TransUnitValidationResult> validationResult = null;
-      if (action.isFilterHasError())
+      if (action.isFilterHasError() && action.getValidationIds() != null && !action.getValidationIds().isEmpty())
       {
-         validationResult = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getId());
+         textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getId());
       }
       
-      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage);
+      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage, action.isFilterHasError());
       result.setNavigationIndex(navigationResult);
-      result.setValidationResults(validationResult);
       return result;
    }
 
@@ -151,7 +148,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       return !Strings.isNullOrEmpty(phrase) && phrase.trim().length() != 0;
    }
 
-   private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows, int targetOffset, int targetPage)
+   private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows, int targetOffset, int targetPage, boolean isFilterByHasError)
    {
       List<TransUnit> units = Lists.transform(textFlows, new HTextFlowToTransUnitFunction(hLocale, transUnitTransformer));
 
@@ -165,7 +162,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          }
       }
       // stupid GWT RPC can't handle com.google.common.collect.Lists$TransformingRandomAccessList
-      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow, targetOffset, targetPage);
+      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow, targetOffset, targetPage, isFilterByHasError);
    }
 
    @Override

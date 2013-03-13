@@ -38,6 +38,9 @@ import org.zanata.webtrans.client.events.LoadingEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.RefreshPageEventHandler;
+import org.zanata.webtrans.client.events.RequestPageValidationEvent;
+import org.zanata.webtrans.client.events.RequestPageValidationHandler;
+import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
@@ -79,7 +82,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       TransUnitsTableDisplay.Listener,
       TableRowSelectedEventHandler,
       LoadingEventHandler,
-      RefreshPageEventHandler, UserConfigChangeHandler
+      RefreshPageEventHandler, UserConfigChangeHandler,
+      RequestPageValidationHandler
 // @formatter:on
 {
 
@@ -142,6 +146,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(LoadingEvent.TYPE, this));
       registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(RequestPageValidationEvent.TYPE, this));
 
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
@@ -382,5 +387,26 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
+   }
+
+   @Override
+   public void onRequestPageValidation(RequestPageValidationEvent event)
+   {
+      List<SourceContentsDisplay> sourceDisplays = sourceContentsPresenter.getDisplays();
+      List<TargetContentsDisplay> targetDisplays = targetContentsPresenter.getDisplays();
+      
+      for (int i = 0; i < sourceContentsPresenter.getDisplays().size(); i++)
+      {
+         SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
+         TargetContentsDisplay targetDisplay = targetDisplays.get(i);
+
+         String source = sourceDisplay.getSourcePanelList().get(0).getSource();
+         String target = targetDisplay.getEditors().get(0).getText();
+         
+         RunValidationEvent runValidationEvent = new RunValidationEvent(source, target, false);
+         runValidationEvent.addWidget(targetDisplay);
+         
+         eventBus.fireEvent(runValidationEvent);
+      }
    }
 }

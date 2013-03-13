@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 
 import com.google.common.base.Objects;
 
@@ -19,21 +18,21 @@ public class GetTransUnitListResult implements DispatchResult
    private int targetOffset;
    private int targetPage;
    private GetTransUnitsNavigationResult navigationIndex;
-   
-   private List<TransUnitValidationResult> validationResult;
+   private boolean filterByHasError = false;
 
    @SuppressWarnings("unused")
    private GetTransUnitListResult()
    {
    }
 
-   public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units, int gotoRow, int targetOffset, int targetPage)
+   public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units, int gotoRow, int targetOffset, int targetPage, boolean filterByHasError)
    {
       this.documentId = documentId;
       this.units = units;
       this.gotoRow = gotoRow;
       this.targetOffset = targetOffset;
       this.targetPage = targetPage;
+      this.filterByHasError = filterByHasError;
    }
 
    public List<TransUnit> getUnits()
@@ -70,15 +69,10 @@ public class GetTransUnitListResult implements DispatchResult
    {
       this.navigationIndex = navigationIndex;
    }
-   
-   public void setValidationResults(List<TransUnitValidationResult> validationResult)
-   {
-      this.validationResult =validationResult;
-   }
 
-   public List<TransUnitValidationResult> getValidationResult()
+   public boolean isFilterByHasError()
    {
-      return validationResult;
+      return filterByHasError;
    }
 
    @Override

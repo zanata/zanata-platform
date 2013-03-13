@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
