@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,6 +46,7 @@ public class ValidationServiceTest
    private EventBus eventBus;
    @Mock
    private TableEditorMessages messages;
+   
    private ValidationMessages validationMessages;
    @Mock
    private HasUpdateValidationWarning validationMessagePanel;
@@ -54,6 +54,7 @@ public class ValidationServiceTest
    @Mock
    private CachingDispatchAsync dispatcher;
    
+   @Mock
    private UserConfigHolder configHolder;
 
    @BeforeMethod
@@ -84,11 +85,9 @@ public class ValidationServiceTest
    @Test
    public void onValidate()
    {
-      when(validationMessages.varsAdded(isA(List.class))).thenReturn("Unexpected variable");
-
       RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
       event.addWidget(validationMessagePanel);
-      ArrayList<String> errors = Lists.newArrayList("Unexpected variable", "Unexpected variable");
+      ArrayList<String> errors = Lists.newArrayList(validationMessages.varsAdded(null), validationMessages.varsAdded(null));
 
       service.onValidate(event);
 

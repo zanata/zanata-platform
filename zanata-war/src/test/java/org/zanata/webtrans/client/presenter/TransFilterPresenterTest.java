@@ -44,6 +44,8 @@ public class TransFilterPresenterTest
    private HasValue<Boolean> translatedChk;
    @Mock
    private HasValue<Boolean> untranslatedChk;
+   @Mock
+   private HasValue<Boolean> hasErrorChk;
    @Captor
    private ArgumentCaptor<ValueChangeHandler<Boolean>> filterChangeHandlerCaptor;
 
@@ -58,6 +60,7 @@ public class TransFilterPresenterTest
       when(display.getNeedReviewChk()).thenReturn(needReviewChk);
       when(display.getTranslatedChk()).thenReturn(translatedChk);
       when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
+      when(display.getHasErrorChk()).thenReturn(hasErrorChk);
 
       presenter = new TransFilterPresenter(display, eventBus, history, userOptionsService);
 
@@ -149,6 +152,8 @@ public class TransFilterPresenterTest
       when(needReviewChk.getValue()).thenReturn(true);
       when(translatedChk.getValue()).thenReturn(false);
       when(untranslatedChk.getValue()).thenReturn(true);
+      when(hasErrorChk.getValue()).thenReturn(false);
+      
       presenter.onBind();
       verify(needReviewChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
       ValueChangeHandler<Boolean> handler = filterChangeHandlerCaptor.getValue();

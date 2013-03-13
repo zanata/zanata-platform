@@ -39,8 +39,6 @@ import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 @Test(groups = { "unit-tests" })
 public class XMLEntityValidationTests
 {
-   // TODO use TestMessages
-
    private XmlEntityValidation xmlEntityValidation;
 
    private ValidationMessages messages;
