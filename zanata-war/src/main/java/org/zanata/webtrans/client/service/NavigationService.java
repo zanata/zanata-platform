@@ -31,6 +31,8 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
+import org.zanata.webtrans.client.events.InitEditorEvent;
+import org.zanata.webtrans.client.events.InitEditorEventHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
@@ -47,7 +49,6 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.EditorClientId;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -56,7 +57,6 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -67,23 +67,21 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler, InitEditorEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNDEFINED = -1;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final ModalNavigationStateHolder navigationStateHolder;
+   private final GetTransUnitActionContextHolder contextHolder;
    private final UserConfigHolder configHolder;
    private final TableEditorMessages messages;
    private final SinglePageDataModelImpl pageModel;
    private NavigationService.PageDataChangeListener pageDataChangeListener;
 
-   //tracking variables
-   private GetTransUnitActionContext context;
-
    @Inject
-   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder)
+   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder, GetTransUnitActionContextHolder getTransUnitActionContextHolder)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
@@ -91,6 +89,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       this.messages = messages;
       this.pageModel = pageModel;
       this.navigationStateHolder = navigationStateHolder;
+      this.contextHolder = getTransUnitActionContextHolder;
       bindHandlers();
    }
 
@@ -102,6 +101,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
       eventBus.addHandler(BookmarkedTextFlowEvent.TYPE, this);
+      eventBus.addHandler(InitEditorEvent.TYPE, this);
    }
 
    protected void requestTransUnitsAndUpdatePageIndex(GetTransUnitActionContext actionContext, final boolean needReloadIndex)
@@ -125,7 +125,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
          {
             List<TransUnit> units = result.getUnits();
             Log.info("result size: " + units.size());
-            context = context.changeOffset(result.getTargetOffset());
+            contextHolder.changeOffset(result.getTargetOffset());
             pageModel.setData(units);
             pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
 
@@ -152,9 +152,10 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
    private void highlightSearch()
    {
-      if (!Strings.isNullOrEmpty(context.getFindMessage()))
+      String findMessage = contextHolder.getContext().getFindMessage();
+      if (!Strings.isNullOrEmpty(findMessage))
       {
-         pageDataChangeListener.highlightSearch(context.getFindMessage());
+         pageDataChangeListener.highlightSearch(findMessage);
       }
    }
 
@@ -163,7 +164,8 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       int page = normalizePageIndex(pageIndex);
       if (page != navigationStateHolder.getCurrentPage())
       {
-         GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
+         GetTransUnitActionContext context = contextHolder.getContext();
+         GetTransUnitActionContext newContext = contextHolder.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
          Log.info("page index: " + page + " page context: " + newContext);
          requestTransUnitsAndUpdatePageIndex(newContext, !configHolder.isAcceptAllStatus());
       }
@@ -225,7 +227,8 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    private void loadPageAndGoToRow(int pageIndex, TransUnitId transUnitId)
    {
       int page = normalizePageIndex(pageIndex);
-      GetTransUnitActionContext newContext = context.changeOffset(context.getCount() * page).changeTargetTransUnitId(transUnitId);
+      GetTransUnitActionContext context = contextHolder.getContext();
+      GetTransUnitActionContext newContext = contextHolder.changeOffset(context.getCount() * page).changeTargetTransUnitId(transUnitId);
       Log.debug("page index: " + page + " page context: " + newContext);
       requestTransUnitsAndUpdatePageIndex(newContext, !configHolder.isAcceptAllStatus());
    }
@@ -233,7 +236,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      if (Objects.equal(event.getUpdateInfo().getDocumentId(), context.getDocumentId()))
+      if (Objects.equal(event.getUpdateInfo().getDocumentId(), contextHolder.getContext().getDocumentId()))
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          boolean updated = updateDataModel(updatedTU);
@@ -263,6 +266,22 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    }
 
    @Override
+   public void onBookmarkableTextFlow(BookmarkedTextFlowEvent bookmarkedTextFlowEvent)
+   {
+      int oldOffset = contextHolder.getContext().getOffset();
+      int offset = bookmarkedTextFlowEvent.getOffset();
+      if (oldOffset == offset)
+      {
+         // target text flow is on current page
+         eventBus.fireEvent(new TableRowSelectedEvent(bookmarkedTextFlowEvent.getTargetTransUnitId()));
+      }
+      else
+      {
+         execute(bookmarkedTextFlowEvent);
+      }
+   }
+
+   @Override
    public void onPageSizeChange(EditorPageSizeChangeEvent pageSizeChangeEvent)
    {
       execute(pageSizeChangeEvent);
@@ -270,33 +289,24 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
    }
 
+   @Override
+   public void onInitEditor(InitEditorEvent event)
+   {
+      requestTransUnitsAndUpdatePageIndex(contextHolder.getContext(), true);
+   }
+
    public void execute(UpdateContextCommand command)
    {
-      if (context == null)
+      GetTransUnitActionContext context = contextHolder.getContext();
+      GetTransUnitActionContext newContext = command.updateContext(context);
+      Log.debug("old context: " + context);
+      Log.debug("new context: " + newContext);
+      if (context.needReloadList(newContext))
       {
-         Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
-         DocumentSelectionEvent documentSelectionEvent = (DocumentSelectionEvent) command;
-         DocumentId documentId = documentSelectionEvent.getDocumentId();
-         // @formatter:off
-         context = new GetTransUnitActionContext(documentId)
-               .changeCount(configHolder.getState().getEditorPageSize())
-               .changeFindMessage(documentSelectionEvent.getFindMessage())
-               .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
-               .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
-               .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated());
-         requestTransUnitsAndUpdatePageIndex(context, true);
-         // @formatter:on
+         boolean needReloadIndex = context.needReloadNavigationIndex(newContext);
+         requestTransUnitsAndUpdatePageIndex(newContext, needReloadIndex);
       }
-      else
-      {
-         GetTransUnitActionContext newContext = command.updateContext(context);
-         if (context.needReloadList(newContext))
-         {
-            boolean needReloadIndex = context.needReloadNavigationIndex(newContext);
-            requestTransUnitsAndUpdatePageIndex(newContext, needReloadIndex);
-         }
-         this.context = newContext;
-      }
+      contextHolder.updateContext(newContext);
    }
 
    public void selectByRowIndex(int rowIndexOnPage)
@@ -304,7 +314,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       if (pageModel.getCurrentRow() != rowIndexOnPage)
       {
          pageModel.setSelected(rowIndexOnPage);
-         context = context.changeTargetTransUnitId(pageModel.getSelectedOrNull().getId());
+         contextHolder.changeTargetTransUnitId(pageModel.getSelectedOrNull().getId());
          eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
          navigationStateHolder.updateSelected(getSelectedOrNull().getId());
       }
@@ -346,26 +356,9 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
     */
    protected void init(GetTransUnitActionContext context)
    {
-      this.context = context;
+      contextHolder.updateContext(context);
       configHolder.setEditorPageSize(context.getCount());
       requestTransUnitsAndUpdatePageIndex(context, true);
-   }
-
-   @Override
-   public void onBookmarkableTextFlow(BookmarkedTextFlowEvent event)
-   {
-      // FIXME this won't work. navigationStateHolder is not loaded on first load.
-//      int targetPage = navigationStateHolder.getTargetPage(event.getTextFlowId());
-//      if (targetPage == UNDEFINED)
-//      {
-         // TODO send a notification to user saying this bookmarked text flow id is invalid?
-         // TODO do we remove invalid bookmarked text flow from history token and url?
-//         return;
-//      }
-      this.context  = context
-//            .changeOffset(targetPage)
-            .changeTargetTransUnitId(event.getTextFlowId());
-      requestTransUnitsAndUpdatePageIndex(context, false);
    }
 
    public static interface UpdateContextCommand

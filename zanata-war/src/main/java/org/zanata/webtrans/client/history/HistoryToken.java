@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.history;
 import org.zanata.webtrans.client.presenter.MainView;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 
 /**
  * Encapsulates a string token of key-value pairs for GWT history operations.
@@ -513,16 +514,15 @@ public class HistoryToken
 
    public void setTextFlowId(String textFlowId)
    {
-      Long id;
-      try
+      String textFlow = Strings.nullToEmpty(textFlowId);
+      if (textFlow.matches("^\\d+$"))
       {
-         id = Long.valueOf(textFlowId);
+         this.textFlowId = Long.valueOf(textFlow);
       }
-      catch (Exception e)
+      else
       {
-         id = null;
+         this.textFlowId = null;
       }
-      this.textFlowId = id;
    }
 
    public Long getTextFlowId()

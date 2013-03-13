@@ -1,14 +1,7 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +17,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
@@ -71,6 +65,7 @@ public class NavigationServiceUnitTest
    private ArgumentCaptor<AbstractAsyncCallback<GetTransUnitListResult>> resultCaptor;
    @Mock
    private NavigationService.PageDataChangeListener pageDataChangeListener;
+   private GetTransUnitActionContextHolder contextHolder;
 
 
    @BeforeMethod
@@ -82,7 +77,9 @@ public class NavigationServiceUnitTest
       configHolder.setEditorPageSize(EDITOR_PAGE_SIZE);
       SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl();
       ModalNavigationStateHolder navigationStateHolder = new ModalNavigationStateHolder(configHolder);
-      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder);
+      contextHolder = new GetTransUnitActionContextHolder(configHolder);
+      contextHolder.initContext(new DocumentId(1L, "a.pot"), null, null);
+      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder, contextHolder);
       service.addPageDataChangeListener(pageDataChangeListener);
 
       verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
@@ -344,5 +341,35 @@ public class NavigationServiceUnitTest
 
       // not in current page
       assertThat(service.getByIdOrNull(new TransUnitId(99)), Matchers.nullValue());
+   }
+
+   @Test
+   public void onBookmarkedTextFlowOnSamePage()
+   {
+      contextHolder.changeOffset(1);
+      TransUnitId targetId = new TransUnitId(1);
+
+      service.onBookmarkableTextFlow(new BookmarkedTextFlowEvent(1, targetId));
+
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      TableRowSelectedEvent event = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
+      assertThat(event.getSelectedId(), Matchers.equalTo(targetId));
+      verifyZeroInteractions(dispatcher);
+   }
+
+   @Test
+   public void onBookmarkedTextFlowOnDifferentPage()
+   {
+      // current offset is 1
+      contextHolder.changeOffset(1);
+      TransUnitId targetId = new TransUnitId(1);
+      // target offset is 2
+      BookmarkedTextFlowEvent bookmarkedTextFlowEvent = new BookmarkedTextFlowEvent(2, targetId);
+      NavigationService serviceSpy = spy(service);
+      doNothing().when(serviceSpy).execute(bookmarkedTextFlowEvent);
+
+      serviceSpy.onBookmarkableTextFlow(bookmarkedTextFlowEvent);
+
+      verify(serviceSpy).execute(bookmarkedTextFlowEvent);
    }
 }

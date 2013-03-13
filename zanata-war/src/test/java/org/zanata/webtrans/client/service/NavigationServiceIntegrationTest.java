@@ -120,7 +120,10 @@ public class NavigationServiceIntegrationTest
       pageModel = new SinglePageDataModelImpl();
       configHolder = new UserConfigHolder();
       navigationStateHolder = new ModalNavigationStateHolder(configHolder);
-      service = new NavigationService(eventBus, dispatcher, configHolder, messages, pageModel, navigationStateHolder);
+      GetTransUnitActionContextHolder contextHolder = new GetTransUnitActionContextHolder(configHolder);
+      contextHolder.initContext(DOCUMENT_ID, null, null);
+
+      service = new NavigationService(eventBus, dispatcher, configHolder, messages, pageModel, navigationStateHolder, contextHolder);
       service.addPageDataChangeListener(transUnitsTablePresenter);
 
       context = new GetTransUnitActionContext(DOCUMENT_ID);
