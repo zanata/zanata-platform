@@ -510,7 +510,7 @@
   <!-- Project -->
   <page view-id="/project/home.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('', 'Projects')}"/>
+  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Projects'])}"/>
   </page>
   
   <page view-id="/project/project.xhtml">
